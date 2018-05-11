@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" 
      width="100" height="100" viewBox="0 0 100 100">
-	<path d="M 50, 0 L 100, 20 L 100, 30 L 50, 10 L 0 30 L 0 20 Z"/>
+	<path d="M 0, 20 A 50 20, 0, 0, 1 100 20 A 50 20, 0, 0, 1, 0 20 Z" fill="#3d8b3d"/>
+	<path d="M 0, 30 A 50 20  0  0  0 100 30 L 100 50 A 50 20  0  0 1 0 50 Z" fill="#3d8b3d"/>
+	<path d="M 0, 60 A 50 20  0  0  0 100 60 L 100 80 A 50 20  0  0 1 0 80 Z" fill="#3d8b3d"/>
 </svg>
