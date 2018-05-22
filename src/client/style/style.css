@@ -102,3 +102,9 @@ body {
 	margin-right: 5px;
 	vertical-align: middle;
 }
+
+/* Stuff for the top bar */
+.hamburgerIcon {
+	height: 1em;
+	vertical-align: middle;
+}

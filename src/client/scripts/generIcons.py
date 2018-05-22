@@ -36,6 +36,13 @@ def generCloud():
     return generPath("M {:.2f} {:.2f}".format(sin(offset)*r2, (cos(offset)*r2+25)*2)+t+"Z"+
                      "M -10 -15 L 10 -15 L 10 20 L 20 20 L 0 45 L -20 20 L -10 20 Z")
 
+def generHamburger():
+    out=[]
+    for i in range(3):
+        out.append("<rect x='-50' y='{:.2f}' width='100' height='{:.2f}'/>".format(-50 + i*200/5, 100/5))
+    return "\n".join(out)
+
 if __name__=="__main__":
     writeSvg("../icons/star.svg", generStar())
+    writeSvg("../icons/hamburger.svg", generHamburger())
     #writeSvg("../icons/cloud.svg",generCloud())
