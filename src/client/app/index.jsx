@@ -1,5 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
+import {JsonRequest} from './ajax';
 
 class StatsScreen extends React.Component {
 	render () {
@@ -72,20 +73,38 @@ class MainPanel extends React.Component {
             }];
     }
     componentDidMount() {
-        this.timerID = setTimeout(
-            function() {
-                let props = this.state.results;
+        this.timerID = JsonRequest(
+            "https://www.openml.org/api/v1/json/data/list/limit/20/offset/0",
+            undefined,
+            function(ajax) {
+                /*let props = this.state.results;
                 props.push({
-                    "name": "surprie (2)",
+                    "name": "surprise (2)",
                     "teaser": "Did not expect that, did y'a?",
                     "stats": [
                         {"value": "5,000,000", "unit": "runs", "icon": "icons/star.svg"},
                         {"value": "2,000", "unit": "likes", "icon": "icons/heart.svg"},
                         {"value": "14,000", "unit": "downloads", "icon": "icons/cloud.svg"}
                     ]
-                });
-                this.setState({"results": props});
+                });*/
+                this.setState((prevState, props)=>({
+                    results: prevState.results.concat(ajax.data.dataset.map(
+                        x => ({
+                            "name": x["name"],
+                            "teaser": "I can not find the teaser text",
+                            "stats": x["quality"].map(
+                                y => ({
+                                    "value": ""+y["value"],
+                                    "unit": ""+y["name"],
+                                })
+                            )
+                        })))
+                })
+                );
             }.bind(this),
+            function(error) {
+                console.log("error", error);
+            },
             1000
         )
     }
