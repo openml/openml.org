@@ -74,33 +74,41 @@ class MainPanel extends React.Component {
     }
     componentDidMount() {
         this.timerID = JsonRequest(
-            "https://www.openml.org/api/v1/json/data/list/limit/20/offset/0",
-            undefined,
-            function(ajax) {
-                /*let props = this.state.results;
-                props.push({
-                    "name": "surprise (2)",
-                    "teaser": "Did not expect that, did y'a?",
-                    "stats": [
-                        {"value": "5,000,000", "unit": "runs", "icon": "icons/star.svg"},
-                        {"value": "2,000", "unit": "likes", "icon": "icons/heart.svg"},
-                        {"value": "14,000", "unit": "downloads", "icon": "icons/cloud.svg"}
-                    ]
-                });*/
-                this.setState((prevState, props)=>({
-                    results: prevState.results.concat(ajax.data.dataset.map(
-                        x => ({
-                            "name": x["name"],
-                            "teaser": "I can not find the teaser text",
-                            "stats": x["quality"].map(
-                                y => ({
-                                    "value": ""+y["value"],
-                                    "unit": ""+y["name"],
+            "https://www.openml.org/es/openml/_search",
+            {
+                "from" : 0,
+                "size" : 100,
+                "query" : { "bool" : { "must" : {"match_all" : { }}, "filter": { "term" : { "status" : "active" } }, "should": [{ "term" : { "visibility" : "public" } }], "minimum_should_match" : 1  }},"sort" : { "runs" : { "order": "desc"}},
+                "aggs" : {
+                    "type" : {
+                        "terms" : { "field" : "_type" }
+                    }
+                }
+            },
+            function (ajax) {
+
+                this.setState(
+                    function(prevState, props) {
+                        return {
+                            results: prevState.results.concat(ajax["hits"]["hits"].map(
+                                x => ({
+                                    "name": x["_source"]["name"],
+                                    "teaser": "I can not find the teaser text",
+                                    "stats": [
+                                        {"value": x["_source"]["runs"], "unit": "runs", "icon": "icons/star.svg"},
+                                        {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "icons/heart.svg"},
+                                        {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "icons/cloud.svg"},
+                                        {"value": x["_source"]["reach"], "unit": "reach"},
+                                        {"value": x["_source"]["impact"], "unit": "impact"}
+
+                                    ]
                                 })
-                            )
-                        })))
-                })
+                            ))
+                        };
+                    }.bind(this)
                 );
+
+                console.log(ajax);
             }.bind(this),
             function(error) {
                 console.log("error", error);
@@ -110,7 +118,6 @@ class MainPanel extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.timerID);
     }
 
     render() {
