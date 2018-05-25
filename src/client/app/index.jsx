@@ -4,7 +4,7 @@ import {JsonRequest} from './ajax';
 
 class StatsScreen extends React.Component {
 	render () {
-		let stats = this.props.stat.map(
+		let stats = this.props.stats.map(
 			item=><span className="stat">
 			{item.icon?(<img src={item.icon}/>):undefined}
 			<span className="statValue">{item.value}</span>
@@ -30,10 +30,10 @@ class SearchElement extends React.Component {
 					{this.props.teaser+''}
 					</div>
 					<div className="itemStats itemStatsBig">
-						<StatsScreen stat={this.props.stats}/>
+						<StatsScreen stats={this.props.stats}/>
 					</div>
 					<div className="itemStats itemStatsSmall">
-					
+					    <StatsScreen stats={this.props.stats2}/>
 					</div>
 				</div>
 			</div>
@@ -59,21 +59,28 @@ class MainPanel extends React.Component {
                     {"value": "5,000,000", "unit": "runs", "icon": "icons/star.svg"},
                     {"value": "2,000", "unit": "likes", "icon": "icons/heart.svg"},
                     {"value": "14,000", "unit": "downloads", "icon": "icons/cloud.svg"}
-                ]
+                ],
+                "stats2": []
             },
             {
                 "name": "credit-g (1)",
                 "teaser": "This dataset classifies people described by a set of attributes as good or bad compared to",
-                "stats": [{"value": "5", "unit": "mm"}]
+                "stats": [{"value": "5", "unit": "mm"}],
+                "stats2": [
+
+                ]
             },
             {
                 "name": "monk-problems-2 (1)",
                 "teaser": "Once upon a time, in July 1991, the monks of Corsendonk Priory were faced with",
-                "stats": [{"value": "5", "unit": "mm"}]
+                "stats": [{"value": "5", "unit": "mm"}],
+                "stats2": [
+                    {"value": "5", "unit": "nm"}
+                ]
             }];
     }
     componentDidMount() {
-        this.timerID = JsonRequest(
+        JsonRequest(
             "https://www.openml.org/es/openml/_search",
             {
                 "from" : 0,
@@ -98,9 +105,14 @@ class MainPanel extends React.Component {
                                         {"value": x["_source"]["runs"], "unit": "runs", "icon": "icons/star.svg"},
                                         {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "icons/heart.svg"},
                                         {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "icons/cloud.svg"},
-                                        {"value": x["_source"]["reach"], "unit": "reach"},
-                                        {"value": x["_source"]["impact"], "unit": "impact"}
-
+                                        {"value": x["_source"]["reach"], "unit": "reach", "icon": "icons/rss.svg"},
+                                        {"value": x["_source"]["impact"], "unit": "impact", "icon": "icons/lightning.svg"}
+                                    ],
+                                    "stats2": [
+                                        {"value": x["_source"]["qualities"]["NumberOfInstances"]+"", "unit": "instances"},
+                                        {"value": x["_source"]["qualities"]["NumberOfFeatures"]+"", "unit": "fields"},
+                                        {"value": x["_source"]["qualities"]["NumberOfClasses"]+"", "unit": "classes"},
+                                        {"value": x["_source"]["qualities"]["NumberOfMissingValues"]+"", "unit": "missing"}
                                     ]
                                 })
                             ))
@@ -108,7 +120,7 @@ class MainPanel extends React.Component {
                     }.bind(this)
                 );
 
-                console.log(ajax);
+                console.log(ajax["hits"]["hits"][0]);
             }.bind(this),
             function(error) {
                 console.log("error", error);
@@ -123,7 +135,8 @@ class MainPanel extends React.Component {
     render() {
 		console.log(this.state.results);
 		let results = this.state.results.map(
-				result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}/>
+				result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
+                                         stats2={result.stats2}/>
 			)
 		return <div className="mainbar">{results}</div>
 	}
