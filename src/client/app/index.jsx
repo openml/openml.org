@@ -7,7 +7,7 @@ class StatsScreen extends React.Component {
 	render () {
 		let stats = this.props.stats.map(
 			item=><span className="stat">
-			{item.icon?(<img src={item.icon}/>):undefined}
+			{item.icon?(<span className={"fa "+item.icon}/>):undefined}
 			<span className="statValue">{item.value}</span>
 			&nbsp;
 			<span className="statUnit">{item.unit}</span>
@@ -21,7 +21,7 @@ class SearchElement extends React.Component {
 		render() {
 			return <div className="contentSection" onClick = {this.props.onclick}>
 				<div className="itemHead">
-					<img src="icons/database.svg"/>
+					<span className="fa fa-database"/>
 				</div>
 				<div className="itemName">
 					{this.props.name + ''}
@@ -51,34 +51,7 @@ class SearchResultsPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.state.results = [
-            {
-                "name": "Test for an item with a name so ridiculously extreme that my layout could look ugly possibly",
-                "teaser": "This teaser is supposed to be quite long, and thus to copy random jargon"+
-                " from openML it probably uses some kind of cost matrix with 24 unique values and a p value below 0.2",
-                "stats": [
-                    {"value": "5,000,000", "unit": "runs", "icon": "icons/star.svg"},
-                    {"value": "2,000", "unit": "likes", "icon": "icons/heart.svg"},
-                    {"value": "14,000", "unit": "downloads", "icon": "icons/cloud.svg"}
-                ],
-                "stats2": []
-            },
-            {
-                "name": "credit-g (1)",
-                "teaser": "This dataset classifies people described by a set of attributes as good or bad compared to",
-                "stats": [{"value": "5", "unit": "mm"}],
-                "stats2": [
-
-                ]
-            },
-            {
-                "name": "monk-problems-2 (1)",
-                "teaser": "Once upon a time, in July 1991, the monks of Corsendonk Priory were faced with",
-                "stats": [{"value": "5", "unit": "mm"}],
-                "stats2": [
-                    {"value": "5", "unit": "nm"}
-                ]
-            }];
+        this.state.results = [];
     }
     componentDidMount() {
         JsonRequest(
@@ -128,11 +101,11 @@ class SearchResultsPanel extends React.Component {
                                     "name": x["_source"]["name"],
                                     "teaser": "I can not find the teaser text",
                                     "stats": [
-                                        {"value": x["_source"]["runs"], "unit": "runs", "icon": "icons/star.svg"},
-                                        {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "icons/heart.svg"},
-                                        {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "icons/cloud.svg"},
-                                        {"value": x["_source"]["reach"], "unit": "reach", "icon": "icons/rss.svg"},
-                                        {"value": x["_source"]["impact"], "unit": "impact", "icon": "icons/lightning.svg"}
+                                        {"value": x["_source"]["runs"], "unit": "runs", "icon": "fa-star"},
+                                        {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "fa-heart"},
+                                        {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "fa-cloud"},
+                                        {"value": x["_source"]["reach"], "unit": "reach", "icon": "fa-rss"},
+                                        {"value": x["_source"]["impact"], "unit": "impact", "icon": "fa-bolt"}
                                     ],
                                     "stats2": [
                                         {"value": x["_source"]["qualities"]["NumberOfInstances"]+"", "unit": "instances"},
@@ -164,14 +137,18 @@ class SearchResultsPanel extends React.Component {
     }
 
     render() {
-		console.log(this.state.results);
-		let results = this.state.results.map(
-				result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
+        if (this.state.results.length >= 1) {
+            let results = this.state.results.map(
+                result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
                                          stats2={result.stats2} data_id={result.data_id}
-                                         onclick={()=>this.clickCallBack(result.data_id)}
+                                         onclick={() => this.clickCallBack(result.data_id)}
                 />
-			)
-		return <div className="mainBar">{results}</div>
+            )
+            return <div className="mainBar">{results}</div>
+        }
+        else {
+            return <div className={"mainBar"}>No results found</div>
+        }
 	}
 }
 
@@ -196,7 +173,7 @@ class MainPanel extends React.Component {
 
 class TopBar extends React.Component {
 	render() {
-		return <div className="topbar"><img id="sidebarHamburgerIcon" src="icons/hamburger.svg" className="hamburgerIcon"/>Top bar</div>
+		return <div className="topbar"><span id="sidebarHamburgerIcon" className="fa fa-bars"/>Top bar</div>
 	}
 }
 

@@ -59,8 +59,10 @@ body {
 	overflow: hidden;
 }
 
-.itemHead img {
+.itemHead span {
 	height: 20px;
+	font-size: 20px;
+	color: #3d8b3d;
 	align-self: flex-start;
 }
 
