@@ -7,6 +7,9 @@ function AjaxRequest(url,
                      successCallback,
                      failCallback,
                      headers) {
+    if (typeof failCallback !== "function") {
+        throw TypeError("Fail callback must be function, is "+failCallback);
+    }
     let xhr = createXHR();
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {

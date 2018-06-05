@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {JsonRequest} from './ajax';
+import {EntryDetails}  from './itemDetail.jsx'
 
 class StatsScreen extends React.Component {
 	render () {
@@ -18,7 +19,7 @@ class StatsScreen extends React.Component {
 
 class SearchElement extends React.Component {
 		render() {
-			return <div className="searchresult">
+			return <div className="contentSection" onClick = {this.props.onclick}>
 				<div className="itemHead">
 					<img src="icons/database.svg"/>
 				</div>
@@ -46,7 +47,7 @@ class Sidebar extends React.Component {
 	}
 }
 
-class MainPanel extends React.Component {
+class SearchResultsPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -85,7 +86,32 @@ class MainPanel extends React.Component {
             {
                 "from" : 0,
                 "size" : 100,
-                "query" : { "bool" : { "must" : {"match_all" : { }}, "filter": { "term" : { "status" : "active" } }, "should": [{ "term" : { "visibility" : "public" } }], "minimum_should_match" : 1  }},"sort" : { "runs" : { "order": "desc"}},
+                "query" : {
+                    "bool" :
+                        {
+                            "must" :
+                                {"match_all" : { }},
+                            "filter":
+                                {
+                                    "term" :
+                                        {
+                                            "status" : "active"
+                                        }
+                                    },
+                            "should":
+                                [
+                                    {
+                                        "term" : {
+                                            "visibility" : "public"
+                                        }
+                                    }
+                                ],
+                            "minimum_should_match":1}},
+                "sort" : {
+                    "runs" : {
+                        "order": "desc"
+                    }
+                },
                 "aggs" : {
                     "type" : {
                         "terms" : { "field" : "_type" }
@@ -113,7 +139,8 @@ class MainPanel extends React.Component {
                                         {"value": x["_source"]["qualities"]["NumberOfFeatures"]+"", "unit": "fields"},
                                         {"value": x["_source"]["qualities"]["NumberOfClasses"]+"", "unit": "classes"},
                                         {"value": x["_source"]["qualities"]["NumberOfMissingValues"]+"", "unit": "missing"}
-                                    ]
+                                    ],
+                                    "data_id": x["_source"]["data_id"]
                                 })
                             ))
                         };
@@ -126,7 +153,11 @@ class MainPanel extends React.Component {
                 console.log("error", error);
             },
             1000
-        )
+        );
+    }
+
+    clickCallBack(id) {
+        this.props.stateChangeCallback({"mode": "detail", "entry": id});
     }
 
     componentWillUnmount() {
@@ -136,10 +167,31 @@ class MainPanel extends React.Component {
 		console.log(this.state.results);
 		let results = this.state.results.map(
 				result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
-                                         stats2={result.stats2}/>
+                                         stats2={result.stats2} data_id={result.data_id}
+                                         onclick={()=>this.clickCallBack(result.data_id)}
+                />
 			)
-		return <div className="mainbar">{results}</div>
+		return <div className="mainBar">{results}</div>
 	}
+}
+
+class MainPanel extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            "mode": "list",
+            "entry": undefined
+        };
+    }
+
+    render() {
+        if (this.state.mode === "list") {
+            return <SearchResultsPanel stateChangeCallback = {this.setState.bind(this)}/>;
+        }
+        else {
+            return <EntryDetails entry = {this.state.entry} stateChangeCallback = {this.setState.bind(this)}/>;
+        }
+    }
 }
 
 class TopBar extends React.Component {
