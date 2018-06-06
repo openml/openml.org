@@ -64,7 +64,6 @@ export class EntryDetails extends React.Component {
             let tags = this.state.obj.tags.map(
                 t => <span className="tag"><span className="fa fa-tag"/>{""+t.tag}</span>
             );
-            console.log(tags);
             return <div className="mainBar">
                 <h1 className={"sectionTitle"}>{this.state.obj.name}</h1>
                 <div className="subtitle">uploaded by {this.state.obj.uploader} at {this.state.obj.date}</div>

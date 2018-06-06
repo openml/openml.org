@@ -120,19 +120,16 @@ class SearchResultsPanel extends React.Component {
                         };
                     }.bind(this)
                 );
-
-                console.log(ajax["hits"]["hits"][0]);
             }.bind(this),
             function(error) {
-                this.state.error = "[HTTP #"+error.status+"]"+error.statusText+": "+error.responseText,
-                console.log("error", error);
+                this.state.error = "[HTTP #"+error.status+"]"+error.statusText+": "+error.responseText;
             },
             1000
         );
     }
 
     clickCallBack(id) {
-        this.props.stateChangeCallback({"mode": "detail", "entry": id});
+        this.props.stateChangeCallback("detail", id);// stateChangeCallback({"mode": "detail", "entry": id});
     }
 
     componentWillUnmount() {
@@ -160,22 +157,42 @@ class SearchResultsPanel extends React.Component {
 class MainPanel extends React.Component {
     constructor() {
         super();
-        this.state = {
-            "mode": "list",
-            "entry": undefined
-        };
+        if (history.state === null) {
+
+            this.state = {
+                "mode": "list",
+                "entry": undefined
+            };
+        }
+        else {
+            this.state = history.state;
+        }
+        document.title = this.state["mode"] + " - newOpenML";
+        history.replaceState(this.state, "hello");
+    }
+
+    componentDidMount() {
+        window.onpopstate = this.popStateEventHandler.bind(this);
+    }
+
+    popStateEventHandler(ev) {
+        this.setState(ev.state);
+        document.title = ev.state["mode"] + " - newOpenML";
     }
 
     setMode(mode, entry){
-        
+        let d = {"mode": mode, "entry": entry};
+        history.pushState(d, mode);
+        this.setState(d);
+        document.title = mode + " - newOpenML";
     }
 
     render() {
         if (this.state.mode === "list") {
-            return <SearchResultsPanel stateChangeCallback = {this.setState.bind(this)}/>;
+            return <SearchResultsPanel stateChangeCallback = {this.setMode.bind(this)}/>;
         }
         else {
-            return <EntryDetails entry = {this.state.entry} stateChangeCallback = {this.setState.bind(this)}/>;
+            return <EntryDetails entry = {this.state.entry} stateChangeCallback = {this.setMode.bind(this)}/>;
         }
     }
 }
