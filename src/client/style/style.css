@@ -8,7 +8,6 @@ body {
 	background-color: #f2f2f2;
 	
 	font-family: 'Roboto', sans-serif;
-	font-weight: 300;
 	min-width: 480px;
 }
 
@@ -109,4 +108,29 @@ body {
 .hamburgerIcon {
 	height: 1em;
 	vertical-align: middle;
+}
+
+/* Stuff for item detail page */
+.dataStats {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 600px;
+    justify-content: space-around;
+}
+
+.dataStats span {
+    margin-right: 10px;
+}
+
+.tag {
+    background-color: #3d8b3d;
+    font-size: 10px;
+    display: inline-block;
+    color: #ffffff;
+    margin-bottom: 4px;
+    padding: 4px;
+    border-radius: 4px;
+    font-weight: bold;
 }

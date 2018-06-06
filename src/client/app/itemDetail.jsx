@@ -60,16 +60,22 @@ export class EntryDetails extends React.Component {
                 <h2>Loading...</h2></div>
         }
         else {
+            /**/
+            let tags = this.state.obj.tags.map(
+                t => <span className="tag"><span className="fa fa-tag"/>{""+t.tag}</span>
+            );
+            console.log(tags);
             return <div className="mainBar">
                 <h1 className={"sectionTitle"}>{this.state.obj.name}</h1>
                 <div className="subtitle">uploaded by {this.state.obj.uploader} at {this.state.obj.date}</div>
                 <div className="dataStats">
-                    <span>{this.state.obj.format}</span>
-                    <span>{this.state.obj.licence}</span>
-                    <span>{this.state.obj.nr_of_likes} likes</span>
-                    <span>{this.state.obj.nr_of_downlaods} downloads</span>
-                    <span>{this.state.obj.nr_of_issues} issues</span>
-                    <span>{this.state.obj.nr_of_downvotes} downvotes</span>
+                    <span><span className="fa fa-table"/>{this.state.obj.format}</span>
+                    <span><span className="fa fa-closed-captioning"/>{this.state.obj.licence}</span>
+                    <span><span className="fa fa-heart"/>{this.state.obj.nr_of_likes} likes</span>
+                    <span><span className="fa fa-cloud"/>{this.state.obj.nr_of_downlaods} downloads</span>
+                    <span><span className="fa fa-exclamation-triangle"/>{this.state.obj.nr_of_issues} issues</span>
+                    <span><span className="fa fa-thumbs-down"/>{this.state.obj.nr_of_downvotes} downvotes</span>
+                    {tags}
                 </div>
                 <div className="contentSection">
                     <ReactMarkdown source={this.state.obj.description} />

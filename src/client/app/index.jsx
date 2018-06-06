@@ -52,6 +52,7 @@ class SearchResultsPanel extends React.Component {
         super(props);
         this.state = {};
         this.state.results = [];
+        this.state.error=null;
     }
     componentDidMount() {
         JsonRequest(
@@ -123,6 +124,7 @@ class SearchResultsPanel extends React.Component {
                 console.log(ajax["hits"]["hits"][0]);
             }.bind(this),
             function(error) {
+                this.state.error = "[HTTP #"+error.status+"]"+error.statusText+": "+error.responseText,
                 console.log("error", error);
             },
             1000
@@ -143,11 +145,14 @@ class SearchResultsPanel extends React.Component {
                                          stats2={result.stats2} data_id={result.data_id}
                                          onclick={() => this.clickCallBack(result.data_id)}
                 />
-            )
+            );
             return <div className="mainBar">{results}</div>
         }
+        else if (this.state.error !== null){
+            return <div className={"mainBar"}>Error: {this.state.error}</div>
+        }
         else {
-            return <div className={"mainBar"}>No results found</div>
+            return <div className={"mainBar"}>No search results found</div>
         }
 	}
 }
@@ -159,6 +164,10 @@ class MainPanel extends React.Component {
             "mode": "list",
             "entry": undefined
         };
+    }
+
+    setMode(mode, entry){
+        
     }
 
     render() {
