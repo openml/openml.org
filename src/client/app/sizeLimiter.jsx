@@ -6,7 +6,6 @@ export class SizeLimiter extends React.Component {
         this.state={"expanded": false};
     }
     render() {
-        console.log(this.props.children);
         let maxlen = this.props.maxLength===undefined?this.props.maxLength:7;
         if (this.props.children.length <= maxlen) {
             return <div>

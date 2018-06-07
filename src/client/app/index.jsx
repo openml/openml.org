@@ -141,6 +141,7 @@ class SearchResultsPanel extends React.Component {
                 result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
                                          stats2={result.stats2} data_id={result.data_id}
                                          onclick={() => this.clickCallBack(result.data_id)}
+                                         key={result.name+"_"+result.data_id}
                 />
             );
             return <div className="mainBar">{results}</div>

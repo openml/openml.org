@@ -135,7 +135,7 @@ export class EntryDetails extends React.Component {
                 <SizeLimiter maxLength={7}>
                 {
                     this.state.obj.features.map(m => (
-                        <FeatureDetail item={m}>
+                        <FeatureDetail key={"fd_"+m.name} item={m}>
                         </FeatureDetail>
                     ))
                 }
@@ -144,9 +144,12 @@ export class EntryDetails extends React.Component {
                 <div className={"subtitle"}>{Object.keys(this.state.obj.qualities).length} total qualities</div>
                 <SizeLimiter maxLength={7}>
                     {Object.keys(this.state.obj.qualities).map(m => (
-                        <QualityDetail item={{"name": m, "value": this.state.obj.qualities[m]}}/>
+                        <QualityDetail key={"q_"+m} item={{"name": m, "value": this.state.obj.qualities[m]}}/>
                     ))}
                 </SizeLimiter>
+
+                <h1>Tasks</h1>
+                <div className={"subtitle"}>Task visualization not currently supported</div>
             </div>
         }
     }
