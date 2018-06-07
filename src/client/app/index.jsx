@@ -6,7 +6,7 @@ import {EntryDetails}  from './itemDetail.jsx'
 class StatsScreen extends React.Component {
 	render () {
 		let stats = this.props.stats.map(
-			item=><span className="stat">
+			item=><span className="stat" key={"stat_"+item.unit+"_"+item.value}>
 			{item.icon?(<span className={"fa "+item.icon}/>):undefined}
 			<span className="statValue">{item.value}</span>
 			&nbsp;

@@ -11,6 +11,10 @@ body {
 	min-width: 480px;
 }
 
+h1 {
+    margin-bottom: 0px;
+}
+
 .sidebar {
 	background-color: #fefefe;
 	display: block;
@@ -133,4 +137,12 @@ body {
     padding: 4px;
     border-radius: 4px;
     font-weight: bold;
+}
+
+.subtitle {
+	font-style: oblique;
+	color: #aaaaaa;
+	display: block;
+    margin-bottom: 20px;
+    font-weight: normal;
 }

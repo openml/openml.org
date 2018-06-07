@@ -1,7 +1,58 @@
 import React from 'react';
 import {JsonRequest} from './ajax';
-import {render} from 'react-dom';
+import {SizeLimiter} from './sizeLimiter.jsx';
 import ReactMarkdown from 'react-markdown';
+
+class FeatureDetail extends React.Component {
+    render() {
+        let icon = "";
+        switch (this.props.item.type) {
+            case "numeric":
+                icon = "fa-ruler-horizontal";
+                break;
+            case "nominal":
+                icon = "fa-tag";
+                break;
+            default:
+                icon = "fa-question-circle";
+                break;
+        }
+        return <div className={"contentSection"}>
+            <div className={"itemHead"}><span className={"fa "+icon}/></div>
+            <div className={"itemName"}>{this.props.item.name}
+                {this.props.item.target?(<span className={"subtitle"}>(target)</span>):""}</div>
+            <div className={""}>{this.props.item.distinct} distinct values<br/>
+                {this.props.item.missing} missing attributes</div>
+        </div>
+    }
+}
+
+class QualityDetail extends React.Component {
+    constructor() {
+        super();
+    }
+
+    fixUpperCase(str){
+        let o = ""
+        for (let i=0; i<str.length; i++){
+            if (str[i].toLowerCase()!=str[i]){
+                o += " "+str[i].toLowerCase();
+            }
+            else {
+                o+=str[i];
+            }
+        }
+        return o;
+    }
+
+    render() {
+        return <div className={"contentSection"}>
+            <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
+            <div className={"itemName"}>{this.fixUpperCase(this.props.item.name)}</div>
+            <div className={""}>{this.props.item.value}</div>
+        </div>
+    }
+}
 
 export class EntryDetails extends React.Component {
     constructor() {
@@ -62,10 +113,10 @@ export class EntryDetails extends React.Component {
         else {
             /**/
             let tags = this.state.obj.tags.map(
-                t => <span className="tag"><span className="fa fa-tag"/>{""+t.tag}</span>
+                t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
             return <div className="mainBar">
-                <h1 className={"sectionTitle"}>{this.state.obj.name}</h1>
+                <h1 className={"sectionTitle"}><span className={"fa fa-database"}/>{this.state.obj.name}</h1>
                 <div className="subtitle">uploaded by {this.state.obj.uploader} at {this.state.obj.date}</div>
                 <div className="dataStats">
                     <span><span className="fa fa-table"/>{this.state.obj.format}</span>
@@ -79,6 +130,23 @@ export class EntryDetails extends React.Component {
                 <div className="contentSection">
                     <ReactMarkdown source={this.state.obj.description} />
                 </div>
+                <h1>Features</h1>
+                <div className={"subtitle"}>{this.state.obj.features.length} total features</div>
+                <SizeLimiter maxLength={7}>
+                {
+                    this.state.obj.features.map(m => (
+                        <FeatureDetail item={m}>
+                        </FeatureDetail>
+                    ))
+                }
+                </SizeLimiter>
+                <h1>Qualities</h1>
+                <div className={"subtitle"}>{Object.keys(this.state.obj.qualities).length} total qualities</div>
+                <SizeLimiter maxLength={7}>
+                    {Object.keys(this.state.obj.qualities).map(m => (
+                        <QualityDetail item={{"name": m, "value": this.state.obj.qualities[m]}}/>
+                    ))}
+                </SizeLimiter>
             </div>
         }
     }
