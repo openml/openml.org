@@ -40,6 +40,16 @@ a.noLink {
 	padding: 30px;
 }
 
+.mainBar-sideBarOpen {
+    margin-left: 256px;
+}
+
+@media(max-device-width: 512px){
+    .mainBar-sideBarOpen {
+        margin-left: 0px;
+    }
+}
+
 .topbar {
 	background-color: #4caf50;
 	
