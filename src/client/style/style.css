@@ -75,22 +75,24 @@ h1 {
 	font-weight: bold;
 	flex-shrink: 0.1;
 	width: 20%;
-	height: 66%;
+	/*height: 66%;*/
 	overflow: hidden;
 }
 
 .itemInfo {
 	width: calc(80% - 20px);
 	overflow: hidden;
+    height: 80px;
 }
 
 .itemInfo .itemTeaser {
-	height: 33%;
+	height: 30px;
 	overflow: hidden;
 }
 
 .itemInfo .itemStats {
 	color: #3d8b3d;
+	height: 25px;
 }
 
 .itemInfo .itemStatsBig {

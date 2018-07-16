@@ -1,5 +1,4 @@
 import React from 'react';
-import {JsonRequest} from './ajax';
 import {SizeLimiter} from './sizeLimiter.jsx';
 import ReactMarkdown from 'react-markdown';
 
@@ -62,25 +61,9 @@ export class EntryDetails extends React.Component {
         this.state["error"] = null;
     }
     componentDidMount() {
+        /*
         JsonRequest("https://www.openml.org/es/openml/data/"+this.props.entry,
             undefined,
-            /*{
-                "query":
-                    {
-                        "ids":
-                            {
-                                "values": [this.props.entry]
-                            }
-                    },
-                "query":
-                    {
-
-                        "types":
-                            {
-                                "values": ["data"]
-                            }
-                    }
-            },*/
             function(json) {
                 console.log("success");
                 console.log(json);
@@ -96,7 +79,7 @@ export class EntryDetails extends React.Component {
                 console.log(json);
                 this.setState({"error": "[HTTP Error "+json.status+"] "+json.statusText+". Please try again later."
                     +json.responseText});
-            }.bind(this))
+            }.bind(this))*/
     }
 
     render(){
