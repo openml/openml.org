@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {JsonRequest} from './ajax';
+import {listDatasets} from './api.js'
 import {EntryDetails}  from './itemDetail.jsx'
 
 class StatsScreen extends React.Component {
@@ -55,67 +55,20 @@ class SearchResultsPanel extends React.Component {
         this.state.error=null;
     }
     componentDidMount() {
-        JsonRequest(
-            "https://www.openml.org/es/openml/_search",
-            {
-                "from" : 0,
-                "size" : 100,
-                "query" : {
-                    "bool" :
-                        {
-                            "must" :
-                                {"match_all" : { }},
-                            "filter":
-                                {
-                                    "term" :
-                                        {
-                                            "status" : "active"
-                                        }
-                                    },
-                            "should":
-                                [
-                                    {
-                                        "term" : {
-                                            "visibility" : "public"
-                                        }
-                                    }
-                                ],
-                            "minimum_should_match":1}},
-                "sort" : {
-                    "runs" : {
-                        "order": "desc"
-                    }
-                },
-                "aggs" : {
-                    "type" : {
-                        "terms" : { "field" : "_type" }
-                    }
-                }
-            },
-            function (ajax) {
+        console.log("mounted");
+        listDatasets(
+
+        ).then(
+            (data)=>this.setState({"results": data})
+        ).catch(
+            (error)=>this.setState({"error": ""+error})
+        )
+            /*function (ajax) {
 
                 this.setState(
                     function(prevState, props) {
                         return {
-                            results: prevState.results.concat(ajax["hits"]["hits"].map(
-                                x => ({
-                                    "name": x["_source"]["name"],
-                                    "teaser": "I can not find the teaser text",
-                                    "stats": [
-                                        {"value": x["_source"]["runs"], "unit": "runs", "icon": "fa-star"},
-                                        {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "fa-heart"},
-                                        {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "fa-cloud"},
-                                        {"value": x["_source"]["reach"], "unit": "reach", "icon": "fa-rss"},
-                                        {"value": x["_source"]["impact"], "unit": "impact", "icon": "fa-bolt"}
-                                    ],
-                                    "stats2": [
-                                        {"value": x["_source"]["qualities"]["NumberOfInstances"]+"", "unit": "instances"},
-                                        {"value": x["_source"]["qualities"]["NumberOfFeatures"]+"", "unit": "fields"},
-                                        {"value": x["_source"]["qualities"]["NumberOfClasses"]+"", "unit": "classes"},
-                                        {"value": x["_source"]["qualities"]["NumberOfMissingValues"]+"", "unit": "missing"}
-                                    ],
-                                    "data_id": x["_source"]["data_id"]
-                                })
+                            results: prevState.results.concat(
                             ))
                         };
                     }.bind(this)
@@ -125,7 +78,7 @@ class SearchResultsPanel extends React.Component {
                 this.state.error = "[HTTP #"+error.status+"]"+error.statusText+": "+error.responseText;
             },
             1000
-        );
+        );*/
     }
 
     clickCallBack(id) {
@@ -206,7 +159,13 @@ class TopBar extends React.Component {
 
 class App extends React.Component {
     render () {
-        return (<div><Sidebar/><TopBar/><MainPanel/></div>);
+        return (
+        <div>
+            <Sidebar/>
+            <TopBar/>
+            <MainPanel/>
+        </div>
+        );
     }
 }
 render(<App/>, document.getElementById('app'));
