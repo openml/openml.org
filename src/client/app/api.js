@@ -1,3 +1,10 @@
+function errorCheck(request) {
+    if (!request.ok) {
+        throw Error("Request failed: " + request.statusText);
+    }
+    return request;
+}
+
 export function listDatasets() {
     /*JsonRequest(
             "https://www.openml.org/es/openml/_search",
@@ -40,25 +47,19 @@ export function listDatasets() {
         }
     };
 
-    console.log("fetching");
-
-    return fetch('https://www.openml.org/search',
+    return fetch('https://www.openml.org/es/openml/_search',
         {
             method: "POST",
             mode: "cors",
             body: JSON.stringify(params)
         }
     ).then(
-        (request) => {
-            console.log("fetching II");
-            if (!request.ok) {
-                throw Error("Request failed: " + request.statusText);
-            }
-            return request;
-        }).then(
+        errorCheck
+    ).then(
         (request) => request.json()
     ).then(
         (data) => {
+            console.log(data["hits"]["hits"][0]);
             return data["hits"]["hits"].map(
                 x => ({
                     "name": x["_source"]["name"],
@@ -81,4 +82,25 @@ export function listDatasets() {
             )
         }
     );
+}
+
+export function getItem(itemId) {
+    return fetch(
+        "https://www.openml.org/es/openml/data/" + itemId,
+        {
+            mode: "cors"
+        }
+    ).then(
+        errorCheck
+    ).then(
+        (request)=>request.json()
+    ).then(
+        (data)=>{
+            if (data["found"]!==true){
+                throw Error("No dataset with id \""+itemID+"\" found. It may have been removed or renamed");
+            }
+            return Promise.resolve(data["_source"])
+        }
+
+    )
 }
