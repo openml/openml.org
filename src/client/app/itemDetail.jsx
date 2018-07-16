@@ -1,5 +1,6 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
+import {getItem} from './api.js'
 import ReactMarkdown from 'react-markdown';
 
 class FeatureDetail extends React.Component {
@@ -61,6 +62,20 @@ export class EntryDetails extends React.Component {
         this.state["error"] = null;
     }
     componentDidMount() {
+        getItem(this.props.entry)
+            .then(
+                (data)=>{
+                    this.setState({"obj": data})
+                }
+            ).catch(
+            (error)=> {
+                this.setState({
+                    "obj": undefined,
+                    "error": error+""
+                })
+            }
+
+        )
         /*
         JsonRequest("https://www.openml.org/es/openml/data/"+this.props.entry,
             undefined,

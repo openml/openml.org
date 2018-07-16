@@ -55,7 +55,6 @@ class SearchResultsPanel extends React.Component {
         this.state.error=null;
     }
     componentDidMount() {
-        console.log("mounted");
         listDatasets(
 
         ).then(
