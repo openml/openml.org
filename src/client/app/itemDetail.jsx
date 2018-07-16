@@ -76,25 +76,6 @@ export class EntryDetails extends React.Component {
             }
 
         )
-        /*
-        JsonRequest("https://www.openml.org/es/openml/data/"+this.props.entry,
-            undefined,
-            function(json) {
-                console.log("success");
-                console.log(json);
-                if (json["found"]===true) {
-                    this.setState({"obj": json._source});
-                }
-                else {
-                    this.setState({"obj": undefined,
-                    "error": "No dataset with id "+this.props.entry+" can be found, it may have been moved or deleted."});
-                }
-            }.bind(this),
-            function(json){
-                console.log(json);
-                this.setState({"error": "[HTTP Error "+json.status+"] "+json.statusText+". Please try again later."
-                    +json.responseText});
-            }.bind(this))*/
     }
 
     render(){

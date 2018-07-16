@@ -44,7 +44,20 @@ export function listDatasets() {
             "type": {
                 "terms": {"field": "_type"}
             }
-        }
+        },
+        "_source": [
+            "name",
+            "runs",
+            "nr_of_likes",
+            "nr_of_downloads",
+            "reach",
+            "impact",
+            "qualities.NumberOfInstances",
+            "qualities.NumberOfFeatures",
+            "qualities.NumberOfClasses",
+            "qualities.NumberOfMissingValues",
+            "data_id"
+        ]
     };
 
     return fetch('https://www.openml.org/es/openml/_search',
