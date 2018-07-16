@@ -9,6 +9,7 @@ import {HashRouter, Route, Redirect, Switch, Link} from 'react-router-dom'
 import {listDatasets} from './api.js';
 import {EntryDetails}  from './itemDetail.jsx';
 import {Sidebar} from './sidebar.jsx';
+import {TopBar} from './topbar.jsx';
 
 class StatsScreen extends React.Component {
 	render () {
@@ -20,15 +21,15 @@ class StatsScreen extends React.Component {
 			<span className="statUnit">{item.unit}</span>
 			</span>
 		);
-		return <div>{stats}</div>
+		return <React.Fragment>{stats}</React.Fragment>
 	}
 }
 
 class SearchElement extends React.Component {
 		render() {
 			return (
-                <Link to={"/detail/"+this.props.data_id} className={"noLink"}>
-                    <div className="contentSection">
+                <Link to={"/data/"+this.props.data_id} className={"noLink"}>
+                    <div className="contentSection item">
                         <div className="itemHead">
                             <span className="fa fa-database"/>
                         </div>
@@ -87,13 +88,13 @@ class SearchResultsPanel extends React.Component {
                                          key={result.name+"_"+result.data_id}
                 />
             );
-            return <div className="mainBar">{results}</div>
+            return <React.Fragment>{results}</React.Fragment>
         }
         else if (this.state.error !== null){
-            return <div className={"mainBar"}>Error: {this.state.error}</div>
+            return <p>Error: {this.state.error}</p>
         }
         else {
-            return <div className={"mainBar"}>No search results found</div>
+            return <p>No search results found</p>
         }
 	}
 }
@@ -101,67 +102,47 @@ class SearchResultsPanel extends React.Component {
 class MainPanel extends React.Component {
     constructor() {
         super();
-        if (history.state === null) {
-
-            this.state = {
-                "mode": "list",
-                "entry": undefined
-            };
-        }
-        else {
-            this.state = history.state;
-        }
-        document.title = this.state["mode"] + " - newOpenML";
-        history.replaceState(this.state, "hello");
     }
 
     componentDidMount() {
-        window.onpopstate = this.popStateEventHandler.bind(this);
-    }
 
-    popStateEventHandler(ev) {
-        this.setState(ev.state);
-        document.title = ev.state["mode"] + " - newOpenML";
-    }
-
-    setMode(mode, entry){
-        let d = {"mode": mode, "entry": entry};
-        history.pushState(d, mode);
-        this.setState(d);
-        document.title = mode + " - newOpenML";
     }
 
     render() {
-        return <React.Fragment>
+        return <div style={this.props.sideBarOpen?{"margin-left": "256px"}:{}} className="mainBar">
             <Switch>
-                <Route exact path={"/"} render={()=>(<Redirect to={"/list"}/>)}/>
-                <Route path={"/list"} component={SearchResultsPanel}/>
-                <Route path={"/detail/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}/>)}/>
+                <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
+                <Route exact path={"/data"} component={SearchResultsPanel}/>
+                <Route exact path={"/data/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}/>)}/>
                 <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>
             </Switch>
-        </React.Fragment>
-        /*if (this.state.mode === "list") {
-            return <SearchResultsPanel stateChangeCallback = {this.setMode.bind(this)}/>;
-        }
-        else {
-            return <EntryDetails entry = {this.state.entry} stateChangeCallback = {this.setMode.bind(this)}/>;
-        }*/
+        </div>
     }
 }
 
-class TopBar extends React.Component {
-	render() {
-		return <div className="topbar"><span id="sidebarHamburgerIcon" className="fa fa-bars"/>Top bar</div>
-	}
-}
-
 class App extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {
+            sideBarOpen: true
+        }
+    }
+
+    toggleSideBar() {
+        this.setState(
+            (state)=>(
+                {"sideBarOpen": !state.sideBarOpen}
+            )
+        )
+    }
+
     render () {
         return (
         <div>
-            <Sidebar/>
-            <TopBar/>
-            <MainPanel/>
+            {this.state.sideBarOpen?<Sidebar/>:null}
+            <TopBar toggleSideBar = {this.toggleSideBar.bind(this)}/>
+            <MainPanel sideBarOpen={this.state.sideBarOpen}/>
         </div>
         );
     }

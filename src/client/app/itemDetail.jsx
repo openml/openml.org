@@ -17,7 +17,7 @@ class FeatureDetail extends React.Component {
                 icon = "fa-question-circle";
                 break;
         }
-        return <div className={"contentSection"}>
+        return <div className="contentSection item">
             <div className={"itemHead"}><span className={"fa "+icon}/></div>
             <div className={"itemName"}>{this.props.item.name}
                 {this.props.item.target?(<span className={"subtitle"}>(target)</span>):""}</div>
@@ -46,7 +46,7 @@ class QualityDetail extends React.Component {
     }
 
     render() {
-        return <div className={"contentSection"}>
+        return <div className={"contentSection item"}>
             <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
             <div className={"itemName"}>{this.fixUpperCase(this.props.item.name)}</div>
             <div className={""}>{this.props.item.value}</div>
@@ -94,7 +94,7 @@ export class EntryDetails extends React.Component {
             let tags = this.state.obj.tags.map(
                 t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
-            return <div className="mainBar">
+            return <React.Fragment>
                 <h1 className={"sectionTitle"}><span className={"fa fa-database"}/>{this.state.obj.name}</h1>
                 <div className="subtitle">uploaded by {this.state.obj.uploader} at {this.state.obj.date}</div>
                 <div className="dataStats">
@@ -129,7 +129,7 @@ export class EntryDetails extends React.Component {
 
                 <h1>Tasks</h1>
                 <div className={"subtitle"}>Task visualization not currently supported</div>
-            </div>
+            </React.Fragment>
         }
     }
 }
