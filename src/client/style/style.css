@@ -3,12 +3,11 @@
 }
 
 body {
-	margin-top: 50px;
 	padding: 0px;
 	background-color: #f2f2f2;
 	
 	font-family: 'Roboto', sans-serif;
-	min-width: 480px;
+	/*min-width: 480px;*/
 }
 
 h1 {
@@ -25,19 +24,20 @@ a.noLink {
 	display: block;
 	position: fixed;
 	left: 0px;
-	padding-bottom: 30px;
-	padding-left: 0px;
-	padding-right: 0px;
+    top: 0px;
 	font-size: 14px;
 	width: 256px;
 	height: 100%;
+
+
+    padding: 70px 10px 10px 10px;
 	
 	box-shadow: 4px 0px 8px 0px #00000014;
 }
 
 .mainBar {
-	margin-left: 256px;
-	padding: 20px;
+    margin-top: 60px;
+	padding: 30px;
 }
 
 .topbar {
@@ -51,14 +51,19 @@ a.noLink {
 	min-height: 50px;
 	color: #ffffffd7;
 	font-size: 18px;
-	
-	padding: 15px;
+
 }
 
-/*relating to search result*/
+.topbar .topbar-icon {
+    height: 60px;
+    line-height: 30px;
+    padding: 15px;
+
+    cursor: pointer;
+}
+
 .contentSection {
 	box-shadow: 0px 1px 6px 0px #00000023;
-	display: flex;
 	width: 100%;
 	min-height: 80px;
 	background-color: #fefefe;
@@ -67,27 +72,36 @@ a.noLink {
 	overflow: hidden;
 }
 
+
+/*relating to search result*/
+.item { /* item in search result*/
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .itemHead span {
 	height: 20px;
 	font-size: 20px;
 	color: #3d8b3d;
 	align-self: flex-start;
+    flex-grow: 0;
 }
 
 .itemName {
 	align-self: flex-start;
 	padding-left: 10px;
 	font-weight: bold;
-	flex-shrink: 0.1;
-	width: 20%;
+	flex-shrink: 0.2;
+	flex-grow: 2;
+    min-width: 105px;
+    flex-basis: 105px;
 	/*height: 66%;*/
 	overflow: hidden;
 }
 
 .itemInfo {
-	width: calc(80% - 20px);
-	overflow: hidden;
-    height: 80px;
+	flex-grow: 8;
+    flex-shrink: 2;
 }
 
 .itemInfo .itemTeaser {
@@ -97,7 +111,10 @@ a.noLink {
 
 .itemInfo .itemStats {
 	color: #3d8b3d;
-	height: 25px;
+	min-height: 25px;
+
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .itemInfo .itemStatsBig {
