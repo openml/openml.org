@@ -109,7 +109,7 @@ class MainPanel extends React.Component {
     }
 
     render() {
-        return <div style={this.props.sideBarOpen?{"margin-left": "256px"}:{}} className="mainBar">
+        return <div className={"mainBar "+(this.props.sideBarOpen?"mainBar-sideBarOpen":"")}>
             <Switch>
                 <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
                 <Route exact path={"/data"} component={SearchResultsPanel}/>
@@ -125,7 +125,8 @@ class App extends React.Component {
         super();
 
         this.state = {
-            sideBarOpen: true
+            sideBarOpen: window.screen.width >512 // Hide sidebar exactly when the CSS moves
+                                                  // the main content behind the sidebar
         }
     }
 
