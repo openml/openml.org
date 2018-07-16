@@ -1,7 +1,14 @@
+//REACT
 import React from 'react';
 import {render} from 'react-dom';
-import {listDatasets} from './api.js'
-import {EntryDetails}  from './itemDetail.jsx'
+
+//REACT router
+import {HashRouter, Route, Redirect, Switch, Link} from 'react-router-dom'
+
+//self
+import {listDatasets} from './api.js';
+import {EntryDetails}  from './itemDetail.jsx';
+import {Sidebar} from './sidebar.jsx';
 
 class StatsScreen extends React.Component {
 	render () {
@@ -19,33 +26,33 @@ class StatsScreen extends React.Component {
 
 class SearchElement extends React.Component {
 		render() {
-			return <div className="contentSection" onClick = {this.props.onclick}>
-				<div className="itemHead">
-					<span className="fa fa-database"/>
-				</div>
-				<div className="itemName">
-					{this.props.name + ''}
-				</div>
-				<div className="itemInfo">
-					<div className="itemTeaser">
-					{this.props.teaser+''}
-					</div>
-					<div className="itemStats itemStatsBig">
-						<StatsScreen stats={this.props.stats}/>
-					</div>
-					<div className="itemStats itemStatsSmall">
-					    <StatsScreen stats={this.props.stats2}/>
-					</div>
-				</div>
-			</div>
+			return (
+                <Link to={"/detail/"+this.props.data_id} className={"noLink"}>
+                    <div className="contentSection">
+                        <div className="itemHead">
+                            <span className="fa fa-database"/>
+                        </div>
+                        <div className="itemName">
+                            {this.props.name + ''}
+                        </div>
+                        <div className="itemInfo">
+                            <div className="itemTeaser">
+                                {this.props.teaser + ''}
+                            </div>
+                            <div className="itemStats itemStatsBig">
+                                <StatsScreen stats={this.props.stats}/>
+                            </div>
+                            <div className="itemStats itemStatsSmall">
+                                <StatsScreen stats={this.props.stats2}/>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
+                    )
 		}
 }
 
-class Sidebar extends React.Component {
-	render() {
-		return <div className="sidebar">sidebar</div>
-	}
-}
+
 
 class SearchResultsPanel extends React.Component {
     constructor(props) {
@@ -62,22 +69,6 @@ class SearchResultsPanel extends React.Component {
         ).catch(
             (error)=>this.setState({"error": ""+error})
         )
-            /*function (ajax) {
-
-                this.setState(
-                    function(prevState, props) {
-                        return {
-                            results: prevState.results.concat(
-                            ))
-                        };
-                    }.bind(this)
-                );
-            }.bind(this),
-            function(error) {
-                this.state.error = "[HTTP #"+error.status+"]"+error.statusText+": "+error.responseText;
-            },
-            1000
-        );*/
     }
 
     clickCallBack(id) {
@@ -141,12 +132,20 @@ class MainPanel extends React.Component {
     }
 
     render() {
-        if (this.state.mode === "list") {
+        return <React.Fragment>
+            <Switch>
+                <Route exact path={"/"} render={()=>(<Redirect to={"/list"}/>)}/>
+                <Route path={"/list"} component={SearchResultsPanel}/>
+                <Route path={"/detail/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}/>)}/>
+                <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>
+            </Switch>
+        </React.Fragment>
+        /*if (this.state.mode === "list") {
             return <SearchResultsPanel stateChangeCallback = {this.setMode.bind(this)}/>;
         }
         else {
             return <EntryDetails entry = {this.state.entry} stateChangeCallback = {this.setMode.bind(this)}/>;
-        }
+        }*/
     }
 }
 
@@ -167,4 +166,4 @@ class App extends React.Component {
         );
     }
 }
-render(<App/>, document.getElementById('app'));
+render(<HashRouter><App/></HashRouter>, document.getElementById('app'));

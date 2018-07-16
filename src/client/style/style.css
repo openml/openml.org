@@ -15,6 +15,11 @@ h1 {
     margin-bottom: 0px;
 }
 
+a.noLink {
+	color: unset;
+	text-decoration: unset;
+}
+
 .sidebar {
 	background-color: #fefefe;
 	display: block;
