@@ -21,7 +21,7 @@ class FeatureDetail extends React.Component {
             <div className={"itemHead"}><span className={"fa "+icon}/></div>
             <div className={"itemName"}>{this.props.item.name}
                 {this.props.item.target?(<span className={"subtitle"}>(target)</span>):""}</div>
-            <div className={""}>{this.props.item.distinct} distinct values<br/>
+            <div className={"itemDetail-small"}>{this.props.item.distinct} distinct values<br/>
                 {this.props.item.missing} missing attributes</div>
         </div>
     }
@@ -49,7 +49,7 @@ class QualityDetail extends React.Component {
         return <div className={"contentSection item"}>
             <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
             <div className={"itemName"}>{this.fixUpperCase(this.props.item.name)}</div>
-            <div className={""}>{this.props.item.value}</div>
+            <div className={"itemDetail-small"}>{this.props.item.value}</div>
         </div>
     }
 }
@@ -90,7 +90,6 @@ export class EntryDetails extends React.Component {
                 <h2>Loading...</h2></div>
         }
         else {
-            /**/
             let tags = this.state.obj.tags.map(
                 t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
