@@ -109,13 +109,24 @@ a.noLink {
 	overflow: hidden;
 }
 
+.itemDetail-small {
+	flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 50px;
+}
+
 .itemInfo {
 	flex-grow: 8;
     flex-shrink: 2;
+
+    flex-basis: 200px;
 }
 
 .itemInfo .itemTeaser {
-	height: 30px;
+	height: 1em;
+    width: 75%;
+
+
 	overflow: hidden;
 }
 

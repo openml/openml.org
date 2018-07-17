@@ -5,6 +5,16 @@ function errorCheck(request) {
     return request;
 }
 
+function getTeaser(description) {
+    let lines = description.split("\n").map(i=>i.trim());
+    for (let i=0; i<lines.length; i++){
+        if (!lines[i].startsWith("*") && !lines[i].startsWith("#") && lines[i].length>0){
+            return lines[i];
+        }
+    }
+    return lines[0];
+}
+
 export function listDatasets() {
     /*JsonRequest(
             "https://www.openml.org/es/openml/_search",
@@ -56,7 +66,8 @@ export function listDatasets() {
             "qualities.NumberOfFeatures",
             "qualities.NumberOfClasses",
             "qualities.NumberOfMissingValues",
-            "data_id"
+            "data_id",
+            "description"
         ]
     };
 
@@ -76,7 +87,7 @@ export function listDatasets() {
             return data["hits"]["hits"].map(
                 x => ({
                     "name": x["_source"]["name"],
-                    "teaser": "I can not find the teaser text",
+                    "teaser": getTeaser(x["_source"]["description"]),
                     "stats": [
                         {"value": x["_source"]["runs"], "unit": "runs", "icon": "fa-star"},
                         {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "fa-heart"},
