@@ -84,10 +84,25 @@ a.noLink {
 	overflow: hidden;
 }
 
+/*Button*/
+.button {
+    color: black;
+    display: inline-block;
+    border-radius: 2px;
+
+    padding: 10px;
+
+}
+
+a.button:hover {
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+}
+
 /*Relating to drop down menu*/
 .dropdown-container {
 	position: relative;
 	display: inline-block;
+
 }
 
 .dropdown-main {
@@ -97,11 +112,12 @@ a.noLink {
 
     background-color: white;
 
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+
 	width: 200px;
 
 	padding: 10px;
 	margin: 5px;
-	box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12)
 }
 
 .dropdown-main-icon {

@@ -54,6 +54,7 @@ export class SearchResultsPanel extends React.Component {
         this.state.error = null;
         this.state.loading = true;
         this.state.sort = {"name": "runs", "value": "runs"};
+        this.state.order = "desc";
 
         this.sortOptions = [
             //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=match&amp;order=desc">Best match</a></li>
@@ -102,7 +103,7 @@ export class SearchResultsPanel extends React.Component {
 
     reload() {
         listDatasets(
-            {"value": this.state.sort.value, "order": "desc"}
+            {"value": this.state.sort.value, "order": this.state.order}
         ).then(
             (data) => this.setState({"results": data, "loading": false})
         ).catch(
@@ -113,8 +114,8 @@ export class SearchResultsPanel extends React.Component {
     componentWillUnmount() {
     }
 
-    sortChange(sortType) {
-        this.setState({"sort": sortType, "results": [], "loading": true}, this.reload.bind(this));
+    sortChange(sortType, order) {
+        this.setState({"sort": sortType, "results": [], "loading": true, "order": order}, this.reload.bind(this));
     }
 
     render() {
@@ -141,6 +142,7 @@ export class SearchResultsPanel extends React.Component {
 
 
         return <React.Fragment>
+            <h1>Data sets</h1>
             <FilterBar sortOptions={this.sortOptions} onChange={this.sortChange.bind(this)}/>
             {component}
         </React.Fragment>;
