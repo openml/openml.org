@@ -35,7 +35,7 @@ class QualityDetail extends React.Component {
     fixUpperCase(str){
         let o = ""
         for (let i=0; i<str.length; i++){
-            if (str[i].toLowerCase()!=str[i]){
+            if (str[i].toLowerCase()!==str[i]){
                 o += " "+str[i].toLowerCase();
             }
             else {

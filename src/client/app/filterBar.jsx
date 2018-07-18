@@ -40,7 +40,7 @@ export class FilterBar extends React.Component {
                 <a className="button" onClick={this.flipOrder.bind(this)}>
                     {
                         this.state.order==="asc"?
-                            (<React.Fragment><i className="fa fa-arrow-down"/> Assending</React.Fragment>):
+                            (<React.Fragment><i className="fa fa-arrow-down"/> Ascending</React.Fragment>):
                         (<React.Fragment><i className="fa fa-arrow-up"/> Descending</React.Fragment>)
                     }
                 </a>
