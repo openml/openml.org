@@ -15,7 +15,7 @@ function getTeaser(description) {
     return lines[0];
 }
 
-export function listDatasets() {
+export function listDatasets(sort = {"value": "runs", "order": "desc"}) {
     /*JsonRequest(
             "https://www.openml.org/es/openml/_search",
             ,*/
@@ -46,8 +46,8 @@ export function listDatasets() {
                 }
         },
         "sort": {
-            "runs": {
-                "order": "desc"
+            [sort.value]: {
+                "order": sort.order
             }
         },
         "aggs": {
