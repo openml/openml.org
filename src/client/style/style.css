@@ -62,6 +62,8 @@ a.noLink {
 	color: #ffffffd7;
 	font-size: 18px;
 
+	z-index: 10;
+
 }
 
 .topbar .topbar-icon {
@@ -80,6 +82,63 @@ a.noLink {
 	
 	padding: 10px;
 	overflow: hidden;
+}
+
+/*Relating to drop down menu*/
+.dropdown-container {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-main {
+	display: inline-block;
+	border-color: #adadad;
+	border-radius: 2px;
+
+    background-color: white;
+
+	width: 200px;
+
+	padding: 10px;
+	margin: 5px;
+	box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12)
+}
+
+.dropdown-main-icon {
+    float: right;
+}
+
+.dropdown-options {
+	position: absolute;
+	left: 5px;
+	top: 2em;
+
+	display: block;
+	width: 200px;
+	padding: 0px;
+	box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+
+	background-color: #ffffff;
+	list-style-type: none;
+}
+
+.dropdown-item {
+	display: block;
+	width: 100%;
+	padding: 5px;
+}
+
+.dropdown-item-hover {
+	background-color: #ececec;
+}
+
+.dropdown-item-selected {
+	font-weight: bold;
+}
+
+/*Filter bar*/
+.filterBar {
+    padding: 20px;
 }
 
 
