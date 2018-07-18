@@ -6,7 +6,8 @@ export class FilterBar extends React.Component {
         super();
 
         this.state = {
-            "sort": {"name": "Runs", "value": "runs"}
+            "sort": {"name": "Runs", "value": "runs"},
+            "order": "asc" //Options: arc, desc
         }
     }
 
@@ -16,7 +17,15 @@ export class FilterBar extends React.Component {
                 "sort": state
             }
         );
-        this.props.onChange(state);
+        this.props.onChange(state, this.state.order);
+    }
+
+    flipOrder() {
+        let order = this.state.order;
+        this.setState(
+            (state)=>({"order": state.order==="asc"?"desc":"asc"})
+        );
+        this.props.onChange(this.state.sort, order==="asc"?"desc":"asc");
     }
 
     render() {
@@ -27,6 +36,14 @@ export class FilterBar extends React.Component {
                           onChange={this.sortChange.bind(this)}
                 options={
                     this.props.sortOptions}/>
+
+                <a className="button" onClick={this.flipOrder.bind(this)}>
+                    {
+                        this.state.order==="asc"?
+                            (<React.Fragment><i className="fa fa-arrow-down"/> Assending</React.Fragment>):
+                        (<React.Fragment><i className="fa fa-arrow-up"/> Descending</React.Fragment>)
+                    }
+                </a>
             </div>
         )
     }
