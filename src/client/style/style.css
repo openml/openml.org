@@ -81,21 +81,42 @@ a.noLink {
 	background-color: #fefefe;
 	
 	padding: 10px;
-	overflow: hidden;
 }
 
 /*Button*/
 .button {
-    color: black;
-    display: inline-block;
-    border-radius: 2px;
-
-    padding: 10px;
+	display: inline-block;
+    background-color: #4caf50;
+	border-radius: 2px;
+	padding: 10px;
+	color: #ffffff;
+	margin: 0px 5px 0px 5px;
 
 }
 
-a.button:hover {
+.button-gray {
+	color: black;
+	display: inline-block;
+	border-radius: 2px;
+
+	padding: 10px;
+
+}
+
+a.button-gray:hover {
     box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+}
+
+input {
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+    padding: 10px;
+
+    border: 0px solid black;
+
+    border-radius: 2px;
+
+    font-family: inherit;
+    font-size: inherit;
 }
 
 /*Relating to drop down menu*/
@@ -136,6 +157,8 @@ a.button:hover {
 
 	background-color: #ffffff;
 	list-style-type: none;
+
+    z-index: 1;
 }
 
 .dropdown-item {
@@ -162,6 +185,8 @@ a.button:hover {
 .item { /* item in search result*/
     display: flex;
     flex-wrap: wrap;
+
+	overflow: hidden;
 }
 
 .itemHead span {
