@@ -15,7 +15,7 @@ function getTeaser(description) {
     return lines[0];
 }
 
-export function listDatasets(sort = {"value": "runs", "order": "desc"}) {
+export function listDatasets(sort = {"value": "runs", "order": "desc"}, filter=[]) {
     /*JsonRequest(
             "https://www.openml.org/es/openml/_search",
             ,*/
@@ -23,27 +23,20 @@ export function listDatasets(sort = {"value": "runs", "order": "desc"}) {
         "from": 0,
         "size": 100,
         "query": {
-            "bool":
-                {
-                    "must":
-                        {"match_all": {}},
-                    "filter":
-                        {
-                            "term":
-                                {
-                                    "status": "active"
-                                }
-                        },
-                    "should":
-                        [
-                            {
-                                "term": {
-                                    "visibility": "public"
-                                }
-                            }
-                        ],
-                    "minimum_should_match": 1
-                }
+            "bool": {
+                "filter": [
+                    {
+                        "term": {
+                            "status": "active"
+                        }
+                    },
+                    {
+                        "term": {
+                            "visibility": "public"
+                        }
+                    }
+                ].concat(filter)
+            }
         },
         "sort": {
             [sort.value]: {
@@ -83,7 +76,6 @@ export function listDatasets(sort = {"value": "runs", "order": "desc"}) {
         (request) => request.json()
     ).then(
         (data) => {
-            console.log(data["hits"]["hits"][0]);
             return data["hits"]["hits"].map(
                 x => ({
                     "name": x["_source"]["name"],
