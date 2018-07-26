@@ -26,9 +26,12 @@ class SearchElement extends React.Component {
                     <div className="itemHead">
                         <span className="fa fa-database"/>
                     </div>
-                    <div className="itemName">
-                        {this.props.name + ''}
-                    </div>
+                    {
+                        this.props.name!==undefined?
+                        <div className="itemName">
+                            {this.props.name + ''}
+                        </div>:null
+                    }
                     <div className="itemInfo">
                         <div className="itemTeaser">
                             {this.props.teaser + ''}
@@ -53,59 +56,9 @@ export class SearchResultsPanel extends React.Component {
         this.state.results = [];
         this.state.error = null;
         this.state.loading = true;
-        this.state.sort = {"name": "runs", "value": "runs"};
+        this.state.sort = this.props.sortOptions[0];
         this.state.order = "desc";
-        this.state.filter=[];
-
-        this.sortOptions = [
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=match&amp;order=desc">Best match</a></li>
-            {"name": "best match", "value": "match "},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=runs&amp;order=desc">Most runs</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=runs&amp;order=asc">Fewest runs</a></li>
-            {"name": "Runs", "value": "runs"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=nr_of_likes&amp;order=desc">Most likes</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=nr_of_likes&amp;order=asc">Fewest likes</a></li>
-            {"name": "Likes", "value": "nr_of_likes"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=nr_of_downloads&amp;order=desc">Most downloads</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=nr_of_downloads&amp;order=asc">Fewest downloads</a></li>
-            {"name": "Downloads", "value": "nr_of_downloads"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=reach&amp;order=desc">Highest Reach</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=reach&amp;order=asc">Lowest Reach</a></li>
-            {"name": "Reach", "value": "reach"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=impact&amp;order=desc">Highest Impact</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=impact&amp;order=asc">Lowest Impact</a></li>
-            {"name": "Impact", "value": "impact"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=date&amp;order=desc">Most recent</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=date&amp;order=asc">Least recent</a></li>
-            {"name": "Date uploaded", "value": "date"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=last_update&amp;order=desc">Last update</a></li>
-            {"name": "Date updated", "value": "last_update"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfInstances&amp;order=desc">Most instances</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfInstances&amp;order=asc">Fewest instances</a></li>
-            {"name": "Instances", "value": "qualities.NumberOfInstances"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfFeatures&amp;order=desc">Most features</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfFeatures&amp;order=asc">Fewest features</a></li>
-            {"name": "Features", "value": "qualities.NumberOfFeatures"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfNumericFeatures&amp;order=desc">Most numeric features</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfNumericFeatures&amp;order=asc">Fewest numeric features</a></li>
-            {"name": "Numeric Features", "value": "qualities.NumberOfNumericFeatures"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfMissingValues&amp;order=desc">Most missing values</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfMissingValues&amp;order=asc">Fewest missing values</a></li>
-            {"name": "Missing Values", "value": "qualities.NumberOfMissingValues"},
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfClasses&amp;order=desc">Most classes</a></li>
-            //<a role="menuitem" tabIndex="-1" href="/search?type=data&amp;sort=qualities.NumberOfClasses&amp;order=asc">Fewest classes</a></li>
-            {"name": "Classes", "value": "qualities.NumberOfClasses"}
-        ];
-
-        this.filterOptions = [
-            {"name": "Instances", "value": "qualities.NumberOfInstances", "type": "numeric"},
-            {"name": "Features", "value": "qualities.NumberOfFeatures", "type": "numeric"},
-            {"name": "Number of Missing values", "value": "qualities.NumberOfMissingValues", "type": "numeric"},
-            {"name": "Classes", "value": "qualities.NumberOfClasses", "type": "numeric"},
-            {"name": "Default Accuracy", "value": "qualities.DefaultAccuracy", "type": "numeric"},
-            {"name": "Uploader", "value": "uploader", "type": "string"}
-
-        ]
+        this.state.filter = [];
     }
 
     componentDidMount() {
@@ -114,12 +67,28 @@ export class SearchResultsPanel extends React.Component {
 
     reload() {
         listDatasets(
+            this.props.type,
             {"value": this.state.sort.value, "order": this.state.order},
-            this.state.filter
+            this.state.filter,
+            this.props.nameField,
+            this.props.descriptionField,
+            this.props.processDescription,
+            this.props.idField,
+            this.props.stats,
+            this.props.stats2
         ).then(
-            (data) => this.setState({"results": data, "loading": false})
+            (data) => {
+                console.log("finished: "+data.length+" ", this);
+                this.setState((state)=>{
+                    console.log("getstate: ",state);
+                    return {"results": data, "loading": false};
+                });
+                this.forceUpdate();
+            }
         ).catch(
-            (error) => this.setState({"error": "" + error, "loading": false})
+            (error) => this.setState({"error": "" + error+(
+                error.hasAttribute("fileName")?"("+error.fileName+":"+error.lineNumber+")":""
+                ),"loading": false})
         )
     }
 
@@ -138,7 +107,7 @@ export class SearchResultsPanel extends React.Component {
         let component = null;
 
         if (this.state.loading) {
-            component= <p>Loading...</p>;
+            component = <p>Loading... {JSON.stringify(this.state.sort)} {JSON.stringify(this.state.order)}</p>;
         }
         else if (this.state.results.length >= 1) {
             component = this.state.results.map(
@@ -160,11 +129,153 @@ export class SearchResultsPanel extends React.Component {
         return <React.Fragment>
             <h1>Data sets</h1>
             <FilterBar
-                sortOptions={this.sortOptions}
+                sortOptions={this.props.sortOptions}
                 onChange={this.sortChange.bind(this)}
-                filterOptions={this.filterOptions}
+                filterOptions={this.props.filterOptions}
             />
             {component}
         </React.Fragment>;
+    }
+}
+
+export class DataListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions={[
+                //{"name": "best match", "value": "match "},
+                {"name": "Runs", "value": "runs"},
+                {"name": "Likes", "value": "nr_of_likes"},
+                {"name": "Downloads", "value": "nr_of_downloads"},
+                {"name": "Reach", "value": "reach"},
+                {"name": "Impact", "value": "impact"},
+                {"name": "Date uploaded", "value": "date"},
+                {"name": "Date updated", "value": "last_update"},
+                {"name": "Instances", "value": "qualities.NumberOfInstances"},
+                {"name": "Features", "value": "qualities.NumberOfFeatures"},
+                {"name": "Numeric Features", "value": "qualities.NumberOfNumericFeatures"},
+                {"name": "Missing Values", "value": "qualities.NumberOfMissingValues"},
+                {"name": "Classes", "value": "qualities.NumberOfClasses"}
+            ]}
+            filterOptions={[
+                {"name": "Instances", "value": "qualities.NumberOfInstances", "type": "numeric"},
+                {"name": "Features", "value": "qualities.NumberOfFeatures", "type": "numeric"},
+                {"name": "Number of Missing values", "value": "qualities.NumberOfMissingValues", "type": "numeric"},
+                {"name": "Classes", "value": "qualities.NumberOfClasses", "type": "numeric"},
+                {"name": "Default Accuracy", "value": "qualities.DefaultAccuracy", "type": "numeric"},
+                {"name": "Uploader", "value": "uploader", "type": "string"}
+            ]}
+            type="data"
+            nameField="name"
+            descriptionField="description"
+            processDescription={true}
+            idField="data_id"
+            stats={[
+                {"param": "runs", "unit": "runs", "icon": "fa fa-star"},
+                {"param": "nr_of_likes", "unit": "likes", "icon": "fa-heart"},
+                {"param": "nr_of_downloads", "unit": "downloads", "icon": "fa-cloud"},
+                {"param": "reach", "unit": "reach", "icon": "fa-rss"},
+                {"param": "impact", "unit": "impact", "icon": "fa-bolt"}
+            ]}
+            stats2={[
+                {"param": "qualities.NumberOfInstances", "unit": "instances"},
+                {"param": "qualities.NumberOfFeatures", "unit": "fields"},
+                {"param": "qualities.NumberOfClasses", "unit": "classes"},
+                {"param": "qualities.NumberOfMissingValues" + "", "unit": "missing"}
+            ]}
+        />
+    }
+}
+
+export class TaskListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions={[
+                //{"name": "best match", "value": "match "},
+                {"name": "Runs", "value": "runs"},
+                {"name": "Likes", "value": "nr_of_likes"},
+                {"name": "Downloads", "value": "nr_of_downloads"},
+            ]}
+            filterOptions={[
+                {"name": "Estimation Procedure", "value": "estimation_procedure.name", "type": "string"},
+            ]}
+            type="task"
+            nameField={null}
+            descriptionField="source_data.name"
+            processDescription={false}
+            idField="task_id"
+
+            stats={[
+                {"param": "runs", "unit": "runs", "icon": "fa fa-star"},
+                {"param": "nr_of_likes", "unit": "likes", "icon": "fa-heart"},
+                {"param": "nr_of_downloads", "unit": "downloads", "icon": "fa-cloud"},
+                {"param": "reach", "unit": "reach", "icon": "fa-rss"},
+                {"param": "impact", "unit": "impact", "icon": "fa-bolt"}
+            ]}
+            stats2={[
+                {"param": "estimation_procedure.name", "unit": "estimation procedure"},
+                {"param": "reuse", "unit": "reuse"},
+                {"param": "reach_of_reuse", "unit": "reach of reuse"},
+            ]}
+
+        />
+    }
+}
+
+export class FlowListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions = {[
+                 {"name": "runs", "value": "runs"}
+             ]}
+            filterOptions = {[]}
+            type="flow"
+            nameField="name"
+            descriptionField="description"
+            processDescription={false}
+            idField="flow_id"
+
+            stats={[
+                {"param": "runs", "unit": "runs", "icon": "fa fa-star"},
+                {"param": "nr_of_likes", "unit": "likes", "icon": "fa-heart"},
+                {"param": "nr_of_downloads", "unit": "downloads", "icon": "fa-cloud"},
+                {"param": "reach", "unit": "reach", "icon": "fa-rss"},
+                {"param": "impact", "unit": "impact", "icon": "fa-bolt"}
+            ]}
+
+            stats2={[
+                {"param": "reach_of_reuse", "unit": "reach of reuse"},
+                {"param": "impact_of_reuse", "unit": "impact of reuse"}
+            ]}
+        />
+    }
+}
+
+export class RunListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions = {[
+                {"name": "Downlaods", "value": "total_downloads"}
+            ]}
+
+            filterOptions = {
+                []
+            }
+
+            type="run"
+            nameField="run_flow.name"
+            descriptionField="output_files.model_readable.url"
+            processDescription={false}
+            idField="run_id"
+
+            stats={[
+                {"unit": "likes", "param": "nr_of_likes", "icon": "fa-heart"},
+                {"unit": "downloads", "param": "nr_of_downloads", "icon": "fa-cloud"},
+                {"unit": "reach", "param": "reach", "icon": "fa-rss"}
+            ]}
+
+            stats2={
+                []
+            }
+        />
     }
 }

@@ -6,25 +6,61 @@ function errorCheck(request) {
 }
 
 function getTeaser(description) {
-    let lines = description.split("\n").map(i=>i.trim());
-    for (let i=0; i<lines.length; i++){
-        if (!lines[i].startsWith("*") && !lines[i].startsWith("#") && lines[i].length>0){
+    if (description === undefined) {
+        return undefined;
+    }
+    let lines = description.split("\n").map(i => i.trim());
+    for (let i = 0; i < lines.length; i++) {
+        if (!lines[i].startsWith("*") && !lines[i].startsWith("#") && lines[i].length > 0) {
             return lines[i];
         }
     }
     return lines[0];
 }
 
-export function listDatasets(sort = {"value": "runs", "order": "desc"}, filter=[]) {
-    /*JsonRequest(
-            "https://www.openml.org/es/openml/_search",
-            ,*/
+function parseDots(obj, param) {
+    if (param === undefined || param === null) {
+        return undefined;
+    }
+    param = param + "";
+
+    let index = param.indexOf(".");
+    if (index === -1) {
+        if (!obj.hasOwnProperty(param)) {
+            return "Cannot load property '" + param + "'";
+        }
+        return obj[param];
+    }
+    else {
+        return parseDots(obj[param.substring(0, index)], param.substring(index + 1));
+    }
+}
+
+
+export function listDatasets(type = "data", sort = {"value": "runs", "order": "desc"}, filter = [],
+                             nameField = "name", descriptionField = "description",
+                             processDescription = true,
+                             idField = "data_id",
+                             stats = [
+                                 {"param": "runs", "unit": "runs", "icon": "fa fa-star"},
+                                 {"param": "nr_of_likes", "unit": "likes", "icon": "fa-heart"},
+                                 {"param": "nr_of_downloads", "unit": "downloads", "icon": "fa-cloud"},
+                                 {"param": "reach", "unit": "reach", "icon": "fa-rss"},
+                                 {"param": "impact", "unit": "impact", "icon": "fa-bolt"}
+                             ],
+                             stats2 = [
+                                 {"param": "qualities.NumberOfInstances", "unit": "instances"},
+                                 {"param": "qualities.NumberOfFeatures", "unit": "fields"},
+                                 {"param": "qualities.NumberOfClasses", "unit": "classes"},
+                                 {"param": "qualities.NumberOfMissingValues" + "", "unit": "missing"}
+                             ]) {
     let params = {
         "from": 0,
         "size": 100,
         "query": {
             "bool": {
                 "filter": [
+                    /*
                     {
                         "term": {
                             "status": "active"
@@ -34,7 +70,7 @@ export function listDatasets(sort = {"value": "runs", "order": "desc"}, filter=[
                         "term": {
                             "visibility": "public"
                         }
-                    }
+                    }*/
                 ].concat(filter)
             }
         },
@@ -49,22 +85,29 @@ export function listDatasets(sort = {"value": "runs", "order": "desc"}, filter=[
             }
         },
         "_source": [
-            "name",
-            "runs",
-            "nr_of_likes",
-            "nr_of_downloads",
-            "reach",
-            "impact",
-            "qualities.NumberOfInstances",
-            "qualities.NumberOfFeatures",
-            "qualities.NumberOfClasses",
-            "qualities.NumberOfMissingValues",
-            "data_id",
-            "description"
-        ]
+            nameField,
+            descriptionField,
+            idField].concat(
+            stats.map((stat) => stat.param)
+        ).concat(
+            stats2.map((stat) => stat.param)
+        ).filter((l)=>(!!l)),
+        /*
+        "name",
+        "runs",
+        "nr_of_likes",
+        "nr_of_downloads",
+        "reach",
+        "impact",
+        "qualities.NumberOfInstances",
+        "qualities.NumberOfFeatures",
+        "qualities.NumberOfClasses",
+        "qualities.NumberOfMissingValues",
+        "data_id",
+        "description"*/
     };
 
-    return fetch('https://www.openml.org/es/openml/_search',
+    return fetch('https://www.openml.org/es/openml/_search?type=' + type,
         {
             method: "POST",
             mode: "cors",
@@ -77,24 +120,33 @@ export function listDatasets(sort = {"value": "runs", "order": "desc"}, filter=[
     ).then(
         (data) => {
             return data["hits"]["hits"].map(
-                x => ({
-                    "name": x["_source"]["name"],
-                    "teaser": getTeaser(x["_source"]["description"]),
-                    "stats": [
-                        {"value": x["_source"]["runs"], "unit": "runs", "icon": "fa-star"},
-                        {"value": x["_source"]["nr_of_likes"], "unit": "likes", "icon": "fa-heart"},
-                        {"value": x["_source"]["nr_of_downloads"], "unit": "downloads", "icon": "fa-cloud"},
-                        {"value": x["_source"]["reach"], "unit": "reach", "icon": "fa-rss"},
-                        {"value": x["_source"]["impact"], "unit": "impact", "icon": "fa-bolt"}
-                    ],
-                    "stats2": [
-                        {"value": x["_source"]["qualities"]["NumberOfInstances"] + "", "unit": "instances"},
-                        {"value": x["_source"]["qualities"]["NumberOfFeatures"] + "", "unit": "fields"},
-                        {"value": x["_source"]["qualities"]["NumberOfClasses"] + "", "unit": "classes"},
-                        {"value": x["_source"]["qualities"]["NumberOfMissingValues"] + "", "unit": "missing"}
-                    ],
-                    "data_id": x["_source"]["data_id"]
-                })
+                x => {
+                    let source = x["_source"];
+                    return {
+                        "name": parseDots(source, nameField),
+                        "teaser": processDescription ? getTeaser(parseDots(source, descriptionField)) :
+                            parseDots(source, descriptionField),
+                        "stats":
+                            stats.map(
+                                stat => ({
+                                    "value": parseDots(source, stat.param),
+                                    "unit": stat.unit,
+                                    "icon": stat.icon
+                                })
+                            )
+                        ,
+                        "stats2":
+                            stats2.map(
+                                stat => ({
+                                    "value": parseDots(source, stat.param),
+                                    "unit": stat.unit,
+                                    "icon": stat.icon
+                                })
+                            )
+                        ,
+                        "data_id": parseDots(source, idField)
+                    }
+                }
             )
         }
     );
@@ -109,14 +161,13 @@ export function getItem(itemId) {
     ).then(
         errorCheck
     ).then(
-        (request)=>request.json()
+        (request) => request.json()
     ).then(
-        (data)=>{
-            if (data["found"]!==true){
-                throw Error("No dataset with id \""+itemID+"\" found. It may have been removed or renamed");
+        (data) => {
+            if (data["found"] !== true) {
+                throw Error("No dataset with id \"" + itemID + "\" found. It may have been removed or renamed");
             }
             return Promise.resolve(data["_source"])
         }
-
     )
 }
