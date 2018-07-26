@@ -186,11 +186,11 @@ class TextFilter extends React.Component {
 
 
 export class FilterBar extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            "sort": {"name": "Runs", "value": "runs"},
+            "sort": props.sortOptions[0],
             "order": "desc", //Options: arc, desc
             "showFilter": false,
             "filters": {}
