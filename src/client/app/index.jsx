@@ -44,7 +44,7 @@ class App extends React.Component {
         super();
 
         this.state = {
-            sideBarOpen: window.screen.width >512 // Hide sidebar exactly when the CSS moves
+            sideBarOpen: window.innerWidth >512 // Hide sidebar exactly when the CSS moves
                                                   // the main content behind the sidebar
         }
     }

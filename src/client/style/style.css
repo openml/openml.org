@@ -29,6 +29,8 @@ a.noLink {
 	width: 256px;
 	height: 100%;
 
+	z-index: 9;
+
 
     padding: 70px 10px 10px 10px;
 	
@@ -44,7 +46,7 @@ a.noLink {
     margin-left: 256px;
 }
 
-@media(max-device-width: 512px){
+@media(max-width: 512px){
     .mainBar-sideBarOpen {
         margin-left: 0px;
     }
