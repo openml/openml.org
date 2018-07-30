@@ -9,7 +9,7 @@ import {HashRouter, Route, Redirect, Switch, Link} from 'react-router-dom'
 import {EntryDetails}  from './itemDetail.jsx';
 import {Sidebar} from './sidebar.jsx';
 import {TopBar} from './topbar.jsx';
-import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel} from './dataList.jsx';
+import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel, StudyListPanel, PeopleListPanel} from './dataList.jsx';
 
 
 class MainPanel extends React.Component {
@@ -30,6 +30,8 @@ class MainPanel extends React.Component {
                 <Route exact path={"/task"} component={TaskListPanel}/>
                 <Route exact path={"/flow"} component={FlowListPanel}/>
                 <Route exact path={"/run"} component={RunListPanel}/>
+                <Route exact path={"/study"} component={StudyListPanel}/>
+                <Route exact path={"/user"} component={PeopleListPanel}/>
 
                 <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>
             </Switch>
