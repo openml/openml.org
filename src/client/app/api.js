@@ -1,8 +1,15 @@
-function errorCheck(request) {
-    if (!request.ok) {
-        throw Error("Request failed: " + request.statusText);
+function errorCheck(response) {
+    if (!response.ok) {
+        console.error("request failed: ["+response.status+"] "+response.statusText);
+        if (response.hasOwnProperty("headers") && !response.headers.get("content_type").startsWith("application/json")){
+            return Promise.reject("["+response.status+"] "+response.statusText);
+        }
+        return response.json().then(
+            (data)=>Promise.reject("[ElasticSearch] "+data.error.root_cause[0].reason)
+        )
+        //throw new Error("Request failed: " + request.statusText);
     }
-    return request;
+    return Promise.resolve(response);
 }
 
 function getTeaser(description) {
@@ -22,16 +29,23 @@ function parseDots(obj, param) {
     if (param === undefined || param === null) {
         return undefined;
     }
+
+    if (obj === undefined || obj === null) {
+        throw new Error("Obj may not be NULL");
+    }
     param = param + "";
 
     let index = param.indexOf(".");
     if (index === -1) {
         if (!obj.hasOwnProperty(param)) {
-            return "Cannot load property '" + param + "'";
+            return ("Cannot load property "+param);
         }
         return obj[param];
     }
     else {
+        if (!obj.hasOwnProperty(param.substring(0, index))){
+            return ("Cannot load intermediate property "+param.substring(0, index));
+        }
         return parseDots(obj[param.substring(0, index)], param.substring(index + 1));
     }
 }
@@ -79,6 +93,7 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
                 "order": sort.order
             }
         },
+
         "aggs": {
             "type": {
                 "terms": {"field": "_type"}

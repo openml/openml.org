@@ -21,16 +21,16 @@ class StatsScreen extends React.Component {
 class SearchElement extends React.Component {
     render() {
         return (
-            <Link to={"/data/" + this.props.data_id} className={"noLink"}>
+            <Link to={"/"+this.props.type+"/" + this.props.data_id} className={"noLink"}>
                 <div className="contentSection item">
                     <div className="itemHead">
                         <span className="fa fa-database"/>
                     </div>
                     {
-                        this.props.name!==undefined?
-                        <div className="itemName">
-                            {this.props.name + ''}
-                        </div>:null
+                        this.props.name !== undefined ?
+                            <div className="itemName">
+                                {this.props.name + ''}
+                            </div> : null
                     }
                     <div className="itemInfo">
                         <div className="itemTeaser">
@@ -78,17 +78,26 @@ export class SearchResultsPanel extends React.Component {
             this.props.stats2
         ).then(
             (data) => {
-                console.log("finished: "+data.length+" ", this);
-                this.setState((state)=>{
-                    console.log("getstate: ",state);
+                this.setState((state) => {
                     return {"results": data, "loading": false};
                 });
-                this.forceUpdate();
             }
         ).catch(
-            (error) => this.setState({"error": "" + error+(
-                error.hasAttribute("fileName")?"("+error.fileName+":"+error.lineNumber+")":""
-                ),"loading": false})
+            (error) => {
+                console.error(error);
+                try {
+                    this.setState({
+                        "error": "" + error + (
+                            error.hasOwnProperty("fileName") ? " (" + error.fileName + ":" + error.lineNumber + ")" : ""
+                        ),
+                        "loading": false
+                    });
+                }
+                catch (ex) {
+                    console.error("There was an error displaying the above error");
+                    console.error(ex);
+                }
+            }
         )
     }
 
@@ -96,9 +105,6 @@ export class SearchResultsPanel extends React.Component {
     }
 
     sortChange(sortType, order, filter) {
-        console.log(sortType);
-        console.log(order);
-        console.log(filter);
         this.setState({"sort": sortType, "results": [], "loading": true, "order": order, "filter": filter},
             this.reload.bind(this));
     }
@@ -107,7 +113,7 @@ export class SearchResultsPanel extends React.Component {
         let component = null;
 
         if (this.state.loading) {
-            component = <p>Loading... {JSON.stringify(this.state.sort)} {JSON.stringify(this.state.order)}</p>;
+            component = <p>Loading...</p>;
         }
         else if (this.state.results.length >= 1) {
             component = this.state.results.map(
@@ -115,6 +121,7 @@ export class SearchResultsPanel extends React.Component {
                                          stats2={result.stats2} data_id={result.data_id}
                                          onclick={() => this.clickCallBack(result.data_id)}
                                          key={result.name + "_" + result.data_id}
+                                         type={this.props.type}
                 />
             );
         }
@@ -224,10 +231,10 @@ export class TaskListPanel extends React.Component {
 export class FlowListPanel extends React.Component {
     render() {
         return <SearchResultsPanel
-            sortOptions = {[
-                 {"name": "runs", "value": "runs"}
-             ]}
-            filterOptions = {[]}
+            sortOptions={[
+                {"name": "runs", "value": "runs"}
+            ]}
+            filterOptions={[]}
             type="flow"
             nameField="name"
             descriptionField="description"
@@ -253,11 +260,11 @@ export class FlowListPanel extends React.Component {
 export class RunListPanel extends React.Component {
     render() {
         return <SearchResultsPanel
-            sortOptions = {[
+            sortOptions={[
                 {"name": "Downlaods", "value": "total_downloads"}
             ]}
 
-            filterOptions = {
+            filterOptions={
                 []
             }
 
@@ -276,6 +283,67 @@ export class RunListPanel extends React.Component {
             stats2={
                 []
             }
+        />
+    }
+}
+
+export class StudyListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions={[
+                {"name": "Date", "value": "date"},
+                {"name": "Datasets", "value": "datasets_included"}, // This does not work, since for some reason
+                {"name": "tasks", "value": "tasks_included"},       // these three variables are not numbers, but
+                {"name": "flows", "value": "flows_included"}        // are actually strings, which ES cannot
+            ]}                                                      // sort properly
+            filterOptions={[]}
+            type="study"
+            nameField="alias"
+            descriptionField="description"
+
+            processDescription={false}
+
+            idField="study_id"
+
+            stats={[
+                {"unit": "datasets", "param": "datasets_included", "icon": "fa-database"},
+                {"unit": "tasks", "param": "tasks_included", "icon": "fa-trophy"},
+                {"unit": "flows", "param": "flows_included", "icon": "fa-gears"},
+
+            ]}
+
+            stats2={[]}
+        />
+    }
+}
+
+export class PeopleListPanel extends React.Component {
+    render() {
+        return <SearchResultsPanel
+            sortOptions={[
+                {"name": "Date", "value": "date"},
+            ]}
+            filterOptions={[]}
+            type="user"
+            nameField="last_name"
+            descriptionField="bio"
+
+            processDescription={false}
+
+            idField="user_id"
+
+            stats={[
+                {"unit": "uploads", "param": "nr_of_uploads", "icon": "fa-cloud"},
+                {"unit": "activity", "param": "activity", "icon": "fa-heartbeat"},
+                {"unit": "reach", "param": "reach", "icon": "fa-rss"},
+                {"unit": "impact", "param": "impact", "icon": "lightning"}
+            ]}
+
+            stats2={[
+                {"unit": "", "param": "affiliation", "icon": "fa-university"},
+                {"unit": "", "param": "country", "icon": "fa-map-marker"},
+                {"unit": "", "param": "date", "icon": "fa-clock"}
+            ]}
         />
     }
 }
