@@ -9,7 +9,7 @@ import {HashRouter, Route, Redirect, Switch, Link} from 'react-router-dom'
 import {EntryDetails}  from './itemDetail.jsx';
 import {Sidebar} from './sidebar.jsx';
 import {TopBar} from './topbar.jsx';
-import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel, StudyListPanel, PeopleListPanel} from './dataList.jsx';
+import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel, StudyListPanel, PeopleListPanel} from './search.jsx';
 
 
 class MainPanel extends React.Component {
@@ -24,13 +24,16 @@ class MainPanel extends React.Component {
     render() {
         return <div className={"mainBar "+(this.props.sideBarOpen?"mainBar-sideBarOpen":"")}>
             <Switch>
-                <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
-                <Route exact path={"/data"} component={DataListPanel}/>
-                <Route exact path={"/data/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}/>)}/>
-                <Route exact path={"/task"} component={TaskListPanel}/>
-                <Route exact path={"/flow"} component={FlowListPanel}/>
-                <Route exact path={"/run"} component={RunListPanel}/>
-                <Route exact path={"/study"} component={StudyListPanel}/>
+                 <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
+	                       <Route exact path={"/data"} component={DataListPanel}/>
+	                       <Route exact path={"/data/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="data"/>)}/>
+	                       <Route exact path={"/task"} component={TaskListPanel}/>
+	                       <Route exact path={"/task/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="task"/>)}/>
+	                       <Route exact path={"/flow"} component={FlowListPanel}/>
+	                       <Route exact path={"/flow/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="flow"/>)}/>
+	                       <Route exact path={"/run"} component={RunListPanel}/>
+	                       <Route exact path={"/run/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="run"/>)}/>
+	                       <Route exact path={"/study"} component={StudyListPanel}/>
                 <Route exact path={"/user"} component={PeopleListPanel}/>
 
                 <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>

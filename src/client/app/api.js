@@ -167,9 +167,9 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
     );
 }
 
-export function getItem(itemId) {
+export function getItem(type,itemId) {
     return fetch(
-        "https://www.openml.org/es/openml/data/" + itemId,
+        "https://www.openml.org/es/openml/"+ type +"/" + itemId,
         {
             mode: "cors"
         }
@@ -180,7 +180,7 @@ export function getItem(itemId) {
     ).then(
         (data) => {
             if (data["found"] !== true) {
-                throw Error("No dataset with id \"" + itemID + "\" found. It may have been removed or renamed");
+                throw Error("No task with id \"" + itemID + "\" found. It may have been removed or renamed");
             }
             return Promise.resolve(data["_source"])
         }
