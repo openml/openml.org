@@ -1,9 +1,14 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
-import {getItem} from './api.js'
+import {getItem} from './api.js';
+//items
+import {DatasetItem} from './dataset.jsx';
+import {TaskItem} from './task.jsx';
+import {FlowItem} from './flow.jsx';
+import {RunItem} from './run.jsx';
 import ReactMarkdown from 'react-markdown';
 
-class FeatureDetail extends React.Component {
+export class FeatureDetail extends React.Component {
     render() {
         let icon = "";
         switch (this.props.item.type) {
@@ -11,6 +16,19 @@ class FeatureDetail extends React.Component {
                 icon = "fa-ruler-horizontal";
                 break;
             case "nominal":
+                icon = "fa-tag";
+                break;
+          //fix icons from here
+            case "discrete":
+                icon = "fa-tag";
+                break;
+            case "logical":
+                icon = "fa-tag";
+                break;
+            case "integer":
+                icon = "fa-tag";
+                break;
+            case "numericvector":
                 icon = "fa-tag";
                 break;
             default:
@@ -27,7 +45,7 @@ class FeatureDetail extends React.Component {
     }
 }
 
-class QualityDetail extends React.Component {
+export class QualityDetail extends React.Component {
     constructor() {
         super();
     }
@@ -49,7 +67,7 @@ class QualityDetail extends React.Component {
         return <div className={"contentSection item"}>
             <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
             <div className={"itemName"}>{this.fixUpperCase(this.props.item.name)}</div>
-            <div className={"itemDetail-small"}>{this.props.item.value}</div>
+            <div className={"itemDetail-small"}>{this.props.item.value}{this.props.item.default_value}</div>
         </div>
     }
 }
@@ -62,7 +80,7 @@ export class EntryDetails extends React.Component {
         this.state["error"] = null;
     }
     componentDidMount() {
-        getItem(this.props.entry)
+        getItem(this.props.type,this.props.entry)
             .then(
                 (data)=>{
                     this.setState({"obj": data})
@@ -93,42 +111,23 @@ export class EntryDetails extends React.Component {
             let tags = this.state.obj.tags.map(
                 t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
-            return <React.Fragment>
-                <h1 className={"sectionTitle"}><span className={"fa fa-database"}/>{this.state.obj.name}</h1>
-                <div className="subtitle">uploaded by {this.state.obj.uploader} at {this.state.obj.date}</div>
-                <div className="dataStats">
-                    <span><span className="fa fa-table"/>{this.state.obj.format}</span>
-                    <span><span className="fa fa-closed-captioning"/>{this.state.obj.licence}</span>
-                    <span><span className="fa fa-heart"/>{this.state.obj.nr_of_likes} likes</span>
-                    <span><span className="fa fa-cloud"/>{this.state.obj.nr_of_downlaods} downloads</span>
-                    <span><span className="fa fa-exclamation-triangle"/>{this.state.obj.nr_of_issues} issues</span>
-                    <span><span className="fa fa-thumbs-down"/>{this.state.obj.nr_of_downvotes} downvotes</span>
-                    {tags}
-                </div>
-                <div className="contentSection">
-                    <ReactMarkdown source={this.state.obj.description} />
-                </div>
-                <h1>Features</h1>
-                <div className={"subtitle"}>{this.state.obj.features.length} total features</div>
-                <SizeLimiter maxLength={7}>
-                {
-                    this.state.obj.features.map(m => (
-                        <FeatureDetail key={"fd_"+m.name} item={m}>
-                        </FeatureDetail>
-                    ))
-                }
-                </SizeLimiter>
-                <h1>Qualities</h1>
-                <div className={"subtitle"}>{Object.keys(this.state.obj.qualities).length} total qualities</div>
-                <SizeLimiter maxLength={7}>
-                    {Object.keys(this.state.obj.qualities).map(m => (
-                        <QualityDetail key={"q_"+m} item={{"name": m, "value": this.state.obj.qualities[m]}}/>
-                    ))}
-                </SizeLimiter>
-
-                <h1>Tasks</h1>
-                <div className={"subtitle"}>Task visualization not currently supported</div>
-            </React.Fragment>
+       switch (this.props.type){
+                   case "data":
+                   return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
+                   break;
+                   case "task":
+                   return <TaskItem object={this.state.obj} tags={tags}></TaskItem>
+                   break;
+                   case "flow":
+                   return <FlowItem object={this.state.obj} tags={tags}></FlowItem>
+                   break;
+                   case "run":
+                   return <RunItem object={this.state.obj} tags={tags}></RunItem>
+                   break;
+                   default:
+                   return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
+                   break;
         }
     }
+  }
 }
