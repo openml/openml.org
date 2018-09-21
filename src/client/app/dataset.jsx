@@ -35,7 +35,7 @@ export class DatasetItem extends React.Component{
         <div className={"subtitle"}>{Object.keys(this.props.object.qualities).length} total qualities</div>
         <SizeLimiter maxLength={7}>
             {Object.keys(this.props.object.qualities).map(m => (
-                <QualityDetail key={"q_"+m} item={{"name": m, "value": this.props.object.qualities[m]}}/>
+                <QualityDetail key={"q_"+m} item={{"name": m, "value": this.props.object.qualities[m]}} />
             ))}
         </SizeLimiter>
 

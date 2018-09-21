@@ -5,7 +5,7 @@
 body {
 	padding: 0px;
 	background-color: #f2f2f2;
-	
+
 	font-family: 'Roboto', sans-serif;
 	/*min-width: 480px;*/
 }
@@ -33,7 +33,7 @@ a.noLink {
 
 
     padding: 70px 10px 10px 10px;
-	
+
 	box-shadow: 4px 0px 8px 0px #00000014;
 }
 
@@ -54,7 +54,7 @@ a.noLink {
 
 .topbar {
 	background-color: #4caf50;
-	
+
 	box-shadow: 0 0 4px #00000023,0px 4px 8px #00000023;
 	top: 0px;
 	position: fixed;
@@ -78,10 +78,47 @@ a.noLink {
 
 .contentSection {
 	box-shadow: 0px 1px 6px 0px #00000023;
+		position: relative;
 	width: 100%;
 	min-height: 80px;
 	background-color: #fefefe;
-	
+	padding: 10px;
+
+}
+.evaluationContentSection {
+	box-shadow: 0px 1px 6px 0px #00000023;
+		position: relative;
+	width: 100%;
+	min-height: 200px;
+	background-color: #fefefe;
+	padding: 10px;
+
+}
+.smallContentSection {
+	box-shadow: 0px 1px 6px 0px #00000023;
+		position: relative;
+	width: 100%;
+	min-height: 50px;
+	background-color: #fefefe;
+	padding: 10px;
+
+}
+.rightContentSection {
+	box-shadow: 0px 1px 6px 0px #00000023;
+	 position: absolute;
+	right: 0px;
+	width: 70%;
+	min-height: 200px;
+	background-color: #fefefe;
+	padding: 10px;
+}
+.leftContentSection {
+	box-shadow: 0px 1px 6px 0px #00000023;
+	 position: absolute;
+	left: 0px;
+	width: 30%;
+	min-height: 200px;
+	background-color: #fefefe;
 	padding: 10px;
 }
 
