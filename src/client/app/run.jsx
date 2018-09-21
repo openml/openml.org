@@ -1,11 +1,24 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
-import {FeatureDetail} from './itemDetail.jsx';
-import {QualityDetail} from './itemDetail.jsx';
+import {EvaluationDetail} from './itemDetail.jsx';
+import {FlowDetail} from './itemDetail.jsx';
 import ReactMarkdown from 'react-markdown';
+
+
 
 export class RunItem extends React.Component{
   render(){
+    //remove evaluations that do not have 'value' property from the retrieved api data
+    var evaluations=[];
+    for(let i=0; i< this.props.object.evaluations.length; i++){
+       if(this.props.object.evaluations[i].value!=null){
+            evaluations.push(this.props.object.evaluations[i]);
+      }
+    }
+    //parameter with the same names result in FlowDetail objects with the same keys,counter is used to prevent it
+    var parameterID=0;
+    //ID counter for evaluations
+    var evaluationID=0;
     return <React.Fragment>
         <h1 className={"sectionTitle"}><span className={"fa fa-trophy"}/>Run {this.props.object.run_id}</h1>
         <div className="subtitle"> </div>
@@ -23,13 +36,19 @@ export class RunItem extends React.Component{
         <SizeLimiter maxLength={7}>
         {
             this.props.object.run_flow.parameters.map(m => (
-                <FeatureDetail key={"fd_"+m.name} item={m}>
-                </FeatureDetail>
+                <FlowDetail key={parameterID++} item={m}>
+                </FlowDetail>
             ))
         }
         </SizeLimiter>
-
-
+        <h1> {this.props.object.evaluations.length} Evaluation measures</h1>
+        {
+            evaluations.map(m => (
+                <EvaluationDetail key={evaluationID++} item={m} target_values={this.props.object.run_task.target_values}>
+                </EvaluationDetail>
+            )
+          )
+        }
         <h1>Tasks</h1>
         <div className={"subtitle"}>Task visualization not currently supported</div>
     </React.Fragment>

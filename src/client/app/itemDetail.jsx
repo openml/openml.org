@@ -8,6 +8,20 @@ import {FlowItem} from './flow.jsx';
 import {RunItem} from './run.jsx';
 import ReactMarkdown from 'react-markdown';
 
+
+function fixUpperCase(str){
+    let o = ""
+    for (let i=0; i<str.length; i++){
+        if (str[i].toLowerCase()!==str[i]){
+            o += " "+str[i].toLowerCase();
+        }
+        else {
+            o+=str[i];
+        }
+    }
+    return o;
+}
+
 export class FeatureDetail extends React.Component {
     render() {
         let icon = "";
@@ -18,19 +32,6 @@ export class FeatureDetail extends React.Component {
             case "nominal":
                 icon = "fa-tag";
                 break;
-          //fix icons from here
-            case "discrete":
-                icon = "fa-tag";
-                break;
-            case "logical":
-                icon = "fa-tag";
-                break;
-            case "integer":
-                icon = "fa-tag";
-                break;
-            case "numericvector":
-                icon = "fa-tag";
-                break;
             default:
                 icon = "fa-question-circle";
                 break;
@@ -39,6 +40,7 @@ export class FeatureDetail extends React.Component {
             <div className={"itemHead"}><span className={"fa "+icon}/></div>
             <div className={"itemName"}>{this.props.item.name}
                 {this.props.item.target?(<span className={"subtitle"}>(target)</span>):""}</div>
+           <div className={"itemDetail-small"}>{this.props.item.type}</div>
             <div className={"itemDetail-small"}>{this.props.item.distinct} distinct values<br/>
                 {this.props.item.missing} missing attributes</div>
         </div>
@@ -50,6 +52,18 @@ export class QualityDetail extends React.Component {
         super();
     }
 
+    render() {
+        return <div className={"contentSection item"}>
+            <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
+            <div className={"itemName"}>{fixUpperCase(this.props.item.name)}</div>
+            <div className={"itemDetail-small"}>{this.props.item.value}</div>
+        </div>
+    }
+}
+export class ParameterDetail extends React.Component {
+    constructor() {
+        super();
+    }
     fixUpperCase(str){
         let o = ""
         for (let i=0; i<str.length; i++){
@@ -62,16 +76,63 @@ export class QualityDetail extends React.Component {
         }
         return o;
     }
-
     render() {
-        return <div className={"contentSection item"}>
-            <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
-            <div className={"itemName"}>{this.fixUpperCase(this.props.item.name)}</div>
-            <div className={"itemDetail-small"}>{this.props.item.value}{this.props.item.default_value}</div>
-        </div>
-    }
+         return <div className={"contentSection item"}>
+             <div className={"itemName"}>{fixUpperCase(this.props.item.name)}</div>
+             <div className={"itemDetail-small"}>{this.props.item.default_value}</div>
+         </div>
+       }
 }
+export class EvaluationDetail extends React.Component {
+    constructor() {
+        super();
+    }
 
+    render(){
+       if (this.props.item.array_data != null){
+         let classes = this.props.target_values.map(item => <td key={"key_"+item}> {item} </td> );
+         //same values result in same keys, counter is used to prevent it
+         var ID=0;
+         let values = this.props.item.array_data.map(item => <td key={ID++}> {item} </td> );
+       return <div className="evaluationContentSection">
+        <div className="leftContentSection">{this.props.item.evaluation_measure}</div>
+        <div className="rightContentSection">
+        <div className="smallContentSection">{this.props.item.value}</div>
+        <div className="smallContentSection">
+            <table>
+                 <tbody>
+                    <tr>{classes}</tr>
+                    <tr>{values}</tr>
+                 </tbody>
+            </table>
+        </div>
+        <div className="smallContentSection">Small</div>
+        </div>
+      </div>
+    }
+    else {
+      return <div className="evaluationContentSection">
+       <div className="leftContentSection">{this.props.item.evaluation_measure}</div>
+       <div className="rightContentSection">
+           <div className="smallContentSection">{this.props.item.value}</div>
+           <div className="smallContentSection">Small</div>
+       </div>
+     </div>
+
+    }
+    }
+  }
+export class FlowDetail extends React.Component {
+    constructor() {
+        super();
+    }
+    render() {
+         return <div className={"contentSection item"}>
+             <div className={"itemName"}>{fixUpperCase(this.props.item.parameter)}</div>
+             <div className={"itemDetail-small"}>{this.props.item.value}</div>
+         </div>
+       }
+}
 export class EntryDetails extends React.Component {
     constructor() {
         super();

@@ -1,7 +1,7 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
 import {FeatureDetail} from './itemDetail.jsx';
-import {QualityDetail} from './itemDetail.jsx';
+import {ParameterDetail} from './itemDetail.jsx';
 import ReactMarkdown from 'react-markdown';
 
 export class FlowItem extends React.Component{
@@ -29,8 +29,8 @@ export class FlowItem extends React.Component{
         <SizeLimiter maxLength={7}>
         {
             this.props.object.parameters.map(m => (
-                <QualityDetail key={"fd_"+m.name} item={m}>
-                </QualityDetail>
+                <ParameterDetail key={"fd_"+m.name} item={m}>
+                </ParameterDetail>
             ))
         }
         </SizeLimiter>
