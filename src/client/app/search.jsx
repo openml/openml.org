@@ -206,7 +206,7 @@ export class TaskListPanel extends React.Component {
                 {"name": "Estimation Procedure", "value": "estimation_procedure.name", "type": "string"},
             ]}
             type="task"
-            nameField={null}
+            nameField={"tasktype.name"}
             descriptionField="source_data.name"
             processDescription={false}
             idField="task_id"
@@ -298,7 +298,7 @@ export class StudyListPanel extends React.Component {
             ]}                                                      // sort properly
             filterOptions={[]}
             type="study"
-            nameField="alias"
+            nameField="name"
             descriptionField="description"
 
             processDescription={false}

@@ -34,6 +34,7 @@ class MainPanel extends React.Component {
 	                       <Route exact path={"/run"} component={RunListPanel}/>
 	                       <Route exact path={"/run/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="run"/>)}/>
 	                       <Route exact path={"/study"} component={StudyListPanel}/>
+                         <Route exact path={"/study/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="study"/>)}/>
                 <Route exact path={"/user"} component={PeopleListPanel}/>
 
                 <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>
