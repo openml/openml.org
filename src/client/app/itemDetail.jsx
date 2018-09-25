@@ -6,6 +6,7 @@ import {DatasetItem} from './dataset.jsx';
 import {TaskItem} from './task.jsx';
 import {FlowItem} from './flow.jsx';
 import {RunItem} from './run.jsx';
+import {StudyItem} from './study.jsx';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -21,7 +22,6 @@ function fixUpperCase(str){
     }
     return o;
 }
-
 export class FeatureDetail extends React.Component {
     render() {
         let icon = "";
@@ -106,7 +106,7 @@ export class EvaluationDetail extends React.Component {
                  </tbody>
             </table>
         </div>
-        <div className="smallContentSection">Small</div>
+        <div className="smallContentSection">Cross-validation details (10-fold Crossvalidation)</div>
         </div>
       </div>
     }
@@ -115,7 +115,7 @@ export class EvaluationDetail extends React.Component {
        <div className="leftContentSection">{this.props.item.evaluation_measure}</div>
        <div className="rightContentSection">
            <div className="smallContentSection">{this.props.item.value}</div>
-           <div className="smallContentSection">Small</div>
+           <div className="smallContentSection">Cross-validation details (10-fold Crossvalidation)</div>
        </div>
      </div>
 
@@ -169,9 +169,12 @@ export class EntryDetails extends React.Component {
                 <h2>Loading...</h2></div>
         }
         else {
-            let tags = this.state.obj.tags.map(
+          if(this.props.type === "data" || this.props.type === "task" || this.props.type ==="flow" || this.props.type === "run"){
+            var tags = this.state.obj.tags.map(
                 t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
+          }
+
        switch (this.props.type){
                    case "data":
                    return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
@@ -184,6 +187,9 @@ export class EntryDetails extends React.Component {
                    break;
                    case "run":
                    return <RunItem object={this.state.obj} tags={tags}></RunItem>
+                   break;
+                   case "study":
+                   return <StudyItem object={this.state.obj} ></StudyItem>
                    break;
                    default:
                    return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>

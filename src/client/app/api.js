@@ -186,3 +186,22 @@ export function getItem(type,itemId) {
         }
     )
 }
+export function getList(itemId) {
+    return fetch(
+        "https://www.openml.org/es/openml/data/list/tag/" + itemId,
+        {
+            mode: "cors"
+        }
+    ).then(
+        errorCheck
+    ).then(
+        (request) => request.json()
+    ).then(
+        (data) => {
+            if (data["found"] !== true) {
+                throw Error("No task with id \"" + itemID + "\" found. It may have been removed or renamed");
+            }
+            return Promise.resolve(data["_source"])
+        }
+    )
+}

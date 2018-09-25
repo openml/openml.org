@@ -1,6 +1,5 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
-import {FeatureDetail} from './itemDetail.jsx';
 import {ParameterDetail} from './itemDetail.jsx';
 import ReactMarkdown from 'react-markdown';
 
@@ -10,7 +9,7 @@ export class FlowItem extends React.Component{
         <h1 className={"sectionTitle"}><span className={"fa fa-cogs"}/>{this.props.object.name}</h1>
         <div className="dataStats">
         <div className="subtitle"></div>
-            <span><span className="fa fa-upload"/>Visibility:{this.props.object.visibility}</span>
+            <span><span className="fa fa-eye-slash"/>Visibility:{this.props.object.visibility}</span>
             <span><span className="fa fa-cloud-upload"/>uploaded {this.props.object.date} by {this.props.object.uploader}</span>
             <span><span className="fa fa-cloud-upload"/>{this.props.object.dependencies}</span>
 
