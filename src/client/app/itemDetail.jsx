@@ -7,6 +7,8 @@ import {TaskItem} from './task.jsx';
 import {FlowItem} from './flow.jsx';
 import {RunItem} from './run.jsx';
 import {StudyItem} from './study.jsx';
+import {UserItem} from './user.jsx';
+
 import ReactMarkdown from 'react-markdown';
 
 
@@ -190,6 +192,9 @@ export class EntryDetails extends React.Component {
                    break;
                    case "study":
                    return <StudyItem object={this.state.obj} ></StudyItem>
+                   break;
+                   case "user":
+                   return <UserItem object={this.state.obj} ></UserItem>
                    break;
                    default:
                    return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>

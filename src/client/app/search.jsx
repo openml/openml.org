@@ -1,13 +1,15 @@
 import React from "react";
 import {listDatasets} from "./api";
-
 import {Link} from 'react-router-dom';
 import {FilterBar} from "./filterBar.jsx";
 
 class StatsScreen extends React.Component {
+  //statsScreen for every user in the people lists gives warning for the same key in multiple objects
+
     render() {
+        var Id=0;
         let stats = this.props.stats.map(
-            item => <span className="stat" key={"stat_" + item.unit + "_" + item.value}>
+            item => <span className="stat" key={"stat_" + item.unit + "_" + item.value + Id++}>
 			{item.icon ? (<span className={"fa " + item.icon}/>) : undefined}
                 <span className="statValue">{item.value}</span>
                 &nbsp;
@@ -71,6 +73,7 @@ export class SearchResultsPanel extends React.Component {
             {"value": this.state.sort.value, "order": this.state.order},
             this.state.filter,
             this.props.nameField,
+          //  this.props.firstName,
             this.props.descriptionField,
             this.props.processDescription,
             this.props.idField,
@@ -325,6 +328,7 @@ export class PeopleListPanel extends React.Component {
             ]}
             filterOptions={[]}
             type="user"
+            firstName = "first_name"
             nameField="last_name"
             descriptionField="bio"
 
