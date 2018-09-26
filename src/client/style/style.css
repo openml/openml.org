@@ -78,7 +78,7 @@ a.noLink {
 
 .contentSection {
 	box-shadow: 0px 1px 6px 0px #00000023;
-		position: relative;
+	position: relative;
 	width: 100%;
 	min-height: 80px;
 	background-color: #fefefe;
@@ -95,8 +95,8 @@ a.noLink {
 
 }
 .smallContentSection {
-	box-shadow: 0px 1px 6px 0px #00000023;
-		position: relative;
+/*	box-shadow: 0px 1px 6px 0px #00000023;*/
+	/*position: relative;*/
 	width: 100%;
 	min-height: 50px;
 	background-color: #fefefe;
@@ -104,8 +104,8 @@ a.noLink {
 
 }
 .rightContentSection {
-	box-shadow: 0px 1px 6px 0px #00000023;
-	 position: absolute;
+	/*box-shadow: 0px 1px 6px 0px #00000023;*/
+	position: absolute;
 	right: 0px;
 	width: 70%;
 	min-height: 200px;
@@ -113,7 +113,7 @@ a.noLink {
 	padding: 10px;
 }
 .leftContentSection {
-	box-shadow: 0px 1px 6px 0px #00000023;
+	/*box-shadow: 0px 1px 6px 0px #00000023;*/
 	 position: absolute;
 	left: 0px;
 	width: 30%;
@@ -121,7 +121,42 @@ a.noLink {
 	background-color: #fefefe;
 	padding: 10px;
 }
+.userPanel{
+/*	position: absolute;*/
+	width: 100%;
+	min-height: 300px;
+	padding: 15px;
+	border-radius: 0px;
+	background-color: #fefefe;
+	  margin-bottom: 20px
 
+}
+.userPanelDetails{
+	position:relative;
+	width: 100%;
+	min-height: 180px;
+	padding: 15px;
+	border-radius: 0px;
+	background-color: #fefefe;
+
+}
+.userPanelStats {
+	  position:relative;
+		width: 100%;
+		min-height: 80px;
+    border-radius: 0px;
+		background-color: #fefefe;
+}
+.userTable{
+	box-shadow: 0px 1px 6px 0px #00000023;
+/*	position: relative;*/
+	width: 100%;
+	min-height: 80px;
+	background-color: #fefefe;
+	padding: 10px;
+
+
+}
 /*Button*/
 .button {
 	display: inline-block;
@@ -331,4 +366,12 @@ input {
 	display: block;
     margin-bottom: 20px;
     font-weight: normal;
+}
+/* user image*/
+.userImage {
+	margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-bottom: 20px;
+	border-radius: 50%
 }

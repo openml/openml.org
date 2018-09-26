@@ -1,6 +1,4 @@
 import React from 'react';
-import {SizeLimiter} from './sizeLimiter.jsx';
-import {ParameterDetail} from './itemDetail.jsx';
 import ReactMarkdown from 'react-markdown';
 
 class  DescriptionView extends React.Component{
