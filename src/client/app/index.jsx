@@ -10,7 +10,8 @@ import {EntryDetails}  from './itemDetail.jsx';
 import {Sidebar} from './sidebar.jsx';
 import {TopBar} from './topbar.jsx';
 import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel, StudyListPanel, PeopleListPanel} from './search.jsx';
-
+import {LoginPanel} from './login.jsx';
+import {RegisterPanel} from './register.jsx';
 
 class MainPanel extends React.Component {
     constructor() {
@@ -25,6 +26,8 @@ class MainPanel extends React.Component {
         return <div className={"mainBar "+(this.props.sideBarOpen?"mainBar-sideBarOpen":"")}>
             <Switch>
                  <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
+                        <Route exact path={"/login"} component={LoginPanel}/>
+                          <Route exact path={"/register"} component={RegisterPanel}/>
 	                       <Route exact path={"/data"} component={DataListPanel}/>
 	                       <Route exact path={"/data/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="data"/>)}/>
 	                       <Route exact path={"/task"} component={TaskListPanel}/>

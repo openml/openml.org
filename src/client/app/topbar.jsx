@@ -11,6 +11,10 @@ export class TopBar extends React.Component {
                 <Link to={"/"} className={"noLink"}>
                     New OpenML
                 </Link>
+                <Link to="/login" className="btn btn-link">
+                      <button className="float-right"> Sign in</button>
+                   </Link>
+
             </div>)
     }
 }
