@@ -1,6 +1,7 @@
 import React from 'react';
 import {SizeLimiter} from './sizeLimiter.jsx';
 import {getItem} from './api.js';
+import {listStudy} from './api.js';
 //items
 import {DatasetItem} from './dataset.jsx';
 import {TaskItem} from './task.jsx';
@@ -8,7 +9,6 @@ import {FlowItem} from './flow.jsx';
 import {RunItem} from './run.jsx';
 import {StudyItem} from './study.jsx';
 import {UserItem} from './user.jsx';
-
 import ReactMarkdown from 'react-markdown';
 
 
@@ -143,6 +143,7 @@ export class EntryDetails extends React.Component {
         this.state["error"] = null;
     }
     componentDidMount() {
+      console.log(this.props.type,this.props.entry);
         getItem(this.props.type,this.props.entry)
             .then(
                 (data)=>{
@@ -155,7 +156,6 @@ export class EntryDetails extends React.Component {
                     "error": error+""
                 })
             }
-
         )
     }
 
@@ -172,6 +172,7 @@ export class EntryDetails extends React.Component {
         }
         else {
           if(this.props.type === "data" || this.props.type === "task" || this.props.type ==="flow" || this.props.type === "run"){
+            console.log(this.state.obj);
             var tags = this.state.obj.tags.map(
                 t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
             );
@@ -191,7 +192,11 @@ export class EntryDetails extends React.Component {
                    return <RunItem object={this.state.obj} tags={tags}></RunItem>
                    break;
                    case "study":
+                    // if(this.props.list === "true"){
+                      //  return <StudyItem object={this.state.obj} ></StudyItem>
+                    // }else{
                    return <StudyItem object={this.state.obj} ></StudyItem>
+                  //   }
                    break;
                    case "user":
                    return <UserItem object={this.state.obj} ></UserItem>

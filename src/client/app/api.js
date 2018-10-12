@@ -51,7 +51,7 @@ function parseDots(obj, param) {
 }
 
 
-export function listDatasets(type = "data", sort = {"value": "runs", "order": "desc"}, filter = [],
+export function listItems(tag,type = "data", sort = {"value": "runs", "order": "desc"}, filter = [],
                              nameField = "name", descriptionField = "description",
                              processDescription = true,
                              idField = "data_id",
@@ -68,25 +68,44 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
                                  {"param": "qualities.NumberOfClasses", "unit": "classes"},
                                  {"param": "qualities.NumberOfMissingValues" + "", "unit": "missing"}
                              ]) {
+
+      if(tag !== undefined){//nested query for tag
+                  filter =[{
+                      "nested":
+                       {
+                         "path":
+                          "tags",
+                          "query":
+                                {
+                                    "term":
+                                        {
+                                            "tags.tag":tag
+                                        }
+                                },
+                      }
+                    }]
+      }
+
+    console.log(filter);
     let params = {
         "from": 0,
         "size": 100,
         "query": {
-            "bool": {
-                "filter": [
-                    /*
-                    {
-                        "term": {
-                            "status": "active"
-                        }
-                    },
-                    {
-                        "term": {
-                            "visibility": "public"
-                        }
-                    }*/
-                ].concat(filter)
-            }
+          "bool":
+              {
+                  "must":
+                      {"match_all": {}},
+                  "filter":[].concat(filter),
+                  "should":
+                      [
+                          {
+                              "term": {
+                                  "visibility": "public"
+                              }
+                          }
+                      ],
+                  "minimum_should_match": 1
+              }
         },
         "sort": {
             [sort.value]: {
@@ -107,21 +126,8 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
         ).concat(
             stats2.map((stat) => stat.param)
         ).filter((l)=>(!!l)),
-        /*
-        "name",
-        "runs",
-        "nr_of_likes",
-        "nr_of_downloads",
-        "reach",
-        "impact",
-        "qualities.NumberOfInstances",
-        "qualities.NumberOfFeatures",
-        "qualities.NumberOfClasses",
-        "qualities.NumberOfMissingValues",
-        "data_id",
-        "description"*/
     };
-
+   //console.log(params);
     return fetch('https://www.openml.org/es/openml/_search?type=' + type,
         {
             method: "POST",
@@ -134,6 +140,7 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
         (request) => request.json()
     ).then(
         (data) => {
+        //  console.log(data["hits"]["hits"][0]);
             return data["hits"]["hits"].map(
                 x => {
                     let source = x["_source"];
@@ -166,6 +173,9 @@ export function listDatasets(type = "data", sort = {"value": "runs", "order": "d
         }
     );
 }
+
+
+
 
 export function getItem(type,itemId) {
     return fetch(
