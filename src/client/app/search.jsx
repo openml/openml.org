@@ -1,5 +1,5 @@
 import React from "react";
-import {listDatasets} from "./api";
+import {listItems} from "./api";
 import {Link} from 'react-router-dom';
 import {FilterBar} from "./filterBar.jsx";
 
@@ -21,6 +21,7 @@ class StatsScreen extends React.Component {
 }
 
 class SearchElement extends React.Component {
+
     render() {
         return (
             <Link to={"/"+this.props.type+"/" + this.props.data_id} className={"noLink"}>
@@ -60,7 +61,7 @@ export class SearchResultsPanel extends React.Component {
         this.state.loading = true;
         this.state.sort = this.props.sortOptions[0];
         this.state.order = "desc";
-        this.state.filter = [];
+        this.state.filter =  [];
     }
 
     componentDidMount() {
@@ -68,42 +69,40 @@ export class SearchResultsPanel extends React.Component {
     }
 
     reload() {
-        listDatasets(
-            this.props.type,
-            {"value": this.state.sort.value, "order": this.state.order},
-            this.state.filter,
-            this.props.nameField,
-          //  this.props.firstName,
-            this.props.descriptionField,
-            this.props.processDescription,
-            this.props.idField,
-            this.props.stats,
-            this.props.stats2
-        ).then(
-            (data) => {
-                this.setState((state) => {
-                    return {"results": data, "loading": false};
-                });
-            }
-        ).catch(
-            (error) => {
-                console.error(error);
-                try {
-                    this.setState({
-                        "error": "" + error + (
-                            error.hasOwnProperty("fileName") ? " (" + error.fileName + ":" + error.lineNumber + ")" : ""
-                        ),
-                        "loading": false
-                    });
-                }
-                catch (ex) {
-                    console.error("There was an error displaying the above error");
-                    console.error(ex);
-                }
-            }
-        )
-    }
-
+                listItems(this.props.tag,
+                    this.props.type,
+                    {"value": this.state.sort.value, "order": this.state.order},
+                    this.state.filter,
+                    this.props.nameField,
+                    this.props.descriptionField,
+                    this.props.processDescription,
+                    this.props.idField,
+                    this.props.stats,
+                    this.props.stats2
+                ).then(
+                    (data) => {
+                        this.setState((state) => {
+                            return {"results": data, "loading": false};
+                        });
+                    }
+                ).catch(
+                    (error) => {
+                        console.error(error);
+                        try {
+                            this.setState({
+                                "error": "" + error + (
+                                    error.hasOwnProperty("fileName") ? " (" + error.fileName + ":" + error.lineNumber + ")" : ""
+                                ),
+                                "loading": false
+                            });
+                        }
+                        catch (ex) {
+                            console.error("There was an error displaying the above error");
+                            console.error(ex);
+                        }
+                    }
+                )
+        }
     componentWillUnmount() {
     }
 
@@ -125,7 +124,7 @@ export class SearchResultsPanel extends React.Component {
                                          onclick={() => this.clickCallBack(result.data_id)}
                                          key={result.name + "_" + result.data_id}
                                          type={this.props.type}
-                />
+                ></SearchElement>
             );
         }
         else if (this.state.error !== null) {
@@ -135,22 +134,33 @@ export class SearchResultsPanel extends React.Component {
             component = <p>No search results found</p>;
         }
 
-
-        return <React.Fragment>
-            <h1>Data sets</h1>
-            <FilterBar
-                sortOptions={this.props.sortOptions}
-                onChange={this.sortChange.bind(this)}
-                filterOptions={this.props.filterOptions}
-            />
-            {component}
-        </React.Fragment>;
+        if(this.props.tag === undefined){
+                  return <React.Fragment>
+                      <h1>Data sets</h1>
+                      <FilterBar
+                          sortOptions={this.props.sortOptions}
+                          onChange={this.sortChange.bind(this)}
+                          filterOptions={this.props.filterOptions}
+                      />
+                      {component}
+                  </React.Fragment>;
+      }else{ //nested query
+        console.log(this.state.results.length);
+            return <React.Fragment>
+                {component}
+            </React.Fragment>;
+      }
     }
 }
 
 export class DataListPanel extends React.Component {
+  constructor(props) {
+      super(props);
+    }
+
     render() {
         return <SearchResultsPanel
+            tag={this.props.tag} // for nested query in study page
             sortOptions={[
                 //{"name": "best match", "value": "match "},
                 {"name": "Runs", "value": "runs"},
@@ -192,13 +202,17 @@ export class DataListPanel extends React.Component {
                 {"param": "qualities.NumberOfClasses", "unit": "classes"},
                 {"param": "qualities.NumberOfMissingValues" + "", "unit": "missing"}
             ]}
-        />
+        ></SearchResultsPanel>
     }
 }
 
 export class TaskListPanel extends React.Component {
+  constructor(props) {
+      super(props);
+    }
     render() {
         return <SearchResultsPanel
+        tag={this.props.tag} // for nested query in study page
             sortOptions={[
                 //{"name": "best match", "value": "match "},
                 {"name": "Runs", "value": "runs"},
@@ -227,13 +241,14 @@ export class TaskListPanel extends React.Component {
                 {"param": "reach_of_reuse", "unit": "reach of reuse"},
             ]}
 
-        />
+        ></SearchResultsPanel>
     }
 }
 
 export class FlowListPanel extends React.Component {
     render() {
         return <SearchResultsPanel
+        tag={this.props.tag} // for nested query in study page
             sortOptions={[
                 {"name": "runs", "value": "runs"}
             ]}
@@ -256,13 +271,14 @@ export class FlowListPanel extends React.Component {
                 {"param": "reach_of_reuse", "unit": "reach of reuse"},
                 {"param": "impact_of_reuse", "unit": "impact of reuse"}
             ]}
-        />
+        ></SearchResultsPanel>
     }
 }
 
 export class RunListPanel extends React.Component {
     render() {
         return <SearchResultsPanel
+        tag={this.props.tag} // for nested query in study page
             sortOptions={[
                 {"name": "Downlaods", "value": "total_downloads"}
             ]}
@@ -286,7 +302,7 @@ export class RunListPanel extends React.Component {
             stats2={
                 []
             }
-        />
+        ></SearchResultsPanel>
     }
 }
 
@@ -316,7 +332,7 @@ export class StudyListPanel extends React.Component {
             ]}
 
             stats2={[]}
-        />
+        ></SearchResultsPanel>
     }
 }
 
@@ -348,6 +364,6 @@ export class PeopleListPanel extends React.Component {
                 {"unit": "", "param": "country", "icon": "fa-map-marker"},
                 {"unit": "", "param": "date", "icon": "fa-clock"}
             ]}
-        />
+        ></SearchResultsPanel>
     }
 }

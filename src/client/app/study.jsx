@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+//list
+import {DataListPanel,TaskListPanel,FlowListPanel,RunListPanel} from './search.jsx';
 
 class  DescriptionView extends React.Component{
       render(){
@@ -9,30 +11,31 @@ class  DescriptionView extends React.Component{
       }
 }
 class  DatasetView extends React.Component{
+  //send id of the study item in order to make the query for this study tag
       render(){
         return <React.Fragment>
-           {this.props.obj.object.description}
+          <DataListPanel tag={"study"+"_"+this.props.obj.object.study_id}></DataListPanel>
         </React.Fragment>
       }
 }
 class  TaskView extends React.Component{
       render(){
         return <React.Fragment>
-           {this.props.obj.object.description}
+           <TaskListPanel tag={"study"+"_"+this.props.obj.object.study_id}></TaskListPanel>
         </React.Fragment>
       }
 }
 class  FlowView extends React.Component{
       render(){
         return <React.Fragment>
-           {this.props.obj.object.description}
+           <FlowListPanel tag={"study"+"_"+this.props.obj.object.study_id}></FlowListPanel>
         </React.Fragment>
       }
 }
 class  RunView extends React.Component{
       render(){
         return <React.Fragment>
-           {this.props.obj.object.description}
+           <RunListPanel tag={"study"+"_"+this.props.obj.object.study_id}></RunListPanel>
         </React.Fragment>
       }
 }
@@ -50,25 +53,26 @@ export class StudyItem extends React.Component{
    handleClick(content){
 
      switch(content){
-           case 'Description':
-           this.setState({view: <DescriptionView obj={this.object}/>});
-           break;
-           case 'Datasets':
-           this.setState({view: <DatasetView obj={this.object} />});
-           break;
-           case 'Tasks':
-           this.setState({view: <TaskView obj={this.object} />});
-           break;
-           case 'Flows':
-           this.setState({view: <FlowView obj={this.object}/>});
-           break;
-           case 'Runs':
-           this.setState({view: <RunView obj={this.object}/>});
-           break;
-           default:
-            this.setState({view: <DescriptionView obj={this.object}/>});
-           break;
+       case 'Description':
+       this.setState({view: <DescriptionView obj={this.object}/>});
+       break;
+       case 'Datasets':
+       this.setState({view: <DatasetView obj={this.object} />});
+       break;
+       case 'Tasks':
+       this.setState({view: <TaskView obj={this.object} />});
+       break;
+       case 'Flows':
+       this.setState({view: <FlowView obj={this.object}/>});
+       break;
+       case 'Runs':
+       this.setState({view: <RunView obj={this.object}/>});
+       break;
+       default:
+        this.setState({view: <DescriptionView obj={this.object}/>});
+       break;
      }
+
    }
 
   render(){
