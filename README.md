@@ -2,9 +2,17 @@
 This is a novel standalone frontend for OpenML, built on Flask, React, and Dash.
 
 ## Building
-The app can be built by running
+Install webpack first:
+
+`npm install webpack-cli webpack babel-core`
+
+Build the app by running
 
 `npm run debug`
+
+If successful, you can view the frontend on 
+
+`http://localhost/openml.org/src/client/`
 
 ## How to contribute
 We welcome all contributions to:
