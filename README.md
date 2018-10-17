@@ -2,9 +2,9 @@
 This is a novel standalone frontend for OpenML, built on Flask, React, and Dash.
 
 ## Building
-Install webpack first:
+If you haven't already, install a recent version of NPM (6 or higher). Next, due to a recent [bad webpack update](https://github.com/plotly/dash-component-boilerplate/issues/12), install the following:
 
-`npm install webpack-cli webpack babel-core`
+`npm install webpack@^4.20.2 webpack-cli@^3.1.1`
 
 Build the app by running
 
