@@ -272,7 +272,6 @@ export class FilterBar extends React.Component {
                 {
                     !this.state.showFilter ? null : (
                         <div className="contentSection">
-                            <p> Find all datasets where </p>
                             {
                                 this.props.filterOptions.map(
                                     (option, index) => {

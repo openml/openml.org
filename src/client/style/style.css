@@ -297,7 +297,7 @@ input {
 }
 
 .itemInfo .itemTeaser {
-	height: 1em;
+	height: 1.7em;
     width: 75%;
 
 
@@ -374,4 +374,62 @@ input {
   display: block;
   margin-bottom: 20px;
 	border-radius: 50%
+}
+
+/* sidebar */
+
+/* First level of nav */
+.sidenav {
+  border-radius: 5px;
+  text-decoration: none;
+  list-style: none;
+  margin-top:10px;
+  margin-right: 0px;
+  padding-inline-start: 0px
+}
+
+.sidenav ul {
+  list-style: none;
+}
+
+.sidenav li {
+  padding-left: 10px;
+}
+
+.sidenav > li > a {
+  display: block;
+  color: #424242;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 0px;
+  text-decoration: none;
+}
+
+.sidenav > li > a > i{
+  margin-right: 8px;
+}
+
+.icongreen i {
+  color: #388e3c;
+  display: inline-block;
+  margin-right: 3px;
+}
+
+.sidenav > li:nth-child(1) > a {
+  color: #388e3c; /*green*/
+}
+.sidenav > li:nth-child(2) > a {
+  color: #fb8c00; /*yellow*/
+}
+.sidenav > li:nth-child(3) > a {
+  color: #1976d2; /*blue*/
+}
+.sidenav > li:nth-child(4) > a {
+  color: #d32f2f; /*red*/
+}
+.sidenav > li:nth-child(5) > a {
+  color: #9c27b0; /*purple*/
+}
+.sidenav > li:nth-child(6) > a {
+  color: #03a9f4; /*blue accent*/
 }
