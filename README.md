@@ -11,6 +11,7 @@ Build the app by running
 `npm run debug`
 
 ## Starting Flask
+If you haven't already, install Flask with `pip install Flask`.
 Start the service with:
 
 `python server.py`
