@@ -111,6 +111,10 @@ export class SearchResultsPanel extends React.Component {
             this.reload.bind(this));
     }
 
+    capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     render() {
         let component = null;
 
@@ -136,7 +140,7 @@ export class SearchResultsPanel extends React.Component {
 
         if(this.props.tag === undefined){
                   return <React.Fragment>
-                      <h1>Data sets</h1>
+                      <h1>{this.capitalize(this.props.type)}</h1>
                       <FilterBar
                           sortOptions={this.props.sortOptions}
                           onChange={this.sortChange.bind(this)}
@@ -250,7 +254,7 @@ export class FlowListPanel extends React.Component {
         return <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
             sortOptions={[
-                {"name": "runs", "value": "runs"}
+                {"name": "Runs", "value": "runs"}
             ]}
             filterOptions={[]}
             type="flow"
@@ -280,7 +284,7 @@ export class RunListPanel extends React.Component {
         return <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
             sortOptions={[
-                {"name": "Downlaods", "value": "total_downloads"}
+                {"name": "Downloads", "value": "total_downloads"}
             ]}
 
             filterOptions={
@@ -312,8 +316,8 @@ export class StudyListPanel extends React.Component {
             sortOptions={[
                 {"name": "Date", "value": "date"},
                 {"name": "Datasets", "value": "datasets_included"}, // This does not work, since for some reason
-                {"name": "tasks", "value": "tasks_included"},       // these three variables are not numbers, but
-                {"name": "flows", "value": "flows_included"}        // are actually strings, which ES cannot
+                {"name": "Tasks", "value": "tasks_included"},       // these three variables are not numbers, but
+                {"name": "Flows", "value": "flows_included"}        // are actually strings, which ES cannot
             ]}                                                      // sort properly
             filterOptions={[]}
             type="study"

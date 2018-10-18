@@ -6,13 +6,13 @@ export class Sidebar extends React.Component {
     render() {
         return (
             <div className="sidebar">
-                <ul>
-                    <li><i className="fa fa-database"/><Link to="/data"> Data</Link></li>
-                    <li><i className="fa fa-trophy"/><Link to="/task">Task</Link></li>
-                    <li><i className="fa fa-cogs"/><Link to="/flow">Flow</Link></li>
-                    <li><i className="fa fa-star"/><Link to="/run">Run</Link></li>
-                    <li><i className="fa fa-flask"/><Link to="/study">Study</Link></li>
-                    <li><i className="fa fa-users"/><Link to="/user">People</Link></li>
+                <ul className="sidenav">
+                    <li><Link to="/data"><i className="fa fa-fw fa-lg fa-database"/> Data</Link></li>
+                    <li><Link to="/task"><i className="fa fa-fw fa-lg fa-trophy"/> Task</Link></li>
+                    <li><Link to="/flow"><i className="fa fa-fw fa-lg fa-cogs"/> Flow</Link></li>
+                    <li><Link to="/run"><i className="fa fa-fw fa-lg fa-star"/> Run</Link></li>
+                    <li><Link to="/study"><i className="fa fa-fw fa-lg fa-flask"/> Study</Link></li>
+                    <li><Link to="/user"><i className="fa fa-fw fa-lg fa-users"/> People</Link></li>
                 </ul>
 
             </div>
