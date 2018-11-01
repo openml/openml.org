@@ -75,7 +75,7 @@ export class RegisterPanel extends React.Component {
                         <input type="text" className="form-control" name="first_name" value={this.state.first_name} onChange={this.handleInput} placeholder="First name" />
                     </div>
                     <div className={'form-group' + (this.state.submit && !this.state.last_name ? ' has-error' : '')}>
-                        <input type="text" className="form-control" name="password" value={this.state.last_name} onChange={this.handleInput} placeholder="Last name" />
+                        <input type="text" className="form-control" name="last_name" value={this.state.last_name} onChange={this.handleInput} placeholder="Last name" />
                         {this.state.submit && !this.state.last_name &&
                             <div className="help-block">Last name field is required.</div>
                         }
