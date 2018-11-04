@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 
 //REACT router
 import {HashRouter, Route, Redirect, Switch, Link} from 'react-router-dom'
-
+import { BrowserRouter as Router } from 'react-router-dom';
 //self
 import {EntryDetails}  from './itemDetail.jsx';
 import {Sidebar} from './sidebar.jsx';
@@ -12,6 +12,10 @@ import {TopBar} from './topbar.jsx';
 import {DataListPanel, TaskListPanel, FlowListPanel, RunListPanel, StudyListPanel, PeopleListPanel} from './search.jsx';
 import {LoginPanel} from './login.jsx';
 import {RegisterPanel} from './register.jsx';
+import {UserProfilePanel}  from './userProfile.jsx';
+import { AuthProvider } from './context.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx';
+import Header from './header.jsx';
 
 class MainPanel extends React.Component {
     constructor() {
@@ -24,10 +28,13 @@ class MainPanel extends React.Component {
 
     render() {
         return <div className={"mainBar "+(this.props.sideBarOpen?"mainBar-sideBarOpen":"")}>
+
+         <AuthProvider>
             <Switch>
                  <Route exact path={"/"} render={()=>(<Redirect to={"/data"}/>)}/>
                         <Route exact path={"/login"} component={LoginPanel}/>
-                          <Route exact path={"/register"} component={RegisterPanel}/>
+                         <Route exact path={"/register"} component={RegisterPanel}/>
+                         <ProtectedRoute exact path={"/userprofile"} component={UserProfilePanel}/>
 	                       <Route exact path={"/data"} component={DataListPanel}/>
 	                       <Route exact path={"/data/:entry"} render={(info)=>(<EntryDetails entry={info.match.params.entry}  type="data"/>)}/>
 	                       <Route exact path={"/task"} component={TaskListPanel}/>
@@ -43,6 +50,8 @@ class MainPanel extends React.Component {
 
                 <Route render={(location)=>(<p>404 - {JSON.stringify(location)+""}</p>)}/>
             </Switch>
+       </AuthProvider>
+
         </div>
     }
 }

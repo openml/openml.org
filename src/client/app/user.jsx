@@ -39,27 +39,27 @@ export class UserItem extends React.Component{
                <table className="userTable">
                     <tbody>
                        <tr>
-                          <td class="itemName"><span><span className="fa fa-database"/> Datasets</span></td>
-                          <td class="itemDetail-small" ><span><span className="fa fa-cloud-upload-alt"/>{this.props.object.datasets_uploaded}</span></td>
-                          <td class="itemDetail-small"><span><span className="fa fa-cloud-download-alt"/>{this.props.object.downloads_received_data}</span></td>
-                          <td class="itemDetail-small" ><span><span className="fa fa-heart"/>{this.props.object.likes_received_data}</span></td>
-                          <td class="itemDetail-small" ><span><span className="fa fa-spinner"/>{this.props.object.runs_on_datasets}</span></td>
+                          <td className="itemName"><span><span className="fa fa-database"/> Datasets</span></td>
+                          <td className="itemDetail-small" ><span><span className="fa fa-cloud-upload-alt"/>{this.props.object.datasets_uploaded}</span></td>
+                          <td className="itemDetail-small"><span><span className="fa fa-cloud-download-alt"/>{this.props.object.downloads_received_data}</span></td>
+                          <td className="itemDetail-small" ><span><span className="fa fa-heart"/>{this.props.object.likes_received_data}</span></td>
+                          <td className="itemDetail-small" ><span><span className="fa fa-spinner"/>{this.props.object.runs_on_datasets}</span></td>
                        </tr>
                        <tr>
-                          <td class="itemName"><span><span className="fa fa-cogs flow"/> Flows</span></td>
+                          <td className="itemName"><span><span className="fa fa-cogs flow"/> Flows</span></td>
                           <td><span><span className="fa fa-cloud-upload-alt"/>{this.props.object.flows_uploaded}</span></td>
                           <td><span><span className="fa fa-cloud-download-alt"/>{this.props.object.downloads_received_flow}</span></td>
                           <td><span><span className="fa fa-heart"/>{this.props.object.likes_received_flow}</span></td>
                           <td><span><span className="fa fa-spinner"/>{this.props.object.runs_on_flows}</span></td>
                        </tr>
                        <tr>
-                          <td class="itemName"><span><span className="fa fa-trophy"/> Tasks</span></td>
+                          <td className="itemName"><span><span className="fa fa-trophy"/> Tasks</span></td>
                           <td><span><span className="fa fa-cloud-upload-alt"/>{this.props.object.tasks_uploaded}</span></td>
                           <td><span><span className="fa fa-cloud-download-alt"/>{this.props.object.downloads_received_task}</span></td>
                           <td><span><span className="fa fa-heart"/>{this.props.object.likes_received_task}</span></td>
                        </tr>
                        <tr>
-                          <td class="itemName"><span><span className="fa fa-star"/> Runs</span></td>
+                          <td className="itemName"><span><span className="fa fa-star"/> Runs</span></td>
                           <td><span><span className="fa fa-cloud-upload-alt"/>{this.props.object.runs_uploaded}</span></td>
                           <td><span><span className="fa fa-cloud-download-alt"/>{this.props.object.downloads_received_run}</span></td>
                           <td><span><span className="fa fa-heart"/>{this.props.object.likes_received_run}</span></td>
