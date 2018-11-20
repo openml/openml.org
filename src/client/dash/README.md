@@ -23,15 +23,25 @@ Lines 31-58 handle the general data preprocessing: distinguishing and categorizi
 Line 63 creates the layout object of the application, the construction of this object is closed on line 161. The reason why this is so long is because Dash requires the composition of the entire layout on construction, and functionality is added later. The general structure is as follows:
 
 ATTRIBUTE SELECTOR####COLOR CODE SELECTOR
+
 #####################
+
 SINGLE VARIABLE PLOT
+
 #####################
+
 ATTRIBUTE SELECTOR####ATTRIBUTE SELECTOR####COLOR CODE SELECTOR
+
 #####################
+
 DUAL VARIABLE PLOT
+
 #####################
+
 ATTRIBUTE SELECTOR
+
 #####################
+
 PARALLEL LINES PLOT
 
 After line 161 the functionality is added. Each callback makes sure that the functionality for a plot is added.
