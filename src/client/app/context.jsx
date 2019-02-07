@@ -9,6 +9,7 @@ class AuthProvider extends React.Component {
     this.state = { isAuth: false }
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
+
   }
   login() {
     setTimeout(() => this.setState({ isAuth: true }), 1000)
@@ -30,4 +31,34 @@ class AuthProvider extends React.Component {
 }
 
 const AuthConsumer = AuthContext.Consumer
-export { AuthProvider, AuthConsumer}
+
+export const searches = {
+    types: ['data','task','flow','run','study','user'],
+    icons: {
+      data: 'fa fa-database',
+      task: 'fa fa-trophy',
+      flow: 'fa fa-cogs',
+      run:  'fa fa-star',
+      study:'fa fa-flask',
+      user: 'fa fa-user'
+    },
+    names: {
+      data: 'Datasets',
+      task: 'Tasks',
+      flow: 'Flows',
+      run:  'Runs',
+      study:'Studies',
+      user: 'People'
+    },
+    colors: {
+      data: 'green',
+      task: 'yellow',
+      flow: 'blue',
+      run:  'red',
+      study:'purple',
+      user: 'lightblue'
+    }
+}
+const SearchContext = React.createContext(searches)
+
+export { AuthProvider, AuthConsumer, SearchContext}

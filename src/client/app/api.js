@@ -1,12 +1,17 @@
 function errorCheck(response) {
-    if (!response.ok) {
-        console.error("request failed: ["+response.status+"] "+response.statusText);
+      if (!response.ok) {
+        console.error("Request failed: ["+response.status+"] "+response.statusText);
+        console.log(response)
         if (response.hasOwnProperty("headers") && !response.headers.get("content_type").startsWith("application/json")){
             return Promise.reject("["+response.status+"] "+response.statusText);
         }
+        if(typeof data !== 'undefined'){
         return response.json().then(
             (data)=>Promise.reject("[ElasticSearch] "+data.error.root_cause[0].reason)
         )
+      } else {
+        return Promise.reject("[ElasticSearch] "+response.status+": "+response.statusText);
+      }
         //throw new Error("Request failed: " + request.statusText);
     }
     return Promise.resolve(response);
@@ -85,8 +90,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                       }
                     }]
       }
-
-    console.log(filter);
+    //console.log(filter);
     let params = {
         "from": 0,
         "size": 100,
@@ -128,8 +132,12 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
         ).filter((l)=>(!!l)),
     };
    //console.log(params);
-    return fetch('https://www.openml.org/es/openml/_search?type=' + type,
+    return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
         {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
             method: "POST",
             mode: "cors",
             body: JSON.stringify(params)
@@ -179,8 +187,12 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
 
 export function getItem(type,itemId) {
     return fetch(
-        "https://www.openml.org/es/openml/"+ type +"/" + itemId,
+        process.env.ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId,
         {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
             mode: "cors"
         }
     ).then(
@@ -198,8 +210,12 @@ export function getItem(type,itemId) {
 }
 export function getList(itemId) {
     return fetch(
-        "https://www.openml.org/es/openml/data/list/tag/" + itemId,
+        process.env.ELASTICSEARCH_SERVER + "/data/data/list/tag/" + itemId,
         {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
             mode: "cors"
         }
     ).then(

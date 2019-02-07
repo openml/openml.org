@@ -78,7 +78,7 @@ export class StudyItem extends React.Component{
   render(){
 
     return <React.Fragment>
-        <h1 className={"sectionTitle"}><span className={"fa fa-flask"}/>{this.props.object.name}</h1>
+        <h1 className={"sectionTitle"}><span className={"fa fa-flask"}/>bla {this.props.object.name}</h1>
         <div className="dataStats">
         <div className="subtitle"></div>
             <span><span className="fa fa-cloud-upload"/>uploaded {this.props.object.date} by {this.props.object.uploader}</span>

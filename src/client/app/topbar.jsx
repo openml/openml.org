@@ -8,12 +8,9 @@ export class TopBar extends React.Component {
             <div className="topbar">
                 <span id="sidebarHamburgerIcon" className="fa fa-bars fa-lg topbar-icon" onClick={this.props.toggleSideBar}/>
 
-                <Link to={"/"} className={"noLink"}>
-                    New OpenML
-                </Link>
-                <Link to="/login" className="btn btn-link">
-                      <button className="float-right"> Sign in</button>
-                   </Link>
+                <Link to={"/"} className="noLink">OpenML</Link>
+                <Link to="/login" className="button-white pull-right noLink">Sign in</Link>
+                <a href="https://docs.openml.org" target="_blank" className="button-white pull-right noLink">Help</a>
 
             </div>)
     }

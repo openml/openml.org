@@ -2,6 +2,8 @@ import React from "react";
 import {listItems} from "./api";
 import {Link} from 'react-router-dom';
 import {FilterBar} from "./filterBar.jsx";
+import {SearchContext} from './context.jsx';
+
 
 class StatsScreen extends React.Component {
   //statsScreen for every user in the people lists gives warning for the same key in multiple objects
@@ -21,13 +23,12 @@ class StatsScreen extends React.Component {
 }
 
 class SearchElement extends React.Component {
-
     render() {
         return (
             <Link to={"/"+this.props.type+"/" + this.props.data_id} className={"noLink"}>
                 <div className="contentSection item">
                     <div className="itemHead">
-                        <span className="fa fa-database"/>
+                        <span className={this.context.icons[this.props.type] + " " + this.context.colors[this.props.type]}/>
                     </div>
                     {
                         this.props.name !== undefined ?
@@ -51,6 +52,7 @@ class SearchElement extends React.Component {
         )
     }
 }
+SearchElement.contextType = SearchContext
 
 export class SearchResultsPanel extends React.Component {
     constructor(props) {

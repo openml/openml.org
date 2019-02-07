@@ -36,7 +36,8 @@ export class RegisterPanel extends React.Component {
            this.setState({ confirm: true });
          }
          if (username && password) {
-
+           console.log(username)
+           console.log(password)
         }
       }
     render() {
