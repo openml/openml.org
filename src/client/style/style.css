@@ -7,6 +7,7 @@ body {
 	background-color: #f2f2f2;
 
 	font-family: 'Roboto', sans-serif;
+	font-size: 1.6rem !important;
 	/*min-width: 480px;*/
 }
 
@@ -16,7 +17,12 @@ h1 {
 
 a.noLink {
 	color: unset;
-	text-decoration: unset;
+	text-decoration:none;
+}
+
+a.noLink:hover {
+	color: unset;
+	text-decoration:none;
 }
 
 .sidebar {
@@ -25,7 +31,6 @@ a.noLink {
 	position: fixed;
 	left: 0px;
     top: 0px;
-	font-size: 14px;
 	width: 256px;
 	height: 100%;
 
@@ -60,12 +65,13 @@ a.noLink {
 	position: fixed;
 	right: 0px;
 	left: 0px;
-	min-height: 50px;
+	min-height: 70px;
 	color: #ffffffd7;
-	font-size: 18px;
+	font-size: 22px;
+	font-weight: 200;
+	padding-top:5px;
 
 	z-index: 10;
-
 }
 
 .topbar .topbar-icon {
@@ -180,6 +186,21 @@ a.noLink {
 a.button-gray:hover {
     box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
 }
+.button-white {
+	color: #ffffffd7;
+	font-size: 1.8rem;
+	display: inline-block;
+	border-radius: 2px;
+	padding: 10px;
+	text-transform: uppercase;
+	margin-right:15px;
+	margin-top:5px;
+}
+
+a.button-white:hover {
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
+}
+
 
 input {
     box-shadow: 0 1px 6px 0 rgba(0,0,0,.12),0 1px 6px 0 rgba(0,0,0,.12);
@@ -415,21 +436,21 @@ input {
   margin-right: 3px;
 }
 
-.sidenav > li:nth-child(1) > a {
-  color: #388e3c; /*green*/
+.green {
+  color: #388e3c !important;
 }
-.sidenav > li:nth-child(2) > a {
-  color: #fb8c00; /*yellow*/
+.yellow {
+  color: #fb8c00 !important;
 }
-.sidenav > li:nth-child(3) > a {
-  color: #1976d2; /*blue*/
+.blue {
+  color: #1976d2 !important;
 }
-.sidenav > li:nth-child(4) > a {
-  color: #d32f2f; /*red*/
+.red {
+  color: #d32f2f !important;
 }
-.sidenav > li:nth-child(5) > a {
-  color: #9c27b0; /*purple*/
+.purple {
+  color: #9c27b0 !important;
 }
-.sidenav > li:nth-child(6) > a {
-  color: #03a9f4; /*blue accent*/
+.lightblue {
+  color: #03a9f4 !important;
 }

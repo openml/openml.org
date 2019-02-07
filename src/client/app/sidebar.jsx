@@ -1,21 +1,22 @@
 import React from "react";
 
 import {Link} from "react-router-dom";
+import {SearchContext} from './context.jsx';
 
 export class Sidebar extends React.Component {
     render() {
+        let search_context = this.context
+        let links = search_context.types.map(function(t){
+            return <li key={t}><Link to={"/"+t} className={search_context.colors[t]}><i className={search_context.icons[t] + " fa-fw fa-lg"}/> {search_context.names[t]}</Link></li>
+          })
+
         return (
             <div className="sidebar">
                 <ul className="sidenav">
-                    <li><Link to="/data"><i className="fa fa-fw fa-lg fa-database"/> Data</Link></li>
-                    <li><Link to="/task"><i className="fa fa-fw fa-lg fa-trophy"/> Task</Link></li>
-                    <li><Link to="/flow"><i className="fa fa-fw fa-lg fa-cogs"/> Flow</Link></li>
-                    <li><Link to="/run"><i className="fa fa-fw fa-lg fa-star"/> Run</Link></li>
-                    <li><Link to="/study"><i className="fa fa-fw fa-lg fa-flask"/> Study</Link></li>
-                    <li><Link to="/user"><i className="fa fa-fw fa-lg fa-users"/> People</Link></li>
+                  {links}
                 </ul>
-
             </div>
         )
     }
 }
+Sidebar.contextType = SearchContext
