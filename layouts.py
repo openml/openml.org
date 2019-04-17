@@ -38,6 +38,8 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
     encoding = response.info().get_content_charset('utf8')
     metadata = json.loads(response.read().decode(encoding))
     metadata = pd.DataFrame.from_dict(metadata["data_features"])
+    d= metadata["feature"]
+    featureinfo = pd.DataFrame.from_records(d)
     numericals = []
     nominals = []
     labels = []
@@ -62,10 +64,21 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
 
     layout = html.Div(children=[
         html.Div([
-            html.Div(children=[
 
-                html.Div(
-                    [dcc.Dropdown(
+            html.Div(
+                    [dash_table.DataTable(
+                        id='table',
+                        columns=[{"name": i, "id": i} for i in featureinfo.columns],
+                        data=featureinfo[:10].to_dict("rows"),
+                        )],
+                    
+                    style={'width':'45%', 'display' : 'inline-block', 'top': '5%', 'position': 'relative'}
+                    ),
+
+            html.Div(
+                [
+
+                dcc.Dropdown(
                         id="singleVariableDropDown",
                         options=[
                         {'label': i , 'value': i} for i in labels
@@ -74,27 +87,22 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
                         clearable = False,
                         placeholder="Select an attribute",
                         value = labels[0]
-                        )],
-                    style={'width':'45%', 'display' : 'inline-block', 'top': '30%', 'position': 'relative'}
-                    ),
+                        ),
 
-                html.Div([
-                    html.H3("Color Code based on target class?"),
                     dcc.RadioItems(
                         id='singleVariableRadio',
                         options=[{'label': i, 'value': i} for i in ['Yes', 'No']],
                         value='No',
                         labelStyle={'display': 'inline-block'}
-                        )],
-                    style= {'width':'50%', 'display' : 'inline-block', 'float': 'right'}
-                    ),
-                    ],
-                    style ={'height': '5%', 'position' : 'absolute', 'display' : 'inline-block', 'width' : '100%'}),
-            html.Div([dcc.Graph(
+                        ),
+
+
+                dcc.Graph(
                 id= "singleVariableGraph",
                 style = {'height' : '100%', 'width': '100%',  'position' : 'absolute'}
                 )],
-            style = {'height': '27%', 'position' : 'absolute', 'display' : 'inline-block', 'top' : '5%', 'width' : '100%'})],
+            style = {'height': '27%', 'position' : 'absolute', 'display' : 'inline-block', 'top' : '35%', 'width' : '100%'})
+            ],
             ),
         ],
 
