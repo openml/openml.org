@@ -13,7 +13,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import dash_table
 
-def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
+def get_graph_from_data(dataSetJSONInt,app):
 
     """Get the graphs for a particular dataset. Invoked from dashapp.
 
@@ -30,9 +30,16 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
     the page layout with graphs corresponding to the dataset
 
     """
+
+
+
+    url = "https://www.openml.org/api/v1/json/data/{}".format(dataSetJSONInt)
+    response = urllib.request.urlopen(url)
+    encoding = response.info().get_content_charset('utf8')
+    description = json.loads(response.read().decode(encoding))
+    dataSetCSVInt= (description["data_set_description"]["file_id"])
     url = "https://www.openml.org/data/v1/get_csv/{}".format(dataSetCSVInt)
     df = pd.read_csv(url)
-
 
     for column in df:
         df[column].fillna(df[column].mode())
@@ -40,6 +47,7 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
     response = urllib.request.urlopen(url)
     encoding = response.info().get_content_charset('utf8')
     metadata = json.loads(response.read().decode(encoding))
+
     metadata = pd.DataFrame.from_dict(metadata["data_features"])
     d= metadata["feature"]
     featureinfo = pd.DataFrame.from_records(d)
@@ -66,6 +74,8 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
         df["numerical_target"] = aplist
 
     layout = html.Div([
+        # Hidden div inside the app that stores the intermediate value
+        html.Div(id='intermediate-value', style={'display': 'none'}),
         html.H4('Gapminder DataTable'),
         dt.DataTable(
             rows=featureinfo.to_dict('records'),
@@ -143,4 +153,4 @@ def get_graph_from_data(dataSetCSVInt,dataSetJSONInt,app):
 
     ], className="container")
 
-    return layout
+    return layout,df

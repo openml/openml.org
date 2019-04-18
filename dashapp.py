@@ -6,7 +6,9 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from tablelayout import get_graph_from_data
 import re
+import numpy as np
 from callbacks import register_callbacks
+
 
 def create_dash_app(flaskapp):
     """Create a dashapp and embed it in the given flaskapp.
@@ -33,19 +35,26 @@ def create_dash_app(flaskapp):
 
    
     
-    @app.callback(dash.dependencies.Output('page-content', 'children'),
-      [dash.dependencies.Input('url', 'pathname')])
+    @app.callback([dash.dependencies.Output('page-content', 'children'),
+                   dash.dependencies.Output('intermediate-value', 'children')],
+                    [dash.dependencies.Input('url', 'pathname')])
     def display_page(pathname):
         """
                 Render different layouts or graphs based on URL path
         """
+        cleaned_df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+                                  columns=['a', 'b', 'c'])
         if pathname is not None and '/dashboard/data' in pathname:
+
+
             id = max(int(re.search(r'\d+', pathname).group()),1)
             #return id
-            layout = get_graph_from_data(id,id,app)
-            return layout
+            layout,cleaned_df = get_graph_from_data(id,app)
+            out = cleaned_df.to_json(date_format='iso', orient='split')
+            return layout,out
         else:
-            return index_page
+            out = cleaned_df.to_json(date_format='iso', orient='split')
+            return index_page,out
      
 
 
