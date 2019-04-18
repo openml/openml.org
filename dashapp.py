@@ -4,7 +4,7 @@ import dash_html_components as html
 import pandas as pd
 import plotly.plotly as py
 import plotly.graph_objs as go
-from layouts import get_graph_from_data
+from tablelayout import get_graph_from_data
 import re
 from callbacks import register_callbacks
 
