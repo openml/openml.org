@@ -51,6 +51,9 @@ def get_graph_from_data(dataSetJSONInt,app):
     metadata = pd.DataFrame.from_dict(metadata["data_features"])
     d= metadata["feature"]
     featureinfo = pd.DataFrame.from_records(d)
+    displayfeatures = featureinfo[["name","is_target","data_type","number_of_missing_values"]]
+    displayfeatures.columns = ["Attribute","Target","DataType","Missing values"]
+    print(displayfeatures.head())
     numericals = []
     nominals = []
     labels = []
@@ -76,24 +79,36 @@ def get_graph_from_data(dataSetJSONInt,app):
     layout = html.Div([
         # Hidden div inside the app that stores the intermediate value
         html.Div(id='intermediate-value', style={'display': 'none'}),
-        html.H4('Gapminder DataTable'),
-        dt.DataTable(
-            rows=featureinfo.to_dict('records'),
+        html.H3('List and plot of features', style={'text-align':'center'}),
+        html.Div( [
+            html.Div(
+
+            dt.DataTable(
+            rows=displayfeatures.to_dict('records'),
 
             # optional - sets the order of columns
-            columns=sorted(featureinfo.columns),
+            columns=(displayfeatures.columns),
+            column_widths = [125,120,125,125],
+            min_width = 600,
 
             row_selectable=True,
             filterable=True,
             sortable=True,
             selected_row_indices=[],
-            id='datatable-gapminder'
+            max_rows_in_viewport=7,
+            id='datatable-gapminder',
         ),
-        html.Div(id='selected-indexes'),
-        dcc.Graph(
-            id='graph-gapminder'
-        ),
+            style={'width': '49%', 'display': 'inline-block','position' : 'relative'}),
+            #style={'width': '600px','margin-right': 'auto', 'margin-left': 'auto'}, #center alignment table
 
+        #html.Div(id='selected-indexes',style={'width': '49%', 'display': 'inline-block'}),
+        html.Div
+            (dcc.Graph(
+            id='graph-gapminder'
+        ),style={'width': '49%', 'display': 'inline-block','position' : 'relative'})
+
+        ]),
+        html.H3('Scatter plot of attribute pairs', style={'text-align': 'center'}),
         #scatter
         html.Div([
             html.Div(children=[
@@ -133,7 +148,7 @@ def get_graph_from_data(dataSetJSONInt,app):
                         placeholder="Color Code based on",
                         value=nominals[0]
                     )],
-                   # style={'width': '30%', 'display': 'inline-block', 'left': '66%', 'position': 'absolute'}
+                   style={'width': '30%', 'display': 'inline-block', 'left': '66%', 'position': 'absolute'},
                 ),
             ],
                 # style={'height': '5%', 'position': 'absolute', 'display': 'inline-block', 'width': '100%',
