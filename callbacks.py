@@ -38,11 +38,11 @@ def register_callbacks(app):
         if len(selected_row_indices)!=0:
             dff = dff.loc[selected_row_indices]
             print(dff.head())
-            attributes = dff["name"].values
+            attributes = dff["Attribute"].values
 
         if len(attributes)==0:
             fig = tools.make_subplots(rows=1, cols=1)
-            trace1 = go.Scatter(x=[20, 30, 40], y=[50, 60, 70])
+            trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
             fig.append_trace(trace1,1,1)
         else:
             numplots =  len(attributes)
@@ -73,7 +73,7 @@ def register_callbacks(app):
 
 
 
-        fig['layout'].update(height=600, width=600, title='Distribution Subplots' )
+        fig['layout'].update(title='Distribution Subplots' )
 
         return fig
 
