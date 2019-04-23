@@ -46,7 +46,8 @@ def register_callbacks(app):
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
          Input('datatable-gapminder', 'rows'),
-         Input('datatable-gapminder', 'selected_row_indices')])
+         Input('datatable-gapminder', 'selected_row_indices'),
+         ])
     def update_figure(df_json, pathname, rows, selected_row_indices):
         """
         :param df_json: json
@@ -57,6 +58,7 @@ def register_callbacks(app):
             rows of the displayed dash table
         :param selected_row_indices: list
             user-selected rows of the dash table
+        :param colorCode: str
         :return: fig
             Figure with plots of selected features
         """
@@ -68,11 +70,12 @@ def register_callbacks(app):
             return
         df = pd.read_json(df_json, orient='split')
         dff = pd.DataFrame(rows)
+        target_attribute= dff[dff["Target"] == "true"]["Attribute"].values[0]
         attributes = []
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
-            #print(dff.head())
             attributes = dff["Attribute"].values
+            types = dff["DataType"].values
         if len(attributes) == 0:
             fig = tools.make_subplots(rows=1, cols=1)
             trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
@@ -80,9 +83,9 @@ def register_callbacks(app):
         else:
             numplots = len(attributes)
             fig = tools.make_subplots(rows=numplots, cols=1)
-            i = 1
+            i = 0
             for attribute in attributes:
-                if is_numeric_dtype(df[attribute]):
+                if types[i]=="numeric":
                     trace1 = {
                         "type": 'violin',
                         "x": df[attribute],
@@ -101,8 +104,9 @@ def register_callbacks(app):
                     }
                 else:
                     trace1 = go.Histogram(x=sorted(df[attribute]))
-                fig.append_trace(trace1, i, 1)
                 i = i+1
+                fig.append_trace(trace1, i, 1)
+
         fig['layout'].update(title='Distribution Subplots')
         return fig
 
