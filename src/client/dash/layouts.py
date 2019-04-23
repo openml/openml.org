@@ -93,7 +93,15 @@ def get_graph_from_data(dataSetJSONInt, app):
                        'position': 'relative'}
             ),
         ]),
-        # 4. Scatter plot with drop down list.
+       # 4. Scatter matrix based on selected rows
+        html.H3('Scatter matrix based on target', style={'text-align': 'center'}),
+        html.Div(
+            [dcc.Graph(
+                id='matrix',
+                style={'height': '60%', 'width': '100%',
+                       'position': 'relative'})],
+        ),
+        # 5. Scatter plot with drop down list.
         html.H3('Scatter plot', style={'text-align': 'center'}),
         html.Div([
             html.Div(children=[
@@ -143,6 +151,7 @@ def get_graph_from_data(dataSetJSONInt, app):
                            'left': '66%', 'position': 'absolute'},
                 ),
             ]),
+
             # Scatter plot
             html.Div(
                 [dcc.Graph(
