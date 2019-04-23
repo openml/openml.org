@@ -3,9 +3,9 @@ import pandas as pd
 import re
 from .layouts import get_graph_from_data
 from plotly import tools
-from pandas.api.types import is_numeric_dtype
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
+import plotly.figure_factory as ff
 
 
 def register_callbacks(app):
@@ -42,7 +42,8 @@ def register_callbacks(app):
             return index_page, out
 
     @app.callback(
-        Output('graph-gapminder', 'figure'),
+        [Output('graph-gapminder', 'figure'),
+         Output('matrix', 'figure')],
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
          Input('datatable-gapminder', 'rows'),
@@ -64,13 +65,15 @@ def register_callbacks(app):
         """
         if pathname is not None and '/dashboard/data' in pathname:
             print('entered table update')
-        else:
-            return
+        # else:
+        #     return
         if df_json is None:
-            return
-        df = pd.read_json(df_json, orient='split')
-        dff = pd.DataFrame(rows)
-        target_attribute= dff[dff["Target"] == "true"]["Attribute"].values[0]
+            dff = pd.DataFrame()
+            df = pd.DataFrame()
+        else:
+            df = pd.read_json(df_json, orient='split')
+            dff = pd.DataFrame(rows)
+            target_attribute= dff[dff["Target"] == "true"]["Attribute"].values[0]
         attributes = []
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
@@ -108,7 +111,16 @@ def register_callbacks(app):
                 fig.append_trace(trace1, i, 1)
 
         fig['layout'].update(title='Distribution Subplots')
-        return fig
+
+        if(len(attributes)>1):
+            df_scatter = df[attributes]
+            df_scatter[target_attribute] = df[target_attribute]
+            matrix = ff.create_scatterplotmatrix(df_scatter, diag='box',index= target_attribute,
+                                          colormap='Portland', colormap_type='seq', height=800, width=800)
+        else:
+            # return an empty fig
+            matrix = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
+        return fig,matrix
 
     @app.callback(Output('scatterPlotGraph', 'figure'), [
         Input('intermediate-value', 'children'),
