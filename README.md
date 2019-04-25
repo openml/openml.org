@@ -9,6 +9,12 @@ If you haven't already, install a recent version of NPM (6 or higher). Next, due
 Build the app by running
 
 `npm run debug`
+## Install Dash
+`pip install dash==0.40.0 ` 
+
+(Note that the dash app does not work with newer dash version).
+
+`pip install dash-table-experiments`
 
 ## Starting Flask
 If you haven't already, install Flask with `pip install Flask`.

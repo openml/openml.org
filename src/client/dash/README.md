@@ -1,4 +1,18 @@
-This file contains a single function that generates and returns a Flask Application containing the three visualizations for the given dataset.
+The dashapp is composed of two parts :
+* Layouts found in `layouts.py`
+* Callbacks found in `callbacks.py`
+
+In order to add a new graph for datasets, add the graph to the `get_graph_from_data` function.
+
+For example, 
+`dcc.Graph(id='scatterPlotGraph',
+           style={'height': '100%', 'width': '100%', 'position': 'absolute'})`
+If the graph is non-interactive or static, the data can just be added to the graph component.           
+If graph needs to be updated dynamically using interactions such as dropdown, checklists etc, a callback needs to be 
+added. This callback needs to return a figure. Refer to `update_dualVariableGraph` callback in `callbacks.py`.
+
+
+OpenML_Plots.py file contains a single function that generates and returns a Flask Application containing the three visualizations for the given dataset.
 The dataset can be distinguished by finding the file ID and the dataset ID and filling them in in the funtion.
 
 EXAMPLE:
