@@ -1,7 +1,7 @@
 import plotly.graph_objs as go
 import pandas as pd
 import re
-from .layouts import get_graph_from_data
+from .layouts import get_graph_from_data, get_layout_from_task
 from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
@@ -34,6 +34,11 @@ def register_callbacks(app):
             layout, df = get_graph_from_data(id, app)
             out = df.to_json(date_format='iso', orient='split')
             return layout, out
+        elif pathname is not None and 'dashboard/task' in pathname:
+            id = max(int(re.search(r'\d+', pathname).group()), 1)
+            layout, taskdf = get_layout_from_task(id, app)
+            out = taskdf.to_json(date_format='iso', orient='split')
+            return layout,out
         else:
             index_page = html.Div([
                 html.H1('Welcome to dash dashboard'),
@@ -168,4 +173,42 @@ def register_callbacks(app):
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
             )}
+        return fig
+
+    @app.callback(Output('taskplot', 'figure'),[
+        Input('intermediate-value', 'children'),
+        Input('url', 'pathname'),
+        Input('metric', 'value'), ])
+    def update_tasks(df_json, pathname, metric):
+        """
+        :param df_json: json
+            task df cached by display_page callback
+        :param pathname: str
+            url pathname entered
+        :return:
+            fig : Scatter plot of top 50 flows for the selected function
+        """
+        if pathname is not None and '/dashboard/task' in pathname:
+            print('entered task plot')
+        else:
+            return
+
+        if df_json is None:
+            return
+        df = pd.read_json(df_json, orient='split')
+        evals = df[df["function"] == str(metric)]
+        evals = evals.sort_values(by=['value'], ascending=False)
+        hover_text=[]
+        for run_id in evals["run_id"].values:
+            link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\">."
+            hover_text.append(link)
+        data = [go.Scatter(y=evals["flow_name"][:100],
+                           x=evals["value"][:100],
+                           mode='text+markers',
+                           text=hover_text,
+                           marker=dict(color='rgb(0,0,255)', opacity=0.5),
+                           )
+                ]
+        layout = go.Layout(autosize=False, width=1500, height=500, margin=dict(l=400))
+        fig = go.Figure(data, layout)
         return fig

@@ -161,3 +161,56 @@ def get_graph_from_data(dataSetJSONInt, app):
             )],
         )], className="container")
     return layout, df
+
+
+def get_layout_from_task(taskid, app):
+    """
+
+    :param taskid: Id of the task in the URL
+    :param app: Dash app for which a graph layout needs to be created based on the task
+    :return:
+    """
+    url = "https://www.openml.org/api/v1/json/evaluation/list/task/{}".format(taskid)
+    response = urllib.request.urlopen(url)
+    encoding = response.info().get_content_charset('utf8')
+    evaluations = json.loads(response.read().decode(encoding))
+    taskdf = pd.DataFrame.from_dict(evaluations["evaluations"]["evaluation"])
+    # roc = df[df["function"] == "area_under_roc_curve"]
+    # roc = roc.sort_values(by=['value'], ascending=False)
+    # hover_text = []
+    # roc = roc[:40]
+    # for run_id in roc["run_id"].values:
+    #     link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\">."
+    #     hover_text.append(link)
+    layout = html.Div([
+        html.Div(id='intermediate-value', style={'display': 'none'}),
+        html.Div(children=[
+            #1 Dropdown to choose metric
+            html.Div(
+                [dcc.Dropdown(
+                    id='metric',
+                    options=[
+                        {'label': i, 'value': i} for i in taskdf.function.unique()
+                    ],
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select an attribute",
+                    value=taskdf.function.unique()[0]
+                )],
+                style={'width': '30%', 'display': 'inline-block',
+                       'position': 'relative'},
+            ),
+            #2 Plot of flow vs metric
+            # Scatter plot
+            html.Div(
+                [dcc.Graph(
+                    id='taskplot',
+                    style={'height': '100%', 'width': '100%',
+                           'position': 'absolute'})],
+            )
+        ]),
+    ])
+
+    return layout, taskdf
+
+
