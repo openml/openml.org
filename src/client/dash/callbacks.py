@@ -199,6 +199,10 @@ def register_callbacks(app):
         evals = df[df["function"] == str(metric)]
         evals = evals.sort_values(by=['value'], ascending=False)
         hover_text=[]
+        tick_text =[]
+        for flow_id in evals["flow_id"].values:
+            link = "<a href=\"https://www.openml.org/f/" + str(flow_id) + "/\">"
+            tick_text.append(link)
         for run_id in evals["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\">."
             hover_text.append(link)
@@ -209,6 +213,9 @@ def register_callbacks(app):
                            marker=dict(color='rgb(0,0,255)', opacity=0.5),
                            )
                 ]
-        layout = go.Layout(autosize=False, width=1500, height=500, margin=dict(l=400))
+        layout = go.Layout(autosize=False, width=1500, height=1000, margin=dict(l=400),
+                           yaxis=go.layout.YAxis(
+                               ticktext=tick_text + evals["flow_name"], tickvals=evals["flow_name"][:100]
+                           ))
         fig = go.Figure(data, layout)
         return fig
