@@ -6,6 +6,7 @@ from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import plotly.figure_factory as ff
+from openml import datasets, tasks, runs, flows, config, evaluations, study
 
 
 def register_callbacks(app):
@@ -195,9 +196,13 @@ def register_callbacks(app):
 
         if df_json is None:
             return
-        df = pd.read_json(df_json, orient='split')
-        evals = df[df["function"] == str(metric)]
-        evals = evals.sort_values(by=['value'], ascending=False)
+        task_id = max(int(re.search(r'\d+', pathname).group()), 1)
+        eval_objects = evaluations.list_evaluations(function=metric, task=str(task_id))
+        rows = []
+        for id, e in eval_objects.items():
+            rows.append(vars(e))
+        df = pd.DataFrame(rows)
+        evals = df.sort_values(by=['value'], ascending=False)
         hover_text=[]
         tick_text =[]
         for flow_id in evals["flow_id"].values:
