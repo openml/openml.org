@@ -31,12 +31,12 @@ def register_callbacks(app):
         """
         df = pd.DataFrame()
         if pathname is not None and '/dashboard/data' in pathname:
-            id = max(int(re.search(r'\d+', pathname).group()), 1)
+            id = int(re.search('data/(\d+)', pathname).group(1))
             layout, df = get_graph_from_data(id, app)
             out = df.to_json(date_format='iso', orient='split')
             return layout, out
         elif pathname is not None and 'dashboard/task' in pathname:
-            id = max(int(re.search(r'\d+', pathname).group()), 1)
+            id = int(re.search('task/(\d+)', pathname).group(1))
             layout, taskdf = get_layout_from_task(id, app)
             out = taskdf.to_json(date_format='iso', orient='split')
             return layout,out
@@ -57,6 +57,9 @@ def register_callbacks(app):
          ])
     def update_figure(df_json, pathname, rows, selected_row_indices):
         """
+        Updates distribution based on selected attributes from the table
+        Updates scatter matrix plot,if two or more attributes are chosen
+        from the table.
         :param df_json: json
             df cached by display_page callback in json format
         :param pathname: str
@@ -71,8 +74,8 @@ def register_callbacks(app):
         """
         if pathname is not None and '/dashboard/data' in pathname:
             print('entered table update')
-        # else:
-        #     return
+        else:
+            return [],[]
         if df_json is None:
             dff = pd.DataFrame()
             df = pd.DataFrame()
@@ -126,7 +129,7 @@ def register_callbacks(app):
         else:
             # return an empty fig
             matrix = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
-        return fig,matrix
+        return fig, matrix
 
     @app.callback(Output('scatterPlotGraph', 'figure'), [
         Input('intermediate-value', 'children'),
@@ -153,10 +156,10 @@ def register_callbacks(app):
         if pathname is not None and '/dashboard/data' in pathname:
             print('entered scatter plot')
         else:
-            return
+            return []
 
         if df_json is None:
-            return
+            return []
         df = pd.read_json(df_json, orient='split')
         fig = {
             'data': [go.Scatter(
@@ -176,8 +179,9 @@ def register_callbacks(app):
             )}
         return fig
 
-    @app.callback(Output('taskplot', 'figure'),[
-        Input('intermediate-value', 'children'),
+    @app.callback([Output('taskplot', 'figure'),
+        Output('people', 'figure')],
+        [Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
         Input('metric', 'value'), ])
     def update_tasks(df_json, pathname, metric):
@@ -192,35 +196,89 @@ def register_callbacks(app):
         if pathname is not None and '/dashboard/task' in pathname:
             print('entered task plot')
         else:
-            return
-
-        if df_json is None:
-            return
-        task_id = max(int(re.search(r'\d+', pathname).group()), 1)
-        eval_objects = evaluations.list_evaluations(function=metric, task=str(task_id))
+            return []
+        # List of evaluations to dataframe.
+        task_id = int(re.search('task/(\d+)', pathname).group(1))
+        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)])
+        if not eval_objects:
+            return []
         rows = []
         for id, e in eval_objects.items():
             rows.append(vars(e))
         df = pd.DataFrame(rows)
-        evals = df.sort_values(by=['value'], ascending=False)
-        hover_text=[]
-        tick_text =[]
+        # METHOD 1 of top 100 flows
+        # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
+        top_runs = (df.sort_values('value', ascending=False).groupby(['flow_name'], sort=False).head(100))
+        evals = top_runs[top_runs.groupby(['flow_name'], sort=False).ngroup() < 100]
+        # Plot evals in ascending order
+        evals = evals.sort_values(by=['value'], ascending=True)
+
+        run_link = []
+        tick_text = []
+        uploader = []
+        truncated = []
+
+        for run_id in evals["run_id"].values:
+            link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
+            run = runs.get_runs([int(run_id)])[0]
+            uploader.append(run.uploader_name)
+            run_link.append(link)
+
         for flow_id in evals["flow_id"].values:
             link = "<a href=\"https://www.openml.org/f/" + str(flow_id) + "/\">"
             tick_text.append(link)
-        for run_id in evals["run_id"].values:
-            link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\">."
-            hover_text.append(link)
-        data = [go.Scatter(y=evals["flow_name"][:100],
-                           x=evals["value"][:100],
+
+        for flow in evals['flow_name'].values:
+            truncated.append(flow[:50]+'..' if len(flow)>50 else flow)
+
+        evals['flow_name_t'] = truncated
+        data = [go.Scatter(y=evals["flow_name"],
+                           x=evals["value"],
                            mode='text+markers',
-                           text=hover_text,
-                           marker=dict(color='rgb(0,0,255)', opacity=0.5),
+                           text=run_link,
+                           hovertext=evals['flow_name_t']+['<br>']*evals.shape[0]+evals["value"].astype(str)
+                                     +['<br>']*evals.shape[0] + ['click for more info']*evals.shape[0],
+                           hoverinfo='text',
+                           hoveron = 'points+fills',
+                           hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
+                           marker=dict(opacity=0.5, symbol='diamond',
+                                       color=evals["run_id"],  # set color equal to a variable
+                                       colorscale='Earth', )
                            )
                 ]
-        layout = go.Layout(autosize=False, width=1500, height=1000, margin=dict(l=400),
+        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=evals.shape[0],
                            yaxis=go.layout.YAxis(
-                               ticktext=tick_text + evals["flow_name"], tickvals=evals["flow_name"][:100]
+                               ticktext=tick_text + evals["flow_name_t"], tickvals=evals["flow_name"]
                            ))
         fig = go.Figure(data, layout)
-        return fig
+
+        #FIG 2
+        evals['upload_time'] = pd.to_datetime(evals['upload_time'])
+        evals['upload_time'] = evals['upload_time'].dt.date
+        evals['uploader'] = uploader
+        from sklearn import preprocessing
+        le = preprocessing.LabelEncoder()
+        evals['uploader_id'] = le.fit_transform(evals['uploader'])
+        data = [go.Scatter(y=evals["value"],
+                           x=evals["upload_time"],
+                           mode='text+markers',
+                           text=run_link,
+                           hovertext=evals["uploader"],
+                           hoverlabel=dict(bgcolor="white", bordercolor="black"),
+                           marker=dict(opacity=0.5, symbol='diamond',
+                                       color=evals["uploader_id"],  # set color equal to a variable
+                                       colorscale='Earth', )
+                           )
+                ]
+        layout = go.Layout(
+            autosize=False, width=1200, height=600, margin=dict(l=500),
+            xaxis=go.layout.XAxis(showgrid=False),
+            yaxis=go.layout.YAxis(showgrid=True,
+                                  title=go.layout.yaxis.Title(text='predictive_accuracy'),
+                                  ticktext=tick_text + evals["flow_name"],
+                                  showticklabels=True))
+        fig1 = go.Figure(data, layout)
+
+
+
+        return fig,fig1
