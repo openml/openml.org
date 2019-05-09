@@ -19,13 +19,14 @@ def register_callbacks(app):
     @app.callback([Output('page-content', 'children'),
                    Output('intermediate-value', 'children')],
                   [Input('url', 'pathname')])
-    def display_page(pathname):
+    def render_layout(pathname):
         """
-        Main callback invoked when a URL with a data ID is entered.
+        Main callback invoked when a URL with a data or task ID is entered.
         :param: pathname: str
-            The URL entered, typically consists of dashboard/data/dataID.
+            The URL entered, typically consists of dashboard/data/dataID or
+            dashboard/task/ID
         :return: page-content: dash layout
-            The page layout with feature table and graphs
+            The page layout with tables and graphs
         :return: intermediate-value: json
             Cached df in json format for sharing between callbacks
         """
@@ -55,13 +56,13 @@ def register_callbacks(app):
          Input('datatable-gapminder', 'rows'),
          Input('datatable-gapminder', 'selected_row_indices'),
          ])
-    def update_figure(df_json, pathname, rows, selected_row_indices):
+    def update_data_plots(df_json, pathname, rows, selected_row_indices):
         """
         Updates distribution based on selected attributes from the table
         Updates scatter matrix plot,if two or more attributes are chosen
         from the table.
         :param df_json: json
-            df cached by display_page callback in json format
+            df cached by render_layout callback in json format
         :param pathname: str
             URL pathname entered
         :param rows: list
@@ -137,11 +138,11 @@ def register_callbacks(app):
         Input('dualVariableDropdownNum1', 'value'),
         Input('dualVariableDropdownNum2', 'value'),
         Input('dualVariableDropdownNom', 'value'), ])
-    def update_dualVariableGraph(df_json, pathname, at1, at2, colorCode):
+    def update_scatter_plot(df_json, pathname, at1, at2, colorCode):
         """
 
         :param df_json: json
-            df cached by display_page callback
+            df cached by render_layout callback
         :param pathname: str
             url pathname entered
         :param at1: str
@@ -184,7 +185,7 @@ def register_callbacks(app):
         [Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
         Input('metric', 'value'), ])
-    def update_tasks(df_json, pathname, metric):
+    def update_task_plots(df_json, pathname, metric):
         """
         :param df_json: json
             task df cached by display_page callback
@@ -252,7 +253,7 @@ def register_callbacks(app):
                            ))
         fig = go.Figure(data, layout)
 
-        #FIG 2
+        # FIG 2
         evals['upload_time'] = pd.to_datetime(evals['upload_time'])
         evals['upload_time'] = evals['upload_time'].dt.date
         evals['uploader'] = uploader
@@ -278,7 +279,4 @@ def register_callbacks(app):
                                   ticktext=tick_text + evals["flow_name"],
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
-
-
-
-        return fig,fig1
+        return fig, fig1
