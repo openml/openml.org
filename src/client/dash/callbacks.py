@@ -1,13 +1,13 @@
 import plotly.graph_objs as go
 import pandas as pd
 import re
-from .layouts import get_graph_from_data, get_layout_from_task
+from .layouts import get_graph_from_data, get_layout_from_task, get_layout_from_flow
 from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import plotly.figure_factory as ff
 from openml import datasets, tasks, runs, flows, config, evaluations, study
-
+from numpy import array
 
 def register_callbacks(app):
     """
@@ -40,7 +40,12 @@ def register_callbacks(app):
             id = int(re.search('task/(\d+)', pathname).group(1))
             layout, taskdf = get_layout_from_task(id, app)
             out = taskdf.to_json(date_format='iso', orient='split')
-            return layout,out
+            return layout, out
+        elif pathname is not None and 'dashboard/flow' in pathname:
+            id = int(re.search('flow/(\d+)', pathname).group(1))
+            layout, flowdf = get_layout_from_flow(id,app)
+            out = flowdf.to_json(date_format='iso', orient='split')
+            return layout, out
         else:
             index_page = html.Div([
                 html.H1('Welcome to dash dashboard'),
@@ -280,3 +285,98 @@ def register_callbacks(app):
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
         return fig, fig1
+
+    @app.callback(Output('flowplot', 'figure'),
+        [Input('intermediate-value', 'children'),
+        Input('url', 'pathname'),
+        Input('metric', 'value'),
+        Input('tasktype', 'value'),
+        Input('parameter', 'value'),])
+    def update_flow_plots(df_json, pathname, metric, tasktype, parameter):
+        """
+        :param df_json: json
+            task df cached by render_layout callback
+        :param pathname: str
+            url pathname entered
+        :return:
+            fig : Scatter plot
+        """
+        if pathname is not None and '/dashboard/flow' in pathname:
+            print('entered flow plot')
+        else:
+            return []
+
+        # Get all tasks of selected task type
+        task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                      "Supervised data stream classification", "Clustering",
+                      "Machine Learning Challenge",
+                      "Survival Analysis", "Subgroup Discovery"]
+        TASK_TYPE_ID = task_types.index(tasktype)+1
+        task_id = []
+        tlist = tasks.list_tasks(task_type_id=TASK_TYPE_ID)
+        for key, value in tlist.items():
+            task_id.append(value['tid'])
+
+        # Get all evaluations of given metric and flow id
+        flow_id = int(re.search('flow/(\d+)', pathname).group(1))
+        evals = evaluations.list_evaluations(function=metric, flow=[flow_id])
+        rows = []
+        for id, e in evals.items():
+            rows.append(vars(e))
+        df = pd.DataFrame(rows)
+
+        # Filter type of task
+        df = df[df['task_id'].isin(task_id)]
+        df.sort_values(by=['value'], ascending=False,inplace=True)
+        run_link = []
+        tick_text = []
+
+        # Set clickable labels
+        for run_id in df["run_id"].values:
+            link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
+            run_link.append(link)
+
+        for data_id in df["data_id"].values:
+            link = "<a href=\"https://www.openml.org/d/" + str(data_id) + "/\">"
+            tick_text.append(link)
+        hover_text = []
+        if parameter == 'None':
+            color = [0.5] * 1000
+            hover_text = df["value"]
+            print ('None')
+        else:
+            color = []
+            for run_id in df.run_id[:1000]:
+                p = pd.DataFrame(runs.get_runs([run_id])[0].parameter_settings)
+                row = p[p['oml:name'] == parameter]
+                if row.empty:
+                    color.append('0')
+                else:
+                    color.append(row['oml:value'].values[0])
+                    hover_text.append(row['oml:value'].values[0])
+
+            if color[0].isdigit():
+                print(color)
+                color = list(map(int, color))
+            else:
+                color = pd.DataFrame(color)[0].astype('category').cat.codes
+        data = [go.Scatter(x=df["value"][:1000],
+                           y=df["data_name"][:1000],
+                           mode='text+markers',
+                           text=run_link,
+                           hovertext=hover_text,
+                           hoverlabel=dict(bgcolor="white", bordercolor="black"),
+                           marker=dict(opacity=0.8, symbol='diamond',
+                                       color=color,  # set color equal to a variable
+                                       colorscale='Earth', )
+                           )
+                ]
+        layout = go.Layout(
+            autosize=False, width=1200, height=3000, margin=dict(l=500),
+            xaxis=go.layout.XAxis(showgrid=False),
+            yaxis=go.layout.YAxis(showgrid=True,
+                                  ticktext=tick_text+df["data_name"],
+                                  tickvals=df["data_name"],
+                                  showticklabels=True))
+        fig = go.Figure(data, layout)
+        return fig
