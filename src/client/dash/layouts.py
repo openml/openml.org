@@ -4,7 +4,7 @@ import dash_html_components as html
 import pandas as pd
 import urllib.request
 import json
-
+from openml import flows
 
 def get_graph_from_data(dataSetJSONInt, app):
     """
@@ -178,13 +178,6 @@ def get_layout_from_task(taskid, app):
     encoding = response.info().get_content_charset('utf8')
     evaluations = json.loads(response.read().decode(encoding))
     df = pd.DataFrame.from_dict(evaluations["evaluation_measures"]["measures"])
-    # roc = df[df["function"] == "area_under_roc_curve"]
-    # roc = roc.sort_values(by=['value'], ascending=False)
-    # hover_text = []
-    # roc = roc[:40]
-    # for run_id in roc["run_id"].values:
-    #     link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\">."
-    #     hover_text.append(link)
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
@@ -228,3 +221,84 @@ def get_layout_from_task(taskid, app):
     return layout, df
 
 
+def get_layout_from_flow(id, app):
+    """
+
+    :param id: flow ID from path
+    :param app: dash application
+    :return:
+    """
+    # Dropdown #1 Metrics
+    url = "https://www.openml.org/api/v1/json/evaluationmeasure/list"
+    response = urllib.request.urlopen(url)
+    encoding = response.info().get_content_charset('utf8')
+    evaluations = json.loads(response.read().decode(encoding))
+    df = pd.DataFrame.from_dict(evaluations["evaluation_measures"]["measures"])
+    # Dropdown #2 task types
+    task_types=["Supervised classification","Supervised regression", "Learning curve",
+                "Supervised data stream classification","Clustering",
+                "Machine Learning Challenge",
+                "Survival Analysis","Subgroup Discovery"]
+    # Dropdown #3 flow parameters
+    P = flows.get_flow(id).parameters.items()
+    Parameters = [x[0] for x in P]
+    Parameters.append('None')
+    layout = html.Div([
+        html.Div(id='intermediate-value', style={'display': 'none'}),
+        html.Div(children=[
+            #1 Dropdown to choose metric
+            html.Div(
+                [dcc.Dropdown(
+                    id='metric',
+                    options=[
+                        {'label': i, 'value': i} for i in df.measure.unique()
+                    ],
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select an attribute",
+                    value=df.measure.unique()[0]
+                )],
+                style={'width': '30%', 'display': 'inline-block',
+                       'position': 'relative'},
+            ),
+            # 2 Dropdown to choose task type
+            html.Div(
+                [dcc.Dropdown(
+                    id='tasktype',
+                    options=[
+                        {'label': i, 'value': i} for i in task_types
+                    ],
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select an attribute",
+                    value=task_types[0]
+                )],
+                style={'width': '30%', 'display': 'inline-block',
+                       'position': 'relative'},
+            ),
+            # 3 Dropdown to choose parameter
+            html.Div(
+                [dcc.Dropdown(
+                    id='parameter',
+                    options=[
+                        {'label': i, 'value': i} for i in Parameters
+                    ],
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select an attribute",
+                    value=Parameters[-1]
+                )],
+                style={'width': '30%', 'display': 'inline-block',
+                       'position': 'relative'},
+            ),
+
+            html.Div(
+                [dcc.Graph(
+                    id='flowplot',
+                    style={'height': '100%', 'width': '100%',
+                           'position': 'absolute'})],
+            ),
+
+        ]),
+    ])
+    return layout, df
