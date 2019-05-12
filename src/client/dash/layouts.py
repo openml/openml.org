@@ -104,7 +104,7 @@ def get_graph_from_data(dataSetJSONInt, app):
         html.Div(
             [dcc.Graph(
                 id='matrix',
-                style={'height': '60%', 'width': '100%',
+                style={'height': '100%', 'width': '100%',
                        'position': 'relative'})],
         ),
         # 5. Scatter plot with drop down list.
@@ -164,7 +164,7 @@ def get_graph_from_data(dataSetJSONInt, app):
                 [dcc.Graph(
                     id='scatterPlotGraph',
                     style={'height': '60%', 'width': '100%',
-                           'position': 'absolute'})],
+                           'position': 'relative'})],
             )],
         )], className="container")
     return layout, df
@@ -208,15 +208,13 @@ def get_layout_from_task(taskid, app):
                 [dcc.Graph(
                     id='taskplot',
                     style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'})],
-            )]),
+                           'position': 'absolute'})], id='tab1')]),
                 dcc.Tab(label='People', children=[
                     html.Div(
                         [dcc.Graph(
                             id='people',
                             style={'height': '100%', 'width': '100%',
-                                   'position': 'absolute'})],
-                    )]),
+                                   'position': 'absolute'})],id='tab2')]),
 
             ])
         ]),
