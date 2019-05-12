@@ -66,7 +66,8 @@ def get_graph_from_data(dataSetJSONInt, app):
         # 1. Hidden div to cache data and pass between callbacks
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
-        html.P('Table of features', style={'text-align': 'left','color':'gray'}),
+        html.H3('List of attributes', style={'text-align': 'left','color':'black'}),
+        html.P('Choose one or more attributes for distribution plots', style={'text-align': 'left', 'color': 'gray'}),
         # 3. Table and distribution graph layout
         html.Div([
             html.Div(
@@ -85,7 +86,10 @@ def get_graph_from_data(dataSetJSONInt, app):
                 style={'width': '49%', 'display': 'inline-block',
                        'position': 'relative'}
             ),
+
+
             html.Div(
+
                 dcc.Graph(
                     id='graph-gapminder'
                 ),
@@ -94,18 +98,18 @@ def get_graph_from_data(dataSetJSONInt, app):
             ),
         ]),
        # 4. Scatter matrix based on selected rows
-        dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='Scatter Matrix', children=[
-        html.P('Choose two or more attributes from table', style={'text-align': 'left','color': 'gray'}),
+
+        html.H3('Scatter matrix', style={'text-align': 'left'}),
+        html.P('Choose two or more attributes from table for scatter matrix', style={'text-align': 'left','color': 'gray'}),
         html.Div(
             [dcc.Graph(
                 id='matrix',
                 style={'height': '60%', 'width': '100%',
                        'position': 'relative'})],
-        ),]),
+        ),
         # 5. Scatter plot with drop down list.
-            dcc.Tab(label='Scatter Plot', children=[
-        html.H3('Scatter plot', style={'text-align': 'center'}),
+
+        html.H3('Scatter plot', style={'text-align': 'left'}),
         html.Div([
             html.Div(children=[
                 # Dropdown 1
@@ -161,7 +165,7 @@ def get_graph_from_data(dataSetJSONInt, app):
                     id='scatterPlotGraph',
                     style={'height': '60%', 'width': '100%',
                            'position': 'absolute'})],
-            )],)])],
+            )],
         )], className="container")
     return layout, df
 
