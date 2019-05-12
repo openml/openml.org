@@ -125,7 +125,7 @@ def register_callbacks(app):
                 i = i+1
                 fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(title='Distribution Subplots')
+        fig['layout'].update(title=go.layout.Title(text='Distribution plots'))
 
         if(len(attributes)>1):
             df_scatter = df[attributes]
@@ -189,7 +189,7 @@ def register_callbacks(app):
         Output('people', 'figure')],
         [Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
-        Input('metric', 'value'), ])
+        Input('metric', 'value') ])
     def update_task_plots(df_json, pathname, metric):
         """
         :param df_json: json
@@ -197,7 +197,7 @@ def register_callbacks(app):
         :param pathname: str
             url pathname entered
         :return:
-            fig : Scatter plot of top 50 flows for the selected function
+            fig : Scatter plot of top 100 flows for the selected function
         """
         if pathname is not None and '/dashboard/task' in pathname:
             print('entered task plot')
@@ -226,7 +226,7 @@ def register_callbacks(app):
 
         for run_id in evals["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
-            run = runs.get_runs([int(run_id)])[0]
+            run = runs.get_run(int(run_id), ignore_cache=False)
             uploader.append(run.uploader_name)
             run_link.append(link)
 
@@ -242,10 +242,10 @@ def register_callbacks(app):
                            x=evals["value"],
                            mode='text+markers',
                            text=run_link,
-                           hovertext=evals['flow_name_t']+['<br>']*evals.shape[0]+evals["value"].astype(str)
+                           hovertext=evals['flow_name']+['<br>']*evals.shape[0]+evals["value"].astype(str)
                                      +['<br>']*evals.shape[0] + ['click for more info']*evals.shape[0],
-                           hoverinfo='text',
-                           hoveron = 'points+fills',
+                           #hoverinfo='text',
+                           #hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
                            marker=dict(opacity=0.5, symbol='diamond',
                                        color=evals["run_id"],  # set color equal to a variable
