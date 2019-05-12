@@ -6,6 +6,7 @@ from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import plotly.figure_factory as ff
+import dash_core_components as dcc
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 from numpy import array
 
@@ -131,7 +132,7 @@ def register_callbacks(app):
             df_scatter = df[attributes]
             df_scatter[target_attribute] = df[target_attribute]
             matrix = ff.create_scatterplotmatrix(df_scatter, diag='box',index= target_attribute,
-                                          colormap='Portland', colormap_type='seq', height=800, width=800)
+                                          colormap='Portland', colormap_type='seq', height=800, width=1500)
         else:
             # return an empty fig
             matrix = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
@@ -185,8 +186,8 @@ def register_callbacks(app):
             )}
         return fig
 
-    @app.callback([Output('taskplot', 'figure'),
-        Output('people', 'figure')],
+    @app.callback([Output('tab1', 'children'),
+        Output('tab2', 'children')],
         [Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
         Input('metric', 'value') ])
@@ -244,7 +245,7 @@ def register_callbacks(app):
                            text=run_link,
                            hovertext=evals['flow_name']+['<br>']*evals.shape[0]+evals["value"].astype(str)
                                      +['<br>']*evals.shape[0] + ['click for more info']*evals.shape[0],
-                           #hoverinfo='text',
+                           hoverinfo='text',
                            #hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
                            marker=dict(opacity=0.5, symbol='diamond',
@@ -284,7 +285,7 @@ def register_callbacks(app):
                                   ticktext=tick_text + evals["flow_name"],
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
-        return fig, fig1
+        return html.Div(dcc.Graph(figure=fig)), html.Div(dcc.Graph(figure=fig1))
 
     @app.callback(Output('flowplot', 'figure'),
         [Input('intermediate-value', 'children'),
