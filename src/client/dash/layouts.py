@@ -38,7 +38,6 @@ def get_graph_from_data(dataSetJSONInt, app):
                                    "data_type", "number_of_missing_values"]]
     displayfeatures.columns = ["Attribute", "Target",
                                "DataType", "Missing values"]
-    #print(displayfeatures.head())
     # Data processing
     numericals = []
     nominals = []
@@ -99,18 +98,23 @@ def get_graph_from_data(dataSetJSONInt, app):
         ]),
        # 4. Scatter matrix based on selected rows
 
-        html.H3('Scatter matrix', style={'text-align': 'left'}),
-        html.P('Choose two or more attributes from table for scatter matrix', style={'text-align': 'left','color': 'gray'}),
-        html.Div(
-            [dcc.Graph(
-                id='matrix',
-                style={'height': '100%', 'width': '100%',
-                       'position': 'relative'})],
-        ),
+        dcc.Tabs(id="tabs", children=[
+            dcc.Tab(label='Scatter Matrix', children=[
+                html.Div([
+                    html.H3('Scatter matrix', style={'text-align': 'left'}),
+                    html.P('Choose two or more attributes from table for scatter matrix',
+                           style={'text-align': 'left', 'color': 'gray'}),
+                    html.Div(id='matrix')]), #Graph will be passed to this Div
+
+                ]),
+
+
         # 5. Scatter plot with drop down list.
 
-        html.H3('Scatter plot', style={'text-align': 'left'}),
+
+        dcc.Tab(label='Scatter Plot', children=[
         html.Div([
+            html.H3('Scatter plot', style={'text-align': 'left'}),
             html.Div(children=[
                 # Dropdown 1
                 html.Div(
@@ -158,14 +162,10 @@ def get_graph_from_data(dataSetJSONInt, app):
                            'left': '66%', 'position': 'absolute'},
                 ),
             ]),
-
+            ]),
             # Scatter plot
-            html.Div(
-                [dcc.Graph(
-                    id='scatterPlotGraph',
-                    style={'height': '60%', 'width': '100%',
-                           'position': 'relative'})],
-            )],
+            html.Div(id='scatterPlotGraph')],
+        )],
         )], className="container")
     return layout, df
 
