@@ -8,6 +8,7 @@ import dash_html_components as html
 import plotly.figure_factory as ff
 import dash_core_components as dcc
 from openml import datasets, tasks, runs, flows, config, evaluations, study
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from numpy import array
 
 def register_callbacks(app):
@@ -55,8 +56,7 @@ def register_callbacks(app):
             return index_page, out
 
     @app.callback(
-        [Output('graph-gapminder', 'figure'),
-         Output('matrix', 'figure')],
+        Output('graph-gapminder', 'figure'),
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
          Input('datatable-gapminder', 'rows'),
@@ -126,7 +126,63 @@ def register_callbacks(app):
                 i = i+1
                 fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(title=go.layout.Title(text='Distribution plots'))
+        fig['layout'].update(title=go.layout.Title(text='Distribution plots'),hovermode='closest')
+        return fig
+
+    @app.callback(
+        Output('matrix', 'children'),
+        [Input('intermediate-value', 'children'),
+         Input('url', 'pathname'),
+         Input('datatable-gapminder', 'rows'),
+         Input('datatable-gapminder', 'selected_row_indices'),
+         ])
+    def update_scattermatrix(df_json, pathname, rows, selected_row_indices):
+        """
+        Updates distribution based on selected attributes from the table
+        Updates scatter matrix plot,if two or more attributes are chosen
+        from the table.
+        :param df_json: json
+            df cached by render_layout callback in json format
+        :param pathname: str
+            URL pathname entered
+        :param rows: list
+            rows of the displayed dash table
+        :param selected_row_indices: list
+            user-selected rows of the dash table
+        :param colorCode: str
+        :return: fig
+            Figure with plots of selected features
+        """
+        if pathname is not None and '/dashboard/data' in pathname:
+            print('entered table update')
+        else:
+            return [], []
+        if df_json is None:
+            dff = pd.DataFrame()
+            df = pd.DataFrame()
+        else:
+            df = pd.read_json(df_json, orient='split')
+            dff = pd.DataFrame(rows)
+            target_attribute = dff[dff["Target"] == "true"]["Attribute"].values[0]
+            target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
+            if target_type=="nominal":
+                from category_encoders.target_encoder import TargetEncoder
+                x= df.drop(target_attribute,axis=1)
+                y = df[target_attribute]
+                te = TargetEncoder()
+                out = te.fit_transform(x,y)
+                x = out.drop("numerical_target", axis=1)
+                y = out["numerical_target"]
+                print(out.columns)
+                print(out.head())
+                rf = RandomForestClassifier()
+                rf.fit(x,y)
+                print(rf.feature_importances_)
+
+        attributes = []
+        if len(selected_row_indices) != 0:
+            dff = dff.loc[selected_row_indices]
+            attributes = dff["Attribute"].values
 
         if(len(attributes)>1):
             df_scatter = df[attributes]
@@ -136,9 +192,9 @@ def register_callbacks(app):
         else:
             # return an empty fig
             matrix = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
-        return fig, matrix
+        return html.Div(dcc.Graph(figure=matrix))
 
-    @app.callback(Output('scatterPlotGraph', 'figure'), [
+    @app.callback(Output('scatterPlotGraph', 'children'), [
         Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
         Input('dualVariableDropdownNum1', 'value'),
@@ -184,7 +240,7 @@ def register_callbacks(app):
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
             )}
-        return fig
+        return html.Div(dcc.Graph(figure=fig))
 
     @app.callback([Output('tab1', 'children'),
         Output('tab2', 'children')],
@@ -253,7 +309,7 @@ def register_callbacks(app):
                                        colorscale='Earth', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=evals.shape[0],
+        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=evals.shape[0],hovermode='closest',
                            yaxis=go.layout.YAxis(
                                ticktext=tick_text + evals["flow_name_t"], tickvals=evals["flow_name"]
                            ))
@@ -278,10 +334,10 @@ def register_callbacks(app):
                            )
                 ]
         layout = go.Layout(
-            autosize=False, width=1200, height=600, margin=dict(l=500),
+            autosize=False, width=1200, height=600, margin=dict(l=500),hovermode='closest',
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
-                                  title=go.layout.yaxis.Title(text='predictive_accuracy'),
+                                  title=go.layout.yaxis.Title(text=str(metric)),
                                   ticktext=tick_text + evals["flow_name"],
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
@@ -342,8 +398,11 @@ def register_callbacks(app):
             tick_text.append(link)
         hover_text = []
         if parameter == 'None':
-            color = [0.5] * 1000
+            color = [1] * 1000
             hover_text = df["value"]
+            marker = dict(opacity=0.8, symbol='diamond',
+                                       color=color,  # set color equal to a variable
+                                       colorscale='Jet')
             print ('None')
         else:
             color = []
@@ -356,23 +415,25 @@ def register_callbacks(app):
                     color.append(row['oml:value'].values[0])
                     hover_text.append(row['oml:value'].values[0])
 
+
             if color[0].isdigit():
                 print(color)
                 color = list(map(int, color))
             else:
                 color = pd.DataFrame(color)[0].astype('category').cat.codes
+            marker = dict(opacity=0.8, symbol='diamond',
+                          color=color,  # set color equal to a variable
+                          colorscale='Jet', colorbar=dict(title='Colorbar'))
         data = [go.Scatter(x=df["value"][:1000],
                            y=df["data_name"][:1000],
                            mode='text+markers',
                            text=run_link,
                            hovertext=hover_text,
                            hoverlabel=dict(bgcolor="white", bordercolor="black"),
-                           marker=dict(opacity=0.8, symbol='diamond',
-                                       color=color,  # set color equal to a variable
-                                       colorscale='Earth', )
-                           )
+                           marker= marker )
+
                 ]
-        layout = go.Layout(
+        layout = go.Layout(hovermode='closest',
             autosize=False, width=1200, height=3000, margin=dict(l=500),
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
