@@ -164,7 +164,8 @@ def get_graph_from_data(dataSetJSONInt, app):
             ]),
             ]),
             # Scatter plot
-            html.Div(id='scatterPlotGraph')],
+            html.Div(id='scatterPlotGraph')
+        ],
         )],
         )], className="container")
     return layout, df

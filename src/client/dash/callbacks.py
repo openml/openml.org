@@ -167,17 +167,14 @@ def register_callbacks(app):
             target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
             if target_type=="nominal":
                 from category_encoders.target_encoder import TargetEncoder
-                x= df.drop(target_attribute,axis=1)
-                y = df[target_attribute]
+                x = df.drop(target_attribute, axis=1)
+                y = pd.Categorical(df[target_attribute]).codes
                 te = TargetEncoder()
-                out = te.fit_transform(x,y)
-                x = out.drop("numerical_target", axis=1)
-                y = out["numerical_target"]
-                print(out.columns)
-                print(out.head())
+                x = te.fit_transform(x, y)
                 rf = RandomForestClassifier()
-                rf.fit(x,y)
-                print(rf.feature_importances_)
+                rf.fit(x, y)
+                fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
+                print(fi[:5])
 
         attributes = []
         if len(selected_row_indices) != 0:
