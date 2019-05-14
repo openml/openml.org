@@ -1,7 +1,7 @@
 import plotly.graph_objs as go
 import pandas as pd
 import re
-from .layouts import get_graph_from_data, get_layout_from_task, get_layout_from_flow
+from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow
 from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
@@ -9,7 +9,6 @@ import plotly.figure_factory as ff
 import dash_core_components as dcc
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from numpy import array
 
 def register_callbacks(app):
     """
@@ -28,16 +27,16 @@ def register_callbacks(app):
             The URL entered, typically consists of dashboard/data/dataID or
             dashboard/task/ID
         :return: page-content: dash layout
-            The page layout with tables and graphs
+                 basic layout
         :return: intermediate-value: json
             Cached df in json format for sharing between callbacks
         """
         df = pd.DataFrame()
         if pathname is not None and '/dashboard/data' in pathname:
             id = int(re.search('data/(\d+)', pathname).group(1))
-            layout, df = get_graph_from_data(id, app)
-            out = df.to_json(date_format='iso', orient='split')
-            return layout, out
+            layout, df = get_layout_from_data(id, app)
+            cache = df.to_json(date_format='iso', orient='split')
+            return layout, cache
         elif pathname is not None and 'dashboard/task' in pathname:
             id = int(re.search('task/(\d+)', pathname).group(1))
             layout, taskdf = get_layout_from_task(id, app)
@@ -56,40 +55,28 @@ def register_callbacks(app):
             return index_page, out
 
     @app.callback(
-        Output('graph-gapminder', 'figure'),
+        Output('distribution', 'children'),
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('datatable-gapminder', 'rows'),
-         Input('datatable-gapminder', 'selected_row_indices'),
+         Input('datatable', 'rows'),
+         Input('datatable', 'selected_row_indices'),
          ])
-    def update_data_plots(df_json, pathname, rows, selected_row_indices):
+    def distribution_plot(df_json, pathname, rows, selected_row_indices):
         """
-        Updates distribution based on selected attributes from the table
-        Updates scatter matrix plot,if two or more attributes are chosen
-        from the table.
-        :param df_json: json
-            df cached by render_layout callback in json format
-        :param pathname: str
-            URL pathname entered
-        :param rows: list
-            rows of the displayed dash table
-        :param selected_row_indices: list
-            user-selected rows of the dash table
-        :param colorCode: str
-        :return: fig
-            Figure with plots of selected features
+
+        :param df_json: cached data
+        :param pathname: url
+        :param rows: rows of the feature table
+        :param selected_row_indices: selected rows of the feature table
+        :return: subplots containing violin plot or histogram for selected_row_indices
         """
-        if pathname is not None and '/dashboard/data' in pathname:
+
+        if '/dashboard/data' in pathname and df_json is not None:
             print('entered table update')
         else:
-            return [],[]
-        if df_json is None:
-            dff = pd.DataFrame()
-            df = pd.DataFrame()
-        else:
-            df = pd.read_json(df_json, orient='split')
-            dff = pd.DataFrame(rows)
-            target_attribute= dff[dff["Target"] == "true"]["Attribute"].values[0]
+            return [], []
+        df = pd.read_json(df_json, orient='split')
+        dff = pd.DataFrame(rows)
         attributes = []
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
@@ -117,86 +104,65 @@ def register_callbacks(app):
                         "meanline": {
                             "visible": True
                         },
-                        "fillcolor": '#8dd3c7',
-                        "opacity": 0.6,
-                        "x0": attribute
+                        "fillcolor": 'steelblue',
+                        "opacity": 0.8,
+                        "x0": attribute,
+                        "name": attribute
                     }
                 else:
-                    trace1 = go.Histogram(x=sorted(df[attribute]))
+                    trace1 = go.Histogram(x=sorted(df[attribute]), opacity=0.75, name=attribute)
                 i = i+1
                 fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(title=go.layout.Title(text='Distribution plots'),hovermode='closest')
-        return fig
+        fig['layout'].update(hovermode='closest')
+        return html.Div(dcc.Graph(figure=fig))
 
     @app.callback(
-        Output('matrix', 'children'),
+        [Output('fi', 'children'),
+         Output('matrix', 'children')],
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('datatable-gapminder', 'rows'),
-         Input('datatable-gapminder', 'selected_row_indices'),
+         Input('datatable', 'rows')
          ])
-    def update_scattermatrix(df_json, pathname, rows, selected_row_indices):
-        """
-        Updates distribution based on selected attributes from the table
-        Updates scatter matrix plot,if two or more attributes are chosen
-        from the table.
-        :param df_json: json
-            df cached by render_layout callback in json format
-        :param pathname: str
-            URL pathname entered
-        :param rows: list
-            rows of the displayed dash table
-        :param selected_row_indices: list
-            user-selected rows of the dash table
-        :param colorCode: str
-        :return: fig
-            Figure with plots of selected features
-        """
-        if pathname is not None and '/dashboard/data' in pathname:
-            print('entered table update')
-        else:
-            return [], []
-        if df_json is None:
-            dff = pd.DataFrame()
-            df = pd.DataFrame()
-        else:
+    def feature_importance(df_json, pathname, rows):
+        if df_json is not None and '/dashboard/data' in pathname:
             df = pd.read_json(df_json, orient='split')
-            dff = pd.DataFrame(rows)
-            target_attribute = dff[dff["Target"] == "true"]["Attribute"].values[0]
-            target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
-            if target_type=="nominal":
-                from category_encoders.target_encoder import TargetEncoder
-                x = df.drop(target_attribute, axis=1)
-                y = pd.Categorical(df[target_attribute]).codes
-                te = TargetEncoder()
-                x = te.fit_transform(x, y)
-                rf = RandomForestClassifier()
-                rf.fit(x, y)
-                fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
-                print(fi[:5])
-
-        attributes = []
-        if len(selected_row_indices) != 0:
-            dff = dff.loc[selected_row_indices]
-            attributes = dff["Attribute"].values
-
-        if(len(attributes)>1):
-            df_scatter = df[attributes]
-            df_scatter[target_attribute] = df[target_attribute]
-            matrix = ff.create_scatterplotmatrix(df_scatter, diag='box',index= target_attribute,
-                                          colormap='Portland', colormap_type='seq', height=800, width=1500)
         else:
-            # return an empty fig
-            matrix = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
-        return html.Div(dcc.Graph(figure=matrix))
+            return [],[]
+        dff = pd.DataFrame(rows)
+        target_attribute = dff[dff["Target"] == "true"]["Attribute"].values[0]
+        target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
+        from category_encoders.target_encoder import TargetEncoder
+        x = df.drop(target_attribute, axis=1)
+        te = TargetEncoder()
+        if target_type == "nominal":
+            y = pd.Categorical(df[target_attribute]).codes
+            x = te.fit_transform(x, y)
+            rf = RandomForestClassifier()
+            rf.fit(x, y)
+        else:
+            y = df[target_attribute]
+            x = te.fit_transform(x, y)
+            rf = RandomForestRegressor()
+            rf.fit(x, y)
+        fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
+        fi = fi.sort_values('importance', ascending=False).reset_index()
+        trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
+        layout = go.Layout(title="RandomForest feature importance", autosize=False,
+                           margin=dict(l=500), width=1200, hovermode='closest')
+        figure = go.Figure(data=[trace], layout=layout)
+        df_imp = df[fi['index'][0:5].values]
+        df_imp['target'] = df[target_attribute]
+        matrix = ff.create_scatterplotmatrix(df_imp, title='Scatter matrix top 5 features', diag='box', index='target',
+                                          colormap='Portland', colormap_type='seq', height=1200, width=1500)
+        return html.Div(dcc.Graph(figure=figure)),html.Div(dcc.Graph(figure=matrix))
 
-    @app.callback(Output('scatterPlotGraph', 'children'), [
+    @app.callback(Output('scatter_plot', 'children'), [
         Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
-        Input('dualVariableDropdownNum1', 'value'),
-        Input('dualVariableDropdownNum2', 'value'),
-        Input('dualVariableDropdownNom', 'value'), ])
+        Input('dropdown1', 'value'),
+        Input('dropdown2', 'value'),
+        Input('dropdown3', 'value'), ])
     def update_scatter_plot(df_json, pathname, at1, at2, colorCode):
         """
 
@@ -213,7 +179,7 @@ def register_callbacks(app):
         :return:
             fig : Scatter plot of selected attributes
         """
-        if pathname is not None and '/dashboard/data' in pathname:
+        if at1 is not None and at2 is not None and '/dashboard/data' in pathname:
             print('entered scatter plot')
         else:
             return []
@@ -236,6 +202,7 @@ def register_callbacks(app):
                 xaxis={'title': at1, 'autorange': True},
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
+                height=800, width=1200
             )}
         return html.Div(dcc.Graph(figure=fig))
 

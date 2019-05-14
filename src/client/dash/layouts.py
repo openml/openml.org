@@ -6,9 +6,10 @@ import urllib.request
 import json
 from openml import flows
 
-def get_graph_from_data(dataSetJSONInt, app):
+
+def get_layout_from_data(data_id, app):
     """
-    :param dataSetJSONInt: int
+    :param data_id: int
         data ID of the data to be displayeds
     :param app: dash app
         dash application that requires the layout
@@ -16,32 +17,32 @@ def get_graph_from_data(dataSetJSONInt, app):
         dash layout with graphs and tables for given data ID
     """
     # Get CSV ID from data ID
-    url = "https://www.openml.org/api/v1/json/data/{}".format(dataSetJSONInt)
+    url = "https://www.openml.org/api/v1/json/data/{}".format(data_id)
     response = urllib.request.urlopen(url)
     encoding = response.info().get_content_charset('utf8')
     description = json.loads(response.read().decode(encoding))
-    dataSetCSVInt = (description["data_set_description"]["file_id"])
+    csv_id = (description["data_set_description"]["file_id"])
+
     # Read CSV
-    url = "https://www.openml.org/data/v1/get_csv/{}".format(dataSetCSVInt)
+    url = "https://www.openml.org/data/v1/get_csv/{}".format(csv_id)
     df = pd.read_csv(url)
     for column in df:
         df[column].fillna(df[column].mode())
+
     # Read metadata
-    url = 'https://www.openml.org/api/v1/json/data/features/{}'.format(dataSetJSONInt)
+    url = 'https://www.openml.org/api/v1/json/data/features/{}'.format(data_id)
     response = urllib.request.urlopen(url)
     encoding = response.info().get_content_charset('utf8')
     metadata = json.loads(response.read().decode(encoding))
     metadata = pd.DataFrame.from_dict(metadata["data_features"])
     d = metadata["feature"]
-    featureinfo = pd.DataFrame.from_records(d)
-    displayfeatures = featureinfo[["name", "is_target",
-                                   "data_type", "number_of_missing_values"]]
-    displayfeatures.columns = ["Attribute", "Target",
-                               "DataType", "Missing values"]
-    # Data processing
-    numericals = []
+    features = pd.DataFrame.from_records(d)
+    display_features = features[["name", "is_target",
+                                 "data_type", "number_of_missing_values"]]
+    display_features.columns = ["Attribute", "Target",
+                                "DataType", "Missing values"]
     nominals = []
-    labels = []
+    numericals = []
     for feature in metadata["feature"]:
         if feature["is_target"] == "true":
             target = feature["name"]
@@ -49,124 +50,90 @@ def get_graph_from_data(dataSetJSONInt, app):
             nominals.append(feature["name"])
         else:
             numericals.append(feature["name"])
-        labels.append(feature["name"])
-    if target not in numericals:
-        numtar = {}
-        counter = 0
-        for i in set(df[target]):
-            numtar[i] = counter
-            counter += 1
-        aplist = []
-        for i in df[target]:
-            aplist.append(numtar[i])
-        df["numerical_target"] = aplist
+
     # Define layout
     layout = html.Div([
-        # 1. Hidden div to cache data and pass between callbacks
+        # 1. Hidden div to cache data and use in different callbacks
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
         html.H3('List of attributes', style={'text-align': 'left','color':'black'}),
-        html.P('Choose one or more attributes for distribution plots', style={'text-align': 'left', 'color': 'gray'}),
-        # 3. Table and distribution graph layout
+        html.P('Choose one or more attributes for violin plot(numeric) and'
+               ' histogram (nominal)', style={'text-align': 'left', 'color': 'gray'}),
+        # 3. Table with meta data
         html.Div([
+            # 3a. Table with meta data on left side
             html.Div(
                 dt.DataTable(
-                    rows=displayfeatures.to_dict('records'),
-                    columns=(displayfeatures.columns),
+                    rows=display_features.to_dict('records'),
+                    columns=display_features.columns,
                     column_widths=[120, 120, 120, 120],
                     min_width=600,
                     row_selectable=True,
                     filterable=True,
                     sortable=True,
                     selected_row_indices=[],
-                    max_rows_in_viewport=10,
-                    id='datatable-gapminder',
-                ),
-                style={'width': '49%', 'display': 'inline-block',
-                       'position': 'relative'}
+                    max_rows_in_viewport=15,
+                    id='datatable',
+                ), style={'width': '49%', 'display': 'inline-block',
+                          'position': 'relative'}
             ),
-
-
+            # 3b. Distribution graphs on the right side.for
+            #     Callback = distribution_plot
             html.Div(
-
-                dcc.Graph(
-                    id='graph-gapminder'
-                ),
+                id='distribution',
                 style={'width': '49%', 'display': 'inline-block',
                        'position': 'relative'}
             ),
         ]),
-       # 4. Scatter matrix based on selected rows
-
+        # 4. Adding tabs for multiple plots
+        #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='Scatter Matrix', children=[
+            dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')]),
+            dcc.Tab(label='Scatter matrix', children=[html.Div(id='matrix')]),
+            dcc.Tab(label='Scatter plot',
+                children=[
+
                 html.Div([
-                    html.H3('Scatter matrix', style={'text-align': 'left'}),
-                    html.P('Choose two or more attributes from table for scatter matrix',
-                           style={'text-align': 'left', 'color': 'gray'}),
-                    html.Div(id='matrix')]), #Graph will be passed to this Div
 
-                ]),
+                html.Div(dcc.Dropdown(
+                        id='dropdown1',
+                        options=[
+                            {'label': i , 'value': i} for i in numericals
+                        ],
 
+                    multi=False,
+                    clearable=False,
+                    value=numericals[0]
+                    )),
 
-        # 5. Scatter plot with drop down list.
-
-
-        dcc.Tab(label='Scatter Plot', children=[
-        html.Div([
-            html.H3('Scatter plot', style={'text-align': 'left'}),
-            html.Div(children=[
-                # Dropdown 1
-                html.Div(
-                    [dcc.Dropdown(
-                        id='dualVariableDropdownNum1',
+                html.Div(dcc.Dropdown(
+                        id='dropdown2',
                         options=[
                             {'label': i, 'value': i} for i in numericals
                         ],
-                        multi=False,
-                        clearable=False,
-                        placeholder="Select an attribute",
-                        value=numericals[0]
-                    )],
-                    style={'width': '30%', 'display': 'inline-block',
-                           'position': 'relative'}
-                ),
-                # Dropdown 2
-                html.Div(
-                    [dcc.Dropdown(
-                        id='dualVariableDropdownNum2',
-                        options=[
-                            {'label': i, 'value': i} for i in numericals
-                        ],
-                        multi=False,
-                        clearable=False,
-                        placeholder="Select an attribute",
-                        value=numericals[1]
-                    )],
-                    style={'width': '30%', 'display': 'inline-block',
-                           'left': '33%', 'position': 'absolute'}
-                ),
-                # Dropdown 3
-                html.Div(
-                    [dcc.Dropdown(
-                        id='dualVariableDropdownNom',
-                        options=[
-                            {'label': i, 'value': i} for i in nominals
-                        ],
-                        multi=False,
-                        clearable=False,
-                        placeholder="Color Code based on",
-                        value=nominals[0]
-                    )],
-                    style={'width': '30%', 'display': 'inline-block',
-                           'left': '66%', 'position': 'absolute'},
-                ),
-            ]),
-            ]),
-            # Scatter plot
-            html.Div(id='scatterPlotGraph')
+
+                    multi=False,
+                    clearable=False,
+                   value=numericals[0]
+
+                    )),
+
+                html.Div(dcc.Dropdown(
+                    id='dropdown3',
+                    options=[
+                        {'label': i, 'value': i} for i in nominals
+                    ],
+
+                    multi=False,
+                    clearable=False,
+
+                  value=nominals[0]
+
+                )),
+
+             html.Div(id='scatter_plot'),])
+            ])#if numericals else dcc.Tab(label='Scatter Plot',children=[html.Div(html.P('No numericals found'))])
         ],
-        )],
         )], className="container")
     return layout, df
 
