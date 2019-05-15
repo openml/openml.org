@@ -226,7 +226,7 @@ def register_callbacks(app):
             return []
         # List of evaluations to dataframe.
         task_id = int(re.search('task/(\d+)', pathname).group(1))
-        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)])
+        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], size=10000)
         if not eval_objects:
             return []
         rows = []
@@ -340,7 +340,7 @@ def register_callbacks(app):
 
         # Get all evaluations of given metric and flow id
         flow_id = int(re.search('flow/(\d+)', pathname).group(1))
-        evals = evaluations.list_evaluations(function=metric, flow=[flow_id])
+        evals = evaluations.list_evaluations(function=metric, flow=[flow_id], size=10000)
         rows = []
         for id, e in evals.items():
             rows.append(vars(e))
