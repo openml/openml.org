@@ -4,7 +4,8 @@ import dash_html_components as html
 import pandas as pd
 import urllib.request
 import json
-from openml import flows
+from openml import datasets, tasks, runs, flows, config, evaluations, study
+import numpy as np
 
 
 def get_layout_from_data(data_id, app):
@@ -272,3 +273,53 @@ def get_layout_from_flow(id, app):
         ]),
     ])
     return layout, df
+
+def get_layout_from_run(run_id,app):
+    items = vars(runs.get_run(int(run_id)))
+
+    orderedDictList = (items['fold_evaluations'])
+    df = pd.DataFrame(orderedDictList.items(),columns=['evaluations','results'])
+
+    list = []
+    error = []
+    for dict in df['results']:
+        x = (dict[0])
+        values = [x[elem] for elem in x]
+        mean = str(round(np.mean(np.array(values), axis=0),3))
+        std = str(round(np.std(np.array(values), axis=0),3))
+        list.append(values)
+        error.append(mean+" \u00B1 "+std)
+    df.drop(['results'],axis=1, inplace=True)
+    df['results'] = list
+    df['values'] = error
+    d = df.drop(['results'], axis=1)
+
+    layout = html.Div([
+        html.Div(id='intermediate-value', style={'display': 'none'}),
+        # 3a. Table with meta data on left side
+        html.Div([
+           html.Div(
+            dt.DataTable(
+                rows=d.to_dict('records'),
+                columns=d.columns,
+                column_widths=[200, 120, 120, 120],
+                min_width=600,
+                row_selectable=True,
+                filterable=True,
+                sortable=True,
+                selected_row_indices=[],
+                max_rows_in_viewport=15,
+                id='runtable',
+            ), style={'width': '49%', 'display': 'inline-block',
+                       'position': 'relative'}
+        ),
+        # 3b. Distribution graphs on the right side.for
+        #     Callback = distribution_plot
+        html.Div(
+            id='runplot',
+            style={'width': '49%', 'display': 'inline-block',
+                   'position': 'absolute'}
+        ),
+    ])
+    ])
+    return layout,df

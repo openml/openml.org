@@ -1,7 +1,7 @@
 import plotly.graph_objs as go
 import pandas as pd
 import re
-from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow
+from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run
 from plotly import tools
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
@@ -9,7 +9,7 @@ import plotly.figure_factory as ff
 import dash_core_components as dcc
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-
+import numpy as np
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -46,6 +46,11 @@ def register_callbacks(app):
             id = int(re.search('flow/(\d+)', pathname).group(1))
             layout, flowdf = get_layout_from_flow(id,app)
             out = flowdf.to_json(date_format='iso', orient='split')
+            return layout, out
+        elif pathname is not None and 'dashboard/run' in pathname:
+            id = int(re.search('run/(\d+)', pathname).group(1))
+            layout, rundf = get_layout_from_run(id, app)
+            out = rundf.to_json(date_format='iso', orient='split')
             return layout, out
         else:
             index_page = html.Div([
@@ -406,3 +411,50 @@ def register_callbacks(app):
                                   showticklabels=True))
         fig = go.Figure(data, layout)
         return fig
+
+
+    @app.callback(
+        Output('runplot', 'children'),
+        [Input('intermediate-value', 'children'),
+         Input('url', 'pathname'),
+         Input('runtable', 'rows'),
+         Input('runtable', 'selected_row_indices'),
+         ])
+    def run_plot(df_json, pathname, rows, selected_row_indices):
+        """
+
+        :param df_json: cached data
+        :param pathname: url
+        :param rows: rows of the feature table
+        :param selected_row_indices: selected rows of the feature table
+        :return: subplots containing violin plot or histogram for selected_row_indices
+        """
+        print('entered run update #1')
+
+        if '/dashboard/run' in pathname and df_json is not None:
+            print('entered run update')
+        else:
+            return [], []
+        df = pd.read_json(df_json, orient='split')
+        rows = pd.DataFrame(rows)
+
+        if len(selected_row_indices) != 0:
+            selected_rows = rows.loc[selected_row_indices]["evaluations"].values
+            numplots = len(selected_rows)
+            i = numplots
+            fig = tools.make_subplots(rows=numplots, cols=1)
+            for metric in selected_rows:
+                measure = df.loc[df['evaluations'] == metric]
+                x = measure['results'].values[0]
+                trace1 = go.Box(
+                x=x,
+                name=metric)
+                fig.append_trace(trace1,i,1)
+                i = i-1
+            fig['layout'].update(title = 'Cross-validation details (10-fold Crossvalidation)',hovermode='closest', height=numplots*200, margin=dict(l=200))
+        else:
+            fig = []
+
+        return html.Div(dcc.Graph(figure=fig))
+
+
