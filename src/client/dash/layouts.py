@@ -133,7 +133,7 @@ def get_layout_from_data(data_id, app):
                 )),
 
              html.Div(id='scatter_plot'),])
-            ])#if numericals else dcc.Tab(label='Scatter Plot',children=[html.Div(html.P('No numericals found'))])
+            ])if numericals else dcc.Tab(label='Scatter Plot',children=[html.Div(html.P('No numericals found'))])
         ],
         )], className="container")
     return layout, df
@@ -172,18 +172,9 @@ def get_layout_from_task(taskid, app):
             #2 Scatter plot of flow vs metric
             # Scatter plot
             dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='Evaluations', children=[
-              html.Div(
-                [dcc.Graph(
-                    id='taskplot',
-                    style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'})], id='tab1')]),
-                dcc.Tab(label='People', children=[
-                    html.Div(
-                        [dcc.Graph(
-                            id='people',
-                            style={'height': '100%', 'width': '100%',
-                                   'position': 'absolute'})],id='tab2')]),
+            dcc.Tab(label='Evaluations', children=[html.Div( id='tab1')]),
+                dcc.Tab(label='People', children=[html.Div(id='tab2'),
+            ]),
 
             ])
         ]),
