@@ -10,6 +10,7 @@ import dash_core_components as dcc
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 import numpy as np
+import dash_table_experiments as dt
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -212,7 +213,8 @@ def register_callbacks(app):
         return html.Div(dcc.Graph(figure=fig))
 
     @app.callback([Output('tab1', 'children'),
-        Output('tab2', 'children')],
+        Output('tab2', 'children'),
+       ],
         [Input('intermediate-value', 'children'),
         Input('url', 'pathname'),
         Input('metric', 'value') ])
@@ -310,7 +312,29 @@ def register_callbacks(app):
                                   ticktext=tick_text + evals["flow_name"],
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
-        return html.Div(dcc.Graph(figure=fig)), html.Div(dcc.Graph(figure=fig1))
+        #TABLE
+        top_uploader = (evals.sort_values('value', ascending=False).groupby(['uploader'], sort=False))
+        name = top_uploader['uploader'].unique()
+        rank = list(range(1, len(name) + 1))
+        entries = top_uploader['uploader'].value_counts().values
+        leaderboard = pd.DataFrame({'Rank': rank, 'Name': name, 'Entries': entries}).reset_index()
+        leaderboard.drop('Name', axis=1, inplace=True)
+        print(leaderboard)
+        table =  html.Div(
+            dt.DataTable(
+                rows=leaderboard.to_dict('records'),
+                columns=leaderboard.columns,
+                column_widths=[200, 120, 120, 120],
+                min_width=600,
+                row_selectable=False,
+                filterable=True,
+                sortable=True,
+                selected_row_indices=[],
+                max_rows_in_viewport=15,
+                id='tasktable',
+            ),
+        )
+        return html.Div(dcc.Graph(figure=fig)), html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
 
     @app.callback(Output('flowplot', 'figure'),
         [Input('intermediate-value', 'children'),
