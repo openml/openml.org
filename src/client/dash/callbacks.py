@@ -83,6 +83,7 @@ def register_callbacks(app):
             return [], []
         df = pd.read_json(df_json, orient='split')
         dff = pd.DataFrame(rows)
+        target = dff[dff["Target"]== "true"]["Attribute"].values[0]
         attributes = []
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
@@ -98,27 +99,19 @@ def register_callbacks(app):
             i = 0
             for attribute in attributes:
                 if types[i]=="numeric":
-                    trace1 = {
-                        "type": 'violin',
-                        "x": df[attribute],
-                        "box": {
-                            "visible": True
-                        },
-                        "line": {
-                            "color": 'black'
-                        },
-                        "meanline": {
-                            "visible": True
-                        },
-                        "fillcolor": 'steelblue',
-                        "opacity": 0.8,
-                        "x0": attribute,
-                        "name": attribute
-                    }
+                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i)
+                                           for i in set(df[target])]
+                    i = i + 1
+                    for trace in data:
+                        fig.append_trace(trace, i, 1)
+
                 else:
-                    trace1 = go.Histogram(x=sorted(df[attribute]), opacity=0.75, name=attribute)
-                i = i+1
-                fig.append_trace(trace1, i, 1)
+                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i)
+                                           for i in set(df[target])]
+                    i = i + 1
+                    for trace in data:
+                        fig.append_trace(trace, i, 1)
+
 
         fig['layout'].update(hovermode='closest')
         return html.Div(dcc.Graph(figure=fig))
@@ -159,9 +152,34 @@ def register_callbacks(app):
         figure = go.Figure(data=[trace], layout=layout)
         df_imp = df[fi['index'][0:5].values]
         df_imp['target'] = df[target_attribute]
-        matrix = ff.create_scatterplotmatrix(df_imp, title='Scatter matrix top 5 features', diag='box', index='target',
-                                          colormap='Portland', colormap_type='seq', height=1200, width=1500)
-        return html.Div(dcc.Graph(figure=figure)),html.Div(dcc.Graph(figure=matrix))
+        numeric = 0
+        for attribute in df_imp.columns:
+            dtype = (dff[dff["Attribute"]==attribute]["DataType"].values)
+            if "numeric" in dtype:
+                numeric = 1
+                break
+            else:
+                numeric = 0
+        if numeric == 1:
+            matrix = ff.create_scatterplotmatrix(df_imp, title='Scatter matrix top 5 features', diag='box',
+                                                     index='target',
+                                                     colormap='Portland', colormap_type='seq', height=1200, width=1500)
+            graph = dcc.Graph(figure=matrix)
+        else:
+            d= df_imp
+            parcats = [go.Parcats(
+                dimensions=[
+                    {'label': column,
+                     'values': list(d[column].values)} for column in d.columns],
+                line={'color': y,
+                      'colorscale': 'Portland'},
+                hoveron='color',
+                hoverinfo='count+probability',
+                arrangement='freeform'
+            )]
+            fig = go.Figure(data=parcats)
+            graph = dcc.Graph(figure=fig)
+        return html.Div(dcc.Graph(figure=figure)),html.Div(graph)
 
     @app.callback(Output('scatter_plot', 'children'), [
         Input('intermediate-value', 'children'),
