@@ -91,15 +91,15 @@ def get_layout_from_data(data_id):
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')]),
-            dcc.Tab(label='Scatter matrix', children=[
+            dcc.Tab(label='Feature Interactions', children=[
                 html.Div([
                     html.Div(
                         dcc.RadioItems(
                             id = 'radio',
-                            options = [{'label': "Top 5 features", "value":"top"},
-                                       {'label': "Top 5 numeric features", "value":"numeric"},
-                                       {'label': "Top 5  nominal features", "value":"nominal"}],
-                            value = "top"
+                            options = [{'label': "Top five feature interactions", "value":"top"},
+                                       {'label': "Top five numeric feature interactions", "value":"numeric"},
+                                       {'label': "Top five nominal feature interactions", "value":"nominal"}],
+                            value="top"
 
                         )),
                     html.Div(id='matrix'),
