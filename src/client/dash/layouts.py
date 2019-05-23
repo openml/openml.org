@@ -8,53 +8,54 @@ from openml import datasets, tasks, runs, flows, config, evaluations, study
 import numpy as np
 
 
-def get_layout_from_data(data_id, app):
-    """
-    :param data_id: int
-        data ID of the data to be displayeds
-    :param app: dash app
-        dash application that requires the layout
-    :return:layout: dash layout
-        dash layout with graphs and tables for given data ID
-    """
-    # Get CSV ID from data ID
-    url = "https://www.openml.org/api/v1/json/data/{}".format(data_id)
-    response = urllib.request.urlopen(url)
-    encoding = response.info().get_content_charset('utf8')
-    description = json.loads(response.read().decode(encoding))
-    csv_id = (description["data_set_description"]["file_id"])
 
-    # Read CSV
-    url = "https://www.openml.org/data/v1/get_csv/{}".format(csv_id)
-    df = pd.read_csv(url)
-    for column in df:
-        df[column].fillna(df[column].mode())
+def get_data_metadata(data_id):
+    data = datasets.get_dataset(data_id)
+    features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
+    is_target=[]
+    for name in features["name"]:
+        if name == data.default_target_attribute:
+            is_target.append("true")
+        else:
+            is_target.append("false")
+    features["Target"] = is_target
 
-    # Read metadata
-    url = 'https://www.openml.org/api/v1/json/data/features/{}'.format(data_id)
-    response = urllib.request.urlopen(url)
-    encoding = response.info().get_content_charset('utf8')
-    metadata = json.loads(response.read().decode(encoding))
-    metadata = pd.DataFrame.from_dict(metadata["data_features"])
-    d = metadata["feature"]
-    features = pd.DataFrame.from_records(d)
-    display_features = features[["name", "is_target",
-                                 "data_type", "number_of_missing_values"]]
-    display_features.columns = ["Attribute", "Target",
-                                "DataType", "Missing values"]
+    display_features = features[["name", "data_type",
+                                 "number_missing_values", "Target"]]
+
+    display_features.rename(columns={"name": "Attribute", "data_type":"DataType",
+                                     "number_missing_values": "Missing values",
+                                     }, inplace=True)
     nominals = []
     numericals = []
-    for feature in metadata["feature"]:
-        if feature["is_target"] == "true":
-            target = feature["name"]
-        if feature["data_type"] == "nominal":
-            nominals.append(feature["name"])
+    for index, row in features.iterrows():
+        if row["data_type"] == "nominal":
+            nominals.append(row["name"])
         else:
-            numericals.append(feature["name"])
+            numericals.append(row["name"])
+    X, y, categorical, attribute_names = data.get_data()
+    df = pd.DataFrame(X, columns=attribute_names)
+    for column in df:
+        df[column].fillna(df[column].mode(), inplace=True)
+    return df, display_features, numericals, nominals
+
+
+
+def get_layout_from_data(data_id):
+    """
+
+    :param data_id: dataset id
+    :return:
+     layout: basic layout for data visualization (tables, htmlDiv and dropdown)
+     df: df cached for use in callbacks
+
+    """
+    # Get data and metadata
+    df, metadata, numericals, nominals = get_data_metadata(data_id)
 
     # Define layout
     layout = html.Div([
-        # 1. Hidden div to cache data and use in different callbacks
+        # 1. Hidden div to cache df and use in different callbacks
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
         html.H3('List of attributes', style={'text-align': 'left','color':'black'}),
@@ -65,8 +66,8 @@ def get_layout_from_data(data_id, app):
             # 3a. Table with meta data on left side
             html.Div(
                 dt.DataTable(
-                    rows=display_features.to_dict('records'),
-                    columns=display_features.columns,
+                    rows=metadata.to_dict('records'),
+                    columns=metadata.columns,
                     column_widths=[120, 120, 120, 120],
                     min_width=600,
                     row_selectable=True,
@@ -78,7 +79,7 @@ def get_layout_from_data(data_id, app):
                 ), style={'width': '49%', 'display': 'inline-block',
                           'position': 'relative'}
             ),
-            # 3b. Distribution graphs on the right side.for
+            # 3b. Distribution graphs on the right side
             #     Callback = distribution_plot
             html.Div(
                 id='distribution',
@@ -90,7 +91,22 @@ def get_layout_from_data(data_id, app):
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')]),
-            dcc.Tab(label='Scatter matrix', children=[html.Div(id='matrix')]),
+            dcc.Tab(label='Scatter matrix', children=[
+                html.Div([
+                    html.Div(
+                        dcc.RadioItems(
+                            id = 'radio',
+                            options = [{'label': "Top 5 features", "value":"top"},
+                                       {'label': "Top 5 numeric features", "value":"numeric"},
+                                       {'label': "Top 5  nominal features", "value":"nominal"}],
+                            value = "top"
+
+                        )),
+                    html.Div(id='matrix'),
+
+
+                ])
+            ]),
             dcc.Tab(label='Scatter plot',
                 children=[
 

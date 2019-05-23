@@ -11,6 +11,11 @@ from openml import datasets, tasks, runs, flows, config, evaluations, study
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 import numpy as np
 import dash_table_experiments as dt
+from sklearn.preprocessing import Imputer
+def clean_dataset(df):
+    imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
+    out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
+    return out
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -35,7 +40,7 @@ def register_callbacks(app):
         df = pd.DataFrame()
         if pathname is not None and '/dashboard/data' in pathname:
             id = int(re.search('data/(\d+)', pathname).group(1))
-            layout, df = get_layout_from_data(id, app)
+            layout, df = get_layout_from_data(id)
             cache = df.to_json(date_format='iso', orient='split')
             return layout, cache
         elif pathname is not None and 'dashboard/task' in pathname:
@@ -137,13 +142,16 @@ def register_callbacks(app):
         if target_type == "nominal":
             y = pd.Categorical(df[target_attribute]).codes
             x = te.fit_transform(x, y)
+            x = clean_dataset(x)
             rf = RandomForestClassifier()
             rf.fit(x, y)
         else:
             y = df[target_attribute]
             x = te.fit_transform(x, y)
+            x = clean_dataset(x)
             rf = RandomForestRegressor()
             rf.fit(x, y)
+
         fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
