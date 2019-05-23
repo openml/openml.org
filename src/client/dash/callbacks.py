@@ -126,9 +126,10 @@ def register_callbacks(app):
          Output('matrix', 'children')],
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('datatable', 'rows')
+         Input('datatable', 'rows'),
+         Input('radio', 'value')
          ])
-    def feature_importance(df_json, pathname, rows):
+    def feature_importance(df_json, pathname, rows, radio):
         if df_json is not None and '/dashboard/data' in pathname:
             df = pd.read_json(df_json, orient='split')
         else:
@@ -159,8 +160,17 @@ def register_callbacks(app):
                            margin=dict(l=500), width=1200, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
         df_imp = df[fi['index'][0:5].values]
-        df_imp['target'] = df[target_attribute]
+        df_imp['target'] = y
         numeric = 0
+        numericals =[]
+        nominals =[]
+        for attribute in df.columns:
+            dtype = (dff[dff["Attribute"]==attribute]["DataType"].values)
+            if "numeric" in dtype:
+                numericals.append(attribute)
+            else:
+
+                nominals.append(attribute)
         for attribute in df_imp.columns:
             dtype = (dff[dff["Attribute"]==attribute]["DataType"].values)
             if "numeric" in dtype:
@@ -168,25 +178,67 @@ def register_callbacks(app):
                 break
             else:
                 numeric = 0
-        if numeric == 1:
-            matrix = ff.create_scatterplotmatrix(df_imp, title='Scatter matrix top 5 features', diag='box',
+
+        top_numericals = (fi['index'][fi['index'].isin(numericals)][:5])
+        top_nominals = (fi['index'][fi['index'].isin(nominals)][:5])
+        if radio == "top":
+            if numeric == 1:
+                matrix = ff.create_scatterplotmatrix(df_imp, title='Top feature interactions', diag='box',
+                                                         index='target',
+                                                         colormap='Portland', colormap_type='seq', height=1200, width=1500)
+                graph = dcc.Graph(figure=matrix)
+
+
+            else:
+                d = df_imp
+                parcats = [go.Parcats(
+                    dimensions=[
+                        {'label': column,
+                         'values': list(d[column].values)} for column in d.columns],
+                    line={'color': y,
+                          'colorscale': 'Portland'},
+                    hoveron='color',
+                    hoverinfo='count+probability',
+                    arrangement='freeform'
+                )]
+                layout = go.Layout(autosize=False,  width=1200, height=800)
+
+                fig = go.Figure(data=parcats, layout = layout)
+                graph = dcc.Graph(figure=fig)
+
+
+        elif radio =="numeric":
+            if len(top_numericals):
+                print(top_numericals)
+                df_num = df[top_numericals]
+                df_num['target'] = y
+                matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
                                                      colormap='Portland', colormap_type='seq', height=1200, width=1500)
-            graph = dcc.Graph(figure=matrix)
-        else:
-            d= df_imp
-            parcats = [go.Parcats(
-                dimensions=[
-                    {'label': column,
-                     'values': list(d[column].values)} for column in d.columns],
-                line={'color': y,
-                      'colorscale': 'Portland'},
-                hoveron='color',
-                hoverinfo='count+probability',
-                arrangement='freeform'
-            )]
-            fig = go.Figure(data=parcats)
-            graph = dcc.Graph(figure=fig)
+                graph = dcc.Graph(figure=matrix)
+            else:
+                graph = html.P("No numericals found")
+        elif radio =="nominal":
+            if len(top_nominals):
+                print(top_nominals)
+                df_nom = df[top_nominals]
+                df_nom['target'] = y
+                parcats = [go.Parcats(
+                    dimensions=[
+                        {'label': column,
+                         'values': list(df_nom[column].values)} for column in df_nom.columns],
+                    line={'color': df_nom['target'],
+                          'colorscale': 'Portland'},
+                    hoveron='color',
+                    hoverinfo='count+probability',
+                    arrangement='freeform'
+                )]
+                layout = go.Layout(autosize=False, width=1200, height=800)
+                fig = go.Figure(data=parcats, layout = layout)
+                graph = dcc.Graph(figure=fig)
+            else:
+                graph = html.P("No nominals found")
+
         return html.Div(dcc.Graph(figure=figure)),html.Div(graph)
 
     @app.callback(Output('scatter_plot', 'children'), [
