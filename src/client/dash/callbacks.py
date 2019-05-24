@@ -16,6 +16,34 @@ def clean_dataset(df):
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
     out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
     return out
+
+def get_highest_rank(df, leaderboard):
+    df.sort_values(by=['upload_time'], inplace=True)
+    scores = []
+    highest_rank = {}
+    highest_score = {}
+
+    setup_ids = []
+    for index, row in df.iterrows():
+        if row['setup_id'] not in setup_ids:
+            users = list(highest_rank.keys())
+            new_user = (row['uploader'] not in (users))
+            setup_ids.append(row['setup_id'])
+            score = row['value']
+            if new_user or (score not in scores):
+                scores.append(score)
+                scores.sort(reverse=True)
+                rank = scores.index(score) + 1
+                if new_user or (highest_rank[row['uploader']] > rank):
+                    highest_rank[row['uploader']] = rank
+                    highest_score[row['uploader']] = score
+                    if highest_rank[row['uploader']] > row['Rank']:
+                        highest_rank[row['uploader']] = row['Rank']
+    leaderboard['highest_rank'] = list(highest_rank.values())
+    leaderboard['Top Score'] = list(highest_score.values())
+    return leaderboard
+
+
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -159,8 +187,8 @@ def register_callbacks(app):
         layout = go.Layout(title="RandomForest feature importance", autosize=False,
                            margin=dict(l=500), width=1200, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
-        df_imp = df[fi['index'][0:5].values]
-        df_imp['target'] = y
+        top_features = df[fi['index'][0:5].values]
+        top_features['target'] = y
         numeric = 0
         numericals =[]
         nominals =[]
@@ -169,9 +197,8 @@ def register_callbacks(app):
             if "numeric" in dtype:
                 numericals.append(attribute)
             else:
-
                 nominals.append(attribute)
-        for attribute in df_imp.columns:
+        for attribute in top_features.columns:
             dtype = (dff[dff["Attribute"]==attribute]["DataType"].values)
             if "numeric" in dtype:
                 numeric = 1
@@ -183,14 +210,14 @@ def register_callbacks(app):
         top_nominals = (fi['index'][fi['index'].isin(nominals)][:5])
         if radio == "top":
             if numeric == 1:
-                matrix = ff.create_scatterplotmatrix(df_imp, title='Top feature interactions', diag='box',
+                matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                          index='target',
                                                          colormap='Portland', colormap_type='seq', height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
 
 
             else:
-                d = df_imp
+                d = top_features
                 parcats = [go.Parcats(
                     dimensions=[
                         {'label': column,
@@ -397,13 +424,19 @@ def register_callbacks(app):
         entries = top_uploader['uploader'].value_counts().values
         leaderboard = pd.DataFrame({'Rank': rank, 'Name': name, 'Entries': entries}).reset_index()
         leaderboard.drop('Name', axis=1, inplace=True)
-        print(leaderboard)
+        ranks = []
+        df = top_uploader.head(evals.shape[1])
+        for uploader in df['uploader']:
+            ranks.append(leaderboard[leaderboard['uploader'] == uploader].Rank.values[0])
+        df['Rank'] = ranks
+        df.sort_values(by=['upload_time'], inplace=True)
+        leaderboard = get_highest_rank(df, leaderboard)
         table =  html.Div(
             dt.DataTable(
                 rows=leaderboard.to_dict('records'),
                 columns=leaderboard.columns,
                 column_widths=[200, 120, 120, 120],
-                min_width=600,
+                min_width=1000,
                 row_selectable=False,
                 filterable=True,
                 sortable=True,
