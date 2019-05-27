@@ -1,5 +1,4 @@
 import plotly.graph_objs as go
-import pandas as pd
 import re
 from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run
 from plotly import tools
@@ -7,41 +6,10 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import plotly.figure_factory as ff
 import dash_core_components as dcc
-from openml import datasets, tasks, runs, flows, config, evaluations, study
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-import numpy as np
+from .helpers import *
 import dash_table_experiments as dt
-from sklearn.preprocessing import Imputer
-def clean_dataset(df):
-    imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
-    out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
-    return out
 
-def get_highest_rank(df, leaderboard):
-    df.sort_values(by=['upload_time'], inplace=True)
-    scores = []
-    highest_rank = {}
-    highest_score = {}
-
-    setup_ids = []
-    for index, row in df.iterrows():
-        if row['setup_id'] not in setup_ids:
-            users = list(highest_rank.keys())
-            new_user = (row['uploader'] not in (users))
-            setup_ids.append(row['setup_id'])
-            score = row['value']
-            if new_user or (score not in scores):
-                scores.append(score)
-                scores.sort(reverse=True)
-                rank = scores.index(score) + 1
-                if new_user or (highest_rank[row['uploader']] > rank):
-                    highest_rank[row['uploader']] = rank
-                    highest_score[row['uploader']] = score
-                    if highest_rank[row['uploader']] > row['Rank']:
-                        highest_rank[row['uploader']] = row['Rank']
-    leaderboard['highest_rank'] = list(highest_rank.values())
-    leaderboard['Top Score'] = list(highest_score.values())
-    return leaderboard
 
 
 def register_callbacks(app):
@@ -97,8 +65,8 @@ def register_callbacks(app):
         Output('distribution', 'children'),
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('datatable', 'rows'),
-         Input('datatable', 'selected_row_indices'),
+         Input('datatable', 'data'),
+         Input('datatable', 'selected_rows'),
          ])
     def distribution_plot(df_json, pathname, rows, selected_row_indices):
         """
@@ -109,6 +77,7 @@ def register_callbacks(app):
         :param selected_row_indices: selected rows of the feature table
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
+        print(selected_row_indices)
 
         if '/dashboard/data' in pathname and df_json is not None:
             print('entered table update')
@@ -132,8 +101,8 @@ def register_callbacks(app):
             i = 0
             for attribute in attributes:
                 if types[i]=="numeric":
-                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i)
-                                           for i in set(df[target])]
+                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i,
+                                       nbinsx=10, histfunc="count")for i in set(df[target])] # marker = dict(cmin = 0, color =i,  size= 20, cmax = 16, colorbar = dict(x=1))
                     i = i + 1
                     for trace in data:
                         fig.append_trace(trace, i, 1)
@@ -146,7 +115,7 @@ def register_callbacks(app):
                         fig.append_trace(trace, i, 1)
 
 
-        fig['layout'].update(hovermode='closest')
+        fig['layout'].update(hovermode='closest', showlegend = False) # barmode='stack')
         return html.Div(dcc.Graph(figure=fig))
 
     @app.callback(
@@ -154,7 +123,7 @@ def register_callbacks(app):
          Output('matrix', 'children')],
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('datatable', 'rows'),
+         Input('datatable', 'data'),
          Input('radio', 'value')
          ])
     def feature_importance(df_json, pathname, rows, radio):
@@ -442,7 +411,7 @@ def register_callbacks(app):
                 sortable=True,
                 selected_row_indices=[],
                 max_rows_in_viewport=15,
-                id='tasktable',
+                id='tasktable'
             ),
         )
         return html.Div(dcc.Graph(figure=fig)), html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
