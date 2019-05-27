@@ -1,45 +1,10 @@
 import dash_core_components as dcc
-import dash_table_experiments as dt
+import dash_table as dt
 import dash_html_components as html
-import pandas as pd
 import urllib.request
 import json
-from openml import datasets, tasks, runs, flows, config, evaluations, study
 import numpy as np
-
-
-
-def get_data_metadata(data_id):
-    data = datasets.get_dataset(data_id)
-    features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-    is_target=[]
-    for name in features["name"]:
-        if name == data.default_target_attribute:
-            is_target.append("true")
-        else:
-            is_target.append("false")
-    features["Target"] = is_target
-
-    display_features = features[["name", "data_type",
-                                 "number_missing_values", "Target"]]
-
-    display_features.rename(columns={"name": "Attribute", "data_type":"DataType",
-                                     "number_missing_values": "Missing values",
-                                     }, inplace=True)
-    nominals = []
-    numericals = []
-    for index, row in features.iterrows():
-        if row["data_type"] == "nominal":
-            nominals.append(row["name"])
-        else:
-            numericals.append(row["name"])
-    X, y, categorical, attribute_names = data.get_data()
-    df = pd.DataFrame(X, columns=attribute_names)
-    for column in df:
-        df[column].fillna(df[column].mode(), inplace=True)
-    return df, display_features, numericals, nominals
-
-
+from .helpers import *
 
 def get_layout_from_data(data_id):
     """
@@ -66,16 +31,36 @@ def get_layout_from_data(data_id):
             # 3a. Table with meta data on left side
             html.Div(
                 dt.DataTable(
-                    rows=metadata.to_dict('records'),
-                    columns=metadata.columns,
-                    column_widths=[120, 120, 120, 120],
-                    min_width=600,
-                    row_selectable=True,
-                    filterable=True,
-                    sortable=True,
-                    selected_row_indices=[],
-                    max_rows_in_viewport=15,
+                    data=metadata.to_dict('records'),
+                    columns=[{"name": i, "id": i} for i in metadata.columns],
+                    row_selectable="multi",
+                    row_deletable=False,
+
+                    sorting=True,
+                    selected_rows=[],
                     id='datatable',
+                    style_cell={'textAlign': 'left', 'backgroundColor': 'rgb(248, 248, 248)',
+                                'minWidth': '150px', 'width': '150px', 'maxWidth': '150px',
+                                'overflow': 'hidden','textOverflow': 'ellipsis'},
+
+                    style_table={
+                        'maxHeight': '500px',
+                        'overflowY': 'scroll',
+                        'border': 'thin lightgrey solid'
+                    },
+                    style_as_list_view=False,
+                    style_data_conditional=[
+                        {
+                        "if": {"row_index": 0},
+                        "backgroundColor": "rgb(0, 0, 255)",
+                        'color': 'white'
+                        },
+                        {'if': {'filter': '"Missing values" > num(0)' },
+                              'backgroundColor': 'rgb(200, 0, 0)','color': 'white',},
+
+
+                    ]
+
                 ), style={'width': '49%', 'display': 'inline-block',
                           'position': 'relative'}
             ),
