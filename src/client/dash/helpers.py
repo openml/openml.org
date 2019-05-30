@@ -1,6 +1,7 @@
 from sklearn.preprocessing import Imputer
 import pandas as pd
 from openml import datasets, tasks, runs, flows, config, evaluations, study
+import scipy.stats
 
 def clean_dataset(df):
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
@@ -44,8 +45,16 @@ def get_data_metadata(data_id):
             numericals.append(row["name"])
     X, y, categorical, attribute_names = data.get_data()
     df = pd.DataFrame(X, columns=attribute_names)
+    entropy =[]
     for column in df:
         df[column].fillna(df[column].mode(), inplace=True)
+        if column in nominals:
+            count = df[column].value_counts()
+            ent = scipy.stats.entropy(count)
+            entropy.append(ent)
+        else:
+            entropy.append(0)
+    metafeatures['entropy'] = entropy
     return df, metafeatures, numericals, nominals
 
 

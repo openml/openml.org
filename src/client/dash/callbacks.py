@@ -9,8 +9,7 @@ import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from .helpers import *
 import dash_table_experiments as dt
-
-
+import numpy as np
 
 def register_callbacks(app):
     """
@@ -85,8 +84,13 @@ def register_callbacks(app):
             return [], []
         df = pd.read_json(df_json, orient='split')
         dff = pd.DataFrame(rows)
-        target = dff[dff["Target"]== "true"]["Attribute"].values[0]
+        target = dff[dff["Target"] == "true"]["Attribute"].values[0]
         attributes = []
+        T = 20
+        target_vals = list(set(df[target]))
+        N = len(target_vals)
+        color = ['hsl(' + str(h) + ',50%' + ',50%)' for h in np.linspace(0, 360, N)]
+        df[target] = pd.Categorical(df[target]).codes
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
             attributes = dff["Attribute"].values
@@ -101,22 +105,24 @@ def register_callbacks(app):
             i = 0
             for attribute in attributes:
                 if types[i]=="numeric":
-                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i,
-                                       nbinsx=10, histfunc="count")for i in set(df[target])] # marker = dict(cmin = 0, color =i,  size= 20, cmax = 16, colorbar = dict(x=1))
+                    data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]), name=target_vals[i],
+                                       nbinsx=10, histfunc="count",
+                                       marker=dict(color=color[i], cmin=0, cmax=max(df[target]),
+                                                   colorbar=dict(thickness=T)))for i in range(int(N))]
                     i = i + 1
                     for trace in data:
                         fig.append_trace(trace, i, 1)
 
                 else:
-                    data=[go.Histogram(x=sorted(df[attribute][df[target] == i]), name=i)
-                                           for i in set(df[target])]
+                    data=[go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]), name=target_vals[i],
+                                       marker=dict(color=color[i], cmin=0, cmax=max(df[target]), colorbar=dict(thickness=T)))for i in range(int(N))] # marker = dict(cmin = 0, color =i,  size= 20, cmax = 16, colorbar = dict(x=1))
                     i = i + 1
                     for trace in data:
                         fig.append_trace(trace, i, 1)
 
 
-        fig['layout'].update(hovermode='closest', showlegend = False) # barmode='stack')
-        return html.Div(dcc.Graph(figure=fig))
+        fig['layout'].update(hovermode='closest', showlegend = False, height = 200+(len(attributes)*100)) # barmode='stack')
+        return html.Div(dcc.Graph(figure=fig), style={'overflowY': 'scroll', 'height': 500})
 
     @app.callback(
         [Output('fi', 'children'),

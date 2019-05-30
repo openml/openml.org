@@ -37,7 +37,7 @@ def get_layout_from_data(data_id):
                     row_deletable=False,
 
                     sorting=True,
-                    selected_rows=[],
+                    selected_rows=[0],
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'rgb(248, 248, 248)',
                                 'minWidth': '150px', 'width': '150px', 'maxWidth': '150px',
