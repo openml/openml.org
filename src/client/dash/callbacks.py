@@ -69,8 +69,9 @@ def register_callbacks(app):
          Input('url', 'pathname'),
          Input('datatable', 'data'),
          Input('datatable', 'selected_rows'),
+         Input('radio1', 'value')
          ])
-    def distribution_plot(df_json, pathname, rows, selected_row_indices):
+    def distribution_plot(df_json, pathname, rows, selected_row_indices, radio1):
         """
 
         :param df_json: cached data
@@ -82,7 +83,7 @@ def register_callbacks(app):
         print(selected_row_indices)
 
         if '/dashboard/data' in pathname and df_json is not None:
-            print('entered table update')
+            print('entered table update', radio1)
         else:
             return [], []
         df = pd.read_json(df_json, orient='split')

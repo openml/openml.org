@@ -67,11 +67,20 @@ def get_layout_from_data(data_id):
             ),
             # 3b. Distribution graphs on the right side
             #     Callback = distribution_plot
-            html.Div(
-                id='distribution',
-                style={'width': '49%', 'display': 'inline-block',
-                       'position': 'relative'}
-            ),
+            html.Div([
+
+                html.Div(
+                    dcc.RadioItems(
+                        id='radio1',
+                        options=[{'label': "Target based", "value": "target"},
+                                 {'label': "Individual", "value": "solo"},],
+                        value="target"
+
+                    )),
+                html.Div(
+                    id='distribution'),
+            ],  style={'width': '49%', 'display': 'inline-block',
+                       'position': 'relative'}),
         ]),
         # 4. Adding tabs for multiple plots
         #    Add another tab for a new plot
