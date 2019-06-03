@@ -565,6 +565,6 @@ def register_callbacks(app):
         else:
             fig = []
 
-        return html.Div(dcc.Graph(figure=fig))
+        return html.Div(dcc.Graph(figure=fig), style={'overflowY': 'scroll', 'height': 500})
 
 
