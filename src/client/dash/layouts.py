@@ -5,6 +5,7 @@ import urllib.request
 import json
 import numpy as np
 from .helpers import *
+import dash_table_experiments as dte
 
 def get_layout_from_data(data_id):
     """
@@ -291,7 +292,7 @@ def get_layout_from_run(run_id,app):
         # 3a. Table with meta data on left side
         html.Div([
            html.Div(
-            dt.DataTable(
+            dte.DataTable(
                 rows=d.to_dict('records'),
                 columns=d.columns,
                 column_widths=[200, 120, 120, 120],
@@ -299,8 +300,8 @@ def get_layout_from_run(run_id,app):
                 row_selectable=True,
                 filterable=True,
                 sortable=True,
-                selected_row_indices=[],
-                max_rows_in_viewport=15,
+                selected_row_indices=[0],
+                max_rows_in_viewport=10,
                 id='runtable',
             ), style={'width': '49%', 'display': 'inline-block',
                        'position': 'relative'}
