@@ -2,7 +2,7 @@ from sklearn.preprocessing import Imputer
 import pandas as pd
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 import scipy.stats
-
+from sklearn.neighbors.kde import KernelDensity
 def clean_dataset(df):
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
     out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
@@ -46,7 +46,7 @@ def get_data_metadata(data_id):
     X, y, categorical, attribute_names = data.get_data()
     df = pd.DataFrame(X, columns=attribute_names)
     entropy =[]
-    for column in df:
+    for column in metafeatures['Attribute']:
         df[column].fillna(df[column].mode(), inplace=True)
         if column in nominals:
             count = df[column].value_counts()

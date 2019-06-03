@@ -12,6 +12,8 @@ import dash_table_experiments as dt
 import numpy as np
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
+
+
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -607,7 +609,8 @@ def register_callbacks(app):
         data = []
         roc = []
         if n_classes == 2:
-            y_test = y_codes
+            _, idx = np.unique(y_codes, return_index=True)
+            y_test = label_binarize(y_codes, classes=y_codes[np.sort(idx)])
             precision, recall, thresholds = precision_recall_curve(y_test, y_score, pos_label=1)
             fpr, tpr, rocthresh = roc_curve(y_test, y_score)
 
