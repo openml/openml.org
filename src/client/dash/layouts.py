@@ -313,6 +313,10 @@ def get_layout_from_run(run_id,app):
             style={'width': '49%', 'display': 'inline-block',
                    'position': 'absolute'}
         ),
-    ])
+    ]),
+        dcc.Tabs(id="tabs", children=[
+            dcc.Tab(label='PR chart', children=[html.Div(id='pr')]),
+            dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
+                 ])
     ])
     return layout,df

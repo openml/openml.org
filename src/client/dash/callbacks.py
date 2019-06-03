@@ -10,7 +10,8 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from .helpers import *
 import dash_table_experiments as dt
 import numpy as np
-
+from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.preprocessing import label_binarize
 def register_callbacks(app):
     """
     Registers the callbacks of the given dash app app
@@ -567,4 +568,119 @@ def register_callbacks(app):
 
         return html.Div(dcc.Graph(figure=fig), style={'overflowY': 'scroll', 'height': 500})
 
+    @app.callback(
+        [Output('pr', 'children'),
+         Output('roc','children')],
+        [Input('intermediate-value', 'children'),
+         Input('url', 'pathname'),
+         Input('runtable', 'rows'),
+         # Input('runtable', 'selected_row_indices'),
+         ])
+    def prchart(df_json, pathname, rows):
 
+        if pathname is not None and 'dashboard/run' in pathname:
+            id = int(re.search('run/(\d+)', pathname).group(1))
+            print(id)
+        items = vars(runs.get_run(int(id)))
+        ID = items['output_files']['predictions']
+        url = "https://www.openml.org/data/download/{}".format(ID) + "/predictions.arff"
+
+
+        from scipy.io import arff
+        import urllib.request
+        import io  # for io.StringIO()
+
+        ftpstream = urllib.request.urlopen(url)
+        data, meta = arff.loadarff(io.StringIO(ftpstream.read().decode('utf-8')))
+        df = pd.DataFrame(data)
+        df['prediction'] = df['prediction'].str.decode('utf-8')
+        df['correct'] = df['correct'].str.decode('utf-8')
+        vals = df['correct'].unique()
+        confidence = ["confidence." + str(val) for val in vals]
+        # FOR BINARY
+
+
+        y_codes = pd.Categorical(df['correct']).codes
+
+        y_score = df[confidence[1]].values
+        n_classes = df['correct'].nunique()
+        data = []
+        roc = []
+        if n_classes == 2:
+            y_test = y_codes
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score, pos_label=1)
+            fpr, tpr, rocthresh = roc_curve(y_test, y_score)
+
+            h = ['Threshold: ' + value for value in thresholds.astype(str)]
+            trace1 = go.Scatter(x=recall, y=precision, hovertext=h,
+                                mode='lines',
+                                line=dict(width=2, color='navy'),
+                                name='Precision-Recall curve')
+
+            layout = go.Layout(xaxis=dict(title='Recall'),
+                               yaxis=dict(title='Precision'))
+
+            fig = go.Figure(data=[trace1], layout=layout)
+
+            #ROC
+            h = ['Threshold: ' + value for value in rocthresh.astype(str)]
+            trace2 = go.Scatter(x=fpr, y=tpr, hovertext=h,
+                                mode='lines',
+                                line=dict(width=2, color='navy'),
+                                name='ROC chart')
+
+            layout = go.Layout(xaxis=dict(title='FPR'),
+                               yaxis=dict(title='TPR'))
+
+            fig2 = go.Figure(data=[trace2], layout=layout)
+
+        else:
+            precision = dict()
+            recall = dict()
+            threshold = dict()
+            rocthresh = dict()
+            fpr = dict()
+            tpr = dict()
+            _, idx = np.unique(y_codes, return_index=True)
+            y_test = label_binarize(y_codes, classes=y_codes[np.sort(idx)])
+            for i in range(n_classes):
+                y_score = df[confidence[i]].values
+                precision[i], recall[i], threshold[i] = precision_recall_curve(y_test[:, i], y_score, pos_label=1)
+                fpr[i], tpr[i], rocthresh[i] = roc_curve(y_test[:,i], y_score)
+
+            for i in range(n_classes):
+                h = ['Threshold: ' + value for value in threshold[i].astype(str)]
+                trace3 = go.Scatter(x=recall[i], y=precision[i], name=confidence[i],
+                                    hovertext=h,
+                                    hoverinfo='text',
+                                    hoverlabel=dict(namelength=-1),
+                                    mode='lines',
+                                    line=dict(width=2),
+                                    )
+                data.append(trace3)
+                h1 = ['Threshold: ' + value for value in rocthresh[i].astype(str)]
+                trace = go.Scatter(x=fpr[i], y=tpr[i], name=confidence[i],
+                                   hovertext=h1,
+                                   hoverinfo='text',
+                                   hoverlabel=dict(namelength=-1),
+                                   mode='lines',
+                                   line=dict(width=2),
+                                   )
+                roc.append(trace)
+
+            layout = go.Layout(title='PR curve',
+                               xaxis=dict(title='Recall'),
+                               yaxis=dict(title='Precision'))
+
+            fig = go.Figure(data=data, layout=layout)
+
+
+            layout = go.Layout(title='Extension of ROC to multi-class',
+                               xaxis=dict(title='fpr'),
+                               yaxis=dict(title='tpr'))
+
+            fig2 = go.Figure(data=roc, layout=layout)
+        graph = dcc.Graph(figure=fig)
+
+
+        return html.Div(graph), html.Div(dcc.Graph(figure=fig2))
