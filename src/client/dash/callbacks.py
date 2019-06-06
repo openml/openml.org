@@ -12,7 +12,7 @@ import dash_table_experiments as dt
 import numpy as np
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
-
+from random import randint
 
 def register_callbacks(app):
     """
@@ -20,6 +20,8 @@ def register_callbacks(app):
     :param app: Dash application
 
     """
+
+    # Callback #1
 
     @app.callback([Output('page-content', 'children'),
                    Output('intermediate-value', 'children')],
@@ -44,24 +46,22 @@ def register_callbacks(app):
         elif pathname is not None and 'dashboard/task' in pathname:
             id = int(re.search('task/(\d+)', pathname).group(1))
             layout, taskdf = get_layout_from_task(id, app)
-            out = taskdf.to_json(date_format='iso', orient='split')
-            return layout, out
+            cache = taskdf.to_json(date_format='iso', orient='split')
+            return layout, cache
         elif pathname is not None and 'dashboard/flow' in pathname:
             id = int(re.search('flow/(\d+)', pathname).group(1))
             layout, flowdf = get_layout_from_flow(id,app)
-            out = flowdf.to_json(date_format='iso', orient='split')
-            return layout, out
+            cache = flowdf.to_json(date_format='iso', orient='split')
+            return layout, cache
         elif pathname is not None and 'dashboard/run' in pathname:
             id = int(re.search('run/(\d+)', pathname).group(1))
             layout, rundf = get_layout_from_run(id, app)
-            out = rundf.to_json(date_format='iso', orient='split')
-            return layout, out
+            cache = rundf.to_json(date_format='iso', orient='split')
+            return layout, cache
         else:
-            index_page = html.Div([
-                html.H1('Welcome to dash dashboard'),
-            ])
-            out = df.to_json(date_format='iso', orient='split')
-            return index_page, out
+            index_page = html.Div([html.H1('Welcome to dash dashboard')])
+            cache = df.to_json(date_format='iso', orient='split')
+            return index_page, cache
 
     @app.callback(
         Output('distribution', 'children'),
@@ -89,44 +89,92 @@ def register_callbacks(app):
         df = pd.read_json(df_json, orient='split')
         dff = pd.DataFrame(rows)
         target = dff[dff["Target"] == "true"]["Attribute"].values[0]
+        target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
         attributes = []
-        T = 20
-        target_vals = list(set(df[target]))
-        N = len(target_vals)
-        color = ['hsl(' + str(h) + ',50%' + ',50%)' for h in np.linspace(0, 360, N)]
-        df[target] = pd.Categorical(df[target]).codes
+        if target_type == "numeric" and radio1 == "target":
+            print(target_type)
+            df[target] = pd.cut(df[target], 200).astype(str)
+
+        N = len(df[target].unique())
+        color = ['hsl(' + str(h) + ',50%' + ',50%)' for h in np.linspace(0, 240, N)]
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
             attributes = dff["Attribute"].values
             types = dff["DataType"].values
+
+        target_vals = list(set(df[target]))
         if len(attributes) == 0:
             fig = tools.make_subplots(rows=1, cols=1)
             trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
             fig.append_trace(trace1, 1, 1)
         else:
             numplots = len(attributes)
-            fig = tools.make_subplots(rows=numplots, cols=1)
+            fig = tools.make_subplots(rows=numplots, cols=1, subplot_titles=tuple(attributes))
             i = 0
             for attribute in attributes:
-                if types[i]=="numeric":
-                    data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]), name=target_vals[i],
-                                       nbinsx=10, histfunc="count",
-                                       marker=dict(color=color[i], cmin=0, cmax=max(df[target]),
-                                                   colorbar=dict(thickness=T)))for i in range(int(N))]
-                    i = i + 1
-                    for trace in data:
-                        fig.append_trace(trace, i, 1)
-
+                if i == 0:
+                    COLORBAR = True
                 else:
-                    data=[go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]), name=target_vals[i],
-                                       marker=dict(color=color[i], cmin=0, cmax=max(df[target]), colorbar=dict(thickness=T)))for i in range(int(N))] # marker = dict(cmin = 0, color =i,  size= 20, cmax = 16, colorbar = dict(x=1))
-                    i = i + 1
-                    for trace in data:
-                        fig.append_trace(trace, i, 1)
+                    COLORBAR = False
 
+                if types[i] == "numeric":
+                    if radio1 == "target":
+                        data = [go.Histogram(x=sorted(sorted(df[attribute][df[target] == target_vals[i]])),
+                                             name= str(target_vals[i]),
+                                             nbinsx=10, histfunc="count", showlegend=COLORBAR,
+                                             marker=dict(color=color[i],
+                                                         cmin=0,
+                                                         showscale=False,
+                                                         colorbar=dict(thickness=20,
+                                                                       tickvals=color,
+                                                                       ticktext=target_vals
+                                                                       )))for i in range(int(N))]
+                        i = i + 1
+                        for trace in data:
+                            fig.append_trace(trace, i, 1)
+                    else:
+                        trace1 = {
+                            "type": 'violin',
+                            "showlegend": False,
+                            "x": df[attribute],
+                            "box": {
+                                "visible": True
+                            },
+                            "line": {
+                                "color": 'black'
+                            },
+                            "meanline": {
+                                "visible": True
+                            },
+                            "fillcolor": 'steelblue',
+                            "name": "",
+                            "opacity": 0.6,
+                            #"x0": attribute
+                        }
+                        i = i + 1
+                        fig.append_trace(trace1, i, 1)
+                else:
+                    if radio1 == "target":
+                        data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]),
+                                             name= str(target_vals[i]),
+                                             showlegend=COLORBAR,
+                                             marker=dict(color=color[i],
+                                                         cmin=0,
+                                                         showscale=False,
+                                                         colorbar=dict(thickness=20,
+                                                                       tickvals=color,
+                                                                       ticktext=target_vals
+                                                                       )))for i in range(int(N))]
+                        i = i + 1
+                        for trace in data:
+                            fig.append_trace(trace, i, 1)
+                    else:
+                        i = i + 1
+                        trace1 = go.Histogram(x=sorted(df[attribute]), name=attribute,  showlegend=False, marker=dict(color='steelblue'))
+                        fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(hovermode='closest', showlegend = False, height = 200+(len(attributes)*100)) # barmode='stack')
-        return html.Div(dcc.Graph(figure=fig), style={'overflowY': 'scroll', 'height': 500})
+        fig['layout'].update(hovermode='closest',height=300+(len(attributes)*100))  # barmode='stack')
+        return html.Div(dcc.Graph(figure=fig))
 
     @app.callback(
         [Output('fi', 'children'),
@@ -151,13 +199,13 @@ def register_callbacks(app):
             y = pd.Categorical(df[target_attribute]).codes
             x = te.fit_transform(x, y)
             x = clean_dataset(x)
-            rf = RandomForestClassifier()
+            rf = RandomForestClassifier(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
         else:
             y = df[target_attribute]
             x = te.fit_transform(x, y)
             x = clean_dataset(x)
-            rf = RandomForestRegressor()
+            rf = RandomForestRegressor(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
 
         fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
@@ -168,6 +216,7 @@ def register_callbacks(app):
         figure = go.Figure(data=[trace], layout=layout)
         top_features = df[fi['index'][0:5].values]
         top_features['target'] = y
+        C = 'Portland'
         numeric = 0
         numericals =[]
         nominals =[]
@@ -191,7 +240,7 @@ def register_callbacks(app):
             if numeric == 1:
                 matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                          index='target',
-                                                         colormap='Portland', colormap_type='seq', height=1200, width=1500)
+                                                         colormap=C, colormap_type='seq', height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
 
 
@@ -202,7 +251,7 @@ def register_callbacks(app):
                         {'label': column,
                          'values': list(d[column].values)} for column in d.columns],
                     line={'color': y,
-                          'colorscale': 'Portland'},
+                          'colorscale': C},
                     hoveron='color',
                     hoverinfo='count+probability',
                     arrangement='freeform'
@@ -220,7 +269,7 @@ def register_callbacks(app):
                 df_num['target'] = y
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
-                                                     colormap='Portland', colormap_type='seq', height=1200, width=1500)
+                                                     colormap=C, colormap_type='seq', height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
             else:
                 graph = html.P("No numericals found")
@@ -229,12 +278,14 @@ def register_callbacks(app):
                 print(top_nominals)
                 df_nom = df[top_nominals]
                 df_nom['target'] = y
+                if target_type == "numeric":
+                    df_nom['target'] = pd.cut(df_nom['target'], 200).astype(str)
                 parcats = [go.Parcats(
                     dimensions=[
                         {'label': column,
                          'values': list(df_nom[column].values)} for column in df_nom.columns],
-                    line={'color': df_nom['target'],
-                          'colorscale': 'Portland'},
+                    line={'color': pd.Categorical(df_nom['target']).codes,
+                          'colorscale': C},
                     hoveron='color',
                     hoverinfo='count+probability',
                     arrangement='freeform'
