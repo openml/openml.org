@@ -25,8 +25,7 @@ def get_layout_from_data(data_id):
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
         html.H3('List of attributes', style={'text-align': 'left','color':'black'}),
-        html.P('Choose one or more attributes for violin plot(numeric) and'
-               ' histogram (nominal)', style={'text-align': 'left', 'color': 'gray'}),
+        html.P('Choose one or more attributes for distribution plot', style={'text-align': 'left', 'color': 'gray'}),
         # 3. Table with meta data
         html.Div([
             # 3a. Table with meta data on left side
@@ -36,7 +35,7 @@ def get_layout_from_data(data_id):
                     columns=[{"name": i, "id": i} for i in metadata.columns],
                     row_selectable="multi",
                     row_deletable=False,
-
+                    filtering=False,
                     sorting=True,
                     selected_rows=[0],
                     id='datatable',
@@ -45,7 +44,7 @@ def get_layout_from_data(data_id):
                                 'overflow': 'hidden','textOverflow': 'ellipsis'},
 
                     style_table={
-                        'maxHeight': '500px',
+                        'minHeight': '500px',
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
@@ -72,15 +71,15 @@ def get_layout_from_data(data_id):
                 html.Div(
                     dcc.RadioItems(
                         id='radio1',
-                        options=[{'label': "Target based", "value": "target"},
-                                 {'label': "Individual", "value": "solo"},],
+                        options=[{'label': "Target based distribution", "value": "target"},
+                                 {'label': "Individual distribution", "value": "solo"},],
                         value="target"
 
                     )),
                 html.Div(
-                    id='distribution'),
+                    id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position':'absolute'}),
             ],  style={'width': '49%', 'display': 'inline-block',
-                       'position': 'relative'}),
+                       'position': 'absolute'}),
         ]),
         # 4. Adding tabs for multiple plots
         #    Add another tab for a new plot
