@@ -3,6 +3,9 @@ import pandas as pd
 from openml import datasets, tasks, runs, flows, config, evaluations, study
 import scipy.stats
 from sklearn.neighbors.kde import KernelDensity
+import time
+
+
 def clean_dataset(df):
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
     out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
@@ -12,7 +15,7 @@ def clean_dataset(df):
 def get_data_metadata(data_id):
     data = datasets.get_dataset(data_id)
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-    is_target=[]
+    is_target = []
     for name in features["name"]:
         if name == data.default_target_attribute:
             is_target.append("true")
@@ -36,18 +39,13 @@ def get_data_metadata(data_id):
                                  "number_missing_values": "Missing values",
                                      }, inplace=True)
     metafeatures.sort_values(by='Target', ascending=False, inplace=True)
-    nominals = []
-    numericals = []
-    for index, row in features.iterrows():
-        if row["data_type"] == "nominal":
-            nominals.append(row["name"])
-        else:
-            numericals.append(row["name"])
+    numericals = list(metafeatures["Attribute"][metafeatures["DataType"] == "numeric"])
+    nominals = list(metafeatures["Attribute"][metafeatures["DataType"] == "nominal"])
+
     X, y, categorical, attribute_names = data.get_data()
     df = pd.DataFrame(X, columns=attribute_names)
     entropy =[]
     for column in metafeatures['Attribute']:
-        df[column].fillna(df[column].mode(), inplace=True)
         if column in nominals:
             count = df[column].value_counts()
             ent = scipy.stats.entropy(count)
@@ -55,6 +53,7 @@ def get_data_metadata(data_id):
         else:
             entropy.append(0)
     metafeatures['entropy'] = entropy
+    df.to_pickle('df.pkl')
     return df, metafeatures, numericals, nominals
 
 

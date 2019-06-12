@@ -1,6 +1,6 @@
 from flask import Flask
 import os
-from src.client.dash.dashapp import create_dash_app
+from src.dash.dashapp import create_dash_app
 from flask import send_from_directory
 
 app = Flask(__name__, static_url_path='', static_folder='src/client')
@@ -18,6 +18,7 @@ def serve(path):
         return send_from_directory('src/client', path)
     else:
         return send_from_directory('src/client', 'index.html')
+
 
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT", 5000)), debug=True)

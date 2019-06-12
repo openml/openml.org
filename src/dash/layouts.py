@@ -7,6 +7,7 @@ import numpy as np
 from .helpers import *
 import dash_table_experiments as dte
 
+
 def get_layout_from_data(data_id):
     """
 
@@ -17,14 +18,14 @@ def get_layout_from_data(data_id):
 
     """
     # Get data and metadata
-    df, metadata, numericals, nominals = get_data_metadata(data_id)
+    df, metadata, numerical_data, nominal_data = get_data_metadata(data_id)
 
     # Define layout
     layout = html.Div([
         # 1. Hidden div to cache df and use in different callbacks
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
-        html.H3('List of attributes', style={'text-align': 'left','color':'black'}),
+        html.H3('List of attributes', style={'text-align': 'left', 'color': 'black'}),
         html.P('Choose one or more attributes for distribution plot', style={'text-align': 'left', 'color': 'gray'}),
         # 3. Table with meta data
         html.Div([
@@ -41,22 +42,25 @@ def get_layout_from_data(data_id):
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'rgb(248, 248, 248)',
                                 'minWidth': '150px', 'width': '150px', 'maxWidth': '150px',
-                                'overflow': 'hidden','textOverflow': 'ellipsis'},
+                                'overflow': 'hidden', 'textOverflow': 'ellipsis'},
 
                     style_table={
                         'minHeight': '500px',
+                        'maxHeight': '500px',
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
                     style_as_list_view=False,
                     style_data_conditional=[
                         {
-                        "if": {"row_index": 0},
-                        "backgroundColor": "rgb(0, 0, 255)",
-                        'color': 'white'
+                            "if": {"row_index": 0},
+                            "backgroundColor": "rgb(0, 0, 255)",
+                            'color': 'white'
                         },
-                        {'if': {'filter': '"Missing values" > num(0)' },
-                              'backgroundColor': 'rgb(200, 0, 0)','color': 'white',},
+                        {
+                            'if': {'filter': '"Missing values" > num(0)'},
+                            'backgroundColor': 'rgb(200, 0, 0)', 'color': 'white'
+                        },
 
 
                     ]
@@ -67,7 +71,6 @@ def get_layout_from_data(data_id):
             # 3b. Distribution graphs on the right side
             #     Callback = distribution_plot
             html.Div([
-
                 html.Div(
                     dcc.RadioItems(
                         id='radio1',
@@ -89,10 +92,10 @@ def get_layout_from_data(data_id):
                 html.Div([
                     html.Div(
                         dcc.RadioItems(
-                            id = 'radio',
-                            options = [{'label': "Top five feature interactions", "value":"top"},
-                                       {'label': "Top five numeric feature interactions", "value":"numeric"},
-                                       {'label': "Top five nominal feature interactions", "value":"nominal"}],
+                            id='radio',
+                            options=[{'label': "Top five feature interactions", "value": "top"},
+                                     {'label': "Top five numeric feature interactions", "value": "numeric"},
+                                     {'label': "Top five nominal feature interactions", "value": "nominal"}],
                             value="top"
 
                         )),
@@ -101,49 +104,37 @@ def get_layout_from_data(data_id):
 
                 ])
             ]),
-            dcc.Tab(label='Scatter plot',
-                children=[
-
+            dcc.Tab(label='Scatter plot', children=[
                 html.Div([
-
-                html.Div(dcc.Dropdown(
+                    html.Div(dcc.Dropdown(
                         id='dropdown1',
                         options=[
-                            {'label': i , 'value': i} for i in numericals
+                            {'label': i, 'value': i} for i in numerical_data
                         ],
-
-                    multi=False,
-                    clearable=False,
-                    value=numericals[0]
+                        multi=False,
+                        clearable=False,
+                        value=numerical_data[0]
                     )),
-
-                html.Div(dcc.Dropdown(
+                    html.Div(dcc.Dropdown(
                         id='dropdown2',
                         options=[
-                            {'label': i, 'value': i} for i in numericals
+                            {'label': i, 'value': i} for i in numerical_data
                         ],
-
-                    multi=False,
-                    clearable=False,
-                   value=numericals[0]
+                        multi=False,
+                        clearable=False,
+                        value=numerical_data[0]
 
                     )),
-
-                html.Div(dcc.Dropdown(
-                    id='dropdown3',
-                    options=[
-                        {'label': i, 'value': i} for i in nominals
-                    ],
-
-                    multi=False,
-                    clearable=False,
-
-                  value=nominals[0]
-
-                )),
-
-             html.Div(id='scatter_plot'),])
-            ])if numericals else dcc.Tab(label='Scatter Plot',children=[html.Div(html.P('No numericals found'))])
+                    html.Div(dcc.Dropdown(
+                        id='dropdown3',
+                        options=[
+                            {'label': i, 'value': i} for i in nominal_data],
+                        multi=False,
+                        clearable=False,
+                        value=nominal_data[0])),
+                    html.Div(id='scatter_plot'), ])
+            ])if numerical_data else dcc.Tab(label='Scatter Plot',
+                                             children=[html.Div(html.P('No numerical_data found'))])
         ],
         )], className="container")
     return layout, df
@@ -275,6 +266,7 @@ def get_layout_from_flow(id, app):
     ])
     return layout, df
 
+
 def get_layout_from_run(run_id,app):
     items = vars(runs.get_run(int(run_id)))
 
@@ -309,7 +301,7 @@ def get_layout_from_run(run_id,app):
                 filterable=True,
                 sortable=True,
                 selected_row_indices=[0],
-                max_rows_in_viewport=10,
+                max_rows_in_viewport=15,
                 id='runtable',
             ), style={'width': '49%', 'display': 'inline-block',
                        'position': 'relative'}
@@ -319,7 +311,7 @@ def get_layout_from_run(run_id,app):
         html.Div(
             id='runplot',
             style={'width': '49%', 'display': 'inline-block',
-                   'position': 'absolute'}
+                   'position': 'absolute', 'overflowY': 'scroll', 'height': 500}
         ),
     ]),
         dcc.Tabs(id="tabs", children=[
