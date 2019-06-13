@@ -157,6 +157,7 @@ def register_data_callbacks(app):
         else:
             return [], []
 
+
         start = time.time()
         dff = pd.DataFrame(rows)
         target_attribute = dff[dff["Target"] == "true"]["Attribute"].values[0]
@@ -186,27 +187,40 @@ def register_data_callbacks(app):
         layout = go.Layout(title="RandomForest feature importance", autosize=False,
                            margin=dict(l=500), width=1200, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
-        top_features = df[fi['index'][0:5].values]
-        top_features['target'] = y
+
+
         C = 'Portland'
-        numeric = 0
 
         numericals = list(dff["Attribute"][dff["DataType"] == "numeric"])
         nominals = list(dff["Attribute"][dff["DataType"] == "nominal"])
 
-        for attribute in top_features.columns:
-            dtype = dff[dff["Attribute"] == attribute]["DataType"].values
-            if "numeric" in dtype:
-                numeric = 1
-                break
-            else:
-                numeric = 0
+
 
         top_numericals = (fi['index'][fi['index'].isin(numericals)][:5])
         top_nominals = (fi['index'][fi['index'].isin(nominals)][:5])
+        df['target'] = df[target_attribute]
+        if target_type == "numeric":
+            top_features = df[fi['index'][0:5].values]
+            df['target'] = y
+            df['target'] = pd.cut(df['target'], 200).astype(str)
+            cat = df['target'].str.extract('\((.*),', expand=False).astype(float)
+            df['bin'] = pd.Series(cat)
+            df.sort_values(by='bin', inplace=True)
+            df.drop('bin', axis=1, inplace=True)
+        else:
+            try:
+                df['target'] = df['target'].astype(int)
+            except:
+                pass
+
+            df.sort_values(by='target', inplace=True)
 
         if radio == "top":
-            if numeric == 1:
+            top_features = df[fi['index'][0:5].values]
+            top_features['target'] = df['target']
+
+            if len(top_numericals):
+
                 matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                      index='target',
                                                      colormap=C, colormap_type='seq', height=1200, width=1500)
@@ -235,7 +249,7 @@ def register_data_callbacks(app):
             if len(top_numericals):
                 print(top_numericals)
                 df_num = df[top_numericals]
-                df_num['target'] = y
+                df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
                                                      colormap=C, colormap_type='seq', height=1200, width=1500)
@@ -246,9 +260,8 @@ def register_data_callbacks(app):
             if len(top_nominals):
                 print(top_nominals)
                 df_nom = df[top_nominals]
-                df_nom['target'] = y
-                if target_type == "numeric":
-                    df_nom['target'] = pd.cut(df_nom['target'], 200).astype(str)
+                df_nom['target'] = df['target']
+
                 parcats = [go.Parcats(
                     dimensions=[
                         {'label': column,
