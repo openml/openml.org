@@ -37,6 +37,7 @@ def register_data_callbacks(app):
             return [], []
         # df = pd.read_json(df_json, orient='split')
         df = pd.read_pickle('df.pkl')
+
         dff = pd.DataFrame(rows)
         end = time.time()
         print("to get cached data it takes")
@@ -44,11 +45,23 @@ def register_data_callbacks(app):
         target = dff[dff["Target"] == "true"]["Attribute"].values[0]
         target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
         attributes = []
+        df.sort_values(by=target, inplace=True)
+        print(df.head())
 
         if target_type == "numeric" and radio1 == "target":
             print(target_type)
-            df[target] = pd.cut(df[target], 200).astype(str)
+        if radio1 == "target":
 
+            if target_type == "numeric":
+                df[target] = pd.cut(df[target], 200).astype(str)
+                cat = df[target].str.extract('\((.*),', expand=False).astype(float)
+                df['bin'] = pd.Series(cat)
+                df.sort_values(by='bin', inplace=True)
+            else:
+                df.sort_values(by=target, inplace=True)
+                df[target] = df[target].astype(str)
+            target_vals = list(df[target].unique())
+            print(target_vals)
         N = len(df[target].unique())
         color = ['hsl(' + str(h) + ',50%' + ',50%)' for h in np.linspace(0, 240, N)]
         if len(selected_row_indices) != 0:
@@ -56,7 +69,6 @@ def register_data_callbacks(app):
             attributes = dff["Attribute"].values
             types = dff["DataType"].values
 
-        target_vals = list(set(df[target]))
         if len(attributes) == 0:
             fig = tools.make_subplots(rows=1, cols=1)
             trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
