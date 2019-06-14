@@ -59,9 +59,20 @@ def get_layout_from_data(data_id):
                         },
                         {
                             'if': {'filter': '"Missing values" > num(0)'},
-                            'backgroundColor': 'rgb(200, 0, 0)', 'color': 'white'
+                            'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
                         },
-
+                        {
+                            'if': {'filter': '"Missing values" > num(10)'},
+                            'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
+                        },
+                        {
+                            'if': {'filter': '"Missing values" > num(50)'},
+                            'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
+                        },
+                        {
+                            'if': {'filter': '"Missing values" > num(100)'},
+                            'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
+                        },
 
                     ]
 
