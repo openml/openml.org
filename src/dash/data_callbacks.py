@@ -17,9 +17,10 @@ def register_data_callbacks(app):
          Input('url', 'pathname'),
          Input('datatable', 'data'),
          Input('datatable', 'selected_rows'),
-         Input('radio1', 'value')
+         Input('radio1', 'value'),
+         Input('stack', 'value')
          ])
-    def distribution_plot(df_json, pathname, rows, selected_row_indices, radio_value):
+    def distribution_plot(df_json, pathname, rows, selected_row_indices, radio_value, stack):
         """
 
         :param df_json: cached data
@@ -38,6 +39,11 @@ def register_data_callbacks(app):
         target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
         attributes = []
         df.sort_values(by=target, inplace=True)
+        print(stack)
+        if stack == "yes":
+            barmode = "stack"
+        else:
+            barmode = "group"
         if radio_value == "target":
             if target_type == "numeric":
                 df[target] = pd.cut(df[target], 1000).astype(str)
@@ -49,7 +55,8 @@ def register_data_callbacks(app):
                 df[target] = df[target].astype(str)
             target_vals = list(df[target].unique())
         N = len(df[target].unique())
-        color = ['hsl(' + str(h) + ',50%' + ',50%)' for h in np.linspace(0, 240, N)]
+        color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+        print(color)
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
             attributes = dff["Attribute"].values
@@ -74,6 +81,10 @@ def register_data_callbacks(app):
                                              name=str(target_vals[i]),
                                              nbinsx=20, histfunc="count", showlegend=showlegend,
                                              marker=dict(color=color[i],
+                                                         line=dict(
+                                                             color=color[i],
+                                                             width=1.5,
+                                                         ),
                                                          cmin=0,
                                                          showscale=False,
                                                          colorbar=dict(thickness=20,
@@ -124,7 +135,7 @@ def register_data_callbacks(app):
                                               marker=dict(color='steelblue'))
                         fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100),barmode='stack')  # barmode='stack')
+        fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100),barmode=barmode)  # barmode='stack')
         return html.Div(dcc.Graph(figure=fig))
 
     @app.callback(
