@@ -45,8 +45,8 @@ def get_layout_from_data(data_id):
                                 'overflow': 'hidden', 'textOverflow': 'ellipsis'},
 
                     style_table={
-                        'minHeight': '500px',
-                        'maxHeight': '500px',
+                        'minHeight': '600px',
+                        'maxHeight': '600px',
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
@@ -89,6 +89,14 @@ def get_layout_from_data(data_id):
                                  {'label': "Individual distribution", "value": "solo"},],
                         value="target"
 
+                    )),
+                html.Div(
+                    dcc.RadioItems(
+                        id='stack',
+                        options=[
+                            {'label': 'Stacked', 'value': 'yes'},
+                        ],
+                        value='no'
                     )),
                 html.Div(
                     id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position':'absolute'}),
