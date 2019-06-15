@@ -20,8 +20,10 @@ def register_task_callbacks(app):
                    ],
                   [Input('intermediate-value', 'children'),
                    Input('url', 'pathname'),
-                   Input('metric', 'value')])
-    def update_task_plots(df_json, pathname, metric):
+                   Input('metric', 'value'),
+                   Input('button','n_clicks')
+                   ])
+    def update_task_plots(df_json, pathname, metric,n_clicks):
         """
         :param df_json: json
             task df cached by display_page callback
@@ -31,19 +33,32 @@ def register_task_callbacks(app):
             fig : Scatter plot of top 100 flows for the selected function
         """
         if pathname is not None and '/dashboard/task' in pathname:
-            print('entered task plot')
+            print('entered task plot', n_clicks)
         else:
             return []
+        if n_clicks is None:
+            n_clicks = 0
         # List of evaluations to dataframe.
         task_id = int(re.search('task/(\d+)', pathname).group(1))
-        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], sort="desc",
-                                                    size=10000)
+        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], sort="desc",offset=n_clicks*100,
+                                                    size=100)
+        df_old = pd.read_pickle('task.pkl')
         if not eval_objects:
-            return []
-        rows = []
-        for id, e in eval_objects.items():
-            rows.append(vars(e))
-        df = pd.DataFrame(rows)
+            if df_old.empty:
+                return []
+            else:
+                df = df_old
+        else:
+            rows = []
+            for id, e in eval_objects.items():
+                rows.append(vars(e))
+                df_new = pd.DataFrame(rows)
+            if df_old.empty:
+                df = df_new
+            else:
+                df = df_old.append(df_new)
+
+        df.to_pickle('task.pkl')
         # METHOD 1 of top 100 flows
         # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
         top_runs = (df.groupby(['flow_name'], sort=False).head(100))
@@ -82,7 +97,7 @@ def register_task_callbacks(app):
                                        colorscale='Earth', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=2 * evals.shape[0],
+        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=evals.shape[0],
                            hovermode='closest',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(

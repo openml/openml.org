@@ -196,7 +196,9 @@ def get_layout_from_task(taskid, app):
                 dcc.Tab(label='People', children=[html.Div(id='tab2'),
             ]),
 
-            ])
+            ]),
+            html.Div(html.Button('Fetch next 10k runs', id='button'))
+
         ]),
     ])
 
