@@ -1,23 +1,16 @@
 import plotly.graph_objs as go
 import re
-from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run
-from plotly import tools
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 from .helpers import *
 import dash_table_experiments as dt
-import numpy as np
-from sklearn.metrics import precision_recall_curve, roc_curve
-from sklearn.preprocessing import label_binarize
 import time
-from .data_callbacks import register_data_callbacks
-
 
 def register_task_callbacks(app):
-    @app.callback([Output('tab1', 'children'),
-                   Output('tab2', 'children'),
-                   ],
+    @app.callback(Output('tab1', 'children'),
+                   #Output('tab2', 'children'),
+
                   [Input('intermediate-value', 'children'),
                    Input('url', 'pathname'),
                    Input('metric', 'value'),
@@ -32,6 +25,7 @@ def register_task_callbacks(app):
         :return:
             fig : Scatter plot of top 100 flows for the selected function
         """
+        N_RUNS = 1000
         if pathname is not None and '/dashboard/task' in pathname:
             print('entered task plot', n_clicks)
         else:
@@ -40,9 +34,15 @@ def register_task_callbacks(app):
             n_clicks = 0
         # List of evaluations to dataframe.
         task_id = int(re.search('task/(\d+)', pathname).group(1))
-        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], sort="desc",offset=n_clicks*100,
-                                                    size=100)
-        df_old = pd.read_pickle('task.pkl')
+
+        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], sort="desc",offset=n_clicks*N_RUNS,
+                                                    size=N_RUNS)
+
+        try:
+            df_old = pd.read_pickle('task.pkl')
+        except:
+            df_old = pd.DataFrame()
+
         if not eval_objects:
             if df_old.empty:
                 return []
@@ -60,9 +60,11 @@ def register_task_callbacks(app):
 
         df.to_pickle('task.pkl')
         # METHOD 1 of top 100 flows
-        # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
-        top_runs = (df.groupby(['flow_name'], sort=False).head(100))
-        evals = top_runs[top_runs.groupby(['flow_name']).ngroup() < 100]
+        # # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
+        # top_runs = (df.groupby(['flow_name'], sort=False).head(100))
+        # evals = top_runs[top_runs.groupby(['flow_name']).ngroup() < 100]
+        evals = df
+        print(evals.shape)
 
         run_link = []
         tick_text = []
@@ -71,8 +73,6 @@ def register_task_callbacks(app):
 
         for run_id in evals["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
-            run = runs.get_run(int(run_id), ignore_cache=False)
-            uploader.append(run.uploader_name)
             run_link.append(link)
 
         for flow_id in evals["flow_id"].values:
@@ -97,7 +97,7 @@ def register_task_callbacks(app):
                                        colorscale='Earth', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, height=evals.shape[0],
+        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, # height=2*evals.shape[0],
                            hovermode='closest',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
@@ -106,7 +106,56 @@ def register_task_callbacks(app):
                            ))
         fig = go.Figure(data, layout)
 
+
+        return html.Div(dcc.Graph(figure=fig)) #,
+    @app.callback(Output('tab2', 'children'),
+                   [Input('intermediate-value', 'children'),
+                   Input('url', 'pathname'),
+                   Input('metric', 'value'),
+                   Input('button','n_clicks')
+                   ])
+    def update_leader_board(df_json, pathname, metric,n_clicks):
+        N_RUNS = 10000
+        if pathname is not None and '/dashboard/task' in pathname:
+            print('entered leader plot', n_clicks)
+        else:
+            return []
+        if n_clicks is None:
+            n_clicks = 0
+        # List of evaluations to dataframe.
+        task_id = int(re.search('task/(\d+)', pathname).group(1))
+
+        eval_objects = evaluations.list_evaluations(function=metric, task=[int(task_id)], sort="desc",
+                                                    size=N_RUNS)
+        rows=[]
+        for id, e in eval_objects.items():
+            rows.append(vars(e))
+            df= pd.DataFrame(rows)
+        # METHOD 1 of top 100 flows
+        # # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
+        top_runs = (df.groupby(['flow_name'], sort=False).head(100))
+        evals = top_runs[top_runs.groupby(['flow_name']).ngroup() < 100]
         # FIG 2
+        start = time.time()
+        uploader =[]
+        for run_id in evals["run_id"].values:
+            run = runs.get_run((run_id), ignore_cache=False)
+            uploader.append(run.uploader_name)
+
+        end = time.time()
+        print("time for getting evaluation", end-start)
+        tick_text=[]
+        run_link=[]
+        for run_id in evals["run_id"].values:
+            link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
+            run_link.append(link)
+
+        for flow_id in evals["flow_id"].values:
+            link = "<a href=\"https://www.openml.org/f/" + str(flow_id) + "/\">"
+            tick_text.append(link)
+
+
+
         evals['upload_time'] = pd.to_datetime(evals['upload_time'])
         evals['upload_time'] = evals['upload_time'].dt.date
         evals['uploader'] = uploader
@@ -160,4 +209,5 @@ def register_task_callbacks(app):
                 id='tasktable'
             ),
         )
-        return html.Div(dcc.Graph(figure=fig)), html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
+        return html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
+

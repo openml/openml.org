@@ -6,7 +6,7 @@ import json
 import numpy as np
 from .helpers import *
 import dash_table_experiments as dte
-
+import os
 
 def get_layout_from_data(data_id):
     """
@@ -91,10 +91,11 @@ def get_layout_from_data(data_id):
 
                     )),
                 html.Div(
-                    dcc.RadioItems(
+                        dcc.RadioItems(
                         id='stack',
                         options=[
-                            {'label': 'Stacked', 'value': 'yes'},
+                            {'label': 'Stack', 'value': 'yes'},
+                            {'label': 'Un-stack', 'value': 'no'},
                         ],
                         value='no'
                     )),
@@ -171,6 +172,10 @@ def get_layout_from_task(taskid, app):
     encoding = response.info().get_content_charset('utf8')
     evaluations = json.loads(response.read().decode(encoding))
     df = pd.DataFrame.from_dict(evaluations["evaluation_measures"]["measures"])
+    try:
+        os.remove('task.pkl')
+    except:
+        pass
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
@@ -191,13 +196,16 @@ def get_layout_from_task(taskid, app):
             ),
             #2 Scatter plot of flow vs metric
             # Scatter plot
+
             dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='Evaluations', children=[html.Div( id='tab1')]),
+                dcc.Loading(fullscreen=True, children=[
+                    dcc.Tab(label='Evaluations', children=[html.Div( id='tab1')])]),
                 dcc.Tab(label='People', children=[html.Div(id='tab2'),
             ]),
 
             ]),
-            html.Div(html.Button('Fetch next 10k runs', id='button'))
+            html.Div(html.Button('Fetch next 1000 runs', id='button')),
+
 
         ]),
     ])
