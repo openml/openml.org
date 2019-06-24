@@ -20,8 +20,8 @@ def register_run_callbacks(app):
         Output('runplot', 'children'),
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname'),
-         Input('runtable', 'rows'),
-         Input('runtable', 'selected_row_indices'),
+         Input('runtable', 'data'),
+         Input('runtable', 'selected_rows'),
          ])
     def run_plot(df_json, pathname, rows, selected_row_indices):
         """
@@ -32,18 +32,21 @@ def register_run_callbacks(app):
         :param selected_row_indices: selected rows of the feature table
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
-        print('entered run update #1')
+
 
         if '/dashboard/run' in pathname and df_json is not None:
-            print('entered run update')
+            print('entered run update #1')
         else:
             return [], []
         df = pd.read_json(df_json, orient='split')
         rows = pd.DataFrame(rows)
 
+
         if len(selected_row_indices) != 0:
+
             selected_rows = rows.loc[selected_row_indices]["evaluations"].values
             numplots = len(selected_rows)
+
             i = numplots
             fig = tools.make_subplots(rows=numplots, cols=1)
             for metric in selected_rows:

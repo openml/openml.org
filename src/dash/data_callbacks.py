@@ -39,7 +39,6 @@ def register_data_callbacks(app):
         target_type = (dff[dff["Target"] == "true"]["DataType"].values[0])
         attributes = []
         df.sort_values(by=target, inplace=True)
-        print(stack)
         if stack == "yes":
             barmode = "stack"
         else:
@@ -56,7 +55,6 @@ def register_data_callbacks(app):
             target_vals = list(df[target].unique())
         N = len(df[target].unique())
         color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
-        print(color)
         if len(selected_row_indices) != 0:
             dff = dff.loc[selected_row_indices]
             attributes = dff["Attribute"].values
@@ -228,7 +226,6 @@ def register_data_callbacks(app):
                 graph = dcc.Graph(figure=fig)
         elif radio == "numeric":
             if len(top_numericals):
-                print(top_numericals)
                 df_num = df[top_numericals]
                 df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
@@ -239,7 +236,6 @@ def register_data_callbacks(app):
                 graph = html.P("No numericals found")
         elif radio == "nominal":
             if len(top_nominals):
-                print(top_nominals)
                 df_nom = df[top_nominals]
                 df_nom['target'] = df['target']
 
