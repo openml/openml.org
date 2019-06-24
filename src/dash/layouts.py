@@ -7,6 +7,7 @@ import numpy as np
 from .helpers import *
 import dash_table_experiments as dte
 import os
+from openml import datasets, tasks, runs, flows, config, evaluations, study
 
 def get_layout_from_data(data_id):
     """
@@ -171,11 +172,8 @@ def get_layout_from_task(taskid, app):
     :param app: Dash app for which a graph layout needs to be created based on the task
     :return:
     """
-    url = "https://www.openml.org/api/v1/json/evaluationmeasure/list"
-    response = urllib.request.urlopen(url)
-    encoding = response.info().get_content_charset('utf8')
-    evaluations = json.loads(response.read().decode(encoding))
-    df = pd.DataFrame.from_dict(evaluations["evaluation_measures"]["measures"])
+
+    measures = (evaluations.list_evaluation_measures())
     try:
         os.remove('task.pkl')
     except:
@@ -188,12 +186,12 @@ def get_layout_from_task(taskid, app):
                 [dcc.Dropdown(
                     id='metric',
                     options=[
-                        {'label': i, 'value': i} for i in df.measure.unique()
+                        {'label': i, 'value': i} for i in measures
                     ],
                     multi=False,
                     clearable=False,
                     placeholder="Select an attribute",
-                    value=df.measure.unique()[0]
+                    value=measures[0]
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
@@ -214,7 +212,7 @@ def get_layout_from_task(taskid, app):
         ]),
     ])
 
-    return layout, df
+    return layout, pd.DataFrame(measures)
 
 
 def get_layout_from_flow(id, app):
