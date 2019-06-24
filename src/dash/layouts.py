@@ -26,7 +26,8 @@ def get_layout_from_data(data_id):
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
         html.H3('List of attributes', style={'text-align': 'left', 'color': 'black'}),
-        html.P('Choose one or more attributes for distribution plot', style={'text-align': 'left', 'color': 'gray'}),
+        html.P('Choose one or more attributes for distribution plot',
+               style={'text-align': 'left', 'color': 'gray'}),
         # 3. Table with meta data
         html.Div([
             # 3a. Table with meta data on left side
@@ -35,9 +36,8 @@ def get_layout_from_data(data_id):
                     data=metadata.to_dict('records'),
                     columns=[{"name": i, "id": i} for i in metadata.columns],
                     row_selectable="multi",
+                    sort_action="native",
                     row_deletable=False,
-                    filtering=False,
-                    sorting=True,
                     selected_rows=[0],
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'rgb(248, 248, 248)',
@@ -50,7 +50,6 @@ def get_layout_from_data(data_id):
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
-                    style_as_list_view=False,
                     style_data_conditional=[
                         {
                             "if": {"row_index": 0},
@@ -58,27 +57,32 @@ def get_layout_from_data(data_id):
                             'color': 'white'
                         },
                         {
-                            'if': {'filter': '"Missing values" > num(0)'},
+                            'if': {'column_id': 'Missing values',
+                                   'filter_query': '{Missing values} > 0'
+                                   },
                             'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
                         },
                         {
-                            'if': {'filter': '"Missing values" > num(10)'},
+                            'if': {'column_id':'Missing values',
+                                           'filter_query': '{Missing values} > 10'
+                                           },
                             'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
                         },
                         {
-                            'if': {'filter': '"Missing values" > num(50)'},
+                             'if': {'column_id':'Missing values',
+                                           'filter_query': '{Missing values} > 50'
+                                           },
                             'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
                         },
                         {
-                            'if': {'filter': '"Missing values" > num(100)'},
+                            'if': {'column_id':'Missing values',
+                                           'filter_query': '{Missing values} > 100'
+                                           },
                             'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
                         },
-
-                    ]
-
+                     ]
                 ), style={'width': '49%', 'display': 'inline-block',
-                          'position': 'relative'}
-            ),
+                          'position': 'relative'}),
             # 3b. Distribution graphs on the right side
             #     Callback = distribution_plot
             html.Div([
@@ -321,18 +325,14 @@ def get_layout_from_run(run_id,app):
         # 3a. Table with meta data on left side
         html.Div([
            html.Div(
-            dte.DataTable(
-                rows=d.to_dict('records'),
-                columns=d.columns,
-                column_widths=[200, 120, 120, 120],
-                min_width=600,
-                row_selectable=True,
-                filterable=True,
-                sortable=True,
-                selected_row_indices=[0],
-                max_rows_in_viewport=15,
-                id='runtable',
-            ), style={'width': '49%', 'display': 'inline-block',
+               dt.DataTable(
+                   data=d.to_dict('records'),
+                   columns=[{"name": i, "id": i} for i in d.columns],
+                   row_selectable="multi",
+                   sort_action="native",
+                   row_deletable=False,
+                   selected_rows=[0],
+                   id='runtable'), style={'width': '49%', 'display': 'inline-block',
                        'position': 'relative'}
         ),
         # 3b. Distribution graphs on the right side.for

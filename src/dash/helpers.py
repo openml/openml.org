@@ -79,6 +79,6 @@ def get_highest_rank(df, leaderboard):
                     highest_score[row['uploader']] = score
                     if highest_rank[row['uploader']] > row['Rank']:
                         highest_rank[row['uploader']] = row['Rank']
-    leaderboard['highest_rank'] = list(highest_rank.values())
+    #leaderboard['highest_rank'] = list(highest_rank.values())
     leaderboard['Top Score'] = list(highest_score.values())
     return leaderboard

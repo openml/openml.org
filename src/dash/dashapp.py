@@ -13,8 +13,7 @@ def create_dash_app(flaskapp):
 
     """
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-    app = dash.Dash(server=flaskapp, url_base_pathname='/dashboard/',
-                    urlexternal_stylesheets=external_stylesheets)
+    app = dash.Dash(server=flaskapp, url_base_pathname='/dashboard/')
     app.config.suppress_callback_exceptions = True
     app.layout = html.Div([
                             dcc.Location(id='url', refresh=False),
