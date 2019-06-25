@@ -36,11 +36,11 @@ def register_task_callbacks(app):
 
         eval_objects = evaluations.list_evaluations(function=metric,
                                                     task=[int(task_id)],
-                                                    sort="desc",
+                                                    sort_order="desc",
                                                     offset=n_clicks*N_RUNS,
                                                     size=N_RUNS)
         try:
-            df_old = pd.read_pickle('task.pkl')
+            df_old = pd.read_pickle('task'+str(task_id)+'.pkl')
         except:
             df_old = pd.DataFrame()
 
@@ -59,7 +59,7 @@ def register_task_callbacks(app):
             else:
                 df = df_old.append(df_new)
 
-        df.to_pickle('task.pkl')
+        df.to_pickle('task'+str(task_id)+'.pkl')
         evals = df
         run_link = []
         tick_text = []
@@ -122,7 +122,7 @@ def register_task_callbacks(app):
 
         eval_objects = evaluations.list_evaluations(function=metric,
                                                     task=[int(task_id)],
-                                                    sort="desc",
+                                                    sort_order="desc",
                                                     size=N_RUNS)
         rows=[]
         for id, e in eval_objects.items():

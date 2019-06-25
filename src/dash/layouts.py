@@ -1,20 +1,18 @@
 import dash_core_components as dcc
 import dash_table as dt
 import dash_html_components as html
-import urllib.request
-import json
 import numpy as np
 from .helpers import *
-import dash_table_experiments as dte
 import os
-from openml import datasets, tasks, runs, flows, config, evaluations, study
+from openml import runs, flows, evaluations
+
 
 def get_layout_from_data(data_id):
     """
 
     :param data_id: dataset id
     :return:
-     layout: basic layout for data visualization (tables, htmlDiv and dropdown)
+     layout: custom layout for data visualization
      df: df cached for use in callbacks
 
     """
@@ -23,7 +21,7 @@ def get_layout_from_data(data_id):
 
     # Define layout
     layout = html.Div([
-        # 1. Hidden div to cache df and use in different callbacks
+        # 1. Hidden div to cache data 
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # 2. Title
         html.H3('List of attributes', style={'text-align': 'left', 'color': 'black'}),
@@ -51,6 +49,7 @@ def get_layout_from_data(data_id):
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
+                    # Select special rows to highlight
                     style_data_conditional=[
                         {
                             "if": {"row_index": 0},
@@ -64,28 +63,29 @@ def get_layout_from_data(data_id):
                             'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
                         },
                         {
-                            'if': {'column_id':'Missing values',
-                                           'filter_query': '{Missing values} > 10'
-                                           },
+                            'if': {'column_id': 'Missing values',
+                                   'filter_query': '{Missing values} > 10'
+                                   },
                             'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
                         },
                         {
                              'if': {'column_id':'Missing values',
-                                           'filter_query': '{Missing values} > 50'
-                                           },
-                            'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
+                                    'filter_query': '{Missing values} > 50'
+                                    },
+                             'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
                         },
                         {
-                            'if': {'column_id':'Missing values',
-                                           'filter_query': '{Missing values} > 100'
-                                           },
+                            'if': {'column_id': 'Missing values',
+                                   'filter_query': '{Missing values} > 100'
+                                   },
                             'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
                         },
                      ]
                 ), style={'width': '49%', 'display': 'inline-block',
-                          'position': 'relative'}),
+                          'position': 'relative'}
+            ),
             # 3b. Distribution graphs on the right side
-            #     Callback = distribution_plot
+            #     Callback for updating this graph = distribution_plot
             html.Div([
                 html.Div(
                     dcc.RadioItems(
@@ -97,22 +97,23 @@ def get_layout_from_data(data_id):
                     )),
                 html.Div(
                         dcc.RadioItems(
-                        id='stack',
-                        options=[
-                            {'label': 'Stack', 'value': 'yes'},
-                            {'label': 'Un-stack', 'value': 'no'},
-                        ],
-                        value='no'
-                    )),
+                            id='stack',
+                            options=[
+                                {'label': 'Stack', 'value': 'yes'},
+                                {'label': 'Un-stack', 'value': 'no'},
+                            ],
+                            value='no'
+                        )),
                 html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position':'absolute'}),
+                    id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position': 'absolute'}),
             ],  style={'width': '49%', 'display': 'inline-block',
-                       'position': 'absolute'}),
+                       'position': 'absolute'}
+            ),
         ]),
-        # 4. Adding tabs for multiple plots
+        # 4. Adding tabs for multiple plots below table and distribution plot
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')]),
+            dcc.Loading(dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')])),
             dcc.Tab(label='Feature Interactions', children=[
                 html.Div([
                     html.Div(
@@ -165,23 +166,25 @@ def get_layout_from_data(data_id):
     return layout, df
 
 
-def get_layout_from_task(taskid, app):
+def get_layout_from_task(task_id):
     """
 
-    :param taskid: Id of the task in the URL
-    :param app: Dash app for which a graph layout needs to be created based on the task
+    :param task_id:
     :return:
+    layout: the layout for task visualization
+    df : the df containing measures
+
     """
 
     measures = (evaluations.list_evaluation_measures())
     try:
-        os.remove('task.pkl')
-    except:
+        os.remove('task'+str(task_id)+'.pkl')
+    except OSError:
         pass
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
-            #1 Dropdown to choose metric
+            # Dropdown to choose metric
             html.Div(
                 [dcc.Dropdown(
                     id='metric',
@@ -196,15 +199,12 @@ def get_layout_from_task(taskid, app):
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
             ),
-            #2 Scatter plot of flow vs metric
-            # Scatter plot
+            # Scatter plot flow vs metric
 
             dcc.Tabs(id="tabs", children=[
                 dcc.Loading(fullscreen=True, children=[
-                    dcc.Tab(label='Evaluations', children=[html.Div( id='tab1')])]),
-                dcc.Tab(label='People', children=[html.Div(id='tab2'),
-            ]),
-
+                    dcc.Tab(label='Evaluations', children=[html.Div(id='tab1')])]),
+                dcc.Tab(label='People', children=[html.Div(id='tab2')])
             ]),
             html.Div(html.Button('Fetch next 1000 runs', id='button')),
 
@@ -215,42 +215,38 @@ def get_layout_from_task(taskid, app):
     return layout, pd.DataFrame(measures)
 
 
-def get_layout_from_flow(id, app):
+def get_layout_from_flow(flow_id):
     """
 
-    :param id: flow ID from path
-    :param app: dash application
+    :param flow_id:
     :return:
     """
     # Dropdown #1 Metrics
-    url = "https://www.openml.org/api/v1/json/evaluationmeasure/list"
-    response = urllib.request.urlopen(url)
-    encoding = response.info().get_content_charset('utf8')
-    evaluations = json.loads(response.read().decode(encoding))
-    df = pd.DataFrame.from_dict(evaluations["evaluation_measures"]["measures"])
+    measures = (evaluations.list_evaluation_measures())
+    df = pd.DataFrame(measures)
     # Dropdown #2 task types
     task_types=["Supervised classification","Supervised regression", "Learning curve",
                 "Supervised data stream classification","Clustering",
                 "Machine Learning Challenge",
                 "Survival Analysis","Subgroup Discovery"]
     # Dropdown #3 flow parameters
-    P = flows.get_flow(id).parameters.items()
-    Parameters = [x[0] for x in P]
-    Parameters.append('None')
+    P = flows.get_flow(flow_id).parameters.items()
+    parameters = [x[0] for x in P]
+    parameters.append('None')
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
-            #1 Dropdown to choose metric
+            # 1 Dropdown to choose metric
             html.Div(
                 [dcc.Dropdown(
                     id='metric',
                     options=[
-                        {'label': i, 'value': i} for i in df.measure.unique()
+                        {'label': i, 'value': i} for i in measures
                     ],
                     multi=False,
                     clearable=False,
                     placeholder="Select an attribute",
-                    value=df.measure.unique()[0]
+                    value=measures[0]
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
@@ -275,12 +271,12 @@ def get_layout_from_flow(id, app):
                 [dcc.Dropdown(
                     id='parameter',
                     options=[
-                        {'label': i, 'value': i} for i in Parameters
+                        {'label': i, 'value': i} for i in parameters
                     ],
                     multi=False,
                     clearable=False,
                     placeholder="Select an attribute",
-                    value=Parameters[-1]
+                    value=parameters[-1]
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
@@ -298,29 +294,31 @@ def get_layout_from_flow(id, app):
     return layout, df
 
 
-def get_layout_from_run(run_id,app):
+def get_layout_from_run(run_id):
+    """
+
+    :param run_id: id of the run
+    :return: layout for run dashboard
+    """
     items = vars(runs.get_run(int(run_id)))
-
-    orderedDictList = (items['fold_evaluations'])
-    df = pd.DataFrame(orderedDictList.items(),columns=['evaluations','results'])
-
-    list = []
+    ordered_dict= (items['fold_evaluations'])
+    df = pd.DataFrame(ordered_dict.items(), columns=['evaluations', 'results'])
+    result_list = []
     error = []
-    for dict in df['results']:
-        x = (dict[0])
+    for dic in df['results']:
+        x = (dic[0])
         values = [x[elem] for elem in x]
         mean = str(round(np.mean(np.array(values), axis=0),3))
         std = str(round(np.std(np.array(values), axis=0),3))
-        list.append(values)
+        result_list.append(values)
         error.append(mean+" \u00B1 "+std)
-    df.drop(['results'],axis=1, inplace=True)
-    df['results'] = list
+    df.drop(['results'], axis=1, inplace=True)
+    df['results'] = result_list
     df['values'] = error
     d = df.drop(['results'], axis=1)
-
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
-        # 3a. Table with meta data on left side
+        # Table with metric on left side
         html.Div([
            html.Div(
                dt.DataTable(
@@ -331,19 +329,16 @@ def get_layout_from_run(run_id,app):
                    row_deletable=False,
                    selected_rows=[0],
                    id='runtable'), style={'width': '49%', 'display': 'inline-block',
-                       'position': 'relative'}
-        ),
-        # 3b. Distribution graphs on the right side.for
-        #     Callback = distribution_plot
-        html.Div(
+                                          'position': 'relative'}
+           ),
+           html.Div(
             id='runplot',
             style={'width': '49%', 'display': 'inline-block',
-                   'position': 'absolute', 'overflowY': 'scroll', 'height': 500}
-        ),
-    ]),
+                   'position': 'absolute', 'overflowY': 'scroll', 'height': 500}),
+        ]),
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='PR chart', children=[html.Div(id='pr')]),
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ])
     ])
-    return layout,df
+    return layout, df
