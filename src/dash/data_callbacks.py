@@ -7,7 +7,6 @@ import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from .helpers import *
 import numpy as np
-import time
 
 
 def register_data_callbacks(app):
