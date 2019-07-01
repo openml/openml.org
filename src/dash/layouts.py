@@ -302,7 +302,7 @@ def get_layout_from_run(run_id):
     :return: layout for run dashboard
     """
     items = vars(runs.get_run(int(run_id)))
-    ordered_dict= (items['fold_evaluations'])
+    ordered_dict = (items['fold_evaluations'])
     df = pd.DataFrame(ordered_dict.items(), columns=['evaluations', 'results'])
     result_list = []
     error = []
@@ -342,4 +342,8 @@ def get_layout_from_run(run_id):
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ])
     ])
+    # Add some more rows indicating prediction id
+    df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
+    df = df.append(df2)
     return layout, df
