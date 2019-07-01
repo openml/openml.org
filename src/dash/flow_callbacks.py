@@ -49,7 +49,7 @@ def register_flow_callbacks(app):
 
         # Get all evaluations of given metric and flow id
         flow_id = int(re.search('flow/(\d+)', pathname).group(1))
-        evals = evaluations.list_evaluations(function=metric, flow=[flow_id], sort='desc', size=10000)
+        evals = evaluations.list_evaluations(function=metric, flow=[flow_id], sort_order='desc', size=10000)
         rows = []
         for id, e in evals.items():
             rows.append(vars(e))

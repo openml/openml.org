@@ -10,7 +10,7 @@ from sklearn.preprocessing import label_binarize
 from scipy.io import arff
 import urllib.request
 import io
-
+import re
 
 def register_run_callbacks(app):
 
@@ -30,6 +30,7 @@ def register_run_callbacks(app):
         :param selected_row_indices: selected rows of the feature table
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
+        run_id = int(re.search('run/(\d+)', pathname).group(1))
         if '/dashboard/run' in pathname and df_json is not None:
             df = pd.read_json(df_json, orient='split')
         else:
@@ -59,6 +60,7 @@ def register_run_callbacks(app):
         [Input('intermediate-value', 'children'),
          Input('url', 'pathname')])
     def pr_chart(df_json, pathname):
+        run_id = int(re.search('run/(\d+)', pathname).group(1))
         if '/dashboard/run' in pathname and df_json is not None:
             df = pd.read_json(df_json, orient='split')
         else:
