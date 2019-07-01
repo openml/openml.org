@@ -346,4 +346,5 @@ def get_layout_from_run(run_id):
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
     df = df.append(df2)
+    df.to_pickle('./data/dictionary/'+'run.pkl')
     return layout, df

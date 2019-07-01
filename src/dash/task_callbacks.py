@@ -41,7 +41,7 @@ def register_task_callbacks(app):
                                                     size=N_RUNS)
         try:
             df_old = pd.read_pickle('task'+str(task_id)+'.pkl')
-        except:
+        except OSError:
             df_old = pd.DataFrame()
 
         if not eval_objects:
