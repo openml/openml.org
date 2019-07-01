@@ -1,9 +1,7 @@
 from sklearn.preprocessing import Imputer
 import pandas as pd
-from openml import datasets, tasks, runs, flows, config, evaluations, study
+from openml import datasets
 import scipy.stats
-from sklearn.neighbors.kde import KernelDensity
-import time
 
 
 def clean_dataset(df):
@@ -13,48 +11,44 @@ def clean_dataset(df):
 
 
 def get_data_metadata(data_id):
-    data = datasets.get_dataset(data_id)
-    features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-    is_target = []
-    for name in features["name"]:
-        if name == data.default_target_attribute:
-            is_target.append("true")
-        else:
-            is_target.append("false")
-    features["Target"] = is_target
+    """ Download the dataset and get metadata
 
-    size = []
-    for value in features['nominal_values']:
-        if value is not None:
-            size.append(str(len(value)))
-        else:
-            size.append(' ')
+    :param data_id: ID of the OpenML dataset
+    :return:
+    """
+    # Get data in pandas df format
+    data = datasets.get_dataset(data_id)
+    x, y, categorical, attribute_names = data.get_data()
+    df = pd.DataFrame(x, columns=attribute_names)
+    df.to_pickle('df'+str(data_id)+'.pkl')
+
+    # Get meta-features and add target
+    features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
+    is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
+    features["Target"] = is_target
+    # Extract #categories
+    size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
     features['nominal_values'].replace({None: ' '}, inplace=True)
     features['# categories'] = size
-
-    metafeatures = features[["name", "data_type",
-                                 "number_missing_values", '# categories', "Target"]]
-
-    metafeatures.rename(columns={"name": "Attribute", "data_type":"DataType",
-                                 "number_missing_values": "Missing values",
-                                     }, inplace=True)
-    metafeatures.sort_values(by='Target', ascending=False, inplace=True)
-    numericals = list(metafeatures["Attribute"][metafeatures["DataType"] == "numeric"])
-    nominals = list(metafeatures["Attribute"][metafeatures["DataType"] == "nominal"])
-
-    X, y, categorical, attribute_names = data.get_data()
-    df = pd.DataFrame(X, columns=attribute_names)
-    entropy =[]
-    for column in metafeatures['Attribute']:
-        if column in nominals:
+    # choose features to be displayed
+    meta_features = features[["name", "data_type", "number_missing_values", '# categories', "Target"]]
+    meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
+                                  "number_missing_values": "Missing values"}, inplace=True)
+    meta_features.sort_values(by='Target', ascending=False, inplace=True)
+    # Add entropy
+    numerical_features = list(meta_features["Attribute"][meta_features["DataType"] == "numeric"])
+    nominal_features = list(meta_features["Attribute"][meta_features["DataType"] == "nominal"])
+    entropy = []
+    for column in meta_features['Attribute']:
+        if column in nominal_features:
             count = df[column].value_counts()
             ent = scipy.stats.entropy(count)
             entropy.append(ent)
         else:
             entropy.append(0)
-    metafeatures['entropy'] = entropy
-    df.to_pickle('df.pkl')
-    return df, metafeatures, numericals, nominals
+    meta_features['entropy'] = entropy
+
+    return df, meta_features, numerical_features, nominal_features
 
 
 def get_highest_rank(df, leaderboard):
