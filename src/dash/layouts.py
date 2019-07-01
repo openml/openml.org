@@ -91,7 +91,7 @@ def get_layout_from_data(data_id):
                     dcc.RadioItems(
                         id='radio1',
                         options=[{'label': "Target based distribution", "value": "target"},
-                                 {'label': "Individual distribution", "value": "solo"},],
+                                 {'label': "Individual distribution", "value": "solo"}],
                         value="target"
 
                     )),
@@ -99,10 +99,10 @@ def get_layout_from_data(data_id):
                         dcc.RadioItems(
                             id='stack',
                             options=[
-                                {'label': 'Stack', 'value': 'yes'},
-                                {'label': 'Un-stack', 'value': 'no'},
+                                {'label': 'Stack', 'value': 'stack'},
+                                {'label': 'Un-stack', 'value': 'group'},
                             ],
-                            value='no'
+                            value='group'
                         )),
                 html.Div(
                     id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position': 'absolute'}),
@@ -283,14 +283,15 @@ def get_layout_from_flow(flow_id):
             ),
 
             html.Div(
-                [dcc.Graph(
+                [dcc.Loading(dcc.Graph(
                     id='flowplot',
                     style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'})],
+                           'position': 'absolute'}))],
             ),
 
         ]),
     ])
+
     return layout, df
 
 
@@ -337,7 +338,7 @@ def get_layout_from_run(run_id):
                    'position': 'absolute', 'overflowY': 'scroll', 'height': 500}),
         ]),
         dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='PR chart', children=[html.Div(id='pr')]),
+            dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ])
     ])

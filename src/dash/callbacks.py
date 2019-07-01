@@ -1,66 +1,54 @@
-import plotly.graph_objs as go
 import re
 from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run
-from plotly import tools
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import dash_html_components as html
-import dash_core_components as dcc
 from .helpers import *
-import dash_table_experiments as dt
-import numpy as np
-from sklearn.metrics import precision_recall_curve, roc_curve
-from sklearn.preprocessing import label_binarize
-import time
 from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
 from .run_callbacks import register_run_callbacks
 
+
 def register_callbacks(app):
-    """
-    Registers the callbacks of the given dash app app
-    :param app: Dash application
+    """Register all callbacks of the dash app
 
+    :param app: the dash application
+    :return:
     """
-
-    # Callback #1
 
     @app.callback([Output('page-content', 'children'),
                    Output('intermediate-value', 'children')],
                   [Input('url', 'pathname')])
     def render_layout(pathname):
         """
-        Main callback invoked when a URL with a data or task ID is entered.
+        Main callback invoked when a URL with a data/run/flow/task ID is entered.
         :param: pathname: str
             The URL entered, typically consists of dashboard/data/dataID or
             dashboard/task/ID
         :return: page-content: dash layout
-                 basic layout
+            The basic layout of the dash application in the requested URL
         :return: intermediate-value: json
             Cached df in json format for sharing between callbacks
         """
         df = pd.DataFrame()
         if pathname is not None and '/dashboard/data' in pathname:
-            id = int(re.search('data/(\d+)', pathname).group(1))
-            start = time.time()
-            layout, df = get_layout_from_data(id)
+            data_id = int(re.search('data/(\d+)', pathname).group(1))
+            layout, df = get_layout_from_data(data_id)
             cache = df.to_json(date_format='iso', orient='split')
-            end = time.time()
-            print("time taken for getting layout of data ", end - start)
             return layout, cache
         elif pathname is not None and 'dashboard/task' in pathname:
-            id = int(re.search('task/(\d+)', pathname).group(1))
-            layout, taskdf = get_layout_from_task(id, app)
+            task_id = int(re.search('task/(\d+)', pathname).group(1))
+            layout, taskdf = get_layout_from_task(task_id)
             cache = taskdf.to_json(date_format='iso', orient='split')
             return layout, cache
         elif pathname is not None and 'dashboard/flow' in pathname:
-            id = int(re.search('flow/(\d+)', pathname).group(1))
-            layout, flowdf = get_layout_from_flow(id,app)
+            flow_id = int(re.search('flow/(\d+)', pathname).group(1))
+            layout, flowdf = get_layout_from_flow(flow_id)
             cache = flowdf.to_json(date_format='iso', orient='split')
             return layout, cache
         elif pathname is not None and 'dashboard/run' in pathname:
-            id = int(re.search('run/(\d+)', pathname).group(1))
-            layout, rundf = get_layout_from_run(id, app)
+            run_id = int(re.search('run/(\d+)', pathname).group(1))
+            layout, rundf = get_layout_from_run(run_id)
             cache = rundf.to_json(date_format='iso', orient='split')
             return layout, cache
         else:
