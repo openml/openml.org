@@ -5,42 +5,38 @@ import dash_html_components as html
 import dash_core_components as dcc
 from .helpers import *
 import dash_table as dt
-import time
+from openml import runs, evaluations
+
 
 def register_task_callbacks(app):
-    @app.callback(Output('tab1', 'children'),
-                   #Output('tab2', 'children'),
-
+    @app.callback([Output('tab1', 'children'),
+                   Output('tab2', 'children')],
                   [Input('url', 'pathname'),
                    Input('metric', 'value'),
-                   Input('button','n_clicks')
+                   Input('button', 'n_clicks')
                    ])
-    def update_task_plots( pathname, metric, n_clicks):
+    def update_task_plots(pathname, metric, n_clicks):
         """
-        :param df_json: json
-            task df cached by display_page callback
-        :param pathname: str
-            url pathname entered
+
+        :param pathname:
+        :param metric:
+        :param n_clicks:
         :return:
-            fig : Scatter plot of top 100 flows for the selected function
         """
         N_RUNS = 1000
         if pathname is not None and '/dashboard/task' in pathname:
-            print('entered task plot', n_clicks)
+            task_id = int(re.search('task/(\d+)', pathname).group(1))
         else:
             return []
         if n_clicks is None:
             n_clicks = 0
-        # List of evaluations to dataframe.
-        task_id = int(re.search('task/(\d+)', pathname).group(1))
-
         eval_objects = evaluations.list_evaluations(function=metric,
                                                     task=[int(task_id)],
                                                     sort_order="desc",
                                                     offset=n_clicks*N_RUNS,
                                                     size=N_RUNS)
         try:
-            df_old = pd.read_pickle('task'+str(task_id)+'.pkl')
+            df_old = pd.read_pickle('cache/task'+str(task_id)+'.pkl')
         except OSError:
             df_old = pd.DataFrame()
 
@@ -59,11 +55,12 @@ def register_task_callbacks(app):
             else:
                 df = df_old.append(df_new)
 
-        df.to_pickle('task'+str(task_id)+'.pkl')
+        print(df.shape)
+
+        df.to_pickle('cache/task'+str(task_id)+'.pkl')
         evals = df
         run_link = []
         tick_text = []
-        uploader = []
         truncated = []
 
         for run_id in evals["run_id"].values:
@@ -82,8 +79,7 @@ def register_task_callbacks(app):
                            x=evals["value"],
                            mode='text+markers',
                            text=run_link,
-                           hovertext=evals['flow_name'] + ['<br>'] * evals.shape[0] + evals["value"].astype(str)
-                                     + ['<br>'] * evals.shape[0] + ['click for more info'] * evals.shape[0],
+                           hovertext=evals['flow_name'] + ['<br>'] * evals.shape[0] + evals["value"].astype(str)+['<br>'] * evals.shape[0] + ['click for more info'] * evals.shape[0],
                            hoverinfo='text',
                            # hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
@@ -92,7 +88,7 @@ def register_task_callbacks(app):
                                        colorscale='Earth', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500, # height=2*evals.shape[0],
+        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500,
                            hovermode='closest',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
@@ -100,49 +96,12 @@ def register_task_callbacks(app):
                                ticktext=tick_text + evals["flow_name_t"], tickvals=evals["flow_name"]
                            ))
         fig = go.Figure(data, layout)
-
-
-        return html.Div(dcc.Graph(figure=fig))
-
-    @app.callback(Output('tab2', 'children'),
-                   [Input('url', 'pathname'),
-                   Input('metric', 'value'),
-                   Input('button','n_clicks')
-                   ])
-    def update_leader_board( pathname, metric,n_clicks):
-        N_RUNS = 1000
-        if pathname is not None and '/dashboard/task' in pathname:
-            print('entered leader plot', n_clicks)
-        else:
-            return []
-        if n_clicks is None:
-            n_clicks = 0
-        # List of evaluations to dataframe.
-        task_id = int(re.search('task/(\d+)', pathname).group(1))
-
-        eval_objects = evaluations.list_evaluations(function=metric,
-                                                    task=[int(task_id)],
-                                                    sort_order="desc",
-                                                    size=N_RUNS)
-        rows=[]
-        for id, e in eval_objects.items():
-            rows.append(vars(e))
-            df= pd.DataFrame(rows)
-        # METHOD 1 of top 100 flows
-        # # Sort entire df, group by flow name, get 100 top runs in each group only for the first 100 groups
-        top_runs = (df.groupby(['flow_name'], sort=False).head(100))
-        evals = top_runs[top_runs.groupby(['flow_name']).ngroup() < 100]
-        # FIG 2
-        start = time.time()
-        uploader =[]
+        uploader = []
         for run_id in evals["run_id"].values:
             name = runs.list_runs(id=[run_id])[run_id]['uploader']
             uploader.append(name)
-
-        end = time.time()
-        print("time for getting evaluation", end-start)
-        tick_text=[]
-        run_link=[]
+        tick_text = []
+        run_link = []
         for run_id in evals["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
             run_link.append(link)
@@ -151,14 +110,10 @@ def register_task_callbacks(app):
             link = "<a href=\"https://www.openml.org/f/" + str(flow_id) + "/\">"
             tick_text.append(link)
 
-
-
         evals['upload_time'] = pd.to_datetime(evals['upload_time'])
         evals['upload_time'] = evals['upload_time'].dt.date
         evals['uploader'] = uploader
-        # from sklearn import preprocessing
-        # le = preprocessing.LabelEncoder()
-        # #evals['uploader_id'] = le.fit_transform(evals['uploader'])
+
         data = [go.Scatter(y=evals["value"],
                            x=evals["upload_time"],
                            mode='text+markers',
@@ -203,5 +158,6 @@ def register_task_callbacks(app):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        return html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
+        return html.Div(dcc.Graph(figure=fig)), \
+               html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
 
