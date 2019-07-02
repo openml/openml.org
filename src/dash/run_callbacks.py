@@ -12,16 +12,16 @@ import urllib.request
 import io
 import re
 
+
 def register_run_callbacks(app):
 
     @app.callback(
         Output('runplot', 'children'),
-        [Input('intermediate-value', 'children'),
-         Input('url', 'pathname'),
+        [Input('url', 'pathname'),
          Input('runtable', 'data'),
          Input('runtable', 'selected_rows'),
          ])
-    def run_plot(df_json, pathname, rows, selected_row_indices):
+    def run_plot(pathname, rows, selected_row_indices):
         """
 
         :param df_json: cached data
@@ -31,9 +31,9 @@ def register_run_callbacks(app):
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
         run_id = int(re.search('run/(\d+)', pathname).group(1))
-        if '/dashboard/run' in pathname and df_json is not None:
-            df = pd.read_json(df_json, orient='split')
-        else:
+        try:
+            df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')
+        except OSError:
             return []
         rows = pd.DataFrame(rows)
 
@@ -57,13 +57,12 @@ def register_run_callbacks(app):
     @app.callback(
         [Output('pr', 'children'),
          Output('roc', 'children')],
-        [Input('intermediate-value', 'children'),
-         Input('url', 'pathname')])
-    def pr_chart(df_json, pathname):
+        [Input('url', 'pathname')])
+    def pr_chart(pathname):
         run_id = int(re.search('run/(\d+)', pathname).group(1))
-        if '/dashboard/run' in pathname and df_json is not None:
-            df = pd.read_json(df_json, orient='split')
-        else:
+        try:
+            df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')
+        except OSError:
             return [], []
         pred_id = (df[df["evaluations"] == "predictions"]["results"].values[0])
         url = "https://www.openml.org/data/download/{}".format(pred_id) + "/predictions.arff"
