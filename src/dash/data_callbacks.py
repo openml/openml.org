@@ -21,7 +21,7 @@ def register_data_callbacks(app):
     def distribution_plot(rows, selected_row_indices, radio_value, stack, url):
         data_id = int(re.search('data/(\d+)', url).group(1))
         try:
-            df = pd.read_pickle('df'+str(data_id)+'.pkl')
+            df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
             return []
 
@@ -131,7 +131,7 @@ def register_data_callbacks(app):
     def feature_importance(rows, radio, url):
         data_id = int(re.search('data/(\d+)', url).group(1))
         try:
-            df = pd.read_pickle('df'+str(data_id)+'.pkl')
+            df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
             return []
         meta_data = pd.DataFrame(rows)
@@ -261,7 +261,7 @@ def register_data_callbacks(app):
         """
         data_id = int(re.search('data/(\d+)', url).group(1))
         try:
-            df = pd.read_pickle('df'+str(data_id)+'.pkl')
+            df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
             return []
         fig = {
