@@ -9,6 +9,7 @@ from .helpers import *
 import numpy as np
 import re
 
+
 def register_data_callbacks(app):
     @app.callback(
         Output('distribution', 'children'),
@@ -126,7 +127,7 @@ def register_data_callbacks(app):
          Output('matrix', 'children')],
         [Input('datatable', 'data'),
          Input('radio', 'value'),
-         Input('url','pathname')
+         Input('url', 'pathname')
          ])
     def feature_importance(rows, radio, url):
         data_id = int(re.search('data/(\d+)', url).group(1))

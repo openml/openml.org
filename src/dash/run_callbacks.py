@@ -59,6 +59,7 @@ def register_run_callbacks(app):
          Output('roc', 'children')],
         [Input('url', 'pathname')])
     def pr_chart(pathname):
+        print(pathname)
         run_id = int(re.search('run/(\d+)', pathname).group(1))
         try:
             df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')

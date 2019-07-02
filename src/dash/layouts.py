@@ -178,7 +178,7 @@ def get_layout_from_task(task_id):
 
     measures = (evaluations.list_evaluation_measures())
     try:
-        os.remove('task'+str(task_id)+'.pkl')
+        os.remove('cache/task'+str(task_id)+'.pkl')
     except OSError:
         pass
     layout = html.Div([
@@ -225,10 +225,9 @@ def get_layout_from_flow(flow_id):
     measures = (evaluations.list_evaluation_measures())
     df = pd.DataFrame(measures)
     # Dropdown #2 task types
-    task_types=["Supervised classification","Supervised regression", "Learning curve",
-                "Supervised data stream classification","Clustering",
-                "Machine Learning Challenge",
-                "Survival Analysis","Subgroup Discovery"]
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
     # Dropdown #3 flow parameters
     P = flows.get_flow(flow_id).parameters.items()
     parameters = [x[0] for x in P]
