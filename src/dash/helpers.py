@@ -26,6 +26,7 @@ def get_data_metadata(data_id):
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
+
     # Extract #categories
     size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
     features['nominal_values'].replace({None: ' '}, inplace=True)
@@ -45,10 +46,10 @@ def get_data_metadata(data_id):
             ent = scipy.stats.entropy(count)
             entropy.append(ent)
         else:
-            entropy.append(0)
-    meta_features['entropy'] = entropy
-
-    return df, meta_features, numerical_features, nominal_features
+            entropy.append(' ')
+    meta_features['Entropy'] = entropy
+    meta_features['Target'].replace({'false': ' '}, inplace=True)
+    return df, meta_features, numerical_features, nominal_features, (vars(data)['name'])
 
 
 def get_highest_rank(df, leaderboard):
