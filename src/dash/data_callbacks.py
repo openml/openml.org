@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from .helpers import *
 import numpy as np
 import re
-
+from random import shuffle
 
 def register_data_callbacks(app):
     @app.callback(
@@ -167,22 +167,29 @@ def register_data_callbacks(app):
         top_numericals = (fi['index'][fi['index'].isin(numerical_features)][:5])
         top_nominals = (fi['index'][fi['index'].isin(nominal_features)][:5])
         df['target'] = df[target_attribute]
+        C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
+             'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)'
+             ]
         if target_type == "numeric" and radio == "nominal":
+            cmap_type = 'seq'
             df['target'] = y
             df['target'] = pd.cut(df['target'], 1000).astype(str)
             cat = df['target'].str.extract('\((.*),', expand=False).astype(float)
             df['bin'] = pd.Series(cat)
             df.sort_values(by='bin', inplace=True)
             df.drop('bin', axis=1, inplace=True)
+
+
         else:
+            cmap_type = 'cat'
+            N = len(df['target'].unique())
             try:
                 df['target'] = df['target'].astype(int)
             except ValueError:
                 print("target not converted to int")
             df.sort_values(by='target', inplace=True)
-        C = ['rgb(166,206,227)','rgb(31,120,180)', 'rgb(178,223,138)',
-             'rgb(51,160,44)',  'rgb(251,154,153)', 'rgb(227,26,28)'
-             ]
+            df['target'] = df['target'].astype(str)
+
         if radio == "top":
             top_features = df[fi['index'][0:5].values]
             top_features['target'] = df['target']
@@ -191,7 +198,7 @@ def register_data_callbacks(app):
 
                 matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                      index='target',
-                                                     colormap_type='cat',
+                                                     colormap_type=cmap_type,
                                                      colormap=C, height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
             else:
@@ -216,7 +223,7 @@ def register_data_callbacks(app):
                 df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
-                                                     colormap=C, colormap_type='seq', height=1200, width=1500)
+                                                     colormap=cmap_type, colormap_type='seq', height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
             else:
                 graph = html.P("No numericals found")
