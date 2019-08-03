@@ -49,7 +49,7 @@ def register_task_callbacks(app):
             rows = []
             for id, e in eval_objects.items():
                 rows.append(vars(e))
-                df_new = pd.DataFrame(rows)
+            df_new = pd.DataFrame(rows)
             if df_old.empty:
                 df = df_new
             else:

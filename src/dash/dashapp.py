@@ -19,3 +19,4 @@ def create_dash_app(flask_app):
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
     os.mkdir('cache')
+    return app
