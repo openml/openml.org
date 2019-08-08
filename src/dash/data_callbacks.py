@@ -120,7 +120,7 @@ def register_data_callbacks(app):
                         fig.append_trace(trace1, i, 1)
 
         fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100), barmode=stack)
-        return html.Div(dcc.Graph(figure=fig))
+        return html.Div(dcc.Graph(figure=fig), id="graph1")
 
     @app.callback(
         [Output('fi', 'children'),
