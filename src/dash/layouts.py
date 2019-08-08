@@ -58,6 +58,7 @@ def get_layout_from_data(data_id):
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
+                    page_action='none',
                     # Select special rows to highlight
                     style_data_conditional=[
                         {
@@ -123,7 +124,7 @@ def get_layout_from_data(data_id):
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
             dcc.Loading(dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')])),
-            dcc.Tab(label='Feature Interactions', children=[
+            dcc.Tab(id="tab2", label='Feature Interactions', children=[
                 html.Div([
                     html.Div(
                         dcc.RadioItems(
@@ -139,7 +140,7 @@ def get_layout_from_data(data_id):
 
                 ])
             ]),
-            dcc.Tab(label='Scatter plot', children=[
+            dcc.Tab(id="tab3", label='Scatter plot', children=[
                 html.Div([
                     html.Div(dcc.Dropdown(
                         id='dropdown1',
