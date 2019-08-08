@@ -17,10 +17,15 @@ def get_data_metadata(data_id):
     :return:
     """
     # Get data in pandas df format
+    import time
+    start = time.time()
     data = datasets.get_dataset(data_id)
     x, y, categorical, attribute_names = data.get_data()
+    end = time.time()
+    print("get data", end-start)
     df = pd.DataFrame(x, columns=attribute_names)
     df.to_pickle('cache/df'+str(data_id)+'.pkl')
+
 
     # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
