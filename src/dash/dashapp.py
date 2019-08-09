@@ -12,8 +12,9 @@ def create_dash_app(flask_app):
     :param flask_app: This dash app runs on the same server as flask_app
     :return:
     """
-    external_stylesheets = ['https://codepen.io/sahithyaravi/pen/xomKBw.css']
-    app = dash.Dash(server=flask_app, url_base_pathname='/dashboard/', external_stylesheets=external_stylesheets)
+
+    app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
+    app.enable_dev_tools()
     app.config.suppress_callback_exceptions = True
     app.layout = html.Div([dcc.Location(id='url', refresh=False), html.Div(id='page-content')])
     register_callbacks(app)
