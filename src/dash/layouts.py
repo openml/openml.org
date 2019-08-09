@@ -340,13 +340,20 @@ def get_layout_from_run(run_id):
                    sort_action="native",
                    row_deletable=False,
                    selected_rows=[0],
-                   id='runtable'), style={'width': '49%', 'display': 'inline-block',
+                   style_cell={'textAlign': 'left', 'backgroundColor': 'white',
+                               'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
+                               'textAlign': 'left',
+                               'textOverflow': 'ellipsis', "fontSize": 15,
+                               "fontFamily": "Helvetica"
+                               },
+                   id='runtable'), style={'width': '35%', 'display': 'inline-block',
                                           'position': 'relative'}
            ),
            html.Div(
             id='runplot',
-            style={'width': '49%', 'display': 'inline-block',
-                   'position': 'absolute', 'overflowY': 'scroll', 'height': 500}),
+            style={'width': '62%', 'display': 'inline-block',
+                   'position': 'absolute',
+                   'overflowY': 'scroll', 'height': 500}),
         ]),
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
