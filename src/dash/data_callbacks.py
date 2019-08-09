@@ -27,16 +27,22 @@ def register_data_callbacks(app):
             return []
 
         meta_data = pd.DataFrame(rows)
-        target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
-        target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+        try:
+            target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
+            target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+        except IndexError:
+            radio_value = "solo"
+
+
         if len(selected_row_indices) != 0:
             meta_data = meta_data.loc[selected_row_indices]
             attributes = meta_data["Attribute"].values
             types = meta_data["DataType"].values
 
-        # Bin numeric target
-        df.sort_values(by=target, inplace=True)
+
         if radio_value == "target":
+            # Bin numeric target
+            df.sort_values(by=target, inplace=True)
             if target_type == "numeric":
                 df[target] = pd.cut(df[target], 1000).astype(str)
                 cat = df[target].str.extract('\((.*),', expand=False).astype(float)
@@ -46,9 +52,9 @@ def register_data_callbacks(app):
                 df.sort_values(by=target, inplace=True)
                 df[target] = df[target].astype(str)
             target_vals = list(df[target].unique())
-
-        N = len(df[target].unique())
-        color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+        if radio_value == "target":
+            N = len(df[target].unique())
+            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
 
         if len(attributes) == 0:
             fig = tools.make_subplots(rows=1, cols=1)
@@ -136,8 +142,11 @@ def register_data_callbacks(app):
         except OSError:
             return []
         meta_data = pd.DataFrame(rows)
-        target_attribute = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
-        target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+        try:
+            target_attribute = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
+            target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+        except IndexError:
+            return "No target found", "No target found"
         # Feature importance bar plot
         from category_encoders.target_encoder import TargetEncoder
         x = df.drop(target_attribute, axis=1)
