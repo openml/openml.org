@@ -7,7 +7,7 @@ from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
 from .run_callbacks import register_run_callbacks
-
+import time
 
 def register_callbacks(app):
     """Register all callbacks of the dash app
@@ -16,8 +16,8 @@ def register_callbacks(app):
     :return:
     """
 
-    @app.callback([Output('page-content', 'children'),
-                   Output('intermediate-value', 'children')],
+    @app.callback(Output('page-content', 'children'),
+
                   [Input('url', 'pathname')])
     def render_layout(pathname):
         """
@@ -33,28 +33,31 @@ def register_callbacks(app):
         df = pd.DataFrame()
         if pathname is not None and '/dashboard/data' in pathname:
             data_id = int(re.search('data/(\d+)', pathname).group(1))
+            start = time.time()
             layout, df = get_layout_from_data(data_id)
-            cache = df.to_json(date_format='iso', orient='split')
-            return layout, cache
+
+            end = time.time()
+            print("time ", end-start)
+            return layout
         elif pathname is not None and 'dashboard/task' in pathname:
             task_id = int(re.search('task/(\d+)', pathname).group(1))
             layout, taskdf = get_layout_from_task(task_id)
-            cache = taskdf.to_json(date_format='iso', orient='split')
-            return layout, cache
+
+            return layout
         elif pathname is not None and 'dashboard/flow' in pathname:
             flow_id = int(re.search('flow/(\d+)', pathname).group(1))
             layout, flowdf = get_layout_from_flow(flow_id)
-            cache = flowdf.to_json(date_format='iso', orient='split')
-            return layout, cache
+
+            return layout
         elif pathname is not None and 'dashboard/run' in pathname:
             run_id = int(re.search('run/(\d+)', pathname).group(1))
             layout, rundf = get_layout_from_run(run_id)
-            cache = rundf.to_json(date_format='iso', orient='split')
-            return layout, cache
+
+            return layout
         else:
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
-            cache = df.to_json(date_format='iso', orient='split')
-            return index_page, cache
+
+            return index_page
 
     register_data_callbacks(app)
     register_run_callbacks(app)
