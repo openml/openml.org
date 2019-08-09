@@ -5,6 +5,7 @@ import scipy.stats
 
 
 def clean_dataset(df):
+    df = df.loc[:, df.isnull().mean() < .8]
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
     out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
     return out

@@ -19,6 +19,7 @@ def get_layout_from_data(data_id):
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
 
+
     # Define layout
     layout = html.Div([
         # 1. Hidden div to cache data 
@@ -43,8 +44,9 @@ def get_layout_from_data(data_id):
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
-                                "fontFamily": "Arial", "size": 10, 'textAlign': 'left',
-                                'textOverflow': 'ellipsis',
+                                 'textAlign': 'left',
+                                'textOverflow': 'ellipsis',"fontSize":15,
+                                "fontFamily": "Helvetica"
                                },
                     style_header={
                         'backgroundColor': 'white',
@@ -169,8 +171,8 @@ def get_layout_from_data(data_id):
                         clearable=False,
                         value=nominal_data[0])),
                     html.Div(id='scatter_plot'), ])
-            ])if numerical_data else dcc.Tab(label='Scatter Plot',
-                                             children=[html.Div(html.P('No numerical_data found'))])
+            ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
+                                             children=[html.Div(html.P('No numerical-nominal combination found'))])
         ],
         )], className="container")
     return layout, df

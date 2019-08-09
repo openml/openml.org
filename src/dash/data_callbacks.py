@@ -52,9 +52,12 @@ def register_data_callbacks(app):
                 df.sort_values(by=target, inplace=True)
                 df[target] = df[target].astype(str)
             target_vals = list(df[target].unique())
+
         if radio_value == "target":
             N = len(df[target].unique())
             color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+
+
 
         if len(attributes) == 0:
             fig = tools.make_subplots(rows=1, cols=1)
@@ -121,7 +124,7 @@ def register_data_callbacks(app):
                             fig.append_trace(trace, i, 1)
                     else:
                         i = i + 1
-                        trace1 = go.Histogram(x=sorted(df[attribute]), name=attribute, showlegend=False,
+                        trace1 = go.Histogram(x=(df[attribute]), name=attribute, showlegend=False,
                                               marker=dict(color='steelblue'))
                         fig.append_trace(trace1, i, 1)
 
@@ -151,7 +154,7 @@ def register_data_callbacks(app):
         from category_encoders.target_encoder import TargetEncoder
         x = df.drop(target_attribute, axis=1)
         te = TargetEncoder()
-        if target_type == "nominal":
+        if target_type == "nominal" or target_type == "string":
             y = pd.Categorical(df[target_attribute]).codes
             x = te.fit_transform(x, y)
             x = clean_dataset(x)
