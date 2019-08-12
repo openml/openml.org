@@ -104,17 +104,15 @@ def get_layout_from_data(data_id):
                         id='radio1',
                         options=[{'label': "Target based distribution", "value": "target"},
                                  {'label': "Individual distribution", "value": "solo"}],
-                        value="target"
+                        value="solo",
+                        labelStyle={'display': 'inline-block', 'text-align': 'justify'}
 
                     )),
                 html.Div(
                         dcc.RadioItems(
                             id='stack',
-                            options=[
-                                {'label': 'Stack', 'value': 'stack'},
-                                {'label': 'Un-stack', 'value': 'group'},
-                            ],
-                            value='group'
+                            value='group',
+                            labelStyle={'display': 'inline-block', 'text-align': 'justify'}
                         )),
                 html.Div(
                     id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position': 'absolute'}),
