@@ -206,7 +206,7 @@ def register_data_callbacks(app):
         C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
              'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)'
              ]
-        if target_type == "numeric" and radio == "nominal":
+        if target_type == "numeric":
             cmap_type = 'seq'
             df['target'] = y
             df['target'] = pd.cut(df['target'], 1000).astype(str)
