@@ -19,7 +19,6 @@ def get_layout_from_data(data_id):
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
 
-
     # Define layout
     layout = html.Div([
         # 1. Hidden div to cache data 
@@ -33,7 +32,7 @@ def get_layout_from_data(data_id):
         html.Div([
             # 3a. Table with meta data on left side
             html.Div(
-                dt.DataTable(
+                dcc.Loading(dt.DataTable(
                     data=metadata.to_dict('records'),
                     columns=[{"name": i, "id": i} for i in metadata.columns],
                     row_selectable="multi",
@@ -41,6 +40,7 @@ def get_layout_from_data(data_id):
                     row_deletable=False,
                     selected_rows=[0],
                     style_as_list_view=True,
+                    filter_action="native",
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
@@ -93,8 +93,8 @@ def get_layout_from_data(data_id):
                             'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
                         },
                      ]
-                ), style={'width': '49%', 'display': 'inline-block',
-                          'position': 'relative'}
+                ), fullscreen=True),
+                style={'width': '49%', 'display': 'inline-block','position': 'relative'}
             ),
             # 3b. Distribution graphs on the right side
             #     Callback for updating this graph = distribution_plot
@@ -138,6 +138,7 @@ def get_layout_from_data(data_id):
 
                         )),
                     html.Div(id='matrix'),
+                    html.Div(id='hidden', style={'display': 'none'})
 
 
                 ])

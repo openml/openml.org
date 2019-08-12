@@ -1,5 +1,5 @@
 import plotly.graph_objs as go
-from plotly import tools
+from plotly import subplots
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import plotly.figure_factory as ff
@@ -33,12 +33,10 @@ def register_data_callbacks(app):
         except IndexError:
             radio_value = "solo"
 
-
         if len(selected_row_indices) != 0:
             meta_data = meta_data.loc[selected_row_indices]
             attributes = meta_data["Attribute"].values
             types = meta_data["DataType"].values
-
 
         if radio_value == "target":
             # Bin numeric target
@@ -57,14 +55,12 @@ def register_data_callbacks(app):
             N = len(df[target].unique())
             color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
 
-
-
         if len(attributes) == 0:
-            fig = tools.make_subplots(rows=1, cols=1)
+            fig = subplots.make_subplots(rows=1, cols=1)
             trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
             fig.append_trace(trace1, 1, 1)
         else:
-            fig = tools.make_subplots(rows=len(attributes), cols=1, subplot_titles=tuple(attributes))
+            fig = subplots.make_subplots(rows=len(attributes), cols=1, subplot_titles=tuple(attributes))
             i = 0
             for attribute in attributes:
                 show_legend = True if i == 0 else False
@@ -133,7 +129,8 @@ def register_data_callbacks(app):
 
     @app.callback(
         [Output('fi', 'children'),
-         Output('matrix', 'children')],
+         Output('hidden','value')],
+
         [Input('datatable', 'data'),
          Input('radio', 'value'),
          Input('url', 'pathname')
@@ -173,6 +170,33 @@ def register_data_callbacks(app):
                            margin=dict(l=500), width=1200, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
+        fi.to_pickle('cache/fi' + str(data_id) + '.pkl')
+
+        return html.Div(dcc.Graph(figure=figure)), "done"
+
+    @app.callback(Output('matrix', 'children'),
+        [Input('datatable', 'data'),
+         Input('radio', 'value'),
+         Input('url', 'pathname'),
+         Input('hidden', 'value')
+         ])
+    def feature_interactions(rows, radio, url, dummy):
+        data_id = int(re.search('data/(\d+)', url).group(1))
+        if dummy == "done":
+            df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
+            fi = pd.read_pickle('cache/fi' + str(data_id) + '.pkl')
+        else:
+            return []
+        meta_data = pd.DataFrame(rows)
+        try:
+            target_attribute = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
+            target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+        except IndexError:
+            return "No target found", "No target found"
+        if target_type == "nominal" or target_type == "string":
+            y = pd.Categorical(df[target_attribute]).codes
+        else:
+            y = df[target_attribute]
         # Feature interaction plots
         numerical_features = list(meta_data["Attribute"][meta_data["DataType"] == "numeric"])
         nominal_features = list(meta_data["Attribute"][meta_data["DataType"] == "nominal"])
@@ -190,8 +214,6 @@ def register_data_callbacks(app):
             df['bin'] = pd.Series(cat)
             df.sort_values(by='bin', inplace=True)
             df.drop('bin', axis=1, inplace=True)
-
-
         else:
             cmap_type = 'cat'
             N = len(df['target'].unique())
@@ -235,7 +257,7 @@ def register_data_callbacks(app):
                 df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
-                                                     colormap=cmap_type, colormap_type='seq', height=1200, width=1500)
+                                                     colormap=C, colormap_type=cmap_type, height=1200, width=1500)
                 graph = dcc.Graph(figure=matrix)
             else:
                 graph = html.P("No numericals found")
@@ -260,7 +282,7 @@ def register_data_callbacks(app):
             else:
                 graph = html.P("No nominals found")
 
-        return html.Div(dcc.Graph(figure=figure)), html.Div(graph)
+        return  html.Div(graph)
 
     @app.callback(Output('scatter_plot', 'children'), [
         Input('dropdown1', 'value'),
