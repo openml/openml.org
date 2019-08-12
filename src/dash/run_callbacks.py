@@ -65,6 +65,9 @@ def register_run_callbacks(app):
             df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')
         except OSError:
             return [], []
+        task_type = df[df["evaluations"] == "task_type"]["results"].values[0]
+        if "Classification" not in task_type:
+            return "Only classification supported", "Only classification supported"
         pred_id = (df[df["evaluations"] == "predictions"]["results"].values[0])
         url = "https://www.openml.org/data/download/{}".format(pred_id) + "/predictions.arff"
         ftp_stream = urllib.request.urlopen(url)

@@ -21,8 +21,7 @@ def get_layout_from_data(data_id):
 
     # Define layout
     layout = html.Div([
-        # 1. Hidden div to cache data 
-        html.Div(id='intermediate-value', style={'display': 'none'}),
+
         # 2. Title
         html.H3(name+' dataset', style={'text-align': 'center', 'text-color': 'black',
                                         'font_family': 'sans-serif'}),
@@ -357,11 +356,15 @@ def get_layout_from_run(run_id):
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
-                 ])
+                 ]),
+
     ])
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
+    df3 = pd.DataFrame({'task_type': items['task_type']}.items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
     df = df.append(df2)
+    df = df.append(df3)
     df.to_pickle('cache/run'+str(run_id)+'.pkl')
     return layout, df
