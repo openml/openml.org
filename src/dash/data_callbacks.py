@@ -324,3 +324,17 @@ def register_data_callbacks(app):
                 height=800, width=1200
             )}
         return html.Div(dcc.Graph(figure=fig))
+
+    @app.callback(
+        Output('stack', 'options'),
+        [Input('radio1', 'value')])
+    def update_radios(radio1):
+        if radio1 == "target":
+            options = [
+                          {'label': 'Stack', 'value': 'stack'},
+                          {'label': 'Un-stack', 'value': 'group'},
+                      ]
+            return options
+        else:
+            return []
+
