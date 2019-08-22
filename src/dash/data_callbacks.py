@@ -289,7 +289,7 @@ def register_data_callbacks(app):
         Input('dropdown2', 'value'),
         Input('dropdown3', 'value'),
         Input('url', 'pathname')])
-    def update_scatter_plot(at1, at2, colorCode,url):
+    def update_scatter_plot(at1, at2, colorCode, url):
         """
 
         :param at1: str
