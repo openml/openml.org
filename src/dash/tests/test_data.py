@@ -3,6 +3,7 @@ from src.dash.helpers import get_data_metadata
 import os
 import shutil
 from collections import Counter
+BASE_URL = 'http://127.0.0.1:5000/dashboard/'
 
 
 def uncommon_string(s1, s2):
@@ -14,7 +15,7 @@ def uncommon_string(s1, s2):
 
 
 def test_data_page_loading(dash_br):
-    dash_br.server_url = 'http://127.0.0.1:5000/dashboard/data/5'
+    dash_br.server_url = BASE_URL + 'data/5'
     time.sleep(5)
     assert dash_br.get_logs() == [], "browser console should contain no error"
 
@@ -25,7 +26,7 @@ def test_table_data(dash_br):
     shutil.rmtree('cache', ignore_errors=True)
     os.mkdir('cache')
     _, metadata, _, _, _ = get_data_metadata(data_id)
-    dash_br.server_url = 'http://127.0.0.1:5000/dashboard/data/5'
+    dash_br.server_url = BASE_URL + 'data/5'
     time.sleep(5)
     feature_table = dash_br.find_element("#datatable")
     actual_table = (feature_table.text.split("Entropy")[-1])
@@ -40,7 +41,7 @@ def test_table_data(dash_br):
 
 def test_graph_elements_loaded(dash_br):
     data_id = 50
-    dash_br.server_url = 'http://127.0.0.1:5000/dashboard/data/'+str(data_id)
+    dash_br.server_url = BASE_URL + 'data/50'
     time.sleep(10)
     distribution_plot = dash_br.find_element("#distribution") #find_element_by_css_selector("#graph1")
     fi = dash_br.find_element("#fi")
@@ -50,9 +51,7 @@ def test_graph_elements_loaded(dash_br):
 
 def test_alternate_tabs(dash_br):
     data_id = 5
-    dash_br.server_url = 'http://127.0.0.1:5000/dashboard/data/' + str(data_id)
+    dash_br.server_url = BASE_URL + '/data/5'
     time.sleep(20)
     scatter_matrix = dash_br.find_element("#tab2").find_element_by_css_selector("#matrix")
-    #scatter_plot = dash_br.find_element("#tab3")#.find_element_by_css_selector("#scatter_plot")
-    #print(scatter_plot.text)
-    print(scatter_matrix.text)
+    assert(scatter_matrix.text is not None)
