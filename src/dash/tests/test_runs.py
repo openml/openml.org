@@ -18,7 +18,7 @@ def uncommon_string(s1, s2):
 
 
 def test_run_page_loading(dash_br):
-    dash_br.server_url = BASE_URL + '/run/10228060'
+    dash_br.server_url = BASE_URL + 'run/10228060'
     time.sleep(5)
     assert dash_br.get_logs() == [], "browser console should contain no error"
 
@@ -42,7 +42,7 @@ def test_run_data(dash_br):
     df['results'] = result_list
     df['values'] = error
     d = df.drop(['results'], axis=1)
-    dash_br.server_url = BASE_URL + '/run/10228060'
+    dash_br.server_url = BASE_URL + 'run/10228060'
     time.sleep(5)
     feature_table = dash_br.find_element("#runtable")
     actual_table = (feature_table.text.split("values")[-1])
