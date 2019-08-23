@@ -10,9 +10,7 @@ Build the app by running
 
 `npm run debug`
 ## Install Dash
-`pip install dash==0.40.0 ` 
-
-(Note that the dash app does not work with newer dash version).
+`pip install dash==1.1.1` 
 
 `pip install dash-table-experiments`
 
