@@ -35,9 +35,9 @@ def register_flow_callbacks(app):
         tlist = tasks.list_tasks(task_type_id=task_types.index(tasktype)+1)
         task_id = [value['tid'] for key, value in tlist.items()]
         # Get all evaluations of selected metric and flow
-        evals = evaluations.list_evaluations(function=metric, flow=[flow_id], sort_order='desc', size=10000)
-        rows = [vars(e) for id, e in evals.items()]
-        df = pd.DataFrame(rows)
+        df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id], sort_order='desc',
+                                                 size=10000, output_format='dataframe')
+
         # Filter type of task
         df = df[df['task_id'].isin(task_id)]
         run_link = []
@@ -59,14 +59,14 @@ def register_flow_callbacks(app):
                                        colorscale='Jet')
         else:
             color = []
-            for run_id in df.run_id[:1000]:
-                p = pd.DataFrame(runs.get_runs([run_id])[0].parameter_settings)
-                row = p[p['oml:name'] == parameter]
-                if row.empty:
+            for param_dict in df.parameters[:1000]:
+                values = [value for key, value in param_dict.items() if parameter == key]
+
+                if not values:
                     color.append('0')
                 else:
-                    color.append(row['oml:value'].values[0])
-                    hover_text.append(row['oml:value'].values[0])
+                    color.append(values[0])
+                    hover_text.append(values[0])
             if color[0].isdigit():
                 color = list(map(int, color))
             else:
