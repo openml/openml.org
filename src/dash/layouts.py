@@ -4,7 +4,7 @@ import dash_html_components as html
 import numpy as np
 from .helpers import *
 import os
-from openml import runs, flows, evaluations
+from openml import runs, flows, evaluations, setups
 
 
 def get_layout_from_data(data_id):
@@ -239,8 +239,9 @@ def get_layout_from_flow(flow_id):
                   "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
                   "Survival Analysis", "Subgroup Discovery"]
     # Dropdown #3 flow parameters
-    P = flows.get_flow(flow_id).parameters.items()
-    parameters = [x[0] for x in P]
+    P = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
+    parameter_dict = P['parameters'].values[0]
+    parameters = [param['full_name'] for key, param in parameter_dict.items()]
     parameters.append('None')
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
