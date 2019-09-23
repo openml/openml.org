@@ -4,8 +4,8 @@ import dash_html_components as html
 import numpy as np
 from .helpers import *
 import os
-from openml import runs, flows, evaluations, setups
-
+from openml import runs, flows, evaluations, setups, study
+import plotly.graph_objs as go
 
 def get_layout_from_data(data_id):
     """
@@ -369,3 +369,29 @@ def get_layout_from_run(run_id):
     df = df.append(df3)
     df.to_pickle('cache/run'+str(run_id)+'.pkl')
     return layout, df
+
+def get_layout_from_study(study_id):
+    """
+    params:
+    study_id: study id provided
+    outpus:
+    scatter plot for runs and studies combined
+    """
+    items = study.get_study(int(study_id))
+    run_ids = items.runs[1:10]
+    item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    layout = html.Div([
+        dcc.Dropdown(
+            id = 'dropdown-study',
+            options = [
+                {'label':'mean-value', 'value':'0'},
+                {'label':'folded', 'value':'1'}
+            ],
+            value = '0'
+        ),
+        html.Div(id='scatterplot-study'),
+    ])
+    return layout, item
+
+
+
