@@ -3,6 +3,8 @@ from src.dash.helpers import get_data_metadata
 import os
 import shutil
 from collections import Counter
+from openml import datasets, tasks, runs, flows, config, evaluations, study
+import os, pandas as pd, numpy as np, seaborn as sns, sklearn
 BASE_URL = 'http://127.0.0.1:5000/dashboard/'
 
 
@@ -55,3 +57,14 @@ def test_alternate_tabs(dash_br):
     time.sleep(20)
     scatter_matrix = dash_br.find_element("#tab2").find_element_by_css_selector("#matrix")
     assert(scatter_matrix.text is not None)
+
+def test_all_datasets(dash_br):
+    df = datasets.list_datasets(output_format='dataframe')
+    ids = []
+    for id in df['did'].values:
+        dash_br.server_url = BASE_URL + 'data/'+ str(id)
+        time.sleep(5)
+        if dash_br.get_logs() != []:
+            ids.append(id)
+    print(ids)
+
