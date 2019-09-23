@@ -35,41 +35,15 @@ def register_study_callbacks(app):
         if(value == '0'):
             fig = go.Figure(data=go.Scatter(x=item['value'], y=item['data_name'], mode='markers'))
         else:
-            item_fold[['fold1', 'fold2', 'fold3', 'fold4', 'fold5', 'fold6', 'fold7', 'fold8', 'fold9',
-                       'fold10']] = pd.DataFrame(item_fold['values'].values.tolist(), index=item_fold.index)
+            df = splitDataFrameList(item_fold, 'values')
+            dfs = dict(tuple(df.groupby('flow_name')))
+            key_list = list(dfs.keys())
             fig = go.Figure()
+            for i in range(len(key_list)):
+                curr_df = dfs[str(key_list[i])]
+                fig.add_trace(go.Scatter(x=curr_df['values'], y=curr_df['data_name'],
+                                         mode='markers', name=str(key_list[i])))
 
-            # Add traces
-            fig.add_trace(go.Scatter(x=item_fold['fold1'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='markers'))
-            fig.add_trace(go.Scatter(x=item_fold['fold2'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='s+markers'))
-            fig.add_trace(go.Scatter(x=item_fold['fold3'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold4'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold5'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold6'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold7'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold8'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold9'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
-            fig.add_trace(go.Scatter(x=item_fold['fold10'], y=item_fold['data_name'],
-                                     mode='markers',
-                                     name='lines'))
         graph = dcc.Graph(figure=fig)
         return html.Div(graph)
 
