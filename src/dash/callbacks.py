@@ -1,5 +1,5 @@
 import re
-from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run
+from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run, get_layout_from_study
 from dash.dependencies import Input, Output
 import dash_html_components as html
 from .helpers import *
@@ -7,6 +7,8 @@ from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
 from .run_callbacks import register_run_callbacks
+from .study_callbacks import register_study_callbacks
+
 import time
 
 def register_callbacks(app):
@@ -54,6 +56,10 @@ def register_callbacks(app):
             layout, rundf = get_layout_from_run(run_id)
 
             return layout
+        elif pathname is not None and 'dashboard/study' in pathname:
+            study_id = int(re.search('study/(\d+)', pathname).group(1))
+            layout, studydf = get_layout_from_study(study_id)
+            return layout
         else:
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
 
@@ -63,6 +69,7 @@ def register_callbacks(app):
     register_run_callbacks(app)
     register_task_callbacks(app)
     register_flow_callbacks(app)
+    register_study_callbacks(app)
 
 
 
