@@ -2,12 +2,13 @@ from sklearn.preprocessing import Imputer
 import pandas as pd
 from openml import datasets
 import scipy.stats
+import numpy as np
 
 
 def clean_dataset(df):
+
     df = df.loc[:, df.isnull().mean() < .8]
-    imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
-    out = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
+    out = df.fillna(df.mode().iloc[0])
     return out
 
 
@@ -27,7 +28,6 @@ def get_data_metadata(data_id):
     df = pd.DataFrame(x, columns=attribute_names)
     df.to_pickle('cache/df'+str(data_id)+'.pkl')
 
-
     # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
@@ -42,10 +42,16 @@ def get_data_metadata(data_id):
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
+    s1 = meta_features['Attribute']
+    s2 = pd.Series(df.columns)
+    meta_features['Attribute'] = (pd.Series(np.intersect1d(s1.values, s2.values)))
+    meta_features.dropna(axis=0, inplace=True)
+
     # Add entropy
     numerical_features = list(meta_features["Attribute"][meta_features["DataType"] == "numeric"])
     nominal_features = list(meta_features["Attribute"][meta_features["DataType"] == "nominal"])
     entropy = []
+
     for column in meta_features['Attribute']:
         if column in nominal_features:
             count = df[column].value_counts()
