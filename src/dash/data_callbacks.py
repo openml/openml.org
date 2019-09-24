@@ -153,14 +153,14 @@ def register_data_callbacks(app):
         te = TargetEncoder()
         if target_type == "nominal" or target_type == "string":
             y = pd.Categorical(df[target_attribute]).codes
-            x = te.fit_transform(x, y)
             x = clean_dataset(x)
+            x = te.fit_transform(x, y)
             rf = RandomForestClassifier(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
         else:
             y = df[target_attribute]
-            x = te.fit_transform(x, y)
             x = clean_dataset(x)
+            x = te.fit_transform(x, y)
             rf = RandomForestRegressor(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
         fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
@@ -198,6 +198,7 @@ def register_data_callbacks(app):
         else:
             y = df[target_attribute]
         # Feature interaction plots
+        df = clean_dataset(df)
         numerical_features = list(meta_data["Attribute"][meta_data["DataType"] == "numeric"])
         nominal_features = list(meta_data["Attribute"][meta_data["DataType"] == "nominal"])
         top_numericals = (fi['index'][fi['index'].isin(numerical_features)][:5])
