@@ -29,6 +29,8 @@ def register_study_callbacks(app):
         study_id = int(re.search('study/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
         runs = study.runs[1:300]
+        print(len(study.runs))
+
         item = openml.evaluations.list_evaluations('predictive_accuracy', id=runs, output_format='dataframe', )
         item_fold = openml.evaluations.list_evaluations('predictive_accuracy', id=runs, output_format='dataframe',
                                                         per_fold=True)
