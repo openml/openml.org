@@ -66,5 +66,4 @@ def test_all_datasets(dash_br):
         time.sleep(5)
         if dash_br.get_logs() != []:
             ids.append(id)
-    print(ids)
-
+    np.save('ids.npy', np.asarray(ids))
