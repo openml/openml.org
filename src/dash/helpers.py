@@ -74,18 +74,18 @@ def get_highest_rank(df, leaderboard):
     for index, row in df.iterrows():
         if row['setup_id'] not in setup_ids:
             users = list(highest_rank.keys())
-            new_user = (row['uploader'] not in (users))
+            new_user = (row['uploader_name'] not in (users))
             setup_ids.append(row['setup_id'])
             score = row['value']
             if new_user or (score not in scores):
                 scores.append(score)
                 scores.sort(reverse=True)
                 rank = scores.index(score) + 1
-                if new_user or (highest_rank[row['uploader']] > rank):
-                    highest_rank[row['uploader']] = rank
-                    highest_score[row['uploader']] = score
-                    if highest_rank[row['uploader']] > row['Rank']:
-                        highest_rank[row['uploader']] = row['Rank']
+                if new_user or (highest_rank[row['uploader_name']] > rank):
+                    highest_rank[row['uploader_name']] = rank
+                    highest_score[row['uploader_name']] = score
+                    if highest_rank[row['uploader_name']] > row['Rank']:
+                        highest_rank[row['uploader_name']] = row['Rank']
     #leaderboard['highest_rank'] = list(highest_rank.values())
     leaderboard['Top Score'] = list(highest_score.values())
     return leaderboard

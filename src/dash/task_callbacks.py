@@ -27,7 +27,7 @@ def register_task_callbacks(app):
         if pathname is not None and '/dashboard/task' in pathname:
             task_id = int(re.search('task/(\d+)', pathname).group(1))
         else:
-            return []
+            return html.Div(), html.Div()
         if n_clicks is None:
             n_clicks = 0
         eval_objects = evaluations.list_evaluations(function=metric,
@@ -42,7 +42,7 @@ def register_task_callbacks(app):
 
         if not eval_objects:
             if df_old.empty:
-                return []
+                return html.Div(), html.Div()
             else:
                 df = df_old
         else:
@@ -96,10 +96,7 @@ def register_task_callbacks(app):
                                ticktext=tick_text + evals["flow_name_t"], tickvals=evals["flow_name"]
                            ))
         fig = go.Figure(data, layout)
-        uploader = []
-        for run_id in evals["run_id"].values:
-            name = runs.list_runs(id=[run_id])[run_id]['uploader']
-            uploader.append(name)
+
         tick_text = []
         run_link = []
         for run_id in evals["run_id"].values:
@@ -112,21 +109,21 @@ def register_task_callbacks(app):
 
         evals['upload_time'] = pd.to_datetime(evals['upload_time'])
         evals['upload_time'] = evals['upload_time'].dt.date
-        evals['uploader'] = uploader
+
 
         data = [go.Scatter(y=evals["value"],
                            x=evals["upload_time"],
                            mode='text+markers',
                            text=run_link,
-                           hovertext=evals["uploader"],
+                           hovertext=evals["uploader_name"],
                            hoverlabel=dict(bgcolor="white", bordercolor="black"),
                            marker=dict(opacity=0.5, symbol='diamond',
                                        color=evals["uploader"],  # set color equal to a variable
-                                       colorscale='Earth', )
+                                       colorscale='Jet', )
                            )
                 ]
         layout = go.Layout(
-            autosize=False, width=1200, height=600, margin=dict(l=500), hovermode='closest',
+            autosize=True, width=1200, margin=dict(l=500), hovermode='closest',
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
                                   title=go.layout.yaxis.Title(text=str(metric)),
@@ -134,17 +131,17 @@ def register_task_callbacks(app):
                                   showticklabels=True))
         fig1 = go.Figure(data, layout)
         # TABLE
-        top_uploader = (evals.sort_values('value', ascending=False).groupby(['uploader'], sort=False))
-        name = top_uploader['uploader'].unique()
+        top_uploader = (evals.sort_values('value', ascending=False).groupby(['uploader_name'], sort=False))
+        name = top_uploader['uploader_name'].unique()
         rank = list(range(1, len(name) + 1))
-        entries = top_uploader['uploader'].value_counts().values
+        entries = top_uploader['uploader_name'].value_counts().values
         leaderboard = pd.DataFrame({'Rank': rank, 'Name': name, 'Entries': entries}).reset_index()
         leaderboard.drop('Name', axis=1, inplace=True)
         ranks = []
         df = top_uploader.head(evals.shape[1])
 
-        for uploader in df['uploader']:
-            ranks.append(leaderboard[leaderboard['uploader'] == uploader].Rank.values[0])
+        for uploader in df['uploader_name']:
+            ranks.append(leaderboard[leaderboard['uploader_name'] == uploader].Rank.values[0])
         df['Rank'] = ranks
         df.sort_values(by=['upload_time'], inplace=True)
         leaderboard = get_highest_rank(df, leaderboard)
