@@ -80,19 +80,23 @@ def register_task_callbacks(app):
                            mode='text+markers',
                            text=run_link,
                            hovertext=evals['flow_name'] + ['<br>'] * evals.shape[0] + evals["value"].astype(str)+['<br>'] * evals.shape[0] + ['click for more info'] * evals.shape[0],
-                           hoverinfo='text',
+                           #hoverinfo='text',
                            # hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
                            marker=dict(opacity=0.5, symbol='diamond',
                                        color=evals["run_id"],  # set color equal to a variable
-                                       colorscale='Earth', )
+                                       colorscale='RdBu', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), width=1500,
-                           hovermode='closest',
+        layout = go.Layout(autosize=False, margin=dict(l=400),height=2*len(evals['flow_name']),
+                           title='Every point is a run, click for details <br>'
+                                 'Every y label is a flow, click for details',
+                           width=1500,
+                           hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
                                autorange="reversed",
+
                                ticktext=tick_text + evals["flow_name_t"], tickvals=evals["flow_name"]
                            ))
         fig = go.Figure(data, layout)
@@ -111,6 +115,7 @@ def register_task_callbacks(app):
         evals['upload_time'] = evals['upload_time'].dt.date
 
 
+
         data = [go.Scatter(y=evals["value"],
                            x=evals["upload_time"],
                            mode='text+markers',
@@ -119,11 +124,11 @@ def register_task_callbacks(app):
                            hoverlabel=dict(bgcolor="white", bordercolor="black"),
                            marker=dict(opacity=0.5, symbol='diamond',
                                        color=evals["uploader"],  # set color equal to a variable
-                                       colorscale='Jet', )
+                                       colorscale='Rainbow', )
                            )
                 ]
-        layout = go.Layout(
-            autosize=True, width=1200, margin=dict(l=500), hovermode='closest',
+        layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
+            autosize=True,  margin=dict(l=500), hovermode='y',
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
                                   title=go.layout.yaxis.Title(text=str(metric)),
@@ -155,6 +160,6 @@ def register_task_callbacks(app):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        return html.Div(dcc.Graph(figure=fig)), \
+        return html.Div(dcc.Graph(figure=fig),draggable=True), \
                html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
 
