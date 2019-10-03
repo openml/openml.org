@@ -6,6 +6,8 @@ from collections import Counter
 from openml import runs, flows, evaluations
 import pandas as pd
 import numpy as np
+from openml import datasets, tasks, runs, flows, config, evaluations, study
+import numpy as np
 BASE_URL = 'http://127.0.0.1:5000/dashboard/'
 
 
@@ -64,4 +66,14 @@ def test_run_graph_elements(dash_br):
     assert("area_under_roc_curve" in distribution_plot.text)
     assert("Recall" in pr.text)
 
+
+def test_all_runs(dash_br):
+    df = runs.list_runs(output_format='dataframe')
+    ids = []
+    for id in df['run_id'].values:
+        dash_br.server_url = BASE_URL + 'run/'+ str(id)
+        time.sleep(5)
+        if dash_br.get_logs() != []:
+            ids.append(id)
+    np.save('run_ids.npy', np.asarray(ids))
 

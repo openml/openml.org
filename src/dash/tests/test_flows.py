@@ -1,5 +1,6 @@
 import time
 from openml import runs, flows, evaluations
+import numpy as np
 BASE_URL = 'http://127.0.0.1:5000/dashboard/'
 
 
@@ -36,3 +37,15 @@ def test_flow_dropdowns(dash_br):
     assert('area_under_roc_curve' in metric_dropdown.text )
     assert ('Supervised classification' in tasktype_dropdown.text)
     assert ('I' in parameter_dropdown.text)
+
+
+def test_all_flows(dash_br):
+    df = flows.list_flows(output_format='dataframe')
+    ids = []
+    for id in df['flow_id'].values:
+        dash_br.server_url = BASE_URL + 'flow/'+ str(id)
+        time.sleep(5)
+        if dash_br.get_logs() != []:
+            ids.append(id)
+    np.save('flow_ids.npy', np.asarray(ids))
+
