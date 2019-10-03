@@ -9,7 +9,6 @@ import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 import { darken } from "polished";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import "../vendor/perfect-scrollbar.css";
 
 import { spacing } from "@material-ui/system";
 
@@ -59,6 +58,67 @@ const Scrollbar = styled(PerfectScrollbar)`
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   width: 260px;
   overflow-x: hidden;
+
+  .scrollbar-container {
+  position: relative;
+  height: 100%;
+  }
+
+  .ps {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .ps__rail-x {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    height: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+
+  .ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    width: 15px;
+    right: 0;
+    position: absolute;
+  }
+
+  .ps--active-x > .ps__rail-x,
+  .ps--active-y > .ps__rail-y {
+    display: block;
+    background-color: transparent;
+  }
+
+  .ps:hover > .ps__rail-x,
+  .ps:hover > .ps__rail-y,
+  .ps--focus > .ps__rail-x,
+  .ps--focus > .ps__rail-y,
+  .ps--scrolling-x > .ps__rail-x,
+  .ps--scrolling-y > .ps__rail-y {
+    opacity: 0.6;
+  }
+
+  .ps__thumb-x {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color .2s linear, height .2s ease-in-out;
+    height: 6px;
+    bottom: 2px;
+    position: absolute;
+  }
+
+  .ps__thumb-y {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color .2s linear, width .2s ease-in-out;
+    width: 6px;
+    right: 2px;
+    position: absolute;
+  }
 `;
 
 const List = styled(MuiList)`
