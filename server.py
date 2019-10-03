@@ -12,10 +12,10 @@ app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists("src/client/" + path):
-        return send_from_directory('src/client', path)
+    if path != "" and os.path.exists("src/client/app/build" + path):
+        return send_from_directory('src/client/app/build', path)
     else:
-        return send_from_directory('src/client', 'index.html')
+        return send_from_directory('src/client/app/build', 'index.html')
 
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT", 5000)), debug=True)
