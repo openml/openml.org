@@ -213,9 +213,6 @@ function SidebarCategory({
 function SidebarLink({ name, to, badge, icon }) {
   return (
     <SimpleLink
-      button
-      dense
-      exact
       href={to}
       target="_blank"
       rel="noreferrer"
