@@ -1,0 +1,14 @@
+dash_core_components==1.2.0
+pandas==0.24.2
+dash_html_components==1.0.1
+numpy==1.16.3
+scipy==1.2.1
+Flask==1.0.2
+itsdangerous==1.1.0
+Flask_SQLAlchemy==2.4.1
+seaborn==0.9.0
+category_encoders==2.0.0
+plotly==4.1.1
+dash_table==4.3.0
+openml==0.9.0
+scikit_learn==0.21.3
