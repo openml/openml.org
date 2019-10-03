@@ -22,6 +22,7 @@ class App extends React.Component {
     currentTheme: 0,
     miniDrawer: false,
     opaqueSearch: false,
+    animation: true,
     drawerWidth: 260
   };
 
@@ -31,6 +32,7 @@ class App extends React.Component {
         <ThemeContext.Provider value={
             {   state: this.state,
                 setTheme: (value) => this.setState({ currentTheme: value }),
+                toggleAnimation: (value) => this.setState({ animation: value }),
                 setOpaqueSearch: (value) => this.setState({ opaqueSearch: value }),
                 miniDrawerToggle: () => this.setState({
                   miniDrawer: !this.state.miniDrawer,
