@@ -72,7 +72,10 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                                  {"param": "qualities.NumberOfFeatures", "unit": "fields"},
                                  {"param": "qualities.NumberOfClasses", "unit": "classes"},
                                  {"param": "qualities.NumberOfMissingValues", "unit": "missing"}
-                             ]) {
+                             ],
+                             statusField = "status") {
+
+      console.log(statusField);
 
       if(tag !== undefined){//nested query for tag
                   filter =[{
@@ -129,7 +132,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
             stats.map((stat) => stat.param)
         ).concat(
             stats2.map((stat) => stat.param)
-        ).filter((l)=>(!!l)),
+        ).concat(statusField).filter((l)=>(!!l)),
     };
     console.log(params);
     //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
@@ -149,7 +152,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
         (request) => request.json()
     ).then(
         (data) => {
-        //  console.log(data["hits"]["hits"][0]);
+            console.log(data["hits"]["hits"][0]);
             return data["hits"]["hits"].map(
                 x => {
                     let source = x["_source"];
@@ -175,6 +178,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                                 })
                             )
                         ,
+                        "data_status": parseDots(source, statusField),
                         "data_id": parseDots(source, idField)
                     }
                 }

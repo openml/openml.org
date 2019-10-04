@@ -62,6 +62,7 @@ const MainContent = styled(Paper)`
   flex: 1;
   background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
   box-shadow ${props => props.bg === 'Gradient' ? 'none' : props.theme.body.background};
+  padding: 0px;
 
   @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     flex: none;
