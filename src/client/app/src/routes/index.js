@@ -19,7 +19,6 @@ const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
 
 // Documentation
-const Documentation = async(() => import("../pages/docs/Documentation"));
 const About = async(() => import("../pages/docs/About"));
 const GetInvolved = async(() => import("../pages/docs/GetInvolved"));
 const Terms = async(() => import("../pages/docs/Terms"));
@@ -83,7 +82,6 @@ const taskRoutes = {
   path: "/tasks",
   icon: <YellowMenuIcon icon={['fas', 'flag']} fixedWidth />,
   component: Tasks,
-  children: null
 };
 
 const flowRoutes = {
@@ -91,7 +89,6 @@ const flowRoutes = {
   path: "/flows",
   icon: <BlueMenuIcon icon="cog" fixedWidth />,
   component: Flows,
-  children: null
 };
 
 const runRoutes = {
@@ -99,7 +96,6 @@ const runRoutes = {
   path: "/runs",
   icon: <RedMenuIcon icon="atom" fixedWidth />,
   component: Runs,
-  children: null
 };
 
 const studyRoutes = {
@@ -107,7 +103,6 @@ const studyRoutes = {
   path: "/studies",
   icon: <PurpleMenuIcon icon="flask" fixedWidth />,
   component: Studies,
-  children: null
 };
 
 const taskTypeRoutes = {
@@ -115,7 +110,6 @@ const taskTypeRoutes = {
   path: "/tasktypes",
   icon: <OrangeMenuIcon icon={['far', 'flag']} fixedWidth />,
   component: TaskTypes,
-  children: null
 };
 
 const measureRoutes = {
@@ -123,7 +117,6 @@ const measureRoutes = {
   path: "/measures",
   icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
   component: Measures,
-  children: null
 };
 
 const peopleRoutes = {
@@ -131,7 +124,6 @@ const peopleRoutes = {
   path: "/people",
   icon: <LightBlueMenuIcon icon="users" fixedWidth />,
   component: People,
-  children: null
 };
 
 const profileRoutes = {
@@ -139,14 +131,12 @@ const profileRoutes = {
   path: "/auth/profile",
   icon: <GreenMenuIcon icon="user" fixedWidth />,
   component: Profile,
-  children: null
 };
 
 const coverRoutes = {
   id: "Cover",
   path: "/",
   component: Cover,
-  children: null,
   background: 'Gradient',
 };
 
@@ -184,11 +174,10 @@ const authRoutes = {
 
 const documentationRoutes = {
   id: "Documentation",
-  path: "/documentation",
+  path: "https://docs.openml.org",
   header: "Learn more",
   icon: <GreenMenuIcon icon="book-open" fixedWidth />,
-  component: Documentation,
-  children: null
+  component: null,
 };
 
 const contributeRoutes = {
@@ -196,7 +185,6 @@ const contributeRoutes = {
   path: "/contribute",
   icon: <YellowMenuIcon icon="hand-holding-heart" fixedWidth />,
   component: GetInvolved,
-  children: null
 };
 
 const foundationRoutes = {
@@ -204,7 +192,6 @@ const foundationRoutes = {
   path: "/foundation",
   icon: <BlueMenuIcon icon="hands-helping" fixedWidth />,
   component: Foundation,
-  children: null
 };
 
 const termsRoutes = {
@@ -212,7 +199,6 @@ const termsRoutes = {
   path: "/terms",
   icon: <RedMenuIcon icon="heart" fixedWidth />,
   component: Terms,
-  children: null
 };
 
 const teamRoutes = {
@@ -220,7 +206,6 @@ const teamRoutes = {
   path: "/team",
   icon: <PurpleMenuIcon icon="user-friends" fixedWidth />,
   component: About,
-  children: null
 };
 
 
