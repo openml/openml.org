@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { rgba } from "polished";
 import Icon from '@material-ui/core/Icon';
+import Tooltip from '@material-ui/core/Tooltip';
 import { blue, green, grey, indigo} from "@material-ui/core/colors";
 
 import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 import { darken } from "polished";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import "../vendor/perfect-scrollbar.css";
 
 import { spacing } from "@material-ui/system";
 
@@ -18,9 +18,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Box as MuiBox,
-  Collapse,
   Grid,
   Chip,
+  Link as MuiLink,
   ListItem,
   ListItemText,
   Drawer as MuiDrawer,
@@ -33,6 +33,15 @@ import routes from "../routes/index";
 const NavLink = React.forwardRef((props, ref) => (
   <RouterNavLink innerRef={ref} {...props} />
 ));
+
+const SimpleLink = styled(MuiLink)`
+  text-decoration: none;
+
+  &:focus, &:hover, &:visited, &:link, &:active {
+      text-decoration: none;
+  }
+`;
+
 
 const Box = styled(MuiBox)(spacing);
 
@@ -49,6 +58,67 @@ const Scrollbar = styled(PerfectScrollbar)`
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   width: 260px;
   overflow-x: hidden;
+
+  .scrollbar-container {
+  position: relative;
+  height: 100%;
+  }
+
+  .ps {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .ps__rail-x {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    height: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+
+  .ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    width: 15px;
+    right: 0;
+    position: absolute;
+  }
+
+  .ps--active-x > .ps__rail-x,
+  .ps--active-y > .ps__rail-y {
+    display: block;
+    background-color: transparent;
+  }
+
+  .ps:hover > .ps__rail-x,
+  .ps:hover > .ps__rail-y,
+  .ps--focus > .ps__rail-x,
+  .ps--focus > .ps__rail-y,
+  .ps--scrolling-x > .ps__rail-x,
+  .ps--scrolling-y > .ps__rail-y {
+    opacity: 0.6;
+  }
+
+  .ps__thumb-x {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color .2s linear, height .2s ease-in-out;
+    height: 6px;
+    bottom: 2px;
+    position: absolute;
+  }
+
+  .ps__thumb-y {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color .2s linear, width .2s ease-in-out;
+    width: 6px;
+    right: 2px;
+    position: absolute;
+  }
 `;
 
 const List = styled(MuiList)`
@@ -115,37 +185,6 @@ const CategoryIcon = styled(FontAwesomeIcon)`
   color: ${props => rgba(props.theme.sidebar.color, 0.5)};
 `;
 
-const Link = styled(ListItem)`
-  padding-left: ${props => props.theme.spacing(15)}px;
-  padding-top: ${props => props.theme.spacing(2)}px;
-  padding-bottom: ${props => props.theme.spacing(2)}px;
-
-  span {
-    color: ${props => rgba(props.theme.sidebar.color, 0.7)};
-  }
-
-  &:hover span {
-    color: ${props => rgba(props.theme.sidebar.color, 0.9)};
-  }
-
-  &.${props => props.activeClassName} {
-    background-color: ${props => darken(0.06, props.theme.sidebar.background)};
-
-    span {
-      color: ${props => props.theme.sidebar.color};
-    }
-  }
-`;
-
-const LinkText = styled(ListItemText)`
-  color: ${props => props.theme.sidebar.color};
-  span {
-    font-size: ${props => props.theme.typography.body1.fontSize}px;
-  }
-  margin-top: 0;
-  margin-bottom: 0;
-`;
-
 const CountBadge = styled(Chip)`
   margin-top: 5px;
   font-size: 11px;
@@ -203,7 +242,7 @@ const IndigoIcon = styled(FontAwesomeIcon)({
 });
 const SpacedIcon = styled(FontAwesomeIcon)({
     cursor: 'pointer',
-    marginLeft: 9,
+    marginLeft: 10,
 });
 
 function SidebarCategory({
@@ -231,19 +270,18 @@ function SidebarCategory({
   );
 }
 
-function SidebarLink({ name, to, badge }) {
+function SidebarLink({ name, to, badge, icon }) {
   return (
-    <Link
-      button
-      dense
-      component={NavLink}
-      exact
-      to={to}
-      activeClassName="active"
+    <SimpleLink
+      href={to}
+      target="_blank"
+      rel="noreferrer"
     >
-      <LinkText>{name}</LinkText>
-      {badge ? <CountBadge label={badge} /> : ""}
-    </Link>
+      <Category>
+        {icon}
+        <CategoryText>{name}</CategoryText>
+      </Category>
+    </SimpleLink>
   );
 }
 
@@ -289,12 +327,14 @@ class Sidebar extends React.Component {
 
     return (
       <Drawer variant="permanent" {...other}>
-        <Brand>
-          <Icon style={{ fontSize: 39, overflow: 'visible', textAlign: 'center', marginRight: 5 }}>
-            <img alt='' height='100%' src="openml.svg" style={{ paddingBottom: 5 }}/>
-          </Icon>
-          <Box ml={1}>OpenML</Box>
-        </Brand>
+        <SimpleLink href="/">
+          <Brand>
+            <Icon style={{ fontSize: 39, overflow: 'visible', textAlign: 'center', marginRight: 5 }}>
+              <img alt='' height='100%' src="openml.svg" style={{ paddingBottom: 5 }}/>
+            </Icon>
+            <Box ml={1}>OpenML</Box>
+          </Brand>
+        </SimpleLink>
         <Scrollbar>
         <ThemeContext.Consumer>
           {(context) => (
@@ -311,34 +351,8 @@ class Sidebar extends React.Component {
                      context.state.miniDrawer ? (
                     <hr />
                     ) : null}
-                    {category.children ? (
+                    {category.component ? (
                       <React.Fragment key={index}>
-                        <SidebarCategory
-                          isOpen={!this.state[index]}
-                          isCollapsable={true}
-                          name={category.id}
-                          icon={category.icon}
-                          button={true}
-                          onClick={() => this.toggle(index)}
-                        />
-
-                        <Collapse
-                          in={this.state[index]}
-                          timeout="auto"
-                          unmountOnExit
-                        >
-                          {category.children.map((route, index) => (
-                            <SidebarLink
-                              key={index}
-                              name={route.name}
-                              to={route.path}
-                              icon={route.icon}
-                              badge={route.badge}
-                            />
-                          ))}
-                        </Collapse>
-                      </React.Fragment>
-                    ) : (
                       <SidebarCategory
                         isCollapsable={false}
                         name={category.id}
@@ -347,6 +361,17 @@ class Sidebar extends React.Component {
                         component={NavLink}
                         icon={category.icon}
                         exact
+                        badge={category.badge}
+                      />
+                      </React.Fragment>
+                    ) : (
+                      <SidebarLink
+                        isCollapsable={false}
+                        name={category.id}
+                        to={category.path}
+                        activeClassName="active"
+                        component={SimpleLink}
+                        icon={category.icon}
                         badge={category.badge}
                       />
                     )}
@@ -368,11 +393,21 @@ class Sidebar extends React.Component {
                   }
                 </Grid>
                 <Grid item>
-                  <LightIcon icon="splotch" size="lg" onClick={() => context.setTheme(1)} />
-                  <DarkIcon icon="splotch" size="lg" onClick={() => context.setTheme(0)} />
-                  <GreenIcon icon="splotch" size="lg" onClick={() => context.setTheme(3)} />
-                  <BlueIcon icon="splotch" size="lg" onClick={() => context.setTheme(2)} />
-                  <IndigoIcon icon="splotch" size="lg" onClick={() => context.setTheme(4)} />
+                  <Tooltip title="Switch to Light theme" placement="top-start">
+                    <div style={{display:'inline-block'}}><LightIcon icon="splotch" size="lg" onClick={() => context.setTheme(1)} /></div>
+                  </Tooltip>
+                  <Tooltip title="Switch to Dark theme" placement="top-start">
+                    <div style={{display:'inline-block'}}><DarkIcon icon="splotch" size="lg" onClick={() => context.setTheme(0)} /></div>
+                  </Tooltip>
+                  <Tooltip title="Switch to Green theme" placement="top-start">
+                    <div style={{display:'inline-block'}}><GreenIcon icon="splotch" size="lg" onClick={() => context.setTheme(3)} /></div>
+                  </Tooltip>
+                  <Tooltip title="Switch to Blue theme" placement="top-start">
+                    <div style={{display:'inline-block'}}><BlueIcon icon="splotch" size="lg" onClick={() => context.setTheme(2)} /></div>
+                  </Tooltip>
+                  <Tooltip title="Switch to Indigo theme" placement="top-start">
+                    <div style={{display:'inline-block'}}><IndigoIcon icon="splotch" size="lg" onClick={() => context.setTheme(4)} /></div>
+                  </Tooltip>
                 </Grid>
           </Grid>
           )}

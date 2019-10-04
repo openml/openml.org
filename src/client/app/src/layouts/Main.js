@@ -42,6 +42,7 @@ const animation = props =>
 
 const Root = styled.div`
   animation: ${props => props.bg === 'Gradient' ? animation : 'none'};
+  animation-play-state: ${props => props.bgrunning ? 'running' : 'paused'};
   -webkit-animation-timing-function: linear;
   display: flex;
   min-height: 100vh;
@@ -94,7 +95,7 @@ class Main extends React.Component {
     return (
       <ThemeContext.Consumer>
         {(context) => (
-      <Root bg={background} >
+      <Root bg={background} bgrunning={context.state.animation}>
         <CssBaseline />
         <GlobalStyle />
           <Drawer drawerWidth={context.state.drawerWidth}>

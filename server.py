@@ -18,10 +18,10 @@ create_dash_app(app)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists("src/client/" + path):
-        return send_from_directory('src/client', path)
+    if path != "" and os.path.exists("src/client/app/build" + path):
+        return send_from_directory('src/client/app/build', path)
     else:
-        return send_from_directory('src/client', 'index.html')
+        return send_from_directory('src/client/app/build', 'index.html')
 
 
 if __name__ == '__main__':

@@ -2,18 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green, red, blue, amber, purple } from "@material-ui/core/colors";
+import { green, red, blue, amber, purple, grey } from "@material-ui/core/colors";
 import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core/";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+import { ThemeContext } from "../../App.js";
 
 import {
   Grid,
   Paper,
   Card,
   CardContent as MuiCardContent,
-  Typography
+  Typography,
+  Tooltip
 } from "@material-ui/core";
 
 const FrontPaper = styled(Paper)`
@@ -61,7 +63,6 @@ const CoverTitle = styled(Typography)`
   padding-top: 50px;
   padding-bottom: 30px;
 `;
-
 const FixedIcon = styled(FontAwesomeIcon)`
     position: absolute;
     font-size:${props => props.sizept ? props.sizept : 20}pt;
@@ -98,6 +99,11 @@ const AmberIcon = styled(FontAwesomeIcon)`
 const PurpleIcon = styled(FontAwesomeIcon)`
     color: ${purple[500]};
 `;
+const PauseIcon = styled(FontAwesomeIcon)({
+    cursor: 'pointer',
+    marginLeft: 10,
+    color: grey[100],
+});
 
 function OpenMLGraph() {
   return (
@@ -427,6 +433,21 @@ class Cover extends React.Component {
               </ListItem>
             </CardContent>
           </FrontPaper>
+
+          <CoverTitle variant="h5" gutterBottom>
+          <ThemeContext.Consumer>
+            {(context) => (
+              <Tooltip title={context.state.animation ? "Stop gradient descent" : "Start gradient descent"} placement="top-start">
+              <div style={{display:'inline-block'}}>
+              {context.state.animation
+                ? <PauseIcon icon={['far', 'pause-circle']} size="lg" onClick={() => context.toggleAnimation(false)} />
+                : <PauseIcon icon={['far', 'play-circle']} size="lg" onClick={() => context.toggleAnimation(true)} />
+              }
+              </div>
+              </Tooltip>
+            )}
+          </ThemeContext.Consumer>
+          </CoverTitle>
         </Grid>
       </div>
       );
