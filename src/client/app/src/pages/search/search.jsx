@@ -3,43 +3,16 @@ import styled from "styled-components";
 import {listItems} from "./api";
 import {Link} from 'react-router-dom';
 import {FilterBar} from "./FilterBar.jsx";
-import { Card, CardHeader, Tooltip, Chip } from '@material-ui/core';
+import { Card, Tooltip } from '@material-ui/core';
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { blue, yellow, orange, red, green, grey, purple} from "@material-ui/core/colors";
+import { blue, orange, red, green, grey, purple} from "@material-ui/core/colors";
 
-const GreenMenuIcon = styled(FontAwesomeIcon)({
+const ColoredIcon = styled(FontAwesomeIcon)`
     cursor: 'pointer',
-    color: green[400],
-});
-const YellowMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: yellow[700],
-});
-const LightBlueMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: blue[300],
-});
-const BlueMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: blue[800],
-});
-const RedMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: red[400],
-});
-const PurpleMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: purple[600],
-});
-const OrangeMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: orange[400],
-});
-const GreyMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: grey[400],
-});
+    color: ${props => props.color },
+`;
 const ResultLink = styled(Link)`
     text-decoration: none;
     &:focus, &:hover, &:visited, &:link, &:active {
@@ -68,7 +41,6 @@ const SubTitle = styled.div`
   text-overflow: ellipsis;
 `;
 const SearchPanel = styled.div`
-  padding-top: 20px;
   overflow: none;
 `;
 const ResultCard = styled(Card)({
@@ -79,6 +51,42 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 15,
 });
+const Scrollbar = styled(PerfectScrollbar)`
+  overflow-x: hidden;
+  position: relative;
+  height: calc(100vh - 105px);
+
+  .ps {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .ps__rail-x, .ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    height: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+`;
+const dataStatus = {
+  active: {
+    title: "verified",
+    icon: "check",
+    color: green[500]
+  },
+  deactivated: {
+    title: "deactivated",
+    icon: "times",
+    color: red[500]
+  },
+  in_preparation: {
+    title: "unverified",
+    icon: "wrench",
+    color: orange[500]
+  }
+}
 
 class StatsScreen extends React.Component {
   //statsScreen for every user in the people lists gives warning for the same key in multiple objects
@@ -113,7 +121,6 @@ class SearchElement extends React.Component {
           }
           return newValue;
         }
-        console.log(this.props.status);
 
         return (
             <ResultLink to={"/"+this.props.type+"/" + this.props.data_id} className={"noLink"}>
@@ -121,34 +128,27 @@ class SearchElement extends React.Component {
                   <Title>{this.props.name}</Title>
                   <SubTitle>{this.props.teaser}</SubTitle>
                   <Tooltip title="runs" placement="top-start">
-                     <Stats><RedMenuIcon icon="atom" fixedWidth /> {abbreviateNumber(this.props.stats[0].value)}</Stats>
+                     <Stats><ColoredIcon color={red[500]} icon="atom" fixedWidth /> {abbreviateNumber(this.props.stats[0].value)}</Stats>
                   </Tooltip>
                   <Tooltip title="likes" placement="top-start">
-                     <Stats><PurpleMenuIcon icon="heart" fixedWidth /> {abbreviateNumber(this.props.stats[1].value)}</Stats>
+                     <Stats><ColoredIcon color={purple[500]} icon="heart" fixedWidth /> {abbreviateNumber(this.props.stats[1].value)}</Stats>
                   </Tooltip>
                   <Tooltip title="downloads" placement="top-start">
-                     <Stats><LightBlueMenuIcon icon="cloud-download-alt" fixedWidth /> {abbreviateNumber(this.props.stats[2].value)}</Stats>
+                     <Stats><ColoredIcon color={blue[700]} icon="cloud-download-alt" fixedWidth /> {abbreviateNumber(this.props.stats[2].value)}</Stats>
                   </Tooltip>
                   {!isNaN(this.props.stats2[0].value) &&
                   <Tooltip title="dimensions (rows x columns)" placement="top-start">
-                     <Stats><GreyMenuIcon icon="table" fixedWidth /> {abbreviateNumber(this.props.stats2[0].value)} x {abbreviateNumber(this.props.stats2[1].value)}</Stats>
+                     <Stats><ColoredIcon color={grey[400]} icon="table" fixedWidth /> {abbreviateNumber(this.props.stats2[0].value)} x {abbreviateNumber(this.props.stats2[1].value)}</Stats>
                   </Tooltip>
                   }
-                  {this.props.data_status === 'active' &&
-                  <Tooltip title="verified" placement="top-start">
-                     <RightStats><GreenMenuIcon icon="check" fixedWidth /></RightStats>
+                  <Tooltip title={dataStatus[this.props.data_status]["title"]} placement="top-start">
+                     <RightStats>
+                     <ColoredIcon
+                          color={dataStatus[this.props.data_status]["color"]}
+                          icon={dataStatus[this.props.data_status]["icon"]}
+                          fixedWidth
+                      /></RightStats>
                   </Tooltip>
-                  }
-                  {this.props.data_status === 'deactivated' &&
-                  <Tooltip title="deactivated" placement="top-start">
-                     <RightStats><RedMenuIcon icon="times" fixedWidth /></RightStats>
-                  </Tooltip>
-                  }
-                  {this.props.data_status === 'in_preparation' &&
-                  <Tooltip title="in_preparation" placement="top-start">
-                     <RightStats><OrangeMenuIcon icon="wrench" fixedWidth /></RightStats>
-                  </Tooltip>
-                  }
                 </ResultCard>
             </ResultLink>
         )
@@ -163,7 +163,7 @@ export class SearchResultsPanel extends React.Component {
         this.state.results = [];
         this.state.error = null;
         this.state.loading = true;
-        this.state.sort = this.props.sortOptions[0];
+        this.state.sort = this.props.sortOptions[1].value;
         this.state.order = "desc";
         this.state.filter =  [];
     }
@@ -173,10 +173,9 @@ export class SearchResultsPanel extends React.Component {
     }
 
     reload() {
-                console.log(this.props.statusField);
                 listItems(this.props.tag,
                     this.props.type,
-                    {"value": this.state.sort.value, "order": this.state.order},
+                    {"value": this.state.sort, "order": this.state.order},
                     this.state.filter,
                     this.props.nameField,
                     this.props.descriptionField,
@@ -252,11 +251,12 @@ export class SearchResultsPanel extends React.Component {
                           onChange={this.sortChange.bind(this)}
                           filterOptions={this.props.filterOptions}
                       />
-                      {component}
+                      <Scrollbar>
+                        {component}
+                      </Scrollbar>
                     </SearchPanel>
                   </React.Fragment>;
       }else{ //nested query
-        console.log(this.state.results.length);
             return <React.Fragment>
                     <SearchPanel>
                       {component}
