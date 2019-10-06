@@ -74,9 +74,6 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                                  {"param": "qualities.NumberOfMissingValues", "unit": "missing"}
                              ],
                              statusField = "status") {
-
-      console.log(statusField);
-
       if(tag !== undefined){//nested query for tag
                   filter =[{
                       "nested":
@@ -152,7 +149,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
         (request) => request.json()
     ).then(
         (data) => {
-            console.log(data["hits"]["hits"][0]);
+            //console.log(data["hits"]["hits"][0]);
             return data["hits"]["hits"].map(
                 x => {
                     let source = x["_source"];
