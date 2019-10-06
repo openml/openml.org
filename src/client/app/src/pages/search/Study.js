@@ -1,7 +1,9 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
 //list
-import {DataListPanel,TaskListPanel,FlowListPanel,RunListPanel} from './search.jsx';
+import DataListPanel from './DataListPanel.js';
+import TaskListPanel from './TaskListPanel.js';
+import FlowListPanel from './FlowListPanel.js';
+import RunListPanel from './RunListPanel.js';
 
 class  DescriptionView extends React.Component{
       render(){
@@ -14,28 +16,28 @@ class  DatasetView extends React.Component{
   //send id of the study item in order to make the query for this study tag
       render(){
         return <React.Fragment>
-          <DataListPanel tag={"study"+"_"+this.props.obj.object.study_id}></DataListPanel>
+          <DataListPanel tag={"study_"+this.props.obj.object.study_id}></DataListPanel>
         </React.Fragment>
       }
 }
 class  TaskView extends React.Component{
       render(){
         return <React.Fragment>
-           <TaskListPanel tag={"study"+"_"+this.props.obj.object.study_id}></TaskListPanel>
+           <TaskListPanel tag={"study_"+this.props.obj.object.study_id}></TaskListPanel>
         </React.Fragment>
       }
 }
 class  FlowView extends React.Component{
       render(){
         return <React.Fragment>
-           <FlowListPanel tag={"study"+"_"+this.props.obj.object.study_id}></FlowListPanel>
+           <FlowListPanel tag={"study_"+this.props.obj.object.study_id}></FlowListPanel>
         </React.Fragment>
       }
 }
 class  RunView extends React.Component{
       render(){
         return <React.Fragment>
-           <RunListPanel tag={"study"+"_"+this.props.obj.object.study_id}></RunListPanel>
+           <RunListPanel tag={"study_"+this.props.obj.object.study_id}></RunListPanel>
         </React.Fragment>
       }
 }
