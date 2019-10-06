@@ -1,5 +1,26 @@
 import React from 'react';
-import {Dropdown} from "./ui/dropdown.jsx";
+import { Button, InputLabel, FormControlLabel, FormControl, Collapse, Select } from '@material-ui/core';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styled from "styled-components";
+
+const FilterButton = styled(Button)`
+  min-width: 0;
+  width: 60px;
+  height: 40px;
+  font-size: 15px;
+  color: #666;
+`;
+
+const FilterBox = styled.div`
+  height: 50px;
+  padding-top:5px;
+  padding-bottom:5px;
+`;
+
+const FilterControl = styled(FormControlLabel)`
+  float: right;
+  margin-right: 0px;
+`;
 
 class GenericFilter extends React.Component {
 
@@ -43,6 +64,10 @@ class GenericFilter extends React.Component {
 
     render() {
         let attrs = this.props.attrs;
+        let inputProperties = {
+          name: attrs.filterType.name,
+          id: attrs.filterType.value
+        }
 
         let elem = attrs.filterType["render"](
             {"onChange": this.onFilterValue1Change.bind(this),
@@ -50,12 +75,18 @@ class GenericFilter extends React.Component {
             {"onChange": this.onFilterValue2Change.bind(this),
                 "value": attrs.filterValue2}
         );
-
         return (<div className={"filterElement"}>
-                <strong>{this.props.attribute.name}</strong> is
-                <Dropdown selected={attrs.filterType}
-                          options={this.props.allFilterTypes}
-                          onChange={this.onFilterTypeChange.bind(this)}/>
+                <FormControl>
+                  <InputLabel htmlFor={this.props.attribute.name}>{this.props.attribute.name}</InputLabel>
+                  <Select
+                    native
+                    value={this.props.attrs.filterType}
+                    onChange={this.onFilterTypeChange.bind(this)}
+                    inputProps={inputProperties}
+                  >{this.props.allFilterTypes.map((item) =>
+                    <option key={item.value} value={item.value}>{item.name}</option>)}
+                  </Select>
+                </FormControl>
                 {elem}
                 {this.props.showAnd ? ", and " : null}
             </div>
@@ -185,15 +216,16 @@ export class FilterBar extends React.Component {
         super(props);
 
         this.state = {
-            "sort": props.sortOptions[0],
+            "sort": props.sortOptions[1].value,
             "order": "desc", //Options: arc, desc
             "showFilter": false,
-            "filters": {}
+            "filters": {},
+            "sortVisible": false,
         }
 
     }
 
-    propegate(sort, order, filters) {
+    propagate(sort, order, filters) {
         this.props.onChange(sort, order, Object.values(filters).map((item) => item.query).filter(item=>(!!item)));
     }
 
@@ -214,96 +246,105 @@ export class FilterBar extends React.Component {
 
     //Called when submitting new filters
     onSubmit() {
-
         this.setState({"showFilter": false});
-        this.propegate(this.state.sort, this.state.order, this.state.filters);
+        this.propagate(this.state.sort, this.state.order, this.state.filters);
     }
 
-    sortChange(state) {
-        this.setState(
-            {
-                "sort": state
-            },
-        );
-
-        this.propegate(state, this.state.order, this.state.filters);
+    sortChange = event => {
+        this.setState({"sort": event.target.value}, () => {
+          this.propagate(this.state.sort, this.state.order, this.state.filters);
+        });
     }
 
     flipOrder() {
         let order = this.state.order;
-        console.log(order);
         this.setState(
             (state) => ({"order": state.order === "asc" ? "desc" : "asc"})
         );
-        this.propegate(this.state.sort, order === "asc" ? "desc" : "asc", this.state.filters);
+        this.propagate(this.state.sort, order === "asc" ? "desc" : "asc", this.state.filters);
     }
 
-    flipFilter() {
+    flipFilter = () => {
         this.setState((state) => ({"showFilter": !state.showFilter}));
     }
+
+
+    flipSorter = () => {
+      this.setState((state) => ({"sortVisible": !state.sortVisible}));
+    };
 
     render() {
         return (
             <React.Fragment>
-            <div className="filterBar">
-                Order by:
-                <Dropdown selected={this.state.sort}
-                          onChange={this.sortChange.bind(this)}
-                          options={
-                              this.props.sortOptions}/>
+            <FilterBox>
+            <FilterControl
+              control={<FilterButton onClick={this.flipFilter}><FontAwesomeIcon icon="filter" /></FilterButton>}
+            />
+            <FilterControl
+              control={<FilterButton onClick={this.flipSorter}><FontAwesomeIcon icon="sort-amount-down" /></FilterButton>}
+            />
+            </FilterBox>
+            <Collapse in={this.state.sortVisible}>
+              <FormControl style={{width:100}}>
+                <InputLabel shrink htmlFor="order-by">Sort by</InputLabel>
+                <Select
+                  native
+                  value={this.state.sort}
+                  onChange={this.sortChange}
+                  inputProps={{
+                    name: 'sort',
+                    id: 'order-by',
+                  }}
+                >{this.props.sortOptions.map((item) =>
+                  <option key={item.value} value={item.value}>{item.name}</option>)}
+                </Select>
+              </FormControl>
+              <Button onClick={this.flipOrder.bind(this)}>
+                  {
+                      this.state.order === "asc" ?
+                          (<React.Fragment><FontAwesomeIcon icon="sort-up"/></React.Fragment>) :
+                          (<React.Fragment><FontAwesomeIcon icon="sort-down"/></React.Fragment>)
+                  }
+              </Button>
+            </Collapse>
+            <Collapse in={this.state.showFilter}>
+              <div className="contentSection">
+                  {
+                      this.props.filterOptions.map(
+                          (option, index) => {
+                              let props = undefined;
+                              if (this.state.filters.hasOwnProperty(option.value)) {
+                                  props = this.state.filters[option.value]["params"];
+                              }
+                              let Component=null;
+                              if (option.type === "numeric") {
+                                  Component=NumberFilter;
+                              }
+                              else if (option.type === "string"){
+                                  Component=TextFilter;
+                              }
+                              else {
+                                  return <p key={option.value}>Filtering for {option.type} not supported</p>
+                              }
 
-                <button className="button-gray" onClick={this.flipOrder.bind(this)}>
-                    {
-                        this.state.order === "asc" ?
-                            (<React.Fragment><i className="fa fa-arrow-down"/> Ascending</React.Fragment>) :
-                            (<React.Fragment><i className="fa fa-arrow-up"/> Descending</React.Fragment>)
-                    }
-                </button>
-                <button className={this.state.showFilter?"button":"button-gray"} onClick={this.flipFilter.bind(this)}>
-                    <i className="fa fa-filter"/> Filter
-                </button>
-            </div>
 
-                {
-                    !this.state.showFilter ? null : (
-                        <div className="contentSection">
-                            {
-                                this.props.filterOptions.map(
-                                    (option, index) => {
-                                        let props = undefined;
-                                        if (this.state.filters.hasOwnProperty(option.value)) {
-                                            props = this.state.filters[option.value]["params"];
-                                        }
-                                        let Component=null;
-                                        if (option.type === "numeric") {
-                                            Component=NumberFilter;
-                                        }
-                                        else if (option.type === "string"){
-                                            Component=TextFilter;
-                                        }
-                                        else {
-                                            return <p key={option.value}>Filtering for {option.type} not supported</p>
-                                        }
+                              return <Component
+                                  key={option.value}
+                                  attribute={option}
+                                  attrs={props}
+                                  showAnd={index !== this.props.filterOptions.length - 1}
+                                  onChange={this.onFilterChange.bind(this)}
 
-
-                                        return <Component
-                                            key={option.value}
-                                            attribute={option}
-                                            attrs={props}
-                                            showAnd={index !== this.props.filterOptions.length - 1}
-                                            onChange={this.onFilterChange.bind(this)}
-
-                                        />
-                                    }
-                                )
-                            }
-                            <div><button
-                                className="button"
-                                onClick={this.onSubmit.bind(this)}
-                            ><i className={"fa fa-search"}/> submit</button></div>
-                        </div>
-                    )
-                }
+                              />
+                          }
+                      )
+                  }
+                  <div><button
+                      className="button"
+                      onClick={this.onSubmit.bind(this)}
+                  ><i className={"fa fa-search"}/> submit</button></div>
+              </div>
+            </Collapse>
             </React.Fragment>
         )
     }

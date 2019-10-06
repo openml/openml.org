@@ -26,13 +26,13 @@ const Foundation = async(() => import("../pages/docs/Foundation"));
 
 // Search
 const Data = async(() => import("../pages/search/DataListPanel"));
-const Tasks = async(() => import("../pages/search/Blank"));
-const Flows = async(() => import("../pages/search/Blank"));
-const Runs = async(() => import("../pages/search/Blank"));
-const Studies = async(() => import("../pages/search/Blank"));
-const TaskTypes = async(() => import("../pages/search/Blank"));
-const Measures = async(() => import("../pages/search/Blank"));
-const People = async(() => import("../pages/search/Blank"));
+const Tasks = async(() => import("../pages/search/TaskListPanel"));
+const Flows = async(() => import("../pages/search/FlowListPanel"));
+const Runs = async(() => import("../pages/search/RunListPanel"));
+const Studies = async(() => import("../pages/search/StudyListPanel"));
+const TaskTypes = async(() => import("../pages/search/TaskTypeListPanel"));
+const Measures = async(() => import("../pages/search/MeasureListPanel"));
+const People = async(() => import("../pages/search/PeopleListPanel"));
 
 const GreenMenuIcon = styled(FontAwesomeIcon)({
     cursor: 'pointer',

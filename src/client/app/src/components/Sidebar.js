@@ -58,11 +58,8 @@ const Scrollbar = styled(PerfectScrollbar)`
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   width: 260px;
   overflow-x: hidden;
-
-  .scrollbar-container {
   position: relative;
   height: 100%;
-  }
 
   .ps {
     overflow: hidden;

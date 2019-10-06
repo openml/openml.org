@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import {
   Card as MuiCard,
+  Paper,
   CardContent,
   Divider as MuiDivider,
   Grid,
@@ -17,19 +18,24 @@ const Divider = styled(MuiDivider)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
 
+const MainPaper= styled(Paper)`
+  flex: 1;
+  background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
+  padding: 40px;
+`;
+
 function Placeholder() {
   return (
-    <Card>
-      {console.log("hello")}
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Card
-        </Typography>
-        <Typography variant="body1" gutterBottom my={4}>
-          Contents
-        </Typography>
-      </CardContent>
-    </Card>
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Card
+          </Typography>
+          <Typography variant="body1" gutterBottom my={4}>
+            Contents
+          </Typography>
+        </CardContent>
+      </Card>
   );
 }
 
@@ -37,17 +43,19 @@ function Placeholder() {
 function BlankDocs() {
   return (
     <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        About
-      </Typography>
+      <MainPaper>
+        <Typography variant="h3" gutterBottom display="inline">
+          About
+        </Typography>
 
-      <Divider my={6} />
+        <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Placeholder />
-          </Grid>
-      </Grid>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Placeholder />
+            </Grid>
+        </Grid>
+      </MainPaper>
     </React.Fragment>
   );
 }
