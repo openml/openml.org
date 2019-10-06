@@ -6,6 +6,7 @@ import {
   CardContent,
   Divider as MuiDivider,
   Grid,
+  Paper,
   Typography as MuiTypography
 } from "@material-ui/core";
 
@@ -16,6 +17,12 @@ const Card = styled(MuiCard)(spacing);
 const Divider = styled(MuiDivider)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
+
+const MainPaper= styled(Paper)`
+  flex: 1;
+  background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
+  padding: 40px;
+`;
 
 function Placeholder() {
   return (
@@ -36,6 +43,7 @@ function Placeholder() {
 function BlankDocs() {
   return (
     <React.Fragment>
+    <MainPaper>
       <Typography variant="h3" gutterBottom display="inline">
         Terms and Citation
       </Typography>
@@ -47,6 +55,7 @@ function BlankDocs() {
           <Placeholder />
           </Grid>
       </Grid>
+    </MainPaper>
     </React.Fragment>
   );
 }
