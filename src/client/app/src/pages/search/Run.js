@@ -1,10 +1,7 @@
 import React from 'react';
-import {SizeLimiter} from './sizeLimiter.jsx';
-import {EvaluationDetail} from './itemDetail.jsx';
-import {FlowDetail} from './itemDetail.jsx';
-import ReactMarkdown from 'react-markdown';
-
-
+import {SizeLimiter} from './sizeLimiter.js';
+import {EvaluationDetail} from './ItemDetail.js';
+import {FlowDetail} from './ItemDetail.js';
 
 export class RunItem extends React.Component{
   render(){

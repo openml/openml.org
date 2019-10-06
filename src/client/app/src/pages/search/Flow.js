@@ -1,6 +1,6 @@
 import React from 'react';
-import {SizeLimiter} from './sizeLimiter.jsx';
-import {ParameterDetail} from './itemDetail.jsx';
+import {SizeLimiter} from './sizeLimiter.js';
+import {ParameterDetail} from './ItemDetail.js';
 import ReactMarkdown from 'react-markdown';
 
 export class FlowItem extends React.Component{
