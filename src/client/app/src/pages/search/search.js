@@ -44,6 +44,8 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 15,
   cursor: 'pointer',
+  maxWidth: 500,
+
 });
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
