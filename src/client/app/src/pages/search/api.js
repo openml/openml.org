@@ -55,6 +55,7 @@ function parseDots(obj, param) {
     }
 }
 
+const ELASTICSEARCH_SERVER = 'https://www.openml.org/es/';
 
 export function listItems(tag,type = "data", sort = {"value": "runs", "order": "desc"}, filter = [],
                              nameField = "name", descriptionField = "description",
@@ -133,7 +134,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
     };
     console.log(params);
     //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
-    return fetch('https://www.openml.org/es/' + type + '/'+ type + '/_search?type=' + type,
+    return fetch(ELASTICSEARCH_SERVER + type + '/'+ type + '/_search?type=' + type,
         {
             headers: {
               'Accept': 'application/json',
@@ -150,7 +151,9 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
     ).then(
         (data) => {
             //console.log(data["hits"]["hits"][0]);
-            return data["hits"]["hits"].map(
+            return {
+              "total": data["hits"]["total"],
+              "results": data["hits"]["hits"].map(
                 x => {
                     let source = x["_source"];
                     return {
@@ -179,7 +182,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                         "data_id": parseDots(source, idField)
                     }
                 }
-            )
+            )}
         }
     );
 }
@@ -189,7 +192,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
 
 export function getItem(type,itemId) {
     return fetch(
-        process.env.ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId,
+        ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId,
         {
             headers: {
               'Accept': 'application/json',
@@ -212,7 +215,7 @@ export function getItem(type,itemId) {
 }
 export function getList(itemId) {
     return fetch(
-        process.env.ELASTICSEARCH_SERVER + "/data/data/list/tag/" + itemId,
+        ELASTICSEARCH_SERVER + "/data/data/list/tag/" + itemId,
         {
             headers: {
               'Accept': 'application/json',

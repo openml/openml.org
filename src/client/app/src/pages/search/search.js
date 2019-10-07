@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {listItems} from "./api";
-import {Link} from 'react-router-dom';
-import {FilterBar} from "./FilterBar.jsx";
+import {FilterBar} from "./FilterBar.js";
 import { Card, Tooltip } from '@material-ui/core';
 import PerfectScrollbar from "react-perfect-scrollbar";
 
@@ -12,12 +11,6 @@ import { blue, orange, red, green, grey, purple} from "@material-ui/core/colors"
 const ColoredIcon = styled(FontAwesomeIcon)`
     cursor: 'pointer',
     color: ${props => props.color },
-`;
-const ResultLink = styled(Link)`
-    text-decoration: none;
-    &:focus, &:hover, &:visited, &:link, &:active {
-      text-decoration: none;
-    }
 `;
 const Stats = styled.div`
   padding-right: 8px;
@@ -50,11 +43,12 @@ const ResultCard = styled(Card)({
   paddingLeft: 15,
   paddingTop: 15,
   paddingBottom: 15,
+  cursor: 'pointer',
 });
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
   position: relative;
-  height: calc(100vh - 105px);
+  height: calc(100vh - 115px);
 
   .ps {
     overflow: hidden;
@@ -88,22 +82,6 @@ const dataStatus = {
   }
 }
 
-class StatsScreen extends React.Component {
-  //statsScreen for every user in the people lists gives warning for the same key in multiple objects
-    render() {
-        var Id=0;
-        let stats = this.props.stats.map(
-            item => <span className="stat" key={"stat_" + item.unit + "_" + item.value + Id++}>
-			{item.icon ? (<span className={"fa " + item.icon}/>) : undefined}
-                <span className="statValue">{item.value}</span>
-                &nbsp;
-                <span className="statUnit">{item.unit}</span>
-			</span>
-        );
-        return <React.Fragment>{stats}</React.Fragment>
-    }
-}
-
 class SearchElement extends React.Component {
 
     render() {
@@ -123,24 +101,28 @@ class SearchElement extends React.Component {
         }
 
         return (
-            <ResultLink to={"/"+this.props.type+"/" + this.props.data_id} className={"noLink"}>
-              <ResultCard>
+              <ResultCard onClick={this.props.onclick}>
                   <Title>{this.props.name}</Title>
                   <SubTitle>{this.props.teaser}</SubTitle>
-                  <Tooltip title="runs" placement="top-start">
-                     <Stats><ColoredIcon color={red[500]} icon="atom" fixedWidth /> {abbreviateNumber(this.props.stats[0].value)}</Stats>
-                  </Tooltip>
-                  <Tooltip title="likes" placement="top-start">
-                     <Stats><ColoredIcon color={purple[500]} icon="heart" fixedWidth /> {abbreviateNumber(this.props.stats[1].value)}</Stats>
-                  </Tooltip>
-                  <Tooltip title="downloads" placement="top-start">
-                     <Stats><ColoredIcon color={blue[700]} icon="cloud-download-alt" fixedWidth /> {abbreviateNumber(this.props.stats[2].value)}</Stats>
-                  </Tooltip>
-                  {!isNaN(this.props.stats2[0].value) &&
+                  {this.props.stats !== undefined &&
+                  <React.Fragment>
+                    <Tooltip title="runs" placement="top-start">
+                       <Stats><ColoredIcon color={red[500]} icon="atom" fixedWidth /> {abbreviateNumber(this.props.stats[0].value)}</Stats>
+                    </Tooltip>
+                    <Tooltip title="likes" placement="top-start">
+                       <Stats><ColoredIcon color={purple[500]} icon="heart" fixedWidth /> {abbreviateNumber(this.props.stats[1].value)}</Stats>
+                    </Tooltip>
+                    <Tooltip title="downloads" placement="top-start">
+                       <Stats><ColoredIcon color={blue[700]} icon="cloud-download-alt" fixedWidth /> {abbreviateNumber(this.props.stats[2].value)}</Stats>
+                    </Tooltip>
+                  </React.Fragment>
+                  }
+                  {!isNaN(this.props.stats2[0]) &&
                   <Tooltip title="dimensions (rows x columns)" placement="top-start">
                      <Stats><ColoredIcon color={grey[400]} icon="table" fixedWidth /> {abbreviateNumber(this.props.stats2[0].value)} x {abbreviateNumber(this.props.stats2[1].value)}</Stats>
                   </Tooltip>
                   }
+                  {dataStatus[this.props.data_status] !== undefined &&
                   <Tooltip title={dataStatus[this.props.data_status]["title"]} placement="top-start">
                      <RightStats>
                      <ColoredIcon
@@ -149,8 +131,8 @@ class SearchElement extends React.Component {
                           fixedWidth
                       /></RightStats>
                   </Tooltip>
+                  }
                 </ResultCard>
-            </ResultLink>
         )
     }
 }
@@ -163,7 +145,7 @@ export class SearchResultsPanel extends React.Component {
         this.state.results = [];
         this.state.error = null;
         this.state.loading = true;
-        this.state.sort = this.props.sortOptions[1].value;
+        this.state.sort = this.props.sortOptions[0].value;
         this.state.order = "desc";
         this.state.filter =  [];
     }
@@ -187,7 +169,7 @@ export class SearchResultsPanel extends React.Component {
                 ).then(
                     (data) => {
                         this.setState((state) => {
-                            return {"results": data, "loading": false};
+                            return {"results": data.results, "total": data.total, "loading": false};
                         });
                     }
                 ).catch(
@@ -220,6 +202,11 @@ export class SearchResultsPanel extends React.Component {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    selectDataset = (e, id) => {
+      e.preventDefault();
+      console.log(id);
+    }
+
     render() {
         let component = null;
 
@@ -230,7 +217,7 @@ export class SearchResultsPanel extends React.Component {
             component = this.state.results.map(
                 result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
                                          stats2={result.stats2} data_id={result.data_id}
-                                         onclick={() => this.clickCallBack(result.data_id)}
+                                         onclick={() => this.props.selectEntity(result.data_id)}
                                          key={result.name + "_" + result.data_id}
                                          type={this.props.type} data_status={result.data_status}
                 ></SearchElement>
@@ -250,13 +237,16 @@ export class SearchResultsPanel extends React.Component {
                           sortOptions={this.props.sortOptions}
                           onChange={this.sortChange.bind(this)}
                           filterOptions={this.props.filterOptions}
+                          searchColor={this.props.searchColor}
+                          resultSize={this.state.total}
+                          resultType={this.props.type}
                       />
                       <Scrollbar>
                         {component}
                       </Scrollbar>
                     </SearchPanel>
                   </React.Fragment>;
-      }else{ //nested query
+      } else { //nested query
             return <React.Fragment>
                     <SearchPanel>
                       {component}

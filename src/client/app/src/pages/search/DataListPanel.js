@@ -1,18 +1,71 @@
 import React from "react";
-import { SearchResultsPanel } from "./search.jsx"
+import { SearchResultsPanel } from "./search.js"
+import { EntryDetails } from "./ItemDetail.js"
 import { Grid, Tabs, Tab } from '@material-ui/core';
+import styled from "styled-components";
+import { green } from "@material-ui/core/colors";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import queryString from 'query-string'
+
+const SearchTabs = styled(Tabs)`
+  height:51px;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+  color: ${green[500]};
+`;
+const SearchTab = styled(Tab)`
+  color: ${green[500]} !important;
+`;
+const DetailPanel = styled.div`
+  margin:10px;
+`;
+const Scrollbar = styled(PerfectScrollbar)`
+  overflow-x: hidden;
+  position: relative;
+  height: calc(100vh - 115px);
+
+  .ps {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .ps__rail-x, .ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color .2s linear, opacity .2s linear;
+    height: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+`;
 
 export default class DataListPanel extends React.Component {
+
     state = {
       activeTab: 0,
+      searchType: 'data',
+      searchEntity: null
     };
 
-    handleChange = (event, activeTab) => {
+    componentDidMount() {
+      //read query parameters and open the right entity
+      const qstring = queryString.parse(this.props.location.search);
+      this.setState({searchEntity: (qstring.id ? qstring.id : null)});
+    }
+
+    // New dataset selected
+    selectEntity = (value) => {
+      this.setState({ searchEntity: value });
+      this.props.history.push('/data?id='+value)
+    }
+
+    // Switch between tabs
+    tabChange = (event, activeTab) => {
       this.setState( (state) => ({activeTab}));
     };
 
     render() {
-        const { activeTab } = this.state;
+        const activeTab = this.state.activeTab;
 
         return (
           <Grid container spacing={0}>
@@ -61,25 +114,33 @@ export default class DataListPanel extends React.Component {
                     {"param": "qualities.NumberOfMissingValues", "unit": "missing"}
                 ]}
                 statusField="status"
+                searchColor={green[500]}
+                selectEntity={this.selectEntity}
             ></SearchResultsPanel>
           </Grid>
           <Grid item xs={12} sm={8}>
-            <Tabs
+            <SearchTabs
               value={activeTab}
-              onChange={this.handleChange}
+              onChange={this.tabChange}
               indicatorColor="primary"
               textColor="primary"
               >
-              <Tab label="Detail" key="detail" />
-              <Tab label="Dashboard" key="dash" />
-            </Tabs>
+              <SearchTab label="Detail" key="detail" />
+              <SearchTab label="Dashboard" key="dash" />
+            </SearchTabs>
+            <Scrollbar>
             {
               (
                 activeTab === 0
-                  ? <div>Details go here</div>
-                  : <div>Dash goes here</div>
+                  ? (this.state.searchEntity ?
+                      <DetailPanel><EntryDetails type="data" entity={this.state.searchEntity}/></DetailPanel> :
+                      <div>No dataset selected. Render overview table of datasets and properties.</div>)
+                  : (this.state.searchEntity ?
+                      <div>Render Dash for dataset with ID {this.state.searchEntity}</div> :
+                      <div>No dataset selected. Render Dash overview of datasets.</div>)
               )
             }
+            </Scrollbar>
           </Grid>
         </Grid>
       );

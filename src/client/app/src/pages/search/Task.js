@@ -1,8 +1,4 @@
 import React from 'react';
-import {SizeLimiter} from './sizeLimiter.jsx';
-import {FeatureDetail} from './itemDetail.jsx';
-import {QualityDetail} from './itemDetail.jsx';
-import ReactMarkdown from 'react-markdown';
 
 export class TaskItem extends React.Component{
   render(){

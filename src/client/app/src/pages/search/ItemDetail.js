@@ -1,15 +1,13 @@
 import React from 'react';
-import {SizeLimiter} from './sizeLimiter.jsx';
 import {getItem} from './api.js';
-import {listStudy} from './api.js';
 //items
-import {DatasetItem} from './dataset.jsx';
-import {TaskItem} from './task.jsx';
-import {FlowItem} from './flow.jsx';
-import {RunItem} from './run.jsx';
-import {StudyItem} from './study.jsx';
-import {UserItem} from './user.jsx';
-import ReactMarkdown from 'react-markdown';
+import {DatasetItem} from './Dataset.js';
+import {TaskItem} from './Task.js';
+import {FlowItem} from './Flow.js';
+import {RunItem} from './Run.js';
+import {StudyItem} from './Study.js';
+import {UserItem} from './User.js';
+import { Chip } from '@material-ui/core';
 
 
 function fixUpperCase(str){
@@ -50,10 +48,6 @@ export class FeatureDetail extends React.Component {
 }
 
 export class QualityDetail extends React.Component {
-    constructor() {
-        super();
-    }
-
     render() {
         return <div className={"contentSection item"}>
             <div className={"itemHead"}><span className={"fa fa-chart-bar"}/></div>
@@ -63,9 +57,6 @@ export class QualityDetail extends React.Component {
     }
 }
 export class ParameterDetail extends React.Component {
-    constructor() {
-        super();
-    }
     fixUpperCase(str){
         let o = ""
         for (let i=0; i<str.length; i++){
@@ -86,10 +77,6 @@ export class ParameterDetail extends React.Component {
        }
 }
 export class EvaluationDetail extends React.Component {
-    constructor() {
-        super();
-    }
-
     render(){
        if (this.props.item.array_data != null){
          let classes = this.props.target_values.map(item => <td key={"key_"+item}> {item} </td> );
@@ -125,9 +112,6 @@ export class EvaluationDetail extends React.Component {
     }
   }
 export class FlowDetail extends React.Component {
-    constructor() {
-        super();
-    }
     render() {
          return <div className={"contentSection item"}>
              <div className={"itemName"}>{fixUpperCase(this.props.item.parameter)}</div>
@@ -141,22 +125,33 @@ export class EntryDetails extends React.Component {
         this.state = {};
         this.state["obj"] = null;
         this.state["error"] = null;
+        this.state["type"] = null;
+        this.state["entity"] = null;
     }
-    componentDidMount() {
-      console.log(this.props.type,this.props.entry);
-        getItem(this.props.type,this.props.entry)
-            .then(
-                (data)=>{
-                    this.setState({"obj": data})
-                }
-            ).catch(
-            (error)=> {
-                this.setState({
-                    "obj": undefined,
-                    "error": error+""
-                })
-            }
-        )
+
+    componentDidUpdate() {
+        if(this.state["type"] !== this.props.type || this.state["entity"] !== this.props.entity){
+          this.setState({"type":this.props.type});
+          this.setState({"entity":this.props.entity});
+          console.log(this.props.type,this.props.entry);
+          getItem(this.props.type,this.props.entity)
+              .then(
+                  (data)=>{
+                      this.setState({"obj": data})
+                  }
+              ).catch(
+              (error)=> {
+                  this.setState({
+                      "obj": undefined,
+                      "error": error+""
+                  })
+              }
+          )
+        }
+    }
+
+    componentDidMount(){
+      this.componentDidUpdate();
     }
 
     render(){
@@ -174,36 +169,29 @@ export class EntryDetails extends React.Component {
           if(this.props.type === "data" || this.props.type === "task" || this.props.type ==="flow" || this.props.type === "run"){
             console.log(this.state.obj);
             var tags = this.state.obj.tags.map(
-                t => <span className="tag" key={"tag_"+t.tag}><span className="fa fa-tag"/>{""+t.tag}</span>
+                t => <Chip key={"tag_"+t.tag} label={""+t.tag} size="small" />
             );
           }
 
        switch (this.props.type){
                    case "data":
-                   return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
-                   break;
+                    return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
                    case "task":
-                   return <TaskItem object={this.state.obj} tags={tags}></TaskItem>
-                   break;
+                    return <TaskItem object={this.state.obj} tags={tags}></TaskItem>
                    case "flow":
-                   return <FlowItem object={this.state.obj} tags={tags}></FlowItem>
-                   break;
+                    return <FlowItem object={this.state.obj} tags={tags}></FlowItem>
                    case "run":
-                   return <RunItem object={this.state.obj} tags={tags}></RunItem>
-                   break;
+                    return <RunItem object={this.state.obj} tags={tags}></RunItem>
                    case "study":
                     // if(this.props.list === "true"){
                       //  return <StudyItem object={this.state.obj} ></StudyItem>
                     // }else{
-                   return <StudyItem object={this.state.obj} ></StudyItem>
+                    return <StudyItem object={this.state.obj} ></StudyItem>
                   //   }
-                   break;
                    case "user":
-                   return <UserItem object={this.state.obj} ></UserItem>
-                   break;
+                    return <UserItem object={this.state.obj} ></UserItem>
                    default:
-                   return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
-                   break;
+                    return <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
         }
     }
   }
