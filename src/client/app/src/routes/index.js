@@ -25,14 +25,7 @@ const Terms = async(() => import("../pages/docs/Terms"));
 const Foundation = async(() => import("../pages/docs/Foundation"));
 
 // Search
-const Data = async(() => import("../pages/search/DataListPanel"));
-const Tasks = async(() => import("../pages/search/TaskListPanel"));
-const Flows = async(() => import("../pages/search/FlowListPanel"));
-const Runs = async(() => import("../pages/search/RunListPanel"));
-const Studies = async(() => import("../pages/search/StudyListPanel"));
-const TaskTypes = async(() => import("../pages/search/TaskTypeListPanel"));
-const Measures = async(() => import("../pages/search/MeasureListPanel"));
-const People = async(() => import("../pages/search/PeopleListPanel"));
+const SearchPanel = async(() => import("../pages/search/SearchPanel"));
 
 const GreenMenuIcon = styled(FontAwesomeIcon)({
     cursor: 'pointer',
@@ -72,69 +65,87 @@ const dataRoutes = {
   path: "/data",
   header: "Discover",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
-  component: Data,
+  component: SearchPanel,
+  entity_type: "data",
+  searchcolor: green[500],
   badge: "10",
   children: [
     {
       path: "/data",
       name: "Data list",
-      component: Data
-    },
+      component: SearchPanel,
+      entity_type: "data",
+      searchcolor: green[500],    },
     {
       path: "/data/:id",
       name: "Data detail",
-      component: Data
-    },
+      component: SearchPanel,
+      entity_type: "data",
+      searchcolor: green[500],    },
   ]
 };
 
 const taskRoutes = {
   id: "Tasks",
-  path: "/tasks",
+  path: "/task",
   icon: <YellowMenuIcon icon={['fas', 'flag']} fixedWidth />,
-  component: Tasks,
+  component: SearchPanel,
+  entity_type: "task",
+  searchcolor: orange[400],
 };
 
 const flowRoutes = {
   id: "Flows",
-  path: "/flows",
+  path: "/flow",
   icon: <BlueMenuIcon icon="cog" fixedWidth />,
-  component: Flows,
+  component: SearchPanel,
+  entity_type: "flow",
+  searchcolor: blue[800],
 };
 
 const runRoutes = {
   id: "Runs",
-  path: "/runs",
+  path: "/run",
   icon: <RedMenuIcon icon="atom" fixedWidth />,
-  component: Runs,
+  component: SearchPanel,
+  entity_type: "run",
+  searchcolor: red[400],
 };
 
 const studyRoutes = {
   id: "Studies",
-  path: "/studies",
+  path: "/study",
   icon: <PurpleMenuIcon icon="flask" fixedWidth />,
-  component: Studies,
+  component: SearchPanel,
+  entity_type: "study",
+  searchcolor: purple[600],
 };
 
 const taskTypeRoutes = {
   id: "Task Types",
-  path: "/tasktypes",
+  path: "/tasktype",
   icon: <OrangeMenuIcon icon={['far', 'flag']} fixedWidth />,
-  component: TaskTypes,
+  component: SearchPanel,
+  entity_type: "task",
+  searchcolor: orange[400],
 };
 
 const measureRoutes = {
   id: "Measures",
-  path: "/measures",
+  path: "/measure",
   icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
-  component: Measures,
+  component: SearchPanel,
+  entity_type: "measure",
+  searchcolor: grey[500],
 };
 
 const peopleRoutes = {
   id: "People",
   path: "/people",
   icon: <LightBlueMenuIcon icon="users" fixedWidth />,
-  component: People,
+  component: SearchPanel,
+  entity_type: "user",
+  searchcolor: blue[300],
 };
 
 const profileRoutes = {
