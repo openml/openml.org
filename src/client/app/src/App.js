@@ -13,6 +13,11 @@ import Routes from "./routes/Routes";
 
 export const ThemeContext = React.createContext();
 
+export const SearchContext = React.createContext({
+  query: ''
+});
+
+
 //TODO: only import necessary icons
 library.add(fas, far)
 

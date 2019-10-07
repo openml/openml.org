@@ -16,17 +16,17 @@ export class SizeLimiter extends React.Component {
             if (this.state.expanded){
                 return <div>
                     {this.props.children}
-                    <a className={"expand"} onClick={()=>(this.setState({"expanded": false}))}>
+                    <div className={"expand"} onClick={()=>(this.setState({"expanded": false}))}>
                         <span className={"fa fa-caret-up"}/> Show less
-                    </a>
+                    </div>
                 </div>
             }
             else {
                 return <div>
                     {this.props.children.slice(0, maxlen)}
-                    <a className={"expand"} onClick={()=>(this.setState({"expanded": true}))}>
+                    <div className={"expand"} onClick={()=>(this.setState({"expanded": true}))}>
                         <span className={"fa fa-caret-down"}/> Show more
-                    </a>
+                    </div>
                 </div>
             }
         }

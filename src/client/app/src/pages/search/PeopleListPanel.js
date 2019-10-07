@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchResultsPanel } from "./search.jsx"
+import { SearchResultsPanel } from "./search.js"
 
 export default class PeopleListPanel extends React.Component {
     render() {

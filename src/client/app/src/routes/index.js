@@ -69,12 +69,23 @@ const GreyMenuIcon = styled(FontAwesomeIcon)({
 
 const dataRoutes = {
   id: "Data sets",
-  path: "/datasets",
+  path: "/data",
   header: "Discover",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: Data,
   badge: "10",
-  children: null
+  children: [
+    {
+      path: "/data",
+      name: "Data list",
+      component: Data
+    },
+    {
+      path: "/data/:id",
+      name: "Data detail",
+      component: Data
+    },
+  ]
 };
 
 const taskRoutes = {

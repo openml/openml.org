@@ -1,26 +1,51 @@
 import React from 'react';
-import { Button, InputLabel, FormControlLabel, FormControl, Collapse, Select } from '@material-ui/core';
+import { Button, InputLabel, TextField, FormControlLabel, FormControl, Collapse, Select } from '@material-ui/core';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 const FilterButton = styled(Button)`
   min-width: 0;
-  width: 60px;
+  width: 40px;
   height: 40px;
   font-size: 15px;
-  color: #666;
+  color: ${props => props.textcolor };
 `;
-
+const FilterStats = styled.div`
+  padding-left: 15px;
+  padding-top: 15px;
+  float: left;
+  color: ${props => props.textcolor };
+`;
 const FilterBox = styled.div`
   height: 50px;
   padding-top:5px;
   padding-bottom:5px;
 `;
-
+const FilterContainer = styled.div`
+  background-color: #fff;
+  border-right: 1px solid rgba(0,0,0,0.12);
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+`;
+const FilterFormControl = styled(FormControl)`
+  margin-left: 10px;
+  padding-bottom: 10px;
+  background-color: #fff;
+`;
+const FilterPanel = styled.div`
+  background-color: #fff;
+`;
 const FilterControl = styled(FormControlLabel)`
   float: right;
   margin-right: 0px;
 `;
+const typeName = {
+  "data": "datasets",
+  "flow": "flows",
+  "run": "runs",
+  "study": "studies",
+  "task": "tasks",
+  "people": "people",
+};
 
 class GenericFilter extends React.Component {
 
@@ -75,7 +100,7 @@ class GenericFilter extends React.Component {
             {"onChange": this.onFilterValue2Change.bind(this),
                 "value": attrs.filterValue2}
         );
-        return (<div className={"filterElement"}>
+        return (<div>
                 <FormControl>
                   <InputLabel htmlFor={this.props.attribute.name}>{this.props.attribute.name}</InputLabel>
                   <Select
@@ -104,14 +129,14 @@ GenericFilter.defaultProps = {
 
 class NumberFilter extends React.Component {
     toSingleInput(params1){
-        return (<input type={"number"} onChange={params1.onChange} value={params1.value}/>)
+        return (<TextField type={"number"} onChange={params1.onChange} value={params1.value}/>)
     }
 
     toDoubleInput(params1, params2){
         return [
-            <input type={"number"} onChange={params1.onChange} value={params1.value}/>,
+            <TextField type={"number"} onChange={params1.onChange} value={params1.value}/>,
             " and ",
-            <input type={"number"} onChange={params2.onChange} value={params2.value}/>
+            <TextField type={"number"} onChange={params2.onChange} value={params2.value}/>
         ]
     }
 
@@ -174,7 +199,7 @@ class NumberFilter extends React.Component {
 
 class TextFilter extends React.Component {
     toSingleInput(params1){
-        return (<input onChange={params1.onChange} value={params1.value}/>)
+        return (<TextField onChange={params1.onChange} value={params1.value}/>)
     }
 
     render() {
@@ -216,8 +241,8 @@ export class FilterBar extends React.Component {
         super(props);
 
         this.state = {
-            "sort": props.sortOptions[1].value,
-            "order": "desc", //Options: arc, desc
+            "sort": props.sortOptions[0].value,
+            "order": "desc", //Options: asc, desc
             "showFilter": false,
             "filters": {},
             "sortVisible": false,
@@ -256,12 +281,10 @@ export class FilterBar extends React.Component {
         });
     }
 
-    flipOrder() {
-        let order = this.state.order;
-        this.setState(
-            (state) => ({"order": state.order === "asc" ? "desc" : "asc"})
-        );
-        this.propagate(this.state.sort, order === "asc" ? "desc" : "asc", this.state.filters);
+    orderChange = event => {
+        this.setState({"order": event.target.value}, () => {
+          this.propagate(this.state.sort, this.state.order, this.state.filters);
+        });
     }
 
     flipFilter = () => {
@@ -276,39 +299,55 @@ export class FilterBar extends React.Component {
     render() {
         return (
             <React.Fragment>
+            <FilterContainer>
             <FilterBox>
+            <FilterStats textcolor={this.props.searchColor}>
+            {this.props.resultSize ?
+            (this.props.resultSize + " " + typeName[this.props.resultType] + " found")
+            : ""
+            }
+            </FilterStats>
             <FilterControl
-              control={<FilterButton onClick={this.flipFilter}><FontAwesomeIcon icon="filter" /></FilterButton>}
+              control={<FilterButton onClick={this.flipFilter} textcolor={this.props.searchColor}><FontAwesomeIcon icon="filter" /></FilterButton>}
             />
             <FilterControl
-              control={<FilterButton onClick={this.flipSorter}><FontAwesomeIcon icon="sort-amount-down" /></FilterButton>}
+              control={<FilterButton onClick={this.flipSorter} textcolor={this.props.searchColor}><FontAwesomeIcon icon="sort-amount-down" /></FilterButton>}
             />
             </FilterBox>
             <Collapse in={this.state.sortVisible}>
-              <FormControl style={{width:100}}>
-                <InputLabel shrink htmlFor="order-by">Sort by</InputLabel>
+              <FilterPanel>
+              <FilterFormControl>
+                <InputLabel shrink htmlFor="order">Sort by</InputLabel>
                 <Select
                   native
                   value={this.state.sort}
                   onChange={this.sortChange}
                   inputProps={{
-                    name: 'sort',
-                    id: 'order-by',
+                    name: 'order',
+                    id: 'order',
                   }}
                 >{this.props.sortOptions.map((item) =>
                   <option key={item.value} value={item.value}>{item.name}</option>)}
                 </Select>
-              </FormControl>
-              <Button onClick={this.flipOrder.bind(this)}>
-                  {
-                      this.state.order === "asc" ?
-                          (<React.Fragment><FontAwesomeIcon icon="sort-up"/></React.Fragment>) :
-                          (<React.Fragment><FontAwesomeIcon icon="sort-down"/></React.Fragment>)
-                  }
-              </Button>
+              </FilterFormControl>
+              <FilterFormControl>
+                <InputLabel shrink htmlFor="order-up">Order</InputLabel>
+                <Select
+                  native
+                  value={this.state.order}
+                  onChange={this.orderChange}
+                  inputProps={{
+                    name: 'order',
+                    id: 'order-up',
+                  }}>
+                  <option key="asc" value="asc">Ascending</option>
+                  <option key="desc" value="desc">Descending</option>
+                </Select>
+              </FilterFormControl>
+              </FilterPanel>
             </Collapse>
             <Collapse in={this.state.showFilter}>
-              <div className="contentSection">
+              <FilterPanel>
                   {
                       this.props.filterOptions.map(
                           (option, index) => {
@@ -327,24 +366,23 @@ export class FilterBar extends React.Component {
                                   return <p key={option.value}>Filtering for {option.type} not supported</p>
                               }
 
-
                               return <Component
                                   key={option.value}
                                   attribute={option}
                                   attrs={props}
                                   showAnd={index !== this.props.filterOptions.length - 1}
                                   onChange={this.onFilterChange.bind(this)}
-
                               />
                           }
                       )
                   }
-                  <div><button
+                  <div><Button
                       className="button"
                       onClick={this.onSubmit.bind(this)}
-                  ><i className={"fa fa-search"}/> submit</button></div>
-              </div>
+                  ><i className={"fa fa-search"}/> submit</Button></div>
+              </FilterPanel>
             </Collapse>
+            </FilterContainer>
             </React.Fragment>
         )
     }
