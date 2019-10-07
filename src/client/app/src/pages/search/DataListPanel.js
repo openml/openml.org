@@ -136,7 +136,15 @@ export default class DataListPanel extends React.Component {
                       <DetailPanel><EntryDetails type="data" entity={this.state.searchEntity}/></DetailPanel> :
                       <div>No dataset selected. Render overview table of datasets and properties.</div>)
                   : (this.state.searchEntity ?
-                      <div>Render Dash for dataset with ID {this.state.searchEntity}</div> :
+                      <div>
+                          <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard/data/"+ String(this.state.searchEntity)+"/.html"}
+                                  height="1000vh" width="1000vh" frameBorder="0"
+                                  id="dash_iframe"
+
+                                  allowFullScreen sandbox="allow-scripts allow-same-origin">
+
+                          </iframe>
+                      </div> :
                       <div>No dataset selected. Render Dash overview of datasets.</div>)
               )
             }
