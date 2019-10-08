@@ -13,6 +13,10 @@ const FilterButton = styled(Button)`
 const FilterStats = styled.div`
   padding-left: 15px;
   padding-top: 15px;
+  width: calc(100% - 60px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   float: left;
   color: ${props => props.textcolor };
 `;

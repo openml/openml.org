@@ -75,6 +75,7 @@ export function listItems(tag,type = "data", sort = {"value": "runs", "order": "
                                  {"param": "qualities.NumberOfMissingValues", "unit": "missing"}
                              ],
                              statusField = "status") {
+      console.log(type);
       if(tag !== undefined){//nested query for tag
                   filter =[{
                       "nested":

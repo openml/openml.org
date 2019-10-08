@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { green, red, blue, amber, purple, grey } from "@material-ui/core/colors";
-import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core/";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -15,7 +14,11 @@ import {
   Card,
   CardContent as MuiCardContent,
   Typography,
-  Tooltip
+  Tooltip,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Container
 } from "@material-ui/core";
 
 const FrontPaper = styled(Paper)`
@@ -27,6 +30,7 @@ const FrontPaper = styled(Paper)`
 `;
 
 const CardContent = styled(MuiCardContent)`
+  margin-top:10px;
   &:last-child {
     padding-bottom: ${props => props.theme.spacing(4)}px;
   }
@@ -58,7 +62,7 @@ const OpenMLSubTitle = styled.div`
 const CoverTitle = styled(Typography)`
   ${spacing}
   color: white;
-  width: 80%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -256,13 +260,13 @@ class Cover extends React.Component {
 
   render() {
     return (
-      <div>
+      <Container maxWidth="md">
         <OpenMLTitle>OpenML</OpenMLTitle>
-        <OpenMLSubTitle>Machine Learning, better, together</OpenMLSubTitle>
+        <OpenMLSubTitle>Machine Learning, better together</OpenMLSubTitle>
         <Grid container spacing={3}>
 
           <CoverTitle mt={50} variant="h4" gutterBottom>
-          What if we could organize the world’s machine learning information?
+          We believe that everyone should have access to the world’s machine learning information
           </CoverTitle>
           <FrontPaper>
             <CardContent>
@@ -271,8 +275,7 @@ class Cover extends React.Component {
                 <OpenMLGraph />
               </Grid>
               <Grid item xs={12} md={6}>
-              OpenML allows you to easily share your machine learning data and
-              experiments online:
+              Easily find machine learning data and experiments online
               <ListItem>
               <ListItemIcon>
                 <GreenIcon icon="database" size="2x" fixedWidth />
@@ -288,7 +291,7 @@ class Cover extends React.Component {
               </ListItemIcon>
               <ListItemText>
               For every <span style={{color:'orange', fontWeigth:'bold'}}><b>
-              task</b></span>, find all models that were built, and
+              task</b></span>, find all machine learning models that were built, and
               how well they perform.
               </ListItemText>
               </ListItem>
@@ -298,8 +301,8 @@ class Cover extends React.Component {
               </ListItemIcon>
               <ListItemText>
               For every <span style={{color:'red', fontWeigth:'bold'}}><b>
-              model evaluated</b></span>, find the exact data and algorithms
-              used to build it.
+              run (experiment)</b></span>, find model details, evaluations, and the exact data and algorithms
+              used.
               </ListItemText>
               </ListItem>
               <ListItem>
@@ -323,22 +326,13 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-              OpenML uses clean formats and protocols to share machine learning
-              data and has integrations into many machine learning libraries and
-              environments
+              We make it easy to import, organize and share your data directly from
+              the machine learning tools you know and love.
+              Build on the shoulders of giants, and become one yourself.
               </ListItemText>
               <ListItem>
               <ListItemIcon>
-                <RedIcon icon="share-square" size="2x" fixedWidth />
-              </ListItemIcon>
-              <ListItemText>
-              <b>Share</b> data, algorithms, and models straight from the
-              environment in which you created them
-              </ListItemText>
-              </ListItem>
-              <ListItem>
-              <ListItemIcon>
-                <AmberIcon icon="cloud-download-alt" size="2x" fixedWidth />
+                <BlueIcon icon="cloud-download-alt" size="2x" fixedWidth />
               </ListItemIcon>
               <ListItemText>
               <b>Import</b> many data sets, algorithms, and results directly
@@ -347,7 +341,16 @@ class Cover extends React.Component {
               </ListItem>
               <ListItem>
               <ListItemIcon>
-                <GreenIcon icon="laptop" size="2x" fixedWidth />
+                <GreenIcon icon="share-square" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              <b>Share</b> data, algorithms, and models straight from the
+              environment in which you created them
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <RedIcon icon="laptop" size="2x" fixedWidth />
               </ListItemIcon>
               <ListItemText>
               <b>Run</b> models <i>locally</i> (or wherever you want) and easily
@@ -379,8 +382,8 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-              OpenML automatically extracts rich meta-data and makes it
-              available to ensure reproducibility
+              To advance machine learning research, it should be reproducible.
+              OpenML ensures reproducibility by automatically extracting rich meta-data, so that nothing gets lost.
               </ListItemText>
             </CardContent>
             <ReproGraph />
@@ -397,7 +400,7 @@ class Cover extends React.Component {
           </FrontPaper>
 
           <CoverTitle variant="h4" gutterBottom>
-            Automated machine learning
+            Never-ending, automated machine learning
           </CoverTitle>
           <FrontPaper>
             <CardContent>
@@ -436,6 +439,51 @@ class Cover extends React.Component {
             </CardContent>
           </FrontPaper>
 
+          <CoverTitle variant="h4" gutterBottom>
+            Join us
+          </CoverTitle>
+          <FrontPaper>
+            <CardContent>
+              <ListItemText>
+              OpenML is here to help you, so that you can change the world for the better
+              </ListItemText>
+              <ListItem>
+              <ListItemIcon>
+                <RedIcon icon="user-graduate" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Machine learning experts: share your experiments to show how it's done.
+              Measure your impact by how often your work is viewed and reused by others.
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <GreenIcon icon="user-shield" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Data owners: Share your data to challenge the machine learning community
+              with new and interesting problems
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <BlueIcon icon="user-cog" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Algorithm developers: integrate your machine learning tools and algorithms with OpenML to easily import and export data to and from your libraries
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <PurpleIcon icon="user-ninja" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Software engineers: OpenML is open source, get involved and make it even better and more useful
+              </ListItemText>
+              </ListItem>
+            </CardContent>
+          </FrontPaper>
+
           <CoverTitle variant="h5" gutterBottom>
           <ThemeContext.Consumer>
             {(context) => (
@@ -451,7 +499,7 @@ class Cover extends React.Component {
           </ThemeContext.Consumer>
           </CoverTitle>
         </Grid>
-      </div>
+      </Container>
       );
   }
 }
