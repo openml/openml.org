@@ -18,15 +18,29 @@ def get_layout_from_data(data_id):
     """
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    font = [
+    "Nunito Sans",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    '"Segoe UI"',
+    "Roboto",
+    '"Helvetica Neue"',
+    "Arial",
+    "sans-serif",
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"'
+  ]
 
     # Define layout
     layout = html.Div([
 
         # 2. Title
         html.H3(name+' dataset', style={'text-align': 'center', 'text-color': 'black',
-                                        'font_family': 'sans-serif'}),
+                                        'font_family': font}),
         html.P('Choose one or more attributes for distribution plot',
-               style={'text-align': 'left', 'color': 'gray'}),
+               style={'text-align': 'left', 'color': 'gray',
+                      'font_family': font}),
         # 3. Table with meta data
         html.Div([
             # 3a. Table with meta data on left side
@@ -44,7 +58,7 @@ def get_layout_from_data(data_id):
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
-                                "fontFamily": "Open Sans",
+                                "fontFamily": font,
                                 'textOverflow': 'ellipsis',"fontSize":14,
 
                                },
@@ -135,7 +149,7 @@ def get_layout_from_data(data_id):
                                      {'label': "Top five nominal feature interactions", "value": "nominal"}],
                             value="top"
 
-                        )),
+                        ), style={"fontFamily": font}),
                     html.Div(id='matrix'),
                     html.Div(id='hidden', style={'display': 'none'})
 
@@ -152,7 +166,7 @@ def get_layout_from_data(data_id):
                         multi=False,
                         clearable=False,
                         value=numerical_data[0]
-                    ), style={'width': '30%'}),
+                    ), style={'width': '30%', "fontFamily": font}),
                     html.Div(dcc.Dropdown(
                         id='dropdown2',
                         options=[
@@ -162,19 +176,19 @@ def get_layout_from_data(data_id):
                         clearable=False,
                         value=numerical_data[0]
 
-                    ),style={'width': '30%'}),
+                    ),style={'width': '30%',"fontFamily": font}),
                     html.Div(dcc.Dropdown(
                         id='dropdown3',
                         options=[
                             {'label': i, 'value': i} for i in nominal_data],
                         multi=False,
                         clearable=False,
-                        value=nominal_data[0]), style={'width': '30%'}),
+                        value=nominal_data[0]), style={'width': '30%', "fontFamily": font}),
                     html.Div(id='scatter_plot'), ])
             ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
                                              children=[html.Div(html.P('No numerical-nominal combination found'))])
         ],
-        style={"width":"80%"})], className="container", style={"fontFamily": "Open Sans"})
+        style={"width":"80%"})], className="container", style={"fontFamily": font})
     return layout, df
 
 
