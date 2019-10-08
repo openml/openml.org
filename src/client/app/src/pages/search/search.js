@@ -35,6 +35,7 @@ const SubTitle = styled.div`
 `;
 const SearchPanel = styled.div`
   overflow: none;
+  max-width: 600px;
 `;
 const ResultCard = styled(Card)({
   borderRight: '1px solid rgba(0, 0, 0, 0.12)',
@@ -44,7 +45,7 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 15,
   cursor: 'pointer',
-  maxWidth: 500,
+  maxWidth: 600,
 
 });
 const Scrollbar = styled(PerfectScrollbar)`
