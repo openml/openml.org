@@ -28,10 +28,14 @@ def get_data_metadata(data_id):
     df = pd.DataFrame(x, columns=attribute_names)
     df.to_pickle('cache/df'+str(data_id)+'.pkl')
 
+
     # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
+
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
+    pd.set_option('display.max_colwidth',-1)
+
 
     # Extract #categories
     size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
@@ -42,10 +46,10 @@ def get_data_metadata(data_id):
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
-    s1 = meta_features['Attribute']
+
     s2 = pd.Series(df.columns)
-    meta_features['Attribute'] = (pd.Series(np.intersect1d(s1.values, s2.values)))
-    meta_features.dropna(axis=0, inplace=True)
+    meta_features = meta_features[meta_features["Attribute"].isin(s2)]
+
 
     # Add entropy
     numerical_features = list(meta_features["Attribute"][meta_features["DataType"] == "numeric"])
@@ -55,7 +59,7 @@ def get_data_metadata(data_id):
     for column in meta_features['Attribute']:
         if column in nominal_features:
             count = df[column].value_counts()
-            ent = scipy.stats.entropy(count)
+            ent = round(scipy.stats.entropy(count),2)
             entropy.append(ent)
         else:
             entropy.append(' ')

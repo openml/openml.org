@@ -38,14 +38,15 @@ def get_layout_from_data(data_id):
                     sort_action="native",
                     row_deletable=False,
                     selected_rows=[0],
-                    style_as_list_view=True,
+                    #style_as_list_view=True,
                     filter_action="native",
                     id='datatable',
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
-                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
+                                'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
-                                'textOverflow': 'ellipsis',"fontSize":15,
-                                "fontFamily": "Helvetica"
+                                "fontFamily": "Open Sans",
+                                'textOverflow': 'ellipsis',"fontSize":14,
+
                                },
                     style_header={
                         'backgroundColor': 'white',
@@ -54,8 +55,8 @@ def get_layout_from_data(data_id):
                     },
 
                     style_table={
-                        'minHeight': '600px',
-                        'maxHeight': '600px',
+                        'minHeight': '420px',
+                        'maxHeight': '420px',
                         'overflowY': 'scroll',
                         'border': 'thin lightgrey solid'
                     },
@@ -93,7 +94,7 @@ def get_layout_from_data(data_id):
                         },
                      ]
                 ), fullscreen=True),
-                style={'width': '49%', 'display': 'inline-block','position': 'relative'}
+                style={'width': '50%', 'display': 'inline-block','position': 'relative'}
             ),
             # 3b. Distribution graphs on the right side
             #     Callback for updating this graph = distribution_plot
@@ -114,8 +115,9 @@ def get_layout_from_data(data_id):
                             labelStyle={'display': 'inline-block', 'text-align': 'justify'}
                         )),
                 html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'height': 500, 'position': 'absolute'}),
-            ],  style={'width': '49%', 'display': 'inline-block',
+                    id='distribution', style={'overflowY': 'scroll', 'width': '95%',
+                                              'height': '400px', 'position': 'absolute'}),
+            ],  style={'width': '45%', 'display': 'inline-block',
                        'position': 'absolute'}
             ),
         ]),
@@ -150,7 +152,7 @@ def get_layout_from_data(data_id):
                         multi=False,
                         clearable=False,
                         value=numerical_data[0]
-                    )),
+                    ), style={'width': '30%'}),
                     html.Div(dcc.Dropdown(
                         id='dropdown2',
                         options=[
@@ -160,19 +162,19 @@ def get_layout_from_data(data_id):
                         clearable=False,
                         value=numerical_data[0]
 
-                    )),
+                    ),style={'width': '30%'}),
                     html.Div(dcc.Dropdown(
                         id='dropdown3',
                         options=[
                             {'label': i, 'value': i} for i in nominal_data],
                         multi=False,
                         clearable=False,
-                        value=nominal_data[0])),
+                        value=nominal_data[0]), style={'width': '30%'}),
                     html.Div(id='scatter_plot'), ])
             ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
                                              children=[html.Div(html.P('No numerical-nominal combination found'))])
         ],
-        )], className="container")
+        style={"width":"80%"})], className="container", style={"fontFamily": "Open Sans"})
     return layout, df
 
 
