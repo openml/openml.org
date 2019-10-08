@@ -8,6 +8,7 @@ import {RunItem} from './Run.js';
 import {StudyItem} from './Study.js';
 import {UserItem} from './User.js';
 import { Chip } from '@material-ui/core';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 function fixUpperCase(str){
@@ -27,17 +28,17 @@ export class FeatureDetail extends React.Component {
         let icon = "";
         switch (this.props.item.type) {
             case "numeric":
-                icon = "fa-ruler-horizontal";
+                icon = "ruler-horizontal";
                 break;
             case "nominal":
-                icon = "fa-tag";
+                icon = "tag";
                 break;
             default:
-                icon = "fa-question-circle";
+                icon = "question-circle";
                 break;
         }
         return <div className="contentSection item">
-            <div className={"itemHead"}><span className={"fa "+icon}/></div>
+            <div className={"itemHead"}><FontAwesomeIcon icon={icon}/></div>
             <div className={"itemName"}>{this.props.item.name}
                 {this.props.item.target?(<span className={"subtitle"}>(target)</span>):""}</div>
            <div className={"itemDetail-small"}>{this.props.item.type}</div>

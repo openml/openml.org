@@ -16,7 +16,8 @@ const SearchTab = styled(Tab)`
   color: ${props => props.searchcolor} !important;
 `;
 const DetailPanel = styled.div`
-  margin:10px;
+  width:90%;
+  margin: 0 auto;
 `;
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -88,10 +89,10 @@ export default class SearchPanel extends React.Component {
 
         return (
           <Grid container spacing={0}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3} lg={2}>
             {this.getEntityList()}
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={9} lg={10}>
             <SearchTabs
               value={activeTab}
               onChange={this.tabChange}
@@ -113,7 +114,7 @@ export default class SearchPanel extends React.Component {
                       <div>
                       <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard/data/"+ String(this.state.searchEntity)+"/.html"}
                               height="1000vh" width="1000vh" frameBorder="0"
-                              id="dash_iframe"
+                              id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
                               allowFullScreen sandbox="allow-scripts allow-same-origin">
                       </iframe>
                       </div> :
