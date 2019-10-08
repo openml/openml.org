@@ -439,6 +439,51 @@ class Cover extends React.Component {
             </CardContent>
           </FrontPaper>
 
+          <CoverTitle variant="h4" gutterBottom>
+            Join us
+          </CoverTitle>
+          <FrontPaper>
+            <CardContent>
+              <ListItemText>
+              OpenML is here to help you, so that you can change the world for the better
+              </ListItemText>
+              <ListItem>
+              <ListItemIcon>
+                <RedIcon icon="user-graduate" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Machine learning experts: share your experiments to show how it's done.
+              Measure your impact by how often your work is viewed and reused by others.
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <GreenIcon icon="user-shield" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Data owners: Share your data to challenge the machine learning community
+              with new and interesting problems
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <BlueIcon icon="user-cog" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Algorithm developers: integrate your machine learning tools and algorithms with OpenML to easily import and export data to and from your libraries
+              </ListItemText>
+              </ListItem>
+              <ListItem>
+              <ListItemIcon>
+                <PurpleIcon icon="user-ninja" size="2x" fixedWidth />
+              </ListItemIcon>
+              <ListItemText>
+              Software engineers: OpenML is open source, get involved and make it even better and more useful
+              </ListItemText>
+              </ListItem>
+            </CardContent>
+          </FrontPaper>
+
           <CoverTitle variant="h5" gutterBottom>
           <ThemeContext.Consumer>
             {(context) => (
