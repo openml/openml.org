@@ -10,6 +10,7 @@ import numpy as np
 import re
 from random import shuffle
 
+
 def register_data_callbacks(app):
     @app.callback(
         Output('distribution', 'children'),
@@ -233,9 +234,9 @@ def register_data_callbacks(app):
 
                 matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                      index='target',
-                                                     colormap=C,
+                                                     #colormap=C,
                                                      colormap_type=cmap_type,
-                                                      height=800, width=1000)
+                                                      height=800, width=900)
                 graph = dcc.Graph(figure=matrix)
             else:
                 d = top_features
@@ -259,7 +260,8 @@ def register_data_callbacks(app):
                 df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
-                                                     colormap=C, colormap_type=cmap_type, height=1000, width=1000)
+                                                     #colormap=C,
+                                                     colormap_type=cmap_type, height=1000, width=1000)
                 graph = dcc.Graph(figure=matrix)
             else:
                 graph = html.P("No numericals found")
