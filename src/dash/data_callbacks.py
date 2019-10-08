@@ -236,6 +236,7 @@ def register_data_callbacks(app):
                                                      index='target',
                                                      #colormap=C,
                                                      colormap_type=cmap_type,
+
                                                       height=800, width=900)
                 graph = dcc.Graph(figure=matrix)
             else:
