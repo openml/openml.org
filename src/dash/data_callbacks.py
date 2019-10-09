@@ -10,6 +10,7 @@ import numpy as np
 import re
 from random import shuffle
 
+
 def register_data_callbacks(app):
     @app.callback(
         Output('distribution', 'children'),
@@ -167,7 +168,7 @@ def register_data_callbacks(app):
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
         layout = go.Layout(title="RandomForest feature importance", autosize=False,
-                           margin=dict(l=500), width=1200, hovermode='closest')
+                           margin=dict(l=100), width=800, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
         fi.to_pickle('cache/fi' + str(data_id) + '.pkl')
@@ -233,8 +234,10 @@ def register_data_callbacks(app):
 
                 matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
                                                      index='target',
+                                                     #colormap=C,
                                                      colormap_type=cmap_type,
-                                                     colormap=C, height=1200, width=1500)
+
+                                                      height=800, width=900)
                 graph = dcc.Graph(figure=matrix)
             else:
                 d = top_features
@@ -258,7 +261,8 @@ def register_data_callbacks(app):
                 df_num['target'] = df['target']
                 matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
                                                      index='target',
-                                                     colormap=C, colormap_type=cmap_type, height=1200, width=1500)
+                                                     #colormap=C,
+                                                     colormap_type=cmap_type, height=1000, width=1000)
                 graph = dcc.Graph(figure=matrix)
             else:
                 graph = html.P("No numericals found")
@@ -277,13 +281,13 @@ def register_data_callbacks(app):
                     hoverinfo='count+probability',
                     arrangement='freeform'
                 )]
-                layout = go.Layout(autosize=False, width=1200, height=800)
+                layout = go.Layout(autosize=False, width=1000, height=800)
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
             else:
                 graph = html.P("No nominals found")
 
-        return  html.Div(graph)
+        return html.Div(graph)
 
     @app.callback(Output('scatter_plot', 'children'), [
         Input('dropdown1', 'value'),
@@ -322,7 +326,8 @@ def register_data_callbacks(app):
                 xaxis={'title': at1, 'autorange': True},
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
-                height=800, width=1200
+                height=600,
+                width=800
             )}
         return html.Div(dcc.Graph(figure=fig))
 
