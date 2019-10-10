@@ -37,6 +37,8 @@ def register_flow_callbacks(app):
         # Get all evaluations of selected metric and flow
         df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id], sort_order='desc',
                                                  size=10000, output_format='dataframe')
+        if df.empty:
+            return go.Figure()
 
         # Filter type of task
         df = df[df['task_id'].isin(task_id)]
@@ -52,14 +54,14 @@ def register_flow_callbacks(app):
             tick_text.append(link)
         hover_text = []
         if parameter == 'None':
-            color = [1] * 1000
+            color = [1] * len(df['data_name'])
             hover_text = df["value"]
             marker = dict(opacity=0.8, symbol='diamond',
                                        color=color,  # set color equal to a variable
                                        colorscale='Jet')
         else:
             color = []
-            for param_dict in df.parameters[:1000]:
+            for param_dict in df.parameters:
                 values = [value for key, value in param_dict.items() if parameter == key]
 
                 if not values:
@@ -74,8 +76,8 @@ def register_flow_callbacks(app):
             marker = dict(opacity=0.8, symbol='diamond',
                           color=color,  # set color equal to a variable
                           colorscale='Jet', colorbar=dict(title='Colorbar'))
-        data = [go.Scatter(x=df["value"][:1000],
-                           y=df["data_name"][:1000],
+        data = [go.Scatter(x=df["value"],
+                           y=df["data_name"],
                            mode='text+markers',
                            text=run_link,
                            hovertext=hover_text,
@@ -83,7 +85,9 @@ def register_flow_callbacks(app):
                            marker=marker)
                 ]
         layout = go.Layout(hovermode='closest',
-            autosize=False, width=1200, height=3000, margin=dict(l=500),
+                           title='Every point is a run, click for details <br>'
+                                 'Every y label is a dataset, click for details',
+            autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
                                   ticktext=tick_text+df["data_name"],

@@ -7,18 +7,8 @@ import os
 from openml import runs, flows, evaluations, setups, study
 import plotly.graph_objs as go
 
-def get_layout_from_data(data_id):
-    """
-
-    :param data_id: dataset id
-    :return:
-     layout: custom layout for data visualization
-     df: df cached for use in callbacks
-
-    """
-    # Get data and metadata
-    df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
-    font = [
+# Font for entire dashboard, we do not have any styling yet
+font = [
     "Nunito Sans",
     "-apple-system",
     "BlinkMacSystemFont",
@@ -30,7 +20,20 @@ def get_layout_from_data(data_id):
     '"Apple Color Emoji"',
     '"Segoe UI Emoji"',
     '"Segoe UI Symbol"'
-  ]
+]
+
+
+def get_layout_from_data(data_id):
+    """
+
+    :param data_id: dataset id
+    :return:
+     layout: custom layout for data visualization
+     df: df cached for use in callbacks
+
+    """
+    # Get data and metadata
+    df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
 
     # Define layout
     layout = html.Div(children=[
@@ -129,9 +132,9 @@ def get_layout_from_data(data_id):
                             labelStyle={'display': 'inline-block', 'text-align': 'justify'}
                         )),
                 html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'width': '95%',
+                    id='distribution', style={'overflowY': 'scroll', 'width': '100%',
                                               'height': '400px', 'position': 'absolute'}),
-            ],  style={'width': '40%', 'display': 'inline-block',
+            ],  style={'width': '50%', 'display': 'inline-block',
                        'position': 'absolute'}
             ),
         ]),
@@ -186,10 +189,11 @@ def get_layout_from_data(data_id):
                         value=nominal_data[0]), style={'width': '30%'}),
                     html.Div(id='scatter_plot'), ])
             ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
-                                             children=[html.Div(html.P('No numerical-nominal combination found'))])
-        ],
-       )], className="container", style={"fontFamily": font,
-                                         })
+                                                              children=[html.Div(
+                                                                  html.P('No numerical-nominal combination found'))]
+                                                              )],
+                 )],
+        className="container", style={"fontFamily": font})
     return layout, df
 
 
@@ -237,7 +241,7 @@ def get_layout_from_task(task_id):
 
 
         ]),
-    ])
+    ], style={"fontFamily": font, 'width':'100%'})
 
     return layout, pd.DataFrame(measures)
 
@@ -317,7 +321,7 @@ def get_layout_from_flow(flow_id):
             ),
 
         ]),
-    ])
+    ],style={"fontFamily": font})
 
     return layout, df
 
@@ -360,7 +364,7 @@ def get_layout_from_run(run_id):
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
                                'textOverflow': 'ellipsis', "fontSize": 15,
-                               "fontFamily": "Helvetica"
+                               "fontFamily": font
                                },
                    id='runtable'), style={'width': '35%', 'display': 'inline-block',
                                           'position': 'relative'}
@@ -376,7 +380,7 @@ def get_layout_from_run(run_id):
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ]),
 
-    ])
+    ],style={"fontFamily": font})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
@@ -386,6 +390,7 @@ def get_layout_from_run(run_id):
     df = df.append(df3)
     df.to_pickle('cache/run'+str(run_id)+'.pkl')
     return layout, df
+
 
 def get_layout_from_study(study_id):
     """
@@ -407,7 +412,7 @@ def get_layout_from_study(study_id):
             value = '0'
         ),
         html.Div(id='scatterplot-study'),
-    ])
+    ], style={"fontFamily": font})
     return layout, item
 
 

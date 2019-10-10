@@ -1,12 +1,7 @@
 import plotly.graph_objs as go
 import re
 from dash.dependencies import Input, Output
-import dash_html_components as html
-import dash_core_components as dcc
-from .helpers import *
-import dash_table as dt
-from openml import runs, evaluations
-
+from .layouts import *
 
 def register_task_callbacks(app):
     @app.callback([Output('tab1', 'children'),
@@ -88,10 +83,10 @@ def register_task_callbacks(app):
                                        colorscale='RdBu', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400),height=2*len(evals['flow_name']),
+        layout = go.Layout(autosize=False, margin=dict(l=400), height=500+15*(evals['flow_name'].nunique()),
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a flow, click for details',
-                           width=1500,
+                           width=1000,
                            hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
@@ -114,8 +109,6 @@ def register_task_callbacks(app):
         evals['upload_time'] = pd.to_datetime(evals['upload_time'])
         evals['upload_time'] = evals['upload_time'].dt.date
 
-
-
         data = [go.Scatter(y=evals["value"],
                            x=evals["upload_time"],
                            mode='text+markers',
@@ -128,7 +121,7 @@ def register_task_callbacks(app):
                            )
                 ]
         layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
-            autosize=True,  margin=dict(l=500), hovermode='y',
+            autosize=True,  margin=dict(l=100), hovermode='y',
             xaxis=go.layout.XAxis(showgrid=False),
             yaxis=go.layout.YAxis(showgrid=True,
                                   title=go.layout.yaxis.Title(text=str(metric)),
@@ -157,6 +150,13 @@ def register_task_callbacks(app):
                 row_selectable="multi",
                 sort_action="native",
                 row_deletable=False,
+                style_cell={'textAlign': 'left', 'backgroundColor': 'white',
+                            'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
+                            'textAlign': 'left',
+                            "fontFamily": font,
+                            'textOverflow': 'ellipsis', "fontSize": 14,
+
+                            },
                 selected_rows=[0],
                 id='tasktable'),
         )
