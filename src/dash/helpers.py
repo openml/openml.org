@@ -12,7 +12,7 @@ def clean_dataset(df):
     return out
 
 
-def get_data_metadata(data_id):
+def get_data_metadata(data_id: int):
     """ Download the dataset and get metadata
 
     :param data_id: ID of the OpenML dataset
@@ -24,32 +24,26 @@ def get_data_metadata(data_id):
     data = datasets.get_dataset(data_id)
     x, y, categorical, attribute_names = data.get_data()
     end = time.time()
-    print("get data", end-start)
+    print("time taken get data", end-start)
     df = pd.DataFrame(x, columns=attribute_names)
     df.to_pickle('cache/df'+str(data_id)+'.pkl')
 
-
     # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
-    pd.set_option('display.max_colwidth',-1)
-
 
     # Extract #categories
     size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
     features['nominal_values'].replace({None: ' '}, inplace=True)
     features['# categories'] = size
+
     # choose features to be displayed
     meta_features = features[["name", "data_type", "number_missing_values", '# categories', "Target"]]
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
-
-    s2 = pd.Series(df.columns)
-    meta_features = meta_features[meta_features["Attribute"].isin(s2)]
-
+    meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
     numerical_features = list(meta_features["Attribute"][meta_features["DataType"] == "numeric"])
@@ -96,14 +90,15 @@ def get_highest_rank(df, leaderboard):
     leaderboard['Top Score'] = list(highest_score.values())
     return leaderboard
 
-def splitDataFrameList(df,target_column):
-    ''' df = dataframe to split,
+
+def splitDataFrameList(df, target_column):
+    """ df = dataframe to split,
     target_column = the column containing the values to split
     separator = the symbol used to perform the split
     returns: a dataframe with each entry for the target column separated, with each element moved into a new row.
     The values in the other columns are duplicated across the newly divided rows.
-    '''
-    def splitListToRows(row,row_accumulator,target_column):
+    """
+    def splitListToRows(row,row_accumulator, target_column):
         split_row = row[target_column]
         for s in split_row:
             new_row = row.to_dict()
