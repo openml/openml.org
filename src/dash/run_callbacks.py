@@ -1,5 +1,5 @@
 import plotly.graph_objs as go
-from plotly import tools
+import plotly
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
@@ -40,7 +40,7 @@ def register_run_callbacks(app):
         if len(selected_row_indices) != 0:
             selected_rows = rows.loc[selected_row_indices]["evaluations"].values
             i = len(selected_rows)
-            fig = tools.make_subplots(rows=len(selected_rows), cols=1)
+            fig = plotly.subplots.make_subplots(rows=len(selected_rows), cols=1)
             for metric in selected_rows:
                 measure = df.loc[df['evaluations'] == metric]
                 x = measure['results'].values[0]
