@@ -7,12 +7,13 @@ from .helpers import *
 import numpy as np
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
-from scipy.io import arff
+#from scipy.io import arff
+import arff
 import urllib.request
 import io
 import re
 
-
+import openml
 def register_run_callbacks(app):
 
     @app.callback(
@@ -37,18 +38,19 @@ def register_run_callbacks(app):
             return []
         rows = pd.DataFrame(rows)
 
-        if len(selected_row_indices) != 0:
+        if len(selected_row_indices) != 0 and not rows.empty:
             selected_rows = rows.loc[selected_row_indices]["evaluations"].values
-            i = len(selected_rows)
+            i = 0
             fig = plotly.subplots.make_subplots(rows=len(selected_rows), cols=1)
             for metric in selected_rows:
                 measure = df.loc[df['evaluations'] == metric]
                 x = measure['results'].values[0]
                 trace1 = go.Box(x=x, name=metric)
+                i = i+1
                 fig.append_trace(trace1, i, 1)
-                i = i-1
-            fig['layout'].update(title='Cross-validation details (10-fold Crossvalidation)', hovermode='closest',
-                                 height=len(selected_rows)*200, margin=dict(l=200))
+
+            fig['layout'].update(title='Evaluation measures', hovermode='closest',
+                                 height=len(selected_rows)*200, margin=dict(l=0))
         else:
             fig = []
 
@@ -144,12 +146,14 @@ def register_run_callbacks(app):
 
             layout = go.Layout(title='PR curve',
                                xaxis=dict(title='Recall'),
-                               yaxis=dict(title='Precision'))
+                               yaxis=dict(title='Precision'),
+                               height=400)
 
             fig = go.Figure(data=data, layout=layout)
             layout = go.Layout(title='Extension of ROC to multi-class',
                                xaxis=dict(title='fpr'),
-                               yaxis=dict(title='tpr'))
+                               yaxis=dict(title='tpr'),
+                               height=400)
 
             fig2 = go.Figure(data=roc, layout=layout)
         graph = dcc.Graph(figure=fig)

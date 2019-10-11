@@ -58,6 +58,11 @@ def get_layout_from_data(data_id):
                     #style_as_list_view=True,
                     filter_action="native",
                     id='datatable',
+                    style_header={
+                        'backgroundColor': 'white',
+                        'fontWeight': 'bold'
+                    },
+
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
@@ -65,11 +70,7 @@ def get_layout_from_data(data_id):
                                 'textOverflow': 'ellipsis',"fontSize":14,
 
                                },
-                    style_header={
-                        'backgroundColor': 'white',
-                        'color': 'grey',
-                        'textAlign': 'left'
-                    },
+
 
                     style_table={
                         'minHeight': '420px',
@@ -349,6 +350,11 @@ def get_layout_from_run(run_id):
     df['values'] = error
     d = df.drop(['results'], axis=1)
     layout = html.Div([
+        html.H2('Run '+ str(run_id), style={'text-align': 'left', 'text-color': 'black'
+                                          }),
+        html.P('Choose one or more measures from the table',
+               style={'text-align': 'left', 'color': 'gray',
+                      }),
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # Table with metric on left side
         html.Div([
@@ -360,27 +366,37 @@ def get_layout_from_run(run_id):
                    sort_action="native",
                    row_deletable=False,
                    selected_rows=[0],
+                   style_header={
+                       'backgroundColor': 'white',
+                       'fontWeight': 'bold'
+                   },
+
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
                                'textOverflow': 'ellipsis', "fontSize": 15,
                                "fontFamily": font
                                },
-                   id='runtable'), style={'width': '35%', 'display': 'inline-block',
-                                          'position': 'relative'}
+                   style_table={
+                       'minHeight': '420px',
+                       'maxHeight': '420px',
+                       'overflowY': 'scroll',
+                       'border': 'thin lightgrey solid'
+                   },
+                   id='runtable'),  style={'width': '45%', 'display': 'inline-block','position': 'relative'}
            ),
            html.Div(
             id='runplot',
-            style={'width': '62%', 'display': 'inline-block',
-                   'position': 'absolute',
-                   'overflowY': 'scroll', 'height': 500}),
+               style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
+                      'position': 'absolute'}
+           ),
         ]),
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ]),
 
-    ],style={"fontFamily": font})
+    ],style={"fontFamily": font, 'overflowY':'hidden'})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
