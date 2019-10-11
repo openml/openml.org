@@ -111,14 +111,14 @@ export default class SearchPanel extends React.Component {
                       <DetailPanel><EntryDetails type={this.props.entity_type} entity={this.state.searchEntity}/></DetailPanel> :
                       <div>No dataset selected. Render overview table of datasets and properties.</div>)
                   : (this.state.searchEntity ?
-                      <div>
-                      <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard"+ String(window.location.pathname)+"/"+String(this.state.searchEntity)+"/.html"}
-
-                              height="1000vh" width="1000vh" frameBorder="0"
-                              id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
-                              allowFullScreen sandbox="allow-popups
+                    <div>
+                        <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard"+
+                        String(window.location.pathname)+"/"+String(this.state.searchEntity)+"/.html"}
+                                height="1500px" width="98%" frameBorder="0"
+                                id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
+                                allowFullScreen sandbox="allow-popups
                               allow-scripts allow-same-origin allow-top-navigation">
-                      </iframe>
+                        </iframe>
                       </div> :
                       <div>No dataset selected. Render Dash overview of datasets.</div>)
               )
