@@ -36,7 +36,7 @@ def register_flow_callbacks(app):
         task_id = [value['tid'] for key, value in tlist.items()]
         # Get all evaluations of selected metric and flow
         df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id], sort_order='desc',
-                                                 size=10000, output_format='dataframe')
+                                                 size=5000, output_format='dataframe')
         if df.empty:
             return go.Figure()
 
