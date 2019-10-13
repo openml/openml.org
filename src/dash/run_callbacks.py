@@ -7,8 +7,8 @@ from .helpers import *
 import numpy as np
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
-#from scipy.io import arff
-import arff
+from scipy.io import arff
+#import arff
 import urllib.request
 import io
 import re
