@@ -237,7 +237,7 @@ def register_data_callbacks(app):
                                                      #colormap=C,
                                                      colormap_type=cmap_type,
 
-                                                      height=800, width=900)
+                                                      height=800, width=1000)
                 graph = dcc.Graph(figure=matrix)
             else:
                 d = top_features
@@ -251,7 +251,7 @@ def register_data_callbacks(app):
                     hoverinfo='count+probability',
                     arrangement='freeform'
                 )]
-                layout = go.Layout(autosize=False, width=1200, height=800)
+                layout = go.Layout(autosize=False, width=1000, height=800)
 
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
@@ -320,7 +320,7 @@ def register_data_callbacks(app):
                     'size': 15,
                     'line': {'width': 0.5, 'color': 'white'}
                 },
-                name=col,
+                name=str(col),
             ) for col in set(df[colorCode])],
             'layout': go.Layout(
                 xaxis={'title': at1, 'autorange': True},
