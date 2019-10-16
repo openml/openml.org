@@ -1,11 +1,10 @@
 import dash_core_components as dcc
 import dash_table as dt
 import dash_html_components as html
-import numpy as np
 from .helpers import *
 import os
 from openml import runs, flows, evaluations, setups, study
-import plotly.graph_objs as go
+
 
 # Font for entire dashboard, we do not have any styling yet
 font = [
@@ -132,9 +131,9 @@ def get_layout_from_data(data_id):
                             value='group',
                             labelStyle={'display': 'inline-block', 'text-align': 'justify'}
                         )),
-                html.Div(
+                dcc.Loading(html.Div(
                     id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                              'height': '400px', 'position': 'absolute'}),
+                                              'height': '400px', 'position': 'absolute'})),
             ],  style={'width': '50%', 'display': 'inline-block',
                        'position': 'absolute'}
             ),
@@ -142,7 +141,7 @@ def get_layout_from_data(data_id):
         # 4. Adding tabs for multiple plots below table and distribution plot
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
-            dcc.Loading(dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')])),
+           dcc.Tab(label='Feature Importance', children=[ dcc.Loading(html.Div(id='fi'))]),
             dcc.Tab(id="tab2", label='Feature Interactions', children=[
                 html.Div([
                     html.Div(
@@ -154,7 +153,7 @@ def get_layout_from_data(data_id):
                             value="top"
 
                         ), ),
-                    html.Div(id='matrix'),
+                    dcc.Loading(html.Div(id='matrix')),
                     html.Div(id='hidden', style={'display': 'none'})
 
 

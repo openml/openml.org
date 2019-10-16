@@ -32,11 +32,18 @@ def register_flow_callbacks(app):
                       "Supervised data stream classification", "Clustering",
                       "Machine Learning Challenge",
                       "Survival Analysis", "Subgroup Discovery"]
-        tlist = tasks.list_tasks(task_type_id=task_types.index(tasktype)+1)
-        task_id = [value['tid'] for key, value in tlist.items()]
+        t_list = tasks.list_tasks(task_type_id=task_types.index(tasktype)+1)
+        task_id = [value['tid'] for key, value in t_list.items()]
+
         # Get all evaluations of selected metric and flow
-        df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id], sort_order='desc',
-                                                 size=5000, output_format='dataframe')
+        import time
+        start = time.time()
+        df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id],
+                                                 size=5000, output_format='dataframe',
+                                                 sort_order='desc'
+                                                 )
+        end = time.time()
+        print("list flow evals took ", end-start, " sec")
         if df.empty:
             return go.Figure()
 
@@ -57,8 +64,8 @@ def register_flow_callbacks(app):
             color = [1] * len(df['data_name'])
             hover_text = df["value"]
             marker = dict(opacity=0.8, symbol='diamond',
-                                       color=color,  # set color equal to a variable
-                                       colorscale='Jet')
+                          color=color,  # set color equal to a variable
+                          colorscale='Jet')
         else:
             color = []
             for param_dict in df.parameters:
@@ -86,12 +93,14 @@ def register_flow_callbacks(app):
                 ]
         layout = go.Layout(hovermode='closest',
                            title='Every point is a run, click for details <br>'
-                                 'Every y label is a dataset, click for details',
-            autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
-            xaxis=go.layout.XAxis(showgrid=False),
-            yaxis=go.layout.YAxis(showgrid=True,
-                                  ticktext=tick_text+df["data_name"],
-                                  tickvals=df["data_name"],
-                                  showticklabels=True))
+                                 'Every y label is a dataset, click for details <br>'
+                                 'Top 5000 runs shown',
+
+                           autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
+                           xaxis=go.layout.XAxis(showgrid=False),
+                           yaxis=go.layout.YAxis(showgrid=True,
+                                                 ticktext=tick_text+df["data_name"],
+                                                 tickvals=df["data_name"],
+                                                 showticklabels=True))
         fig = go.Figure(data, layout)
         return fig
