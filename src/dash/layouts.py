@@ -438,10 +438,17 @@ def get_dataset_overview():
     bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
     df["instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
     df["features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
+    df["Attribute Type"] = "mixed"
+
+    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
+    df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+
     df.dropna(inplace=True)
-    fig = plotly.subplots.make_subplots(rows=1, cols=2)
+    fig = plotly.subplots.make_subplots(rows=2, cols=2)
     fig.add_trace(
         go.Histogram(x=df["instances"], name="Number of instances"), row=1, col=1)
     fig.add_trace(
         go.Histogram(x=df["features"], name="Number of features"), row=1, col=2)
+    fig.add_trace(
+        go.Histogram(x=df["features"], name="Number of features"), row=2, col=1)
     return html.Div(dcc.Graph(figure=fig))
