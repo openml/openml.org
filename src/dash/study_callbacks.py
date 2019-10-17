@@ -31,8 +31,8 @@ def register_study_callbacks(app):
         runs = study.runs[1:300]
         print(len(study.runs))
 
-        item = openml.evaluations.list_evaluations('predictive_accuracy', id=runs, output_format='dataframe', )
-        item_fold = openml.evaluations.list_evaluations('predictive_accuracy', id=runs, output_format='dataframe',
+        item = openml.evaluations.list_evaluations('predictive_accuracy', run=runs, output_format='dataframe', )
+        item_fold = openml.evaluations.list_evaluations('predictive_accuracy', run=runs, output_format='dataframe',
                                                         per_fold=True)
         if(value == '0'):
             fig = go.Figure(data=go.Scatter(x=item['value'], y=item['data_name'], mode='markers'))
