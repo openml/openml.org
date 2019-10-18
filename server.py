@@ -13,7 +13,6 @@ app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 # Create dash App
 create_dash_app(app)
 
-
 # Serve React App
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -25,7 +24,8 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(port=int(os.environ.get("PORT", 5000)), debug=True)
+    context = ('openml_org.crt','openml_org.key');
+    app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context=context)
 
 # Databases
 db = SQLAlchemy(app)

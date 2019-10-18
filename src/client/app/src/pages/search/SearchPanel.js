@@ -303,7 +303,7 @@ export default class SearchPanel extends React.Component {
                     <DatasetTable entity_type={this.props.entity_type} table_select={this.tableSelect}/>)
                 : (this.context.id ?
                     <div>
-                      <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard/"+
+                      <iframe src={"https://"+String(window.location.hostname)+":5000/dashboard/"+
                       String(this.context.type)+"/"+String(this.context.id)+"/.html"}
                               height="1500px" width="98%" frameBorder="0"
                               id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
