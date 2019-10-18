@@ -46,7 +46,7 @@ const ELASTICSEARCH_SERVER = 'https://www.openml.org/es/';
 
 // general search
 export function search(query, tag, type = "data", fields = ["data_id", "name"], sort = "date", order = "desc",
-                       filter = [], from=0, size=10){
+                       filter = [], from=0, size=100){
       console.log(filter);
       if(tag !== undefined){//nested query for tag
                   filter =[{

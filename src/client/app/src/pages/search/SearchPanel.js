@@ -274,15 +274,16 @@ export default class SearchPanel extends React.Component {
      }
   }
 
+
   render() {
       const activeTab = this.state.activeTab;
 
       return (
         <Grid container spacing={0}>
-        <Grid item xs={12} sm={4} xl={3}>
+        <Grid item xs={12} sm={3} lg={2}>
           {this.getEntityList()}
         </Grid>
-        <Grid item xs={12} sm={8} xl={9}>
+        <Grid item xs={12} sm={9} lg={10}>
           <SearchTabs
             value={activeTab}
             onChange={this.tabChange}
@@ -302,11 +303,13 @@ export default class SearchPanel extends React.Component {
                     <DatasetTable entity_type={this.props.entity_type} table_select={this.tableSelect}/>)
                 : (this.context.id ?
                     <div>
-                    <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard/data/"+ String(this.state.searchEntity)+"/.html"}
-                            height="1000vh" width="1000vh" frameBorder="0"
-                            id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
-                            allowFullScreen sandbox="allow-scripts allow-same-origin">
-                    </iframe>
+                      <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard/"+
+                      String(this.context.type)+"/"+String(this.context.id)+"/.html"}
+                              height="1500px" width="98%" frameBorder="0"
+                              id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
+                              allowFullScreen sandbox="allow-popups
+                            allow-scripts allow-same-origin allow-top-navigation">
+                      </iframe>
                     </div> :
                     <div>No dataset selected. Render Dash overview of datasets.</div>)
             )
