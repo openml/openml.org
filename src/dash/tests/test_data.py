@@ -62,7 +62,7 @@ def test_alternate_tabs(dash_br):
 def test_all_datasets(dash_br):
     df = datasets.list_datasets(output_format='dataframe')
     ids = []
-    for id in df['did'].values[:30]:
+    for id in df['did'].values[100:]:
         dash_br.server_url = BASE_URL + 'data/'+ str(id)
         time.sleep(5)
         if dash_br.get_logs() != []:

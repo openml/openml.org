@@ -1,11 +1,26 @@
 import dash_core_components as dcc
 import dash_table as dt
 import dash_html_components as html
-import numpy as np
 from .helpers import *
 import os
 from openml import runs, flows, evaluations, setups, study
-import plotly.graph_objs as go
+
+
+# Font for entire dashboard, we do not have any styling yet
+font = [
+    "Nunito Sans",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    '"Segoe UI"',
+    "Roboto",
+    '"Helvetica Neue"',
+    "Arial",
+    "sans-serif",
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"'
+]
+
 
 def get_layout_from_data(data_id):
     """
@@ -18,19 +33,6 @@ def get_layout_from_data(data_id):
     """
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
-    font = [
-    "Nunito Sans",
-    "-apple-system",
-    "BlinkMacSystemFont",
-    '"Segoe UI"',
-    "Roboto",
-    '"Helvetica Neue"',
-    "Arial",
-    "sans-serif",
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"'
-  ]
 
     # Define layout
     layout = html.Div(children=[
@@ -55,6 +57,11 @@ def get_layout_from_data(data_id):
                     #style_as_list_view=True,
                     filter_action="native",
                     id='datatable',
+                    style_header={
+                        'backgroundColor': 'white',
+                        'fontWeight': 'bold'
+                    },
+
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
@@ -62,11 +69,7 @@ def get_layout_from_data(data_id):
                                 'textOverflow': 'ellipsis',"fontSize":14,
 
                                },
-                    style_header={
-                        'backgroundColor': 'white',
-                        'color': 'grey',
-                        'textAlign': 'left'
-                    },
+
 
                     style_table={
                         'minHeight': '420px',
@@ -128,17 +131,17 @@ def get_layout_from_data(data_id):
                             value='group',
                             labelStyle={'display': 'inline-block', 'text-align': 'justify'}
                         )),
-                html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'width': '95%',
-                                              'height': '400px', 'position': 'absolute'}),
-            ],  style={'width': '40%', 'display': 'inline-block',
+                dcc.Loading(html.Div(
+                    id='distribution', style={'overflowY': 'scroll', 'width': '100%',
+                                              'height': '400px', 'position': 'absolute'})),
+            ],  style={'width': '50%', 'display': 'inline-block',
                        'position': 'absolute'}
             ),
         ]),
         # 4. Adding tabs for multiple plots below table and distribution plot
         #    Add another tab for a new plot
         dcc.Tabs(id="tabs", children=[
-            dcc.Loading(dcc.Tab(label='Feature Importance', children=[html.Div(id='fi')])),
+           dcc.Tab(label='Feature Importance', children=[ dcc.Loading(html.Div(id='fi'))]),
             dcc.Tab(id="tab2", label='Feature Interactions', children=[
                 html.Div([
                     html.Div(
@@ -150,7 +153,7 @@ def get_layout_from_data(data_id):
                             value="top"
 
                         ), ),
-                    html.Div(id='matrix'),
+                    dcc.Loading(html.Div(id='matrix')),
                     html.Div(id='hidden', style={'display': 'none'})
 
 
@@ -186,10 +189,11 @@ def get_layout_from_data(data_id):
                         value=nominal_data[0]), style={'width': '30%'}),
                     html.Div(id='scatter_plot'), ])
             ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
-                                             children=[html.Div(html.P('No numerical-nominal combination found'))])
-        ],
-       )], className="container", style={"fontFamily": font,
-                                         })
+                                                              children=[html.Div(
+                                                                  html.P('No numerical-nominal combination found'))]
+                                                              )],
+                 )],
+        className="container", style={"fontFamily": font})
     return layout, df
 
 
@@ -237,7 +241,7 @@ def get_layout_from_task(task_id):
 
 
         ]),
-    ])
+    ], style={"fontFamily": font, 'width':'100%'})
 
     return layout, pd.DataFrame(measures)
 
@@ -317,7 +321,7 @@ def get_layout_from_flow(flow_id):
             ),
 
         ]),
-    ])
+    ],style={"fontFamily": font})
 
     return layout, df
 
@@ -345,6 +349,11 @@ def get_layout_from_run(run_id):
     df['values'] = error
     d = df.drop(['results'], axis=1)
     layout = html.Div([
+        html.H2('Run '+ str(run_id), style={'text-align': 'left', 'text-color': 'black'
+                                          }),
+        html.P('Choose one or more measures from the table',
+               style={'text-align': 'left', 'color': 'gray',
+                      }),
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # Table with metric on left side
         html.Div([
@@ -356,27 +365,37 @@ def get_layout_from_run(run_id):
                    sort_action="native",
                    row_deletable=False,
                    selected_rows=[0],
+                   style_header={
+                       'backgroundColor': 'white',
+                       'fontWeight': 'bold'
+                   },
+
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
                                'textOverflow': 'ellipsis', "fontSize": 15,
-                               "fontFamily": "Helvetica"
+                               "fontFamily": font
                                },
-                   id='runtable'), style={'width': '35%', 'display': 'inline-block',
-                                          'position': 'relative'}
+                   style_table={
+                       'minHeight': '420px',
+                       'maxHeight': '420px',
+                       'overflowY': 'scroll',
+                       'border': 'thin lightgrey solid'
+                   },
+                   id='runtable'),  style={'width': '45%', 'display': 'inline-block','position': 'relative'}
            ),
            html.Div(
             id='runplot',
-            style={'width': '62%', 'display': 'inline-block',
-                   'position': 'absolute',
-                   'overflowY': 'scroll', 'height': 500}),
+               style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
+                      'position': 'absolute'}
+           ),
         ]),
         dcc.Tabs(id="tabs", children=[
             dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
             dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
                  ]),
 
-    ])
+    ],style={"fontFamily": font, 'overflowY':'hidden'})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
@@ -387,6 +406,7 @@ def get_layout_from_run(run_id):
     df.to_pickle('cache/run'+str(run_id)+'.pkl')
     return layout, df
 
+
 def get_layout_from_study(study_id):
     """
     params:
@@ -395,8 +415,8 @@ def get_layout_from_study(study_id):
     scatter plot for runs and studies combined
     """
     items = study.get_study(int(study_id))
-    run_ids = items.runs[1:10]
-    item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    run_ids = items.runs[1:300]
+    item = evaluations.list_evaluations('predictive_accuracy', run=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         dcc.Dropdown(
             id = 'dropdown-study',
@@ -407,7 +427,7 @@ def get_layout_from_study(study_id):
             value = '0'
         ),
         html.Div(id='scatterplot-study'),
-    ])
+    ], style={"fontFamily": font})
     return layout, item
 
 
