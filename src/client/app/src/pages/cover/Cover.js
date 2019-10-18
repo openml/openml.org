@@ -6,7 +6,7 @@ import { green, red, blue, amber, purple, grey } from "@material-ui/core/colors"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-import { ThemeContext } from "../../App.js";
+import { MainContext } from "../../App.js";
 
 import {
   Grid,
@@ -31,6 +31,7 @@ const FrontPaper = styled(Paper)`
 
 const CardContent = styled(MuiCardContent)`
   margin-top:10px;
+
   &:last-child {
     padding-bottom: ${props => props.theme.spacing(4)}px;
   }
@@ -41,7 +42,7 @@ const OpenMLTitle = styled.div`
   text-align: center;
   overflow: auto;
   margin: auto;
-  padding-top: 50px;
+  padding-top: 70px;
   color: white;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
@@ -62,7 +63,7 @@ const OpenMLSubTitle = styled.div`
 const CoverTitle = styled(Typography)`
   ${spacing}
   color: white;
-  width: 90%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -249,7 +250,7 @@ const rExample = `
         library(mlr)
         library(OpenML)
 
-        lrn = makeLearner("classif.rpart")
+        lrn = makeLearner("classif.randomForest")
         task = getOMLTask(3954)
         run = runTaskMlr(task, lrn)
         uploadOMLRun(run)
@@ -266,7 +267,7 @@ class Cover extends React.Component {
         <Grid container spacing={3}>
 
           <CoverTitle mt={50} variant="h4" gutterBottom>
-          We believe that everyone should have access to the world’s machine learning information
+          We believe that everyone should have easy access to the world’s machine learning information
           </CoverTitle>
           <FrontPaper>
             <CardContent>
@@ -326,7 +327,7 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-              We make it easy to import, organize and share your data directly from
+              We make it easy to import data, and to share your own data, directly from
               the machine learning tools you know and love.
               Build on the shoulders of giants, and become one yourself.
               </ListItemText>
@@ -423,7 +424,7 @@ class Cover extends React.Component {
               <ListItemText>
               Automate the creation of machine learning pipelines and neural
               archtectures by efficiently exploiting prior knowledge when
-              searching for optimal models
+              optimizing models
               </ListItemText>
               </ListItem>
               <ListItem>
@@ -445,7 +446,7 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-              OpenML is here to help you, so that you can change the world for the better
+              OpenML is here to help you change the world for the better
               </ListItemText>
               <ListItem>
               <ListItemIcon>
@@ -485,18 +486,18 @@ class Cover extends React.Component {
           </FrontPaper>
 
           <CoverTitle variant="h5" gutterBottom>
-          <ThemeContext.Consumer>
+          <MainContext.Consumer>
             {(context) => (
-              <Tooltip title={context.state.animation ? "Stop gradient descent" : "Start gradient descent"} placement="top-start">
+              <Tooltip title={context.animation ? "Stop gradient descent" : "Start gradient descent"} placement="top-start">
               <div style={{display:'inline-block'}}>
-              {context.state.animation
+              {context.animation
                 ? <PauseIcon icon={['far', 'pause-circle']} size="lg" onClick={() => context.toggleAnimation(false)} />
                 : <PauseIcon icon={['far', 'play-circle']} size="lg" onClick={() => context.toggleAnimation(true)} />
               }
               </div>
               </Tooltip>
             )}
-          </ThemeContext.Consumer>
+          </MainContext.Consumer>
           </CoverTitle>
         </Grid>
       </Container>

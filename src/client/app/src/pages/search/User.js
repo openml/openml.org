@@ -1,11 +1,7 @@
 import React from 'react';
 
 export class UserItem extends React.Component{
-
-
-
     render(){
-
       return <React.Fragment>
         <div className="userPanel">
                 <div className="userPanelDetails">

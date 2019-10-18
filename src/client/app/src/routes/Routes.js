@@ -17,7 +17,7 @@ const childRoutes = (Layout, routes) =>
           exact
           render={props => (
             <Layout>
-              <Component entity_type={entity_type} searchcolor={searchcolor} {...props} />
+              <Component type={entity_type} searchcolor={searchcolor} {...props} />
             </Layout>
           )}
         />
@@ -30,7 +30,7 @@ const childRoutes = (Layout, routes) =>
         exact
         render={props => (
           <Layout background={background}>
-            <Component entity_type={entity_type} searchcolor={searchcolor} {...props} />
+            <Component type={entity_type} searchcolor={searchcolor} {...props} />
           </Layout>
         )}
       />

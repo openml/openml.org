@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import {listItems} from "./api";
 import {FilterBar} from "./FilterBar.js";
 import { Card, Tooltip } from '@material-ui/core';
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { blue, orange, red, green, grey, purple} from "@material-ui/core/colors";
+import { MainContext } from "../../App.js";
 
 const ColoredIcon = styled(FontAwesomeIcon)`
     cursor: 'pointer',
@@ -140,97 +140,65 @@ class SearchElement extends React.Component {
     }
 }
 
+
 export class SearchResultsPanel extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {};
-        this.state.results = [];
-        this.state.error = null;
-        this.state.loading = true;
-        this.state.sort = this.props.sortOptions[0].value;
-        this.state.order = "desc";
-        this.state.filter =  [];
-    }
-
-    componentDidMount() {
-        this.reload();
-    }
-
-    reload() {
-                listItems(this.props.tag,
-                    this.props.type,
-                    {"value": this.state.sort, "order": this.state.order},
-                    this.state.filter,
-                    this.props.nameField,
-                    this.props.descriptionField,
-                    this.props.processDescription,
-                    this.props.idField,
-                    this.props.stats,
-                    this.props.stats2,
-                    this.props.statusField
-                ).then(
-                    (data) => {
-                        this.setState((state) => {
-                            return {"results": data.results, "total": data.total, "loading": false};
-                        });
-                    }
-                ).catch(
-                    (error) => {
-                        console.error(error);
-                        try {
-                            this.setState({
-                                "error": "" + error + (
-                                    error.hasOwnProperty("fileName") ? " (" + error.fileName + ":" + error.lineNumber + ")" : ""
-                                ),
-                                "loading": false
-                            });
-                        }
-                        catch (ex) {
-                            console.error("There was an error displaying the above error");
-                            console.error(ex);
-                        }
-                    }
-                )
-        }
-    componentWillUnmount() {
-    }
-
-    sortChange(sortType, order, filter) {
-        this.setState({"sort": sortType, "results": [], "loading": true, "order": order, "filter": filter},
-            this.reload.bind(this));
-    }
+    static contextType = MainContext;
 
     capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    selectDataset = (e, id) => {
-      e.preventDefault();
-      console.log(id);
+    getTeaser = (description) => {
+        if (description === undefined || description === null) {
+            return undefined;
+        }
+        let lines = description.split("\n").map(i => i.trim());
+        for (let i = 0; i < lines.length; i++) {
+            if (!lines[i].startsWith("*") && !lines[i].startsWith("#") && lines[i].length > 0) {
+                return lines[i];
+            }
+        }
+        return lines[0];
+    }
+
+    getStats = (stats, result) => {
+      return stats.map(
+            stat => ({
+                "value": result[stat.param],
+                "unit": stat.unit,
+                "icon": stat.icon
+            })
+        );
     }
 
     render() {
         let component = null;
-
-        if (this.state.loading) {
-            component = <p>Loading...</p>;
+        if (this.props.loading) {
+            component = <p style={{paddingLeft: 10}}>Loading...</p>;
         }
-        else if (this.state.results.length >= 1) {
-            component = this.state.results.map(
-                result => <SearchElement name={result.name} teaser={result.teaser} stats={result.stats}
-                                         stats2={result.stats2} data_id={result.data_id}
-                                         onclick={() => this.props.selectEntity(result.data_id)}
-                                         key={result.name + "_" + result.data_id}
-                                         type={this.props.type} data_status={result.data_status}
+        else if (this.context.results.length >= 1 &&
+                 this.context.results[0][this.context.type+"_id"] !== undefined) {
+            component = this.context.results.map(
+                result =>
+                <SearchElement
+                  name={result.name}
+                  teaser={this.getTeaser(result.description)}
+                  stats={this.getStats(this.props.stats,result)}
+                  stats2={this.getStats(this.props.stats2,result)}
+                  id={result[this.context.type+"_id"]}
+                  onclick={() => this.props.selectEntity(result.data_id)}
+                  key={result[(this.context.type === "task_type" ? "tt" : this.context.type)+"_id"]}
+                  type={this.props.type}
+                  data_status={result.data_status}
                 ></SearchElement>
             );
         }
-        else if (this.state.error !== null) {
-            component = <p>Error: {this.state.error}</p>;
+        else if (this.context.error !== null) {
+            component = <p style={{paddingLeft: 10}}>Error: {this.context.error}</p>;
         }
         else {
-            component = <p>No search results found</p>;
+            component = <p style={{paddingLeft: 10}}>No search results found</p>;
         }
 
         if(this.props.tag === undefined){
@@ -238,11 +206,12 @@ export class SearchResultsPanel extends React.Component {
                     <SearchPanel>
                       <FilterBar
                           sortOptions={this.props.sortOptions}
-                          onChange={this.sortChange.bind(this)}
                           filterOptions={this.props.filterOptions}
                           searchColor={this.props.searchColor}
-                          resultSize={this.state.total}
+                          resultSize={this.context.counts}
                           resultType={this.props.type}
+                          sortChange={this.props.sortChange}
+                          filterChange={this.props.filterChange}
                       />
                       <Scrollbar>
                         {component}

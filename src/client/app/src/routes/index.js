@@ -62,90 +62,68 @@ const GreyMenuIcon = styled(FontAwesomeIcon)({
 
 const dataRoutes = {
   id: "Data sets",
-  path: "/data",
+  path: "/search",
   header: "Discover",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: SearchPanel,
   entity_type: "data",
-  searchcolor: green[500],
   badge: "10",
-  children: [
-    {
-      path: "/data",
-      name: "Data list",
-      component: SearchPanel,
-      entity_type: "data",
-      searchcolor: green[500],    },
-    {
-      path: "/data/:id",
-      name: "Data detail",
-      component: SearchPanel,
-      entity_type: "data",
-      searchcolor: green[500],    },
-  ]
 };
 
 const taskRoutes = {
   id: "Tasks",
-  path: "/task",
+  path: "/search",
   icon: <YellowMenuIcon icon={['fas', 'flag']} fixedWidth />,
   component: SearchPanel,
   entity_type: "task",
-  searchcolor: orange[400],
 };
 
 const flowRoutes = {
   id: "Flows",
-  path: "/flow",
+  path: "/search",
   icon: <BlueMenuIcon icon="cog" fixedWidth />,
   component: SearchPanel,
   entity_type: "flow",
-  searchcolor: blue[800],
 };
 
 const runRoutes = {
   id: "Runs",
-  path: "/run",
+  path: "/search",
   icon: <RedMenuIcon icon="atom" fixedWidth />,
   component: SearchPanel,
   entity_type: "run",
-  searchcolor: red[400],
 };
 
 const studyRoutes = {
   id: "Studies",
-  path: "/study",
+  path: "/search",
   icon: <PurpleMenuIcon icon="flask" fixedWidth />,
   component: SearchPanel,
   entity_type: "study",
-  searchcolor: purple[600],
 };
 
 const taskTypeRoutes = {
   id: "Task Types",
-  path: "/tasktype",
+  path: "/search",
   icon: <OrangeMenuIcon icon={['far', 'flag']} fixedWidth />,
   component: SearchPanel,
-  entity_type: "task",
-  searchcolor: orange[400],
+  entity_type: "task_type",
 };
 
 const measureRoutes = {
   id: "Measures",
-  path: "/measure",
+  path: "/search",
   icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
   component: SearchPanel,
   entity_type: "measure",
-  searchcolor: grey[500],
 };
 
 const peopleRoutes = {
   id: "People",
-  path: "/people",
+  path: "/search",
   icon: <LightBlueMenuIcon icon="users" fixedWidth />,
   component: SearchPanel,
   entity_type: "user",
-  searchcolor: blue[300],
 };
 
 const profileRoutes = {
