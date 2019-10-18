@@ -187,7 +187,7 @@ export class SearchResultsPanel extends React.Component {
                   stats={this.getStats(this.props.stats,result)}
                   stats2={this.getStats(this.props.stats2,result)}
                   id={result[this.context.type+"_id"]}
-                  onclick={() => this.props.selectEntity(result.data_id)}
+                  onclick={() => this.props.selectEntity(result[this.context.type+"_id"])}
                   key={result[(this.context.type === "task_type" ? "tt" : this.context.type)+"_id"]}
                   type={this.props.type}
                   data_status={result.data_status}
