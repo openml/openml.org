@@ -3,8 +3,9 @@ import dash_table as dt
 import dash_html_components as html
 from .helpers import *
 import os
-from openml import runs, flows, evaluations, setups, study
-
+from openml import runs, flows, evaluations, setups, study, datasets
+import plotly
+import plotly.graph_objs as go
 
 # Font for entire dashboard, we do not have any styling yet
 font = [
@@ -194,7 +195,7 @@ def get_layout_from_data(data_id):
                                                               )],
                  )],
         className="container", style={"fontFamily": font})
-    return layout, df
+    return layout
 
 
 def get_layout_from_task(task_id):
@@ -243,7 +244,7 @@ def get_layout_from_task(task_id):
         ]),
     ], style={"fontFamily": font, 'width':'100%'})
 
-    return layout, pd.DataFrame(measures)
+    return layout
 
 
 def get_layout_from_flow(flow_id):
@@ -323,7 +324,7 @@ def get_layout_from_flow(flow_id):
         ]),
     ],style={"fontFamily": font})
 
-    return layout, df
+    return layout
 
 
 def get_layout_from_run(run_id):
@@ -404,7 +405,7 @@ def get_layout_from_run(run_id):
     df = df.append(df2)
     df = df.append(df3)
     df.to_pickle('cache/run'+str(run_id)+'.pkl')
-    return layout, df
+    return layout
 
 
 def get_layout_from_study(study_id):
@@ -428,7 +429,26 @@ def get_layout_from_study(study_id):
         ),
         html.Div(id='scatterplot-study'),
     ], style={"fontFamily": font})
-    return layout, item
+    return layout
 
 
+def get_dataset_overview():
+    df = datasets.list_datasets(output_format='dataframe')
+    print(df.columns)
+    bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
+    df["instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
+    df["features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
+    df["Attribute Type"] = "mixed"
 
+    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
+    df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+
+    df.dropna(inplace=True)
+    fig = plotly.subplots.make_subplots(rows=2, cols=2)
+    fig.add_trace(
+        go.Histogram(x=df["instances"], name="Number of instances"), row=1, col=1)
+    fig.add_trace(
+        go.Histogram(x=df["features"], name="Number of features"), row=1, col=2)
+    fig.add_trace(
+        go.Histogram(x=df["features"], name="Number of features"), row=2, col=1)
+    return html.Div(dcc.Graph(figure=fig))
