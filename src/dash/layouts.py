@@ -436,19 +436,21 @@ def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
     print(df.columns)
     bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
-    df["instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
-    df["features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
+    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
+    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
     df["Attribute Type"] = "mixed"
 
     df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+    cols = ["Number of instances", "Number of features", "Attribute Type"]
 
     df.dropna(inplace=True)
-    fig = plotly.subplots.make_subplots(rows=2, cols=2)
-    fig.add_trace(
-        go.Histogram(x=df["instances"], name="Number of instances"), row=1, col=1)
-    fig.add_trace(
-        go.Histogram(x=df["features"], name="Number of features"), row=1, col=2)
-    fig.add_trace(
-        go.Histogram(x=df["features"], name="Number of features"), row=2, col=1)
+    fig = plotly.subplots.make_subplots(rows=1, cols=3, subplot_titles=tuple(cols))
+    i = 0
+    for col in cols:
+        i = i+1
+        fig.add_trace(
+        go.Histogram(x=df[col], name=col), row=1, col=i)
+    #fig.update_layout(height=1000)
+
     return html.Div(dcc.Graph(figure=fig))

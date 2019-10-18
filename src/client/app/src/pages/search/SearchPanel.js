@@ -112,6 +112,7 @@ export default class SearchPanel extends React.Component {
                       <div>No dataset selected. Render overview table of datasets and properties.</div>)
                   : (this.state.searchEntity ?
                     <div>
+
                         <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard"+
                         String(window.location.pathname)+"/"+String(this.state.searchEntity)+"/.html"}
                                 height="1500px" width="98%" frameBorder="0"
@@ -120,7 +121,14 @@ export default class SearchPanel extends React.Component {
                               allow-scripts allow-same-origin allow-top-navigation">
                         </iframe>
                       </div> :
-                      <div>No dataset selected. Render Dash overview of datasets.</div>)
+                      <div>
+                        <iframe src={"http://"+String(window.location.hostname)+":5000/dashboard"+
+                        String(window.location.pathname)+"/.html"}
+                                height="1500px" width="98%" frameBorder="0"
+                                id="dash_iframe_1" title={'dash_iframe_data_'}
+                                allowFullScreen sandbox="allow-popups
+                              allow-scripts allow-same-origin allow-top-navigation">
+                        </iframe></div>)
               )
             }
             </Scrollbar>
