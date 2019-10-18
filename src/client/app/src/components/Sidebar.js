@@ -12,7 +12,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { spacing } from "@material-ui/system";
 
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -287,7 +287,7 @@ class Sidebar extends React.Component {
     super(props);
     this.state = {};
   }
-
+  
   toggle = index => {
     // Collapse all elements
     Object.keys(this.state).forEach(
@@ -333,19 +333,19 @@ class Sidebar extends React.Component {
           </Brand>
         </SimpleLink>
         <Scrollbar>
-        <ThemeContext.Consumer>
+        <MainContext.Consumer>
           {(context) => (
             <List disablePadding>
               <Items>
                 {routes.map((category, index) => (
                   <React.Fragment key={index}>
-                    {category.header && !context.state.miniDrawer ? (
+                    {category.header && !context.miniDrawer ? (
                       <SidebarSection variant="caption">
                         {category.header}
                       </SidebarSection>
                     ) : null}
                     {category.header && category.header !== 'Discover' &&
-                     context.state.miniDrawer ? (
+                     context.miniDrawer ? (
                     <hr />
                     ) : null}
                     {category.component ? (
@@ -353,12 +353,12 @@ class Sidebar extends React.Component {
                       <SidebarCategory
                         isCollapsable={false}
                         name={category.id}
-                        to={category.path}
+                        to={category.path+"?type="+category.entity_type}
                         activeClassName="active"
                         component={NavLink}
                         icon={category.icon}
                         exact
-                        badge={category.badge}
+                        badge={((category.entity_type === context.type) ? context.counts : 0)}
                       />
                       </React.Fragment>
                     ) : (
@@ -369,7 +369,7 @@ class Sidebar extends React.Component {
                         activeClassName="active"
                         component={SimpleLink}
                         icon={category.icon}
-                        badge={category.badge}
+                        badge={((category.entity_type === context.type) ? context.counts : 0)}
                       />
                     )}
                   </React.Fragment>
@@ -377,14 +377,14 @@ class Sidebar extends React.Component {
               </Items>
             </List>
           )}
-          </ThemeContext.Consumer>
+          </MainContext.Consumer>
         </Scrollbar>
         <SidebarFooter>
-          <ThemeContext.Consumer>
+          <MainContext.Consumer>
           {(context) => (
           <Grid container spacing={4}>
                 <Grid item>
-                  {context.state.miniDrawer
+                  {context.miniDrawer
                     ? <SpacedIcon icon="chevron-right" size="lg" onClick={() => context.miniDrawerToggle()} />
                     : <SpacedIcon icon="chevron-left" size="lg" onClick={() => context.miniDrawerToggle()} />
                   }
@@ -408,7 +408,7 @@ class Sidebar extends React.Component {
                 </Grid>
           </Grid>
           )}
-        </ThemeContext.Consumer>
+        </MainContext.Consumer>
         </SidebarFooter>
       </Drawer>
     );
