@@ -57,39 +57,63 @@ export default class SearchPanel extends React.Component {
     loading: 'true'
   };
 
-
-  // reload search results based on query parameters
-  async componentDidMount() {
+  // Get and sanitize query parameters
+  getQueryParams = () => {
     let qstring = queryString.parse(this.props.location.search);
+
+    // If no sort is defined, set a sensible default
     if(this.context.sort === null){
       if(['data' , 'flow', 'task'].includes(qstring.type)){
         qstring.sort = "runs";
       } else {
         qstring.sort = "date";
       }
-      this.addQuery("sort", qstring.sort);
+      this.updateQuery("sort", qstring.sort);
     }
+    this.updateWindowDimensions();
+    qstring = queryString.parse(this.props.location.search);
+    return qstring;
+  }
+
+  // Add URL query parameters
+  updateQuery = (param,value) => {
+  if(param !== undefined && value !== undefined){
+    let currentUrlParams = new URLSearchParams(this.props.location.search);
+    if(value === null){
+      currentUrlParams.delete(param);
+    } else {
+      currentUrlParams.set(param, value);
+    }
+    this.props.history.push(this.props.location.pathname + "?" + currentUrlParams.toString());
+  }}
+
+  updateWindowDimensions = () => {
+    if(this.context.id !== undefined && window.innerWidth < 600){
+        this.context.toggleSearchList(false);
+    } else {
+        this.context.toggleSearchList(true);
+    }
+  }
+
+  // reload search results based on query parameters
+  async componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+
+    let qstring = this.getQueryParams();
+    //TODO: could speed up search a bit by making this list task-specifoc
     let fields = ["name",qstring.type+"_id","tt_id","description","status","runs","nr_of_likes",
                   "nr_of_downloads","reach","impact","qualities.NumberOfInstances",
                   "qualities.NumberOfFeatures","qualities.NumberOfClasses",
                   "qualities.NumberOfMissingValues","source_data","tasktype",
-                  "estimation_procedure","target_feature"];
+                  "estimation_procedure","target_feature","run_task","uploader"];
     await this.context.setSearch(qstring, fields);
     this.reload();
   }
 
-  // reload search results based on new updates
+  // check if update requires a query reload
   async componentDidUpdate() {
-    let qstring = queryString.parse(this.props.location.search);
-    if(this.context.sort === null){
-      if(['data' , 'flow', 'task'].includes(qstring.type)){
-        qstring.sort = "runs";
-      } else {
-        qstring.sort = "date";
-      }
-      this.addQuery("sort", qstring.sort);
-    }
-    if(this.context.hasChanged(qstring)){
+    if(this.context.hasChanged(this.getQueryParams())){
       this.componentDidMount();
     }
   }
@@ -134,7 +158,7 @@ export default class SearchPanel extends React.Component {
 
   // call search engine for initial listing
   reload(){
-    console.log("Start search with ", this.context)
+    console.log("Context at reload", this.context)
     search(
       this.context.query,
       this.context.tag,
@@ -157,6 +181,14 @@ export default class SearchPanel extends React.Component {
                     res["description"] += ", optimize '" + getProperty(res, 'evaluation_measures');
                   }
                 });
+            } else if ( this.context.type === 'run' ){
+              data.results.forEach(
+                res => {
+                  res["name"] = "Run "+getProperty(res, 'run_id');
+                  res["description"] = getProperty(res, 'run_task.tasktype.name')
+                    + " on " + getProperty(res, 'run_task.source_data.name')
+                    + " by " + getProperty(res, 'uploader');
+                });
             }
             this.context.setResults(data.counts, data.results);
           }).catch(
@@ -178,22 +210,14 @@ export default class SearchPanel extends React.Component {
           );
   }
 
-  // Add URL query parameters
-  addQuery = (param,value) => {
-    if(param !== undefined && value !== undefined){
-      let currentUrlParams = new URLSearchParams(this.props.location.search);
-      currentUrlParams.set(param, value);
-      this.props.history.push(this.props.location.pathname + "?" + currentUrlParams.toString());
-  }}
-
   // Translate sort options to URL query parameters
   sortChange = (filters) => {
     console.log("Sort change",filters);
     if('sort' in filters){
-      this.addQuery("sort", filters.sort);
+      this.updateQuery("sort", filters.sort);
     }
     if('order' in filters){
-      this.addQuery("order", filters.order);
+      this.updateQuery("order", filters.order);
     }
     this.reload();
   }
@@ -204,7 +228,7 @@ export default class SearchPanel extends React.Component {
   filterChange = (filters) => {
     console.log("Filter change",filters);
     filters.forEach((filter) => {
-      this.addQuery(filter.name, filter.type + "_" + filter.value);
+      this.updateQuery(filter.name, filter.type + "_" + filter.value);
     });
     this.reload();
   }
@@ -276,14 +300,14 @@ export default class SearchPanel extends React.Component {
 
 
   render() {
-      const activeTab = this.state.activeTab;
+    const activeTab = this.state.activeTab;
 
-      return (
-        <Grid container spacing={0}>
-        <Grid item xs={12} sm={3} lg={2}>
+    return (
+      <Grid container spacing={0}>
+        <Grid item xs={12} sm={3} lg={3}>
           {this.getEntityList()}
         </Grid>
-        <Grid item xs={12} sm={9} lg={10}>
+        <Grid item xs={12} sm={9} lg={9}>
           <SearchTabs
             value={activeTab}
             onChange={this.tabChange}
