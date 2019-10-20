@@ -25,8 +25,6 @@ const FrontPaper = styled(Paper)`
   ${spacing}
   opacity: 0.9;
   width: 100%;
-  margin-left:20px;
-  margin-right:20px;
 `;
 
 const CardContent = styled(MuiCardContent)`
@@ -360,7 +358,6 @@ class Cover extends React.Component {
               </ListItem>
             </CardContent>
           </FrontPaper>
-          <Grid container spacing={3} style={{marginLeft:15, marginRight:15}}>
           <Grid item xs={12} sm={6}>
             <CodeCard
                 title = 'In Python (with scikit-learn)'
@@ -374,7 +371,6 @@ class Cover extends React.Component {
                 language='r'
                 value= {rExample}
             />
-          </Grid>
           </Grid>
 
           <CoverTitle variant="h4" gutterBottom>

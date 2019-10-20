@@ -33,10 +33,11 @@ class App extends React.Component {
       drawerWidth: this.state.miniDrawer ? 260 : 60  }),
 
     // Search context
+    displaySearch: true,
     query: undefined,
     counts: 0, //counts of hits
     type: "data", //the entity type
-    id: null, //the entity ID
+    id: undefined, //the entity ID
     tag : undefined, //tag filter
     results : [], //the search result list (hits)
     error : null, //search error message
@@ -44,6 +45,7 @@ class App extends React.Component {
     order : "desc", // current sort order
     filter :  [], // current filter
     fields :  ["data_id","name"], // current fields
+    toggleSearchList: (value) => {if(value!==this.state.displaySearch){this.setState({ displaySearch: value })}},
     setQuery: (value) => {this.setState({ query: value });},
     setFields: (value) => {this.setState({ fields: value });},
     setSort: (value) => {this.setState({ sort: value });},
@@ -72,8 +74,10 @@ class App extends React.Component {
       return changed;
     },
     setSearch: (qp, fields) => {
-      let update = {fields: fields};
+      // set defaults
+      let update = {fields: fields, id: undefined, type: undefined};
       let filters = [];
+      // Set all passed key-values
       Object.entries(qp).forEach(([key, value]) => {
         if(key.startsWith("qualities")){
           let vals = value.split("_");

@@ -47,7 +47,6 @@ const ELASTICSEARCH_SERVER = 'https://www.openml.org/es/';
 // general search
 export function search(query, tag, type = "data", fields = ["data_id", "name"], sort = "date", order = "desc",
                        filter = [], from=0, size=100){
-      console.log(filter);
       if(tag !== undefined){//nested query for tag
                   filter =[{
                       "nested":
@@ -96,7 +95,7 @@ export function search(query, tag, type = "data", fields = ["data_id", "name"], 
         },
         "_source": fields.filter((l)=>(!!l)),
     };
-    console.log(params);
+    console.log("Search started",params);
     //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
     return fetch(ELASTICSEARCH_SERVER + type + '/'+ type + '/_search?type=' + type,
         {

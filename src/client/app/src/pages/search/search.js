@@ -32,10 +32,10 @@ const SubTitle = styled.div`
   height: 3em;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width:475px;
 `;
 const SearchPanel = styled.div`
   overflow: none;
-  max-width: 600px;
 `;
 const ResultCard = styled(Card)({
   borderRight: '1px solid rgba(0, 0, 0, 0.12)',
@@ -45,8 +45,6 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 15,
   cursor: 'pointer',
-  maxWidth: 600,
-
 });
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -213,7 +211,7 @@ export class SearchResultsPanel extends React.Component {
                           sortChange={this.props.sortChange}
                           filterChange={this.props.filterChange}
                       />
-                      <Scrollbar>
+                      <Scrollbar style={{display:(this.context.displaySearch ? 'block' : 'none')}}>
                         {component}
                       </Scrollbar>
                     </SearchPanel>
