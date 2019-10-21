@@ -61,7 +61,7 @@ def login():
         print(request.get_json())
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
-        login_user(user, remember=True)
+        login_user(user)
         print('loggedin')
         return 'loggedin'
 
