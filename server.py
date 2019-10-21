@@ -1,14 +1,14 @@
 from flask import Flask, request
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, current_user,logout_user
 import os
 from src.dash.dashapp import create_dash_app
-from flask_argon2 import Argon2
-import models
+# from flask_argon2 import Argon2
+from extensions import db, loginmgr, argon2
 
+from models import User
 app = Flask(__name__, static_url_path='', static_folder='src/client/app/build',
             instance_relative_config=True)
 app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
@@ -16,19 +16,18 @@ app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 #app.config.from_pyfile('config.py')
 
 # Create dash App
-
+db.init_app(app)
 app.config.from_object(Config)
 # CORS initialisation
 CORS(app)
-argon2 = Argon2(app)
+argon2.init_app(app)
 
 # Login initialisation
-loginmgr = LoginManager(app)
 loginmgr.init_app(app)
 loginmgr.login_view = 'login'
 create_dash_app(app)
 #Database initialisation
-db = SQLAlchemy(app)
+
 migrate = Migrate(app, db)
 
 
@@ -45,7 +44,7 @@ def signupfunc():
     if request.method =='POST':
         print(request.get_json())
         robj = request.get_json()
-        user = models.User(username=robj['name'], email=robj['email'])
+        user = User(username=robj['name'], email=robj['email'])
         user.set_password(robj['password'])
         db.session.add(user)
         db.session.commit()
@@ -61,7 +60,7 @@ def login():
     if request.method =='POST':
         print(request.get_json())
         jobj = request.get_json()
-        user = models.User.query.filter_by(email=jobj['email']).first()
+        user = User.query.filter_by(email=jobj['email']).first()
         login_user(user, remember=True)
         print('loggedin')
         return 'loggedin'

@@ -1,7 +1,7 @@
-from server import db
+from extensions import db
 from flask_login import UserMixin
-from server import loginmgr
-from server import argon2
+from extensions import loginmgr
+from extensions import argon2
 
 @loginmgr.user_loader
 def load_user(id):

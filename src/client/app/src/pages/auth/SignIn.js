@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
 import {
   Checkbox,
   FormControl,
@@ -24,8 +23,26 @@ const Wrapper = styled(Paper)`
   }
 `;
 
+
 function SignIn() {
-  return (
+  function sendtoflask(event) {
+    event.preventDefault();
+    console.log('The link was clicked.');
+    const data = new FormData(event.target);
+    fetch('http://127.0.0.1:5000/login',
+    {
+      headers:{
+        'Accept': 'application/json',
+        'Content-type': 'application/json'
+      },
+      method: 'POST',
+      body:JSON.stringify({
+        email:event.target.email.value,
+        password:event.target.password.value,
+            })
+          });
+      }
+    return(
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Welcome back, You!
@@ -33,7 +50,7 @@ function SignIn() {
       <Typography component="h2" variant="body1" align="center">
         Sign in to continue
       </Typography>
-      <form>
+      <form onSubmit={sendtoflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
           <Input id="email" name="email" autoComplete="email" autoFocus />
@@ -51,14 +68,7 @@ function SignIn() {
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        <Button
-          component={Link}
-          to="/"
-          fullWidth
-          variant="contained"
-          color="primary"
-          mb={2}
-        >
+        <Button type = "Submit"  fullWidth  variant="contained"  color="primary"  mb={2} to="/">
           Sign in
         </Button>
         <Button
