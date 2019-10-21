@@ -181,7 +181,7 @@ export class SearchResultsPanel extends React.Component {
             component = <p style={{paddingLeft: 10}}>Loading...</p>;
         }
         else if (this.context.results.length >= 1 &&
-                 this.context.results[0][this.context.type+"_id"] !== undefined) {
+                 this.context.results[0][(this.context.type === "task_type" ? "tt" : this.context.type)+"_id"] !== undefined) {
             component = this.context.results.map(
                 result =>
                 <SearchElement

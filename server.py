@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 import os
 from src.dash.dashapp import create_dash_app
 from flask import send_from_directory
@@ -24,8 +24,7 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    context = ('openml_org.crt','openml_org.key');
-    app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context=context)
+    app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
 
 # Databases
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
