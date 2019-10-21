@@ -7,6 +7,7 @@ import { ThemeProvider } from "styled-components";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
+import { blue, orange, red, green, grey, purple} from "@material-ui/core/colors";
 
 import maTheme from "./theme";
 import Routes from "./routes/Routes";
@@ -33,7 +34,8 @@ class App extends React.Component {
       drawerWidth: this.state.miniDrawer ? 260 : 60  }),
 
     // Search context
-    displaySearch: true,
+    displaySearch: true, // hide search on small screens
+    searchCollapsed: false, // hide search entirely
     query: undefined,
     counts: 0, //counts of hits
     type: "data", //the entity type
@@ -45,12 +47,14 @@ class App extends React.Component {
     order : "desc", // current sort order
     filter :  [], // current filter
     fields :  ["data_id","name"], // current fields
-    toggleSearchList: (value) => {if(value!==this.state.displaySearch){this.setState({ displaySearch: value })}},
+    getColor: () => {return this.getColor();},
+    collapseSearch: (value) => {this.setState({ searchCollapsed: value });},
+    toggleSearchList: (value) => {if(value!==this.state.displaySearch){console.log(value); this.setState({ displaySearch: value })}},
     setQuery: (value) => {this.setState({ query: value });},
     setFields: (value) => {this.setState({ fields: value });},
     setSort: (value) => {this.setState({ sort: value });},
     setOrder: (value) => {this.setState({ order: value });},
-    setID: (value) => {this.setState({ searchID: value });},
+    setID: (value) => {this.setState({ id: value });},
     setResults: (counts, results) => {
       this.setState({ counts: counts, results: results });},
     hasChanged: (qp) => { // has the state changed?
@@ -65,7 +69,7 @@ class App extends React.Component {
             value:vals[1]
           })
         }
-        else if (this.state[key] !== value) {
+        else if (this.state[key] !== value && key !== 'id') {
           changed = true;
         }
       });
@@ -75,7 +79,9 @@ class App extends React.Component {
     },
     setSearch: (qp, fields) => {
       // set defaults
-      let update = {fields: fields, id: undefined, type: undefined};
+      let update = {fields: (fields === undefined ? this.state.fields : fields),
+                    id: undefined,
+                    type: undefined};
       let filters = [];
       // Set all passed key-values
       Object.entries(qp).forEach(([key, value]) => {
@@ -91,6 +97,14 @@ class App extends React.Component {
           update[key] = value;
         }
       });
+      // search visibility
+      if (window.innerWidth < 600){
+          if (update.id !== undefined){
+            update["displaySearch"] = false;
+          } else {
+            update["displaySearch"] = true;
+          }
+      }
       update.filter = filters;
       this.setState(update);
     },
@@ -103,6 +117,29 @@ class App extends React.Component {
     }
 
   };
+
+  getColor = () => {
+    switch (this.state.type){
+                case "data":
+                 return green[500]
+                case "task":
+                 return orange[400]
+                case "flow":
+                 return blue[800]
+                case "run":
+                 return red[400]
+                case "study":
+                 return purple[600]
+                case "task_type":
+                 return orange[400]
+                case "measure":
+                 return grey[700]
+                case "user":
+                 return blue[300]
+                default:
+                 return grey[700]
+     }
+  }
 
   render () {
     return (

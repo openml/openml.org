@@ -5,10 +5,9 @@ import { Grid, Tabs, Tab } from '@material-ui/core';
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import queryString from 'query-string'
-import { DatasetTable } from "./Tables.js"
+import { DetailTable } from "./Tables.js"
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
-import { blue, orange, red, green, grey, purple} from "@material-ui/core/colors";
 
 const SearchTabs = styled(Tabs)`
   height:51px;
@@ -54,7 +53,8 @@ export default class SearchPanel extends React.Component {
 
   state = {
     activeTab: 0, //O: detail, 1: dash
-    loading: 'true'
+    loading: 'true',
+    previousWidth: 0
   };
 
   // Get and sanitize query parameters
@@ -62,7 +62,7 @@ export default class SearchPanel extends React.Component {
     let qstring = queryString.parse(this.props.location.search);
 
     // If no sort is defined, set a sensible default
-    if(this.context.sort === null){
+    if(this.context.sort === null || this.context.type !== qstring.type){
       if(['data' , 'flow', 'task'].includes(qstring.type)){
         qstring.sort = "runs";
       } else {
@@ -70,7 +70,6 @@ export default class SearchPanel extends React.Component {
       }
       this.updateQuery("sort", qstring.sort);
     }
-    this.updateWindowDimensions();
     qstring = queryString.parse(this.props.location.search);
     return qstring;
   }
@@ -95,26 +94,37 @@ export default class SearchPanel extends React.Component {
     }
   }
 
-  // reload search results based on query parameters
-  async componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
-
-    let qstring = this.getQueryParams();
-    //TODO: could speed up search a bit by making this list task-specifoc
-    let fields = ["name",qstring.type+"_id","tt_id","description","status","runs","nr_of_likes",
+  fields = {
+    data: ["data_id","name","description","status","runs","nr_of_likes",
                   "nr_of_downloads","reach","impact","qualities.NumberOfInstances",
                   "qualities.NumberOfFeatures","qualities.NumberOfClasses",
-                  "qualities.NumberOfMissingValues","source_data","tasktype",
-                  "estimation_procedure","target_feature","run_task","uploader"];
-    await this.context.setSearch(qstring, fields);
+                  "qualities.NumberOfMissingValues"],
+    task: ["task_id","runs","nr_of_likes","nr_of_downloads",
+                  "source_data","tasktype","estimation_procedure","target_feature"],
+    flow: ["flow_id","name","runs","nr_of_likes","nr_of_downloads"],
+    run: ["run_id","nr_of_likes","nr_of_downloads","run_task","uploader"],
+    study: ["study_id","nr_of_likes","nr_of_downloads","run_task","uploader"],
+    measure: ["proc_id","name"],
+    user: ["user_id","first_name","last_name","company","bio","date","activity",
+                  "nr_of_uploads","reach","impact", "country"]
+  }
+
+  // reload search results based on query parameters
+  async updateSearch() {
+    let qstring = this.getQueryParams();
+    await this.context.setSearch(qstring, this.fields[qstring.type]);
     this.reload();
+  }
+
+  async componentDidMount() {
+    window.addEventListener('resize', this.updateWindowDimensions);
+    this.updateSearch();
   }
 
   // check if update requires a query reload
   async componentDidUpdate() {
     if(this.context.hasChanged(this.getQueryParams())){
-      this.componentDidMount();
+      this.updateSearch();
     }
   }
 
@@ -189,6 +199,15 @@ export default class SearchPanel extends React.Component {
                     + " on " + getProperty(res, 'run_task.source_data.name')
                     + " by " + getProperty(res, 'uploader');
                 });
+            } else if ( this.context.type === 'user' ){
+              data.results.forEach(
+                res => {
+                  res["name"] = getProperty(res, 'first_name') + " " +
+                      getProperty(res, 'last_name');
+                  res["description"] = getProperty(res, 'bio') + " " +
+                      getProperty(res, 'company') + " " +
+                      getProperty(res, 'country');
+                });
             }
             this.context.setResults(data.counts, data.results);
           }).catch(
@@ -212,7 +231,6 @@ export default class SearchPanel extends React.Component {
 
   // Translate sort options to URL query parameters
   sortChange = (filters) => {
-    console.log("Sort change",filters);
     if('sort' in filters){
       this.updateQuery("sort", filters.sort);
     }
@@ -234,9 +252,17 @@ export default class SearchPanel extends React.Component {
   }
 
   // New dataset selected
+  // Note: We update the context first, then update the URL,
+  // because we want to render before waiting for the browser.
   selectEntity = (value) => {
-    this.context.setID(value);
-    this.props.history.push('?type='+this.context.type+'&id='+value)
+      let qstring = this.getQueryParams();
+      if(value !== null){
+        qstring.id = value;
+      } else {
+        qstring.id = undefined;
+      }
+      this.context.setSearch(qstring);
+      this.updateQuery('id',value);
   }
 
   tableSelect = (event, id) => {
@@ -248,33 +274,10 @@ export default class SearchPanel extends React.Component {
     this.setState( (state) => ({activeTab}));
   };
 
-  getColor = () => {
-    switch (this.context.type){
-                case "data":
-                 return green[500]
-                case "task":
-                 return orange[400]
-                case "flow":
-                 return blue[800]
-                case "run":
-                 return red[400]
-                case "study":
-                 return purple[600]
-                case "tasktype":
-                 return orange[400]
-                case "measure":
-                 return grey[700]
-                case "user":
-                 return blue[300]
-                default:
-                 return grey[700]
-     }
-  }
-
   getEntityList = () => {
     let attrs = {
-      searchcolor: this.getColor(this.context.type),
-      selectEntity: this.selectEntity,
+      searchcolor: this.context.getColor(),
+      selectEntity: this.selectEntity.bind(this),
       sortChange: this.sortChange,
       filterChange: this.filterChange
     }
@@ -287,8 +290,10 @@ export default class SearchPanel extends React.Component {
                  return <FlowListPanel attrs={attrs}/>
                 case "run":
                  return <RunListPanel attrs={attrs}/>
-                case "tasktype":
+                case "task_type":
                  return <TaskTypeListPanel attrs={attrs}/>
+                case "measure":
+                 return <MeasureListPanel attrs={attrs}/>
                 case "study":
                  return <StudyListPanel attrs={attrs}/>
                 case "user":
@@ -304,10 +309,10 @@ export default class SearchPanel extends React.Component {
 
     return (
       <Grid container spacing={0}>
-        <Grid item xs={12} sm={3} lg={3}>
+        <Grid item xs={12} sm={3} style={{display:(this.context.searchCollapsed ? 'none' : 'block')}}>
           {this.getEntityList()}
         </Grid>
-        <Grid item xs={12} sm={9} lg={9}>
+        <Grid item xs={12} sm={(this.context.searchCollapsed ? 12 : 9)}>
           <SearchTabs
             value={activeTab}
             onChange={this.tabChange}
@@ -324,7 +329,7 @@ export default class SearchPanel extends React.Component {
               activeTab === 0
                 ? (this.context.id ?
                     <DetailPanel><EntryDetails type={this.context.type} entity={this.context.id}/></DetailPanel> :
-                    <DatasetTable entity_type={this.props.entity_type} table_select={this.tableSelect}/>)
+                    <DetailTable entity_type={this.props.entity_type} table_select={this.tableSelect}/>)
                 : (this.context.id ?
                     <div>
                       <iframe src={"https://"+String(window.location.hostname)+":5000/dashboard/"+
@@ -552,8 +557,6 @@ export class TaskTypeListPanel extends React.Component {
             descriptionField="blabla"
             processDescription={false}
             idField="tt_id"
-            stats={[]}
-            stats2={[]}
             sortChange={this.props.attrs.sortChange}
             filterChange={this.props.attrs.filterChange}
             searchColor={this.props.attrs.searchcolor}
@@ -573,8 +576,6 @@ export class MeasureListPanel extends React.Component {
             descriptionField="blabla"
             processDescription={false}
             idField="measure_id"
-            stats={[]}
-            stats2={[]}
             sortChange={this.props.attrs.sortChange}
             filterChange={this.props.attrs.filterChange}
             searchColor={this.props.attrs.searchcolor}

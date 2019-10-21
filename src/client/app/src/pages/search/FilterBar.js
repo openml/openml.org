@@ -14,7 +14,7 @@ const FilterButton = styled(Button)`
 const FilterStats = styled.div`
   padding-left: 15px;
   padding-top: 15px;
-  width: calc(100% - 60px);
+  width: calc(100% - 90px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -257,6 +257,10 @@ export class FilterBar extends React.Component {
       this.setState((state) => ({"sortVisible": !state.sortVisible}));
     };
 
+    toggleSelect = () => {
+      this.props.selectEntity(null);
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -270,6 +274,12 @@ export class FilterBar extends React.Component {
             />
             <FilterControl
               control={<FilterButton onClick={this.flipSorter} textcolor={this.props.searchColor}><FontAwesomeIcon icon="sort-amount-down" /></FilterButton>}
+            />
+            <FilterControl style={{display:(this.context.displaySearch ? 'block' : 'none')}}
+              control={<FilterButton onClick={this.context.collapseSearch} textcolor={this.props.searchColor}><FontAwesomeIcon icon="times" /></FilterButton>}
+            />
+            <FilterControl style={{display:(this.context.displaySearch ? 'none' : 'block')}}
+              control={<FilterButton onClick={this.toggleSelect} textcolor={this.props.searchColor}><FontAwesomeIcon icon="angle-double-down" /></FilterButton>}
             />
             </FilterBox>
             <Collapse in={this.state.sortVisible}>
