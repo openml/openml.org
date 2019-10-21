@@ -99,11 +99,12 @@ export default class SearchPanel extends React.Component {
                   "nr_of_downloads","reach","impact","qualities.NumberOfInstances",
                   "qualities.NumberOfFeatures","qualities.NumberOfClasses",
                   "qualities.NumberOfMissingValues"],
+    task_type: ["tt_id","name","description"],
     task: ["task_id","runs","nr_of_likes","nr_of_downloads",
                   "source_data","tasktype","estimation_procedure","target_feature"],
     flow: ["flow_id","name","runs","nr_of_likes","nr_of_downloads"],
     run: ["run_id","nr_of_likes","nr_of_downloads","run_task","uploader"],
-    study: ["study_id","nr_of_likes","nr_of_downloads","run_task","uploader"],
+    study: ["name","description","study_id","nr_of_likes","nr_of_downloads","run_task","uploader"],
     measure: ["proc_id","name"],
     user: ["user_id","first_name","last_name","company","bio","date","activity",
                   "nr_of_uploads","reach","impact", "country"]
@@ -207,6 +208,12 @@ export default class SearchPanel extends React.Component {
                   res["description"] = getProperty(res, 'bio') + " " +
                       getProperty(res, 'company') + " " +
                       getProperty(res, 'country');
+                });
+            } else if ( this.context.type === 'study' ){
+              data.results.forEach(
+                res => {
+                  res["name"] = getProperty(res, 'name');
+                  res["description"] = getProperty(res, 'description');
                 });
             }
             this.context.setResults(data.counts, data.results);
@@ -332,8 +339,8 @@ export default class SearchPanel extends React.Component {
                     <DetailTable entity_type={this.props.entity_type} table_select={this.tableSelect}/>)
                 : (this.context.id ?
                     <div>
-                      <iframe src={"https://"+String(window.location.hostname)+":5000/dashboard/"+
-                      String(this.context.type)+"/"+String(this.context.id)+"/.html"}
+                      <iframe src={"https://"+String(window.location.hostname)+"/dashboard/"+
+                      String(this.context.type)+"/"+String(this.context.id)}
                               height="1500px" width="98%" frameBorder="0"
                               id="dash_iframe" title={'dash_iframe_data_'+this.state.searchEntity}
                               allowFullScreen sandbox="allow-popups
