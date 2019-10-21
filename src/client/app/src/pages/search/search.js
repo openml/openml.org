@@ -45,6 +45,7 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 15,
   cursor: 'pointer',
+  maxWidth: 600
 });
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -118,7 +119,7 @@ class SearchElement extends React.Component {
                     </Tooltip>
                   </React.Fragment>
                   }
-                  {!isNaN(this.props.stats2[0]) &&
+                  {this.props.stats2 !== undefined && !isNaN(this.props.stats2[0]) &&
                   <Tooltip title="dimensions (rows x columns)" placement="top-start">
                      <Stats><ColoredIcon color={grey[400]} icon="table" fixedWidth /> {abbreviateNumber(this.props.stats2[0].value)} x {abbreviateNumber(this.props.stats2[1].value)}</Stats>
                   </Tooltip>
@@ -161,6 +162,9 @@ export class SearchResultsPanel extends React.Component {
     }
 
     getStats = (stats, result) => {
+      if(stats === undefined){
+        return undefined;
+      } else {
       return stats.map(
             stat => ({
                 "value": result[stat.param],
@@ -168,6 +172,7 @@ export class SearchResultsPanel extends React.Component {
                 "icon": stat.icon
             })
         );
+      }
     }
 
     render() {
@@ -186,7 +191,7 @@ export class SearchResultsPanel extends React.Component {
                   stats2={this.getStats(this.props.stats2,result)}
                   id={result[this.context.type+"_id"]}
                   onclick={() => this.props.selectEntity(result[this.context.type+"_id"])}
-                  key={result[(this.context.type === "task_type" ? "tt" : this.context.type)+"_id"]}
+                  key={result[(this.context.type === "measure" ? "name" : ((this.context.type === "task_type" ? "tt" : this.context.type)+"_id"))]}
                   type={this.props.type}
                   data_status={result.data_status}
                 ></SearchElement>
@@ -210,6 +215,7 @@ export class SearchResultsPanel extends React.Component {
                           resultType={this.props.type}
                           sortChange={this.props.sortChange}
                           filterChange={this.props.filterChange}
+                          selectEntity={this.props.selectEntity}
                       />
                       <Scrollbar style={{display:(this.context.displaySearch ? 'block' : 'none')}}>
                         {component}

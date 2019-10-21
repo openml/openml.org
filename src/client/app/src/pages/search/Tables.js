@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { MainContext } from "../../App.js";
 
 import {
   Paper as MuiPaper,
@@ -60,18 +61,6 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
-  {
-    id: "name",
-    numeric: false,
-    label: "Dataset name"
-  },
-  { id: "feat1", numeric: true, label: "Feature 1" },
-  { id: "feat2", numeric: true, label: "Feature 2" },
-  { id: "feat3", numeric: true, label: "Feature 3" },
-  { id: "feat4", numeric: true, label: "Feature 4" }
-];
-
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
@@ -79,6 +68,7 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const {
+      rows,
       order,
       orderBy,
     } = this.props;
@@ -86,7 +76,7 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          {rows.map(
+          {this.props.rows !== undefined && this.props.rows.map(
             row => (
               <TableCell
                 key={row.id}
@@ -128,11 +118,29 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired
 };
 
-export class DatasetTable extends React.Component {
+export class DetailTable extends React.Component {
+
+  static contextType = MainContext;
+  //const type = props.entity_type;
+
+  isNumber = (n) => {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+  }
+
+  buildColumns = (results) => {
+    if(results){
+      Object.entries(results).map( ([col,val]) =>
+        ({ id: col, numeric: this.isNumber(val), label: col})
+      );
+    }
+  }
+
   state = {
     order: "asc",
-    orderBy: "calories",
+    orderBy: this.props.entity_type+"_id",
     selected: [],
+    rows: (this.context.results ?
+      this.buildColumns(this.context.results[0]) : []),
     data: [
       createData("Dataset 1", 305, 3.7, 67, 4.3),
       createData("Dataset 2", 452, 25.0, 51, 4.9),
@@ -182,6 +190,9 @@ export class DatasetTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
+    console.log(this.context.results);
+    console.log(this.state.row);
+
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -192,6 +203,7 @@ export class DatasetTable extends React.Component {
             <Table aria-labelledby="tableTitle">
               <EnhancedTableHead
                 numSelected={selected.length}
+                rows={this.state.rows}
                 order={order}
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
