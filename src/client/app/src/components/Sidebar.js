@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { rgba } from "polished";
 import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import { blue, green, grey, indigo} from "@material-ui/core/colors";
@@ -12,7 +11,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { spacing } from "@material-ui/system";
 
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -146,8 +145,9 @@ const Category = styled(ListItem)`
   padding-top: ${props => props.theme.spacing(3)}px;
   padding-bottom: ${props => props.theme.spacing(3)}px;
   padding-left: ${props => props.theme.spacing(4)}px;
-  padding-right: ${props => props.theme.spacing(6)}px;
+  padding-right: ${props => props.theme.spacing(1)}px;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
+  border-left: ${props => (props.activecategory === 'true' ? '2px' : '0px')} solid ${props => props.currentcolor};
 
   svg {
     font-size: 20px;
@@ -179,19 +179,18 @@ const CategoryText = styled(ListItemText)`
 `;
 
 const CategoryIcon = styled(FontAwesomeIcon)`
-  color: ${props => rgba(props.theme.sidebar.color, 0.5)};
+  color: ${props => props.currentcolor};
+  width: 25px !important;
 `;
 
 const CountBadge = styled(Chip)`
-  margin-top: 5px;
   font-size: 11px;
   height: 20px;
-  position: absolute;
-  right: 12px;
-  top: 8px;
+  float: right;
   color: ${props => props.theme.sidebar.color};
   background-color: unset;
   border: 1px solid ${props => props.theme.sidebar.color};
+  margin-right: 10px;
 `;
 
 const SidebarSection = styled(Typography)`
@@ -249,10 +248,13 @@ function SidebarCategory({
   isOpen,
   isCollapsable,
   badge,
+  activecategory,
+  searchExpand,
+  currentcolor,
   ...rest
 }) {
   return (
-    <Category {...rest}>
+    <Category activecategory={activecategory} currentcolor={currentcolor} {...rest}>
       {icon}
       <CategoryText>{name}</CategoryText>
       {isCollapsable ? (
@@ -262,7 +264,8 @@ function SidebarCategory({
           <CategoryIcon icon="chevron-down" />
         )
       ) : null}
-      {badge ? <CountBadge label={badge} /> : ""}
+        {badge ? <CountBadge label={badge} /> : ""}
+        {searchExpand !== undefined ? <CategoryIcon icon="chevron-right" onClick={searchExpand} color={currentcolor}/> : ""}
     </Category>
   );
 }
@@ -333,19 +336,19 @@ class Sidebar extends React.Component {
           </Brand>
         </SimpleLink>
         <Scrollbar>
-        <ThemeContext.Consumer>
+        <MainContext.Consumer>
           {(context) => (
             <List disablePadding>
               <Items>
                 {routes.map((category, index) => (
                   <React.Fragment key={index}>
-                    {category.header && !context.state.miniDrawer ? (
+                    {category.header && !context.miniDrawer ? (
                       <SidebarSection variant="caption">
                         {category.header}
                       </SidebarSection>
                     ) : null}
                     {category.header && category.header !== 'Discover' &&
-                     context.state.miniDrawer ? (
+                     context.miniDrawer ? (
                     <hr />
                     ) : null}
                     {category.component ? (
@@ -353,12 +356,16 @@ class Sidebar extends React.Component {
                       <SidebarCategory
                         isCollapsable={false}
                         name={category.id}
-                        to={category.path}
+                        to={category.path+"?type="+category.entity_type}
                         activeClassName="active"
                         component={NavLink}
                         icon={category.icon}
                         exact
-                        badge={category.badge}
+                        badge={((category.entity_type === context.type) ? context.counts : 0)}
+                        activecategory={((category.entity_type === context.type) ? 'true' : 'false')}
+                        searchExpand={((category.entity_type === context.type
+                                        && context.searchCollapsed) ? () => context.collapseSearch(false) : undefined)}
+                        currentcolor={context.getColor()}
                       />
                       </React.Fragment>
                     ) : (
@@ -369,7 +376,11 @@ class Sidebar extends React.Component {
                         activeClassName="active"
                         component={SimpleLink}
                         icon={category.icon}
-                        badge={category.badge}
+                        badge={((category.entity_type === context.type) ? context.counts : 0)}
+                        activecategory={((category.entity_type === context.type) ? true : false)}
+                        searchExpand={((category.entity_type === context.type
+                                        && context.searchCollapsed) ? context.collapseSearch : undefined)}
+                        currentcolor={context.getColor()}
                       />
                     )}
                   </React.Fragment>
@@ -377,14 +388,14 @@ class Sidebar extends React.Component {
               </Items>
             </List>
           )}
-          </ThemeContext.Consumer>
+          </MainContext.Consumer>
         </Scrollbar>
         <SidebarFooter>
-          <ThemeContext.Consumer>
+          <MainContext.Consumer>
           {(context) => (
           <Grid container spacing={4}>
                 <Grid item>
-                  {context.state.miniDrawer
+                  {context.miniDrawer
                     ? <SpacedIcon icon="chevron-right" size="lg" onClick={() => context.miniDrawerToggle()} />
                     : <SpacedIcon icon="chevron-left" size="lg" onClick={() => context.miniDrawerToggle()} />
                   }
@@ -408,7 +419,7 @@ class Sidebar extends React.Component {
                 </Grid>
           </Grid>
           )}
-        </ThemeContext.Consumer>
+        </MainContext.Consumer>
         </SidebarFooter>
       </Drawer>
     );

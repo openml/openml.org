@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 //import Footer from "../components/Footer";
 
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
 
 import { spacing } from "@material-ui/system";
 import {
@@ -47,7 +47,7 @@ const Root = styled.div`
   display: flex;
   min-height: 100vh;
   background: ${props => props.bg === 'Gradient' ? 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)' : 'none'};
-  background-size: 400% 400%;
+  background-size: 300% 300%;
 `;
 
 const AppContent = styled.div`
@@ -62,7 +62,7 @@ const MainContent = styled(Paper)`
   flex: 1;
   background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
   box-shadow ${props => props.bg === 'Gradient' ? 'none' : props.theme.body.background};
-  padding: 0px;
+  padding: ${props => props.bg === 'Gradient' ? '10px' : '0'};
 
   @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     flex: none;
@@ -94,16 +94,16 @@ class Main extends React.Component {
     const { children, routes, width, background } = this.props;
 
     return (
-      <ThemeContext.Consumer>
+      <MainContext.Consumer>
         {(context) => (
-      <Root bg={background} bgrunning={context.state.animation}>
+      <Root bg={background} bgrunning={context.animation}>
         <CssBaseline />
         <GlobalStyle />
-          <Drawer drawerWidth={context.state.drawerWidth}>
+          <Drawer drawerWidth={context.drawerWidth}>
             <Hidden mdUp implementation="js">
               <Sidebar
                 routes={routes}
-                PaperProps={{ style: { width: context.state.drawerWidth }}}
+                PaperProps={{ style: { width: context.drawerWidth }}}
                 variant="temporary"
                 open={this.state.mobileOpen}
                 onClose={this.handleDrawerToggle}
@@ -112,7 +112,7 @@ class Main extends React.Component {
             <Hidden smDown implementation="css">
               <Sidebar
                 routes={routes}
-                PaperProps={{ style: { width: context.state.drawerWidth } }}
+                PaperProps={{ style: { width: context.drawerWidth } }}
               />
             </Hidden>
           </Drawer>
@@ -125,7 +125,7 @@ class Main extends React.Component {
           </AppContent>
         </Root>
           )}
-      </ThemeContext.Consumer>
+      </MainContext.Consumer>
     );
   }
 }

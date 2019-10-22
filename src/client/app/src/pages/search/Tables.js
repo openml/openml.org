@@ -1,12 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { MainContext } from "../../App.js";
 
 import {
-  Checkbox,
-  Grid,
-  IconButton,
-  Divider as MuiDivider,
   Paper as MuiPaper,
   Table,
   TableBody,
@@ -15,26 +12,21 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Toolbar,
-  Tooltip,
-  Typography
+  Tooltip
 } from "@material-ui/core";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { spacing } from "@material-ui/system";
 
-const Divider = styled(MuiDivider)(spacing);
-
 const Paper = styled(MuiPaper)(spacing);
 
-const Spacer = styled.div`
-  flex: 1 1 100%;
+const TablePaper = styled(Paper)`
+  height: calc(100vh - 115px);
+  background-color: #fff;
 `;
-
 const TableWrapper = styled.div`
   overflow-y: auto;
   max-width: calc(100vw - ${props => props.theme.spacing(12)}px);
+  cursor: pointer;
 `;
 
 let counter = 0;
@@ -69,19 +61,6 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Dataset name"
-  },
-  { id: "feat1", numeric: true, disablePadding: false, label: "Feature 1" },
-  { id: "feat2", numeric: true, disablePadding: false, label: "Feature 2" },
-  { id: "feat3", numeric: true, disablePadding: false, label: "Feature 3" },
-  { id: "feat4", numeric: true, disablePadding: false, label: "Feature 4" }
-];
-
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
@@ -89,30 +68,23 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const {
-      onSelectAllClick,
+      rows,
       order,
       orderBy,
-      numSelected,
-      rowCount
     } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
-          {rows.map(
+          {this.props.rows !== undefined && this.props.rows.map(
             row => (
               <TableCell
                 key={row.id}
                 align={row.numeric ? "right" : "left"}
-                padding={row.disablePadding ? "none" : "default"}
+                padding="none"
                 sortDirection={orderBy === row.id ? order : false}
+                style={{height:49, paddingLeft:(row.id === 'name' ? 10 : 0),
+                        paddingRight:(row.id === 'feat4' ? 10 : 0)}}
               >
                 <Tooltip
                   title="Sort"
@@ -146,47 +118,29 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired
 };
 
-let EnhancedTableToolbar = props => {
-  const { numSelected } = props;
+export class DetailTable extends React.Component {
 
-  return (
-    <Toolbar>
-      <div>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            Result table
-          </Typography>
-        )}
-      </div>
-      <Spacer />
-      <div>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <FontAwesomeIcon icon="trash" />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FontAwesomeIcon icon="filter" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
-  );
-};
+  static contextType = MainContext;
+  //const type = props.entity_type;
 
-class EnhancedTable extends React.Component {
+  isNumber = (n) => {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+  }
+
+  buildColumns = (results) => {
+    if(results){
+      Object.entries(results).map( ([col,val]) =>
+        ({ id: col, numeric: this.isNumber(val), label: col})
+      );
+    }
+  }
+
   state = {
     order: "asc",
-    orderBy: "calories",
+    orderBy: this.props.entity_type+"_id",
     selected: [],
+    rows: (this.context.results ?
+      this.buildColumns(this.context.results[0]) : []),
     data: [
       createData("Dataset 1", 305, 3.7, 67, 4.3),
       createData("Dataset 2", 452, 25.0, 51, 4.9),
@@ -225,27 +179,6 @@ class EnhancedTable extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    this.setState({ selected: newSelected });
-  };
-
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
@@ -257,17 +190,20 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
+    console.log(this.context.results);
+    console.log(this.state.row);
+
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-        <Paper>
-          <EnhancedTableToolbar numSelected={selected.length} />
+        <TablePaper>
           <TableWrapper>
             <Table aria-labelledby="tableTitle">
               <EnhancedTableHead
                 numSelected={selected.length}
+                rows={this.state.rows}
                 order={order}
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
@@ -282,17 +218,14 @@ class EnhancedTable extends React.Component {
                     return (
                       <TableRow
                         hover
-                        onClick={event => this.handleClick(event, n.id)}
+                        onClick={event => this.props.table_select(event, n.id)}
                         role="checkbox"
                         aria-checked={isSelected}
                         tabIndex={-1}
                         key={n.id}
                         selected={isSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isSelected} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell component="th" scope="row" padding="none" style={{paddingLeft:10}}>
                           {n.name}
                         </TableCell>
                         <TableCell align="right">{n.calories}</TableCell>
@@ -311,7 +244,7 @@ class EnhancedTable extends React.Component {
             </Table>
           </TableWrapper>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
             component="div"
             count={data.length}
             rowsPerPage={rowsPerPage}
@@ -325,27 +258,7 @@ class EnhancedTable extends React.Component {
             onChangePage={this.handleChangePage}
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
           />
-        </Paper>
+        </TablePaper>
     );
   }
 }
-
-function AdvancedTable() {
-  return (
-    <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Search Results
-      </Typography>
-
-      <Divider my={6} />
-
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <EnhancedTable />
-        </Grid>
-      </Grid>
-    </React.Fragment>
-  );
-}
-
-export default AdvancedTable;
