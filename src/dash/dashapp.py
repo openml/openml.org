@@ -19,5 +19,6 @@ def create_dash_app(flask_app):
     app.layout = html.Div([dcc.Location(id='url', refresh=False), html.Div(id='page-content')])
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
-    os.mkdir('cache')
+    os.system('sudo mkdir cache')
+    os.system('sudo chmod 777 cache')
     return app

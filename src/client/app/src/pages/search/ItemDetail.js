@@ -134,7 +134,6 @@ export class EntryDetails extends React.Component {
         if(this.state["type"] !== this.props.type || this.state["entity"] !== this.props.entity){
           this.setState({"type":this.props.type});
           this.setState({"entity":this.props.entity});
-          console.log(this.props.type,this.props.entry);
           getItem(this.props.type,this.props.entity)
               .then(
                   (data)=>{
@@ -168,7 +167,6 @@ export class EntryDetails extends React.Component {
         }
         else {
           if(this.props.type === "data" || this.props.type === "task" || this.props.type ==="flow" || this.props.type === "run"){
-            console.log(this.state.obj);
             var tags = this.state.obj.tags.map(
                 t => <Chip key={"tag_"+t.tag} label={""+t.tag} size="small" />
             );
