@@ -1,5 +1,5 @@
 import re
-from .layouts import get_layout_from_data, get_layout_from_task, get_layout_from_flow, get_layout_from_run, get_layout_from_study
+from .layouts import *
 from dash.dependencies import Input, Output
 import dash_html_components as html
 from .helpers import *
@@ -33,36 +33,38 @@ def register_callbacks(app):
             Cached df in json format for sharing between callbacks
         """
         df = pd.DataFrame()
-        if pathname is not None and '/dashboard/data' in pathname:
-            data_id = int(re.search('data/(\d+)', pathname).group(1))
-            start = time.time()
-            layout, df = get_layout_from_data(data_id)
+        if pathname is not None:
+            number_flag = any(c.isdigit() for c in pathname)
 
-            end = time.time()
-            print("time ", end-start)
-            return layout
+        if pathname is not None and '/dashboard/data' in pathname:
+            if number_flag:
+                data_id = int(re.search('data/(\d+)', pathname).group(1))
+                layout = get_layout_from_data(data_id)
+                return layout
+            else:
+                layout = get_dataset_overview()
+                return layout
         elif pathname is not None and 'dashboard/task' in pathname:
             task_id = int(re.search('task/(\d+)', pathname).group(1))
-            layout, taskdf = get_layout_from_task(task_id)
+            layout = get_layout_from_task(task_id)
 
             return layout
         elif pathname is not None and 'dashboard/flow' in pathname:
             flow_id = int(re.search('flow/(\d+)', pathname).group(1))
-            layout, flowdf = get_layout_from_flow(flow_id)
+            layout = get_layout_from_flow(flow_id)
 
             return layout
         elif pathname is not None and 'dashboard/run' in pathname:
             run_id = int(re.search('run/(\d+)', pathname).group(1))
-            layout, rundf = get_layout_from_run(run_id)
+            layout = get_layout_from_run(run_id)
 
             return layout
         elif pathname is not None and 'dashboard/study' in pathname:
             study_id = int(re.search('study/(\d+)', pathname).group(1))
-            layout, studydf = get_layout_from_study(study_id)
+            layout = get_layout_from_study(study_id)
             return layout
         else:
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
-
             return index_page
 
     register_data_callbacks(app)
