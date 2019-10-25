@@ -67,7 +67,6 @@ const dataRoutes = {
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: SearchPanel,
   entity_type: "data",
-  badge: "10",
 };
 
 const taskRoutes = {
@@ -95,11 +94,25 @@ const runRoutes = {
 };
 
 const studyRoutes = {
-  id: "Studies",
+  id: "Collections",
   path: "/search",
   icon: <PurpleMenuIcon icon="flask" fixedWidth />,
   component: SearchPanel,
   entity_type: "study",
+  children: [
+    {
+      path: "/search",
+      name: "Tasks",
+      component: SearchPanel,
+      subtype: "task",
+    },
+    {
+      path: "/search",
+      name: "Runs",
+      component: SearchPanel,
+      subtype: "run",
+    }
+  ]
 };
 
 const taskTypeRoutes = {
@@ -108,14 +121,6 @@ const taskTypeRoutes = {
   icon: <OrangeMenuIcon icon={['far', 'flag']} fixedWidth />,
   component: SearchPanel,
   entity_type: "task_type",
-};
-
-const measureRoutes = {
-  id: "Measures",
-  path: "/search",
-  icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
-  component: SearchPanel,
-  entity_type: "measure",
 };
 
 const peopleRoutes = {
@@ -138,6 +143,35 @@ const coverRoutes = {
   path: "/",
   component: Cover,
   background: 'Gradient',
+};
+
+const measureRoutes = {
+  id: "Measures",
+  path: "/search",
+  icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
+  component: SearchPanel,
+  entity_type: "measure",
+  subtype_filter: "measure_type",
+  children: [
+    {
+      path: "/search",
+      name: "Data qualities",
+      component: SearchPanel,
+      subtype: "data_quality",
+    },
+    {
+      path: "/search",
+      name: "Eval. Measures",
+      component: SearchPanel,
+      subtype: "evaluation_measure",
+    },
+    {
+      path: "/search",
+      name: "Eval. Procedures",
+      component: SearchPanel,
+      subtype: "estimation_procedure",
+    }
+  ]
 };
 
 const authRoutes = {
