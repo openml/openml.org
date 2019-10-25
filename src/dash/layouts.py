@@ -447,9 +447,12 @@ def get_dataset_overview():
     df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
     cols = ["Number of instances", "Number of features", "Attribute Type", "NumberOfClasses"]
+    title = ["Number of instances across datasets",
+             "Number of features across datasets",
+             "Attribute Type distribution"]
 
     df.dropna(inplace=True)
-    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(cols))
+    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
     i = 0
     for col in cols:
         i = i+1
