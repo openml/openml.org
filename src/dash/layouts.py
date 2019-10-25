@@ -465,16 +465,15 @@ def get_task_overview():
     df = tasks.list_tasks(output_format='dataframe')
     print(df.columns)
 
-    cols = ["task_type"]
-    print(df["ttid"].value_counts())
+    cols = ["task_type", "estimation_procedure"]
+    title = ["Task type", "Estimation procedure"]
 
-
-    fig = plotly.subplots.make_subplots(rows=2, cols=2, subplot_titles=tuple(cols))
+    fig = plotly.subplots.make_subplots(rows=2, cols=1, subplot_titles=tuple(title))
     i = 0
     for col in cols:
         i = i+1
         fig.add_trace(
-        go.Histogram(x=df[col], name=col), row=1, col=i)
+        go.Histogram(x=df[col]), row=i, col=1)
     fig.update_layout(height=1000)
 
     return html.Div(dcc.Graph(figure=fig))
@@ -482,7 +481,7 @@ def get_task_overview():
 
 def get_flow_overview():
     df = flows.list_flows(output_format='dataframe', size=10000)
-    flows.get_flow
+    print(df.columns)
     count = pd.DataFrame(df["name"].value_counts()).reset_index()
     count.columns = ["name", "count"]
     count = count[0:50]
