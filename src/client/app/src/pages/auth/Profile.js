@@ -64,10 +64,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              <BigAvatar
-                alt="Looking Good"
-                src="/bot.png"
-              />
+              <BigAvatar alt="Looking Good" src="/bot.png" />
               <input
                 accept="image/*"
                 style={{ display: "none" }}

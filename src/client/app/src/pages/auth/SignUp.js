@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { red } from "@material-ui/core/colors";
 
-
 import {
   FormControl,
   Input,
@@ -26,7 +25,7 @@ const Wrapper = styled(Paper)`
 `;
 
 const RedIcon = styled(FontAwesomeIcon)({
-    color: red[500],
+  color: red[500]
 });
 
 function SignUp() {
@@ -45,7 +44,9 @@ function SignUp() {
           <Input id="email" name="email" autoComplete="email" />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">Password (min 8 characters)</InputLabel>
+          <InputLabel htmlFor="password">
+            Password (min 8 characters)
+          </InputLabel>
           <Input
             name="password"
             type="password"
@@ -64,7 +65,17 @@ function SignUp() {
           Sign up for OpenML
         </Button>
       </form>
-      <p><RedIcon icon="exclamation-triangle" /> By joining, you agree to the <a target="_blank" rel="noopener noreferrer" href="https://docs.openml.org/terms/">Honor Code and Terms of Use</a>.</p>
+      <p>
+        <RedIcon icon="exclamation-triangle" /> By joining, you agree to the{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://docs.openml.org/terms/"
+        >
+          Honor Code and Terms of Use
+        </a>
+        .
+      </p>
     </Wrapper>
   );
 }
