@@ -19,21 +19,23 @@ import { spacing } from "@material-ui/system";
 
 const Paper = styled(MuiPaper)(spacing);
 
+const ShortCell = styled(TableCell)`
+  padding-left: 10px;
+  padding-right: 0px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const TablePaper = styled(Paper)`
-  height: calc(100vh - 115px);
-  background-color: #fff;
+  width: 100%;
 `;
 const TableWrapper = styled.div`
   overflow-y: auto;
   max-width: calc(100vw - ${props => props.theme.spacing(12)}px);
   cursor: pointer;
 `;
-
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-  counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
-}
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -61,48 +63,55 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
+function shortenHeader(s) {
+  s = s
+    .replace("qualities.", "")
+    .replace("NumberOf", "")
+    .replace("nr_of_", "");
+  s = s
+    .replace(".name", "")
+    .replace("run_task.", "")
+    .replace(/_/g, " ");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const {
-      rows,
-      order,
-      orderBy,
-    } = this.props;
-
+    const { rows, order, orderBy } = this.props;
     return (
       <TableHead>
         <TableRow>
-          {this.props.rows !== undefined && this.props.rows.map(
-            row => (
-              <TableCell
-                key={row.id}
-                align={row.numeric ? "right" : "left"}
-                padding="none"
-                sortDirection={orderBy === row.id ? order : false}
-                style={{height:49, paddingLeft:(row.id === 'name' ? 10 : 0),
-                        paddingRight:(row.id === 'feat4' ? 10 : 0)}}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={row.numeric ? "bottom-end" : "bottom-start"}
-                  enterDelay={300}
+          {rows !== undefined &&
+            rows.map(
+              r => (
+                <ShortCell
+                  key={r.id}
+                  align={r.numeric ? "left" : "left"}
+                  padding="none"
+                  sortDirection={orderBy === r.id ? order : false}
+                  style={{ height: 49, paddingLeft: 10, paddingRight: 0 }}
                 >
-                  <TableSortLabel
-                    active={orderBy === row.id}
-                    direction={order}
-                    onClick={this.createSortHandler(row.id)}
+                  <Tooltip
+                    title="Sort"
+                    placement={r.numeric ? "bottom-end" : "bottom-start"}
+                    enterDelay={300}
                   >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            ),
-            this
-          )}
+                    <TableSortLabel
+                      active={orderBy === r.id}
+                      direction={order}
+                      onClick={this.createSortHandler(r.id)}
+                    >
+                      {shortenHeader(r.label)}
+                    </TableSortLabel>
+                  </Tooltip>
+                </ShortCell>
+              ),
+              this
+            )}
         </TableRow>
       </TableHead>
     );
@@ -119,45 +128,55 @@ EnhancedTableHead.propTypes = {
 };
 
 export class DetailTable extends React.Component {
-
   static contextType = MainContext;
   //const type = props.entity_type;
 
-  isNumber = (n) => {
+  isNumber = n => {
     return !isNaN(parseFloat(n)) && !isNaN(n - 0);
-  }
+  };
 
-  buildColumns = (results) => {
-    if(results){
-      Object.entries(results).map( ([col,val]) =>
-        ({ id: col, numeric: this.isNumber(val), label: col})
-      );
+  skipColumns = ([k, v]) => {
+    if (["description", "id", "comp_name"].includes(k)) {
+      return false;
+    } else {
+      return true;
     }
-  }
+  };
+
+  buildColumns = row => {
+    if (row) {
+      return Object.entries(row)
+        .filter(this.skipColumns)
+        .map(([k, v]) => {
+          if (k !== "description") {
+            return {
+              id: k,
+              numeric: this.isNumber(v),
+              disablePadding: true,
+              label: k
+            };
+          } else {
+            return undefined;
+          }
+        });
+    }
+  };
+
+  buildRows = rows => {
+    if (rows) {
+      return rows.map((row, index) => {
+        row.id = index;
+        return row;
+      });
+    }
+  };
 
   state = {
     order: "asc",
-    orderBy: this.props.entity_type+"_id",
+    orderBy: this.props.entity_type + "_id",
     selected: [],
-    rows: (this.context.results ?
-      this.buildColumns(this.context.results[0]) : []),
-    data: [
-      createData("Dataset 1", 305, 3.7, 67, 4.3),
-      createData("Dataset 2", 452, 25.0, 51, 4.9),
-      createData("Dataset 3", 262, 16.0, 24, 6.0),
-      createData("Dataset 4", 159, 6.0, 24, 4.0),
-      createData("Dataset 5", 356, 16.0, 49, 3.9),
-      createData("Dataset 6", 408, 3.2, 87, 6.5),
-      createData("Dataset 7", 237, 9.0, 37, 4.3),
-      createData("Dataset 8", 375, 0.0, 94, 0.0),
-      createData("Dataset 9", 518, 26.0, 65, 7.0),
-      createData("Dataset 10", 392, 0.2, 98, 0.0),
-      createData("Dataset 11", 318, 0, 81, 2.0),
-      createData("Dataset 12", 360, 19.0, 9, 37.0),
-      createData("Dataset 13", 437, 18.0, 63, 4.0)
-    ],
     page: 0,
-    rowsPerPage: 10
+    rowsPerPage: 100
   };
 
   handleRequestSort = (event, property) => {
@@ -190,75 +209,90 @@ export class DetailTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    console.log(this.context.results);
-    console.log(this.state.row);
+    let rows = [];
+    let data = [];
+    if (this.context.results.length > 0) {
+      rows = this.buildColumns(this.context.results[0]);
+      data = this.buildRows(this.context.results);
+      console.log("Building table");
+    } else {
+      rows = [];
+      data = [];
+    }
 
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+      rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
-        <TablePaper>
-          <TableWrapper>
-            <Table aria-labelledby="tableTitle">
-              <EnhancedTableHead
-                numSelected={selected.length}
-                rows={this.state.rows}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={this.handleSelectAllClick}
-                onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
-              />
-              <TableBody>
-                {stableSort(data, getSorting(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(n => {
-                    const isSelected = this.isSelected(n.id);
-                    return (
-                      <TableRow
-                        hover
-                        onClick={event => this.props.table_select(event, n.id)}
-                        role="checkbox"
-                        aria-checked={isSelected}
-                        tabIndex={-1}
-                        key={n.id}
-                        selected={isSelected}
-                      >
-                        <TableCell component="th" scope="row" padding="none" style={{paddingLeft:10}}>
-                          {n.name}
-                        </TableCell>
-                        <TableCell align="right">{n.calories}</TableCell>
-                        <TableCell align="right">{n.fat}</TableCell>
-                        <TableCell align="right">{n.carbs}</TableCell>
-                        <TableCell align="right">{n.protein}</TableCell>
-                      </TableRow>
+      <TablePaper>
+        <TableWrapper>
+          <Table aria-labelledby="tableTitle">
+            <EnhancedTableHead
+              numSelected={selected.length}
+              rows={rows}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={this.handleSelectAllClick}
+              onRequestSort={this.handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(data, getSorting(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(n => {
+                  const isSelected = this.isSelected(n.id);
+                  var cells = [];
+                  rows.forEach(row => {
+                    cells.push(
+                      <ShortCell align="left" key={row.id}>
+                        {n[row.id]}
+                      </ShortCell>
                     );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 49 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableWrapper>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              "aria-label": "Previous Page"
-            }}
-            nextIconButtonProps={{
-              "aria-label": "Next Page"
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          />
-        </TablePaper>
+                  });
+                  return (
+                    <TableRow
+                      hover
+                      onClick={event =>
+                        this.props.table_select(
+                          event,
+                          data[n.id][this.context.type + "_id"]
+                        )
+                      }
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={n.id}
+                      selected={isSelected}
+                    >
+                      {cells}
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 49 * emptyRows }}>
+                  <ShortCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableWrapper>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
+          component="div"
+          count={this.context.counts}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          backIconButtonProps={{
+            "aria-label": "Previous Page"
+          }}
+          nextIconButtonProps={{
+            "aria-label": "Next Page"
+          }}
+          onChangePage={this.handleChangePage}
+          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+        />
+      </TablePaper>
     );
   }
 }

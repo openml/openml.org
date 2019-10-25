@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled, { withTheme } from "styled-components";
 import { darken } from "polished";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
 
 import {
   Grid,
@@ -189,11 +190,6 @@ const Header = ({ onDrawerToggle, bg }) => (
               <Input
                 placeholder="Search datasets…"
                 bg={context.opaqueSearch ? '' : bg}
-                value={context.query ? context.query : ''}
-                onChange={event => {
-                    event.preventDefault();
-                    context.setQuery(event.target.value);
-                  }}
               />
             </Search>
           </Grid>
@@ -206,7 +202,9 @@ const Header = ({ onDrawerToggle, bg }) => (
     </FlexAppBar>
       )}
   </MainContext.Consumer>
+  <Loader />
   </React.Fragment>
+
 );
 
 export default withTheme(Header);
