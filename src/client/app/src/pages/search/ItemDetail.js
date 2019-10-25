@@ -2,6 +2,7 @@ import React from "react";
 import { getItem } from "./api.js";
 //items
 import { DatasetItem } from "./Dataset.js";
+import { TaskTypeItem } from "./TaskType.js";
 import { TaskItem } from "./Task.js";
 import { FlowItem } from "./Flow.js";
 import { RunItem } from "./Run.js";
@@ -237,6 +238,8 @@ export class EntryDetails extends React.Component {
         //   }
         case "user":
           return <UserItem object={this.state.obj}></UserItem>;
+        case "task_type":
+          return <TaskTypeItem object={this.state.obj}></TaskTypeItem>;
         default:
           return (
             <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>
