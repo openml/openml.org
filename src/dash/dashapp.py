@@ -16,7 +16,8 @@ def create_dash_app(flask_app):
     app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
     #app.enable_dev_tools()
     app.config.suppress_callback_exceptions = True
-    app.layout = html.Div([dcc.Location(id='url', refresh=False), html.Div(id='page-content')])
+    app.layout = html.Div([dcc.Location(id='url', refresh=False),
+                           dcc.Loading(html.Div(id='page-content'))])
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
     os.system('sudo mkdir cache')
