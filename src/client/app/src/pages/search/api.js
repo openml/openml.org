@@ -1,4 +1,4 @@
-function errorCheck(response) {
+export function errorCheck(response) {
   if (!response.ok) {
     console.error(
       "Request failed: [" + response.status + "] " + response.statusText

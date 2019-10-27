@@ -45,7 +45,6 @@ class App extends React.Component {
     displaySearch: true, // hide search on small screens
     searchCollapsed: false, // hide search entirely
     query: undefined,
-    qjson: undefined,
     counts: 0, //counts of hits
     type: undefined, //the entity type
     id: undefined, //the entity ID
@@ -55,7 +54,7 @@ class App extends React.Component {
     error: null, //search error message
     sort: null, // current sort
     order: "desc", // current sort order
-    filters: [], // current filters
+    filters: {}, // current filters
     fields: ["data_id", "name"], // current fields
     getColor: () => {
       return this.getColor();
@@ -100,23 +99,42 @@ class App extends React.Component {
       let update = {
         fields: fields === undefined ? this.state.fields : fields,
         id: undefined,
-        counts: "id" in qp ? this.state.counts : 0
+        counts: "id" in qp ? this.state.counts : 0,
+        filters: this.state.type === qp.type ? this.state.filters : []
       };
-      let filters = [];
-      // Set all passed key-values
+      // process query parameters
       Object.entries(qp).forEach(([key, value]) => {
-        if (key.startsWith("qualities")) {
-          let vals = value.split("_");
-          filters.push({
-            name: key,
-            type: vals[0],
-            value: vals[1]
-          });
-        } else {
+        // Sorting and ID filters
+        if (["sort", "type", "id", "order"].includes(key)) {
           update[key] = value;
-        }
-        if (this.state[key] !== value && key !== "id") {
-          qchanged = true;
+          if (this.state[key] !== value && key !== "id") {
+            qchanged = true;
+          }
+          // Process FILTERS
+          // Filters have shape {key: {value: v, type: t}}
+          // e.g. {number_of_instances: {value: 1000, type: ">"}}
+        } else {
+          let type = "=";
+          if (value.split("_") === 2) {
+            let vals = value.split("_");
+            type = vals[0];
+            value = vals[1];
+          }
+          if (key in this.state.filters) {
+            // Update filter
+            if (
+              this.state.filters[key].type !== type ||
+              this.state.filters[key].value !== value
+            ) {
+              update.filters[key].type = type;
+              update.filters[key].value = value;
+              qchanged = true;
+            }
+          } else {
+            // Add filter
+            update.filters[key] = { value: value, type: type };
+            qchanged = true;
+          }
         }
       });
       // search visibility
@@ -127,26 +145,20 @@ class App extends React.Component {
           update["displaySearch"] = true;
         }
       }
-      update.filters = filters;
-      if (
-        filters.length > 0 &&
-        JSON.stringify(this.state.filters) !== JSON.stringify(filters)
-      )
-        qchanged = true;
+      // Unset ID
       if (this.state.id !== undefined && qp["id"] === undefined)
         qchanged = true;
+      // If anything changed, set the new state
       if (qchanged) {
         update.updateType = "query";
         update.results = [];
-        update.qjson = JSON.stringify(qp);
         console.log("SetState: qchanged");
         this.setState(update);
       } else if (qp["id"] !== undefined && this.state.id !== qp["id"]) {
         console.log("SetState: id changed");
         this.setState({
           id: qp["id"],
-          updateType: "id",
-          qjson: JSON.stringify(qp)
+          updateType: "id"
         });
       } else {
         console.log("SetState: nothing to do");
