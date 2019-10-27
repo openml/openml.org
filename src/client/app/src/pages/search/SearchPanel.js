@@ -72,6 +72,13 @@ export default class SearchPanel extends React.Component {
       }
       this.updateQuery("sort", qstring.sort);
     }
+    if (qstring.type === "measure" && qstring.measure_type === undefined) {
+      qstring.measure_type = "data_quality";
+      this.updateQuery("measure_type", "data_quality");
+    } else if (qstring.type === "study" && qstring.study_type === undefined) {
+      qstring.study_type = "task";
+      this.updateQuery("study_type", "task");
+    }
     return qstring;
   };
 
@@ -160,7 +167,17 @@ export default class SearchPanel extends React.Component {
       "runs_included",
       "date"
     ],
-    measure: ["proc_id", "name", "date"],
+    measure: [
+      "proc_id",
+      "quality_id",
+      "eval_id",
+      "name",
+      "date",
+      "min",
+      "max",
+      "unit",
+      "higherIsBetter"
+    ],
     user: [
       "user_id",
       "first_name",
@@ -196,10 +213,10 @@ export default class SearchPanel extends React.Component {
   // check if update requires a query reload
   componentDidUpdate() {
     if (this.context.updateType === "query") {
-      //console.log("SearchPanel Update! Reload Search");
+      console.log("SearchPanel Update! Reload Search");
       this.reload();
     } else {
-      //console.log("SearchPanel Update! Update Search");
+      console.log("SearchPanel Update! Update Search");
       this.updateSearch();
     }
   }
@@ -214,36 +231,36 @@ export default class SearchPanel extends React.Component {
 
   // translate single search filter to ElasticSearch filters
   toFilterQuery = filters => {
-    filters.forEach(filter => {
-      if (filter.type === "=") {
+    for (var key in filters) {
+      if (filters[key].type === "=") {
         return {
-          term: { [filter.name]: filter.value }
+          term: { [key]: filters[key].value }
         };
-      } else if (filter.type === "gte" || filter.type === "lte") {
+      } else if (filters[key].type === "gte" || filters[key].type === "lte") {
         return {
           range: {
-            [filter.name]: {
-              [filter.type]: filter.value
+            [key]: {
+              [filters[key].type]: filters[key].value
             }
           }
         };
-      } else if (filter.type === "between") {
+      } else if (filters[key].type === "between") {
         return {
           range: {
-            [filter.name]: {
-              gte: filter.value,
-              lte: filter.value2
+            [key]: {
+              gte: filters[key].value,
+              lte: filters[key].value2
             }
           }
         };
-      } else if (filter.type === "in") {
+      } else if (filters[key].type === "in") {
         return {
-          prefix: { [filter.name]: filter.value }
+          prefix: { [key]: filters[key].value }
         };
       } else {
         return null;
       }
-    });
+    }
   };
 
   // call search engine for initial listing

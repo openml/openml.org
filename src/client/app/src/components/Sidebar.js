@@ -13,6 +13,8 @@ import { spacing } from "@material-ui/system";
 
 import { MainContext } from "../App.js";
 
+import { errorCheck } from "../pages/search/api.js";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -194,7 +196,7 @@ const CountBadge = styled(Chip)`
   float: right;
   color: ${props => props.theme.sidebar.color};
   background-color: unset;
-  border: 1px solid ${props => props.theme.sidebar.color};
+  border: none;
   margin-right: 10px;
 `;
 
@@ -299,10 +301,11 @@ function SidebarLink({ name, to, badge, icon }) {
 }
 
 class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  intervalID = 0;
+
+  state = {
+    counts: {}
+  };
 
   toggle = index => {
     // Collapse all elements
@@ -333,7 +336,59 @@ class Sidebar extends React.Component {
         [index]: isActive || isOpen || isHome
       }));
     });
+
+    this.countUpdate();
+    this.intervalID = setInterval(() => {
+      this.countUpdate();
+    }, 10000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  // Abbreviate counts
+  abbreviateNumber = value => {
+    let newValue = value;
+    if (value > 1000) {
+      const suffixes = ["", "k", "M", "B", "T"];
+      let suffixNum = 0;
+      while (newValue >= 1000) {
+        newValue /= 1000;
+        suffixNum++;
+      }
+      newValue = newValue.toPrecision(3);
+      newValue += suffixes[suffixNum];
+    }
+    return newValue;
+  };
+
+  // Fetch the document counts for all OpenML entity types
+  countUpdate = () => {
+    const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+    fetch(ELASTICSEARCH_SERVER + "_all/_search", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({
+        size: 0,
+        aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
+      })
+    })
+      .then(errorCheck)
+      .then(request => request.json())
+      .then(response => {
+        let res = response.aggregations.count_by_type.buckets;
+        let counts = {};
+        res.forEach(r => {
+          counts[r.key] = this.abbreviateNumber(r.doc_count);
+        });
+        this.setState({ counts: counts });
+      });
+  };
 
   render() {
     const { classes, staticContext, ...other } = this.props;
@@ -397,6 +452,12 @@ class Sidebar extends React.Component {
                                   : "false"
                               }
                               currentcolor={context.getColor()}
+                              badge={
+                                context.type === undefined &&
+                                this.state.counts[category.entity_type]
+                                  ? this.state.counts[category.entity_type]
+                                  : 0
+                              }
                             />
                             <Collapse
                               in={
@@ -422,6 +483,12 @@ class Sidebar extends React.Component {
                                   }
                                   exact
                                   icon={route.icon}
+                                  activecategory={
+                                    category.entity_type === context.type
+                                      ? "true"
+                                      : "false"
+                                  }
+                                  currentcolor={context.getColor()}
                                   component={NavLink}
                                   searchExpand={
                                     category.entity_type === context.type &&
@@ -431,7 +498,17 @@ class Sidebar extends React.Component {
                                   }
                                   badge={
                                     category.entity_type === context.type
-                                      ? context.counts
+                                      ? (context.filters.measure_type &&
+                                          route.subtype ===
+                                            context.filters.measure_type
+                                              .value) ||
+                                        (context.filters.study_type &&
+                                          route.subtype ===
+                                            context.filters.study_type.value)
+                                        ? context.counts
+                                        : 0
+                                      : this.state.counts[category.entity_type]
+                                      ? this.state.counts[category.entity_type]
                                       : 0
                                   }
                                 />
@@ -453,6 +530,11 @@ class Sidebar extends React.Component {
                               badge={
                                 category.entity_type === context.type
                                   ? context.counts
+                                    ? this.abbreviateNumber(context.counts)
+                                    : this.state.counts[category.entity_type]
+                                  : context.type === undefined &&
+                                    this.state.counts[category.entity_type]
+                                  ? this.state.counts[category.entity_type]
                                   : 0
                               }
                               activecategory={
