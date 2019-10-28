@@ -483,45 +483,24 @@ def get_task_overview():
 
 
 def get_flow_overview():
-    df = flows.list_flows(output_format='dataframe', size=10000)
-    print("fetched flows")
-    length = len(df)  # length of the array we want to split
-    N=100
-    # array_split - allows indices_or_sections to not equally divide the array
-    # array_split -length % N sub-arrays of size length//N + 1 and the rest of size length//N.
-    flow_chunks = np.array_split(ary=df['id'],
-                                  indices_or_sections=((length - 1) // N) + 1)
-    runs_df = pd.DataFrame()
-    for ids in flow_chunks:
-        result = pd.DataFrame(runs.list_runs(flow=list(ids), output_format='dataframe'))
-        print("fetched one chunk")
-        # concat resulting setup chunks into single datframe
-        runs_df = pd.concat([runs_df, result], ignore_index=True)
 
-    print(runs_df.shape)
-    print(runs_df.head())
+    # df_runs = runs.list_runs(output_format='dataframe', size=10000)
+    # print(df_runs.columns)
+    # count = pd.DataFrame(df_runs["flow_id"].value_counts()).reset_index()
+    # count.columns = ["id", "count"]
+    # print(count.shape)
+    # print(count.head())
 
-
-    # Most used flows
-
-
-
-    # Flows overview
+    # Recently popular Flows overview
+    df = flows.list_flows(output_format='dataframe')
     count = pd.DataFrame(df["name"].value_counts()).reset_index()
     count.columns = ["name", "count"]
-    count = count[0:25]
-    print(count)
-    cols = ["name"]
-    title =["Flows overview"]
-    df_overview = df[df["name"].isin(count["name"])]
-    fig = plotly.subplots.make_subplots(rows=1, cols=1,
-                                        subplot_titles=tuple(title))
-    i = 0
-    for col in cols:
-        i = i+1
-        fig.add_trace(
-        go.Histogram(x=df_overview[col], name=col, orientation="h"), row=1, col=i)
-    fig.update_layout(height=1000, margin=dict(l=100)),
+    count = count[0:1000]
+    fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
+                                 orientation="h")])
+    fig.update_layout(height=1000,
+                      margin = dict(l=500),
+                      title="Overview of some commonly used flows on OpenML"),
 
     return html.Div(dcc.Graph(figure=fig))
 
