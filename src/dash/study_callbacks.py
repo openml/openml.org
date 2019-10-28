@@ -14,9 +14,6 @@ import openml
 
 
 def register_study_callbacks(app):
-
-    print('calling register')
-
     @app.callback(
         Output('scatterplot-study', 'children'),
         [Input('url', 'pathname'),
@@ -24,7 +21,6 @@ def register_study_callbacks(app):
          ]
     )
     def scatterplot_study(pathname, value):
-        print('calling or not')
         print(value)
         study_id = int(re.search('study/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
