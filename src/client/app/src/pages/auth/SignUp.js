@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { red } from "@material-ui/core/colors";
 
-
 import {
   FormControl,
   Input,
@@ -14,6 +13,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
+import axios from "axios";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -34,19 +34,26 @@ function SignUp() {
     event.preventDefault();
     console.log('The link was clicked.');
     const data = new FormData(event.target);
-    fetch('http://127.0.0.1:5000/signup',
+    axios.post('http://127.0.0.1:5000/signup',
     {
-      headers:{
-        'Accept': 'application/json',
-        'Content-type': 'application/json'
-      },
-      method: 'POST',
-      body:JSON.stringify({
         name:event.target.name.value,
         email:event.target.email.value,
         password:event.target.password.value,
-            })
-          });
+
+    });
+    // fetch('http://127.0.0.1:5000/signup',
+    // {
+    //   headers:{
+    //     'Accept': 'application/json',
+    //     'Content-type': 'application/json'
+    //   },
+    //   method: 'POST',
+    //   body:JSON.stringify({
+    //     name:event.target.name.value,
+    //     email:event.target.email.value,
+    //     password:event.target.password.value,
+    //         })
+    //       });
       }
   return (
     <Wrapper>

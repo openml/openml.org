@@ -44,22 +44,29 @@ def create_app(config_object = Config):
 
         return 'request'
 
-    @app.route('/login', methods=['POST', 'GET'])
+    @app.route('/login', methods=['POST'])
     def login():
         if current_user.is_authenticated:
             print('alreadyauth')
             return 'already auth'
-        if request.method == 'POST':
-            print(request.get_json())
-            jobj = request.get_json()
-            user = User.query.filter_by(email=jobj['email']).first()
-            if (user == None):
-                print("error")
-                return "Error"
-            else:
-                login_user(user)
-                print('loggedin')
-                return 'loggedin'
+        # if request.method == 'POST':
+        print(request.get_json())
+        jobj = request.get_json()
+        user = User.query.filter_by(email=jobj['email']).first()
+        if (user == None):
+            print("error")
+            flag = 1
+            return "Error"
+        else:
+            login_user(user)
+            print('loggedin')
+            flag = 0
+            return 'loggedin'
+        # if request.method == 'GET':
+        #     if flag==0:
+        #         return 'loggedin'
+
+
 
     @app.route('/logout')
     def logout():

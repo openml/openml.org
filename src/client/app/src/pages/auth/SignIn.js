@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import {
   Checkbox,
   FormControl,
@@ -23,26 +24,30 @@ const Wrapper = styled(Paper)`
   }
 `;
 
-
+//
 function SignIn() {
   function sendtoflask(event) {
     event.preventDefault();
     console.log('The link was clicked.');
     const data = new FormData(event.target);
-    fetch('http://127.0.0.1:5000/login',
-    {
-      headers:{
-        'Accept': 'application/json',
-        'Content-type': 'application/json'
-      },
-      method: 'POST',
-      body:JSON.stringify({
-        email:event.target.email.value,
-        password:event.target.password.value,
-            })
-          });
-      }
-    return(
+    axios.post('http://127.0.0.1:5000/login',
+        {
+          email: event.target.email.value,
+          password: event.target.password.value,
+
+        });
+    axios.get('http://127.0.0.1:5000/login')
+      .then(function (response) {
+        console.log(response);
+        console.log('clicked');
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+  return(
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Welcome back, You!
