@@ -464,7 +464,7 @@ export default class SearchPanel extends React.Component {
                 <iframe
                   src={
                     "https://" +
-                    String(window.location.hostname) +
+                    String(window.location.host) +
                     "/dashboard/" +
                     String(this.context.type) +
                     "/" +
@@ -481,7 +481,23 @@ export default class SearchPanel extends React.Component {
                 ></iframe>
               </div>
             ) : (
-              <div>No dataset selected. Render Dash overview of datasets.</div>
+              <div><iframe
+                  src={
+                    "https://" +
+                    String(window.location.host) +
+                    "/dashboard/" +
+                    String(this.context.type)
+
+                  }
+                  height="1500px"
+                  width="98%"
+                  frameBorder="0"
+                  id="dash_iframe_overview"
+                  title={"dash_iframe_over_"}
+                  allowFullScreen
+                  sandbox="allow-popups
+                            allow-scripts allow-same-origin allow-top-navigation"
+                ></iframe>.</div>
             )}
           </Scrollbar>
         </Grid>

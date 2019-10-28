@@ -45,20 +45,32 @@ def register_callbacks(app):
                 layout = get_dataset_overview()
                 return layout
         elif pathname is not None and 'dashboard/task' in pathname:
-            task_id = int(re.search('task/(\d+)', pathname).group(1))
-            layout = get_layout_from_task(task_id)
+            if number_flag:
+                task_id = int(re.search('task/(\d+)', pathname).group(1))
+                layout = get_layout_from_task(task_id)
+                return layout
+            else:
+                layout = get_task_overview()
+                return layout
 
-            return layout
         elif pathname is not None and 'dashboard/flow' in pathname:
-            flow_id = int(re.search('flow/(\d+)', pathname).group(1))
-            layout = get_layout_from_flow(flow_id)
+            if number_flag:
+                flow_id = int(re.search('flow/(\d+)', pathname).group(1))
+                layout = get_layout_from_flow(flow_id)
+                return layout
+            else:
+                layout = get_flow_overview()
+                return layout
 
-            return layout
         elif pathname is not None and 'dashboard/run' in pathname:
-            run_id = int(re.search('run/(\d+)', pathname).group(1))
-            layout = get_layout_from_run(run_id)
+            if number_flag:
+                run_id = int(re.search('run/(\d+)', pathname).group(1))
+                layout = get_layout_from_run(run_id)
+                return layout
+            else:
+                layout = get_run_overview()
+                return layout
 
-            return layout
         elif pathname is not None and 'dashboard/study' in pathname:
             study_id = int(re.search('study/(\d+)', pathname).group(1))
             layout = get_layout_from_study(study_id)
