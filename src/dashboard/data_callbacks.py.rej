@@ -1,4 +1,0 @@
-diff a/src/dash/data_callbacks.py b/src/dash/data_callbacks.py	(rejected hunks)
-@@ -0,2 +0 @@
-             return []
--
