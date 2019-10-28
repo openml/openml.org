@@ -1,7 +1,7 @@
 from flask import Flask
 #from flask_sqlalchemy import SQLAlchemy
 import os
-from src.dash.dashapp import create_dash_app
+from src.dashboard.dashapp import create_dash_app
 from flask import send_from_directory
 
 app = Flask(__name__, static_url_path='', static_folder='src/client/app/build',
