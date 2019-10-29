@@ -49,7 +49,6 @@ def create_app(config_object = Config):
         if current_user.is_authenticated:
             print('alreadyauth')
             return 'already auth'
-        # if request.method == 'POST':
         print(request.get_json())
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
@@ -62,9 +61,7 @@ def create_app(config_object = Config):
             print('loggedin')
             flag = 0
             return 'loggedin'
-        # if request.method == 'GET':
-        #     if flag==0:
-        #         return 'loggedin'
+
 
 
 
