@@ -35,9 +35,8 @@ function SignIn() {
           email: event.target.email.value,
           password: event.target.password.value,
 
-        });
-    axios.get('http://127.0.0.1:5000/login')
-      .then(function (response) {
+        })
+        .then(function (response) {
         console.log(response);
         console.log('clicked');
 
