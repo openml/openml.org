@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 //import Footer from "../components/Footer";
 
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
 
 import { spacing } from "@material-ui/system";
 import {
@@ -38,31 +38,37 @@ var gradientBG = keyframes`
 const animation = props =>
   css`
     ${gradientBG} 15s ease infinite;
-  `
+  `;
 
 const Root = styled.div`
-  animation: ${props => props.bg === 'Gradient' ? animation : 'none'};
-  animation-play-state: ${props => props.bgrunning ? 'running' : 'paused'};
+  animation: ${props => (props.bg === "Gradient" ? animation : "none")};
+  animation-play-state: ${props => (props.bgrunning ? "running" : "paused")};
   -webkit-animation-timing-function: linear;
   display: flex;
   min-height: 100vh;
-  background: ${props => props.bg === 'Gradient' ? 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)' : 'none'};
-  background-size: 400% 400%;
+  background: ${props =>
+    props.bg === "Gradient"
+      ? "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)"
+      : "none"};
+  background-size: 300% 300%;
 `;
 
 const AppContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 75%;
 `;
 
 const Paper = styled(MuiPaper)(spacing);
 
 const MainContent = styled(Paper)`
   flex: 1;
-  background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
-  box-shadow ${props => props.bg === 'Gradient' ? 'none' : props.theme.body.background};
-  padding: 0px;
+  background: ${props =>
+    props.bg === "Gradient" ? "transparent" : props.theme.body.background};
+  box-shadow ${props =>
+    props.bg === "Gradient" ? "none" : props.theme.body.background};
+  padding: ${props => (props.bg === "Gradient" ? "10px" : "0")};
 
   @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     flex: none;
@@ -94,38 +100,41 @@ class Main extends React.Component {
     const { children, routes, width, background } = this.props;
 
     return (
-      <ThemeContext.Consumer>
-        {(context) => (
-      <Root bg={background} bgrunning={context.state.animation}>
-        <CssBaseline />
-        <GlobalStyle />
-          <Drawer drawerWidth={context.state.drawerWidth}>
-            <Hidden mdUp implementation="js">
-              <Sidebar
-                routes={routes}
-                PaperProps={{ style: { width: context.state.drawerWidth }}}
-                variant="temporary"
-                open={this.state.mobileOpen}
-                onClose={this.handleDrawerToggle}
+      <MainContext.Consumer>
+        {context => (
+          <Root bg={background} bgrunning={context.animation}>
+            <CssBaseline />
+            <GlobalStyle />
+            <Drawer drawerWidth={context.drawerWidth}>
+              <Hidden mdUp implementation="js">
+                <Sidebar
+                  routes={routes}
+                  PaperProps={{ style: { width: context.drawerWidth } }}
+                  variant="temporary"
+                  open={this.state.mobileOpen}
+                  onClose={this.handleDrawerToggle}
+                />
+              </Hidden>
+              <Hidden smDown implementation="css">
+                <Sidebar
+                  routes={routes}
+                  PaperProps={{ style: { width: context.drawerWidth } }}
+                />
+              </Hidden>
+            </Drawer>
+            <AppContent>
+              <Header
+                onDrawerToggle={this.handleDrawerToggle}
+                bg={background}
               />
-            </Hidden>
-            <Hidden smDown implementation="css">
-              <Sidebar
-                routes={routes}
-                PaperProps={{ style: { width: context.state.drawerWidth } }}
-              />
-            </Hidden>
-          </Drawer>
-          <AppContent>
-            <Header onDrawerToggle={this.handleDrawerToggle}  bg={background}/>
-            <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
-              {children}
-            </MainContent>
-            {/*<Footer />*/}
-          </AppContent>
-        </Root>
-          )}
-      </ThemeContext.Consumer>
+              <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
+                {children}
+              </MainContent>
+              {/*<Footer />*/}
+            </AppContent>
+          </Root>
+        )}
+      </MainContext.Consumer>
     );
   }
 }

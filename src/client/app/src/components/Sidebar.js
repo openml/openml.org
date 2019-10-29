@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { rgba } from "polished";
-import Icon from '@material-ui/core/Icon';
-import Tooltip from '@material-ui/core/Tooltip';
-import { blue, green, grey, indigo} from "@material-ui/core/colors";
+import Icon from "@material-ui/core/Icon";
+import Tooltip from "@material-ui/core/Tooltip";
+import { blue, green, grey, indigo } from "@material-ui/core/colors";
 
 import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 import { darken } from "polished";
@@ -12,7 +11,9 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { spacing } from "@material-ui/system";
 
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
+
+import { errorCheck } from "../pages/search/api.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -20,6 +21,7 @@ import {
   Box as MuiBox,
   Grid,
   Chip,
+  Collapse,
   Link as MuiLink,
   ListItem,
   ListItemText,
@@ -37,11 +39,14 @@ const NavLink = React.forwardRef((props, ref) => (
 const SimpleLink = styled(MuiLink)`
   text-decoration: none;
 
-  &:focus, &:hover, &:visited, &:link, &:active {
-      text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
   }
 `;
-
 
 const Box = styled(MuiBox)(spacing);
 
@@ -69,7 +74,7 @@ const Scrollbar = styled(PerfectScrollbar)`
   .ps__rail-x {
     display: none;
     opacity: 0;
-    transition: background-color .2s linear, opacity .2s linear;
+    transition: background-color 0.2s linear, opacity 0.2s linear;
     height: 15px;
     bottom: 0px;
     position: absolute;
@@ -78,7 +83,7 @@ const Scrollbar = styled(PerfectScrollbar)`
   .ps__rail-y {
     display: none;
     opacity: 0;
-    transition: background-color .2s linear, opacity .2s linear;
+    transition: background-color 0.2s linear, opacity 0.2s linear;
     width: 15px;
     right: 0;
     position: absolute;
@@ -102,7 +107,7 @@ const Scrollbar = styled(PerfectScrollbar)`
   .ps__thumb-x {
     background-color: #aaa;
     border-radius: 6px;
-    transition: background-color .2s linear, height .2s ease-in-out;
+    transition: background-color 0.2s linear, height 0.2s ease-in-out;
     height: 6px;
     bottom: 2px;
     position: absolute;
@@ -111,7 +116,7 @@ const Scrollbar = styled(PerfectScrollbar)`
   .ps__thumb-y {
     background-color: #aaa;
     border-radius: 6px;
-    transition: background-color .2s linear, width .2s ease-in-out;
+    transition: background-color 0.2s linear, width 0.2s ease-in-out;
     width: 6px;
     right: 2px;
     position: absolute;
@@ -146,8 +151,10 @@ const Category = styled(ListItem)`
   padding-top: ${props => props.theme.spacing(3)}px;
   padding-bottom: ${props => props.theme.spacing(3)}px;
   padding-left: ${props => props.theme.spacing(4)}px;
-  padding-right: ${props => props.theme.spacing(6)}px;
+  padding-right: ${props => props.theme.spacing(1)}px;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
+  border-left: ${props => (props.activecategory === "true" ? "2px" : "0px")}
+    solid ${props => props.currentcolor};
 
   svg {
     font-size: 20px;
@@ -179,19 +186,18 @@ const CategoryText = styled(ListItemText)`
 `;
 
 const CategoryIcon = styled(FontAwesomeIcon)`
-  color: ${props => rgba(props.theme.sidebar.color, 0.5)};
+  color: ${props => props.currentcolor};
+  width: 25px !important;
 `;
 
 const CountBadge = styled(Chip)`
-  margin-top: 5px;
   font-size: 11px;
   height: 20px;
-  position: absolute;
-  right: 12px;
-  top: 8px;
+  float: right;
   color: ${props => props.theme.sidebar.color};
   background-color: unset;
-  border: 1px solid ${props => props.theme.sidebar.color};
+  border: none;
+  margin-right: 10px;
 `;
 
 const SidebarSection = styled(Typography)`
@@ -213,33 +219,33 @@ const SidebarFooter = styled.div`
 `;
 
 const LightIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: grey[200],
-    marginLeft: 10,
+  cursor: "pointer",
+  color: grey[200],
+  marginLeft: 10
 });
 const DarkIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: grey[800],
-    marginLeft: 10,
+  cursor: "pointer",
+  color: grey[800],
+  marginLeft: 10
 });
 const GreenIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: green[400],
-    marginLeft: 10,
+  cursor: "pointer",
+  color: green[400],
+  marginLeft: 10
 });
 const BlueIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: blue[400],
-    marginLeft: 10,
+  cursor: "pointer",
+  color: blue[400],
+  marginLeft: 10
 });
 const IndigoIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: indigo[400],
-    marginLeft: 10,
+  cursor: "pointer",
+  color: indigo[400],
+  marginLeft: 10
 });
 const SpacedIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    marginLeft: 10,
+  cursor: "pointer",
+  marginLeft: 10
 });
 
 function SidebarCategory({
@@ -249,10 +255,17 @@ function SidebarCategory({
   isOpen,
   isCollapsable,
   badge,
+  activecategory,
+  searchExpand,
+  currentcolor,
   ...rest
 }) {
   return (
-    <Category {...rest}>
+    <Category
+      activecategory={activecategory}
+      currentcolor={currentcolor}
+      {...rest}
+    >
       {icon}
       <CategoryText>{name}</CategoryText>
       {isCollapsable ? (
@@ -263,17 +276,22 @@ function SidebarCategory({
         )
       ) : null}
       {badge ? <CountBadge label={badge} /> : ""}
+      {searchExpand !== undefined ? (
+        <CategoryIcon
+          icon="chevron-right"
+          onClick={searchExpand}
+          color={currentcolor}
+        />
+      ) : (
+        ""
+      )}
     </Category>
   );
 }
 
 function SidebarLink({ name, to, badge, icon }) {
   return (
-    <SimpleLink
-      href={to}
-      target="_blank"
-      rel="noreferrer"
-    >
+    <SimpleLink href={to} target="_blank" rel="noreferrer">
       <Category>
         {icon}
         <CategoryText>{name}</CategoryText>
@@ -283,10 +301,11 @@ function SidebarLink({ name, to, badge, icon }) {
 }
 
 class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  intervalID = 0;
+
+  state = {
+    counts: {}
+  };
 
   toggle = index => {
     // Collapse all elements
@@ -317,7 +336,59 @@ class Sidebar extends React.Component {
         [index]: isActive || isOpen || isHome
       }));
     });
+
+    this.countUpdate();
+    this.intervalID = setInterval(() => {
+      this.countUpdate();
+    }, 10000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  // Abbreviate counts
+  abbreviateNumber = value => {
+    let newValue = value;
+    if (value > 1000) {
+      const suffixes = ["", "k", "M", "B", "T"];
+      let suffixNum = 0;
+      while (newValue >= 1000) {
+        newValue /= 1000;
+        suffixNum++;
+      }
+      newValue = newValue.toPrecision(3);
+      newValue += suffixes[suffixNum];
+    }
+    return newValue;
+  };
+
+  // Fetch the document counts for all OpenML entity types
+  countUpdate = () => {
+    const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+    fetch(ELASTICSEARCH_SERVER + "_all/_search", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({
+        size: 0,
+        aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
+      })
+    })
+      .then(errorCheck)
+      .then(request => request.json())
+      .then(response => {
+        let res = response.aggregations.count_by_type.buckets;
+        let counts = {};
+        res.forEach(r => {
+          counts[r.key] = this.abbreviateNumber(r.doc_count);
+        });
+        this.setState({ counts: counts });
+      });
+  };
 
   render() {
     const { classes, staticContext, ...other } = this.props;
@@ -326,89 +397,262 @@ class Sidebar extends React.Component {
       <Drawer variant="permanent" {...other}>
         <SimpleLink href="/">
           <Brand>
-            <Icon style={{ fontSize: 39, overflow: 'visible', textAlign: 'center', marginRight: 5 }}>
-              <img alt='' height='100%' src="openml.svg" style={{ paddingBottom: 5 }}/>
+            <Icon
+              style={{
+                fontSize: 39,
+                overflow: "visible",
+                textAlign: "center",
+                marginRight: 5
+              }}
+            >
+              <img
+                alt=""
+                height="100%"
+                src="openml.svg"
+                style={{ paddingBottom: 5 }}
+              />
             </Icon>
             <Box ml={1}>OpenML</Box>
           </Brand>
         </SimpleLink>
         <Scrollbar>
-        <ThemeContext.Consumer>
-          {(context) => (
-            <List disablePadding>
-              <Items>
-                {routes.map((category, index) => (
-                  <React.Fragment key={index}>
-                    {category.header && !context.state.miniDrawer ? (
-                      <SidebarSection variant="caption">
-                        {category.header}
-                      </SidebarSection>
-                    ) : null}
-                    {category.header && category.header !== 'Discover' &&
-                     context.state.miniDrawer ? (
-                    <hr />
-                    ) : null}
-                    {category.component ? (
-                      <React.Fragment key={index}>
-                      <SidebarCategory
-                        isCollapsable={false}
-                        name={category.id}
-                        to={category.path}
-                        activeClassName="active"
-                        component={NavLink}
-                        icon={category.icon}
-                        exact
-                        badge={category.badge}
-                      />
-                      </React.Fragment>
-                    ) : (
-                      <SidebarLink
-                        isCollapsable={false}
-                        name={category.id}
-                        to={category.path}
-                        activeClassName="active"
-                        component={SimpleLink}
-                        icon={category.icon}
-                        badge={category.badge}
-                      />
-                    )}
-                  </React.Fragment>
-                ))}
-              </Items>
-            </List>
-          )}
-          </ThemeContext.Consumer>
+          <MainContext.Consumer>
+            {context => (
+              <List disablePadding>
+                <Items>
+                  {routes.map((category, index) => (
+                    <React.Fragment key={index}>
+                      {category.header && !context.miniDrawer ? (
+                        <SidebarSection variant="caption">
+                          {category.header}
+                        </SidebarSection>
+                      ) : null}
+                      {category.header &&
+                      category.header !== "Discover" &&
+                      context.miniDrawer ? (
+                        <hr />
+                      ) : null}
+
+                      {category.component ? (
+                        category.children ? (
+                          <React.Fragment key={index}>
+                            <SidebarCategory
+                              isCollapsable={false}
+                              name={category.id}
+                              component={NavLink}
+                              to={
+                                category.path + "?type=" + category.entity_type
+                              }
+                              exact
+                              activeClassName="active"
+                              icon={category.icon}
+                              activecategory={
+                                category.entity_type === context.type
+                                  ? "true"
+                                  : "false"
+                              }
+                              currentcolor={context.getColor()}
+                              badge={
+                                context.type === undefined &&
+                                this.state.counts[category.entity_type]
+                                  ? this.state.counts[category.entity_type]
+                                  : 0
+                              }
+                            />
+                            <Collapse
+                              in={
+                                context.type === category.entity_type &&
+                                !context.miniDrawer
+                              }
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              {category.children.map((route, index) => (
+                                <SidebarCategory
+                                  key={index}
+                                  name={route.name}
+                                  activeClassName="active"
+                                  to={
+                                    category.path +
+                                    "?type=" +
+                                    category.entity_type +
+                                    "&" +
+                                    category.subtype_filter +
+                                    "=" +
+                                    route.subtype
+                                  }
+                                  exact
+                                  icon={route.icon}
+                                  activecategory={
+                                    category.entity_type === context.type
+                                      ? "true"
+                                      : "false"
+                                  }
+                                  currentcolor={context.getColor()}
+                                  component={NavLink}
+                                  searchExpand={
+                                    category.entity_type === context.type &&
+                                    context.searchCollapsed
+                                      ? () => context.collapseSearch(false)
+                                      : undefined
+                                  }
+                                  badge={
+                                    category.entity_type === context.type
+                                      ? (context.filters.measure_type &&
+                                          route.subtype ===
+                                            context.filters.measure_type
+                                              .value) ||
+                                        (context.filters.study_type &&
+                                          route.subtype ===
+                                            context.filters.study_type.value)
+                                        ? context.counts
+                                        : 0
+                                      : this.state.counts[category.entity_type]
+                                      ? this.state.counts[category.entity_type]
+                                      : 0
+                                  }
+                                />
+                              ))}
+                            </Collapse>
+                          </React.Fragment>
+                        ) : (
+                          <React.Fragment key={index}>
+                            <SidebarCategory
+                              isCollapsable={false}
+                              name={category.id}
+                              to={
+                                category.path + "?type=" + category.entity_type
+                              }
+                              activeClassName="active"
+                              component={NavLink}
+                              icon={category.icon}
+                              exact
+                              badge={
+                                category.entity_type === context.type
+                                  ? context.counts
+                                    ? this.abbreviateNumber(context.counts)
+                                    : this.state.counts[category.entity_type]
+                                  : context.type === undefined &&
+                                    this.state.counts[category.entity_type]
+                                  ? this.state.counts[category.entity_type]
+                                  : 0
+                              }
+                              activecategory={
+                                category.entity_type === context.type
+                                  ? "true"
+                                  : "false"
+                              }
+                              searchExpand={
+                                category.entity_type === context.type &&
+                                context.searchCollapsed
+                                  ? () => context.collapseSearch(false)
+                                  : undefined
+                              }
+                              currentcolor={context.getColor()}
+                            />
+                          </React.Fragment>
+                        )
+                      ) : (
+                        <SidebarLink
+                          isCollapsable={false}
+                          name={category.id}
+                          to={category.path}
+                          activeClassName="active"
+                          component={SimpleLink}
+                          icon={category.icon}
+                          badge={
+                            category.entity_type === context.type
+                              ? context.counts
+                              : 0
+                          }
+                          activecategory={
+                            category.entity_type === context.type ? true : false
+                          }
+                          searchExpand={
+                            category.entity_type === context.type &&
+                            context.searchCollapsed
+                              ? context.collapseSearch
+                              : undefined
+                          }
+                          currentcolor={context.getColor()}
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </Items>
+              </List>
+            )}
+          </MainContext.Consumer>
         </Scrollbar>
         <SidebarFooter>
-          <ThemeContext.Consumer>
-          {(context) => (
-          <Grid container spacing={4}>
+          <MainContext.Consumer>
+            {context => (
+              <Grid container spacing={4}>
                 <Grid item>
-                  {context.state.miniDrawer
-                    ? <SpacedIcon icon="chevron-right" size="lg" onClick={() => context.miniDrawerToggle()} />
-                    : <SpacedIcon icon="chevron-left" size="lg" onClick={() => context.miniDrawerToggle()} />
-                  }
+                  {context.miniDrawer ? (
+                    <SpacedIcon
+                      icon="chevron-right"
+                      size="lg"
+                      onClick={() => context.miniDrawerToggle()}
+                    />
+                  ) : (
+                    <SpacedIcon
+                      icon="chevron-left"
+                      size="lg"
+                      onClick={() => context.miniDrawerToggle()}
+                    />
+                  )}
                 </Grid>
                 <Grid item>
                   <Tooltip title="Switch to Light theme" placement="top-start">
-                    <div style={{display:'inline-block'}}><LightIcon icon="splotch" size="lg" onClick={() => context.setTheme(1)} /></div>
+                    <div style={{ display: "inline-block" }}>
+                      <LightIcon
+                        icon="splotch"
+                        size="lg"
+                        onClick={() => context.setTheme(1)}
+                      />
+                    </div>
                   </Tooltip>
                   <Tooltip title="Switch to Dark theme" placement="top-start">
-                    <div style={{display:'inline-block'}}><DarkIcon icon="splotch" size="lg" onClick={() => context.setTheme(0)} /></div>
+                    <div style={{ display: "inline-block" }}>
+                      <DarkIcon
+                        icon="splotch"
+                        size="lg"
+                        onClick={() => context.setTheme(0)}
+                      />
+                    </div>
                   </Tooltip>
                   <Tooltip title="Switch to Green theme" placement="top-start">
-                    <div style={{display:'inline-block'}}><GreenIcon icon="splotch" size="lg" onClick={() => context.setTheme(3)} /></div>
+                    <div style={{ display: "inline-block" }}>
+                      <GreenIcon
+                        icon="splotch"
+                        size="lg"
+                        onClick={() => context.setTheme(3)}
+                      />
+                    </div>
                   </Tooltip>
                   <Tooltip title="Switch to Blue theme" placement="top-start">
-                    <div style={{display:'inline-block'}}><BlueIcon icon="splotch" size="lg" onClick={() => context.setTheme(2)} /></div>
+                    <div style={{ display: "inline-block" }}>
+                      <BlueIcon
+                        icon="splotch"
+                        size="lg"
+                        onClick={() => context.setTheme(2)}
+                      />
+                    </div>
                   </Tooltip>
                   <Tooltip title="Switch to Indigo theme" placement="top-start">
-                    <div style={{display:'inline-block'}}><IndigoIcon icon="splotch" size="lg" onClick={() => context.setTheme(4)} /></div>
+                    <div style={{ display: "inline-block" }}>
+                      <IndigoIcon
+                        icon="splotch"
+                        size="lg"
+                        onClick={() => context.setTheme(4)}
+                      />
+                    </div>
                   </Tooltip>
                 </Grid>
-          </Grid>
-          )}
-        </ThemeContext.Consumer>
+              </Grid>
+            )}
+          </MainContext.Consumer>
         </SidebarFooter>
       </Drawer>
     );

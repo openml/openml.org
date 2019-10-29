@@ -3,7 +3,7 @@ import dash_table as dt
 import dash_html_components as html
 from .helpers import *
 import os
-from openml import runs, flows, evaluations, setups, study, datasets
+from openml import runs, flows, evaluations, setups, study, datasets, tasks
 import plotly
 import plotly.graph_objs as go
 
@@ -434,21 +434,90 @@ def get_layout_from_study(study_id):
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
-    print(df.columns)
-    bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
-    df["instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
-    df["features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
-    df["Attribute Type"] = "mixed"
 
+    bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
+    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
+    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
+    for col in ["Number of instances", "Number of features"]:
+        df[col] = df[col].str.replace(',', ' -')
+        df[col] = df[col].str.replace('(', "")
+        df[col] = df[col].str.replace(']', "")
+
+    df["Attribute Type"] = "mixed"
     df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+    cols = ["Number of instances", "Number of features", "Attribute Type", "NumberOfClasses"]
+    title = ["Number of instances across datasets",
+             "Number of features across datasets",
+             "Attribute Type distribution"]
 
     df.dropna(inplace=True)
-    fig = plotly.subplots.make_subplots(rows=2, cols=2)
-    fig.add_trace(
-        go.Histogram(x=df["instances"], name="Number of instances"), row=1, col=1)
-    fig.add_trace(
-        go.Histogram(x=df["features"], name="Number of features"), row=1, col=2)
-    fig.add_trace(
-        go.Histogram(x=df["features"], name="Number of features"), row=2, col=1)
+    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
+    i = 0
+    for col in cols:
+        i = i+1
+        fig.add_trace(
+        go.Histogram(x=df[col], name=col), row=i, col=1)
+    fig.update_layout(height=1000, width=1000,
+                      title="Dataset overview")
+
     return html.Div(dcc.Graph(figure=fig))
+
+
+def get_task_overview():
+    df = tasks.list_tasks(output_format='dataframe')
+    print(df.columns)
+
+    cols = ["task_type", "estimation_procedure"]
+    title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
+
+    fig = plotly.subplots.make_subplots(rows=2, cols=1, subplot_titles=tuple(title))
+    i = 0
+    for col in cols:
+        i = i+1
+        fig.add_trace(
+        go.Histogram(x=df[col]), row=i, col=1)
+    fig.update_layout(height=1000)
+
+    return html.Div(dcc.Graph(figure=fig))
+
+
+def get_flow_overview():
+
+    # df_runs = runs.list_runs(output_format='dataframe', size=10000)
+    # print(df_runs.columns)
+    # count = pd.DataFrame(df_runs["flow_id"].value_counts()).reset_index()
+    # count.columns = ["id", "count"]
+    # print(count.shape)
+    # print(count.head())
+
+    # Recently popular Flows overview
+    df = flows.list_flows(output_format='dataframe')
+    count = pd.DataFrame(df["name"].value_counts()).reset_index()
+    count.columns = ["name", "count"]
+    count = count[0:1000]
+    fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
+                                 orientation="h")])
+    fig.update_layout(height=1000,
+                      margin = dict(l=500),
+                      title="Overview of some commonly used flows on OpenML"),
+
+    return html.Div(dcc.Graph(figure=fig))
+
+
+def get_run_overview():
+    df = runs.list_runs(output_format='dataframe', size=10000)
+    print(df.columns)
+
+    # cols = ["Number of instances", "Number of features", "Attribute Type"]
+    #
+    # df.dropna(inplace=True)
+    # fig = plotly.subplots.make_subplots(rows=1, cols=1, subplot_titles=tuple(cols))
+    # i = 0
+    # for col in cols:
+    #     i = i+1
+    #     fig.add_trace(
+    #     go.Histogram(x=df[col], name=col), row=1, col=i)
+    #fig.update_layout(height=1000)
+
+    return "run"

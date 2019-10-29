@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 
-import { CircularProgress } from "@material-ui/core";
+import { LinearProgress } from "@material-ui/core";
+import { MainContext } from "../App.js";
 
 const Root = styled.div`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  min-height: 100%;
+  margin-top: -4px;
+  z-index: 5000;
 `;
 
 function Loader() {
+  const context = useContext(MainContext);
+
   return (
-    <Root>
-      <CircularProgress m={2} color="secondary" />
+    <Root
+      style={
+        context.updateType === "query"
+          ? { display: "block" }
+          : { display: "none" }
+      }
+    >
+      <LinearProgress m={2} color="secondary" />
     </Root>
   );
 }

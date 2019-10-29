@@ -10,14 +10,14 @@ const childRoutes = (Layout, routes) =>
   routes.map(({ children, path, background, entity_type, searchcolor, component: Component }, index) =>
     children ? (
       // Route item with children
-      children.map(({ path, background, entity_type, searchcolor, component: Component }, index) => (
+      children.map(({ path, background, entity_type, searchcolor, subtype, component: Component }, index) => (
         <Route
           key={index}
           path={path}
           exact
           render={props => (
             <Layout>
-              <Component entity_type={entity_type} searchcolor={searchcolor} {...props} />
+              <Component type={entity_type} subtype={subtype} searchcolor={searchcolor} {...props} />
             </Layout>
           )}
         />
@@ -30,7 +30,7 @@ const childRoutes = (Layout, routes) =>
         exact
         render={props => (
           <Layout background={background}>
-            <Component entity_type={entity_type} searchcolor={searchcolor} {...props} />
+            <Component type={entity_type} searchcolor={searchcolor} {...props} />
           </Layout>
         )}
       />
