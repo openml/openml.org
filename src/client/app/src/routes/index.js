@@ -4,8 +4,15 @@ import async from "../components/Async";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { blue, yellow, orange, red, green, grey, purple} from "@material-ui/core/colors";
-
+import {
+  blue,
+  yellow,
+  orange,
+  red,
+  green,
+  grey,
+  purple
+} from "@material-ui/core/colors";
 
 // Cover components
 const Cover = async(() => import("../pages/cover/Cover"));
@@ -28,138 +35,151 @@ const Foundation = async(() => import("../pages/docs/Foundation"));
 const SearchPanel = async(() => import("../pages/search/SearchPanel"));
 
 const GreenMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: green[400],
+  cursor: "pointer",
+  color: green[400]
 });
 const YellowMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: yellow[700],
+  cursor: "pointer",
+  color: yellow[700]
 });
 const LightBlueMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: blue[300],
+  cursor: "pointer",
+  color: blue[300]
 });
 const BlueMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: blue[800],
+  cursor: "pointer",
+  color: blue[800]
 });
 const RedMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: red[400],
+  cursor: "pointer",
+  color: red[400]
 });
 const PurpleMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: purple[600],
+  cursor: "pointer",
+  color: purple[600]
 });
 const OrangeMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: orange[400],
+  cursor: "pointer",
+  color: orange[400]
 });
 const GreyMenuIcon = styled(FontAwesomeIcon)({
-    cursor: 'pointer',
-    color: grey[400],
+  cursor: "pointer",
+  color: grey[400]
 });
 
 const dataRoutes = {
   id: "Data sets",
-  path: "/data",
+  path: "/search",
   header: "Discover",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: SearchPanel,
-  entity_type: "data",
-  searchcolor: green[500],
-  badge: "10",
-  children: [
-    {
-      path: "/data",
-      name: "Data list",
-      component: SearchPanel,
-      entity_type: "data",
-      searchcolor: green[500],    },
-    {
-      path: "/data/:id",
-      name: "Data detail",
-      component: SearchPanel,
-      entity_type: "data",
-      searchcolor: green[500],    },
-  ]
+  entity_type: "data"
 };
 
 const taskRoutes = {
   id: "Tasks",
-  path: "/task",
-  icon: <YellowMenuIcon icon={['fas', 'flag']} fixedWidth />,
+  path: "/search",
+  icon: <YellowMenuIcon icon={["fas", "flag"]} fixedWidth />,
   component: SearchPanel,
-  entity_type: "task",
-  searchcolor: orange[400],
+  entity_type: "task"
 };
 
 const flowRoutes = {
   id: "Flows",
-  path: "/flow",
+  path: "/search",
   icon: <BlueMenuIcon icon="cog" fixedWidth />,
   component: SearchPanel,
-  entity_type: "flow",
-  searchcolor: blue[800],
+  entity_type: "flow"
 };
 
 const runRoutes = {
   id: "Runs",
-  path: "/run",
+  path: "/search",
   icon: <RedMenuIcon icon="atom" fixedWidth />,
   component: SearchPanel,
-  entity_type: "run",
-  searchcolor: red[400],
+  entity_type: "run"
 };
 
 const studyRoutes = {
-  id: "Studies",
-  path: "/study",
+  id: "Collections",
+  path: "/search",
   icon: <PurpleMenuIcon icon="flask" fixedWidth />,
   component: SearchPanel,
   entity_type: "study",
-  searchcolor: purple[600],
+  subtype_filter: "study_type",
+  children: [
+    {
+      path: "/search",
+      name: "Tasks",
+      component: SearchPanel,
+      subtype: "task"
+    },
+    {
+      path: "/search",
+      name: "Runs",
+      component: SearchPanel,
+      subtype: "run"
+    }
+  ]
 };
 
 const taskTypeRoutes = {
   id: "Task Types",
-  path: "/tasktype",
-  icon: <OrangeMenuIcon icon={['far', 'flag']} fixedWidth />,
+  path: "/search",
+  icon: <OrangeMenuIcon icon={["far", "flag"]} fixedWidth />,
   component: SearchPanel,
-  entity_type: "task",
-  searchcolor: orange[400],
-};
-
-const measureRoutes = {
-  id: "Measures",
-  path: "/measure",
-  icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
-  component: SearchPanel,
-  entity_type: "measure",
-  searchcolor: grey[500],
+  entity_type: "task_type"
 };
 
 const peopleRoutes = {
   id: "People",
-  path: "/people",
+  path: "/search",
   icon: <LightBlueMenuIcon icon="users" fixedWidth />,
   component: SearchPanel,
-  entity_type: "user",
-  searchcolor: blue[300],
+  entity_type: "user"
 };
 
 const profileRoutes = {
   id: "Profile",
   path: "/auth/profile",
   icon: <GreenMenuIcon icon="user" fixedWidth />,
-  component: Profile,
+  component: Profile
 };
 
 const coverRoutes = {
   id: "Cover",
   path: "/",
   component: Cover,
-  background: 'Gradient',
+  background: "Gradient"
+};
+
+const measureRoutes = {
+  id: "Measures",
+  path: "/search",
+  icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
+  component: SearchPanel,
+  entity_type: "measure",
+  subtype_filter: "measure_type",
+  children: [
+    {
+      path: "/search",
+      name: "Data qualities",
+      component: SearchPanel,
+      subtype: "data_quality"
+    },
+    {
+      path: "/search",
+      name: "Eval. Measures",
+      component: SearchPanel,
+      subtype: "evaluation_measure"
+    },
+    {
+      path: "/search",
+      name: "Eval. Procedures",
+      component: SearchPanel,
+      subtype: "estimation_procedure"
+    }
+  ]
 };
 
 const authRoutes = {
@@ -199,37 +219,36 @@ const documentationRoutes = {
   path: "https://docs.openml.org",
   header: "Learn more",
   icon: <GreenMenuIcon icon="book-open" fixedWidth />,
-  component: null,
+  component: null
 };
 
 const contributeRoutes = {
   id: "Get involved",
   path: "/contribute",
   icon: <YellowMenuIcon icon="hand-holding-heart" fixedWidth />,
-  component: GetInvolved,
+  component: GetInvolved
 };
 
 const foundationRoutes = {
   id: "OpenML Foundation",
   path: "/foundation",
   icon: <BlueMenuIcon icon="hands-helping" fixedWidth />,
-  component: Foundation,
+  component: Foundation
 };
 
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
   icon: <RedMenuIcon icon="heart" fixedWidth />,
-  component: Terms,
+  component: Terms
 };
 
 const teamRoutes = {
   id: "Our team",
   path: "/team",
   icon: <PurpleMenuIcon icon="user-friends" fixedWidth />,
-  component: About,
+  component: About
 };
-
 
 export const mainRoutes = [
   coverRoutes,
@@ -246,7 +265,7 @@ export const mainRoutes = [
   contributeRoutes,
   foundationRoutes,
   termsRoutes,
-  teamRoutes,
+  teamRoutes
 ];
 
 export const clearRoutes = [authRoutes];
@@ -264,5 +283,5 @@ export default [
   contributeRoutes,
   foundationRoutes,
   termsRoutes,
-  teamRoutes,
+  teamRoutes
 ];

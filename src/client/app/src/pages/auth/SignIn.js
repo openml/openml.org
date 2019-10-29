@@ -83,12 +83,7 @@ function SignIn() {
         >
           Forgot password
         </Button>
-        <Button
-          component={Link}
-          to="/auth/sign-up"
-          fullWidth
-          color="primary"
-        >
+        <Button component={Link} to="/auth/sign-up" fullWidth color="primary">
           No account? Join OpenML
         </Button>
       </form>

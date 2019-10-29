@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled, { withTheme } from "styled-components";
 import { darken } from "polished";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
 
 import {
   Grid,
@@ -15,7 +16,7 @@ import {
 } from "@material-ui/core";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ThemeContext } from "../App.js";
+import { MainContext } from "../App.js";
 
 const AppBar = styled(MuiAppBar)`
   background: ${props => props.theme.header.background};
@@ -164,9 +165,9 @@ const FlexAppBar = styled(AppBar)`
 
 const Header = ({ onDrawerToggle, bg }) => (
   <React.Fragment>
-    <ThemeContext.Consumer>
+    <MainContext.Consumer>
       {(context) => (
-    <FlexAppBar position="sticky" elevation={0} bg={context.state.opaqueSearch ? '' : bg}
+    <FlexAppBar position="sticky" elevation={0} bg={context.opaqueSearch ? '' : bg}
                 onClick={() => context.setOpaqueSearch(true)}>
       <Toolbar>
         <Grid container alignItems="center">
@@ -177,28 +178,33 @@ const Header = ({ onDrawerToggle, bg }) => (
                 aria-label="Open drawer"
                 onClick={onDrawerToggle}
               >
-                <WhiteIcon icon="bars" bg={context.state.opaqueSearch ? '' : bg}/>
+                <WhiteIcon icon="bars" bg={context.opaqueSearch ? '' : bg}/>
               </IconButton>
             </Grid>
           </Hidden>
           <Grid item xs={8}>
-            <Search bg={context.state.opaqueSearch ? '' : bg}>
+            <Search bg={context.opaqueSearch ? '' : bg}>
               <SearchIconWrapper>
-                <WhiteIcon icon="search" bg={context.state.opaqueSearch ? '' : bg}/>
+                <WhiteIcon icon="search" bg={context.opaqueSearch ? '' : bg}/>
               </SearchIconWrapper>
-              <Input placeholder="Search datasets…"  bg={context.state.opaqueSearch ? '' : bg}/>
+              <Input
+                placeholder="Search datasets…"
+                bg={context.opaqueSearch ? '' : bg}
+              />
             </Search>
           </Grid>
           <Grid item xs />
           <Grid item>
-            <UserMenu bg={context.state.opaqueSearch ? '' : bg}/>
+            <UserMenu bg={context.opaqueSearch ? '' : bg}/>
           </Grid>
         </Grid>
       </Toolbar>
     </FlexAppBar>
       )}
-  </ThemeContext.Consumer>
+  </MainContext.Consumer>
+  <Loader />
   </React.Fragment>
+
 );
 
 export default withTheme(Header);

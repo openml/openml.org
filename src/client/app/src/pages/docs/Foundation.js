@@ -18,9 +18,10 @@ const Divider = styled(MuiDivider)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
 
-const MainPaper= styled(Paper)`
+const MainPaper = styled(Paper)`
   flex: 1;
-  background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
+  background: ${props =>
+    props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
 `;
 
@@ -39,23 +40,22 @@ function Placeholder() {
   );
 }
 
-
 function BlankDocs() {
   return (
     <React.Fragment>
-    <MainPaper>
-      <Typography variant="h3" gutterBottom display="inline">
-        Foundation
-      </Typography>
+      <MainPaper>
+        <Typography variant="h3" gutterBottom display="inline">
+          Foundation
+        </Typography>
 
-      <Divider my={6} />
+        <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Placeholder />
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Placeholder />
           </Grid>
-      </Grid>
-    </MainPaper>
+        </Grid>
+      </MainPaper>
     </React.Fragment>
   );
 }

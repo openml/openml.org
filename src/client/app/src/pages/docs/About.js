@@ -18,27 +18,27 @@ const Divider = styled(MuiDivider)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
 
-const MainPaper= styled(Paper)`
+const MainPaper = styled(Paper)`
   flex: 1;
-  background: ${props => props.bg === 'Gradient' ? 'transparent' : props.theme.body.background};
+  background: ${props =>
+    props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
 `;
 
 function Placeholder() {
   return (
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Card
-          </Typography>
-          <Typography variant="body1" gutterBottom my={4}>
-            Contents
-          </Typography>
-        </CardContent>
-      </Card>
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Card
+        </Typography>
+        <Typography variant="body1" gutterBottom my={4}>
+          Contents
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }
-
 
 function BlankDocs() {
   return (
@@ -53,7 +53,7 @@ function BlankDocs() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Placeholder />
-            </Grid>
+          </Grid>
         </Grid>
       </MainPaper>
     </React.Fragment>
