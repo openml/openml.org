@@ -41,19 +41,7 @@ function SignUp() {
         password:event.target.password.value,
 
     });
-    // fetch('http://127.0.0.1:5000/signup',
-    // {
-    //   headers:{
-    //     'Accept': 'application/json',
-    //     'Content-type': 'application/json'
-    //   },
-    //   method: 'POST',
-    //   body:JSON.stringify({
-    //     name:event.target.name.value,
-    //     email:event.target.email.value,
-    //     password:event.target.password.value,
-    //         })
-    //       });
+
       }
   return (
     <Wrapper>

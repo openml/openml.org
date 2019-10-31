@@ -22,6 +22,9 @@ yarn-error.log*
 
 /__pycache__
 /src/dash/__pycache__
+/migrations
+/src/dashboard/__pycache__
+
 *.sql
 *.db
-/migrations
+*.ipynb
