@@ -3,6 +3,7 @@ import { getItem } from "./api.js";
 //items
 import { DatasetItem } from "./Dataset.js";
 import { TaskTypeItem } from "./TaskType.js";
+import { MeasureItem } from "./Measure.js";
 import { TaskItem } from "./Task.js";
 import { FlowItem } from "./Flow.js";
 import { RunItem } from "./Run.js";
@@ -231,15 +232,13 @@ export class EntryDetails extends React.Component {
         case "run":
           return <RunItem object={this.state.obj} tags={tags}></RunItem>;
         case "study":
-          // if(this.props.list === "true"){
-          //  return <StudyItem object={this.state.obj} ></StudyItem>
-          // }else{
           return <StudyItem object={this.state.obj}></StudyItem>;
-        //   }
         case "user":
           return <UserItem object={this.state.obj}></UserItem>;
         case "task_type":
           return <TaskTypeItem object={this.state.obj}></TaskTypeItem>;
+        case "measure":
+          return <MeasureItem object={this.state.obj}></MeasureItem>;
         default:
           return (
             <DatasetItem object={this.state.obj} tags={tags}></DatasetItem>

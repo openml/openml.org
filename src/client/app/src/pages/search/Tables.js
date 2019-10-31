@@ -136,7 +136,16 @@ export class DetailTable extends React.Component {
   };
 
   skipColumns = ([k, v]) => {
-    if (["description", "id", "comp_name"].includes(k)) {
+    if (
+      [
+        "description",
+        "id",
+        "comp_name",
+        "quality_id",
+        "eval_id",
+        "measure_id"
+      ].includes(k)
+    ) {
       return false;
     } else {
       return true;
@@ -214,7 +223,6 @@ export class DetailTable extends React.Component {
     if (this.context.results.length > 0) {
       rows = this.buildColumns(this.context.results[0]);
       data = this.buildRows(this.context.results);
-      console.log("Building table");
     } else {
       rows = [];
       data = [];
@@ -246,7 +254,7 @@ export class DetailTable extends React.Component {
                   rows.forEach(row => {
                     cells.push(
                       <ShortCell align="left" key={row.id}>
-                        {n[row.id]}
+                        {isNaN(n[row.id]) ? "" + n[row.id] : n[row.id]}
                       </ShortCell>
                     );
                   });
