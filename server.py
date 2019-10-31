@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, current_user,logout_user
 import os
-from src.dash.dashapp import create_dash_app
+from src.dashboard.dashapp import create_dash_app
 # from flask_argon2 import Argon2
 from extensions import db, loginmgr, argon2
 

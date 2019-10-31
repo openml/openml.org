@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import {
   Checkbox,
@@ -26,9 +27,11 @@ const Wrapper = styled(Paper)`
 
 //
 function SignIn() {
+  var logger = false;
+
   function sendtoflask(event) {
+    var log = false;
     event.preventDefault();
-    console.log('The link was clicked.');
     const data = new FormData(event.target);
     axios.post('http://127.0.0.1:5000/login',
         {
@@ -37,15 +40,19 @@ function SignIn() {
 
         })
         .then(function (response) {
-        console.log(response);
-        console.log('clicked');
+
+        if(response.data == 'loggedin'){
+        console.log(response.data);
+        logger = true;
+        }
+
 
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.data);
       });
-    }
-
+    return false;
+  }
   return(
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
@@ -86,6 +93,12 @@ function SignIn() {
         <Button component={Link} to="/auth/sign-up" fullWidth color="primary">
           No account? Join OpenML
         </Button>
+            <div>
+      { logger
+        ? <Redirect to = '/profile' />
+        : <Redirect to = '/auth/sign-in' />
+      }
+    </div>
       </form>
     </Wrapper>
   );
