@@ -66,7 +66,7 @@ const typeName = {
   data: "datasets",
   flow: "flows",
   run: "runs",
-  study: "studies",
+  study: "collections",
   task: "tasks",
   task_type: "task types",
   user: "users",

@@ -51,7 +51,7 @@ export function getProperty(obj, param) {
       return undefined;
     }
   }
-  if (param.endsWith("_id")) {
+  if (param.endsWith("_id") && param !== "eval_id" && param !== "quality_id") {
     return Number(obj[param]);
   } else {
     return obj[param];
@@ -87,12 +87,20 @@ export function search(
       }
     ];
   }
+  let qterms = { match_all: {} };
+  if (query !== undefined) {
+    qterms = {
+      query_string: {
+        query: query
+      }
+    };
+  }
   let params = {
     from: from,
     size: size,
     query: {
       bool: {
-        must: { match_all: {} },
+        must: qterms,
         filter: [].concat(filter),
         should: [
           {

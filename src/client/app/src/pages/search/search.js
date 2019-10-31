@@ -35,6 +35,7 @@ const RightStats = styled.div`
   float: right;
   font-size: 12px;
   padding-left: 8px;
+  color: ${props => props.color};
 `;
 const Title = styled.div`
   padding-bottom: 5px;
@@ -156,6 +157,9 @@ class SearchElement extends React.Component {
 
     return (
       <ResultCard onClick={this.props.onclick}>
+        {this.props.version !== undefined && (
+          <RightStats color={grey[500]}>v.{this.props.version}</RightStats>
+        )}
         <Title>{this.props.name}</Title>
         <SubTitle>{this.props.teaser}</SubTitle>
         {this.props.stats !== undefined && this.props.type !== "run" && (
@@ -262,14 +266,12 @@ export class SearchResultsPanel extends React.Component {
       ] !== undefined
     ) {
       let key =
-        this.context.type === "measure"
-          ? "name"
-          : (this.context.type === "task_type" ? "tt" : this.context.type) +
-            "_id";
+        (this.context.type === "task_type" ? "tt" : this.context.type) + "_id";
 
       component = this.context.results.map(result => (
         <SearchElement
           name={result.name ? result.name : result.comp_name}
+          version={result.version}
           teaser={this.getTeaser(result.description)}
           stats={this.getStats(this.props.stats, result)}
           stats2={this.getStats(this.props.stats2, result)}

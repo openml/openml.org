@@ -41,8 +41,9 @@ const Search = styled.div`
 
   &:hover {
     background-color: ${props =>
-      props.bg === "Gradient" ? "transparent" : darken(0.05,
-        props.theme.header.background)};
+      props.bg === "Gradient"
+        ? "transparent"
+        : darken(0.05, props.theme.header.background)};
   }
 
   ${props => props.theme.breakpoints.up("xs")} {
@@ -81,17 +82,21 @@ const Input = styled(InputBase)`
 `;
 
 const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: black;
+
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
     text-decoration: none;
     color: black;
-
-    &:focus, &:hover, &:visited, &:link, &:active {
-        text-decoration: none;
-        color: black;
-    }
+  }
 `;
 
 const WhiteIcon = styled(FontAwesomeIcon)`
-    color: ${props => props.bg === "Gradient" ? "white" : "inherit"}
+  color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
 `;
 
 class UserMenu extends Component {
@@ -119,7 +124,7 @@ class UserMenu extends Component {
           onClick={this.toggleMenu}
           color="inherit"
         >
-          <WhiteIcon icon={['far', 'user']} bg={this.props.bg}/>
+          <WhiteIcon icon={["far", "user"]} bg={this.props.bg} />
         </IconButton>
         <Menu
           id="menu-appbar"
@@ -132,18 +137,14 @@ class UserMenu extends Component {
               this.closeMenu();
             }}
           >
-            <StyledLink to='/auth/sign-in'>
-            Sign In
-            </StyledLink>
+            <StyledLink to="/auth/sign-in">Sign In</StyledLink>
           </MenuItem>
           <MenuItem
             onClick={() => {
               this.closeMenu();
             }}
           >
-            <StyledLink to='/auth/profile'>
-            Profile
-            </StyledLink>
+            <StyledLink to="/auth/profile">Profile</StyledLink>
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -159,52 +160,67 @@ class UserMenu extends Component {
 }
 
 const FlexAppBar = styled(AppBar)`
-  background: ${props => props.bg === 'Gradient' ? 'transparent' : ''};
-  box-shadow: ${props => props.bg === 'Gradient' ? 'none' : ''};
+  background: ${props => (props.bg === "Gradient" ? "transparent" : "")};
+  box-shadow: ${props => (props.bg === "Gradient" ? "none" : "")};
 `;
 
 const Header = ({ onDrawerToggle, bg }) => (
   <React.Fragment>
     <MainContext.Consumer>
-      {(context) => (
-    <FlexAppBar position="sticky" elevation={0} bg={context.opaqueSearch ? '' : bg}
-                onClick={() => context.setOpaqueSearch(true)}>
-      <Toolbar>
-        <Grid container alignItems="center">
-          <Hidden mdUp>
-            <Grid item>
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={onDrawerToggle}
-              >
-                <WhiteIcon icon="bars" bg={context.opaqueSearch ? '' : bg}/>
-              </IconButton>
+      {context => (
+        <FlexAppBar
+          position="sticky"
+          elevation={0}
+          bg={context.opaqueSearch ? "" : bg}
+          onClick={() => context.setOpaqueSearch(true)}
+        >
+          <Toolbar>
+            <Grid container alignItems="center">
+              <Hidden mdUp>
+                <Grid item>
+                  <IconButton
+                    color="inherit"
+                    aria-label="Open drawer"
+                    onClick={onDrawerToggle}
+                  >
+                    <WhiteIcon
+                      icon="bars"
+                      bg={context.opaqueSearch ? "" : bg}
+                    />
+                  </IconButton>
+                </Grid>
+              </Hidden>
+              <Grid item xs={8}>
+                <Search bg={context.opaqueSearch ? "" : bg}>
+                  <SearchIconWrapper>
+                    <WhiteIcon
+                      icon="search"
+                      bg={context.opaqueSearch ? "" : bg}
+                    />
+                  </SearchIconWrapper>
+                  <Input
+                    placeholder="Search datasets…"
+                    bg={context.opaqueSearch ? "" : bg}
+                    onKeyPress={event => {
+                      if (event.charCode === 13) {
+                        event.preventDefault();
+                        context.setQuery(event.target.value);
+                      }
+                    }}
+                  />
+                </Search>
+              </Grid>
+              <Grid item xs />
+              <Grid item>
+                <UserMenu bg={context.opaqueSearch ? "" : bg} />
+              </Grid>
             </Grid>
-          </Hidden>
-          <Grid item xs={8}>
-            <Search bg={context.opaqueSearch ? '' : bg}>
-              <SearchIconWrapper>
-                <WhiteIcon icon="search" bg={context.opaqueSearch ? '' : bg}/>
-              </SearchIconWrapper>
-              <Input
-                placeholder="Search datasets…"
-                bg={context.opaqueSearch ? '' : bg}
-              />
-            </Search>
-          </Grid>
-          <Grid item xs />
-          <Grid item>
-            <UserMenu bg={context.opaqueSearch ? '' : bg}/>
-          </Grid>
-        </Grid>
-      </Toolbar>
-    </FlexAppBar>
+          </Toolbar>
+        </FlexAppBar>
       )}
-  </MainContext.Consumer>
-  <Loader />
+    </MainContext.Consumer>
+    <Loader />
   </React.Fragment>
-
 );
 
 export default withTheme(Header);
