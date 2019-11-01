@@ -111,6 +111,7 @@ export default class SearchPanel extends React.Component {
     data: [
       "data_id",
       "name",
+      "version",
       "description",
       "qualities.NumberOfInstances",
       "qualities.NumberOfFeatures",
@@ -167,17 +168,20 @@ export default class SearchPanel extends React.Component {
       "runs_included",
       "date"
     ],
-    measure: [
-      "proc_id",
-      "quality_id",
-      "eval_id",
-      "name",
-      "date",
-      "min",
-      "max",
-      "unit",
-      "higherIsBetter"
-    ],
+    measure: {
+      data_quality: ["quality_id", "name", "description", "date"],
+      estimation_procedure: ["proc_id", "name", "description", "date"],
+      evaluation_measure: [
+        "eval_id",
+        "name",
+        "description",
+        "date",
+        "min",
+        "max",
+        "unit",
+        "higherIsBetter"
+      ]
+    },
     user: [
       "user_id",
       "first_name",
@@ -189,14 +193,22 @@ export default class SearchPanel extends React.Component {
       "nr_of_uploads",
       "reach",
       "impact",
-      "date"
+      "date",
+      "image"
     ]
   };
 
   // reload search results based on query parameters
   updateSearch = () => {
     let qstring = this.getQueryParams();
-    this.context.setSearch(qstring, this.fields[qstring.type]);
+    if (qstring.type === "measure") {
+      this.context.setSearch(
+        qstring,
+        this.fields[qstring.type][qstring.measure_type]
+      );
+    } else {
+      this.context.setSearch(qstring, this.fields[qstring.type]);
+    }
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -221,11 +233,23 @@ export default class SearchPanel extends React.Component {
     }
   }
 
+  // Shorten string to 40 characters
   sliceDescription = s => {
     if (s.length > 40) {
       return s.slice(0, 40) + "...";
     } else {
       return s;
+    }
+  };
+
+  // Shorten flow name
+  sliceFlow = s => {
+    let res = s.split(".");
+    res = res[0] + "." + res[res.length - 1];
+    if (res.length > 25) {
+      return res.slice(0, 25) + "...";
+    } else {
+      return res;
     }
   };
 
@@ -292,11 +316,13 @@ export default class SearchPanel extends React.Component {
           });
         } else if (this.context.type === "run") {
           data.results.forEach(res => {
-            res["comp_name"] = "Run " + getProperty(res, "run_id");
+            let flow_name = getProperty(res, "run_flow.name");
+            let data_name = getProperty(res, "run_task.source_data.name");
+            res["comp_name"] = this.sliceFlow(flow_name) + " on " + data_name;
             res["description"] =
-              this.sliceDescription(getProperty(res, "run_flow.name")) +
+              this.sliceDescription(flow_name) +
               " on " +
-              getProperty(res, "run_task.source_data.name") +
+              data_name +
               " by " +
               getProperty(res, "uploader");
             res.evaluations.forEach(score => {
@@ -312,10 +338,27 @@ export default class SearchPanel extends React.Component {
               getProperty(res, "last_name");
             res["description"] =
               getProperty(res, "bio") +
-              " " +
+              " - " +
               getProperty(res, "company") +
-              " " +
+              " - " +
               getProperty(res, "country");
+            res["initials"] =
+              getProperty(res, "first_name")
+                .charAt(0)
+                .toUpperCase() +
+              getProperty(res, "last_name")
+                .charAt(0)
+                .toUpperCase();
+          });
+        } else if (this.context.type === "measure") {
+          let mtype = this.context.filters.measure_type.value;
+          data.results.forEach(res => {
+            if (mtype === "estimation_procedure")
+              res["measure_id"] = getProperty(res, "proc_id");
+            else if (mtype === "data_quality")
+              res["measure_id"] = getProperty(res, "quality_id");
+            else if (mtype === "evaluation_measure")
+              res["measure_id"] = getProperty(res, "eval_id");
           });
         }
         this.context.setResults(data.counts, data.results);
@@ -460,6 +503,9 @@ export default class SearchPanel extends React.Component {
                 />
               )
             ) : this.context.id ? (
+              // TODO: Add logic to call subtypes (e.g. run collection,
+              // task collection). E.g.:
+              // if(context.filter.study_type === 'run') ...
               <div>
                 <iframe
                   src={
@@ -481,13 +527,13 @@ export default class SearchPanel extends React.Component {
                 ></iframe>
               </div>
             ) : (
-              <div><iframe
+              <div>
+                <iframe
                   src={
                     "https://" +
                     String(window.location.host) +
                     "/dashboard/" +
                     String(this.context.type)
-
                   }
                   height="1500px"
                   width="98%"
@@ -497,7 +543,9 @@ export default class SearchPanel extends React.Component {
                   allowFullScreen
                   sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
-                ></iframe>.</div>
+                ></iframe>
+                .
+              </div>
             )}
           </Scrollbar>
         </Grid>
