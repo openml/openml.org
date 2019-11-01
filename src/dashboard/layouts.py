@@ -431,6 +431,21 @@ def get_layout_from_study(study_id):
     ], style={"fontFamily": font})
     return layout
 
+def get_layout_from_suite(suite_id):
+    """
+    params:
+    study_id: study id provided
+    outpus:
+    scatter plot for runs and studies combined
+    """
+    # items = study.get_study(int(study_id))
+    # run_ids = items.runs[1:300]
+    # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    layout = html.Div([
+        html.Div(id='distplot-suite'),
+    ], style={"fontFamily": font})
+    return layout
+
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')

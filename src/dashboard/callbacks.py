@@ -8,6 +8,7 @@ from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
 from .run_callbacks import register_run_callbacks
 from .study_callbacks import register_study_callbacks
+from .suite_callbacks import register_suite_callbacks
 
 import time
 
@@ -75,6 +76,11 @@ def register_callbacks(app):
             study_id = int(re.search('collections/runs/(\d+)', pathname).group(1))
             layout = get_layout_from_study(study_id)
             return layout
+
+        elif pathname is not None and 'dashboard/collections/tasks' in pathname:
+            suite_id = int(re.search('collections/tasks/(\d+)', pathname).group(1))
+            layout = get_layout_from_suite(suite_id)
+            return layout
         else:
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
             return index_page
@@ -84,7 +90,7 @@ def register_callbacks(app):
     register_task_callbacks(app)
     register_flow_callbacks(app)
     register_study_callbacks(app)
-
+    register_suite_callbacks(app)
 
 
 

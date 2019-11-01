@@ -1,22 +1,13 @@
 import plotly.graph_objs as go
-from plotly import tools
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
 from .helpers import *
-import pandas as pd
-from sklearn.preprocessing import label_binarize
-from scipy.io import arff
-import urllib.request
-import io
 import re
 import openml
 
 
 def register_study_callbacks(app):
-
-    print('calling register')
-
     @app.callback(
         Output('scatterplot-study', 'children'),
         [Input('url', 'pathname'),
@@ -24,7 +15,6 @@ def register_study_callbacks(app):
          ]
     )
     def scatterplot_study(pathname, value):
-        print('calling or not')
         print(value)
         study_id = int(re.search('collections/runs/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
