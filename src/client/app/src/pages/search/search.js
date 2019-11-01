@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FilterBar } from "./FilterBar.js";
-import { Card, Tooltip } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
@@ -31,18 +31,27 @@ const Metric = styled.div`
   padding-left: 5px;
   display: inline-block;
 `;
+const SubStats = styled.div`
+  width: 100%;
+  font-size: 12px;
+  padding-left: 4px;
+  color: ${props => props.color};
+`;
 const RightStats = styled.div`
   float: right;
-  font-size: 12px;
-  padding-left: 8px;
-  color: ${props => props.color};
+`;
+const LeftStats = styled.div`
+  float: left;
+  padding-right: 8px;
 `;
 const Title = styled.div`
   padding-bottom: 5px;
   font-size: 16px;
+  font-color: #232f3e;
+  font-weight: 600;
 `;
 const SubTitle = styled.div`
-  padding-bottom: 5px;
+  margin-bottom: 10px;
   color: #666;
   font-size: 12px;
   line-height: 1.5em;
@@ -51,8 +60,12 @@ const SubTitle = styled.div`
   text-overflow: ellipsis;
   max-width: 475px;
 `;
-const SearchPanel = styled.div`
+const SearchPanel = styled(Paper)`
   overflow: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0px;
+  z-index: 100;
+  position: relative;
 `;
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -75,12 +88,11 @@ const Scrollbar = styled(PerfectScrollbar)`
   }
 `;
 const ResultCard = styled(Card)({
-  borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-  borderRadius: 0,
-  padding: 10,
-  paddingLeft: 15,
+  borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+  paddingLeft: 20,
+  paddingRight: 20,
   paddingTop: 15,
-  paddingBottom: 15,
+  paddingBottom: 20,
   cursor: "pointer",
   maxWidth: 600
 });
@@ -105,6 +117,13 @@ TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 class SearchElement extends React.Component {
+  randomColor = () => {
+    let colors = [blue, orange, red, green, purple];
+    return colors[Math.floor(Math.random() * colors.length)][
+      Math.floor(Math.random() * 7 + 3) * 100
+    ];
+  };
+
   render() {
     const abbreviateNumber = value => {
       let newValue = value;
@@ -156,11 +175,25 @@ class SearchElement extends React.Component {
     }
 
     return (
-      <ResultCard onClick={this.props.onclick}>
-        {this.props.version !== undefined && (
-          <RightStats color={grey[500]}>v.{this.props.version}</RightStats>
+      <ResultCard onClick={this.props.onclick} square>
+        {this.props.type === "user" && (
+          <CardHeader
+            avatar={
+              <Avatar
+                src={this.props.image}
+                style={{
+                  height: 60,
+                  width: 60,
+                  backgroundColor: this.randomColor()
+                }}
+              >
+                {this.props.initials}
+              </Avatar>
+            }
+            title={this.props.name}
+          />
         )}
-        <Title>{this.props.name}</Title>
+        {this.props.type !== "user" && <Title>{this.props.name}</Title>}
         <SubTitle>{this.props.teaser}</SubTitle>
         {this.props.stats !== undefined && this.props.type !== "run" && (
           <React.Fragment>
@@ -198,24 +231,30 @@ class SearchElement extends React.Component {
           </Tooltip>
         )}
         {this.props.stats2 !== undefined && this.props.type === "run" && scores}
-        {dataStatus[this.props.data_status] !== undefined && (
-          <Tooltip
-            title={dataStatus[this.props.data_status]["title"]}
-            placement="top-start"
-          >
-            <RightStats>
-              <ColoredIcon
-                color={dataStatus[this.props.data_status]["color"]}
-                icon={dataStatus[this.props.data_status]["icon"]}
-                fixedWidth
-              />
-            </RightStats>
-          </Tooltip>
-        )}
-        <RightStats style={{ color: grey[400] }}>
-          <ColoredIcon color={grey[400]} icon="history" fixedWidth />
-          {timeAgo.format(new Date(this.props.date))}
-        </RightStats>
+
+        <SubStats color={grey[400]}>
+          <LeftStats>
+            <ColoredIcon icon="history" fixedWidth />
+            {timeAgo.format(new Date(this.props.date))}
+          </LeftStats>
+          {this.props.version !== undefined && (
+            <LeftStats>v.{this.props.version}</LeftStats>
+          )}
+          {dataStatus[this.props.data_status] !== undefined && (
+            <Tooltip
+              title={dataStatus[this.props.data_status]["title"]}
+              placement="top-start"
+            >
+              <RightStats>
+                <ColoredIcon
+                  color={dataStatus[this.props.data_status]["color"]}
+                  icon={dataStatus[this.props.data_status]["icon"]}
+                  fixedWidth
+                />
+              </RightStats>
+            </Tooltip>
+          )}
+        </SubStats>
       </ResultCard>
     );
   }
@@ -286,6 +325,8 @@ export class SearchResultsPanel extends React.Component {
           }
           key={result[key]}
           type={this.props.type}
+          image={result.image}
+          initials={result.initials}
           data_status={result.status}
           date={result.date}
         ></SearchElement>

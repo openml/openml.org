@@ -193,7 +193,8 @@ export default class SearchPanel extends React.Component {
       "nr_of_uploads",
       "reach",
       "impact",
-      "date"
+      "date",
+      "image"
     ]
   };
 
@@ -232,11 +233,23 @@ export default class SearchPanel extends React.Component {
     }
   }
 
+  // Shorten string to 40 characters
   sliceDescription = s => {
     if (s.length > 40) {
       return s.slice(0, 40) + "...";
     } else {
       return s;
+    }
+  };
+
+  // Shorten flow name
+  sliceFlow = s => {
+    let res = s.split(".");
+    res = res[0] + "." + res[res.length - 1];
+    if (res.length > 25) {
+      return res.slice(0, 25) + "...";
+    } else {
+      return res;
     }
   };
 
@@ -303,11 +316,13 @@ export default class SearchPanel extends React.Component {
           });
         } else if (this.context.type === "run") {
           data.results.forEach(res => {
-            res["comp_name"] = "Run " + getProperty(res, "run_id");
+            let flow_name = getProperty(res, "run_flow.name");
+            let data_name = getProperty(res, "run_task.source_data.name");
+            res["comp_name"] = this.sliceFlow(flow_name) + " on " + data_name;
             res["description"] =
-              this.sliceDescription(getProperty(res, "run_flow.name")) +
+              this.sliceDescription(flow_name) +
               " on " +
-              getProperty(res, "run_task.source_data.name") +
+              data_name +
               " by " +
               getProperty(res, "uploader");
             res.evaluations.forEach(score => {
@@ -323,10 +338,17 @@ export default class SearchPanel extends React.Component {
               getProperty(res, "last_name");
             res["description"] =
               getProperty(res, "bio") +
-              " " +
+              " - " +
               getProperty(res, "company") +
-              " " +
+              " - " +
               getProperty(res, "country");
+            res["initials"] =
+              getProperty(res, "first_name")
+                .charAt(0)
+                .toUpperCase() +
+              getProperty(res, "last_name")
+                .charAt(0)
+                .toUpperCase();
           });
         } else if (this.context.type === "measure") {
           let mtype = this.context.filters.measure_type.value;

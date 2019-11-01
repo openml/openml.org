@@ -289,6 +289,9 @@ export class DetailTable extends React.Component {
           rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
           component="div"
           count={this.context.counts}
+          style={
+            this.context.counts ? { display: "block" } : { display: "none" }
+          }
           rowsPerPage={Math.min(rowsPerPage, this.context.counts)}
           page={page}
           backIconButtonProps={{
