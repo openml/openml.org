@@ -126,6 +126,7 @@ class Main extends React.Component {
               <Header
                 onDrawerToggle={this.handleDrawerToggle}
                 bg={background}
+                routes={routes}
               />
               <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
                 {children}
