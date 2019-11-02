@@ -71,7 +71,6 @@ class App extends React.Component {
       this.setState({ loading: value });
     },
     setQuery: value => {
-      console.log(value);
       this.setState({ query: value, updateType: "query" });
     },
     setFields: value => {
