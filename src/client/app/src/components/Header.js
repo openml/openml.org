@@ -164,7 +164,7 @@ const FlexAppBar = styled(AppBar)`
   box-shadow: ${props => (props.bg === "Gradient" ? "none" : "")};
 `;
 
-const Header = ({ onDrawerToggle, bg }) => (
+const Header = ({ onDrawerToggle, bg, routes }) => (
   <React.Fragment>
     <MainContext.Consumer>
       {context => (
