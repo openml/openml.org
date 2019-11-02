@@ -160,6 +160,7 @@ export default class SearchPanel extends React.Component {
     ],
     study: [
       "study_id",
+      "study_type",
       "name",
       "description",
       "uploader",
