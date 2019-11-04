@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { FilterBar } from "./FilterBar.js";
 import { Card, Tooltip, Paper, CardHeader, Avatar } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
+import TimeAgo from "react-timeago";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,7 +33,6 @@ const Metric = styled.div`
 const SubStats = styled.div`
   width: 100%;
   font-size: 12px;
-  padding-left: 4px;
   color: ${props => props.color};
 `;
 const RightStats = styled.div`
@@ -55,9 +53,9 @@ const SubTitle = styled.div`
   color: #666;
   font-size: 12px;
   line-height: 1.5em;
-  height: 3em;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-height: 36px;
   max-width: 475px;
 `;
 const SearchPanel = styled(Paper)`
@@ -87,6 +85,9 @@ const Scrollbar = styled(PerfectScrollbar)`
     position: absolute;
   }
 `;
+const SlimCardHeader = styled(CardHeader)({
+  paddingTop: 0
+});
 const ResultCard = styled(Card)({
   borderTop: "1px solid rgba(0, 0, 0, 0.12)",
   paddingLeft: 20,
@@ -113,8 +114,6 @@ const dataStatus = {
     color: orange[500]
   }
 };
-TimeAgo.addLocale(en);
-const timeAgo = new TimeAgo("en-US");
 
 class SearchElement extends React.Component {
   randomColor = () => {
@@ -177,13 +176,13 @@ class SearchElement extends React.Component {
     return (
       <ResultCard onClick={this.props.onclick} square>
         {this.props.type === "user" && (
-          <CardHeader
+          <SlimCardHeader
             avatar={
               <Avatar
                 src={this.props.image}
                 style={{
-                  height: 60,
-                  width: 60,
+                  height: 50,
+                  width: 50,
                   backgroundColor: this.randomColor()
                 }}
               >
@@ -195,30 +194,25 @@ class SearchElement extends React.Component {
         )}
         {this.props.type !== "user" && <Title>{this.props.name}</Title>}
         <SubTitle>{this.props.teaser}</SubTitle>
-        {this.props.stats !== undefined && this.props.type !== "run" && (
+        {this.props.stats !== undefined && (
           <React.Fragment>
-            <Tooltip title="runs" placement="top-start">
-              <Stats>
-                <ColoredIcon color={red[500]} icon="atom" fixedWidth />{" "}
-                {abbreviateNumber(this.props.stats[0].value)}
-              </Stats>
-            </Tooltip>
-            <Tooltip title="likes" placement="top-start">
-              <Stats>
-                <ColoredIcon color={purple[500]} icon="heart" fixedWidth />{" "}
-                {abbreviateNumber(this.props.stats[1].value)}
-              </Stats>
-            </Tooltip>
-            <Tooltip title="downloads" placement="top-start">
-              <Stats>
-                <ColoredIcon
-                  color={blue[700]}
-                  icon="cloud-download-alt"
-                  fixedWidth
-                />{" "}
-                {abbreviateNumber(this.props.stats[2].value)}
-              </Stats>
-            </Tooltip>
+            {this.props.stats.map((stat, index) => (
+              <Tooltip
+                key={index}
+                title={stat.unit}
+                placement="top-start"
+                style={{
+                  display: !stat.value //&& this.props.type === "user"
+                    ? "none"
+                    : "inline-block"
+                }}
+              >
+                <Stats>
+                  <ColoredIcon color={stat.color} icon={stat.icon} fixedWidth />
+                  {" " + abbreviateNumber(stat.value)}
+                </Stats>
+              </Tooltip>
+            ))}
           </React.Fragment>
         )}
         {this.props.stats2 !== undefined && this.props.type === "data" && (
@@ -235,7 +229,7 @@ class SearchElement extends React.Component {
         <SubStats color={grey[400]}>
           <LeftStats>
             <ColoredIcon icon="history" fixedWidth />
-            {timeAgo.format(new Date(this.props.date))}
+            <TimeAgo date={new Date(this.props.date)} minPeriod={60} />
           </LeftStats>
           {this.props.version !== undefined && (
             <LeftStats>v.{this.props.version}</LeftStats>
@@ -291,6 +285,7 @@ export class SearchResultsPanel extends React.Component {
       return stats.map(stat => ({
         value: result[stat.param],
         unit: stat.unit,
+        color: stat.color,
         icon: stat.icon
       }));
     }
