@@ -22,7 +22,6 @@ def create_app(config_object = Config):
                 instance_relative_config=True)
     app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
     app.config.from_object(Config)
-    CORS(app)
     app.route('/', defaults={'path': ''})
     register_extensions(app)
     @app.route('/<path:path>')
@@ -78,6 +77,8 @@ def register_extensions(app):
     loginmgr.init_app(app)
     loginmgr.login_view = 'login'
     create_dash_app(app)
+    CORS(app)
+
 
     # Database initialisation
     db.init_app(app)
@@ -92,5 +93,4 @@ def register_extensions(app):
 
 if __name__ == '__main__':
     app = create_app(Config)
-    app.secret_key='abcd'
-    app.run(port=int(os.environ.get("PORT", 5000)), debug=True)
+    app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
