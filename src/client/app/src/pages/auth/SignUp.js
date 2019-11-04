@@ -13,6 +13,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
+import axios from "axios";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -29,12 +30,25 @@ const RedIcon = styled(FontAwesomeIcon)({
 });
 
 function SignUp() {
+    function sendflask(event) {
+    event.preventDefault();
+    console.log('The link was clicked.');
+    const data = new FormData(event.target);
+    axios.post('http://127.0.0.1:5000/signup',
+    {
+        name:event.target.name.value,
+        email:event.target.email.value,
+        password:event.target.password.value,
+
+    });
+
+      }
   return (
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Almost there
       </Typography>
-      <form>
+      <form onSubmit={sendflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="name">Name</InputLabel>
           <Input id="name" name="name" autoFocus />
@@ -54,14 +68,7 @@ function SignUp() {
             autoComplete="current-password"
           />
         </FormControl>
-        <Button
-          component={Link}
-          to="/"
-          fullWidth
-          variant="contained"
-          color="primary"
-          mt={2}
-        >
+        <Button type="Submit" fullWidth variant="contained" color="primary" mt={2}>
           Sign up for OpenML
         </Button>
       </form>

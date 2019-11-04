@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
+import axios from 'axios';
 import {
   Checkbox,
   FormControl,
@@ -24,8 +25,35 @@ const Wrapper = styled(Paper)`
   }
 `;
 
+//
 function SignIn() {
-  return (
+  var logger = false;
+
+  function sendtoflask(event) {
+    var log = false;
+    event.preventDefault();
+    const data = new FormData(event.target);
+    axios.post('http://127.0.0.1:5000/login',
+        {
+          email: event.target.email.value,
+          password: event.target.password.value,
+
+        })
+        .then(function (response) {
+
+        if(response.data == 'loggedin'){
+        console.log(response.data);
+        logger = true;
+        }
+
+
+      })
+      .catch(function (error) {
+        console.log(error.data);
+      });
+    return false;
+  }
+  return(
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Welcome back, You!
@@ -33,7 +61,7 @@ function SignIn() {
       <Typography component="h2" variant="body1" align="center">
         Sign in to continue
       </Typography>
-      <form>
+      <form onSubmit={sendtoflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
           <Input id="email" name="email" autoComplete="email" autoFocus />
@@ -51,14 +79,7 @@ function SignIn() {
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        <Button
-          component={Link}
-          to="/"
-          fullWidth
-          variant="contained"
-          color="primary"
-          mb={2}
-        >
+        <Button type = "Submit"  fullWidth  variant="contained"  color="primary"  mb={2} to="/">
           Sign in
         </Button>
         <Button
@@ -72,6 +93,12 @@ function SignIn() {
         <Button component={Link} to="/auth/sign-up" fullWidth color="primary">
           No account? Join OpenML
         </Button>
+            <div>
+      { logger
+        ? <Redirect to = '/profile' />
+        : <Redirect to = '/auth/sign-in' />
+      }
+    </div>
       </form>
     </Wrapper>
   );
