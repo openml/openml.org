@@ -519,6 +519,12 @@ export default class SearchPanel extends React.Component {
                     "/dashboard/" +
                     String(this.context.type) +
                     "/" +
+                    (this.context.filter.study_type
+                      ? this.context.filter.study_type + "/"
+                      : "") +
+                    (this.context.filter.measure_type
+                      ? this.context.filter.measure_type + "/"
+                      : "") +
                     String(this.context.id)
                   }
                   height="1500px"
