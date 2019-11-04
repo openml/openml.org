@@ -34,6 +34,9 @@ def get_layout_from_data(data_id):
     """
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    selected_rows = list(range(0, 5))
+    if len(df.columns) < 5:
+        selected_rows = list(range(0, len(df.columns)))
 
     # Define layout
     layout = html.Div(children=[
@@ -54,7 +57,7 @@ def get_layout_from_data(data_id):
                     row_selectable="multi",
                     sort_action="native",
                     row_deletable=False,
-                    selected_rows=[0],
+                    selected_rows=selected_rows,
                     #style_as_list_view=True,
                     filter_action="native",
                     id='datatable',
@@ -449,10 +452,12 @@ def get_layout_from_suite(suite_id):
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
+    showlegend=False
     print(df.columns)
     title = ["Number of instances across datasets",
              "Number of features across datasets",
-             "Attribute Type distribution"]
+             "Attribute Type percentage distribution",
+             "Number of classes"]
 
     df.dropna(inplace=True)
     fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
@@ -471,16 +476,20 @@ def get_dataset_overview():
         df[col] = df[col].str.replace(']', "")
     df.sort_values(by="NumberOfInstances", inplace=True)
     fig.add_trace(
-        go.Histogram(x=df["Number of instances"]), row=1, col=1)
+        go.Histogram(x=df["Number of instances"], showlegend=showlegend), row=1, col=1)
     df.sort_values(by="NumberOfFeatures", inplace=True)
     fig.add_trace(
-        go.Histogram(x=df["Number of features"]), row=2, col=1)
+        go.Histogram(x=df["Number of features"], showlegend=showlegend), row=2, col=1)
 
     df["Attribute Type"] = "mixed"
     df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
     fig.add_trace(
-        go.Histogram(x=df["Attribute Type"], histnorm="percent"), row=3, col=1)
+        go.Histogram(x=df["Attribute Type"], histnorm="percent", showlegend=showlegend), row=3, col=1)
+
+    fig.add_trace(
+        go.Violin(x=df["NumberOfClasses"], showlegend=showlegend, name="NumberOfClasses"), row=4, col=1)
+
     fig.update_layout(height=1000,
                       )
     fig.update_xaxes(tickfont=dict(size=10))
@@ -491,7 +500,7 @@ def get_dataset_overview():
 def get_task_overview():
     df = tasks.list_tasks(output_format='dataframe')
     print(df.columns)
-
+    showlegend = False
     cols = ["task_type", "estimation_procedure"]
     title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
 
@@ -500,7 +509,7 @@ def get_task_overview():
     for col in cols:
         i = i+1
         fig.add_trace(
-        go.Histogram(x=df[col]), row=i, col=1)
+        go.Histogram(x=df[col]), row=i, col=1) #showlegend=showlegend
     fig.update_layout(height=1000)
 
     return html.Div(dcc.Graph(figure=fig))
@@ -523,6 +532,7 @@ def get_flow_overview():
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
                                  orientation="h")])
     fig.update_layout(height=1000,
+                      yaxis=dict(autorange="reversed"),
                       margin = dict(l=500),
                       title="Overview of some commonly used flows on OpenML"),
 
