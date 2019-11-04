@@ -415,9 +415,9 @@ def get_layout_from_study(study_id):
     outpus:
     scatter plot for runs and studies combined
     """
-    items = study.get_study(int(study_id))
-    run_ids = items.runs[1:300]
-    item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    # items = study.get_study(int(study_id))
+    # run_ids = items.runs[1:300]
+    # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         dcc.Dropdown(
             id = 'dropdown-study',

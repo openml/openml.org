@@ -23,14 +23,18 @@ def register_suite_callbacks(app):
 
         for task_id in suite.tasks:
             evaluations = openml.evaluations.list_evaluations(task = [task_id], function = 'area_under_roc_curve', output_format='dataframe', size=10000)
-            print(task_id)
-            all_scores.append(evaluations)
-            x = evaluations.value.values
-            hist_data = [x]
-            group_labels = [evaluations.data_name.iloc[1]]
-            fig = ff.create_distplot(hist_data, group_labels, bin_size = 0.05)
-            graph = dcc.Graph(figure=fig)
-            glist.append(html.Div(dcc.Graph(figure=fig)))
+            print("eval for task id",task_id)
+            if(len(evaluations) == 0):
+                pass
+
+            else:
+                all_scores.append(evaluations)
+                x = evaluations.value.values
+                hist_data = [x]
+                group_labels = [evaluations.data_name.iloc[1]]
+                fig = ff.create_distplot(hist_data, group_labels, bin_size = 0.05)
+                graph = dcc.Graph(figure=fig)
+                glist.append(html.Div(dcc.Graph(figure=fig)))
         return html.Div(glist)
 
 
