@@ -449,6 +449,7 @@ def get_layout_from_suite(suite_id):
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
+    print(df.columns)
     title = ["Number of instances across datasets",
              "Number of features across datasets",
              "Attribute Type distribution"]
@@ -476,10 +477,10 @@ def get_dataset_overview():
         go.Histogram(x=df["Number of features"]), row=2, col=1)
 
     df["Attribute Type"] = "mixed"
-    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
+    df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
     fig.add_trace(
-        go.Histogram(x=df["Attribute Type"]), row=3, col=1)
+        go.Histogram(x=df["Attribute Type"], histnorm="percent"), row=3, col=1)
     fig.update_layout(height=1000,
                       )
     fig.update_xaxes(tickfont=dict(size=10))
