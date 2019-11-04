@@ -194,7 +194,7 @@ def get_layout_from_data(data_id):
                                                                   html.P('No numerical-nominal combination found'))]
                                                               )],
                  )],
-        className="container", style={"fontFamily": font})
+        className="container", style={"fontFamily": font, "fontSize":10})
     return layout
 
 
@@ -449,34 +449,42 @@ def get_layout_from_suite(suite_id):
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
-
-    bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
-    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
-    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
-    for col in ["Number of instances", "Number of features"]:
-        df[col] = df[col].str.replace(',', ' -')
-        df[col] = df[col].str.replace('(', "")
-        df[col] = df[col].str.replace(']', "")
-
-    df["Attribute Type"] = "mixed"
-    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
-    df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
-    cols = ["Number of instances", "Number of features", "Attribute Type", "NumberOfClasses"]
     title = ["Number of instances across datasets",
              "Number of features across datasets",
              "Attribute Type distribution"]
 
     df.dropna(inplace=True)
     fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
-    i = 0
-    for col in cols:
-        i = i+1
-        fig.add_trace(
-        go.Histogram(x=df[col], name=col), row=i, col=1)
-    fig.update_layout(height=1000, width=1000,
-                      title="Dataset overview")
+    # Number of Instances
+    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, max(df["NumberOfInstances"])]
 
-    return html.Div(dcc.Graph(figure=fig))
+    #Number of features
+    bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+
+    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1).astype(str)
+    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2).astype(str)
+
+    for col in ["Number of instances", "Number of features"]:
+        df[col] = df[col].str.replace(',', ' -')
+        df[col] = df[col].str.replace('(', "")
+        df[col] = df[col].str.replace(']', "")
+    df.sort_values(by="NumberOfInstances", inplace=True)
+    fig.add_trace(
+        go.Histogram(x=df["Number of instances"]), row=1, col=1)
+    df.sort_values(by="NumberOfFeatures", inplace=True)
+    fig.add_trace(
+        go.Histogram(x=df["Number of features"]), row=2, col=1)
+
+    df["Attribute Type"] = "mixed"
+    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
+    df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+    fig.add_trace(
+        go.Histogram(x=df["Attribute Type"]), row=3, col=1)
+    fig.update_layout(height=1000,
+                      )
+    fig.update_xaxes(tickfont=dict(size=10))
+
+    return html.Div(dcc.Graph(figure=fig), style={"fontFamily": font, "fontsize":10})
 
 
 def get_task_overview():
