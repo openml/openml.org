@@ -19,3 +19,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+/__pycache__
+/src/dash/__pycache__
+/migrations
+/src/dashboard/__pycache__
+
+*.sql
+*.db
+*.ipynb
