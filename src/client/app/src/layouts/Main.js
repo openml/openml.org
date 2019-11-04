@@ -6,6 +6,7 @@ import Header from "../components/Header";
 //import Footer from "../components/Footer";
 
 import { MainContext } from "../App.js";
+import { Redirect } from "react-router-dom";
 
 import { spacing } from "@material-ui/system";
 import {
@@ -98,11 +99,13 @@ class Main extends React.Component {
 
   render() {
     const { children, routes, width, background } = this.props;
-
     return (
       <MainContext.Consumer>
         {context => (
           <Root bg={background} bgrunning={context.animation}>
+            {context.query !== undefined && context.type === undefined && (
+              <Redirect to="/search?type=data" />
+            )}
             <CssBaseline />
             <GlobalStyle />
             <Drawer drawerWidth={context.drawerWidth}>

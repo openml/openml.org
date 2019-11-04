@@ -8,6 +8,7 @@ import queryString from "query-string";
 import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
+import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
 
 const SearchTabs = styled(Tabs)`
   height: 51px;
@@ -159,6 +160,7 @@ export default class SearchPanel extends React.Component {
     ],
     study: [
       "study_id",
+      "study_type",
       "name",
       "description",
       "uploader",
@@ -191,6 +193,9 @@ export default class SearchPanel extends React.Component {
       "country",
       "activity",
       "nr_of_uploads",
+      "datasets_uploaded",
+      "flows_uploaded",
+      "runs_uploaded",
       "reach",
       "impact",
       "date",
@@ -608,11 +613,19 @@ export class DataListPanel extends React.PureComponent {
         type="data"
         idField="data_id"
         stats={[
-          { param: "runs", unit: "runs", icon: "fa fa-star" },
-          { param: "nr_of_likes", unit: "likes", icon: "fa-heart" },
-          { param: "nr_of_downloads", unit: "downloads", icon: "fa-cloud" },
-          { param: "reach", unit: "reach", icon: "fa-rss" },
-          { param: "impact", unit: "impact", icon: "fa-bolt" }
+          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          {
+            param: "nr_of_likes",
+            unit: "likes",
+            color: purple[500],
+            icon: "heart"
+          },
+          {
+            param: "nr_of_downloads",
+            unit: "downloads",
+            color: blue[500],
+            icon: "cloud-download-alt"
+          }
         ]}
         stats2={[
           { param: "qualities.NumberOfInstances", unit: "instances" },
@@ -642,15 +655,19 @@ export class FlowListPanel extends React.PureComponent {
         processDescription={false}
         idField="flow_id"
         stats={[
-          { param: "runs", unit: "runs", icon: "fa fa-star" },
-          { param: "nr_of_likes", unit: "likes", icon: "fa-heart" },
-          { param: "nr_of_downloads", unit: "downloads", icon: "fa-cloud" },
-          { param: "reach", unit: "reach", icon: "fa-rss" },
-          { param: "impact", unit: "impact", icon: "fa-bolt" }
-        ]}
-        stats2={[
-          { param: "reach_of_reuse", unit: "reach of reuse" },
-          { param: "impact_of_reuse", unit: "impact of reuse" }
+          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          {
+            param: "nr_of_likes",
+            unit: "likes",
+            color: purple[500],
+            icon: "heart"
+          },
+          {
+            param: "nr_of_downloads",
+            unit: "downloads",
+            color: blue[500],
+            icon: "cloud-download-alt"
+          }
         ]}
         sortChange={this.props.attrs.sortChange}
         filterChange={this.props.attrs.filterChange}
@@ -674,15 +691,37 @@ export class UserListPanel extends React.PureComponent {
         processDescription={false}
         idField="user_id"
         stats={[
-          { unit: "uploads", param: "nr_of_uploads", icon: "fa-cloud" },
-          { unit: "activity", param: "activity", icon: "fa-heartbeat" },
-          { unit: "reach", param: "reach", icon: "fa-rss" },
-          { unit: "impact", param: "impact", icon: "lightning" }
-        ]}
-        stats2={[
-          { unit: "", param: "affiliation", icon: "fa-university" },
-          { unit: "", param: "country", icon: "fa-map-marker" },
-          { unit: "", param: "date", icon: "fa-clock" }
+          {
+            unit: "datasets uploaded",
+            param: "datasets_uploaded",
+            color: green[500],
+            icon: "database"
+          },
+          {
+            unit: "flows uploaded",
+            param: "flows_uploaded",
+            color: blue[500],
+            icon: "cog"
+          },
+          {
+            unit: "runs uploaded",
+            param: "runs_uploaded",
+            color: red[400],
+            icon: "atom"
+          },
+          {
+            unit: "activity",
+            param: "activity",
+            color: red[800],
+            icon: "heartbeat"
+          },
+          { unit: "reach", param: "reach", color: purple[500], icon: "rss" },
+          {
+            unit: "impact",
+            param: "impact",
+            color: blue[500],
+            icon: "bolt"
+          }
         ]}
         sortChange={this.props.attrs.sortChange}
         filterChange={this.props.attrs.filterChange}
@@ -710,11 +749,31 @@ export class StudyListPanel extends React.PureComponent {
         processDescription={false}
         idField="study_id"
         stats={[
-          { unit: "datasets", param: "datasets_included", icon: "fa-database" },
-          { unit: "tasks", param: "tasks_included", icon: "fa-trophy" },
-          { unit: "flows", param: "flows_included", icon: "fa-gears" }
+          {
+            param: "datasets_included",
+            unit: "datasets",
+            color: green[400],
+            icon: "database"
+          },
+          {
+            param: "tasks_included",
+            unit: "tasks",
+            color: yellow[700],
+            icon: "flag"
+          },
+          {
+            param: "flows_included",
+            unit: "flows",
+            color: blue[500],
+            icon: "cog"
+          },
+          {
+            param: "runs_included",
+            unit: "runs",
+            color: red[500],
+            icon: "atom"
+          }
         ]}
-        stats2={[]}
         sortChange={this.props.attrs.sortChange}
         filterChange={this.props.attrs.filterChange}
         searchColor={this.props.attrs.searchcolor}
@@ -748,16 +807,19 @@ export class TaskListPanel extends React.PureComponent {
         processDescription={false}
         idField="task_id"
         stats={[
-          { param: "runs", unit: "runs", icon: "fa fa-star" },
-          { param: "nr_of_likes", unit: "likes", icon: "fa-heart" },
-          { param: "nr_of_downloads", unit: "downloads", icon: "fa-cloud" },
-          { param: "reach", unit: "reach", icon: "fa-rss" },
-          { param: "impact", unit: "impact", icon: "fa-bolt" }
-        ]}
-        stats2={[
-          { param: "estimation_procedure.name", unit: "estimation procedure" },
-          { param: "reuse", unit: "reuse" },
-          { param: "reach_of_reuse", unit: "reach of reuse" }
+          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          {
+            param: "nr_of_likes",
+            unit: "likes",
+            color: purple[500],
+            icon: "heart"
+          },
+          {
+            param: "nr_of_downloads",
+            unit: "downloads",
+            color: blue[500],
+            icon: "cloud-download-alt"
+          }
         ]}
         sortChange={this.props.attrs.sortChange}
         filterChange={this.props.attrs.filterChange}
@@ -822,11 +884,6 @@ export class RunListPanel extends React.PureComponent {
         descriptionField="output_files.model_readable.url"
         processDescription={false}
         idField="run_id"
-        stats={[
-          { unit: "likes", param: "nr_of_likes", icon: "fa-heart" },
-          { unit: "downloads", param: "nr_of_downloads", icon: "fa-cloud" },
-          { unit: "reach", param: "reach", icon: "fa-rss" }
-        ]}
         stats2={[
           { unit: "ACC", param: "predictive_accuracy", icon: "fa-chart-bar" },
           { unit: "AUC", param: "area_under_roc_curve", icon: "fa-chart-bar" },
