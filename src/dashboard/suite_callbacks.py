@@ -16,7 +16,7 @@ def register_suite_callbacks(app):
         [Input('url', 'pathname')]
     )
     def distplot_suite(pathname):
-        suite_id = int(re.search('collections/tasks/(\d+)', pathname).group(1))
+        suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         all_scores = []
         glist = []
