@@ -78,7 +78,7 @@ def register_callbacks(app):
             return layout
 
         elif pathname is not None and 'dashboard/study/task' in pathname:
-            suite_id = int(re.search('study/task(\d+)', pathname).group(1))
+            suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
             layout = get_layout_from_suite(suite_id)
             return layout
         else:
