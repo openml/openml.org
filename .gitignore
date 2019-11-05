@@ -28,3 +28,4 @@ yarn-error.log*
 *.sql
 *.db
 *.ipynb
+src/__pycache__/
