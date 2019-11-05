@@ -17,7 +17,7 @@ def register_study_callbacks(app):
     def scatterplot_study(pathname, value):
         print(value)
 
-        study_id = int(re.search('collections/runs/(\d+)', pathname).group(1))
+        study_id = int(re.search('study/run/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
         runs = study.runs[1:300]
         print(len(study.runs))
