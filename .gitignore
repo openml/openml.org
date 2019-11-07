@@ -29,3 +29,5 @@ yarn-error.log*
 *.db
 *.ipynb
 src/__pycache__/
+
+.idea/
