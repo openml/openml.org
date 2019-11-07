@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import {  useState } from 'react';
 import {
   Checkbox,
   FormControl,
@@ -14,6 +15,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
+import {logincontext, MainContext} from "../../App";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -27,20 +29,24 @@ const Wrapper = styled(Paper)`
 
 //
 function SignIn() {
-  var logger = false;
-
+  const [logger, setLogger] = useState(false);
+  const [errorlog, setError] = useState(false);
   function sendtoflask(event) {
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("http://127.0.0.1:5000/login", {
+      .post("https://127.0.0.1:5000/login", {
         email: event.target.email.value,
         password: event.target.password.value
       })
       .then(function(response) {
         if (response.data === "loggedin") {
           console.log(response.data);
-          logger = true;
+          setLogger(true);
+        }
+        else {
+          console.log(response.data);
+          setError(true);
         }
       })
       .catch(function(error) {
@@ -56,6 +62,10 @@ function SignIn() {
       <Typography component="h2" variant="body1" align="center">
         Sign in to continue
       </Typography>
+      { errorlog
+        ? <Typography component="h3" variant = "body1" align = "center" color="red">Wrong username or password</Typography>
+        : <Redirect to = '/auth/sign-in' />
+      }
       <form onSubmit={sendtoflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -84,7 +94,7 @@ function SignIn() {
         >
           Sign in
         </Button>
-        <Button
+         <Button
           component={Link}
           to="/auth/reset-password"
           fullWidth
@@ -95,16 +105,13 @@ function SignIn() {
         <Button component={Link} to="/auth/sign-up" fullWidth color="primary">
           No account? Join OpenML
         </Button>
-        <div>
-          {logger ? (
-            <Redirect to="/profile" />
-          ) : (
-            <Redirect to="/auth/sign-in" />
-          )}
-        </div>
+      { logger
+        ? <Redirect to = '/auth/profile' />
+        : <Redirect to = '/auth/sign-in' />
+      }
+
       </form>
     </Wrapper>
   );
 }
-
 export default SignIn;
