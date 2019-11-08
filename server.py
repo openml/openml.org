@@ -52,7 +52,7 @@ def create_app(config_object = Config):
         print(request.get_json())
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
-        if (user == None):
+        if (user is None or not user.check_password(jobj['password'])):
             print("error")
             flag = 1
             return "Error"
