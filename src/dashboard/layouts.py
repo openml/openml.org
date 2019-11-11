@@ -6,7 +6,7 @@ import os
 from openml import runs, flows, evaluations, setups, study, datasets, tasks
 import plotly
 import plotly.graph_objs as go
-
+from openml.extensions.sklearn import SklearnExtension
 # Font for entire dashboard, we do not have any styling yet
 font = [
     "Nunito Sans",
@@ -529,6 +529,10 @@ def get_flow_overview():
     count = pd.DataFrame(df["name"].value_counts()).reset_index()
     count.columns = ["name", "count"]
     count = count[0:1000]
+    short = []
+    for name in count["name"]:
+        short.append(SklearnExtension.trim_flow_name(name))
+    count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
                                  orientation="h")])
     fig.update_layout(height=1000,
