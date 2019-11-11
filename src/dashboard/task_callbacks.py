@@ -1,7 +1,6 @@
 import re
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-from openml.extensions.sklearn import SklearnExtension
 from .layouts import *
 
 
