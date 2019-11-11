@@ -72,13 +72,13 @@ def register_callbacks(app):
                 layout = get_run_overview()
                 return layout
 
-        elif pathname is not None and 'dashboard/collections/runs' in pathname:
-            study_id = int(re.search('collections/runs/(\d+)', pathname).group(1))
+        elif pathname is not None and 'dashboard/study/run' in pathname:
+            study_id = int(re.search('study/run/(\d+)', pathname).group(1))
             layout = get_layout_from_study(study_id)
             return layout
 
-        elif pathname is not None and 'dashboard/collections/tasks' in pathname:
-            suite_id = int(re.search('collections/tasks/(\d+)', pathname).group(1))
+        elif pathname is not None and 'dashboard/study/task' in pathname:
+            suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
             layout = get_layout_from_suite(suite_id)
             return layout
         else:

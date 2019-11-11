@@ -34,6 +34,9 @@ def get_layout_from_data(data_id):
     """
     # Get data and metadata
     df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    selected_rows = list(range(0, 5))
+    if len(df.columns) < 5:
+        selected_rows = list(range(0, len(df.columns)))
 
     # Define layout
     layout = html.Div(children=[
@@ -54,7 +57,7 @@ def get_layout_from_data(data_id):
                     row_selectable="multi",
                     sort_action="native",
                     row_deletable=False,
-                    selected_rows=[0],
+                    selected_rows=selected_rows,
                     #style_as_list_view=True,
                     filter_action="native",
                     id='datatable',
@@ -194,7 +197,7 @@ def get_layout_from_data(data_id):
                                                                   html.P('No numerical-nominal combination found'))]
                                                               )],
                  )],
-        className="container", style={"fontFamily": font})
+        className="container", style={"fontFamily": font, "fontSize":10})
     return layout
 
 
@@ -449,40 +452,55 @@ def get_layout_from_suite(suite_id):
 
 def get_dataset_overview():
     df = datasets.list_datasets(output_format='dataframe')
+    showlegend=False
+    print(df.columns)
+    title = ["Number of instances across datasets",
+             "Number of features across datasets",
+             "Attribute Type percentage distribution",
+             "Number of classes"]
 
-    bins = [1, 1000, 10000, 100000, 1000000, max(df["NumberOfInstances"])]
-    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins).astype(str)
-    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins).astype(str)
+    df.dropna(inplace=True)
+    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
+    # Number of Instances
+    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, max(df["NumberOfInstances"])]
+
+    #Number of features
+    bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+
+    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1).astype(str)
+    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2).astype(str)
+
     for col in ["Number of instances", "Number of features"]:
         df[col] = df[col].str.replace(',', ' -')
         df[col] = df[col].str.replace('(', "")
         df[col] = df[col].str.replace(']', "")
+    df.sort_values(by="NumberOfInstances", inplace=True)
+    fig.add_trace(
+        go.Histogram(x=df["Number of instances"], showlegend=showlegend), row=1, col=1)
+    df.sort_values(by="NumberOfFeatures", inplace=True)
+    fig.add_trace(
+        go.Histogram(x=df["Number of features"], showlegend=showlegend), row=2, col=1)
 
     df["Attribute Type"] = "mixed"
-    df["Attribute Type"][df['NumberOfSymbolicFeatures'] == 0] = 'numeric'
+    df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
     df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
-    cols = ["Number of instances", "Number of features", "Attribute Type", "NumberOfClasses"]
-    title = ["Number of instances across datasets",
-             "Number of features across datasets",
-             "Attribute Type distribution"]
+    fig.add_trace(
+        go.Histogram(x=df["Attribute Type"], histnorm="percent", showlegend=showlegend), row=3, col=1)
 
-    df.dropna(inplace=True)
-    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
-    i = 0
-    for col in cols:
-        i = i+1
-        fig.add_trace(
-        go.Histogram(x=df[col], name=col), row=i, col=1)
-    fig.update_layout(height=1000, width=1000,
-                      title="Dataset overview")
+    fig.add_trace(
+        go.Violin(x=df["NumberOfClasses"], showlegend=showlegend, name="NumberOfClasses"), row=4, col=1)
 
-    return html.Div(dcc.Graph(figure=fig))
+    fig.update_layout(height=1000,
+                      )
+    fig.update_xaxes(tickfont=dict(size=10))
+
+    return html.Div(dcc.Graph(figure=fig), style={"fontFamily": font, "fontsize":10})
 
 
 def get_task_overview():
     df = tasks.list_tasks(output_format='dataframe')
     print(df.columns)
-
+    showlegend = False
     cols = ["task_type", "estimation_procedure"]
     title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
 
@@ -491,7 +509,7 @@ def get_task_overview():
     for col in cols:
         i = i+1
         fig.add_trace(
-        go.Histogram(x=df[col]), row=i, col=1)
+        go.Histogram(x=df[col]), row=i, col=1) #showlegend=showlegend
     fig.update_layout(height=1000)
 
     return html.Div(dcc.Graph(figure=fig))
@@ -514,6 +532,7 @@ def get_flow_overview():
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
                                  orientation="h")])
     fig.update_layout(height=1000,
+                      yaxis=dict(autorange="reversed"),
                       margin = dict(l=500),
                       title="Overview of some commonly used flows on OpenML"),
 

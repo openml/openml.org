@@ -35,12 +35,14 @@ class User(UserMixin, db.Model):
     external_source = db.Column(db.String(120))
     external_id = db.Column(db.String(120))
     session_hash = db.Column(db.String(120))
+    password_hash = db.Column(db.String(120))
+
 
     def set_password(self, password):
         self.password_hash = argon2.generate_password_hash(password)
 
     def check_password(self, password):
-        password = argon2.generate_password_hash(password)
+        #password = argon2.generate_password_hash(password)
         return argon2.check_password_hash(self.password_hash, password)
     def __repr__(self):
         return '<User {}>'.format(self.username)

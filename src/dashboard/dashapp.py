@@ -5,6 +5,19 @@ from .callbacks import register_callbacks
 import os
 import shutil
 
+font = [
+    "Nunito Sans",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    '"Segoe UI"',
+    "Roboto",
+    '"Helvetica Neue"',
+    "Arial",
+    "sans-serif",
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"'
+]
 
 def create_dash_app(flask_app):
     """Create a dash application with same server as given flask app.
@@ -17,7 +30,7 @@ def create_dash_app(flask_app):
     #app.enable_dev_tools()
     app.config.suppress_callback_exceptions = True
     app.layout = html.Div([dcc.Location(id='url', refresh=False),
-                           dcc.Loading(html.Div(id='page-content'))])
+                           dcc.Loading(html.Div(id='page-content',style={"fontFamily": font, "fontsize":10}))])
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
     os.system('sudo mkdir cache')
