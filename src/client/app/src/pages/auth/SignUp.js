@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { red } from "@material-ui/core/colors";
 
@@ -30,19 +29,16 @@ const RedIcon = styled(FontAwesomeIcon)({
 });
 
 function SignUp() {
-    function sendflask(event) {
+  function sendflask(event) {
     event.preventDefault();
-    console.log('The link was clicked.');
+    console.log("The link was clicked.");
     const data = new FormData(event.target);
-    axios.post('http://127.0.0.1:5000/signup',
-    {
-        name:event.target.name.value,
-        email:event.target.email.value,
-        password:event.target.password.value,
-
+    axios.post("https://127.0.0.1:5000/signup", {
+      name: event.target.name.value,
+      email: event.target.email.value,
+      password: event.target.password.value
     });
-
-      }
+  }
   return (
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
@@ -68,7 +64,13 @@ function SignUp() {
             autoComplete="current-password"
           />
         </FormControl>
-        <Button type="Submit" fullWidth variant="contained" color="primary" mt={2}>
+        <Button
+          type="Submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          mt={2}
+        >
           Sign up for OpenML
         </Button>
       </form>
