@@ -359,7 +359,7 @@ def get_layout_from_run(run_id):
         html.H2('Run '+ str(run_id), style={'text-align': 'left', 'text-color': 'black'
                                           }),
         html.P('Choose one or more measures from the table',
-               style={'text-align': 'left', 'color': 'gray',
+               style={'text-align': 'left', 'color': 'gray', "fontSize": 11,
                       }),
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # Table with metric on left side
@@ -371,7 +371,7 @@ def get_layout_from_run(run_id):
                    row_selectable="multi",
                    sort_action="native",
                    row_deletable=False,
-                   selected_rows=[0],
+                   selected_rows=[0,1,2],
                    style_header={
                        'backgroundColor': 'white',
                        'fontWeight': 'bold'
@@ -380,7 +380,7 @@ def get_layout_from_run(run_id):
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
-                               'textOverflow': 'ellipsis', "fontSize": 15,
+                               'textOverflow': 'ellipsis', "fontSize": 11,
                                "fontFamily": font
                                },
                    style_table={
@@ -399,7 +399,7 @@ def get_layout_from_run(run_id):
         ]),
         html.P("PR chart:"),
         dcc.Loading(html.Div(id='pr')),
-        html.H3("ROC curve:"),
+        html.P("ROC curve:"),
 
         html.Div(id='roc')
                  ,
