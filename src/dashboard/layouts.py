@@ -42,7 +42,7 @@ def get_layout_from_data(data_id):
     layout = html.Div(children=[
 
         # 2. Title
-        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
+        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
                                         }),
         html.P('Choose one or more attributes for distribution plot',
                style={'text-align': 'left', 'color': 'gray',
@@ -69,8 +69,8 @@ def get_layout_from_data(data_id):
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
-                                "fontFamily": font,
-                                'textOverflow': 'ellipsis',"fontSize":14,
+                                 "fontFamily": font,
+                                'textOverflow': 'ellipsis',"fontSize":11,
 
                                },
 
@@ -144,10 +144,12 @@ def get_layout_from_data(data_id):
         ]),
         # 4. Adding tabs for multiple plots below table and distribution plot
         #    Add another tab for a new plot
-        dcc.Tabs(id="tabs", children=[
-           dcc.Tab(label='Feature Importance', children=[ dcc.Loading(html.Div(id='fi'))]),
-            dcc.Tab(id="tab2", label='Feature Interactions', children=[
+
+           html.Div(id='Feature Importance', children=[ html.H2('RandomForest Feature Importance'),
+                                                        dcc.Loading(html.Div(id='fi'))]),
+            html.Div(id="tab2",  children=[
                 html.Div([
+                    html.H2('Feature Interactions'),
                     html.Div(
                         dcc.RadioItems(
                             id='radio',
@@ -163,8 +165,9 @@ def get_layout_from_data(data_id):
 
                 ])
             ]),
-            dcc.Tab(id="tab3", label='Scatter plot', children=[
+            html.Div(id="tab3", children=[
                 html.Div([
+                    html.H2('Scatter plot'),
                     html.Div(dcc.Dropdown(
                         id='dropdown1',
                         options=[
@@ -196,8 +199,8 @@ def get_layout_from_data(data_id):
                                                               children=[html.Div(
                                                                   html.P('No numerical-nominal combination found'))]
                                                               )],
-                 )],
-        className="container", style={"fontFamily": font, "fontSize":10})
+
+        className="container", style={"fontSize":10})
     return layout
 
 
@@ -245,7 +248,7 @@ def get_layout_from_task(task_id):
 
 
         ]),
-    ], style={"fontFamily": font, 'width':'100%'})
+    ], style={'width':'100%'})
 
     return layout
 
@@ -325,7 +328,7 @@ def get_layout_from_flow(flow_id):
             ),
 
         ]),
-    ],style={"fontFamily": font})
+    ])
 
     return layout
 
@@ -394,12 +397,14 @@ def get_layout_from_run(run_id):
                       'position': 'absolute'}
            ),
         ]),
-        dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
-            dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
-                 ]),
+        html.P("PR chart:"),
+        dcc.Loading(html.Div(id='pr')),
+        html.H3("ROC curve:"),
 
-    ],style={"fontFamily": font, 'overflowY':'hidden'})
+        html.Div(id='roc')
+                 ,
+
+    ],style={'overflowY':'hidden'})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
@@ -431,7 +436,7 @@ def get_layout_from_study(study_id):
             value = '0'
         ),
         html.Div(id='scatterplot-study'),
-    ], style={"fontFamily": font})
+    ])
     return layout
 
 def get_layout_from_suite(suite_id):
@@ -446,7 +451,7 @@ def get_layout_from_suite(suite_id):
     # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         html.Div(id='distplot-suite'),
-    ], style={"fontFamily": font})
+    ])
     return layout
 
 
@@ -494,7 +499,7 @@ def get_dataset_overview():
                       )
     fig.update_xaxes(tickfont=dict(size=10))
 
-    return html.Div(dcc.Graph(figure=fig), style={"fontFamily": font, "fontsize":10})
+    return html.Div(dcc.Graph(figure=fig), style={"fontsize":10})
 
 
 def get_task_overview():

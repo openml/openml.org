@@ -125,7 +125,10 @@ def register_data_callbacks(app):
                                               marker=dict(color='steelblue'))
                         fig.append_trace(trace1, i, 1)
 
-        fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100), barmode=stack)
+        fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100), barmode=stack,
+                             font=dict(size=11))
+        for i in fig['layout']['annotations']:
+            i['font']['size'] = 11
         return html.Div(dcc.Graph(figure=fig), id="graph1")
 
     @app.callback(
@@ -167,8 +170,8 @@ def register_data_callbacks(app):
         fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
-        layout = go.Layout(title="RandomForest feature importance", autosize=False,
-                           margin=dict(l=100), width=800, hovermode='closest')
+        layout = go.Layout(autosize=False,
+                           margin=dict(l=100), width=800, height=500, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
         fi.to_pickle('cache/fi' + str(data_id) + '.pkl')
@@ -232,8 +235,9 @@ def register_data_callbacks(app):
 
             if len(top_numericals):
 
-                matrix = ff.create_scatterplotmatrix(top_features, title='Top feature interactions', diag='box',
+                matrix = ff.create_scatterplotmatrix(top_features, diag='box',
                                                      index='target',
+                                                     title="",
                                                      #colormap=C,
                                                      colormap_type=cmap_type,
 
@@ -259,8 +263,9 @@ def register_data_callbacks(app):
             if len(top_numericals):
                 df_num = df[top_numericals]
                 df_num['target'] = df['target']
-                matrix = ff.create_scatterplotmatrix(df_num, title='Top numeric feature interactions', diag='box',
+                matrix = ff.create_scatterplotmatrix(df_num,  diag='box',
                                                      index='target',
+                                                     title="",
                                                      #colormap=C,
                                                      colormap_type=cmap_type, height=1000, width=1000)
                 graph = dcc.Graph(figure=matrix)
@@ -281,7 +286,7 @@ def register_data_callbacks(app):
                     hoverinfo='count+probability',
                     arrangement='freeform'
                 )]
-                layout = go.Layout(autosize=False, width=1000, height=800)
+                layout = go.Layout(autosize=False, width=1000, height=900)
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
             else:
@@ -326,7 +331,7 @@ def register_data_callbacks(app):
                 xaxis={'title': at1, 'autorange': True},
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
-                height=600,
+                height=500,
                 width=800
             )}
         return html.Div(dcc.Graph(figure=fig))
