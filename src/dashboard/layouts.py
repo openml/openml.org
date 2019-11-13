@@ -550,7 +550,19 @@ def get_flow_overview():
 
 def get_run_overview():
     df = runs.list_runs(output_format='dataframe', size=10000)
-    print(df.columns)
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering",
+                  "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
+
+    count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
+    count.columns = ["name", "count"]
+    count["name"] = [task_types[i] for i in count["name"].values]
+    print(count)
+
+    fig = go.Figure(data=[go.Bar(x=count["name"].values, y=count["count"].values,
+                                 )])
+
 
     # cols = ["Number of instances", "Number of features", "Attribute Type"]
     #
@@ -563,4 +575,4 @@ def get_run_overview():
     #     go.Histogram(x=df[col], name=col), row=1, col=i)
     #fig.update_layout(height=1000)
 
-    return "run"
+    return dcc.Graph(figure=fig)
