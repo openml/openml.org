@@ -487,7 +487,7 @@ export default class SearchPanel extends React.Component {
               searchcolor={this.context.getColor()}
             />
             <SearchTab
-              label="Dashboard"
+              label="Analysis"
               key="dash"
               searchcolor={this.context.getColor()}
             />
