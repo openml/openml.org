@@ -37,9 +37,9 @@ def create_app(config_object = Config):
 
     @app.route('/login', methods=['POST'])
     def login():
-        if current_user.is_authenticated:
-            print('alreadyauth')
-            return 'already auth'
+        # if current_user.is_authenticated:
+        #     print('alreadyauth')
+        #     return 'alreadyauth'
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
         if (user is None or not user.check_password(jobj['password'])):
