@@ -39,7 +39,7 @@ def register_flow_callbacks(app):
         import time
         start = time.time()
         df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id],
-                                                 size=5000, output_format='dataframe',
+                                                 size=1000, output_format='dataframe',
                                                  sort_order='desc'
                                                  )
         end = time.time()
@@ -94,7 +94,8 @@ def register_flow_callbacks(app):
         layout = go.Layout(hovermode='closest',
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a dataset, click for details <br>'
-                                 'Top 5000 runs shown',
+                                 'Top 1000 runs shown',
+                           font=dict(size=11),
 
                            autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
                            xaxis=go.layout.XAxis(showgrid=False),
