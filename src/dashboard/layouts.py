@@ -543,14 +543,20 @@ def get_flow_overview():
     count = count[0:1000]
     short = []
     for name in count["name"]:
-        short.append(SklearnExtension.trim_flow_name(name))
+        try:
+            short.append(SklearnExtension.trim_flow_name(name))
+        except:
+            pass
     count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
+                                 marker=dict(color='blue',
+                                             opacity=0.8),
                                  orientation="h")])
-    fig.update_layout(height=1000,
+    fig.update_layout(
                       yaxis=dict(autorange="reversed"),
-                      margin = dict(l=500),
-                      title="Overview of some commonly used flows on OpenML"),
+                      margin=dict(l=500),
+                      title="",
+                      height=700),
 
     return html.Div(dcc.Graph(figure=fig))
 
@@ -582,4 +588,4 @@ def get_run_overview():
     #     go.Histogram(x=df[col], name=col), row=1, col=i)
     #fig.update_layout(height=1000)
 
-    return dcc.Loading(dcc.Graph(figure=fig))
+    return dcc.Graph(figure=fig)
