@@ -40,7 +40,7 @@ function SignIn() {
         password: event.target.password.value
       })
       .then(function(response) {
-        if (response.data === "loggedin") {
+        if (response.data === "loggedin" || response.data === "alreadyauth") {
           console.log(response.data);
           setLogger(true);
         }
