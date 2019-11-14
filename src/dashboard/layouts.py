@@ -220,6 +220,7 @@ def get_layout_from_task(task_id):
     except OSError:
         pass
     layout = html.Div([
+        dcc.Loading(html.Div(id='dummy'), type='dot'),
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
             # Dropdown to choose metric
@@ -238,13 +239,18 @@ def get_layout_from_task(task_id):
                        'position': 'relative'},
             ),
             # Scatter plot flow vs metric
-
-            dcc.Tabs(id="tabs", children=[
-                dcc.Loading(fullscreen=True, children=[
-                    dcc.Tab(label='Evaluations', children=[html.Div(id='tab1')])]),
-                dcc.Tab(label='People', children=[html.Div(id='tab2')])
-            ]),
-            html.Div(html.Button('Fetch next 1000 runs', id='button')),
+            html.H4('Evaluations:'),
+            html.Div(id='tab1'),
+            html.H4('People:'),
+            html.Div(id='tab2'),
+            html.P(" "),
+            html.P(" "),
+            html.Div(html.Button('Fetch next 100 runs', id='button',
+                                 style={'fontSize':14,
+                                        'color':'black',
+                                        'width':'20',
+                                        'height':'30',
+                                        'background-color':'white'})),
 
 
         ]),
@@ -397,9 +403,9 @@ def get_layout_from_run(run_id):
                       'position': 'absolute'}
            ),
         ]),
-        html.P("PR chart:"),
+        html.H4("PR chart:"),
         dcc.Loading(html.Div(id='pr')),
-        html.P("ROC curve:"),
+        html.H4("ROC curve:"),
 
         html.Div(id='roc')
                  ,
@@ -438,6 +444,7 @@ def get_layout_from_study(study_id):
         html.Div(id='scatterplot-study'),
     ])
     return layout
+
 
 def get_layout_from_suite(suite_id):
     """
@@ -557,13 +564,13 @@ def get_run_overview():
 
     count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
     count.columns = ["name", "count"]
+    count["percent"] = (count["count"]/count["count"].sum())*100
     count["name"] = [task_types[i] for i in count["name"].values]
-    print(count)
-
-    fig = go.Figure(data=[go.Bar(x=count["name"].values, y=count["count"].values,
-                                 )])
-
-
+    data = [go.Bar(x=count["name"].values, y=count["percent"].values,
+                   )]
+    fig = go.Figure(data=data)
+    fig.update_layout(yaxis=dict(
+        title='Percentage(%)'))
     # cols = ["Number of instances", "Number of features", "Attribute Type"]
     #
     # df.dropna(inplace=True)
@@ -575,4 +582,4 @@ def get_run_overview():
     #     go.Histogram(x=df[col], name=col), row=1, col=i)
     #fig.update_layout(height=1000)
 
-    return dcc.Graph(figure=fig)
+    return dcc.Loading(dcc.Graph(figure=fig))
