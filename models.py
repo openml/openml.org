@@ -2,7 +2,6 @@ from extensions import db
 from flask_login import UserMixin
 from extensions import loginmgr
 from extensions import argon2
-#from sqlalchemy import db.Column,db. Integer, String, ForeignKey, Date
 
 @loginmgr.user_loader
 def load_user(id):
