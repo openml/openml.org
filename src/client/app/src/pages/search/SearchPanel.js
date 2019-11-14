@@ -529,7 +529,7 @@ export default class SearchPanel extends React.Component {
                       : "") +
                     String(this.context.id)
                   }
-                  height="1500px"
+                  height="2600px"
                   width="98%"
                   frameBorder="0"
                   id="dash_iframe"

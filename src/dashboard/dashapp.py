@@ -30,7 +30,7 @@ def create_dash_app(flask_app):
     #app.enable_dev_tools()
     app.config.suppress_callback_exceptions = True
     app.layout = html.Div([dcc.Location(id='url', refresh=False),
-                           dcc.Loading(html.Div(id='page-content',style={"fontFamily": font, "fontsize":10}))])
+                           html.Div(id='page-content',style={"fontFamily": font})])
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
     os.system('sudo mkdir cache')

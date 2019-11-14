@@ -1,7 +1,6 @@
 import re
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-
 from .layouts import *
 
 
@@ -60,6 +59,7 @@ def register_task_callbacks(app):
         tick_text = []
         truncated = []
 
+
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
@@ -70,15 +70,17 @@ def register_task_callbacks(app):
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df['flow_name'].values:
-            truncated.append(flow[:50] + '..' if len(flow) > 50 else flow)
-        df['flow_name_t'] = truncated
+            truncated.append(SklearnExtension.trim_flow_name(flow))
+            #truncated.append(short[:50] + '..' if len(short) > 50 else short)
+
+        df['flow_name'] = truncated
 
         # Figure 1 - Evaluations
         data = [go.Scatter(y=df["flow_name"],
                            x=df["value"],
                            mode='text+markers',
                            text=run_link,
-                           hovertext=df['flow_name'] + ['<br>'] * df.shape[0] + df["value"].astype(str)+['<br>'] * df.shape[0] + ['click for more info'] * df.shape[0],
+                           #hovertext=df["value"].astype(str)+['<br>'] * df.shape[0] + ['click for more info'] * df.shape[0],
                            # hoverinfo='text',
                            # hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
@@ -92,12 +94,12 @@ def register_task_callbacks(app):
                                  'Every y label is a flow, click for details <br>'
                                  'Top 1000 runs shown<br>',
                            width=1000,
-                           hovermode='x',
+                          # hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
-                               autorange="reversed",
+                           autorange="reversed",
 
-                               ticktext=tick_text + df["flow_name_t"], tickvals=df["flow_name"]
+                               #ticktext=tick_text + df["flow_name"], tickvals=df["flow_name"]
                            ))
         fig = go.Figure(data, layout)
 
