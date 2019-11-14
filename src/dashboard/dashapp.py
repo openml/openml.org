@@ -19,6 +19,7 @@ font = [
     '"Segoe UI Symbol"'
 ]
 
+
 def create_dash_app(flask_app):
     """Create a dash application with same server as given flask app.
 
@@ -27,10 +28,16 @@ def create_dash_app(flask_app):
     """
 
     app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
+
     #app.enable_dev_tools()
     app.config.suppress_callback_exceptions = True
     app.layout = html.Div([dcc.Location(id='url', refresh=False),
-                           html.Div(id='page-content',style={"fontFamily": font})])
+                           dcc.Loading(html.Div(id='loading-indictor',
+                                                style={'display':'none'}),
+                                       type='dot'),
+                           html.Div(id='page-content',style={"fontFamily": font,
+                                                             'background-color': 'white'},
+                                    )])
     register_callbacks(app)
     shutil.rmtree('cache', ignore_errors=True)
     os.system('sudo mkdir cache')
