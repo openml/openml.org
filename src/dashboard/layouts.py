@@ -6,7 +6,7 @@ import os
 from openml import runs, flows, evaluations, setups, study, datasets, tasks
 import plotly
 import plotly.graph_objs as go
-
+from openml.extensions.sklearn import SklearnExtension
 # Font for entire dashboard, we do not have any styling yet
 font = [
     "Nunito Sans",
@@ -42,7 +42,7 @@ def get_layout_from_data(data_id):
     layout = html.Div(children=[
 
         # 2. Title
-        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
+        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
                                         }),
         html.P('Choose one or more attributes for distribution plot',
                style={'text-align': 'left', 'color': 'gray',
@@ -69,8 +69,8 @@ def get_layout_from_data(data_id):
                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                 'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
                                  'textAlign': 'left',
-                                "fontFamily": font,
-                                'textOverflow': 'ellipsis',"fontSize":14,
+                                 "fontFamily": font,
+                                'textOverflow': 'ellipsis',"fontSize":11,
 
                                },
 
@@ -144,10 +144,12 @@ def get_layout_from_data(data_id):
         ]),
         # 4. Adding tabs for multiple plots below table and distribution plot
         #    Add another tab for a new plot
-        dcc.Tabs(id="tabs", children=[
-           dcc.Tab(label='Feature Importance', children=[ dcc.Loading(html.Div(id='fi'))]),
-            dcc.Tab(id="tab2", label='Feature Interactions', children=[
+
+           html.Div(id='Feature Importance', children=[ html.H2('RandomForest Feature Importance'),
+                                                        dcc.Loading(html.Div(id='fi'))]),
+            html.Div(id="tab2",  children=[
                 html.Div([
+                    html.H2('Feature Interactions'),
                     html.Div(
                         dcc.RadioItems(
                             id='radio',
@@ -163,8 +165,9 @@ def get_layout_from_data(data_id):
 
                 ])
             ]),
-            dcc.Tab(id="tab3", label='Scatter plot', children=[
+            html.Div(id="tab3", children=[
                 html.Div([
+                    html.H2('Scatter plot'),
                     html.Div(dcc.Dropdown(
                         id='dropdown1',
                         options=[
@@ -196,8 +199,8 @@ def get_layout_from_data(data_id):
                                                               children=[html.Div(
                                                                   html.P('No numerical-nominal combination found'))]
                                                               )],
-                 )],
-        className="container", style={"fontFamily": font, "fontSize":10})
+
+        className="container", style={"fontSize":10})
     return layout
 
 
@@ -245,7 +248,7 @@ def get_layout_from_task(task_id):
 
 
         ]),
-    ], style={"fontFamily": font, 'width':'100%'})
+    ], style={'width':'100%'})
 
     return layout
 
@@ -325,7 +328,7 @@ def get_layout_from_flow(flow_id):
             ),
 
         ]),
-    ],style={"fontFamily": font})
+    ])
 
     return layout
 
@@ -356,7 +359,7 @@ def get_layout_from_run(run_id):
         html.H2('Run '+ str(run_id), style={'text-align': 'left', 'text-color': 'black'
                                           }),
         html.P('Choose one or more measures from the table',
-               style={'text-align': 'left', 'color': 'gray',
+               style={'text-align': 'left', 'color': 'gray', "fontSize": 11,
                       }),
         html.Div(id='intermediate-value', style={'display': 'none'}),
         # Table with metric on left side
@@ -368,7 +371,7 @@ def get_layout_from_run(run_id):
                    row_selectable="multi",
                    sort_action="native",
                    row_deletable=False,
-                   selected_rows=[0],
+                   selected_rows=[0,1,2],
                    style_header={
                        'backgroundColor': 'white',
                        'fontWeight': 'bold'
@@ -377,7 +380,7 @@ def get_layout_from_run(run_id):
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
-                               'textOverflow': 'ellipsis', "fontSize": 15,
+                               'textOverflow': 'ellipsis', "fontSize": 11,
                                "fontFamily": font
                                },
                    style_table={
@@ -394,12 +397,14 @@ def get_layout_from_run(run_id):
                       'position': 'absolute'}
            ),
         ]),
-        dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
-            dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
-                 ]),
+        html.P("PR chart:"),
+        dcc.Loading(html.Div(id='pr')),
+        html.P("ROC curve:"),
 
-    ],style={"fontFamily": font, 'overflowY':'hidden'})
+        html.Div(id='roc')
+                 ,
+
+    ],style={'overflowY':'hidden'})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
@@ -431,7 +436,7 @@ def get_layout_from_study(study_id):
             value = '0'
         ),
         html.Div(id='scatterplot-study'),
-    ], style={"fontFamily": font})
+    ])
     return layout
 
 def get_layout_from_suite(suite_id):
@@ -446,7 +451,7 @@ def get_layout_from_suite(suite_id):
     # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         html.Div(id='distplot-suite'),
-    ], style={"fontFamily": font})
+    ])
     return layout
 
 
@@ -494,7 +499,7 @@ def get_dataset_overview():
                       )
     fig.update_xaxes(tickfont=dict(size=10))
 
-    return html.Div(dcc.Graph(figure=fig), style={"fontFamily": font, "fontsize":10})
+    return html.Div(dcc.Graph(figure=fig), style={"fontsize":10})
 
 
 def get_task_overview():
@@ -529,6 +534,10 @@ def get_flow_overview():
     count = pd.DataFrame(df["name"].value_counts()).reset_index()
     count.columns = ["name", "count"]
     count = count[0:1000]
+    short = []
+    for name in count["name"]:
+        short.append(SklearnExtension.trim_flow_name(name))
+    count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
                                  orientation="h")])
     fig.update_layout(height=1000,
@@ -541,7 +550,19 @@ def get_flow_overview():
 
 def get_run_overview():
     df = runs.list_runs(output_format='dataframe', size=10000)
-    print(df.columns)
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering",
+                  "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
+
+    count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
+    count.columns = ["name", "count"]
+    count["name"] = [task_types[i] for i in count["name"].values]
+    print(count)
+
+    fig = go.Figure(data=[go.Bar(x=count["name"].values, y=count["count"].values,
+                                 )])
+
 
     # cols = ["Number of instances", "Number of features", "Attribute Type"]
     #
@@ -554,4 +575,4 @@ def get_run_overview():
     #     go.Histogram(x=df[col], name=col), row=1, col=i)
     #fig.update_layout(height=1000)
 
-    return "run"
+    return dcc.Graph(figure=fig)

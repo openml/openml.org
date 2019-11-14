@@ -23,8 +23,7 @@ def get_data_metadata(data_id: int):
     start = time.time()
     data = datasets.get_dataset(data_id)
     x, y, categorical, attribute_names = data.get_data()
-    end = time.time()
-    print("time taken get data", end-start)
+
     df = pd.DataFrame(x, columns=attribute_names)
     df.to_pickle('cache/df'+str(data_id)+'.pkl')
 
@@ -59,6 +58,8 @@ def get_data_metadata(data_id: int):
             entropy.append(' ')
     meta_features['Entropy'] = entropy
     meta_features['Target'].replace({'false': ' '}, inplace=True)
+    end = time.time()
+    print("time taken get data and find entropy", end - start)
     return df, meta_features, numerical_features, nominal_features, (vars(data)['name'])
 
 
