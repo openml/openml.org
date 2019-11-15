@@ -38,141 +38,111 @@ def get_layout_from_data(data_id):
     if len(df.columns) < 5:
         selected_rows = list(range(0, len(df.columns)))
 
-    # Define layout
-    layout = html.Div(children=[
-
-        # 2. Title
-        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
-                                        }),
-        html.P('Choose one or more attributes for distribution plot',
-               style={'text-align': 'left', 'color': 'gray',
-                      }),
-        # 3. Table with meta data
-        html.Div([
-            # 3a. Table with meta data on left side
-            html.Div(
-                dcc.Loading(dt.DataTable(
-                    data=metadata.to_dict('records'),
-                    columns=[{"name": i, "id": i} for i in metadata.columns],
-                    row_selectable="multi",
-                    sort_action="native",
-                    row_deletable=False,
-                    selected_rows=selected_rows,
-                    #style_as_list_view=True,
-                    filter_action="native",
-                    id='datatable',
-                    style_header={
-                        'backgroundColor': 'white',
-                        'fontWeight': 'bold'
-                    },
-
-                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
-                                'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
-                                 'textAlign': 'left',
-                                 "fontFamily": font,
-                                'textOverflow': 'ellipsis',"fontSize":11,
-
-                               },
-
-
-                    style_table={
-                        'minHeight': '420px',
-                        'maxHeight': '420px',
-                        'overflowY': 'scroll',
-                        'border': 'thin lightgrey solid'
-                    },
-                    page_action='none',
-                    # Select special rows to highlight
-                    style_data_conditional=[
-                        {
-                            "if": {"row_index": 0},
-                            "backgroundColor": "rgb(0, 100, 255)",
-                            'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 0'
-                                   },
-                            'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 10'
-                                   },
-                            'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
-                        },
-                        {
+    # Define layout components
+    # Feature table
+    distribution = html.Div([html.Div(dcc.Loading(
+        dt.DataTable(data=metadata.to_dict('records'),
+                     columns=[{"name": i, "id": i} for i in metadata.columns],
+                     row_selectable="multi",
+                     sort_action="native",
+                     row_deletable=False,
+                     selected_rows=selected_rows,
+                     filter_action="native",
+                     id='datatable',
+                     style_header={'backgroundColor': 'white', 'fontWeight': 'bold'},
+                     style_cell={'textAlign': 'left', 'backgroundColor': 'white', 'minWidth': '100px', 'width': '150px',
+                                 'maxWidth': '300px', "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 11},
+                     style_table={'minHeight': '420px', 'maxHeight': '420px', 'overflowY': 'scroll'},
+                     page_action='none',
+                     # Select special rows to highlight
+                     style_data_conditional=[
+                         {
+                             "if": {"row_index": 0},
+                             "backgroundColor": "rgb(0, 100, 255)",
+                             'color': 'white'
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 0'
+                                    },
+                             'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 10'
+                                    },
+                             'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
+                         },
+                         {
                              'if': {'column_id':'Missing values',
                                     'filter_query': '{Missing values} > 50'
                                     },
                              'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 100'
-                                   },
-                            'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
-                        },
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 100'
+                                    },
+                             'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
+                         },
                      ]
-                ), fullscreen=True),
-                style={'width': '45%', 'display': 'inline-block','position': 'relative'}
-            ),
-            # 3b. Distribution graphs on the right side
-            #     Callback for updating this graph = distribution_plot
-            html.Div([
-                html.Div(
-                    dcc.RadioItems(
-                        id='radio1',
-                        options=[{'label': "Target based distribution", "value": "target"},
-                                 {'label': "Individual distribution", "value": "solo"}],
-                        value="solo",
-                        labelStyle={'display': 'inline-block', 'text-align': 'justify'}
+                     ), fullscreen=True),
+        style={'width': '45%', 'display': 'inline-block','position': 'relative'}
+    ),
+        html.Div([
+        html.Div(
+            dcc.RadioItems(
+                id='radio1',
+                options=[{'label': "Target based distribution", "value": "target"},
+                         {'label': "Individual distribution", "value": "solo"}],
+                value="solo",
+                labelStyle={'display': 'inline-block', 'text-align': 'justify'}
 
-                    )),
-                html.Div(
-                        dcc.RadioItems(
-                            id='stack',
-                            value='group',
-                            labelStyle={'display': 'inline-block', 'text-align': 'justify'}
-                        )),
-                dcc.Loading(html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                              'height': '400px', 'position': 'absolute'})),
-            ],  style={'width': '50%', 'display': 'inline-block',
-                       'position': 'absolute'}
-            ),
-        ]),
-        # 4. Adding tabs for multiple plots below table and distribution plot
-        #    Add another tab for a new plot
+            )),
+        html.Div(
+            dcc.RadioItems(
+                id='stack',
+                value='group',
+                labelStyle={'display': 'inline-block', 'text-align': 'justify'}
+            )),
+        dcc.Loading(html.Div(
+            id='distribution', style={'overflowY': 'scroll', 'width': '100%',
+                                      'height': '400px', 'position': 'absolute'})),
+    ], style={'width': '50%', 'display': 'inline-block',
+              'position': 'absolute'}
+    )])
 
-           html.Div(id='Feature Importance', children=[ html.H2('RandomForest Feature Importance'),
-                                                        dcc.Loading(html.Div(id='fi'))]),
-            html.Div(id="tab2",  children=[
-                html.Div([
-                    html.H2('Feature Interactions'),
-                    html.Div(
-                        dcc.RadioItems(
-                            id='radio',
-                            options=[{'label': "Top five feature interactions", "value": "top"},
-                                     {'label': "Top five numeric feature interactions", "value": "numeric"},
-                                     {'label': "Top five nominal feature interactions", "value": "nominal"}],
-                            value="top"
+    # Feature importance
+    feature_importance = html.Div(id='Feature Importance',
+                                  children=[html.H2('RandomForest Feature Importance'),
+                                            dcc.Loading(html.Div(id='fi'))])
 
-                        ), ),
-                    dcc.Loading(html.Div(id='matrix')),
-                    html.Div(id='hidden', style={'display': 'none'})
+    # Feature Interaction
+    feature_interaction = html.Div(id="tab2", children=[
+        html.Div([
+            html.H2('Feature Interactions'),
+            html.Div(
+                dcc.RadioItems(
+                    id='radio',
+                    options=[{'label': "Top five feature interactions", "value": "top"},
+                             {'label': "Top five numeric feature interactions", "value": "numeric"},
+                             {'label': "Top five nominal feature interactions", "value": "nominal"}],
+                    value="top"
 
+                ), ),
+            dcc.Loading(html.Div(id='matrix')),
+            html.Div(id='hidden', style={'display': 'none'})
 
-                ])
-            ]),
-            html.Div(id="tab3", children=[
-                html.Div([
+        ])
+    ])
+
+    # Scatter plot
+    scatter_plot = html.Div(id="tab3", children=[html.Div([
                     html.H2('Scatter plot'),
                     html.Div(dcc.Dropdown(
                         id='dropdown1',
                         options=[
-                            {'label': i, 'value': i} for i in numerical_data
-                        ],
+                            {'label': i, 'value': i} for i in numerical_data],
                         multi=False,
                         clearable=False,
                         value=numerical_data[0]
@@ -198,9 +168,19 @@ def get_layout_from_data(data_id):
             ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
                                                               children=[html.Div(
                                                                   html.P('No numerical-nominal combination found'))]
-                                                              )],
+                                                              )
+    # Define layout using components
+    layout = html.Div(children=[
+        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
+        html.P('Choose one or more attributes for distribution plot',
+               style={'text-align': 'left', 'color': 'gray',
+                      }),
 
-        className="container", style={"fontSize":10})
+        distribution,
+        feature_importance,
+        feature_interaction,
+        scatter_plot
+    ], className='container'),
     return layout
 
 
