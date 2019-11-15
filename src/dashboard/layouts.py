@@ -169,6 +169,8 @@ def get_layout_from_data(data_id):
                                                               children=[html.Div(
                                                                   html.P('No numerical-nominal combination found'))]
                                                               )
+
+    table_graph = dcc.Loading(html.Div(id='table-graph'))
     # Define layout using components
     layout = html.Div(children=[
         html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
@@ -177,9 +179,11 @@ def get_layout_from_data(data_id):
                       }),
 
         distribution,
+        #table_graph,
         feature_importance,
         feature_interaction,
-        scatter_plot
+        scatter_plot,
+
     ], className='container'),
     return layout
 
