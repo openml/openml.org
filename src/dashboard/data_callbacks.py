@@ -1,3 +1,5 @@
+import re
+
 import plotly.graph_objs as go
 from plotly import subplots
 from dash.dependencies import Input, Output, State
@@ -5,22 +7,18 @@ import dash_html_components as html
 import plotly.figure_factory as ff
 import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
 from .helpers import *
-import numpy as np
-import re
-from random import shuffle
 
 
 def register_data_callbacks(app):
     @app.callback(
         Output('distribution', 'children'),
-        [
-         Input('datatable', 'selected_rows'),
+        [Input('datatable', 'selected_rows'),
          Input('radio1', 'value'),
          Input('stack', 'value'),
-         Input('url', 'pathname')
-         ],
-    [State('datatable', 'data')])
+         Input('url', 'pathname')],
+        [State('datatable', 'data')])
     def distribution_plot(selected_row_indices, radio_value, stack, url, rows):
         data_id = int(re.search('data/(\d+)', url).group(1))
         try:

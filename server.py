@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from config import Config
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -7,6 +7,7 @@ import os
 from src.dashboard.dashapp import create_dash_app
 from extensions import db, loginmgr, argon2
 from models import User
+
 
 def create_app(config_object = Config):
 
@@ -42,16 +43,13 @@ def create_app(config_object = Config):
         #     return 'alreadyauth'
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
-        if (user is None or not user.check_password(jobj['password'])):
+        if user is None or not user.check_password(jobj['password']):
             print("error")
             return "Error"
         else:
             login_user(user)
             print('loggedin')
             return 'loggedin'
-
-
-
 
     @app.route('/logout')
     def logout():
@@ -67,16 +65,12 @@ def register_extensions(app):
     loginmgr.login_view = 'login'
     create_dash_app(app)
 
-
     # Database initialisation
     db.init_app(app)
     migrate = Migrate(app, db)
     with app.app_context():
         db.create_all()
     return db
-
-
-
 
 
 if __name__ == '__main__':
