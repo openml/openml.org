@@ -1,7 +1,8 @@
 import re
-from .layouts import *
+
 from dash.dependencies import Input, Output
-import dash_html_components as html
+
+from .layouts import *
 from .helpers import *
 from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
@@ -10,7 +11,6 @@ from .run_callbacks import register_run_callbacks
 from .study_callbacks import register_study_callbacks
 from .suite_callbacks import register_suite_callbacks
 
-import time
 
 def register_callbacks(app):
     """Register all callbacks of the dash app
@@ -34,7 +34,7 @@ def register_callbacks(app):
         :return: intermediate-value: json
             Cached df in json format for sharing between callbacks
         """
-        df = pd.DataFrame()
+
         if pathname is not None:
             number_flag = any(c.isdigit() for c in pathname)
 
