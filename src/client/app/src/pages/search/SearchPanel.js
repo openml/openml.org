@@ -487,7 +487,7 @@ export default class SearchPanel extends React.Component {
               searchcolor={this.context.getColor()}
             />
             <SearchTab
-              label="Dashboard"
+              label="Analysis"
               key="dash"
               searchcolor={this.context.getColor()}
             />
@@ -529,7 +529,7 @@ export default class SearchPanel extends React.Component {
                       : "") +
                     String(this.context.id)
                   }
-                  height="1500px"
+                  height="3300px"
                   width="98%"
                   frameBorder="0"
                   id="dash_iframe"

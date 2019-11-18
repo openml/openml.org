@@ -1,19 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from config import Config
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, current_user,logout_user
 import os
 from src.dashboard.dashapp import create_dash_app
-# from flask_argon2 import Argon2
 from extensions import db, loginmgr, argon2
-
 from models import User
-
-
-#app.config.from_object('config')
-#app.config.from_pyfile('config.py')
-
 
 
 def create_app(config_object = Config):
@@ -35,7 +28,6 @@ def create_app(config_object = Config):
     @app.route('/signup', methods=['POST', 'GET'])
     def signupfunc():
         if request.method == 'POST':
-            print(request.get_json())
             robj = request.get_json()
             user = User(username=robj['name'], email=robj['email'])
             user.set_password(robj['password'])
@@ -46,24 +38,18 @@ def create_app(config_object = Config):
 
     @app.route('/login', methods=['POST'])
     def login():
-        if current_user.is_authenticated:
-            print('alreadyauth')
-            return 'already auth'
-        print(request.get_json())
+        # if current_user.is_authenticated:
+        #     print('alreadyauth')
+        #     return 'alreadyauth'
         jobj = request.get_json()
         user = User.query.filter_by(email=jobj['email']).first()
-        if (user is None or not user.check_password(jobj['password'])):
+        if user is None or not user.check_password(jobj['password']):
             print("error")
-            flag = 1
             return "Error"
         else:
             login_user(user)
             print('loggedin')
-            flag = 0
             return 'loggedin'
-
-
-
 
     @app.route('/logout')
     def logout():
@@ -79,16 +65,12 @@ def register_extensions(app):
     loginmgr.login_view = 'login'
     create_dash_app(app)
 
-
     # Database initialisation
     db.init_app(app)
     migrate = Migrate(app, db)
     with app.app_context():
         db.create_all()
     return db
-
-
-
 
 
 if __name__ == '__main__':
