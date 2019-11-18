@@ -24,7 +24,7 @@ def create_dash_app(flask_app):
     # Generic layout of the dashboard
     url = dcc.Location(id='url', refresh=False)
     global_loading_screen = dcc.Loading(html.Div(id='loading-indictor',
-                                        style={'display': 'none'}), type='dot'),
+                                        style={'display': 'none'}), type='dot')
     page_content = html.Div(id='page-content', style={"fontFamily": font, 'background-color': 'white'})
     app.layout = html.Div([url,
                            global_loading_screen,

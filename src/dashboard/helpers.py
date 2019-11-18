@@ -12,22 +12,8 @@ def clean_dataset(df):
     return out
 
 
-def get_data_metadata(data_id: int):
-    """ Download the dataset and get metadata
-
-    :param data_id: ID of the OpenML dataset
-    :return:
-    """
-    # Get data in pandas df format
-    import time
-    start = time.time()
+def get_metadata(data_id: int):
     data = datasets.get_dataset(data_id)
-    x, y, categorical, attribute_names = data.get_data()
-
-    df = pd.DataFrame(x, columns=attribute_names)
-    df.to_pickle('cache/df'+str(data_id)+'.pkl')
-
-    # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
@@ -42,6 +28,27 @@ def get_data_metadata(data_id: int):
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
+    if meta_features.shape[0] > 1000:
+        meta_features = meta_features[:1000]
+    return meta_features, data, (vars(data)['name'])
+
+
+def get_data_metadata(data_id):
+    """ Download the dataset and get metadata
+
+    :param data_id: ID of the OpenML dataset
+    :return:
+    """
+    # Get data in pandas df format
+    import time
+    start = time.time()
+    meta_features, data, _ = get_metadata(data_id)
+
+    x, y, categorical, attribute_names = data.get_data()
+
+    df = pd.DataFrame(x, columns=attribute_names)
+    df.to_pickle('cache/df'+str(data_id)+'.pkl')
+
     meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
@@ -59,8 +66,8 @@ def get_data_metadata(data_id: int):
     meta_features['Entropy'] = entropy
     meta_features['Target'].replace({'false': ' '}, inplace=True)
     end = time.time()
-    print("time taken get data and find entropy", end - start)
-    return df, meta_features, numerical_features, nominal_features, (vars(data)['name'])
+    print("time taken download data and find entropy", end - start)
+    return df, meta_features, numerical_features, nominal_features
 
 
 def get_highest_rank(df, leaderboard):
