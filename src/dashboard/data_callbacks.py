@@ -29,14 +29,14 @@ def register_data_callbacks(app):
             'id': 'Entropy', 'name': 'Entropy'
 
         })
-        print("download data and calculate entropy")
+        logger.debug("Downloading data and calculate entropy")
         data_id = int(re.search('data/(\d+)', url).group(1))
         df, meta_features, numerical_data, nominal_data = get_data_metadata(data_id)
         scatter_div = [html.Div([html.H2('Scatter plot'),
                                  html.Div(dcc.Dropdown(
                                      id='dropdown1',
                                      options=[
-                                         {'label': i, 'value': i} for i in numerical_data],
+                                         {'label': i, 'value': i} for i in numerical_data[:1000]],
                                      multi=False,
                                      clearable=False,
                                      value=numerical_data[0]
@@ -44,25 +44,26 @@ def register_data_callbacks(app):
                                  html.Div(dcc.Dropdown(
                                      id='dropdown2',
                                      options=[
-                                         {'label': i, 'value': i} for i in numerical_data
+                                         {'label': i, 'value': i} for i in numerical_data[:1000]
                                      ],
                                      multi=False,
                                      clearable=False,
-                                     value=numerical_data[0]
+                                     value=numerical_data[1]
 
                                  ), style={'width': '30%'}),
                                  html.Div(dcc.Dropdown(
                                      id='dropdown3',
                                      options=[
-                                         {'label': i, 'value': i} for i in nominal_data],
+                                         {'label': i, 'value': i} for i in nominal_data[:1000]],
                                      multi=False,
                                      clearable=False,
                                      value=nominal_data[0]), style={'width': '30%'}),
                                  html.Div(id='scatter_plot'), ])
-                       ]if numerical_data and nominal_data else html.Div(id='Scatter Plot',
+                       ]if len(numerical_data) > 1 and nominal_data else html.Div(id='Scatter Plot',
                                                                          children=[html.Div(
                                                                              html.P('No numerical-'
                                                                                     'nominal combination found'))])
+        logger.debug("Downloaded data and calculated entropy")
         return scatter_div, "loaded", meta_features.to_dict('records'), existing_columns
 
     # @app.callback(
@@ -116,8 +117,9 @@ def register_data_callbacks(app):
          Input('dataloaded', 'value')
          ])
     def plot_table(rows, selected_row_indices, url, radio, stack, dataloaded):
-        print(dataloaded)
-        print("enter dist plot" )
+        if dataloaded is None:
+            return []
+        logger.debug("loading pickle to create dist plot")
         data_id = int(re.search('data/(\d+)', url).group(1))
 
         try:
@@ -139,7 +141,6 @@ def register_data_callbacks(app):
         #                                     html.H4("Plot")))
         for index, row in meta_data.iterrows():
             attribute = row["Attribute"]
-            print(attribute)
             col1 = html.P(row["Attribute"])
             col2 = html.P(row["DataType"])
             col3 = html.P(row["Missing values"])
@@ -155,7 +156,7 @@ def register_data_callbacks(app):
         out = html.Div(className="twelve columns",
                        style={'overflowY': 'scroll', 'height': '600px'},
                        children=children)
-        print("plot dist plot done")
+        logger.debug("distribution plot created")
         return out
 
     @app.callback(
@@ -181,17 +182,19 @@ def register_data_callbacks(app):
             return "No target found", "No target found"
 
         # Feature importance bar plot
+
         from category_encoders.target_encoder import TargetEncoder
         x = df.drop(target_attribute, axis=1)
+        y = df[target_attribute]
+
         te = TargetEncoder()
         if target_type == "nominal" or target_type == "string":
-            y = pd.Categorical(df[target_attribute]).codes
+            y = pd.Categorical(y).codes
             x = clean_dataset(x)
             x = te.fit_transform(x, y)
             rf = RandomForestClassifier(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
         else:
-            y = df[target_attribute]
             x = clean_dataset(x)
             x = te.fit_transform(x, y)
             rf = RandomForestRegressor(n_estimators=10, n_jobs=-1)
@@ -255,7 +258,7 @@ def register_data_callbacks(app):
             try:
                 df['target'] = df['target'].astype(int)
             except ValueError:
-                print("target not converted to int")
+                logger.warning("target not converted to int")
             df.sort_values(by='target', inplace=True)
             df['target'] = df['target'].astype(str)
 
@@ -347,6 +350,7 @@ def register_data_callbacks(app):
             fig : Scatter plot of selected attributes
         """
         data_id = int(re.search('data/(\d+)', url).group(1))
+        logger.debug("loading data for scatter plot")
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
@@ -369,6 +373,7 @@ def register_data_callbacks(app):
                 height=500,
                 width=800
             )}
+        logger.debug("scatter plot created")
         return html.Div(dcc.Graph(figure=fig))
 
     @app.callback(
