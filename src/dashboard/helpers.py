@@ -63,11 +63,19 @@ def get_data_metadata(data_id):
         pass
 
     if x.shape[0] >= 50000 and target_attribute:
+        if x.shape[0] < 100000:
+            sample_size = 0.5
+        elif 100000 <= x.shape[0] < 500000:
+            sample_size = 0.25
+        elif 500000 <= x.shape[0] < 1e6:
+            sample_size = 0.1
+        else:
+            sample_size = 0.05
         x = df.drop(target_attribute, axis=1)
         y = df[target_attribute]
         X_train, X_test, y_train, y_test = train_test_split(x, y,
                                                             stratify=y,
-                                                            test_size=0.1)
+                                                            test_size=sample_size)
         x = X_test
         x[target_attribute] = y_test
         df = pd.DataFrame(x, columns=attribute_names)
