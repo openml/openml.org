@@ -9,6 +9,9 @@ from .dashapp import *
 from openml import runs, flows, evaluations, setups, study, datasets, tasks
 from openml.extensions.sklearn import SklearnExtension
 
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
+        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
+
 
 def get_layout_from_data(data_id):
     """
@@ -190,8 +193,8 @@ def get_layout_from_task(task_id):
         pass
 
     # Define components in task layout
-    loading_spinner = dcc.Loading(html.Div(id='dummy'), type='dot'),
-    hidden_div = html.Div(id='intermediate-value', style={'display': 'none'}),
+    loading_spinner = dcc.Loading(html.Div(id='dummy'), type='dot')
+    hidden_div = html.Div(id='intermediate-value', style={'display': 'none'})
     metric_dropdown = html.Div(
         [dcc.Dropdown(
             id='metric',
@@ -205,7 +208,7 @@ def get_layout_from_task(task_id):
         )],
         style={'width': '30%', 'display': 'inline-block',
                'position': 'relative'},
-    ),
+    )
 
     fetch_runs_button = html.Div(html.Button('Fetch next 100 runs', id='button',
                                  style={'fontSize': 14,
@@ -499,7 +502,7 @@ def get_task_overview():
     for col in cols:
         i = i+1
         fig.add_trace(
-        go.Histogram(x=df[col]), row=i, col=1, showlegend = False)
+        go.Histogram(x=df[col], showlegend=False), row=i, col=1)
     fig.update_layout(height=1000)
 
     return html.Div(dcc.Graph(figure=fig))
