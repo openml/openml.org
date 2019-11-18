@@ -3,6 +3,11 @@ import pandas as pd
 from openml import datasets
 import scipy.stats
 import numpy as np
+from sklearn.model_selection import train_test_split
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('dashbpoard')
+logger.setLevel(logging.DEBUG)
 
 
 def clean_dataset(df):
@@ -47,8 +52,28 @@ def get_data_metadata(data_id):
     x, y, categorical, attribute_names = data.get_data()
 
     df = pd.DataFrame(x, columns=attribute_names)
-    df.to_pickle('cache/df'+str(data_id)+'.pkl')
+    if x.shape[0] < 50000:
+        df.to_pickle('cache/df'+str(data_id)+'.pkl')
 
+    # create a subsample of data for large datasets
+    try:
+        target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
+    except IndexError:
+        target_attribute = None
+        pass
+
+    if x.shape[0] >= 50000 and target_attribute:
+        x = df.drop(target_attribute, axis=1)
+        y = df[target_attribute]
+        X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                            stratify=y,
+                                                            test_size=0.1)
+        x = X_test
+        x[target_attribute] = y_test
+        df = pd.DataFrame(x, columns=attribute_names)
+        df.to_pickle('cache/df' + str(data_id) + '.pkl')
+
+    df.to_pickle('cache/df' + str(data_id) + '.pkl')
     meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
@@ -66,7 +91,7 @@ def get_data_metadata(data_id):
     meta_features['Entropy'] = entropy
     meta_features['Target'].replace({'false': ' '}, inplace=True)
     end = time.time()
-    print("time taken download data and find entropy", end - start)
+    logger.debug("time taken download data and find entropy " + str(end - start))
     return df, meta_features, numerical_features, nominal_features
 
 

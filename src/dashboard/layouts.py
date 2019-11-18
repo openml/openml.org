@@ -28,9 +28,8 @@ def get_layout_from_data(data_id):
     if metadata.shape[0] < 5:
         selected_rows = list(range(0, metadata.shape[0]))
 
-
     # Define layout components
-    print("basic layout without download of data")
+    logger.debug("loading skeleton layout and table")
     # Feature table
     feature_table = html.Div(
         dt.DataTable(data=metadata.to_dict('records'),
@@ -147,13 +146,14 @@ def get_layout_from_data(data_id):
 
         feature_table,
         dist_plot,
-        feature_importance,
         scatter_plot,
+        feature_importance,
         feature_interaction,
         html.Div(id='tableloaded', children="table", style={'display': 'none'}),
         html.Div(id='dataloaded', style={'display': 'none'})
 
     ], className='container', style={'overflowY': 'hidden'}),
+    logger.debug("loaded skeleton layout and table")
     return layout
 
 
