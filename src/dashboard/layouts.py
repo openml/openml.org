@@ -22,14 +22,17 @@ def get_layout_from_data(data_id):
 
     """
     # Get data and metadata
-    df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    #df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    metadata, data, name = get_metadata(data_id)
     selected_rows = list(range(0, 5))
-    if len(df.columns) < 5:
-        selected_rows = list(range(0, len(df.columns)))
+    if metadata.shape[0] < 5:
+        selected_rows = list(range(0, metadata.shape[0]))
+
 
     # Define layout components
+    print("basic layout without download of data")
     # Feature table
-    distribution = html.Div([html.Div(dcc.Loading(
+    feature_table = html.Div(
         dt.DataTable(data=metadata.to_dict('records'),
                      columns=[{"name": i, "id": i} for i in metadata.columns],
                      row_selectable="multi",
@@ -41,7 +44,7 @@ def get_layout_from_data(data_id):
                      style_header={'backgroundColor': 'white', 'fontWeight': 'bold'},
                      style_cell={'textAlign': 'left', 'backgroundColor': 'white', 'minWidth': '100px', 'width': '150px',
                                  'maxWidth': '300px', "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 11},
-                     style_table={'minHeight': '420px', 'maxHeight': '420px', 'overflowY': 'scroll'},
+                     style_table={'minHeight': '250px', 'maxHeight': '250px', 'overflowY': 'scroll'},
                      page_action='none',
                      # Select special rows to highlight
                      style_data_conditional=[
@@ -75,31 +78,39 @@ def get_layout_from_data(data_id):
                              'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
                          },
                      ]
-                     ), fullscreen=True),
-        style={'width': '45%', 'display': 'inline-block','position': 'relative'}
-    ),
-        html.Div([
-            html.Div(
-                dcc.RadioItems(
-                    id='radio1',
-                    options=[{'label': "Target based distribution", "value": "target"},
-                             {'label': "Individual distribution", "value": "solo"}],
-                    value="solo",
-                    labelStyle={'display': 'inline-block', 'text-align': 'justify'}
+                     ), className="twelve columns"
+    )
 
-                )),
-            html.Div(
-                dcc.RadioItems(
-                    id='stack',
-                    value='group',
-                    labelStyle={'display': 'inline-block', 'text-align': 'justify'}
-                )),
-            dcc.Loading(html.Div(
+    # Distribution plot
+    table_graph = dcc.Loading(html.Div(id='table-graph', className="twelve columns"))
+    subplot_graph = dcc.Loading(html.Div(
                 id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                          'height': '400px', 'position': 'absolute'})),
-        ], style={'width': '50%', 'display': 'inline-block',
-                  'position': 'absolute'}
-        )])
+                                          'height': '400px'}))
+    dist_plot = html.Div([
+        html.P(''),
+        html.P('Choose if the color code is based on target or not',
+               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
+                      }
+               ),
+        html.Div(
+            dcc.RadioItems(
+                id='radio1',
+                options=[{'label': "Target based distribution", "value": "target"},
+                         {'label': "Individual distribution", "value": "solo"}],
+                value="solo",
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+
+            )),
+        html.Div(
+            dcc.RadioItems(
+                id='stack',
+                value='group',
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+            )),
+        table_graph,
+
+    ],
+    )
 
     # Feature importance
     feature_importance = html.Div(id='Feature Importance',
@@ -113,9 +124,9 @@ def get_layout_from_data(data_id):
             html.Div(
                 dcc.RadioItems(
                     id='radio',
-                    options=[{'label': "Top five feature interactions", "value": "top"},
-                             {'label': "Top five numeric feature interactions", "value": "numeric"},
-                             {'label': "Top five nominal feature interactions", "value": "nominal"}],
+                    options=[{'label': "Top four feature interactions", "value": "top"},
+                             {'label': "Top four numeric feature interactions", "value": "numeric"},
+                             {'label': "Top four nominal feature interactions", "value": "nominal"}],
                     value="top"
 
                 ), ),
@@ -126,54 +137,23 @@ def get_layout_from_data(data_id):
     ])
 
     # Scatter plot
-    scatter_plot = html.Div(id="tab3", children=[html.Div([
-                    html.H2('Scatter plot'),
-                    html.Div(dcc.Dropdown(
-                        id='dropdown1',
-                        options=[
-                            {'label': i, 'value': i} for i in numerical_data],
-                        multi=False,
-                        clearable=False,
-                        value=numerical_data[0]
-                    ), style={'width': '30%'}),
-                    html.Div(dcc.Dropdown(
-                        id='dropdown2',
-                        options=[
-                            {'label': i, 'value': i} for i in numerical_data
-                        ],
-                        multi=False,
-                        clearable=False,
-                        value=numerical_data[0]
-
-                    ),style={'width': '30%'}),
-                    html.Div(dcc.Dropdown(
-                        id='dropdown3',
-                        options=[
-                            {'label': i, 'value': i} for i in nominal_data],
-                        multi=False,
-                        clearable=False,
-                        value=nominal_data[0]), style={'width': '30%'}),
-                    html.Div(id='scatter_plot'), ])
-            ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
-                                                              children=[html.Div(
-                                                                  html.P('No numerical-nominal combination found'))]
-                                                              )
-
-    table_graph = dcc.Loading(html.Div(id='table-graph'))
+    scatter_plot = html.Div(id="tab3")
     # Define layout using components
     layout = html.Div(children=[
-        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
-        html.P('Choose one or more attributes for distribution plot',
-               style={'text-align': 'left', 'color': 'gray',
+        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
+        html.P('Choose one or more attributes for distribution plot (first 1k attributes listed)',
+               style={'text-align': 'left', 'color': 'gray','fontSize': 11
                       }),
 
-        distribution,
-        #table_graph,
+        feature_table,
+        dist_plot,
         feature_importance,
-        feature_interaction,
         scatter_plot,
+        feature_interaction,
+        html.Div(id='tableloaded', children="table", style={'display': 'none'}),
+        html.Div(id='dataloaded', style={'display': 'none'})
 
-    ], className='container'),
+    ], className='container', style={'overflowY': 'hidden'}),
     return layout
 
 
@@ -556,3 +536,6 @@ def get_run_overview():
         title='Percentage(%)'))
 
     return dcc.Graph(figure=fig)
+
+
+

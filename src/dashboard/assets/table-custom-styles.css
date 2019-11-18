@@ -26,7 +26,7 @@ body {
 }
 
 .metric-row {
-  font-size: 1.3rem;
+  font-size: 1.0rem;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
