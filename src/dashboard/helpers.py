@@ -3,6 +3,11 @@ import pandas as pd
 from openml import datasets
 import scipy.stats
 import numpy as np
+from sklearn.model_selection import train_test_split
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('dashbpoard')
+logger.setLevel(logging.DEBUG)
 
 
 def clean_dataset(df):
@@ -12,23 +17,8 @@ def clean_dataset(df):
     return out
 
 
-def get_data_metadata(data_id: int):
-    """ Download the dataset and get metadata
-
-    :param data_id: ID of the OpenML dataset
-    :return:
-    """
-    # Get data in pandas df format
-    import time
-    start = time.time()
+def get_metadata(data_id: int):
     data = datasets.get_dataset(data_id)
-    x, y, categorical, attribute_names = data.get_data()
-    end = time.time()
-    print("time taken get data", end-start)
-    df = pd.DataFrame(x, columns=attribute_names)
-    df.to_pickle('cache/df'+str(data_id)+'.pkl')
-
-    # Get meta-features and add target
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
@@ -43,6 +33,62 @@ def get_data_metadata(data_id: int):
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
+    if meta_features.shape[0] > 1000:
+        meta_features = meta_features[:1000]
+    return meta_features, data, (vars(data)['name'])
+
+
+def get_data_metadata(data_id):
+    """ Download the dataset and get metadata
+
+    :param data_id: ID of the OpenML dataset
+    :return:
+    """
+    # Get data in pandas df format
+    import time
+    start = time.time()
+    meta_features, data, _ = get_metadata(data_id)
+
+    x, y, categorical, attribute_names = data.get_data()
+
+    df = pd.DataFrame(x, columns=attribute_names)
+    if x.shape[0] < 50000:
+        df.to_pickle('cache/df'+str(data_id)+'.pkl')
+
+    # create a subsample of data for large datasets
+    try:
+        target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
+    except IndexError:
+        target_attribute = None
+        pass
+
+    if x.shape[0] >= 50000 and target_attribute:
+        df = clean_dataset(df)
+        if x.shape[0] < 100000:
+            sample_size = 0.5
+        elif 100000 <= x.shape[0] < 500000:
+            sample_size = 0.25
+        elif 500000 <= x.shape[0] < 1e6:
+            sample_size = 0.1
+        else:
+            sample_size = 0.05
+        x = df.drop(target_attribute, axis=1)
+        y = df[target_attribute]
+        try:
+            X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                            stratify=y,
+                                                            test_size=sample_size)
+        except:
+            X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                                stratify=None,
+                                                                test_size=sample_size)
+
+        x = X_test
+        x[target_attribute] = y_test
+        df = pd.DataFrame(x, columns=attribute_names)
+        df.to_pickle('cache/df' + str(data_id) + '.pkl')
+
+    df.to_pickle('cache/df' + str(data_id) + '.pkl')
     meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
@@ -59,7 +105,9 @@ def get_data_metadata(data_id: int):
             entropy.append(' ')
     meta_features['Entropy'] = entropy
     meta_features['Target'].replace({'false': ' '}, inplace=True)
-    return df, meta_features, numerical_features, nominal_features, (vars(data)['name'])
+    end = time.time()
+    logger.debug("time taken download data and find entropy " + str(end - start))
+    return df, meta_features, numerical_features, nominal_features
 
 
 def get_highest_rank(df, leaderboard):

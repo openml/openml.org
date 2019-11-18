@@ -1,12 +1,12 @@
 import re
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-
 from .layouts import *
 
 
 def register_task_callbacks(app):
-    @app.callback([Output('tab1', 'children'),
+    @app.callback([Output('dummy', 'children'),
+                   Output('tab1', 'children'),
                    Output('tab2', 'children')],
                   [Input('url', 'pathname'),
                    Input('metric', 'value'),
@@ -24,7 +24,7 @@ def register_task_callbacks(app):
         :return:
             Interactive graph (Evaluations tab) and leaderboard(People tab)
         """
-        n_runs = 1000
+        n_runs = 100
 
         # extract task id
         if pathname is not None and '/dashboard/task' in pathname:
@@ -60,6 +60,7 @@ def register_task_callbacks(app):
         tick_text = []
         truncated = []
 
+
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
@@ -70,15 +71,17 @@ def register_task_callbacks(app):
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df['flow_name'].values:
-            truncated.append(flow[:50] + '..' if len(flow) > 50 else flow)
-        df['flow_name_t'] = truncated
+            truncated.append(SklearnExtension.trim_flow_name(flow))
+            #truncated.append(short[:50] + '..' if len(short) > 50 else short)
+
+        df['flow_name'] = truncated
 
         # Figure 1 - Evaluations
         data = [go.Scatter(y=df["flow_name"],
                            x=df["value"],
                            mode='text+markers',
                            text=run_link,
-                           hovertext=df['flow_name'] + ['<br>'] * df.shape[0] + df["value"].astype(str)+['<br>'] * df.shape[0] + ['click for more info'] * df.shape[0],
+                           #hovertext=df["value"].astype(str)+['<br>'] * df.shape[0] + ['click for more info'] * df.shape[0],
                            # hoverinfo='text',
                            # hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
@@ -90,14 +93,15 @@ def register_task_callbacks(app):
         layout = go.Layout(autosize=False, margin=dict(l=400), height=500+15*(df['flow_name'].nunique()),
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a flow, click for details <br>'
-                                 'Top 1000 runs shown<br>',
+                                 'Top '+str(n_runs)+' runs shown<br>',
+                           font=dict(size=11),
                            width=1000,
-                           hovermode='x',
+                          # hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
-                               autorange="reversed",
-
-                               ticktext=tick_text + df["flow_name_t"], tickvals=df["flow_name"]
+                           autorange="reversed",
+                               ticktext=tick_text + df["flow_name"],
+                               tickvals=df["flow_name"]
                            ))
         fig = go.Figure(data, layout)
 
@@ -128,6 +132,7 @@ def register_task_callbacks(app):
                 ]
         layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
                            autosize=True,  margin=dict(l=100), hovermode='y',
+                           font=dict(size=11),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,
                                                  title=go.layout.yaxis.Title(text=str(metric)),
@@ -175,6 +180,9 @@ def register_task_callbacks(app):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        return html.Div(dcc.Graph(figure=fig),draggable=True), \
-               html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table])
+        return html.Div(dcc.Graph(figure=fig), style={'display':'none'}), \
+               html.Div(dcc.Graph(figure=fig)),\
+               html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table]), \
+
+
 

@@ -41,16 +41,26 @@ def register_run_callbacks(app):
         if len(selected_row_indices) != 0 and not rows.empty:
             selected_rows = rows.loc[selected_row_indices]["evaluations"].values
             i = 0
-            fig = plotly.subplots.make_subplots(rows=len(selected_rows), cols=1)
+            fig = plotly.subplots.make_subplots(rows=len(selected_rows), cols=1,
+                                                subplot_titles = tuple(selected_rows))
             for metric in selected_rows:
                 measure = df.loc[df['evaluations'] == metric]
                 x = measure['results'].values[0]
-                trace1 = go.Box(x=x, name=metric)
+                trace1 =  {
+                            "type": 'box',
+                            "showlegend": False,
+                            "x": x,
+                            "name": "",
+
+                            # "x0": attribute
+                        }
                 i = i+1
                 fig.append_trace(trace1, i, 1)
 
-            fig['layout'].update(title='Evaluation measures', hovermode='closest',
+            fig['layout'].update(title='', hovermode='closest',
                                  height=len(selected_rows)*200, margin=dict(l=0))
+            for i in fig['layout']['annotations']:
+                i['font']['size'] = 11
         else:
             fig = []
 
@@ -144,13 +154,13 @@ def register_run_callbacks(app):
                                    )
                 roc.append(trace)
 
-            layout = go.Layout(title='PR curve',
+            layout = go.Layout(title='',
                                xaxis=dict(title='Recall'),
                                yaxis=dict(title='Precision'),
                                height=400)
 
             fig = go.Figure(data=data, layout=layout)
-            layout = go.Layout(title='Extension of ROC to multi-class',
+            layout = go.Layout(title='',
                                xaxis=dict(title='fpr'),
                                yaxis=dict(title='tpr'),
                                height=400)

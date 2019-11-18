@@ -1,26 +1,16 @@
-import dash_core_components as dcc
-import dash_table as dt
-import dash_html_components as html
-from .helpers import *
 import os
-from openml import runs, flows, evaluations, setups, study, datasets, tasks
+import dash_table as dt
 import plotly
 import plotly.graph_objs as go
 
-# Font for entire dashboard, we do not have any styling yet
-font = [
-    "Nunito Sans",
-    "-apple-system",
-    "BlinkMacSystemFont",
-    '"Segoe UI"',
-    "Roboto",
-    '"Helvetica Neue"',
-    "Arial",
-    "sans-serif",
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"'
-]
+from .helpers import *
+from .dashapp import *
+
+from openml import runs, flows, evaluations, setups, study, datasets, tasks
+from openml.extensions.sklearn import SklearnExtension
+
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
+        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
 
 def get_layout_from_data(data_id):
@@ -29,175 +19,141 @@ def get_layout_from_data(data_id):
     :param data_id: dataset id
     :return:
      layout: custom layout for data visualization
-     df: df cached for use in callbacks
 
     """
     # Get data and metadata
-    df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    #df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
+    metadata, data, name = get_metadata(data_id)
     selected_rows = list(range(0, 5))
-    if len(df.columns) < 5:
-        selected_rows = list(range(0, len(df.columns)))
+    if metadata.shape[0] < 5:
+        selected_rows = list(range(0, metadata.shape[0]))
 
-    # Define layout
-    layout = html.Div(children=[
-
-        # 2. Title
-        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'
-                                        }),
-        html.P('Choose one or more attributes for distribution plot',
-               style={'text-align': 'left', 'color': 'gray',
-                      }),
-        # 3. Table with meta data
-        html.Div([
-            # 3a. Table with meta data on left side
-            html.Div(
-                dcc.Loading(dt.DataTable(
-                    data=metadata.to_dict('records'),
-                    columns=[{"name": i, "id": i} for i in metadata.columns],
-                    row_selectable="multi",
-                    sort_action="native",
-                    row_deletable=False,
-                    selected_rows=selected_rows,
-                    #style_as_list_view=True,
-                    filter_action="native",
-                    id='datatable',
-                    style_header={
-                        'backgroundColor': 'white',
-                        'fontWeight': 'bold'
-                    },
-
-                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
-                                'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
-                                 'textAlign': 'left',
-                                "fontFamily": font,
-                                'textOverflow': 'ellipsis',"fontSize":14,
-
-                               },
-
-
-                    style_table={
-                        'minHeight': '420px',
-                        'maxHeight': '420px',
-                        'overflowY': 'scroll',
-                        'border': 'thin lightgrey solid'
-                    },
-                    page_action='none',
-                    # Select special rows to highlight
-                    style_data_conditional=[
-                        {
-                            "if": {"row_index": 0},
-                            "backgroundColor": "rgb(0, 100, 255)",
-                            'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 0'
-                                   },
-                            'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 10'
-                                   },
-                            'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
-                        },
-                        {
+    # Define layout components
+    logger.debug("loading skeleton layout and table")
+    # Feature table
+    feature_table = html.Div(
+        dt.DataTable(data=metadata.to_dict('records'),
+                     columns=[{"name": i, "id": i} for i in metadata.columns],
+                     row_selectable="multi",
+                     sort_action="native",
+                     row_deletable=False,
+                     selected_rows=selected_rows,
+                     filter_action="native",
+                     id='datatable',
+                     style_header={'backgroundColor': 'white', 'fontWeight': 'bold'},
+                     style_cell={'textAlign': 'left', 'backgroundColor': 'white', 'minWidth': '100px', 'width': '150px',
+                                 'maxWidth': '300px', "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 11},
+                     style_table={'minHeight': '250px', 'maxHeight': '250px', 'overflowY': 'scroll'},
+                     page_action='none',
+                     # Select special rows to highlight
+                     style_data_conditional=[
+                         {
+                             "if": {"row_index": 0},
+                             "backgroundColor": "rgb(0, 100, 255)",
+                             'color': 'white'
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 0'
+                                    },
+                             'backgroundColor': 'rgb(255, 200, 200)', 'color': 'white'
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 10'
+                                    },
+                             'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
+                         },
+                         {
                              'if': {'column_id':'Missing values',
                                     'filter_query': '{Missing values} > 50'
                                     },
                              'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
-                        },
-                        {
-                            'if': {'column_id': 'Missing values',
-                                   'filter_query': '{Missing values} > 100'
-                                   },
-                            'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
-                        },
+                         },
+                         {
+                             'if': {'column_id': 'Missing values',
+                                    'filter_query': '{Missing values} > 100'
+                                    },
+                             'backgroundColor': 'rgb(255, 0, 0)', 'color': 'white'
+                         },
                      ]
-                ), fullscreen=True),
-                style={'width': '45%', 'display': 'inline-block','position': 'relative'}
-            ),
-            # 3b. Distribution graphs on the right side
-            #     Callback for updating this graph = distribution_plot
-            html.Div([
-                html.Div(
-                    dcc.RadioItems(
-                        id='radio1',
-                        options=[{'label': "Target based distribution", "value": "target"},
-                                 {'label': "Individual distribution", "value": "solo"}],
-                        value="solo",
-                        labelStyle={'display': 'inline-block', 'text-align': 'justify'}
+                     ), className="twelve columns"
+    )
 
-                    )),
-                html.Div(
-                        dcc.RadioItems(
-                            id='stack',
-                            value='group',
-                            labelStyle={'display': 'inline-block', 'text-align': 'justify'}
-                        )),
-                dcc.Loading(html.Div(
-                    id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                              'height': '400px', 'position': 'absolute'})),
-            ],  style={'width': '50%', 'display': 'inline-block',
-                       'position': 'absolute'}
-            ),
-        ]),
-        # 4. Adding tabs for multiple plots below table and distribution plot
-        #    Add another tab for a new plot
-        dcc.Tabs(id="tabs", children=[
-           dcc.Tab(label='Feature Importance', children=[ dcc.Loading(html.Div(id='fi'))]),
-            dcc.Tab(id="tab2", label='Feature Interactions', children=[
-                html.Div([
-                    html.Div(
-                        dcc.RadioItems(
-                            id='radio',
-                            options=[{'label': "Top five feature interactions", "value": "top"},
-                                     {'label': "Top five numeric feature interactions", "value": "numeric"},
-                                     {'label': "Top five nominal feature interactions", "value": "nominal"}],
-                            value="top"
+    # Distribution plot
+    table_graph = dcc.Loading(html.Div(id='table-graph', className="twelve columns"))
+    subplot_graph = dcc.Loading(html.Div(
+                id='distribution', style={'overflowY': 'scroll', 'width': '100%',
+                                          'height': '400px'}))
+    dist_plot = html.Div([
+        html.P(''),
+        html.P('Choose if the color code is based on target or not',
+               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
+                      }
+               ),
+        html.Div(
+            dcc.RadioItems(
+                id='radio1',
+                options=[{'label': "Target based distribution", "value": "target"},
+                         {'label': "Individual distribution", "value": "solo"}],
+                value="solo",
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
 
-                        ), ),
-                    dcc.Loading(html.Div(id='matrix')),
-                    html.Div(id='hidden', style={'display': 'none'})
+            )),
+        html.Div(
+            dcc.RadioItems(
+                id='stack',
+                value='group',
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+            )),
+        table_graph,
 
+    ],
+    )
 
-                ])
-            ]),
-            dcc.Tab(id="tab3", label='Scatter plot', children=[
-                html.Div([
-                    html.Div(dcc.Dropdown(
-                        id='dropdown1',
-                        options=[
-                            {'label': i, 'value': i} for i in numerical_data
-                        ],
-                        multi=False,
-                        clearable=False,
-                        value=numerical_data[0]
-                    ), style={'width': '30%'}),
-                    html.Div(dcc.Dropdown(
-                        id='dropdown2',
-                        options=[
-                            {'label': i, 'value': i} for i in numerical_data
-                        ],
-                        multi=False,
-                        clearable=False,
-                        value=numerical_data[0]
+    # Feature importance
+    feature_importance = html.Div(id='Feature Importance',
+                                  children=[html.H2('RandomForest Feature Importance'),
+                                            dcc.Loading(html.Div(id='fi'))])
 
-                    ),style={'width': '30%'}),
-                    html.Div(dcc.Dropdown(
-                        id='dropdown3',
-                        options=[
-                            {'label': i, 'value': i} for i in nominal_data],
-                        multi=False,
-                        clearable=False,
-                        value=nominal_data[0]), style={'width': '30%'}),
-                    html.Div(id='scatter_plot'), ])
-            ])if numerical_data and nominal_data else dcc.Tab(label='Scatter Plot',
-                                                              children=[html.Div(
-                                                                  html.P('No numerical-nominal combination found'))]
-                                                              )],
-                 )],
-        className="container", style={"fontFamily": font, "fontSize":10})
+    # Feature Interaction
+    feature_interaction = html.Div(id="tab2", children=[
+        html.Div([
+            html.H2('Feature Interactions'),
+            html.Div(
+                dcc.RadioItems(
+                    id='radio',
+                    options=[{'label': "Top four feature interactions", "value": "top"},
+                             {'label': "Top four numeric feature interactions", "value": "numeric"},
+                             {'label': "Top four nominal feature interactions", "value": "nominal"}],
+                    value="top"
+
+                ), ),
+            dcc.Loading(html.Div(id='matrix')),
+            html.Div(id='hidden', style={'display': 'none'})
+
+        ])
+    ])
+
+    # Scatter plot
+    scatter_plot = html.Div(id="tab3")
+    # Define layout using components
+    layout = html.Div(children=[
+        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
+        html.P('Choose one or more attributes for distribution plot (first 1k attributes listed)',
+               style={'text-align': 'left', 'color': 'gray','fontSize': 11
+                      }),
+
+        feature_table,
+        dist_plot,
+        scatter_plot,
+        feature_importance,
+        feature_interaction,
+        html.Div(id='tableloaded', children="table", style={'display': 'none'}),
+        html.Div(id='dataloaded', style={'display': 'none'})
+
+    ], className='container', style={'overflowY': 'hidden'}),
+    logger.debug("loaded skeleton layout and table")
     return layout
 
 
@@ -207,7 +163,6 @@ def get_layout_from_task(task_id):
     :param task_id:
     :return:
     layout: the layout for task visualization
-    df : the df containing measures
 
     """
 
@@ -216,36 +171,48 @@ def get_layout_from_task(task_id):
         os.remove('cache/task'+str(task_id)+'.pkl')
     except OSError:
         pass
+
+    # Define components in task layout
+    loading_spinner = dcc.Loading(html.Div(id='dummy'), type='dot')
+    hidden_div = html.Div(id='intermediate-value', style={'display': 'none'})
+    metric_dropdown = html.Div(
+        [dcc.Dropdown(
+            id='metric',
+            options=[
+                {'label': i, 'value': i} for i in measures
+            ],
+            multi=False,
+            clearable=False,
+            placeholder="Select an attribute",
+            value=measures[0]
+        )],
+        style={'width': '30%', 'display': 'inline-block',
+               'position': 'relative'},
+    )
+
+    fetch_runs_button = html.Div(html.Button('Fetch next 100 runs', id='button',
+                                 style={'fontSize': 14,
+                                        'color': 'black',
+                                        'width': '20',
+                                        'height': '30',
+                                        'background-color': 'white'}))
+    graph_evals = html.Div(id='tab1')
+    graph_people = html.Div(id='tab2')
+
     layout = html.Div([
-        html.Div(id='intermediate-value', style={'display': 'none'}),
+        loading_spinner,
+        hidden_div,
         html.Div(children=[
-            # Dropdown to choose metric
-            html.Div(
-                [dcc.Dropdown(
-                    id='metric',
-                    options=[
-                        {'label': i, 'value': i} for i in measures
-                    ],
-                    multi=False,
-                    clearable=False,
-                    placeholder="Select an attribute",
-                    value=measures[0]
-                )],
-                style={'width': '30%', 'display': 'inline-block',
-                       'position': 'relative'},
-            ),
-            # Scatter plot flow vs metric
-
-            dcc.Tabs(id="tabs", children=[
-                dcc.Loading(fullscreen=True, children=[
-                    dcc.Tab(label='Evaluations', children=[html.Div(id='tab1')])]),
-                dcc.Tab(label='People', children=[html.Div(id='tab2')])
-            ]),
-            html.Div(html.Button('Fetch next 1000 runs', id='button')),
-
-
+            metric_dropdown,
+            html.H4('Evaluations:'),
+            graph_evals,
+            html.H4('People:'),
+            graph_people,
+            html.P(" "),
+            html.P(" "),
+            fetch_runs_button,
         ]),
-    ], style={"fontFamily": font, 'width':'100%'})
+    ], style={'width': '100%'})
 
     return layout
 
@@ -256,23 +223,20 @@ def get_layout_from_flow(flow_id):
     :param flow_id:
     :return:
     """
-    # Dropdown #1 Metrics
+
     measures = (evaluations.list_evaluation_measures())
-    df = pd.DataFrame(measures)
-    # Dropdown #2 task types
+
     task_types = ["Supervised classification", "Supervised regression", "Learning curve",
                   "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
                   "Survival Analysis", "Subgroup Discovery"]
-    # Dropdown #3 flow parameters
-    P = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
-    parameter_dict = P['parameters'].values[0]
+
+    setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
+    parameter_dict = setup_list['parameters'].values[0]
     parameters = [param['full_name'] for key, param in parameter_dict.items()]
     parameters.append('None')
-    layout = html.Div([
-        html.Div(id='intermediate-value', style={'display': 'none'}),
-        html.Div(children=[
-            # 1 Dropdown to choose metric
-            html.Div(
+
+    # Define components of flow layout
+    dropdown_metric = html.Div(
                 [dcc.Dropdown(
                     id='metric',
                     options=[
@@ -285,9 +249,8 @@ def get_layout_from_flow(flow_id):
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
-            ),
-            # 2 Dropdown to choose task type
-            html.Div(
+            )
+    dropdown_tasktype = html.Div(
                 [dcc.Dropdown(
                     id='tasktype',
                     options=[
@@ -300,9 +263,8 @@ def get_layout_from_flow(flow_id):
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
-            ),
-            # 3 Dropdown to choose parameter
-            html.Div(
+            )
+    dropdown_parameter = html.Div(
                 [dcc.Dropdown(
                     id='parameter',
                     options=[
@@ -315,17 +277,20 @@ def get_layout_from_flow(flow_id):
                 )],
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
-            ),
-
-            html.Div(
+            )
+    flow_graph = html.Div(
                 [dcc.Loading(dcc.Graph(
                     id='flowplot',
                     style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'}))],
-            ),
-
-        ]),
-    ],style={"fontFamily": font})
+                           'position': 'absolute'}))])
+    layout = html.Div([
+        html.Div(id='intermediate-value', style={'display': 'none'}),
+        html.Div(children=[
+            dropdown_metric,
+            dropdown_tasktype,
+            dropdown_parameter,
+            flow_graph])
+    ])
 
     return layout
 
@@ -352,23 +317,17 @@ def get_layout_from_run(run_id):
     df['results'] = result_list
     df['values'] = error
     d = df.drop(['results'], axis=1)
-    layout = html.Div([
-        html.H2('Run '+ str(run_id), style={'text-align': 'left', 'text-color': 'black'
-                                          }),
-        html.P('Choose one or more measures from the table',
-               style={'text-align': 'left', 'color': 'gray',
-                      }),
-        html.Div(id='intermediate-value', style={'display': 'none'}),
-        # Table with metric on left side
-        html.Div([
-           html.Div(
+
+    # Define components of run layout
+    run_title = html.H2('Run ' + str(run_id), style={'text-align': 'left', 'text-color': 'black'})
+    run_table = html.Div(
                dt.DataTable(
                    data=d.to_dict('records'),
                    columns=[{"name": i, "id": i} for i in d.columns],
                    row_selectable="multi",
                    sort_action="native",
                    row_deletable=False,
-                   selected_rows=[0],
+                   selected_rows=[0,1,2],
                    style_header={
                        'backgroundColor': 'white',
                        'fontWeight': 'bold'
@@ -377,7 +336,7 @@ def get_layout_from_run(run_id):
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
                                'textAlign': 'left',
-                               'textOverflow': 'ellipsis', "fontSize": 15,
+                               'textOverflow': 'ellipsis', "fontSize": 11,
                                "fontFamily": font
                                },
                    style_table={
@@ -387,19 +346,30 @@ def get_layout_from_run(run_id):
                        'border': 'thin lightgrey solid'
                    },
                    id='runtable'),  style={'width': '45%', 'display': 'inline-block','position': 'relative'}
-           ),
-           html.Div(
+           )
+
+    run_plot = html.Div(
             id='runplot',
                style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
                       'position': 'absolute'}
-           ),
+           )
+    pr_chart = dcc.Loading(html.Div(id='pr'))
+    roc_chart = html.Div(id='roc')
+    layout = html.Div([
+        run_title,
+        html.P('Choose one or more measures from the table',
+               style={'text-align': 'left', 'color': 'gray', "fontSize": 11,
+                      }),
+        html.Div([
+            run_table,
+            run_plot,
         ]),
-        dcc.Tabs(id="tabs", children=[
-            dcc.Tab(label='PR chart', children=[dcc.Loading(html.Div(id='pr'))]),
-            dcc.Tab(label='ROC Chart', children=[html.Div(id='roc')]),
-                 ]),
+        html.H4("PR chart:"),
+        pr_chart,
+        html.H4("ROC curve:"),
+        roc_chart
+    ], style={'overflowY': 'hidden'})
 
-    ],style={"fontFamily": font, 'overflowY':'hidden'})
     # Add some more rows indicating prediction id
     df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
     df2["values"] = ""
@@ -431,8 +401,9 @@ def get_layout_from_study(study_id):
             value = '0'
         ),
         html.Div(id='scatterplot-study'),
-    ], style={"fontFamily": font})
+    ])
     return layout
+
 
 def get_layout_from_suite(suite_id):
     """
@@ -446,37 +417,38 @@ def get_layout_from_suite(suite_id):
     # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         html.Div(id='distplot-suite'),
-    ], style={"fontFamily": font})
+    ])
     return layout
 
 
 def get_dataset_overview():
+    """
+
+    :return: overview of datasets page
+    """
     df = datasets.list_datasets(output_format='dataframe')
-    showlegend=False
-    print(df.columns)
+    df.dropna(inplace=True)
+    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, max(df["NumberOfInstances"])]
+    bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1).astype(str)
+    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2).astype(str)
+
     title = ["Number of instances across datasets",
              "Number of features across datasets",
              "Attribute Type percentage distribution",
              "Number of classes"]
 
-    df.dropna(inplace=True)
     fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
-    # Number of Instances
-    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, max(df["NumberOfInstances"])]
-
-    #Number of features
-    bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-
-    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1).astype(str)
-    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2).astype(str)
 
     for col in ["Number of instances", "Number of features"]:
         df[col] = df[col].str.replace(',', ' -')
         df[col] = df[col].str.replace('(', "")
         df[col] = df[col].str.replace(']', "")
     df.sort_values(by="NumberOfInstances", inplace=True)
+    showlegend = False
     fig.add_trace(
         go.Histogram(x=df["Number of instances"], showlegend=showlegend), row=1, col=1)
+
     df.sort_values(by="NumberOfFeatures", inplace=True)
     fig.add_trace(
         go.Histogram(x=df["Number of features"], showlegend=showlegend), row=2, col=1)
@@ -490,17 +462,18 @@ def get_dataset_overview():
     fig.add_trace(
         go.Violin(x=df["NumberOfClasses"], showlegend=showlegend, name="NumberOfClasses"), row=4, col=1)
 
-    fig.update_layout(height=1000,
-                      )
+    fig.update_layout(height=1000)
     fig.update_xaxes(tickfont=dict(size=10))
 
-    return html.Div(dcc.Graph(figure=fig), style={"fontFamily": font, "fontsize":10})
+    return html.Div(dcc.Graph(figure=fig), style={"fontsize":10})
 
 
 def get_task_overview():
+    """
+
+    :return: Overview page for all tasks on openml
+    """
     df = tasks.list_tasks(output_format='dataframe')
-    print(df.columns)
-    showlegend = False
     cols = ["task_type", "estimation_procedure"]
     title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
 
@@ -509,49 +482,60 @@ def get_task_overview():
     for col in cols:
         i = i+1
         fig.add_trace(
-        go.Histogram(x=df[col]), row=i, col=1) #showlegend=showlegend
+        go.Histogram(x=df[col], showlegend=False), row=i, col=1)
     fig.update_layout(height=1000)
 
     return html.Div(dcc.Graph(figure=fig))
 
 
 def get_flow_overview():
+    """
 
-    # df_runs = runs.list_runs(output_format='dataframe', size=10000)
-    # print(df_runs.columns)
-    # count = pd.DataFrame(df_runs["flow_id"].value_counts()).reset_index()
-    # count.columns = ["id", "count"]
-    # print(count.shape)
-    # print(count.head())
+    :return: overview page for flows
+    """
 
-    # Recently popular Flows overview
     df = flows.list_flows(output_format='dataframe')
     count = pd.DataFrame(df["name"].value_counts()).reset_index()
     count.columns = ["name", "count"]
     count = count[0:1000]
+    short = []
+    for name in count["name"]:
+        try:
+            short.append(SklearnExtension.trim_flow_name(name))
+        except:
+            pass
+    count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
+                                 marker=dict(color='blue',
+                                             opacity=0.8),
                                  orientation="h")])
-    fig.update_layout(height=1000,
+    fig.update_layout(
                       yaxis=dict(autorange="reversed"),
-                      margin = dict(l=500),
-                      title="Overview of some commonly used flows on OpenML"),
+                      margin=dict(l=500),
+                      title="",
+                      height=700),
 
     return html.Div(dcc.Graph(figure=fig))
 
 
 def get_run_overview():
     df = runs.list_runs(output_format='dataframe', size=10000)
-    print(df.columns)
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering",
+                  "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
 
-    # cols = ["Number of instances", "Number of features", "Attribute Type"]
-    #
-    # df.dropna(inplace=True)
-    # fig = plotly.subplots.make_subplots(rows=1, cols=1, subplot_titles=tuple(cols))
-    # i = 0
-    # for col in cols:
-    #     i = i+1
-    #     fig.add_trace(
-    #     go.Histogram(x=df[col], name=col), row=1, col=i)
-    #fig.update_layout(height=1000)
+    count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
+    count.columns = ["name", "count"]
+    count["percent"] = (count["count"]/count["count"].sum())*100
+    count["name"] = [task_types[i] for i in count["name"].values]
+    data = [go.Bar(x=count["name"].values, y=count["percent"].values,
+                   )]
+    fig = go.Figure(data=data)
+    fig.update_layout(yaxis=dict(
+        title='Percentage(%)'))
 
-    return "run"
+    return dcc.Graph(figure=fig)
+
+
+

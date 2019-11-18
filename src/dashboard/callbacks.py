@@ -1,7 +1,8 @@
 import re
-from .layouts import *
+
 from dash.dependencies import Input, Output
-import dash_html_components as html
+
+from .layouts import *
 from .helpers import *
 from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
@@ -10,7 +11,6 @@ from .run_callbacks import register_run_callbacks
 from .study_callbacks import register_study_callbacks
 from .suite_callbacks import register_suite_callbacks
 
-import time
 
 def register_callbacks(app):
     """Register all callbacks of the dash app
@@ -19,7 +19,8 @@ def register_callbacks(app):
     :return:
     """
 
-    @app.callback(Output('page-content', 'children'),
+    @app.callback([Output('page-content', 'children'),
+                   Output('loading-indictor', 'children')],
 
                   [Input('url', 'pathname')])
     def render_layout(pathname):
@@ -33,7 +34,7 @@ def register_callbacks(app):
         :return: intermediate-value: json
             Cached df in json format for sharing between callbacks
         """
-        df = pd.DataFrame()
+
         if pathname is not None:
             number_flag = any(c.isdigit() for c in pathname)
 
@@ -41,49 +42,49 @@ def register_callbacks(app):
             if number_flag:
                 data_id = int(re.search('data/(\d+)', pathname).group(1))
                 layout = get_layout_from_data(data_id)
-                return layout
+                return layout, None
             else:
                 layout = get_dataset_overview()
-                return layout
+                return layout, None
         elif pathname is not None and 'dashboard/task' in pathname:
             if number_flag:
                 task_id = int(re.search('task/(\d+)', pathname).group(1))
                 layout = get_layout_from_task(task_id)
-                return layout
+                return layout, None
             else:
                 layout = get_task_overview()
-                return layout
+                return layout, None
 
         elif pathname is not None and 'dashboard/flow' in pathname:
             if number_flag:
                 flow_id = int(re.search('flow/(\d+)', pathname).group(1))
                 layout = get_layout_from_flow(flow_id)
-                return layout
+                return layout, None
             else:
                 layout = get_flow_overview()
-                return layout
+                return layout, None
 
         elif pathname is not None and 'dashboard/run' in pathname:
             if number_flag:
                 run_id = int(re.search('run/(\d+)', pathname).group(1))
                 layout = get_layout_from_run(run_id)
-                return layout
+                return layout, None
             else:
                 layout = get_run_overview()
-                return layout
+                return layout, None
 
         elif pathname is not None and 'dashboard/study/run' in pathname:
             study_id = int(re.search('study/run/(\d+)', pathname).group(1))
             layout = get_layout_from_study(study_id)
-            return layout
+            return layout, None
 
         elif pathname is not None and 'dashboard/study/task' in pathname:
             suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
             layout = get_layout_from_suite(suite_id)
-            return layout
+            return layout, None
         else:
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
-            return index_page
+            return index_page, None
 
     register_data_callbacks(app)
     register_run_callbacks(app)
