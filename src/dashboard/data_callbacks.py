@@ -74,6 +74,11 @@ def register_data_callbacks(app):
     #     [State('datatable', 'data')])
     # def distribution_sub_plot(selected_row_indices, radio_value, stack, url, rows):
     #     data_id = int(re.search('data/(\d+)', url).group(1))
+
+    # try:
+    #     df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
+    # except OSError:
+    #     return []
     #     meta_data = pd.DataFrame(rows)
     #
     #     if len(selected_row_indices) != 0:
@@ -90,7 +95,7 @@ def register_data_callbacks(app):
     #         i = 0
     #         for attribute in attributes:
     #             show_legend = True if i == 0 else False
-    #             data = dist_plot(meta_data, attribute, types[i], radio_value, data_id, show_legend)
+    #             data = dist_plot(meta_data, attribute, types[i], radio_value, data_id, show_legend, df)
     #             i = i + 1
     #             for trace in data:
     #                 fig.append_trace(trace, i, 1)
@@ -111,8 +116,14 @@ def register_data_callbacks(app):
          Input('dataloaded', 'value')
          ])
     def plot_table(rows, selected_row_indices, url, radio, stack, dataloaded):
-        print("plotting dist plot")
+        print(dataloaded)
+        print("enter dist plot" )
         data_id = int(re.search('data/(\d+)', url).group(1))
+
+        try:
+            df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
+        except OSError:
+            return []
         meta_data = pd.DataFrame(rows)
         if len(selected_row_indices) != 0:
             meta_data = meta_data.loc[selected_row_indices]
@@ -128,6 +139,7 @@ def register_data_callbacks(app):
         #                                     html.H4("Plot")))
         for index, row in meta_data.iterrows():
             attribute = row["Attribute"]
+            print(attribute)
             col1 = html.P(row["Attribute"])
             col2 = html.P(row["DataType"])
             col3 = html.P(row["Missing values"])
@@ -135,7 +147,7 @@ def register_data_callbacks(app):
             col5 = html.P(row["Target"])
             col6 = html.P(row["Target"])
             show_legend = True if index == 0 else False
-            data = dist_plot(meta_data, attribute, row["DataType"], radio, data_id, show_legend)
+            data = dist_plot(meta_data, attribute, row["DataType"], radio, data_id, show_legend, df)
             fig = go.Figure(data=data)
             fig['layout'].update(hovermode='closest', barmode=stack, font=dict(size=11))
             col7 = dcc.Graph(figure=fig)
@@ -423,11 +435,7 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
             )])
 
 
-def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend):
-        try:
-            df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
-        except OSError:
-            return []
+def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df):
         try:
             target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
             target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
