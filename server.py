@@ -31,10 +31,13 @@ def create_app(config_object = Config):
             robj = request.get_json()
             user = User(username=robj['name'], email=robj['email'])
             user.set_password(robj['password'])
+            # max_id = db.session.query(db.func.max(User.id)).scalar()
+            # user.set_user_id(max_id)
             db.session.add(user)
             db.session.commit()
+            print('signedup')
 
-        return 'request'
+        return 'signedup'
 
     @app.route('/login', methods=['POST'])
     def login():

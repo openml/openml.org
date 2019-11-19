@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { red } from "@material-ui/core/colors";
+import { Redirect } from "react-router-dom";
+import {  useState } from 'react';
+
 
 import {
   FormControl,
@@ -29,15 +32,31 @@ const RedIcon = styled(FontAwesomeIcon)({
 });
 
 function SignUp() {
+  const [register, setRegister] = useState(false);
+
   function sendflask(event) {
     event.preventDefault();
     console.log("The link was clicked.");
     const data = new FormData(event.target);
-    axios.post("https://127.0.0.1:5000/signup", {
-      name: event.target.name.value,
-      email: event.target.email.value,
-      password: event.target.password.value
-    });
+    axios
+        .post("https://127.0.0.1:5000/signup", {
+          name: event.target.name.value,
+          email: event.target.email.value,
+          password: event.target.password.value
+        })
+        .then(function(response) {
+            if (response.data === "signedup") {
+                console.log(response.data);
+                setRegister(true);
+            }
+            else {
+                console.log(response.data);
+            }
+        })
+        .catch(function(error) {
+        console.log(error.data);
+      });
+    return false;
   }
   return (
     <Wrapper>
@@ -73,6 +92,10 @@ function SignUp() {
         >
           Sign up for OpenML
         </Button>
+          { register
+        ? <Redirect to = '/auth/sign-in' />
+        : <Redirect to = '/auth/sign-up' />
+      }
       </form>
       <p>
         <RedIcon icon="exclamation-triangle" /> By joining, you agree to the{" "}
