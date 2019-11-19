@@ -113,13 +113,13 @@ def get_layout_from_data(data_id):
 
     # Feature importance
     feature_importance = html.Div(id='Feature Importance',
-                                  children=[html.H2('RandomForest Feature Importance'),
+                                  children=[html.H3('RandomForest Feature Importance'),
                                             dcc.Loading(html.Div(id='fi'))])
 
     # Feature Interaction
     feature_interaction = html.Div(id="tab2", children=[
         html.Div([
-            html.H2('Feature Interactions'),
+            html.H3('Feature Interactions'),
             html.Div(
                 dcc.RadioItems(
                     id='radio',
@@ -146,9 +146,9 @@ def get_layout_from_data(data_id):
 
         feature_table,
         dist_plot,
-        scatter_plot,
         feature_importance,
         feature_interaction,
+        scatter_plot,
         html.Div(id='tableloaded', children="table", style={'display': 'none'}),
         html.Div(id='dataloaded', style={'display': 'none'})
 
@@ -319,7 +319,7 @@ def get_layout_from_run(run_id):
     d = df.drop(['results'], axis=1)
 
     # Define components of run layout
-    run_title = html.H2('Run ' + str(run_id), style={'text-align': 'left', 'text-color': 'black'})
+    run_title = html.H3('Run ' + str(run_id), style={'text-align': 'left', 'text-color': 'black'})
     run_table = html.Div(
                dt.DataTable(
                    data=d.to_dict('records'),

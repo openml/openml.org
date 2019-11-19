@@ -150,7 +150,7 @@ def register_data_callbacks(app):
             show_legend = True if index == 0 else False
             data = dist_plot(meta_data, attribute, row["DataType"], radio, data_id, show_legend, df)
             fig = go.Figure(data=data)
-            fig['layout'].update(hovermode='closest', barmode=stack, font=dict(size=11))
+            fig['layout'].update(hovermode='closest', height=300, barmode=stack, font=dict(size=11))
             col7 = dcc.Graph(figure=fig)
             children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
         out = html.Div(className="twelve columns",
@@ -392,11 +392,7 @@ def register_data_callbacks(app):
 
 def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
     return html.Div(
-
         className="row metric-row",
-
-
-
         children=[
             html.Div(className="two columns",
                      style={"margin-right": "2.5rem",
