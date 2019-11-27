@@ -1,11 +1,7 @@
-from extensions import db
+from server.extensions import db
 from flask_login import UserMixin
-from extensions import loginmgr
-from extensions import argon2
+from server.extensions import argon2
 
-@loginmgr.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
