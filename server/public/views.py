@@ -9,8 +9,9 @@ from flask import (
 )
 from flask_login import login_required, login_user, logout_user
 from server.user.models import User
+from server.extensions import login_manager, db
 
-blueprint = Blueprint("public", __name__, static_folder="'src/client/app/build'")
+blueprint = Blueprint("public", __name__)
 
 @login_manager.user_loader
 def load_user(user_id):

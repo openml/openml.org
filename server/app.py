@@ -1,12 +1,12 @@
 from flask import Flask, request, send_from_directory
-from config import Config
+from .config import Config
 from flask_migrate import Migrate
 from flask_cors import CORS
 import os
-from src.dashboard.dashapp import create_dash_app
-from extensions import db, login_manager, argon2
-from server import user, public
-
+from .src.dashboard.dashapp import create_dash_app
+from .extensions import db, login_manager, argon2
+from server import user
+from server import public
 def create_app(config_object = Config):
 
     app = Flask(__name__, static_url_path='', static_folder='src/client/app/build',
@@ -37,7 +37,3 @@ def register_blueprints(app):
     app.register_blueprint(user.views.blueprint)
     return None
 
-if __name__ == '__main__':
-    app = create_app(Config)
-    app.secret_key = 'abcd'
-    app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')

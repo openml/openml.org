@@ -31,3 +31,5 @@ yarn-error.log*
 src/__pycache__/
 
 .idea/
+
+*.pyc
