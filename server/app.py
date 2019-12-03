@@ -7,11 +7,13 @@ from .src.dashboard.dashapp import create_dash_app
 from .extensions import db, login_manager, argon2
 from server import user
 from server import public
+from .user.models import User
 def create_app(config_object = Config):
 
     app = Flask(__name__, static_url_path='', static_folder='src/client/app/build',
                 instance_relative_config=True)
     app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
+    CORS(app)
     app.config.from_object(Config)
     register_extensions(app)
     register_blueprints(app)
@@ -21,9 +23,9 @@ def create_app(config_object = Config):
 def register_extensions(app):
     argon2.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'user.login'
+
     create_dash_app(app)
-    CORS(app)
     # Database initialisation
     db.init_app(app)
     migrate = Migrate(app, db)
@@ -34,6 +36,6 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(user.views.user_blueprint)
     return None
 

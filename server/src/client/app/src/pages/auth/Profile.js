@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 import {
   Avatar,
@@ -17,6 +18,7 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {func} from "prop-types";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -37,6 +39,14 @@ const BigAvatar = styled(Avatar)`
 `;
 
 function Public() {
+  axios.get("https://127.0.0.1:5000/profile")
+      .then(function (response) {
+        console.log(response);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   return (
     <Card mb={6}>
       <CardContent>
