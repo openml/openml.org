@@ -13,10 +13,7 @@ from server.extensions import login_manager, db
 
 blueprint = Blueprint("public", __name__)
 
-@login_manager.user_loader
-def load_user(user_id):
-    """Load user by ID."""
-    return User.get_by_id(int(user_id))
+
 
 @blueprint.route('/<path:path>')
 def serve(path):
@@ -37,27 +34,15 @@ def signupfunc():
         db.session.add(user)
         db.session.commit()
         print('signedup')
+        return 'signedup'
+    return 'notyet'
 
-    return 'signedup'
 
 
-@blueprint.route('/login', methods=['POST'])
-def login():
-    # if current_user.is_authenticated:
-    #     print('alreadyauth')
-    #     return 'alreadyauth'
-    jobj = request.get_json()
-    user = User.query.filter_by(email=jobj['email']).first()
-    if user is None or not user.check_password(jobj['password']):
-        print("error")
-        return "Error"
-    else:
-        login_user(user)
-        print('loggedin')
-        return 'loggedin'
 
 
 @blueprint.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
