@@ -10,11 +10,14 @@ CORS(user_blueprint)
 @login_manager.request_loader
 def load_user(request):
     """Load user by ID."""
-    print(request)
-    username = request.args.get('id')
-    user = User.query.filter_by(email=username).first()
-    print (user)
-    return user
+    if request.method=='POST':
+        print(request)
+        obj = request.get_json()
+        print(obj)
+        user = User.query.filter_by(email=obj['email']).first()
+        return user
+    else:
+        print('why')
 
 
 @user_blueprint.route('/login', methods=['POST'])
@@ -36,6 +39,7 @@ def login():
 
 
 @user_blueprint.route('/profile', methods=['GET','POST'])
+@login_required
 def profile():
 
     if request.method == 'GET':

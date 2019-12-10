@@ -4,9 +4,7 @@ from server.extensions import argon2
 
 
 class User(UserMixin, db.Model):
-    is_anonymous = False
-    is_active = True
-    is_authenticated = True
+
     id = db.Column(db.Integer, primary_key=True, unique=True)
     ip_address = db.Column(db.String(64))
     username = db.Column(db.String(64), index=True, unique=True)
@@ -44,7 +42,8 @@ class User(UserMixin, db.Model):
         return argon2.check_password_hash(self.password_hash, password)
 
     def get_id(self):
-        return self.id
+        print('called')
+        return self.email
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
