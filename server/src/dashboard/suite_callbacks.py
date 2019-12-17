@@ -22,15 +22,15 @@ def register_suite_callbacks(app):
         suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         data_arr = openml.datasets.get_datasets(suite.data, download_data=False)
-        arr_id = []
+        arr_dataset_name = []
         arr_x = []
         arr_y = []
         for i in range(len(data_arr)):
-            arr_id.append(data_arr[i].dataset_id)
+            arr_dataset_name.append(data_arr[i].name)
             arr_x.append(data_arr[i].qualities[x])
             arr_y.append((data_arr[i].qualities[y]))
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=arr_x, y=arr_y, mode='markers'))
+        fig.add_trace(go.Scatter(x=arr_x, y=arr_y, mode='markers', text=arr_dataset_name))
         fig.update_layout(xaxis_type=x_type,
                           yaxis_type=y_type,
                           xaxis_title=x,
