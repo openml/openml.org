@@ -40,17 +40,12 @@ function SignIn() {
         password: event.target.password.value
       })
       .then(function(response) {
-        if (response.data === "loggedin" || response.data === "alreadyauth") {
           console.log(response.data);
           setLogger(true);
-        }
-        else {
-          console.log(response.data);
-          setError(true);
-        }
       })
       .catch(function(error) {
         console.log(error.data);
+        setError(true);
       });
     return false;
   }
