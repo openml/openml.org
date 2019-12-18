@@ -1,47 +1,46 @@
-from flask import Blueprint, render_template, request, Response
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user, login_user
 from server.user.models import User
 from flask_cors import CORS
 import requests
-from server.extensions import login_manager
+from flask_jwt_extended import (jwt_required, create_access_token,
+    get_jwt_identity
+)
+
 user_blueprint = Blueprint("user", __name__)
 CORS(user_blueprint)
 
-@login_manager.request_loader
-def load_user(request):
-    """Load user by ID."""
-    if request.method=='POST':
-        print(request)
-        obj = request.get_json()
-        print(obj)
-        user = User.query.filter_by(email=obj['email']).first()
-        return user
-    else:
-        print('why')
-
+# @login_manager.request_loader
+# def load_user(request):
+#     """Load user by ID."""
+#     if request.method=='POST':
+#         print(request)
+#         obj = request.get_json()
+#         print(obj)
+#         user = User.query.filter_by(email=obj['email']).first()
+#         return user
+#     else:
+#         print('why')
+#
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
-    # if current_user.is_authenticated:
-    #     print('alreadyauth')
-    #     return 'alreadyauth'
-    # elif request.method == 'POST':
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
     if user is None or not user.check_password(jobj['password']):
         print("error")
-        return "Error"
+        return jsonify({"msg": "Error"}), 401
+
     else:
-        print(current_user)
-        login_user(user, remember=True, force = True)
-        print(current_user)
-        return 'loggedin'
+        access_token = create_access_token(identity=user.email)
+        return jsonify(access_token=access_token), 200
+
 
 
 @user_blueprint.route('/profile', methods=['GET','POST'])
-@login_required
+@jwt_required
 def profile():
-
+    current_user = get_jwt_identity()
     if request.method == 'GET':
         print(current_user)
         print('profile executed')

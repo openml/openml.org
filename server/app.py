@@ -7,7 +7,10 @@ from .src.dashboard.dashapp import create_dash_app
 from .extensions import db, login_manager, argon2
 from server import user
 from server import public
-from .user.models import User
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 def create_app(config_object = Config):
 
     app = Flask(__name__, static_url_path='', static_folder='src/client/app/build',
@@ -17,6 +20,7 @@ def create_app(config_object = Config):
     app.config.from_object(Config)
     register_extensions(app)
     register_blueprints(app)
+    jwt = JWTManager(app)
     return app
 
 
