@@ -123,6 +123,11 @@ class SearchElement extends React.Component {
     ];
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    // Cards are static. No need to rerender.
+    return false;
+  }
+
   render() {
     const abbreviateNumber = value => {
       let newValue = value;
