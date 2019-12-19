@@ -40,17 +40,13 @@ function SignIn() {
         password: event.target.password.value
       })
       .then(function(response) {
-        if (response.data === "loggedin" || response.data === "alreadyauth") {
           console.log(response.data);
           setLogger(true);
-        }
-        else {
-          console.log(response.data);
-          setError(true);
-        }
+          localStorage.setItem("token", response.data.access_token)
       })
       .catch(function(error) {
         console.log(error.data);
+        setError(true);
       });
     return false;
   }

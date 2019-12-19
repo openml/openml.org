@@ -412,12 +412,55 @@ def get_layout_from_suite(suite_id):
     outpus:
     scatter plot for runs and studies combined
     """
-    # items = study.get_study(int(study_id))
-    # run_ids = items.runs[1:300]
-    # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    # layout = html.Div([
+    #     html.Div(id='distplot-suite'),
+    # ])
+    d = datasets.get_dataset(1, download_data=False)
+    key_list = list(d.qualities.keys())
     layout = html.Div([
-        html.Div(id='distplot-suite'),
+        html.Div([
+
+            html.Div([
+                dcc.Dropdown(
+                    id='xaxis-column',
+                    options=[{'label': i, 'value': i} for i in key_list],
+                    value='NumberOfInstances'
+                ),
+                dcc.RadioItems(
+                    id='xaxis-type',
+                    options=[{'label': i, 'value': i} for i in ['linear', 'log']],
+                    value='linear',
+                    labelStyle={'display': 'inline-block'}
+                )
+            ],
+                style={'width': '48%', 'display': 'inline-block'}),
+
+            html.Div([
+                dcc.Dropdown(
+                    id='yaxis-column',
+                    options=[{'label': i, 'value': i} for i in key_list],
+                    value='NumberOfFeatures'
+                ),
+                dcc.RadioItems(
+                    id='yaxis-type',
+                    options=[{'label': i, 'value': i} for i in ['linear', 'log']],
+                    value='linear',
+                    labelStyle={'display': 'inline-block'}
+                )
+            ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+        ]),
+
+        html.Div(id='suite-scatter-plot'),
+        html.Div([
+            dcc.Dropdown(
+                id='xaxis-hist',
+                options=[{'label': i, 'value': i} for i in key_list],
+                value='NumberOfInstances'
+            )
+        ]),
+        html.Div(id='suite-histogram')
     ])
+
     return layout
 
 
