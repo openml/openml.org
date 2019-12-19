@@ -470,12 +470,29 @@ class Cover extends React.Component {
           </CoverTitle>
           <FrontPaper>
             <CardContent>
+              <p>
+                <b>
+                  <i>
+                    OpenML is an open science initiative to make machine
+                    learning research more accessible and beneficial to all of
+                    humanity.
+                  </i>
+                </b>
+                We provide open source interfaces for sharing and organizing
+                datasets, algorithms, and reproducible experiments, and support
+                research in learning from this data to make machine learning
+                more automated, robust, and easy to use. We are a non-profit
+                organization driven by enthousiastic people, engaging with
+                universities, companies, or anyone sharing the same goals.
+                <br />
+                <br />
+              </p>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <OpenMLGraph />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  Easily find machine learning data and experiments online
+                  How we organize machine learning information:
                   <ListItem>
                     <ListItemIcon>
                       <GreenIcon icon="database" size="2x" fixedWidth />
