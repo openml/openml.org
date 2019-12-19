@@ -144,15 +144,16 @@ class App extends React.Component {
         } else {
           update["displaySearch"] = true;
         }
+        if (this.state.displaySearch !== update.displaySearch) qchanged = true;
       }
       // Unset ID
       if (this.state.id !== undefined && qp["id"] === undefined)
         qchanged = true;
       // If anything changed, set the new state
       if (qchanged) {
+        console.log("SetState: query changed");
         update.updateType = "query";
         update.results = [];
-        console.log("SetState: qchanged");
         this.setState(update);
       } else if (qp["id"] !== undefined && this.state.id !== qp["id"]) {
         console.log("SetState: id changed");
@@ -161,6 +162,11 @@ class App extends React.Component {
           updateType: "id"
         });
       } else {
+        if (this.state.updateType !== undefined) {
+          this.setState({
+            updateType: undefined
+          });
+        }
         console.log("SetState: nothing to do");
       }
     },

@@ -230,10 +230,8 @@ export default class SearchPanel extends React.Component {
   // check if update requires a query reload
   componentDidUpdate() {
     if (this.context.updateType === "query") {
-      console.log("SearchPanel Update! Reload Search");
       this.reload();
     } else {
-      console.log("SearchPanel Update! Update Search");
       this.updateSearch();
     }
   }
@@ -469,12 +467,12 @@ export default class SearchPanel extends React.Component {
         <Grid
           item
           xs={12}
-          sm={3}
+          sm={4}
           style={{ display: this.context.searchCollapsed ? "none" : "block" }}
         >
           {this.getEntityList()}
         </Grid>
-        <Grid item xs={12} sm={this.context.searchCollapsed ? 12 : 9}>
+        <Grid item xs={12} sm={this.context.searchCollapsed ? 12 : 8}>
           <SearchTabs
             value={activeTab}
             onChange={this.tabChange}
