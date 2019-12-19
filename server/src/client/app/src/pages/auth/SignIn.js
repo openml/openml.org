@@ -42,6 +42,7 @@ function SignIn() {
       .then(function(response) {
           console.log(response.data);
           setLogger(true);
+          localStorage.setItem("token", response.data.access_token)
       })
       .catch(function(error) {
         console.log(error.data);
