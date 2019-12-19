@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 import {
   Avatar,
@@ -17,6 +18,7 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {func} from "prop-types";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -36,7 +38,21 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
+
 function Public() {
+  const yourConfig = {
+   headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+   }
+}
+  axios.get("https://127.0.0.1:5000/profile",yourConfig)
+      .then(function (response) {
+        console.log(response);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   return (
     <Card mb={6}>
       <CardContent>

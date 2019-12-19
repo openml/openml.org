@@ -1,14 +1,11 @@
-from extensions import db
+from server.extensions import db
 from flask_login import UserMixin
-from extensions import loginmgr
-from extensions import argon2
+from server.extensions import argon2
 
-@loginmgr.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     ip_address = db.Column(db.String(64))
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -43,5 +40,12 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         #password = argon2.generate_password_hash(password)
         return argon2.check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        print('called')
+        return self.email
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+

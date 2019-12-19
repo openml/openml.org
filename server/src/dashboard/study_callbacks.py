@@ -26,8 +26,17 @@ def register_study_callbacks(app):
         item_fold = openml.evaluations.list_evaluations('predictive_accuracy', run=runs, output_format='dataframe',
                                                         per_fold=True)
         if(value == '0'):
-            fig = go.Figure(data=go.Scatter(x=item['value'], y=item['data_name'], mode='markers'))
+            dfs = dict(tuple(item.groupby('flow_name')))
+            key_list = list(dfs.keys())
+            fig = go.Figure()
+            for i in range(len(key_list)):
+                curr_df = dfs[str(key_list[i])]
+                fig.add_trace(go.Scatter(x=curr_df['value'], y=curr_df['data_name'],
+                                         mode='markers', name=str(key_list[i])))
+
+
         else:
+
             df = splitDataFrameList(item_fold, 'values')
             dfs = dict(tuple(df.groupby('flow_name')))
             key_list = list(dfs.keys())
@@ -36,7 +45,19 @@ def register_study_callbacks(app):
                 curr_df = dfs[str(key_list[i])]
                 fig.add_trace(go.Scatter(x=curr_df['values'], y=curr_df['data_name'],
                                          mode='markers', name=str(key_list[i])))
-
-        graph = dcc.Graph(figure=fig)
+        height = len(item['data_name'].unique()) * 30
+        print(height, len(item['data_name'].unique()))
+        fig.update_layout(
+            title="Flow vs task performance",
+            xaxis_title="Predictive accuracy",
+            yaxis_title="Dataset",
+            legend_orientation="h",
+            font=dict(
+                family="Courier New, monospace",
+                size=10,
+                color="#7f7f7f"
+            )
+        )
+        graph = dcc.Graph(figure=fig, style={'height':str(height)+'px' })
         return html.Div(graph)
 
