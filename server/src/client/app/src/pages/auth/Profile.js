@@ -38,8 +38,14 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
+
 function Public() {
-  axios.get("https://127.0.0.1:5000/profile")
+  const yourConfig = {
+   headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+   }
+}
+  axios.get("https://127.0.0.1:5000/profile",yourConfig)
       .then(function (response) {
         console.log(response);
 
