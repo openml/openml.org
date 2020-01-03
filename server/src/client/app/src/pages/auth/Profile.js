@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -40,6 +40,10 @@ const BigAvatar = styled(Avatar)`
 
 
 function Public() {
+  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState(false);
+  const [bio, setBio] = useState(false);
+
   const yourConfig = {
    headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
@@ -48,23 +52,45 @@ function Public() {
   axios.get("https://127.0.0.1:5000/profile",yourConfig)
       .then(function (response) {
         console.log(response);
+        setUser(response.data.username);
+        setEmail(response.data.email);
+        setBio(response.data.bio);
+        console.log('heyy')
+        console.log(user);
 
       })
       .catch(function (error) {
         console.log(error);
       });
+    function profiletoflask(event) {
+      console.log("function worked");
+    event.preventDefault();
+    const data = new FormData(event.target);
+    axios
+      .post("https://127.0.0.1:5000/profile", {
+        bio: event.target.biography.value,
+      }, yourConfig)
+      .then(function(response) {
+          console.log(response.data);
+          })
+      .catch(function(error) {
+        console.log(error.data);
+      });
+    return false;
+  }
   return (
+
     <Card mb={6}>
-      <CardContent>
+      <form onSubmit={profiletoflask}>
         <Typography variant="h6" gutterBottom>
           Public info
         </Typography>
 
         <Grid container spacing={6}>
           <Grid item md={8}>
-            <FormControl fullWidth mb={3}>
+              <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" defaultValue="openmluser" />
+              <Input id="username" defaultValue={user} value={user}/>
             </FormControl>
 
             <FormControl fullWidth mb={3}>
@@ -74,7 +100,9 @@ function Public() {
                 multiline={true}
                 rows={3}
                 rowsMax={4}
-                defaultValue="Update your bio here."
+                defaultValue={bio}
+                value={bio}
+
               />
             </FormControl>
           </Grid>
@@ -102,10 +130,11 @@ function Public() {
           </Grid>
         </Grid>
 
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" type="Submit">
           Save changes
         </Button>
-      </CardContent>
+    </form>
+
     </Card>
   );
 }

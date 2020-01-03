@@ -4,7 +4,7 @@ from server.extensions import argon2
 
 
 class User(UserMixin, db.Model):
-
+    __tablename__='users'
     id = db.Column(db.Integer, primary_key=True, unique=True)
     ip_address = db.Column(db.String(64))
     username = db.Column(db.String(64), index=True, unique=True)
