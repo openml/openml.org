@@ -33,7 +33,6 @@ const RedIcon = styled(FontAwesomeIcon)({
 
 function SignUp() {
   const [register, setRegister] = useState(false);
-
   function sendflask(event) {
     event.preventDefault();
     console.log("The link was clicked.");
