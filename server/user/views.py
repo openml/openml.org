@@ -9,19 +9,9 @@ from flask_jwt_extended import (jwt_required, create_access_token,
 
 user_blueprint = Blueprint("user", __name__)
 CORS(user_blueprint)
+from server.extensions import db
 
-# @login_manager.request_loader
-# def load_user(request):
-#     """Load user by ID."""
-#     if request.method=='POST':
-#         print(request)
-#         obj = request.get_json()
-#         print(obj)
-#         user = User.query.filter_by(email=obj['email']).first()
-#         return user
-#     else:
-#         print('why')
-#
+
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
@@ -46,6 +36,12 @@ def profile():
         print(current_user)
         print('profile executed')
         return jsonify({"username":user.username, "bio":user.bio, "first_name":user.first_name, "last_name":user.last_name, "email":user.email}), 200
+    elif request.method == "POST":
+        data = request.get_json()
+        print(data)
+        user.bio = data['bio']
+        db.session.commit()
+        return "changes executed"
     else:
         return "post user"
 
