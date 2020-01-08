@@ -34,6 +34,6 @@ def create_dash_app(flask_app):
 
     # Create a temporary cache for data transfer between callbacks
     shutil.rmtree('cache', ignore_errors=True)
-    os.system('sudo mkdir cache')
-    os.system('sudo chmod 777 cache')
+    os.system(' mkdir cache')
+    os.system(' chmod 777 cache')
     return app
