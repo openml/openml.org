@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 import os
 from .src.dashboard.dashapp import create_dash_app
-from .extensions import argon2, engine
+from .extensions import argon2, engine, Base, db
 from server import user
 from server import public
 from flask_jwt_extended import (
@@ -30,9 +30,20 @@ def register_extensions(app):
     argon2.init_app(app)
     create_dash_app(app)
     # Database initialisation
-    db_session = scoped_session(sessionmaker(bind=engine))
+    db_session = scoped_session(sessionmaker(autocommit=False,
+                                             autoflush=False,
+                                             bind=engine))
+    Base.query = db_session.query_property()
+    db.init_app(app)
     with app.app_context():
         db.create_all()
+    def init_db():
+        # import all modules here that might define models so that
+        # they will be registered properly on the metadata.  Otherwise
+        # you will have to import them first before calling init_db()
+        import user.models
+        Base.metadata.create_all(bind=engine)
+
     return None
 
 def register_blueprints(app):
