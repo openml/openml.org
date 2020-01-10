@@ -12,9 +12,10 @@ def register_study_callbacks(app):
         Output('scatterplot-study', 'children'),
         [Input('url', 'pathname'),
          Input('dropdown-study', 'value'),
+         Input('graph', 'value'),
          ]
     )
-    def scatterplot_study(pathname, value):
+    def scatterplot_study(pathname, value,type):
         print(value)
 
         study_id = int(re.search('study/run/(\d+)', pathname).group(1))
@@ -31,8 +32,13 @@ def register_study_callbacks(app):
             fig = go.Figure()
             for i in range(len(key_list)):
                 curr_df = dfs[str(key_list[i])]
-                fig.add_trace(go.Scatter(x=curr_df['value'], y=curr_df['data_name'],
-                                         mode='markers', name=str(key_list[i])))
+                if (type == 'scatter'):
+                    fig.add_trace(go.Scatter(x=curr_df['value'], y=curr_df['data_name'],
+                                             mode='markers', name=str(key_list[i])))
+                elif(type == 'parallel-coordinate'):
+                    fig.add_trace(go.Scatter(y=curr_df['value'], x=curr_df['data_name'], mode='lines+markers'
+                                             , name=str(key_list[i])))
+
 
 
         else:
