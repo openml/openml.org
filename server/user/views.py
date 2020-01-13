@@ -1,17 +1,23 @@
 from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required, current_user, login_user
 from server.user.models import User
 from flask_cors import CORS
 import requests
 from flask_jwt_extended import (jwt_required, create_access_token,
     get_jwt_identity
 )
+from server.extensions import db, jwt
+
 
 user_blueprint = Blueprint("user", __name__)
+
 CORS(user_blueprint)
-from server.extensions import db
 
 
+blacklist = set()
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return jti in blacklist
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
@@ -26,7 +32,7 @@ def login():
         return jsonify(access_token=access_token), 200
 
 
-
+# TODO: write jwt expiry logic
 @user_blueprint.route('/profile', methods=['GET','POST'])
 @jwt_required
 def profile():
@@ -45,3 +51,8 @@ def profile():
     else:
         return "post user"
 
+
+# TODO : write logoput logic
+@user_blueprint.route('/logout')
+def logout():
+    return redirect(url_for('index'))

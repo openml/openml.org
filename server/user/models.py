@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from server.extensions import argon2
 from sqlalchemy import Column, Integer, String
 
-
+# TODO: declare useful attributes and delete older attributes
 class User(Base):
     __table__ = Base.metadata.tables['users']
     __table_args__ = {'autoload': True}

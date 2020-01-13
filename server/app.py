@@ -4,13 +4,9 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 import os
 from .src.dashboard.dashapp import create_dash_app
-from .extensions import argon2, engine, Base, db
+from .extensions import argon2, engine, Base, db, jwt
 from server import user
 from server import public
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
-)
 from sqlalchemy.orm import scoped_session, sessionmaker, Query
 
 def create_app(config_object = Config):
@@ -22,14 +18,15 @@ def create_app(config_object = Config):
     app.config.from_object(Config)
     register_extensions(app)
     register_blueprints(app)
-    jwt = JWTManager(app)
     return app
 
 
 def register_extensions(app):
     argon2.init_app(app)
     create_dash_app(app)
+    jwt.init_app(app)
     # Database initialisation
+
     db_session = scoped_session(sessionmaker(autocommit=False,
                                              autoflush=False,
                                              bind=engine))
@@ -41,7 +38,6 @@ def register_extensions(app):
         # import all modules here that might define models so that
         # they will be registered properly on the metadata.  Otherwise
         # you will have to import them first before calling init_db()
-        import user.models
         Base.metadata.create_all(bind=engine)
 
     return None
