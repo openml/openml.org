@@ -7,14 +7,13 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_required, login_user, logout_user
 from server.user.models import User
 from server.extensions import db
 
 blueprint = Blueprint("public", __name__)
 
 
-
+# TODO: do we really need this function
 @blueprint.route('/<path:path>')
 def serve(path):
     if path != "" and os.path.exists("src/client/" + path):
@@ -60,9 +59,3 @@ def signupfunc():
 
 
 
-
-
-@blueprint.route('/logout')
-@login_required
-def logout():
-    return redirect(url_for('index'))
