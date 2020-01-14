@@ -3,8 +3,7 @@ from server.user.models import User
 from flask_cors import CORS
 import requests
 from flask_jwt_extended import (jwt_required, create_access_token,
-    get_jwt_identity
-)
+            get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt
 
 
@@ -39,13 +38,11 @@ def profile():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
-        print(current_user)
-        print('profile executed')
         return jsonify({"username":user.username, "bio":user.bio, "first_name":user.first_name, "last_name":user.last_name, "email":user.email}), 200
     elif request.method == "POST":
         data = request.get_json()
-        print(data)
-        user.bio = data['bio']
+        user.update_bio(data['bio'])
+        db.session.merge(user)
         db.session.commit()
         return "changes executed"
     else:
@@ -53,6 +50,17 @@ def profile():
 
 
 # TODO : write logoput logic
-@user_blueprint.route('/logout')
+@user_blueprint.route('/logout', methods=['DELETE'])
 def logout():
-    return redirect(url_for('index'))
+    jti = get_raw_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"msg": "Successfully logged out"}), 200
+
+@user_blueprint.route('/delete', methods=['GET','POST'])
+@jwt_required
+def delete_user():
+    current_user=get_jwt_identity()
+    User.query.filter_by(email=current_user).delete()
+    db.session.commit()
+    return jsonify({"msg": "User deleted"}), 200
+
