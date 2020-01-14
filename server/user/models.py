@@ -43,6 +43,9 @@ class User(Base):
         #password = argon2.generate_password_hash(password)
         return argon2.check_password_hash(self.password, passwd)
 
+    def update_bio(self, new_bio):
+        self.bio = new_bio
+
     #
     def __repr__(self):
         return '<User {}>'.format(self.username)

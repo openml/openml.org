@@ -60,7 +60,7 @@ def register_study_callbacks(app):
             legend_orientation="h",
             font=dict(
                 family="Courier New, monospace",
-                size=10,
+                size=11,
                 color="#7f7f7f"
             )
         )

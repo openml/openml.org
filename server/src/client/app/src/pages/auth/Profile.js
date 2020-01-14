@@ -63,7 +63,6 @@ function Public() {
         console.log(error);
       });
     function profiletoflask(event) {
-      console.log("function worked");
     event.preventDefault();
     const data = new FormData(event.target);
     axios
@@ -90,7 +89,7 @@ function Public() {
           <Grid item md={8}>
               <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" defaultValue={user} value={user}/>
+              <Input id="username" defaultValue={user} />
             </FormControl>
 
             <FormControl fullWidth mb={3}>
@@ -101,8 +100,6 @@ function Public() {
                 rows={3}
                 rowsMax={4}
                 defaultValue={bio}
-                value={bio}
-
               />
             </FormControl>
           </Grid>
