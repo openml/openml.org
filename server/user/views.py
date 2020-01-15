@@ -42,6 +42,8 @@ def profile():
     elif request.method == "POST":
         data = request.get_json()
         user.update_bio(data['bio'])
+        user.update_first_name(data['first_name'])
+        user.update_last_name(data['last_name'])
         db.session.merge(user)
         db.session.commit()
         return "changes executed"
