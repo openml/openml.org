@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, String
 class User(Base):
     __table__ = Base.metadata.tables['users']
     __table_args__ = {'autoload': True}
+    # Attribute names to help out with functions
     # id = Column(Integer, primary_key=True, unique=True)
     # ip_address = Column(String(64))
     # username = Column(String(64), index=True, unique=True)
@@ -46,6 +47,11 @@ class User(Base):
     def update_bio(self, new_bio):
         self.bio = new_bio
 
+    def update_first_name(self, first_name):
+        self.first_name = first_name
+
+    def update_last_name(self, last_name):
+        self.last_name = last_name
     #
     def __repr__(self):
         return '<User {}>'.format(self.username)
