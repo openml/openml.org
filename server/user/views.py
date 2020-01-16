@@ -31,7 +31,6 @@ def login():
         return jsonify(access_token=access_token), 200
 
 
-# TODO: write jwt expiry logic
 @user_blueprint.route('/profile', methods=['GET','POST'])
 @jwt_required
 def profile():
@@ -51,8 +50,8 @@ def profile():
         return "post user"
 
 
-# TODO : write logoput logic
-@user_blueprint.route('/logout', methods=['DELETE'])
+@user_blueprint.route('/logout', methods=['GET'])
+@jwt_required
 def logout():
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
@@ -62,7 +61,8 @@ def logout():
 @jwt_required
 def delete_user():
     current_user=get_jwt_identity()
-    User.query.filter_by(email=current_user).delete()
+    user =  db.session.query(User).filter(User.email ==current_user).first()
+    db.session.delete(user)
     db.session.commit()
     return jsonify({"msg": "User deleted"}), 200
 

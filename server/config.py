@@ -1,6 +1,7 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+import datetime
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     # SQL Alchemy parameters
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:''@localhost/openml'
@@ -12,3 +13,5 @@ class Config(object):
     ARGON2_PARALLELISM = 2
     # Jwt parameters
     JWT_BLACKLIST_ENABLED = True
+    JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=2)
