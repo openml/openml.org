@@ -20,7 +20,7 @@ def get_dataset_overview():
     """
     df = datasets.list_datasets(output_format='dataframe')
     df.dropna(inplace=True)
-    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, max(df["NumberOfInstances"])]
+    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
     bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
     df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
     df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
@@ -36,10 +36,13 @@ def get_dataset_overview():
         df[col] = df[col].str.replace(',', ' -')
         df[col] = df[col].str.replace('(', "")
         df[col] = df[col].str.replace(']', "")
+        df[col] = df[col].str.replace('.0', " ", regex=False)
     df.sort_values(by="NumberOfInstances", inplace=True)
     showlegend = False
     fig.add_trace(
-        go.Histogram(x=df["Number of instances"], showlegend=showlegend), row=1, col=1)
+        go.Histogram(x=df["Number of instances"], showlegend=showlegend,
+                     #xbins=dict(size=0.5)
+                     ), row=1, col=1)
 
     df.sort_values(by="NumberOfFeatures", inplace=True)
     fig.add_trace(
@@ -54,7 +57,7 @@ def get_dataset_overview():
     fig.add_trace(
         go.Violin(x=df["NumberOfClasses"], showlegend=showlegend, name="NumberOfClasses"), row=4, col=1)
 
-    fig.update_layout(height=1000)
+    fig.update_layout(height=1000, width=1000, bargap=0.3)
     fig.update_xaxes(tickfont=dict(size=10))
 
     return html.Div(dcc.Graph(figure=fig), style={"fontsize":10})
