@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from server.user.models import User
 from flask_cors import CORS
-import requests
+import requests, datetime
 from flask_jwt_extended import (jwt_required, create_access_token,
             get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt
@@ -28,6 +28,9 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
+        timestamp = datetime.datetime.now()
+        timestamp1 = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        user.last_login = timestamp1
         return jsonify(access_token=access_token), 200
 
 

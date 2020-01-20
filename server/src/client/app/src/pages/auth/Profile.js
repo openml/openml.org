@@ -43,6 +43,8 @@ function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
   const [bio, setBio] = useState(false);
+  const [fname, setFname] = useState(false);
+  const [lname, setLname] = useState(false);
 
   const yourConfig = {
    headers: {
@@ -55,7 +57,8 @@ function Public() {
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
-        console.log('heyy')
+        setFname(response.data.first_name);
+        setLname(response.data.last_name);
         console.log(user);
 
       })
@@ -68,6 +71,9 @@ function Public() {
     axios
       .post("https://127.0.0.1:5000/profile", {
         bio: event.target.biography.value,
+        first_name: event.target.firstname.value,
+        last_name: event.target.lastname.value,
+
       }, yourConfig)
       .then(function(response) {
           console.log(response.data);
@@ -84,7 +90,7 @@ function Public() {
         <Typography variant="h6" gutterBottom>
           Public info
         </Typography>
-
+        {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>
               <FormControl fullWidth mb={3}>
@@ -96,12 +102,41 @@ function Public() {
               <TextField
                 label="Biography"
                 id="biography"
-                multiline={true}
+                multiline={false}
                 rows={3}
                 rowsMax={4}
                 defaultValue={bio}
               />
             </FormControl>
+            <FormControl fullWidth mb={3}>
+              <TextField
+                label="First Name"
+                id="firstname"
+                multiline={true}
+                rows={3}
+                rowsMax={4}
+                defaultValue={fname}
+              />
+              {/*<InputLabel htmlFor="firstname">First name</InputLabel>*/}
+              {/*<Input id="firstname" defaultValue={fname} placeholder="First name" />*/}
+            </FormControl>
+            <FormControl fullWidth mb={3}>
+              <InputLabel htmlFor="lastname">Last name</InputLabel>
+              <Input
+                id="lastname"
+                defaultValue={lname}
+                placeholder="Last name"
+              />
+            </FormControl>
+           <FormControl fullWidth mb={3}>
+          <InputLabel htmlFor="email">Email</InputLabel>
+          <Input
+            id="email"
+            type="email"
+            defaultValue={email}
+            placeholder="Email"
+          />
+        </FormControl>
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
@@ -136,81 +171,7 @@ function Public() {
   );
 }
 
-function Private() {
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Private info
-        </Typography>
 
-        <Grid container spacing={6}>
-          <Grid item md={6}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="name">First name</InputLabel>
-              <Input id="name" defaultValue="Ada" placeholder="First name" />
-            </FormControl>
-          </Grid>
-          <Grid item md={6}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="name">Last name</InputLabel>
-              <Input
-                id="name"
-                defaultValue="Lovelace"
-                placeholder="Last name"
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <FormControl fullWidth mb={3}>
-          <InputLabel htmlFor="email">Email</InputLabel>
-          <Input
-            id="email"
-            type="email"
-            defaultValue="adalovelace@gmail.com"
-            placeholder="Email"
-          />
-        </FormControl>
-
-        <FormControl fullWidth mb={3}>
-          <InputLabel htmlFor="address">Address</InputLabel>
-          <Input id="address" placeholder="1234 Main St" />
-        </FormControl>
-
-        <FormControl fullWidth mb={3}>
-          <InputLabel htmlFor="address2">Address 2</InputLabel>
-          <Input id="address2" placeholder="Apartment, studio, or floor" />
-        </FormControl>
-
-        <Grid container spacing={6}>
-          <Grid item md={6}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="city">City</InputLabel>
-              <Input id="city" placeholder="City" />
-            </FormControl>
-          </Grid>
-          <Grid item md={4}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="state">State</InputLabel>
-              <Input id="state" placeholder="State" />
-            </FormControl>
-          </Grid>
-          <Grid item md={2}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="zip">Zip</InputLabel>
-              <Input id="zip" placeholder="Zip" />
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Button variant="contained" color="primary">
-          Save changes
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
 
 function Settings() {
   return (
@@ -224,7 +185,7 @@ function Settings() {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Public />
-          <Private />
+          {/*<Private />*/}
         </Grid>
       </Grid>
     </React.Fragment>
