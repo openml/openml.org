@@ -18,7 +18,7 @@ def clean_dataset(df):
 
 
 def get_metadata(data_id: int):
-    data = datasets.get_dataset(data_id)
+    data = datasets.get_dataset(data_id, download_data=False)
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
     is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
     features["Target"] = is_target
