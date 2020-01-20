@@ -29,7 +29,6 @@ const Page500 = async(() => import("./Page500"));
 const About = async(() => import("../pages/docs/About"));
 const GetInvolved = async(() => import("../pages/docs/GetInvolved"));
 const Terms = async(() => import("../pages/docs/Terms"));
-const Foundation = async(() => import("../pages/docs/Foundation"));
 
 // Search
 const SearchPanel = async(() => import("../pages/search/SearchPanel"));
@@ -95,7 +94,7 @@ const flowRoutes = {
 const runRoutes = {
   id: "Runs",
   path: "/search",
-  icon: <RedMenuIcon icon="atom" fixedWidth />,
+  icon: <RedMenuIcon icon="flask" fixedWidth />,
   component: SearchPanel,
   entity_type: "run"
 };
@@ -103,7 +102,7 @@ const runRoutes = {
 const studyRoutes = {
   id: "Collections",
   path: "/search",
-  icon: <PurpleMenuIcon icon="flask" fixedWidth />,
+  icon: <PurpleMenuIcon icon="layer-group" fixedWidth />,
   component: SearchPanel,
   entity_type: "study",
   subtype_filter: "study_type",
@@ -229,13 +228,6 @@ const contributeRoutes = {
   component: GetInvolved
 };
 
-const foundationRoutes = {
-  id: "OpenML Foundation",
-  path: "/foundation",
-  icon: <BlueMenuIcon icon="hands-helping" fixedWidth />,
-  component: Foundation
-};
-
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
@@ -244,8 +236,8 @@ const termsRoutes = {
 };
 
 const teamRoutes = {
-  id: "Our team",
-  path: "/team",
+  id: "About us",
+  path: "/about",
   icon: <PurpleMenuIcon icon="user-friends" fixedWidth />,
   component: About
 };
@@ -263,7 +255,6 @@ export const mainRoutes = [
   peopleRoutes,
   documentationRoutes,
   contributeRoutes,
-  foundationRoutes,
   termsRoutes,
   teamRoutes
 ];
@@ -281,7 +272,6 @@ export default [
   peopleRoutes,
   documentationRoutes,
   contributeRoutes,
-  foundationRoutes,
   termsRoutes,
   teamRoutes
 ];

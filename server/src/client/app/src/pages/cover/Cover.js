@@ -38,9 +38,19 @@ const CardContent = styled(MuiCardContent)`
   margin-top: 10px;
 
   &:last-child {
-    padding-bottom: ${props => props.theme.spacing(4)}px;
+    padding-bottom: ${props => props.theme.spacing(8)}px;
   }
 `;
+
+const Paragraph = styled(Typography)({
+  paddingBottom: "2vw"
+});
+
+const ListIcon = styled(FontAwesomeIcon)({
+  marginLeft: 10,
+  marginRight: 10,
+  fontWeight: 800
+});
 
 const OpenMLTitle = styled.div`
   height: auto;
@@ -119,7 +129,7 @@ const PauseIcon = styled(FontAwesomeIcon)({
 
 function OpenMLGraph() {
   return (
-    <div style={{ padding: 30 }}>
+    <div style={{ padding: 0 }}>
       <div
         style={{
           position: "relative",
@@ -135,12 +145,12 @@ function OpenMLGraph() {
         <AmberFixedIcon icon="flag" l="90" t="90" />
         <AmberFixedIcon icon="flag" l="90" t="130" />
         <AmberFixedIcon icon="flag" l="90" t="170" />
-        <RedFixedIcon icon="atom" l="180" t="10" />
-        <RedFixedIcon icon="atom" l="180" t="50" />
-        <RedFixedIcon icon="atom" l="180" t="90" />
-        <RedFixedIcon icon="atom" l="180" t="130" />
-        <RedFixedIcon icon="atom" l="180" t="170" />
-        <RedFixedIcon icon="atom" l="180" t="210" />
+        <RedFixedIcon icon="flask" l="180" t="10" />
+        <RedFixedIcon icon="flask" l="180" t="50" />
+        <RedFixedIcon icon="flask" l="180" t="90" />
+        <RedFixedIcon icon="flask" l="180" t="130" />
+        <RedFixedIcon icon="flask" l="180" t="170" />
+        <RedFixedIcon icon="flask" l="180" t="210" />
         <BlueFixedIcon icon="cog" l="270" t="50" />
         <BlueFixedIcon icon="cog" l="270" t="90" />
         <BlueFixedIcon icon="cog" l="270" t="130" />
@@ -266,72 +276,72 @@ function OpenMLGraph() {
 
 function ReproGraph() {
   return (
-    <div style={{ padding: 30 }}>
+    <div style={{ padding: 10 }}>
       <div
         style={{
           position: "relative",
           margin: "auto",
-          width: 420,
+          width: 345,
           height: 100
         }}
       >
-        <GreenFixedIcon icon="database" sizept="30" l="28" t="10" />
-        <AmberFixedIcon icon="flag" sizept="30" l="135" t="10" />
-        <BlueFixedIcon icon="cog" sizept="30" l="245" t="10" />
-        <RedFixedIcon icon="atom" sizept="30" l="355" t="10" />
-        <svg style={{ minWidth: 420, minHeight: 100 }}>
-          <text x="13" y="70" fontWeight="bold">
+        <GreenFixedIcon icon="database" l="28" t="10" />
+        <AmberFixedIcon icon="flag" l="115" t="10" />
+        <BlueFixedIcon icon="cog" l="202" t="10" />
+        <RedFixedIcon icon="flask" l="292" t="10" />
+        <svg style={{ minHeight: 100, minWidth: 345 }}>
+          <text x="13" y="60" fontWeight="bold">
             data sets
           </text>
-          <text x="0" y="90" fontStyle="italic" fontSize="9pt">
+          <text x="0" y="80" fontStyle="italic" fontSize="8pt">
             files/urls, versions
           </text>
-          <text x="3" y="110" fontStyle="italic" fontSize="9pt">
+          <text x="3" y="100" fontStyle="italic" fontSize="8pt">
             stats, properties
           </text>
-          <text x="135" y="70" fontWeight="bold">
+          <text x="110" y="60" fontWeight="bold">
             tasks
           </text>
-          <text x="112" y="90" fontStyle="italic" fontSize="9pt">
+          <text x="92" y="80" fontStyle="italic" fontSize="8pt">
             inputs, outputs
           </text>
-          <text x="113" y="110" fontStyle="italic" fontSize="9pt">
+          <text x="93" y="100" fontStyle="italic" fontSize="8pt">
             train/test splits
           </text>
-          <text x="248" y="70" fontWeight="bold">
+          <text x="198" y="60" fontWeight="bold">
             flows
           </text>
-          <text x="232" y="90" fontStyle="italic" fontSize="9pt">
+          <text x="182" y="80" fontStyle="italic" fontSize="8pt">
             dependencies
           </text>
-          <text x="222" y="110" fontStyle="italic" fontSize="9pt">
+          <text x="172" y="100" fontStyle="italic" fontSize="8pt">
             detailed structure
           </text>
-          <text x="359" y="70" fontWeight="bold">
+          <text x="290" y="60" fontWeight="bold">
             runs
           </text>
-          <text x="337" y="90" fontStyle="italic" fontSize="9pt">
+          <text x="267" y="80" fontStyle="italic" fontSize="8pt">
             configurations
           </text>
-          <text x="345" y="110" fontStyle="italic" fontSize="9pt">
+          <text x="275" y="100" fontStyle="italic" fontSize="8pt">
             evaluations
           </text>
           <line
-            x1="75"
-            y1="30"
-            x2="125"
-            y2="30"
+            x1="65"
+            y1="25"
+            x2="105"
+            y2="25"
             style={{ stroke: "grey", strokeWidth: 1.5 }}
           />
           <line
-            x1="295"
-            y1="30"
-            x2="345"
-            y2="30"
+            x1="240"
+            y1="25"
+            x2="285"
+            y2="25"
             style={{ stroke: "grey", strokeWidth: 1.5 }}
           />
           <path
-            d="M 180 30 Q 265 -30 345 30"
+            d="M 150 25 Q 225 -20 285 25"
             stroke="black"
             fill="transparent"
           />
@@ -343,76 +353,83 @@ function ReproGraph() {
 
 function ReproGraph2() {
   return (
-    <div
-      style={{ position: "relative", margin: "auto", width: 420, height: 180 }}
-    >
-      <PurpleFixedIcon icon="cogs" sizept="20" l="20" t="10" />
-      <BlueFixedIcon icon="cog" sizept="20" l="100" t="10" />
-      <BlueFixedIcon icon="cog" sizept="20" l="100" t="50" />
-      <AmberFixedIcon icon="flag" sizept="20" l="135" t="50" />
-      <RedFixedIcon icon="atom" sizept="20" l="200" t="50" />
-      <BlueFixedIcon icon="cog" sizept="20" l="260" t="50" />
-      <AmberFixedIcon icon="flag" sizept="20" l="295" t="50" />
-      <BlueFixedIcon icon="cog" sizept="20" l="260" t="90" />
-      <PurpleFixedIcon icon="cogs" sizept="20" l="340" t="90" />
+    <div style={{ padding: 0 }}>
+      <div
+        style={{
+          position: "relative",
+          margin: "auto",
+          width: 345,
+          height: 180
+        }}
+      >
+        <PurpleFixedIcon icon="cogs" sizept="20" l="20" t="10" />
+        <BlueFixedIcon icon="cog" sizept="20" l="100" t="10" />
+        <BlueFixedIcon icon="cog" sizept="20" l="100" t="50" />
+        <AmberFixedIcon icon="flag" sizept="20" l="65" t="50" />
+        <RedFixedIcon icon="flask" sizept="20" l="160" t="50" />
+        <BlueFixedIcon icon="cog" sizept="20" l="220" t="50" />
+        <AmberFixedIcon icon="flag" sizept="20" l="255" t="50" />
+        <BlueFixedIcon icon="cog" sizept="20" l="220" t="90" />
+        <PurpleFixedIcon icon="cogs" sizept="20" l="300" t="90" />
 
-      <svg style={{ minWidth: 420, minHeight: 150 }}>
-        <defs>
-          <marker
-            id="black-arrow"
-            viewBox="0 0 10 10"
-            refX="0"
-            refY="5"
-            orient="auto"
-          >
-            <path d="M 0 0 L 10 5 L 0 10 z" />
-          </marker>
-        </defs>
-        <line
-          x1="60"
-          y1="25"
-          x2="90"
-          y2="25"
-          markerEnd="url(#black-arrow)"
-          style={{ stroke: "grey", strokeWidth: 1.5 }}
-        />
-        <text x="65" y="20" fontStyle="italic" fontSize="8pt">
-          wrap
-        </text>
-        <line
-          x1="170"
-          y1="62"
-          x2="190"
-          y2="62"
-          markerEnd="url(#black-arrow)"
-          style={{ stroke: "grey", strokeWidth: 1.5 }}
-        />
-        <line
-          x1="230"
-          y1="62"
-          x2="250"
-          y2="62"
-          markerEnd="url(#black-arrow)"
-          style={{ stroke: "grey", strokeWidth: 1.5 }}
-        />
-        <line
-          x1="295"
-          y1="102"
-          x2="325"
-          y2="102"
-          markerEnd="url(#black-arrow)"
-          style={{ stroke: "grey", strokeWidth: 1.5 }}
-        />
-        <text x="295" y="97" fontStyle="italic" fontSize="8pt">
-          rebuild
-        </text>
-        <text x="80" y="140">
-          original run
-        </text>
-        <text x="250" y="140">
-          reproduced run
-        </text>
-      </svg>
+        <svg style={{ minWidth: 345, minHeight: 150 }}>
+          <defs>
+            <marker
+              id="black-arrow"
+              viewBox="0 0 10 10"
+              refX="0"
+              refY="5"
+              orient="auto"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <line
+            x1="60"
+            y1="25"
+            x2="90"
+            y2="25"
+            markerEnd="url(#black-arrow)"
+            style={{ stroke: "grey", strokeWidth: 1.5 }}
+          />
+          <text x="65" y="20" fontStyle="italic" fontSize="8pt">
+            wrap
+          </text>
+          <line
+            x1="130"
+            y1="62"
+            x2="150"
+            y2="62"
+            markerEnd="url(#black-arrow)"
+            style={{ stroke: "grey", strokeWidth: 1.5 }}
+          />
+          <line
+            x1="190"
+            y1="62"
+            x2="210"
+            y2="62"
+            markerEnd="url(#black-arrow)"
+            style={{ stroke: "grey", strokeWidth: 1.5 }}
+          />
+          <line
+            x1="255"
+            y1="102"
+            x2="285"
+            y2="102"
+            markerEnd="url(#black-arrow)"
+            style={{ stroke: "grey", strokeWidth: 1.5 }}
+          />
+          <text x="255" y="97" fontStyle="italic" fontSize="8pt">
+            rebuild
+          </text>
+          <text x="40" y="140">
+            original run
+          </text>
+          <text x="230" y="140">
+            reproduced run
+          </text>
+        </svg>
+      </div>
     </div>
   );
 }
@@ -465,34 +482,57 @@ class Cover extends React.Component {
         <OpenMLSubTitle>Machine Learning, better together</OpenMLSubTitle>
         <Grid container spacing={3}>
           <CoverTitle mt={50} variant="h4" gutterBottom>
-            We believe that everyone should have easy access to the world’s
-            machine learning information
+            We believe in making machine learning more streamlined, accessible,
+            and beneficial to all of humanity.
           </CoverTitle>
           <FrontPaper>
             <CardContent>
-              <p>
-                <b>
-                  <i>
-                    OpenML is an open science initiative to make machine
-                    learning research more accessible and beneficial to all of
-                    humanity.
-                  </i>
-                </b>
-                We provide open source interfaces for sharing and organizing
-                datasets, algorithms, and reproducible experiments, and support
-                research in learning from this data to make machine learning
-                more automated, robust, and easy to use. We are a non-profit
-                organization driven by enthousiastic people, engaging with
-                universities, companies, or anyone sharing the same goals.
+              <Typography
+                variant="h6"
+                align="center"
+                style={{ marginBottom: 15 }}
+              >
+                <ListIcon
+                  icon="brain"
+                  size="2x"
+                  style={{ color: red[400], marginBottom: 10 }}
+                />
+                <br /> A global machine learning lab
+              </Typography>
+              <Paragraph>
+                Learning which learning algorithms work really well on specific
+                problems requires a lot of experimentation. What if you didn't
+                need to start from scratch? What if you could build on all
+                datasets, algorithms and experiments of the entire machine
+                learning community? And what if you could easily add your own
+                work to make it more visible, organized, and open to new
+                collaborations?
+              </Paragraph>
+              <Typography
+                variant="h6"
+                align="center"
+                style={{ marginBottom: 15 }}
+              >
+                <ListIcon
+                  icon="rocket"
+                  size="2x"
+                  style={{ color: blue[400], marginBottom: 10 }}
+                />
                 <br />
+                An open and free platform
                 <br />
-              </p>
+              </Typography>
+              <Paragraph>
+                OpenML is an open source platform where you can host, review,
+                and organize machine learning datasets, algorithms, and
+                experiments through clean and open interfaces. It connects and
+                organizes all information so that you can easily build on it.
+              </Paragraph>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <OpenMLGraph />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  How we organize machine learning information:
                   <ListItem>
                     <ListItemIcon>
                       <GreenIcon icon="database" size="2x" fixedWidth />
@@ -502,8 +542,11 @@ class Cover extends React.Component {
                       <span style={{ color: "green" }}>
                         <b>dataset</b>
                       </span>
-                      , find which tasks (e.g. classification) need to be
-                      solved.
+                      , find which{" "}
+                      <span style={{ color: "orange" }}>
+                        <b>tasks</b>
+                      </span>{" "}
+                      (e.g. classification) need to be solved.
                     </ListItemText>
                   </ListItem>
                   <ListItem>
@@ -515,21 +558,27 @@ class Cover extends React.Component {
                       <span style={{ color: "orange", fontWeigth: "bold" }}>
                         <b>task</b>
                       </span>
-                      , find all machine learning models that were built, and
-                      how well they perform.
+                      , find all{" "}
+                      <span style={{ color: "red", fontWeigth: "bold" }}>
+                        <b>experiments</b>
+                      </span>{" "}
+                      that people did, and how well their models performed.
                     </ListItemText>
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
-                      <RedIcon icon="atom" size="2x" fixedWidth />
+                      <RedIcon icon="flask" size="2x" fixedWidth />
                     </ListItemIcon>
                     <ListItemText>
                       For every{" "}
                       <span style={{ color: "red", fontWeigth: "bold" }}>
                         <b>run (experiment)</b>
                       </span>
-                      , find model details, evaluations, and the exact data and
-                      algorithms used.
+                      , find model details, evaluations, and the exact{" "}
+                      <span style={{ color: "blue", fontWeigth: "bold" }}>
+                        <b>algorithm pipelines</b>
+                      </span>{" "}
+                      used.
                     </ListItemText>
                   </ListItem>
                   <ListItem>
@@ -539,10 +588,13 @@ class Cover extends React.Component {
                     <ListItemText>
                       For every{" "}
                       <span style={{ color: "blue", fontWeigth: "bold" }}>
-                        <b>algorithm or pipeline</b>
+                        <b>flow (pipeline)</b>
                       </span>
-                      , find the tasks it was evaluated on and how well it
-                      performed.
+                      , find all the{" "}
+                      <span style={{ color: "red", fontWeigth: "bold" }}>
+                        <b>experiments</b>
+                      </span>{" "}
+                      that ever evaluated it and how well it performed.
                     </ListItemText>
                   </ListItem>
                 </Grid>
@@ -606,9 +658,9 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-                To advance machine learning research, it should be reproducible.
-                OpenML ensures reproducibility by automatically extracting rich
-                meta-data, so that nothing gets lost.
+                To advance machine learning research, results should be
+                reproducible. OpenML ensures reproducibility by automatically
+                extracting rich meta-data, so that nothing gets lost.
               </ListItemText>
             </CardContent>
             <ReproGraph />
@@ -672,7 +724,8 @@ class Cover extends React.Component {
           <FrontPaper>
             <CardContent>
               <ListItemText>
-                OpenML is here to help you change the world for the better
+                We aim to create a vibrant ecosystem of everyone involved in
+                machine learning.
               </ListItemText>
               <ListItem>
                 <ListItemIcon>
@@ -690,7 +743,7 @@ class Cover extends React.Component {
                 </ListItemIcon>
                 <ListItemText>
                   Data owners: Share your data to challenge the machine learning
-                  community with new and interesting problems
+                  community with new and interesting problems.
                 </ListItemText>
               </ListItem>
               <ListItem>
@@ -700,7 +753,7 @@ class Cover extends React.Component {
                 <ListItemText>
                   Algorithm developers: integrate your machine learning tools
                   and algorithms with OpenML to easily import and export data to
-                  and from your libraries
+                  and from your libraries.
                 </ListItemText>
               </ListItem>
               <ListItem>
@@ -709,7 +762,7 @@ class Cover extends React.Component {
                 </ListItemIcon>
                 <ListItemText>
                   Software engineers: OpenML is open source, get involved and
-                  make it even better and more useful
+                  make it even better and more useful.
                 </ListItemText>
               </ListItem>
             </CardContent>

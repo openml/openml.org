@@ -413,10 +413,10 @@ export default class SearchPanel extends React.Component {
     let qstring = this.getQueryParams();
     if (value !== null) {
       qstring.id = value;
+      this.context.setSearch(qstring);
     } else {
       qstring.id = undefined;
     }
-    this.context.setSearch(qstring);
     this.updateQuery("id", value);
   };
 
@@ -619,7 +619,7 @@ export class DataListPanel extends React.PureComponent {
         type="data"
         idField="data_id"
         stats={[
-          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          { param: "runs", unit: "runs", color: red[500], icon: "flask" },
           {
             param: "nr_of_likes",
             unit: "likes",
@@ -661,7 +661,7 @@ export class FlowListPanel extends React.PureComponent {
         processDescription={false}
         idField="flow_id"
         stats={[
-          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          { param: "runs", unit: "runs", color: red[500], icon: "flask" },
           {
             param: "nr_of_likes",
             unit: "likes",
@@ -713,7 +713,7 @@ export class UserListPanel extends React.PureComponent {
             unit: "runs uploaded",
             param: "runs_uploaded",
             color: red[400],
-            icon: "atom"
+            icon: "flask"
           },
           {
             unit: "activity",
@@ -777,7 +777,7 @@ export class StudyListPanel extends React.PureComponent {
             param: "runs_included",
             unit: "runs",
             color: red[500],
-            icon: "atom"
+            icon: "flask"
           }
         ]}
         sortChange={this.props.attrs.sortChange}
@@ -813,7 +813,7 @@ export class TaskListPanel extends React.PureComponent {
         processDescription={false}
         idField="task_id"
         stats={[
-          { param: "runs", unit: "runs", color: red[500], icon: "atom" },
+          { param: "runs", unit: "runs", color: red[500], icon: "flask" },
           {
             param: "nr_of_likes",
             unit: "likes",
