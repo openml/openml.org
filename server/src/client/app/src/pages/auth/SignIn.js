@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
-import {  useState } from 'react';
+import { useState } from "react";
 import {
   Checkbox,
   FormControl,
@@ -15,7 +15,7 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
-import {logincontext, MainContext} from "../../App";
+import { logincontext, MainContext } from "../../App";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -40,9 +40,9 @@ function SignIn() {
         password: event.target.password.value
       })
       .then(function(response) {
-          console.log(response.data);
-          setLogger(true);
-          localStorage.setItem("token", response.data.access_token)
+        console.log(response.data);
+        setLogger(true);
+        localStorage.setItem("token", response.data.access_token);
       })
       .catch(function(error) {
         console.log(error.data);
@@ -58,10 +58,13 @@ function SignIn() {
       <Typography component="h2" variant="body1" align="center">
         Sign in to continue
       </Typography>
-      { errorlog
-        ? <Typography component="h3" variant = "body1" align = "center" color="red">Wrong username or password</Typography>
-        : <Redirect to = '/auth/sign-in' />
-      }
+      {errorlog ? (
+        <Typography component="h3" variant="body1" align="center" color="red">
+          Wrong username or password
+        </Typography>
+      ) : (
+        <Redirect to="/auth/sign-in" />
+      )}
       <form onSubmit={sendtoflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -90,7 +93,7 @@ function SignIn() {
         >
           Sign in
         </Button>
-         <Button
+        <Button
           component={Link}
           to="/auth/reset-password"
           fullWidth
@@ -101,11 +104,11 @@ function SignIn() {
         <Button component={Link} to="/auth/sign-up" fullWidth color="primary">
           No account? Join OpenML
         </Button>
-      { logger
-        ? <Redirect to = '/auth/profile' />
-        : <Redirect to = '/auth/sign-in' />
-      }
-
+        {logger ? (
+          <Redirect to="/auth/profile" />
+        ) : (
+          <Redirect to="/auth/sign-in" />
+        )}
       </form>
     </Wrapper>
   );

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -18,7 +18,7 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
+import { func } from "prop-types";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -38,7 +38,6 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
-
 function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
@@ -47,7 +46,7 @@ function Public() {
   const [lname, setLname] = useState(false);
 
   const yourConfig = {
-   headers: {
+    headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
    }
 }
@@ -76,15 +75,14 @@ function Public() {
 
       }, yourConfig)
       .then(function(response) {
-          console.log(response.data);
-          })
+        console.log(response.data);
+      })
       .catch(function(error) {
         console.log(error.data);
       });
     return false;
   }
   return (
-
     <Card mb={6}>
       <form onSubmit={profiletoflask}>
         <Typography variant="h6" gutterBottom>
@@ -93,7 +91,7 @@ function Public() {
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>
-              <FormControl fullWidth mb={3}>
+            <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="username">Username</InputLabel>
               <Input id="username" defaultValue={user} />
             </FormControl>
@@ -165,8 +163,7 @@ function Public() {
         <Button variant="contained" color="primary" type="Submit">
           Save changes
         </Button>
-    </form>
-
+      </form>
     </Card>
   );
 }
