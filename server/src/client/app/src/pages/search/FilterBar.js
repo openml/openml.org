@@ -17,13 +17,13 @@ const FilterButton = styled(Button)`
   min-width: 0;
   width: 40px;
   height: 40px;
-  font-size: 15px;
+  font-size: 18px;
   color: ${props => props.textcolor};
 `;
 const FilterStats = styled.div`
   padding-left: 15px;
   padding-top: 15px;
-  width: calc(100% - 90px);
+  width: calc(100% - 120px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -60,8 +60,9 @@ const FilterPanel = styled.div`
 `;
 const FilterControl = styled(FormControlLabel)`
   float: right;
-  margin-right: 0px;
+  margin-right: 10px;
 `;
+
 const typeName = {
   data: "datasets",
   flow: "flows",
@@ -317,6 +318,10 @@ export class FilterBar extends React.Component {
             </FilterStats>
             <Tooltip title="Filter results" placement="top-start">
               <FilterControl
+                style={{
+                  marginRight: window.innerWidth < 600 ? 10 : 3,
+                  display: this.context.displaySearch ? "block" : "none"
+                }}
                 control={
                   <FilterButton
                     onClick={this.flipFilter}
@@ -329,6 +334,9 @@ export class FilterBar extends React.Component {
             </Tooltip>
             <Tooltip title="Sort results" placement="top-start">
               <FilterControl
+                style={{
+                  display: this.context.displaySearch ? "block" : "none"
+                }}
                 control={
                   <FilterButton
                     onClick={this.flipSorter}
@@ -339,7 +347,12 @@ export class FilterBar extends React.Component {
                 }
               />
             </Tooltip>
-            <Tooltip title="Hide result list" placement="top-start">
+            <Tooltip
+              title={
+                window.innerWidth < 600 ? "Statistics" : "Hide result list"
+              }
+              placement="top-start"
+            >
               <FilterControl
                 style={{
                   display: this.context.displaySearch ? "block" : "none"
@@ -349,12 +362,14 @@ export class FilterBar extends React.Component {
                     onClick={this.context.collapseSearch}
                     textcolor={this.props.searchColor}
                   >
-                    <FontAwesomeIcon icon="times" />
+                    <FontAwesomeIcon
+                      icon={window.innerWidth < 600 ? "chart-pie" : "times"}
+                    />
                   </FilterButton>
                 }
               />
             </Tooltip>
-            <Tooltip title="Expand result list" placement="top-start">
+            <Tooltip title="Show result list" placement="top-start">
               <FilterControl
                 style={{
                   display: this.context.displaySearch ? "none" : "block"
@@ -364,7 +379,7 @@ export class FilterBar extends React.Component {
                     onClick={this.toggleSelect}
                     textcolor={this.props.searchColor}
                   >
-                    <FontAwesomeIcon icon="angle-double-down" />
+                    <FontAwesomeIcon icon="chevron-left" />
                   </FilterButton>
                 }
               />
