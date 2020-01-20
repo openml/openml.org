@@ -3,6 +3,7 @@ import re
 from dash.dependencies import Input, Output
 
 from .layouts import *
+from .overviews import *
 from .helpers import *
 from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
