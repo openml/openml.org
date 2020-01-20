@@ -28,13 +28,14 @@ def signupfunc():
         robj = request.get_json()
         user = User(username=robj['name'], email=robj['email'])
         user.set_password(robj['password'])
-        user.ip_address='0.00.'
-        user.activation_selector = '0000'
+        user.set_session_hash()
+        user.ip_address=request.remote_addr
+        user.activation_selector = 'x100f0'
         user.activation_code = '0000'
-        user.forgotten_password_selector = '0000'
+        user.forgotten_password_selector = '00ffs0'
         user.forgotten_password_code = '0000'
         user.forgotten_password_time ='0000'
-        user.remember_selector = '0000'
+        user.remember_selector = '01f0s0'
         user.remember_code = '0000'
         user.created_on = '0000'
         user.last_login = '0000'
@@ -49,7 +50,6 @@ def signupfunc():
         user.core = '0000'
         user.external_source ='0000'
         user.external_id = '0000'
-        user.session_hash = '0000'
         user.password_hash ='0000'
         db.session.add(user)
         db.session.commit()
@@ -57,5 +57,6 @@ def signupfunc():
         return 'signedup'
     return 'notyet'
 
-
-
+@blueprint.route('/forgotpassword', methods=['POST', 'GET'])
+def password():
+    pass
