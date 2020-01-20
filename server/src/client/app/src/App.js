@@ -5,6 +5,7 @@ import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -22,7 +23,7 @@ import Routes from "./routes/Routes";
 export const MainContext = React.createContext();
 
 //TODO: only import necessary icons
-library.add(fas, far);
+library.add(fas, far, fab);
 
 class App extends React.Component {
   state = {
@@ -95,11 +96,13 @@ class App extends React.Component {
     setSearch: (qp, fields) => {
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
+      let idChanged = false;
       // set defaults
       let update = {
         fields: fields === undefined ? this.state.fields : fields,
         id: undefined,
         counts: "id" in qp ? this.state.counts : 0,
+        displaySearch: true,
         filters: this.state.type === qp.type ? this.state.filters : []
       };
       // process query parameters
@@ -144,22 +147,26 @@ class App extends React.Component {
         } else {
           update["displaySearch"] = true;
         }
-        if (this.state.displaySearch !== update.displaySearch) qchanged = true;
+        if (this.state.displaySearch !== update.displaySearch) idChanged = true;
       }
       // Unset ID
-      if (this.state.id !== undefined && qp["id"] === undefined)
-        qchanged = true;
+      //if (this.state.id !== undefined && qp["id"] === undefined)
+      //  qchanged = true;
       // If anything changed, set the new state
       if (qchanged) {
         console.log("SetState: query changed");
         update.updateType = "query";
         update.results = [];
         this.setState(update);
-      } else if (qp["id"] !== undefined && this.state.id !== qp["id"]) {
+      } else if (
+        (qp["id"] !== undefined && this.state.id !== qp["id"]) ||
+        idChanged
+      ) {
         console.log("SetState: id changed");
         this.setState({
           id: qp["id"],
-          updateType: "id"
+          updateType: "id",
+          displaySearch: update["displaySearch"]
         });
       } else {
         if (this.state.updateType !== undefined) {

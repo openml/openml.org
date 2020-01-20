@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -18,7 +18,7 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
+import { func } from "prop-types";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -38,48 +38,50 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
-
 function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
   const [bio, setBio] = useState(false);
 
   const yourConfig = {
-   headers: {
+    headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
-   }
-}
-  axios.get("https://127.0.0.1:5000/profile",yourConfig)
-      .then(function (response) {
-        console.log(response);
-        setUser(response.data.username);
-        setEmail(response.data.email);
-        setBio(response.data.bio);
-        console.log('heyy')
-        console.log(user);
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    function profiletoflask(event) {
-      console.log("function worked");
+    }
+  };
+  axios
+    .get("https://127.0.0.1:5000/profile", yourConfig)
+    .then(function(response) {
+      console.log(response);
+      setUser(response.data.username);
+      setEmail(response.data.email);
+      setBio(response.data.bio);
+      console.log("heyy");
+      console.log(user);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  function profiletoflask(event) {
+    console.log("function worked");
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("https://127.0.0.1:5000/profile", {
-        bio: event.target.biography.value,
-      }, yourConfig)
+      .post(
+        "https://127.0.0.1:5000/profile",
+        {
+          bio: event.target.biography.value
+        },
+        yourConfig
+      )
       .then(function(response) {
-          console.log(response.data);
-          })
+        console.log(response.data);
+      })
       .catch(function(error) {
         console.log(error.data);
       });
     return false;
   }
   return (
-
     <Card mb={6}>
       <form onSubmit={profiletoflask}>
         <Typography variant="h6" gutterBottom>
@@ -88,9 +90,9 @@ function Public() {
 
         <Grid container spacing={6}>
           <Grid item md={8}>
-              <FormControl fullWidth mb={3}>
+            <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" defaultValue={user} value={user}/>
+              <Input id="username" defaultValue={user} value={user} />
             </FormControl>
 
             <FormControl fullWidth mb={3}>
@@ -102,7 +104,6 @@ function Public() {
                 rowsMax={4}
                 defaultValue={bio}
                 value={bio}
-
               />
             </FormControl>
           </Grid>
@@ -133,8 +134,7 @@ function Public() {
         <Button variant="contained" color="primary" type="Submit">
           Save changes
         </Button>
-    </form>
-
+      </form>
     </Card>
   );
 }

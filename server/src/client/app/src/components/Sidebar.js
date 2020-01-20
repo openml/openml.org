@@ -340,7 +340,7 @@ class Sidebar extends React.Component {
     this.countUpdate();
     this.intervalID = setInterval(() => {
       this.countUpdate();
-    }, 10000);
+    }, 20000);
   }
 
   componentWillUnmount() {
@@ -432,7 +432,6 @@ class Sidebar extends React.Component {
                       context.miniDrawer ? (
                         <hr />
                       ) : null}
-
                       {category.component ? (
                         category.children ? (
                           <React.Fragment key={index}>
@@ -441,7 +440,10 @@ class Sidebar extends React.Component {
                               name={category.id}
                               component={NavLink}
                               to={
-                                category.path + "?type=" + category.entity_type
+                                category.path +
+                                (category.entity_type === undefined
+                                  ? ""
+                                  : "?type=" + category.entity_type)
                               }
                               exact
                               activeClassName="active"
@@ -521,7 +523,10 @@ class Sidebar extends React.Component {
                               isCollapsable={false}
                               name={category.id}
                               to={
-                                category.path + "?type=" + category.entity_type
+                                category.path +
+                                (category.entity_type === undefined
+                                  ? ""
+                                  : "?type=" + category.entity_type)
                               }
                               activeClassName="active"
                               component={NavLink}
