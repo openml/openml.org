@@ -1,66 +1,14 @@
-import os
-import dash_table as dt
 import plotly
 import plotly.graph_objs as go
 
 from .helpers import *
 from .dashapp import *
 
-from openml import runs, flows, evaluations, setups, study, datasets, tasks
+from openml import runs, flows, datasets, tasks
 from openml.extensions.sklearn import SklearnExtension
-
+from dash.dependencies import Input, Output, State
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
         "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
-
-
-def get_dataset_overview():
-    """
-
-    :return: overview of datasets page
-    """
-    df = datasets.list_datasets(output_format='dataframe')
-    df.dropna(inplace=True)
-    bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
-    bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-    df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
-    df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
-
-    title = ["Number of instances across datasets",
-             "Number of features across datasets",
-             "Attribute Type percentage distribution",
-             "Number of classes"]
-
-    fig = plotly.subplots.make_subplots(rows=4, cols=1, subplot_titles=tuple(title))
-
-    for col in ["Number of instances", "Number of features"]:
-        df[col] = df[col].str.replace(',', ' -')
-        df[col] = df[col].str.replace('(', "")
-        df[col] = df[col].str.replace(']', "")
-        df[col] = df[col].str.replace('.0', " ", regex=False)
-    df.sort_values(by="NumberOfInstances", inplace=True)
-    showlegend = False
-    fig.add_trace(
-        go.Histogram(x=df["Number of instances"], showlegend=showlegend,
-                     #xbins=dict(size=0.5)
-                     ), row=1, col=1)
-
-    df.sort_values(by="NumberOfFeatures", inplace=True)
-    fig.add_trace(
-        go.Histogram(x=df["Number of features"], showlegend=showlegend), row=2, col=1)
-
-    df["Attribute Type"] = "mixed"
-    df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
-    df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
-    fig.add_trace(
-        go.Histogram(x=df["Attribute Type"], histnorm="percent", showlegend=showlegend), row=3, col=1)
-
-    fig.add_trace(
-        go.Violin(x=df["NumberOfClasses"], showlegend=showlegend, name="NumberOfClasses"), row=4, col=1)
-
-    fig.update_layout(height=1000, width=1000, bargap=0.3)
-    fig.update_xaxes(tickfont=dict(size=10))
-
-    return html.Div(dcc.Graph(figure=fig), style={"fontsize":10})
 
 
 def get_task_overview():
@@ -78,7 +26,7 @@ def get_task_overview():
         i = i+1
         fig.add_trace(
         go.Histogram(x=df[col], showlegend=False), row=i, col=1)
-    fig.update_layout(height=1000)
+    fig.update_layout(height=1000, width=900)
 
     return html.Div(dcc.Graph(figure=fig))
 
@@ -107,7 +55,7 @@ def get_flow_overview():
     fig.update_layout(
                       yaxis=dict(autorange="reversed"),
                       margin=dict(l=500),
-                      title="",
+                      title="", width=900,
                       height=700),
 
     return html.Div(dcc.Graph(figure=fig))
@@ -127,7 +75,100 @@ def get_run_overview():
     data = [go.Bar(x=count["name"].values, y=count["percent"].values,
                    )]
     fig = go.Figure(data=data)
-    fig.update_layout(yaxis=dict(
+    fig.update_layout(width=900, yaxis=dict(
         title='Percentage(%)'))
 
     return dcc.Graph(figure=fig)
+
+
+def register_overview_callbacks(app):
+    @app.callback(Output('data_overview', 'children'),
+                  [Input('status_data','value')])
+    def dataset_overview(radio):
+        """
+
+        :return: overview of datasets page
+        """
+        if radio == 'active':
+            df = datasets.list_datasets(output_format='dataframe')
+
+        else:
+            df = datasets.list_datasets(output_format='dataframe', status='all')
+
+        df.dropna(inplace=True)
+
+        # Binning
+        bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
+        bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
+        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
+        for col in ["Number of instances", "Number of features"]:
+            df[col] = df[col].str.replace(',', ' -')
+            df[col] = df[col].str.replace('(', "")
+            df[col] = df[col].str.replace(']', "")
+            df[col] = df[col].str.replace('.0', " ", regex=False)
+
+        title = ["Attribute Types",
+                 "Number of classes",
+                 "Number of instances across datasets",
+                 "Number of features across datasets",
+
+                 ]
+
+        # Attribute types
+        df["Attribute Type"] = "mixed"
+        df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
+        df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
+        grouped = (df.groupby("Attribute Type").size().reset_index(name='counts'))
+        colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+        types_chart = go.Pie(labels=grouped["Attribute Type"], values=grouped['counts'],
+                             marker=dict(colors=colors),
+                             showlegend=True)
+        fig1 = go.Figure(data=[types_chart])
+        fig1.update_layout(height=400)
+
+        # No of classes
+        showlegend = False
+        classes_plot = go.Violin(y=df["NumberOfClasses"], showlegend=showlegend,
+                                 box_visible=True,
+                                 fillcolor='mediumpurple',
+                                 meanline_visible=True,
+                                 name=' '
+                                 )
+        fig2 = go.Figure(data=[classes_plot])
+        fig2.update_xaxes(tickfont=dict(size=10))
+        fig2.update_layout(height=400)
+
+        # Instances plot
+        df.sort_values(by="NumberOfInstances", inplace=True)
+
+        instances_plot = go.Histogram(x=df["Number of instances"], marker_color='#EB89B5',
+
+                                      showlegend=showlegend)
+        fig3 = go.Figure(data=[instances_plot], )
+        fig3.update_layout(bargap=0.4, width=900, height=400)
+        fig3.update_xaxes(tickfont=dict(size=10))
+
+        # Features plot
+        df.sort_values(by="NumberOfFeatures", inplace=True)
+        features_plot = go.Histogram(x=df["Number of features"], showlegend=showlegend)
+        fig4 = go.Figure(data=[features_plot])
+        fig4.update_layout(bargap=0.4, width=900, height=400)
+        fig4.update_xaxes(tickfont=dict(size=10))
+
+        return html.Div([html.Div([html.P(title[0]),
+                                   dcc.Graph(figure=fig1)], className="row metric-row",
+                                  style={'width': '48%','text-align': 'center',
+                                         'display': 'inline-block',
+                                         }),
+                         html.Div([html.P(title[1]),
+                                   dcc.Graph(figure=fig2)],className="row metric-row",
+                                  style={'width': '48%', 'text-align': 'center',
+                                         'display': 'inline-block'}),
+                         html.P(title[2]),
+                         dcc.Graph(figure=fig3),
+                         html.P(title[3]),
+                         dcc.Graph(figure=fig4)],
+                        )
+
+
