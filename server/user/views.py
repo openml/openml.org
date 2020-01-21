@@ -64,8 +64,17 @@ def logout():
 @jwt_required
 def delete_user():
     current_user=get_jwt_identity()
-    user =  db.session.query(User).filter(User.email ==current_user).first()
+    user = db.session.query(User).filter(User.email ==current_user).first()
     db.session.delete(user)
     db.session.commit()
     return jsonify({"msg": "User deleted"}), 200
 
+#TODO Write forgotten pass logic
+
+#TODO write user confirmation logic
+
+#TODO Improve email logic
+
+#TODO Reset password logic
+
+#

@@ -9,8 +9,13 @@ from flask import (
 )
 from server.user.models import User
 from server.extensions import db
+import datetime, hashlib
+from server.utils import  forgot_password_email, confirmation_email
+from flask_cors import CORS
 
 blueprint = Blueprint("public", __name__)
+
+CORS(blueprint)
 
 
 # TODO: do we really need this function
@@ -57,6 +62,16 @@ def signupfunc():
         return 'signedup'
     return 'notyet'
 
-@blueprint.route('/forgotpassword', methods=['POST', 'GET'])
+@blueprint.route('/forgotpassword', methods=['POST'])
 def password():
-    pass
+    jobj = request.get_json()
+    timestamp = datetime.datetime.now()
+    timestamp = timestamp.strftime("%d %H")
+    md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
+    user = User.query.filter_by(email=jobj['email']).first()
+    user.update_forgotten_code(md5_digest)
+    #user.update_forgotten_time(timestamp)
+    forgot_password_email(user.email, md5_digest)
+    db.session.merge(user)
+    db.session.commit()
+    return "codesent"

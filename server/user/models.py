@@ -53,15 +53,17 @@ class User(Base):
     def update_last_name(self, last_name):
         self.last_name = last_name
 
+    def update_forgotten_code(self, code):
+        self.forgotten_password_code = code
+
+    def update_forgotten_time(self, time):
+        self.forgotten_password_time = time
+
     def set_session_hash(self):
         timestamp = datetime.datetime.now()
         timestamp1 = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         md5_digest = hashlib.md5(timestamp1.encode()).hexdigest()
         self.session_hash = md5_digest
-
-#TODO write forgotten password logic
-
-
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
