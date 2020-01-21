@@ -464,7 +464,25 @@ def get_layout_from_suite(suite_id):
     return layout
 
 
+def get_layout_dataset_overview():
+    radio_button = html.Div(
+            dcc.RadioItems(
+                id='status_data',
+                options=[{'label': "Active datasets", "value": "active"},
+                         {'label': "All datasets", "value": "all"}],
+                value="active",
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
 
+            ))
 
+    graph = html.Div(id='data_overview', className="twelve columns")
+    layout = html.Div([html.H3('Overview of datasets on OpenML'),
+                       html.P('Choose whether active/all datasets are considered for overview plots',
+                              style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
+                                     }
+                              ),
+                       radio_button,
+                       graph], style={'overflowY':'hidden'})
+    return layout
 
 

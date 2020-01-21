@@ -45,7 +45,7 @@ def register_callbacks(app):
                 layout = get_layout_from_data(data_id)
                 return layout, None
             else:
-                layout = get_dataset_overview()
+                layout = get_layout_dataset_overview()
                 return layout, None
         elif pathname is not None and 'dashboard/task' in pathname:
             if number_flag:
@@ -93,6 +93,7 @@ def register_callbacks(app):
     register_flow_callbacks(app)
     register_study_callbacks(app)
     register_suite_callbacks(app)
+    register_overview_callbacks(app)
 
 
 
