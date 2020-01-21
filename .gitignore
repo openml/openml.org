@@ -37,3 +37,5 @@ src/__pycache__/
 cache/
 
 idea_testing.py
+
+.env
