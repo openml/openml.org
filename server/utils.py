@@ -31,4 +31,3 @@ def forgot_password_email(user_email, token):
         server.login("84be287eed57de", "6a38ff008fe618")
         server.sendmail(sender, receiver, message)
 
-forgot_password_email('aa','token')
