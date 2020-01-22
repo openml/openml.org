@@ -14,15 +14,6 @@ from server.extensions import login_manager, db
 blueprint = Blueprint("public", __name__)
 
 
-
-@blueprint.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists("src/client/" + path):
-        return send_from_directory('src/client', path)
-    else:
-        return send_from_directory('src/client', 'index.html')
-
-
 @blueprint.route('/signup', methods=['POST', 'GET'])
 def signupfunc():
     if request.method == 'POST':
