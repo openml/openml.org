@@ -1,34 +1,27 @@
 import smtplib,ssl
 context = ssl.create_default_context()
 def confirmation_email(user_email, token):
-    with smtplib.SMTP("smtp.mailtrap.io", 2525) as server:
-        sender = "Private Person <from@smtp.mailtrap.io>"
-        receiver = user_email
+    sender = "m@smtp.mailtrap.io"
+    receiver = user_email
+    header  = 'From: %s\n' % sender
+    header += 'To: %s\n' % user_email
+    header += 'Subject: %s\n\n' % 'none'
+    message = header + f"Hi to confirm your account go to https://new.openml.org/confirm/?token={token}"
 
-        message = f"""\
-        Subject: Hi Mailtrap
-        To: {receiver}
-        From: {sender}
-
-        Welcome to OpenML to confirm your account please click or visit the url: {token}"""
-
-        server.login("051361e49a2cdd", "fe060f7da88271")
-        server.sendmail(sender, receiver, message)
+    server = smtplib.SMTP("smtp.mailtrap.io", 2525)
+    server.login("84be287eed57de", "6a38ff008fe618")
+    problems = server.sendmail(sender, receiver, message)
+    server.quit()
 
 def forgot_password_email(user_email, token):
+    sender = "m@smtp.mailtrap.io"
+    receiver = user_email
+    header  = 'From: %s\n' % sender
+    header += 'To: %s\n' % user_email
+    header += 'Subject: %s\n\n' % 'none'
+    message = header + f"Hi to reset you password go to https://new.openml.org/resetpass/?token={token}"
 
-    sender = "Private Person <from@smtp.mailtrap.io>"
-    receiver = "aa"
-
-    message = f"""\
-    Subject: Hi Mailtrap
-    To: {receiver}
-    From: {sender}
-
-    This is a test e- message."""
-
-    with smtplib.SMTP("smtp.mailtrap.io", 2525) as server:
-        server.login("84be287eed57de", "6a38ff008fe618")
-        server.sendmail(sender, receiver, message)
-
-forgot_password_email('aa','token')
+    server = smtplib.SMTP("smtp.mailtrap.io", 2525)
+    server.login("84be287eed57de", "6a38ff008fe618")
+    server.sendmail(sender, receiver, message)
+    server.quit()
