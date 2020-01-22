@@ -148,7 +148,7 @@ class UserMenu extends Component {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              this.closeMenu();
+              this.closeMenu();//TODO add api call
             }}
           >
             Sign out

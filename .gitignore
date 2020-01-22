@@ -35,3 +35,7 @@ src/__pycache__/
 *.pyc
 
 cache/
+
+idea_testing.py
+
+.env
