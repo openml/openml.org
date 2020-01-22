@@ -400,6 +400,12 @@ def get_layout_from_study(study_id):
             ],
             value = '0'
         ),
+        dcc.RadioItems(
+            id='graph',
+            options=[{'label': i, 'value': i} for i in ['scatter', 'parallel-coordinate']],
+            value='scatter',
+            labelStyle={'display': 'inline-block'}
+        ),
         html.Div(id='scatterplot-study'),
     ])
     return layout
