@@ -39,3 +39,5 @@ cache/
 idea_testing.py
 
 .env
+
+Internal_docs/
