@@ -11,9 +11,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_dance.contrib.github import make_github_blueprint, github
 
 
-
-
-
 def register_extensions(app):
     argon2.init_app(app)
     create_dash_app(app)
@@ -28,6 +25,7 @@ def register_extensions(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+
     def init_db():
         # import all modules here that might define models so that
         # they will be registered properly on the metadata.  Otherwise
@@ -44,4 +42,3 @@ def register_blueprints(app):
     github_bp = make_github_blueprint()
     app.register_blueprint(github_bp, url_prefix="/login")
     return None
-
