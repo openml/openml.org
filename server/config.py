@@ -1,7 +1,8 @@
 import os
 import datetime
-
-basedir = os.path.abspath(os.path.dirname(__file__))
+from environs import Env
+env=Env()
+env.read_env()
 class Config(object):
     # SQL Alchemy parameters
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:''@localhost/openml'

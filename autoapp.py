@@ -1,15 +1,14 @@
 from server.app import *
-from flask import jsonify
 
 # Create flask app and routing
 app = Flask(__name__, static_url_path='', static_folder='server/src/client/app/build',
             instance_relative_config=True)
+app.config.from_object(Config)
+
 app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 CORS(app)
-app.config.from_object(Config)
 register_extensions(app)
 register_blueprints(app)
-jwt = JWTManager(app)
 app.secret_key = 'abcd'
 
 
