@@ -7,11 +7,6 @@ from .src.dashboard.dashapp import create_dash_app
 from .extensions import argon2, engine, Base, db, jwt
 from server import user
 from server import public
-
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity)
-
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_dance.contrib.github import make_github_blueprint, github
 
