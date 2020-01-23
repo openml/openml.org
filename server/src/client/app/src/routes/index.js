@@ -22,6 +22,7 @@ const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
 const Profile = async(() => import("../pages/auth/Profile"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
+const ResetPage = async(() => import("../pages/auth/ResetPage"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
 
@@ -199,6 +200,11 @@ const authRoutes = {
       path: "/auth/reset-password",
       name: "Reset Password",
       component: ResetPassword
+    },
+    {
+      path: "/auth/reset-page",
+      name: "Reset Page",
+      component: ResetPage
     },
     {
       path: "/auth/404",
