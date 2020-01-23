@@ -26,7 +26,6 @@ const Wrapper = styled(Paper)`
     padding: ${props => props.theme.spacing(10)}px;
   }
 `;
-console.log(this.props.location.token);
 
 function ResetPage() {
     axios.post("https://127.0.0.1:5000/forgot-token",{
