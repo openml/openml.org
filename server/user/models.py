@@ -3,10 +3,12 @@ from server.extensions import argon2
 from sqlalchemy import Column, Integer, String
 import hashlib, datetime
 
+
 # TODO: declare useful attributes and delete older attributes
 class User(Base):
     __table__ = Base.metadata.tables['users']
     __table_args__ = {'autoload': True}
+
     # Attribute names to help out with functions
     # id = Column(Integer, primary_key=True, unique=True)
     # ip_address = Column(String(64))
@@ -36,12 +38,11 @@ class User(Base):
     # session_hash = Column(String(120))# session hash is API key
     # password_hash = Column(String(120))
 
-
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
     def check_password(self, passwd):
-        #password = argon2.generate_password_hash(password)
+        # password = argon2.generate_password_hash(password)
         return argon2.check_password_hash(self.password, passwd)
 
     def update_bio(self, new_bio):
@@ -67,5 +68,3 @@ class User(Base):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
-
-
