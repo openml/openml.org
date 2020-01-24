@@ -46,3 +46,4 @@ flask-argon2
 flask-login
 flask-cors
 python-dotenv
+flask-jwt-extended
