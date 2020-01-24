@@ -48,3 +48,4 @@ flask-cors
 python-dotenv
 flask-jwt-extended
 environs
+pymysql
