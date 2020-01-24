@@ -5,6 +5,7 @@ import requests, datetime
 from flask_jwt_extended import (jwt_required, create_access_token,
                                 get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt
+from urllib.parse import urlparse, parse_qs
 
 user_blueprint = Blueprint("user", __name__)
 
@@ -73,29 +74,49 @@ def delete_user():
     return jsonify({"msg": "User deleted"}), 200
 
 
-# TODO Write forgotten pass logic
-@user_blueprint.route('/forgot-token', methods=['GET', 'POST'])
+#TODO token expiry logic
+@user_blueprint.route('/forgot-token', methods=['POST'])
 def forgot_token():
-    token = request.args.get('token')
+    data = request.get_json()
+    url = data['url']
+    parsed = urlparse(url)
+    token = parse_qs(parsed.query)['token']
+    print(token)
     user = User.query.filter_by(forgotten_password_code=token).first()
-    if user.forgotten_password_code == token:
+    if user is not None:
         return 'CODE CONFIRMED'
     else:
-        print('sdfs')
-        return "ACCESS DENIED"
+        return jsonify({"msg": "Error"}), 401
 
 
-# TODO Reset password logic
-@user_blueprint.route('/resetpassword')
+
+@user_blueprint.route('/resetpassword', methods=['POST'])
 def reset():
-    token = request.args.get('token')
     data = request.get_json()
+    url = data['url']
+    parsed = urlparse(url)
+    token = parse_qs(parsed.query)['token']
     user = User.query.filter_by(forgotten_password_code=token).first()
-    user.set_password(data['new_password'])
+    user.set_password(data['password'])
     db.session.merge(user)
     db.session.commit()
+    return 'passwor changed'
 
 # TODO write user confirmation logic
+@user_blueprint.route('/confirmation', methods=['POST'])
+def confirm_user():
+    data = request.get_json()
+    url = data['url']
+    parsed = urlparse(url)
+    token = parse_qs(parsed.query)['token']
+    user = User.query.filter_by(activation_code=token).first()
+    if user is None:
+        return 'wrong token'
+    else:
+        return 'userconfirmed'
+
+
+
 
 
 #
