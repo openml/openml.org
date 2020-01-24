@@ -47,3 +47,4 @@ flask-login
 flask-cors
 python-dotenv
 flask-jwt-extended
+environs
