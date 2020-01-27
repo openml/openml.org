@@ -401,16 +401,21 @@ def get_layout_from_study(study_id):
     # Simply listing all metrics (evaluations.list_evaluation_measures) might include metrics that are not recorded.
     this_study = study.get_study(int(study_id))
     first_run = runs.get_run(this_study.runs[0])
+    # The full list of metrics contain 'prior' metrics, which are not dependent on models but on the given dataset.
     # Moreover some metrics don't make sense as a metric (I think there are more, but I don't understand all 'metrics'):
     illegal_metrics = ['number_of_instances', 'os_information']
+    metrics = [metric for metric in first_run.evaluations if metric not in illegal_metrics and 'prior' not in metric]
+    if 'predictive_accuracy' in metrics:
+        default_metric = 'predictive_accuracy'
+    elif 'root_mean_squared_error' in metrics:
+        default_metric = 'root_mean_squared_error'
+    else:
+        default_metric = metrics[0]
+
     metric_dropdown = dcc.Dropdown(
         id='metric-dropdown',
-        options=[
-            {'label': metric.replace('_', ' ').title(), 'value': metric}
-            for metric in first_run.evaluations
-            if metric not in illegal_metrics
-        ],
-        value='predictive_accuracy'
+        options=[{'label': metric.replace('_', ' ').title(), 'value': metric} for metric in metrics],
+        value=default_metric
     )
 
     # The user may choose plot type
