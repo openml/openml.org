@@ -7,6 +7,7 @@ import dash_html_components as html
 
 from .callbacks import register_callbacks
 
+# To do: Move to assets (Copied from Joaquin's react font)
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
         "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
@@ -21,14 +22,19 @@ def create_dash_app(flask_app):
     app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
     app.config.suppress_callback_exceptions = True
 
-    # Generic layout of the dashboard
+    # Layout of the dashboard
+    # 1. URL
     url = dcc.Location(id='url', refresh=False)
-    global_loading_screen = dcc.Loading(html.Div(id='loading-indictor',
-                                        style={'display': 'none'}), type='dot')
+    # 2. Page content - loaded based on URL path
     page_content = html.Div(id='page-content', style={"fontFamily": font, 'background-color': 'white'})
+    # 3. Loading icon
+    global_loading_icon = dcc.Loading(html.Div(id='loading-indictor',
+                                               style={'display': 'none'}),
+                                      type='dot')
     app.layout = html.Div([url,
-                           global_loading_screen,
+                           global_loading_icon,
                            page_content])
+
     # Callbacks
     register_callbacks(app)
 
