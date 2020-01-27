@@ -393,12 +393,12 @@ def get_layout_from_study(study_id):
     # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
     layout = html.Div([
         dcc.Dropdown(
-            id = 'dropdown-study',
-            options = [
-                {'label':'mean-value', 'value':'0'},
-                {'label':'folded', 'value':'1'}
+            id='dropdown-study',
+            options=[
+                {'label': 'Show mean performance only', 'value': 'mean'},
+                {'label': 'Show performance per fold', 'value': 'fold'}
             ],
-            value = '0'
+            value='mean'
         ),
         dcc.RadioItems(
             id='graph',
