@@ -15,44 +15,39 @@ def register_study_callbacks(app):
          Input('graph', 'value'),
          ]
     )
-    def scatterplot_study(pathname, value,type):
+    def scatterplot_study(pathname, value, graph_type):
+        metric = 'predictive_accuracy'
+        fig = go.Figure()
         print(value)
 
-        study_id = int(re.search('study/run/(\d+)', pathname).group(1))
+        study_id = int(re.search(r'study/run/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
         runs = study.runs[1:300]
         print(len(study.runs))
 
-        item = openml.evaluations.list_evaluations('predictive_accuracy', run=runs, output_format='dataframe', )
-        item_fold = openml.evaluations.list_evaluations('predictive_accuracy', run=runs, output_format='dataframe',
-                                                        per_fold=True)
-        if(value == '0'):
-            dfs = dict(tuple(item.groupby('flow_name')))
-            key_list = list(dfs.keys())
-            fig = go.Figure()
-            for i in range(len(key_list)):
-                curr_df = dfs[str(key_list[i])]
-                if (type == 'scatter'):
-                    fig.add_trace(go.Scatter(x=curr_df['value'], y=curr_df['data_name'],
-                                             mode='markers', name=str(key_list[i])))
-                elif(type == 'parallel-coordinate'):
-                    fig.add_trace(go.Scatter(y=curr_df['value'], x=curr_df['data_name'], mode='lines+markers'
-                                             , name=str(key_list[i])))
-
-
-
+        if value == 'mean':
+            study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe')
+            dfs = tuple(study_results.groupby('flow_name'))
+            for flow_name, flow_df in dfs:
+                if graph_type == 'scatter':
+                    fig.add_trace(go.Scatter(x=flow_df['value'], y=flow_df['data_name'],
+                                             mode='markers', name=flow_name))
+                elif graph_type == 'parallel-coordinate':
+                    fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'], mode='lines+markers',
+                                             name=str(flow_name)))
+        elif value == 'fold':
+            study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe', per_fold=True)
+            df = splitDataFrameList(study_results, 'values')
+            dfs = tuple(df.groupby('flow_name'))
+            for flow_name, flow_df in dfs:
+                fig.add_trace(go.Scatter(x=flow_df['values'], y=flow_df['data_name'],
+                                         mode='markers', name=flow_name))
         else:
+            raise ValueError(f"`value` must be one of 'mean' or 'folds', not {value}.")
 
-            df = splitDataFrameList(item_fold, 'values')
-            dfs = dict(tuple(df.groupby('flow_name')))
-            key_list = list(dfs.keys())
-            fig = go.Figure()
-            for i in range(len(key_list)):
-                curr_df = dfs[str(key_list[i])]
-                fig.add_trace(go.Scatter(x=curr_df['values'], y=curr_df['data_name'],
-                                         mode='markers', name=str(key_list[i])))
-        height = len(item['data_name'].unique()) * 30
-        print(height, len(item['data_name'].unique()))
+        per_task_height = 30
+        height = len(study_results['data_name'].unique()) * per_task_height
+        print(height, len(study_results['data_name'].unique()))
         fig.update_layout(
             title="Flow vs task performance",
             xaxis_title="Predictive accuracy",
@@ -64,6 +59,5 @@ def register_study_callbacks(app):
                 color="#7f7f7f"
             )
         )
-        graph = dcc.Graph(figure=fig, style={'height':str(height)+'px' })
+        graph = dcc.Graph(figure=fig, style={'height': f'{height}px'})
         return html.Div(graph)
-
