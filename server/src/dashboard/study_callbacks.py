@@ -5,14 +5,16 @@ import dash_core_components as dcc
 from .helpers import *
 import re
 import openml
+import time
 
 
 def register_study_callbacks(app):
     @app.callback(
-        Output('scatterplot-study', 'children'),
+        [Output('graph-div', 'children'),
+         Output('scatter-or-parallel-radio', 'style')],
         [Input('url', 'pathname'),
-         Input('dropdown-study', 'value'),
-         Input('graph', 'value'),
+         Input('mean-or-fold-dropdown', 'value'),
+         Input('scatter-or-parallel-radio', 'value'),
          ]
     )
     def scatterplot_study(pathname, value, graph_type):
@@ -37,7 +39,9 @@ def register_study_callbacks(app):
                                              name=str(flow_name)))
         elif value == 'fold':
             study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe', per_fold=True)
+            start = time.time()
             df = splitDataFrameList(study_results, 'values')
+            print(time.time() - start, "seconds for split")
             dfs = tuple(df.groupby('flow_name'))
             for flow_name, flow_df in dfs:
                 fig.add_trace(go.Scatter(x=flow_df['values'], y=flow_df['data_name'],
@@ -59,4 +63,5 @@ def register_study_callbacks(app):
             )
         )
         graph = dcc.Graph(figure=fig, style={'height': f'{height}px'})
-        return html.Div(graph)
+        show_graph_radio = {'display': 'block' if (value == 'mean') else 'none'}
+        return html.Div(graph), show_graph_radio
