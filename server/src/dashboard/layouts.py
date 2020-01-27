@@ -388,24 +388,44 @@ def get_layout_from_study(study_id):
     outpus:
     scatter plot for runs and studies combined
     """
-    # items = study.get_study(int(study_id))
-    # run_ids = items.runs[1:300]
-    # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    # Results may be shown in aggregate (mean of folds), or per-fold:
+    mean_or_fold_dropdown = dcc.Dropdown(
+        id='mean-or-fold-dropdown',
+        options=[
+            {'label': 'Show mean performance only', 'value': 'mean'},
+            {'label': 'Show performance per fold', 'value': 'fold'}
+        ],
+        value='mean'
+    )
+
+    # We construct the metric dropdown menu dynamically from computed metrics.
+    # Simply listing all metrics (evaluations.list_evaluation_measures) might include metrics that are not recorded.
+    this_study = study.get_study(int(study_id))
+    first_run = runs.get_run(this_study.runs[0])
+    # Moreover some metrics don't make sense as a metric (I think there are more, but I don't understand all 'metrics'):
+    illegal_metrics = ['number_of_instances', 'os_information']
+    metric_dropdown = dcc.Dropdown(
+        id='metric-dropdown',
+        options=[
+            {'label': metric.replace('_', ' ').title(), 'value': metric}
+            for metric in first_run.evaluations
+            if metric not in illegal_metrics
+        ],
+        value='predictive_accuracy'
+    )
+
+    # The user may choose plot type
+    scatter_or_parallel_radio = dcc.RadioItems(
+        id='scatter-or-parallel-radio',
+        options=[{'label': i, 'value': i} for i in ['scatter', 'parallel-coordinate']],
+        value='scatter',
+        labelStyle={'display': 'inline-block'}
+    )
+
     layout = html.Div([
-        dcc.Dropdown(
-            id='mean-or-fold-dropdown',
-            options=[
-                {'label': 'Show mean performance only', 'value': 'mean'},
-                {'label': 'Show performance per fold', 'value': 'fold'}
-            ],
-            value='mean'
-        ),
-        dcc.RadioItems(
-            id='scatter-or-parallel-radio',
-            options=[{'label': i, 'value': i} for i in ['scatter', 'parallel-coordinate']],
-            value='scatter',
-            labelStyle={'display': 'inline-block'}
-        ),
+        mean_or_fold_dropdown,
+        metric_dropdown,
+        scatter_or_parallel_radio,
         html.Div(id='graph-div'),
     ])
     return layout

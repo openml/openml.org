@@ -15,10 +15,10 @@ def register_study_callbacks(app):
         [Input('url', 'pathname'),
          Input('mean-or-fold-dropdown', 'value'),
          Input('scatter-or-parallel-radio', 'value'),
+         Input('metric-dropdown', 'value')
          ]
     )
-    def scatterplot_study(pathname, value, graph_type):
-        metric = 'predictive_accuracy'
+    def scatterplot_study(pathname, value, graph_type, metric):
         fig = go.Figure()
         print(value)
 
