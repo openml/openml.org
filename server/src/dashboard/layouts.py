@@ -382,11 +382,10 @@ def get_layout_from_run(run_id):
 
 
 def get_layout_from_study(study_id):
-    """
-    params:
-    study_id: study id provided
-    outpus:
-    scatter plot for runs and studies combined
+    """ Generate the layout for the study dashboard. Data content (graphs, tables) is generated through callbacks.
+
+    study_id: id of the study to generate the dashboard for.
+    returns: a html.Div element with child elements containing all UI elements and parent divs for data content.
     """
     # Results may be shown in aggregate (mean of folds), or per-fold:
     mean_or_fold_dropdown = dcc.Dropdown(
