@@ -2,7 +2,7 @@ import re
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from .layouts import *
-
+from openml.extensions.sklearn import SklearnExtension
 
 def register_task_callbacks(app):
     @app.callback([Output('dummy', 'children'),
