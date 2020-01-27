@@ -50,11 +50,10 @@ def register_study_callbacks(app):
         print(height, len(study_results['data_name'].unique()))
         fig.update_layout(
             title="Flow vs task performance",
-            xaxis_title="Predictive accuracy",
+            xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
             yaxis_title="Dataset",
             legend_orientation="h",
             font=dict(
-                family="Courier New, monospace",
                 size=11,
                 color="#7f7f7f"
             )
