@@ -3,6 +3,10 @@ from .helpers import *
 from .dashapp import *
 from openml import runs, evaluations, setups, datasets
 
+# To do: Move to assets (Copied from Joaquin's react font)
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
+        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
+
 
 def get_layout_from_data(data_id):
     """
