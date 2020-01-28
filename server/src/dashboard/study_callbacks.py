@@ -15,8 +15,7 @@ def register_study_callbacks(app):
         [Input('url', 'pathname'),
          Input('mean-or-fold-dropdown', 'value'),
          Input('scatter-or-parallel-radio', 'value'),
-         Input('metric-dropdown', 'value')
-         ]
+         Input('metric-dropdown', 'value')]
     )
     def scatterplot_study(pathname, value, graph_type, metric):
         fig = go.Figure()
@@ -29,8 +28,7 @@ def register_study_callbacks(app):
 
         if value == 'mean':
             study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe')
-            dfs = tuple(study_results.groupby('flow_name'))
-            for flow_name, flow_df in dfs:
+            for flow_name, flow_df in study_results.groupby('flow_name'):
                 if graph_type == 'scatter':
                     fig.add_trace(go.Scatter(x=flow_df['value'], y=flow_df['data_name'],
                                              mode='markers', name=flow_name))
@@ -42,10 +40,17 @@ def register_study_callbacks(app):
             start = time.time()
             df = splitDataFrameList(study_results, 'values')
             print(time.time() - start, "seconds for split")
-            dfs = tuple(df.groupby('flow_name'))
-            for flow_name, flow_df in dfs:
-                fig.add_trace(go.Scatter(x=flow_df['values'], y=flow_df['data_name'],
-                                         mode='markers', name=flow_name))
+
+            dataset_map = {dataset: i for i, dataset in enumerate(df['data_name'].unique())}
+            n_flows = df['flow_name'].nunique()
+            dy_range = 0.6  # Flows will be scattered +/- `dy_range / 2` around the y value (datasets are 1. apart)
+            dy = dy_range/(n_flows - 1)  # Distance between individual flows
+
+            for i, (flow_name, flow_df) in enumerate(df.groupby('flow_name')):
+                y_offset = i * dy - dy_range / 2
+                ys = [dataset_map[d] + y_offset for d in flow_df['data_name']]
+                fig.add_trace(go.Scatter(x=flow_df['values'], y=ys, mode='markers', name=flow_name, opacity=0.75))
+            fig.update_yaxes(ticktext=list(dataset_map), tickvals=list(dataset_map.values()))
         else:
             raise ValueError(f"`value` must be one of 'mean' or 'folds', not {value}.")
 
