@@ -53,8 +53,13 @@ def register_study_callbacks(app):
                 ys = [dataset_y_map[d] + y_offset for d in flow_df['data_name']]
                 fig.add_trace(go.Scatter(x=flow_df['values'], y=ys, mode='markers', name=flow_name, opacity=0.75))
 
+            def create_link_html(data_name: str, dataset_id: str, character_limit: int = 15) -> str:
+                """ Return a html hyperlink (<a>) to the dataset page, text is shortened to `character_limit` chars. """
+                short_name = data_name if len(data_name) <= character_limit else f"{data_name[:character_limit - 3]}..."
+                return f"<a href='/search?type=data&id={dataset_id}'>{short_name}</a>"
+
             # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
-            dataset_link_map = {dataset: f"<a href='/search?type=data&id={dataset_id}'>{dataset}</a>"
+            dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
                                 for dataset, dataset_id in zip(dataset_names, df['data_id'].unique())}
             fig.update_yaxes(ticktext=list(dataset_link_map.values()), tickvals=list(dataset_y_map.values()))
         else:
