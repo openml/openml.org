@@ -40,17 +40,23 @@ def register_study_callbacks(app):
             start = time.time()
             df = splitDataFrameList(study_results, 'values')
             print(time.time() - start, "seconds for split")
+            dataset_names = df['data_name'].unique()
 
-            dataset_map = {dataset: i for i, dataset in enumerate(df['data_name'].unique())}
+            # We map the datasets to a y-value, so we can vary flow y-values explicitly in the scatter plot.
+            dataset_y_map = {dataset: i for i, dataset in enumerate(dataset_names)}
             n_flows = df['flow_name'].nunique()
             dy_range = 0.6  # Flows will be scattered +/- `dy_range / 2` around the y value (datasets are 1. apart)
             dy = dy_range/(n_flows - 1)  # Distance between individual flows
 
             for i, (flow_name, flow_df) in enumerate(df.groupby('flow_name')):
                 y_offset = i * dy - dy_range / 2
-                ys = [dataset_map[d] + y_offset for d in flow_df['data_name']]
+                ys = [dataset_y_map[d] + y_offset for d in flow_df['data_name']]
                 fig.add_trace(go.Scatter(x=flow_df['values'], y=ys, mode='markers', name=flow_name, opacity=0.75))
-            fig.update_yaxes(ticktext=list(dataset_map), tickvals=list(dataset_map.values()))
+
+            # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
+            dataset_link_map = {dataset: f"<a href='/search?type=data&id={dataset_id}'>{dataset}</a>"
+                                for dataset, dataset_id in zip(dataset_names, df['data_id'].unique())}
+            fig.update_yaxes(ticktext=list(dataset_link_map.values()), tickvals=list(dataset_y_map.values()))
         else:
             raise ValueError(f"`value` must be one of 'mean' or 'folds', not {value}.")
 
