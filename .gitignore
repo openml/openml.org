@@ -26,7 +26,6 @@ yarn-error.log*
 /src/dashboard/__pycache__
 
 *.sql
-*.db
 *.ipynb
 src/__pycache__/
 
