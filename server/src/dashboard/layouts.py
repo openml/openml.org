@@ -418,9 +418,16 @@ def get_layout_from_study(study_id):
         value=default_metric
     )
 
+    show_fold_checkbox = dcc.Checklist(
+        id='show-fold-checkbox',
+        options=[{'label': 'Show results for each fold (can be slow)', 'value': 'fold'}],
+        value=[]
+    )
+
     layout = html.Div([
         graph_type_dropdown,
         metric_dropdown,
+        show_fold_checkbox,
         html.Div(id='graph-div'),
     ])
     return layout

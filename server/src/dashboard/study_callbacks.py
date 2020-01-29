@@ -10,19 +10,21 @@ import plotly.express as px
 
 def register_study_callbacks(app):
     @app.callback(
-        [Output('graph-div', 'children')],
-        # Output('scatter-or-parallel-radio', 'style')],
+        [Output('graph-div', 'children'),
+         Output('show-fold-checkbox', 'style')],
         [Input('url', 'pathname'),
          Input('graph-type-dropdown', 'value'),
-         Input('metric-dropdown', 'value')]
+         Input('metric-dropdown', 'value'),
+         Input('show-fold-checkbox', 'value')]
     )
-    def scatterplot_study(pathname, graph_type, metric):
+    def scatterplot_study(pathname, graph_type, metric, show_fold_checkbox):
         fig = go.Figure()
+        show_folds = 'fold' in show_fold_checkbox
 
         study_id = int(re.search(r'study/run/(\d+)', pathname).group(1))
         study = openml.study.get_study(study_id)
         runs = study.runs[1:300]
-        print(len(study.runs), pathname)
+        print(len(study.runs), show_folds, pathname)
 
         if graph_type == 'parallel':
             with print_duration('list_evaluations'):
@@ -31,15 +33,19 @@ def register_study_callbacks(app):
                 fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'],
                                          mode='lines+markers', name=flow_name))
         elif graph_type == 'scatter':
-            with print_duration('list_evaluations_per_fold'):
-                study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe', per_fold=True)
-            with print_duration('split'):
-                df = splitDataFrameList(study_results, 'values')
+            if show_folds:
+                with print_duration('list_evaluations_per_fold'):
+                    study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe', per_fold=True)
+                with print_duration('split'):
+                    df = splitDataFrameList(study_results, 'values')
+            else:
+                df = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe')
+
             dataset_names = df['data_name'].unique()
+            n_flows = df['flow_name'].nunique()
 
             # We map the datasets to a y-value, so we can vary flow y-values explicitly in the scatter plot.
             dataset_y_map = {dataset: i for i, dataset in enumerate(dataset_names)}
-            n_flows = df['flow_name'].nunique()
             dy_range = 0.6  # Flows will be scattered +/- `dy_range / 2` around the y value (datasets are 1. apart)
             dy = dy_range/(n_flows - 1)  # Distance between individual flows
 
@@ -53,17 +59,24 @@ def register_study_callbacks(app):
                                    '<extra></extra>')  # Removes a second box with trace information
 
                 y_offset = i * dy - dy_range / 2
-                # Individual fold results:
-                fold_text = [(f'Dataset: {dataset_name}<br>'
-                              'Fold score') for dataset_name in flow_df['data_name']]
-                y_folds = [dataset_y_map[d] + y_offset for d in flow_df['data_name']]
-                fold_trace = go.Scatter(x=flow_df['values'], y=y_folds, mode='markers', name=f'{flow_name}_fold',
-                                        opacity=0.5, legendgroup=flow_name, showlegend=False, marker=dict(color=flow_color),
-                                        text=fold_text, hovertemplate=shared_template)
-                fig.add_trace(fold_trace)
+
+                if show_folds:
+                    # Individual fold results:
+                    fold_text = [(f'Dataset: {dataset_name}<br>'
+                                  'Fold score') for dataset_name in flow_df['data_name']]
+                    y_folds = [dataset_y_map[d] + y_offset for d in flow_df['data_name']]
+                    fold_trace = go.Scatter(x=flow_df['values'], y=y_folds, mode='markers', name=f'{flow_name}_fold',
+                                            opacity=0.5, legendgroup=flow_name, showlegend=False, marker=dict(color=flow_color),
+                                            text=fold_text, hovertemplate=shared_template)
+                    fig.add_trace(fold_trace)
 
                 # Mean performance:
-                flow_mean_df = flow_df.groupby('data_name', as_index=False).mean()
+                if show_folds:
+                    flow_mean_df = flow_df.groupby('data_name', as_index=False).mean()
+                else:
+                    flow_mean_df = flow_df
+                    flow_mean_df['values'] = flow_mean_df['value']
+
                 y_mean = [dataset_y_map[d] + y_offset for d in flow_mean_df['data_name']]
                 mean_text = [(f'Dataset: {dataset_name}<br>'
                               'Mean score') for dataset_name in flow_mean_df['data_name']]
@@ -83,18 +96,20 @@ def register_study_callbacks(app):
             raise ValueError(f"`graph_type` must be one of 'scatter' or 'parallel', not {graph_type}.")
 
         per_task_height = 30
-        height = len(study_results['data_name'].unique()) * per_task_height
-        print(height, len(study_results['data_name'].unique()))
+        height = len(dataset_names) * per_task_height
+        print(height, len(dataset_names))
         fig.update_layout(
             title="Flow vs task performance",
             xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
             yaxis_title="Dataset",
             legend_orientation='h',
             # legend_title='something'  Should work with plotly >= 4.5, but seems to fail silently.
+            uirevision='some_constant',  # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
             font=dict(
                 size=11,
                 color="#7f7f7f"
             )
         )
         graph = dcc.Graph(figure=fig, style={'height': f'{height}px'})
-        return [html.Div(graph)] # , show_graph_radio
+        checkbox_style = {'display': 'none' if graph_type == 'parallel' else 'block'}
+        return html.Div(graph), checkbox_style
