@@ -17,18 +17,31 @@ def get_task_overview():
     :return: Overview page for all tasks on openml
     """
     df = tasks.list_tasks(output_format='dataframe')
-    cols = ["task_type", "estimation_procedure"]
-    title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
+    title = ['Task types on OpenML', 'Estimation procedure used across tasks']
 
-    fig = plotly.subplots.make_subplots(rows=2, cols=1, subplot_titles=tuple(title))
-    i = 0
-    for col in cols:
-        i = i+1
-        fig.add_trace(
-        go.Histogram(x=df[col], showlegend=False), row=i, col=1)
-    fig.update_layout(height=1000, width=900)
+    # 1. Task type
+    grouped = (df.groupby("task_type").size().reset_index(name='counts'))
+    colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+    types_chart = go.Pie(labels=grouped["task_type"], values=grouped['counts'],
+                         marker=dict(colors=colors),
+                         showlegend=True)
+    fig1 = go.Figure(data=[types_chart])
+    fig1.update_layout(height=400)
 
-    return html.Div(dcc.Graph(figure=fig))
+    # 2. estimation procedure
+    grouped = (df.groupby("estimation_procedure").size().reset_index(name='counts'))
+    grouped = grouped.sort_values(by='counts', ascending=False)
+    data = go.Bar(x=grouped['counts'], y=grouped['estimation_procedure'],
+                  orientation='h',
+                  marker_color='#330C73', showlegend=False)
+
+    fig2 = go.Figure(data=data)
+    fig2.update_layout(bargap=0.4, width=900, height=400)
+    fig2.update_xaxes(tickfont=dict(size=10), categoryorder='total descending')
+    return html.Div([html.P(title[0]),
+                     dcc.Graph(figure=fig1),
+                     html.P(title[1]),
+                     dcc.Graph(figure=fig2)])
 
 
 def get_flow_overview():
@@ -81,9 +94,10 @@ def get_run_overview():
     return dcc.Graph(figure=fig)
 
 
-def register_overview_callbacks(app):
+def register_overview_callbacks(app, cache):
     @app.callback(Output('data_overview', 'children'),
                   [Input('status_data','value')])
+    #@cache.memoize(timeout=20)
     def dataset_overview(radio):
         """
 

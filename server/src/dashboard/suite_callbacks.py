@@ -10,7 +10,7 @@ import plotly.figure_factory as ff
 
 
 
-def register_suite_callbacks(app):
+def register_suite_callbacks(app, cache):
     @app.callback(
         Output('suite-scatter-plot', 'children'),
         [Input('url', 'pathname'),

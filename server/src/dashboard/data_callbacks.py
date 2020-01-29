@@ -12,7 +12,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from .helpers import *
 
 
-def register_data_callbacks(app):
+def register_data_callbacks(app, cache):
     @app.callback(
         [Output('tab3', 'children'),
          Output('dataloaded', 'value'),

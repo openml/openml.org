@@ -7,7 +7,7 @@ import re
 import openml
 
 
-def register_study_callbacks(app):
+def register_study_callbacks(app, cache):
     @app.callback(
         Output('scatterplot-study', 'children'),
         [Input('url', 'pathname'),
