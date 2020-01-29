@@ -1,3 +1,5 @@
+from typing import List
+
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import dash_html_components as html
@@ -32,6 +34,12 @@ def register_study_callbacks(app):
             for flow_name, flow_df in study_results.groupby('flow_name'):
                 fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'],
                                          mode='lines+markers', name=flow_name))
+
+            # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
+            dataset_names = study_results['data_name'].unique()
+            dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
+                                for dataset, dataset_id in zip(dataset_names, study_results['data_id'].unique())}
+            fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=study_results['data_name'].unique())
         elif graph_type == 'scatter':
             if show_folds:
                 with print_duration('list_evaluations_per_fold'):
@@ -83,11 +91,6 @@ def register_study_callbacks(app):
                 mean_trace = go.Scatter(x=flow_mean_df['values'], y=y_mean, mode='markers', marker=dict(symbol='diamond', color=flow_color), legendgroup=flow_name, name=flow_name, text=mean_text, hovertemplate=shared_template)
                 fig.add_trace(mean_trace)
 
-            def create_link_html(data_name: str, dataset_id: str, character_limit: int = 15) -> str:
-                """ Return a html hyperlink (<a>) to the dataset page, text is shortened to `character_limit` chars. """
-                short_name = data_name if len(data_name) <= character_limit else f"{data_name[:character_limit - 3]}..."
-                return f"<a href='/search?type=data&id={dataset_id}'>{short_name}</a>"
-
             # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
             dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
                                 for dataset, dataset_id in zip(dataset_names, df['data_id'].unique())}
@@ -113,3 +116,9 @@ def register_study_callbacks(app):
         graph = dcc.Graph(figure=fig, style={'height': f'{height}px'})
         checkbox_style = {'display': 'none' if graph_type == 'parallel' else 'block'}
         return html.Div(graph), checkbox_style
+
+
+def create_link_html(data_name: str, dataset_id: str, character_limit: int = 15) -> str:
+    """ Return a html hyperlink (<a>) to the dataset page, text is shortened to `character_limit` chars. """
+    short_name = data_name if len(data_name) <= character_limit else f"{data_name[:character_limit - 3]}..."
+    return f"<a href='/search?type=data&id={dataset_id}'>{short_name}</a>"
