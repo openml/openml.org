@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+import time
 from sklearn.preprocessing import Imputer
 import pandas as pd
 from openml import datasets
@@ -157,3 +159,9 @@ def splitDataFrameList(df, target_column):
     new_df = pd.DataFrame(new_rows)
     return new_df
 
+
+@contextmanager
+def print_duration(name: str):
+    start = time.time()
+    yield
+    print(f'{name}: {time.time() - start:.3f}s')
