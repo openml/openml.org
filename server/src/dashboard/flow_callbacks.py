@@ -5,7 +5,7 @@ from .helpers import *
 from openml import tasks, runs, evaluations
 
 
-def register_flow_callbacks(app):
+def register_flow_callbacks(app, cache):
 
     @app.callback(Output('flowplot', 'figure'),
                   [Input('url', 'pathname'),
