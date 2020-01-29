@@ -388,13 +388,13 @@ def get_layout_from_study(study_id):
     returns: a html.Div element with child elements containing all UI elements and parent divs for data content.
     """
     # Results may be shown in aggregate (mean of folds), or per-fold:
-    mean_or_fold_dropdown = dcc.Dropdown(
-        id='mean-or-fold-dropdown',
+    graph_type_dropdown = dcc.Dropdown(
+        id='graph-type-dropdown',
         options=[
-            {'label': 'Show mean performance only', 'value': 'mean'},
-            {'label': 'Show performance per fold', 'value': 'fold'}
+            {'label': 'Show scatter plot of results', 'value': 'scatter'},
+            {'label': 'Show parallel line plot of results', 'value': 'parallel'}
         ],
-        value='mean'
+        value='scatter'
     )
 
     # We construct the metric dropdown menu dynamically from computed metrics.
@@ -418,18 +418,9 @@ def get_layout_from_study(study_id):
         value=default_metric
     )
 
-    # The user may choose plot type
-    scatter_or_parallel_radio = dcc.RadioItems(
-        id='scatter-or-parallel-radio',
-        options=[{'label': i, 'value': i} for i in ['scatter', 'parallel-coordinate']],
-        value='scatter',
-        labelStyle={'display': 'inline-block'}
-    )
-
     layout = html.Div([
-        mean_or_fold_dropdown,
+        graph_type_dropdown,
         metric_dropdown,
-        scatter_or_parallel_radio,
         html.Div(id='graph-div'),
     ])
     return layout
