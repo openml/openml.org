@@ -451,6 +451,7 @@ def get_layout_from_study(study_id):
 def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: List[Tuple[str, str]]) -> dt.DataTable:
     """ Download dataset qualities for the given datasets and populate a DataTable with this information. """
     datas = datasets.get_datasets(dataset_ids, download_data=False)
+    # You might want to filter out all but the shown data, as the unshown data is also sent (but keep did for reference)
     qualities = [{**data.qualities, 'name': data.name, 'did': data.dataset_id} for data in datas]
     columns = [{"name": column_name, "id": quality_name} for column_name, quality_name in columns]
     return dt.DataTable(
