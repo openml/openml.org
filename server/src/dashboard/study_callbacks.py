@@ -57,6 +57,10 @@ def register_study_callbacks(app):
                 dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
                                     for dataset, dataset_id in zip(dataset_names, study_results['data_id'].unique())}
                 fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=study_results['data_name'].unique())
+                fig.update_layout(
+                    xaxis_title="Dataset",
+                    yaxis_title=metric.replace('_', ' ').title()  # Perhaps an explicit mapping is better.
+                )
             elif graph_type == 'scatter':
                 # We map the datasets to a y-value, so we can vary flow y-values explicitly in the scatter plot.
                 dataset_y_map = {dataset: i for i, dataset in enumerate(dataset_names)}
@@ -95,6 +99,11 @@ def register_study_callbacks(app):
                 dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
                                     for dataset, dataset_id in zip(dataset_names, study_results['data_id'].unique())}
                 fig.update_yaxes(ticktext=list(dataset_link_map.values()), tickvals=list(dataset_y_map.values()))
+
+                fig.update_layout(
+                    xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
+                    yaxis_title="Dataset"
+                )
             else:
                 raise ValueError(f"`graph_type` must be one of 'scatter' or 'parallel', not {graph_type}.")
 
@@ -103,8 +112,6 @@ def register_study_callbacks(app):
             print(height, len(dataset_names))
             fig.update_layout(
                 title="Flow vs task performance",
-                xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
-                yaxis_title="Dataset",
                 legend_orientation='h',
                 # legend_title='something'  Should work with plotly >= 4.5, but seems to fail silently.
                 uirevision='some_constant',  # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
