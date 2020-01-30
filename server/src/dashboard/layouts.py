@@ -429,7 +429,7 @@ def get_layout_from_study(study_id):
         id_='dataset-table',
         dataset_ids=this_study.data,
         columns=[
-            ('name', 'name'),
+            ('Name', 'name'),
             ('Instances', 'NumberOfInstances'),
             ('Features', 'NumberOfFeatures'),
             ('Classes', 'NumberOfClasses'),  # Should only be included for studies with classification tasks.
@@ -459,7 +459,11 @@ def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: Lis
         tooltip={'name': 'This is the name of the dataset given by the uploader.'},
         data=qualities,
         filter_action="native",
-        sort_action="native"
+        sort_action="native",
+        style_as_list_view=True,  # Removes vertical grid lines
+        style_cell_conditional=[{'if': {'column_id': 'name'}, 'textAlign': 'left'}],
+        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(252, 252, 252)'}],
+        style_header={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold'}
     )
 
 
