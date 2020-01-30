@@ -23,8 +23,8 @@ def register_study_callbacks(app):
         with print_duration("Callback"):
             fig = go.Figure()
             show_folds = 'fold' in show_fold_checkbox
-
             study_id = int(re.search(r'study/run/(\d+)', pathname).group(1))
+
             study_results = load_run_data(study_id, metric, include_each_fold=show_folds, max_runs=300)
             dataset_names = study_results['data_name'].unique()
             n_flows = study_results['flow_name'].nunique()
@@ -36,9 +36,21 @@ def register_study_callbacks(app):
                                        '%{text}<br>'
                                        '<extra></extra>')  # Removes a second box with trace information
 
+                    # Connecting the results with lines also interpolates over missing values,
+                    # to stop this behavior we add explicit NaNs for datasets without results.
+                    # There are more efficient ways to do this, but we'll optimize this when we need to (curr: 1ms).
+                    scores = []
+                    for dataset_name in dataset_names:
+                        for (score, data_name) in zip(flow_df['value'], flow_df['data_name']):
+                            if dataset_name == data_name:
+                                scores.append(score)
+                                break
+                        else:
+                            scores.append(float('nan'))
+
                     mean_text = [(f'Dataset: {dataset_name}<br>'
-                                  'Mean score') for dataset_name in flow_df['data_name']]
-                    fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'], mode='lines+markers',
+                                  'Mean score') for dataset_name in dataset_names]
+                    fig.add_trace(go.Scatter(y=scores, x=dataset_names, mode='lines+markers',
                                              name=flow_name, text=mean_text, hovertemplate=shared_template))
 
                 # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
