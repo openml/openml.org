@@ -31,7 +31,7 @@ def register_study_callbacks(app):
 
             if graph_type == 'parallel':
                 for flow_name, flow_df in study_results.groupby('flow_name'):
-                    shared_template = (f'{metric}: ' + '%{x}<br>'
+                    shared_template = (f'{metric}: ' + '%{y}<br>'
                                        f'Flow: {flow_name}<br>'
                                        '%{text}<br>'
                                        '<extra></extra>')  # Removes a second box with trace information
