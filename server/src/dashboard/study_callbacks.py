@@ -2,6 +2,7 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
+from dash.exceptions import PreventUpdate
 from openml import OpenMLStudy
 
 from .helpers import *
@@ -17,16 +18,24 @@ def register_study_callbacks(app):
         [Input('url', 'pathname'),
          Input('graph-type-dropdown', 'value'),
          Input('metric-dropdown', 'value'),
-         Input('show-fold-checkbox', 'value')]
+         Input('show-fold-checkbox', 'value'),
+         Input('dataset-table', "derived_virtual_data")
+         ]
     )
-    def scatterplot_study(pathname, graph_type, metric, show_fold_checkbox):
+    def scatterplot_study(pathname, graph_type, metric, show_fold_checkbox, shown_table_rows):
+        if shown_table_rows is None:
+            raise PreventUpdate
+
         with print_duration("Callback"):
             fig = go.Figure()
             show_folds = 'fold' in show_fold_checkbox
             study_id = int(re.search(r'study/run/(\d+)', pathname).group(1))
 
             study_results = load_run_data(study_id, metric, include_each_fold=show_folds, max_runs=300)
-            dataset_names = study_results['data_name'].unique()
+            # dataset_names = study_results['data_name'].unique()
+            dataset_names = [row['name'] for row in shown_table_rows]
+            print(dataset_names)
+            dataset_ids = [row['did'] for row in shown_table_rows]
             n_flows = study_results['flow_name'].nunique()
 
             if graph_type == 'parallel':
@@ -55,8 +64,8 @@ def register_study_callbacks(app):
 
                 # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
                 dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
-                                    for dataset, dataset_id in zip(dataset_names, study_results['data_id'].unique())}
-                fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=study_results['data_name'].unique())
+                                    for dataset, dataset_id in zip(dataset_names, dataset_ids)}
+                fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=dataset_names)
                 fig.update_layout(
                     xaxis_title="Dataset",
                     yaxis_title=metric.replace('_', ' ').title()  # Perhaps an explicit mapping is better.
@@ -122,7 +131,7 @@ def register_study_callbacks(app):
                     color="#7f7f7f"
                 )
             )
-            graph = dcc.Graph(figure=fig, style={'height': f'{height}px'})
+            graph = dcc.Graph(figure=fig)#, style={'height': f'{height}px'})
             checkbox_style = {'display': 'none' if graph_type == 'parallel' else 'block'}
         return html.Div(graph), checkbox_style
 
