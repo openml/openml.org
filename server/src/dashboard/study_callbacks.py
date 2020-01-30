@@ -19,11 +19,11 @@ def register_study_callbacks(app):
          Input('graph-type-dropdown', 'value'),
          Input('metric-dropdown', 'value'),
          Input('show-fold-checkbox', 'value'),
-         Input('dataset-table', "derived_virtual_data")
-         ]
+         Input('dataset-table', "derived_virtual_data")]
     )
     def scatterplot_study(pathname, graph_type, metric, show_fold_checkbox, shown_table_rows):
         if shown_table_rows is None:
+            # The first callback will have shown_table_rows set to None. It's a Dash thing.
             raise PreventUpdate
 
         with print_duration("Callback"):
@@ -34,8 +34,10 @@ def register_study_callbacks(app):
             study_results = load_run_data(study_id, metric, include_each_fold=show_folds, max_runs=300)
             # dataset_names = study_results['data_name'].unique()
             dataset_names = [row['name'] for row in shown_table_rows]
-            print(dataset_names)
             dataset_ids = [row['did'] for row in shown_table_rows]
+            dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
+                                for dataset, dataset_id in zip(dataset_names, dataset_ids)}
+
             n_flows = study_results['flow_name'].nunique()
 
             if graph_type == 'parallel':
@@ -63,8 +65,6 @@ def register_study_callbacks(app):
                                              name=flow_name, text=mean_text, hovertemplate=shared_template))
 
                 # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
-                dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
-                                    for dataset, dataset_id in zip(dataset_names, dataset_ids)}
                 fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=dataset_names)
                 fig.update_layout(
                     xaxis_title="Dataset",
@@ -77,6 +77,7 @@ def register_study_callbacks(app):
                 dy = dy_range/(n_flows - 1)  # Distance between individual flows
 
                 for i, (flow_name, flow_df) in enumerate(study_results.groupby('flow_name')):
+                    flow_df = flow_df[flow_df['data_name'].isin(dataset_names)]
                     # See https://plot.ly/python/discrete-color/#color-sequences-in-plotly-express for color palettes
                     flow_color = px.colors.qualitative.Plotly[i]
 
@@ -104,11 +105,7 @@ def register_study_callbacks(app):
                     mean_trace = go.Scatter(x=flow_df['value'], y=ys, mode='markers', marker=dict(symbol='diamond', color=flow_color), legendgroup=flow_name, name=flow_name, text=mean_text, hovertemplate=shared_template)
                     fig.add_trace(mean_trace)
 
-                # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
-                dataset_link_map = {dataset: create_link_html(dataset, dataset_id)
-                                    for dataset, dataset_id in zip(dataset_names, study_results['data_id'].unique())}
                 fig.update_yaxes(ticktext=list(dataset_link_map.values()), tickvals=list(dataset_y_map.values()))
-
                 fig.update_layout(
                     xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
                     yaxis_title="Dataset"
@@ -131,6 +128,8 @@ def register_study_callbacks(app):
                     color="#7f7f7f"
                 )
             )
+            # Setting height is currently disabled. It messes with the page when filtering datasets.
+            # However, the scatter plot *does* get rendered too small, so have to find a solution.
             graph = dcc.Graph(figure=fig)#, style={'height': f'{height}px'})
             checkbox_style = {'display': 'none' if graph_type == 'parallel' else 'block'}
         return html.Div(graph), checkbox_style
