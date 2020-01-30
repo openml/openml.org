@@ -111,8 +111,9 @@ def register_study_callbacks(app):
             height = len(dataset_names) * per_task_height
             print(height, len(dataset_names))
             fig.update_layout(
-                title="Flow vs task performance",
+                #title="Flow vs task performance",
                 legend_orientation='h',
+                legend=dict(y=1.2),
                 # legend_title='something'  Should work with plotly >= 4.5, but seems to fail silently.
                 uirevision='some_constant',  # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
                 font=dict(
