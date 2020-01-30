@@ -1,9 +1,9 @@
-from typing import List
-
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
+from openml import OpenMLStudy
+
 from .helpers import *
 import re
 import openml
@@ -32,8 +32,15 @@ def register_study_callbacks(app):
             with print_duration('list_evaluations'):
                 study_results = openml.evaluations.list_evaluations(metric, run=runs, output_format='dataframe')
             for flow_name, flow_df in study_results.groupby('flow_name'):
-                fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'],
-                                         mode='lines+markers', name=flow_name))
+                shared_template = (f'{metric}: ' + '%{x}<br>'
+                                   f'Flow: {flow_name}<br>'
+                                   '%{text}<br>'
+                                   '<extra></extra>')  # Removes a second box with trace information
+
+                mean_text = [(f'Dataset: {dataset_name}<br>'
+                              'Mean score') for dataset_name in flow_df['data_name']]
+                fig.add_trace(go.Scatter(y=flow_df['value'], x=flow_df['data_name'], mode='lines+markers',
+                                         name=flow_name, text=mean_text, hovertemplate=shared_template))
 
             # Since `pd.Series.unique` returns in order of appearance, we can match it with the data_id blindly
             dataset_names = study_results['data_name'].unique()
