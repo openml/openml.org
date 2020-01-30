@@ -1,4 +1,6 @@
 import os
+from typing import List, Tuple
+
 import dash_table as dt
 import plotly
 import plotly.graph_objs as go
@@ -423,14 +425,42 @@ def get_layout_from_study(study_id):
         options=[{'label': 'Show results for each fold (can be slow)', 'value': 'fold'}],
         value=[]
     )
-
+    dataset_table = create_dataset_overview_table(
+        id_='dataset-table',
+        dataset_ids=this_study.data,
+        columns=[
+            ('name', 'name'),
+            ('Instances', 'NumberOfInstances'),
+            ('Features', 'NumberOfFeatures'),
+            ('Classes', 'NumberOfClasses'),  # Should only be included for studies with classification tasks.
+            ('Missing Values', 'NumberOfMissingValues'),
+            ('Numeric Features', 'NumberOfNumericFeatures'),
+            ('Categorical Features', 'NumberOfSymbolicFeatures')
+        ]
+    )
     layout = html.Div([
         graph_type_dropdown,
         metric_dropdown,
         show_fold_checkbox,
         html.Div(id='graph-div'),
+        dataset_table
     ])
     return layout
+
+
+def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: List[Tuple[str, str]]) -> dt.DataTable:
+    """ Download dataset qualities for the given datasets and populate a DataTable with this information. """
+    datas = datasets.get_datasets(dataset_ids, download_data=False)
+    qualities = [{**data.qualities, 'name': data.name, 'did': data.dataset_id} for data in datas]
+    columns = [{"name": column_name, "id": quality_name} for column_name, quality_name in columns]
+    return dt.DataTable(
+        id=id_,
+        columns=columns,
+        tooltip={'name': 'This is the name of the dataset given by the uploader.'},
+        data=qualities,
+        filter_action="native",
+        sort_action="native"
+    )
 
 
 def get_layout_from_suite(suite_id):
