@@ -461,6 +461,7 @@ def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: Lis
         filter_action="native",
         sort_action="native",
         style_as_list_view=True,  # Removes vertical grid lines
+        style_cell={'font-family': 'Segoe UI Symbol'},  # 'fontSize': 12
         style_cell_conditional=[{'if': {'column_id': 'name'}, 'textAlign': 'left'}],
         style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(252, 252, 252)'}],
         style_header={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold'}

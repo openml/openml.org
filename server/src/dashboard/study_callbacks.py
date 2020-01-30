@@ -117,7 +117,8 @@ def register_study_callbacks(app):
                 # legend_title='something'  Should work with plotly >= 4.5, but seems to fail silently.
                 uirevision='some_constant',  # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
                 font=dict(
-                    size=11,
+                    family="Segoe UI Symbol",
+                    size=14,
                     color="#7f7f7f"
                 )
             )
