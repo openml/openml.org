@@ -4,7 +4,6 @@ from sqlalchemy import Column, Integer, String
 import hashlib, datetime
 
 
-# TODO: declare useful attributes and delete older attributes
 class User(Base):
     __table__ = Base.metadata.tables['users']
     __table_args__ = {'autoload': True}
@@ -41,6 +40,7 @@ class User(Base):
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
+    # TODO argon2 switch logic
     def check_password(self, passwd):
         # password = argon2.generate_password_hash(password)
         return argon2.check_password_hash(self.password, passwd)

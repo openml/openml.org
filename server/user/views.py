@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, redirect
+from flask import Blueprint, request, jsonify, redirect, url_for, send_from_directory
 from server.user.models import User
 from flask_cors import CORS
 import requests, datetime
@@ -7,7 +7,7 @@ from flask_jwt_extended import (jwt_required, create_access_token,
 from server.extensions import db, jwt
 from urllib.parse import urlparse, parse_qs
 
-user_blueprint = Blueprint("user", __name__)
+user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
 CORS(user_blueprint)
 
@@ -18,7 +18,6 @@ blacklist = set()
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     return jti in blacklist
-
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
@@ -35,7 +34,7 @@ def login():
         user.last_login = timestamp1
         return jsonify(access_token=access_token), 200
 
-
+#TODO Add more atttributes and user profile picture
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
@@ -55,7 +54,7 @@ def profile():
     else:
         return "post user"
 
-
+# TODO fix request
 @user_blueprint.route('/logout', methods=['GET'])
 @jwt_required
 def logout():
@@ -103,17 +102,19 @@ def reset():
     return 'passwor changed'
 
 # TODO write user confirmation logic
-@user_blueprint.route('/confirmation', methods=['POST'])
+@user_blueprint.route('/confirmation')
 def confirm_user():
-    data = request.get_json()
-    url = data['url']
-    parsed = urlparse(url)
-    token = parse_qs(parsed.query)['token']
-    user = User.query.filter_by(activation_code=token).first()
-    if user is None:
-        return 'wrong token'
-    else:
-        return 'userconfirmed'
+    print('confirmation linke')
+    return send_from_directory(user_blueprint.static_folder, 'auth/sign-in')
+    # data = request.get_json()
+    # url = data['url']
+    # parsed = urlparse(url)
+    # token = parse_qs(parsed.query)['token']
+    # user = User.query.filter_by(activation_code=token).first()
+    # if user is None:
+    #     return 'wrong token'
+    # else:
+    #     return 'userconfirmed'
 
 
 

@@ -9,7 +9,7 @@ app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 CORS(app)
 register_extensions(app)
 register_blueprints(app)
-app.secret_key = 'abcd'
+app.secret_key = 'change key here'
 
 
 @app.route('/', defaults={'path': ''})
@@ -34,3 +34,6 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
+
+# TODO Unit testing
+# TODO Config management
