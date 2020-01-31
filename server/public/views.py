@@ -17,7 +17,7 @@ blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
 
-
+# TODO EXISTING USER CHECK
 @blueprint.route('/signup', methods=['POST', 'GET'])
 def signupfunc():
     if request.method == 'POST':
@@ -26,12 +26,12 @@ def signupfunc():
         user.set_password(robj['password'])
         user.set_session_hash()
         user.ip_address = request.remote_addr
-        user.activation_selector = 'x100f0'
+        user.activation_selector = None
         user.activation_code = '0000'
-        user.forgotten_password_selector = '00ffs0'
+        user.forgotten_password_selector = None
         user.forgotten_password_code = '0000'
         user.forgotten_password_time = '0000'
-        user.remember_selector = '01f0s0'
+        user.remember_selector = None
         user.remember_code = '0000'
         user.created_on = '0000'
         user.last_login = '0000'
