@@ -12,7 +12,11 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  
 # command to run tests
-script:
-  - python autoapp.py
-  - pytest server/src/dashboard/tests
+before_script: python autoapp.py &
+after_script: pkill -9 -f "autoapp.py"
+script: pytest server/src/dashboard/tests
+
+
+
