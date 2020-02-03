@@ -6,6 +6,7 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 from server.config import Config
 
@@ -27,3 +28,4 @@ except sqlalchemy.exc.OperationalError:
 argon2 = Argon2()
 db = SQLAlchemy()
 jwt = JWTManager()
+bcrypt = Bcrypt

@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 import os
 from .src.dashboard.dashapp import create_dash_app
-from .extensions import argon2, engine, Base, db, jwt
+from .extensions import argon2, engine, Base, db, jwt, bcrypt
 from server import user
 from server import public
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -15,6 +15,7 @@ def register_extensions(app):
     argon2.init_app(app)
     create_dash_app(app)
     jwt.init_app(app)
+    # bcrypt.init_app(app)
 
     # Database initialisation
     #
@@ -42,3 +43,6 @@ def register_blueprints(app):
     github_bp = make_github_blueprint()
     app.register_blueprint(github_bp, url_prefix="/login")
     return None
+
+# TODO: write tests for app
+# TODO: finish up production and test config
