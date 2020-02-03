@@ -52,3 +52,4 @@ flask-dance
 flask-caching
 pyOpenSSL
 selenium
+dash[testing]
