@@ -12,9 +12,10 @@ from scipy.io import arff
 import urllib.request
 import io
 import re
-
 import openml
-def register_run_callbacks(app):
+
+
+def register_run_callbacks(app, cache):
 
     @app.callback(
         Output('runplot', 'children'),
