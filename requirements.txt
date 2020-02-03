@@ -49,3 +49,5 @@ flask-jwt-extended
 environs
 pymysql
 flask-dance
+flask-caching
+pyOpenSSL
