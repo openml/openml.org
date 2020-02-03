@@ -1,26 +1,29 @@
 
 language: python
 
-addons:
-  chrome: stable
-      
+
 python:
   - "3.6"      # current default Python on Travis CI
   - "3.7"
   - "3.8"
-before_install:
- - sudo apt-get update
- - sudo apt-get install chromium-chromedriver
-  
+
+addons:
+  chrome: stable
+  apt:
+    packages:
+      - chromium-chromedriver
+
 # command to install dependencies
 install:
   - pip install -r requirements.txt
   - pip install dash[testing]
   
-# command to run tests
-before_script: 
-  - "export PATH=$PATH:/usr/lib/chromium-browser/"
-  -  python autoapp.py &
+  
+before_script:
+  - ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
+  - python autoapp.py &  
+  - google-chrome-stable --no-sandbox --headless --remote-debugging-port=9222 &
+ 
 after_script: pkill -9 -f "autoapp.py"
 script: pytest server/src/dashboard/tests 
 
