@@ -1,5 +1,13 @@
 
 language: python
+
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+      
 python:
   - "3.5"
   - "3.6"      # current default Python on Travis CI
