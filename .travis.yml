@@ -17,7 +17,6 @@ before_script:
   # include ChromeDriver in PATH
   - ln --symbolic /usr/lib/chromium-browser/chromedriver "${HOME}/bin/chromedriver"
   # start Chrome and listen on localhost
-  - google-chrome-stable --headless --disable-gpu --no-sandbox --remote-debugging-port=9222 http://localhost &
   - python autoapp.py &  
 
 # command to install dependencies
@@ -30,7 +29,7 @@ install:
 
  
 after_script: pkill -9 -f "autoapp.py"
-script: pytest server/src/dashboard/tests --webdriver Firefox -k bsly001 
+script: pytest server/src/dashboard/tests --webdriver Firefox 
 
 
 
