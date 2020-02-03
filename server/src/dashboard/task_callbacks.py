@@ -2,9 +2,10 @@ import re
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from .layouts import *
+from openml.extensions.sklearn import SklearnExtension
 
 
-def register_task_callbacks(app):
+def register_task_callbacks(app, cache):
     @app.callback([Output('dummy', 'children'),
                    Output('tab1', 'children'),
                    Output('tab2', 'children')],
@@ -12,6 +13,7 @@ def register_task_callbacks(app):
                    Input('metric', 'value'),
                    Input('button', 'n_clicks')
                    ])
+    @cache.memoize(timeout=20)
     def update_task_plots(pathname, metric, n_clicks):
         """
 
