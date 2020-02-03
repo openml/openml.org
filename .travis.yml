@@ -30,7 +30,7 @@ install:
 
  
 after_script: pkill -9 -f "autoapp.py"
-script: pytest server/src/dashboard/tests 
+script: pytest server/src/dashboard/tests --webdriver Firefox -k bsly001 
 
 
 
