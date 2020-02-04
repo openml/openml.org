@@ -1,6 +1,9 @@
 
 language: python
+sudo: required
+dist: xenial
 
+cache: pip
 addons:
   chrome: stable
       
@@ -9,14 +12,21 @@ python:
   - "3.7"
   - "3.8"
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y curl jq
+  - sudo installation/geckodriver.sh latest
+  - sudo installation/chromedriver.sh latest
+
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+
   
 # command to run tests
 before_script: python autoapp.py &
 after_script: pkill -9 -f "autoapp.py"
-script: pytest server/src/dashboard/tests --webdriver Firefox 
+script: pytest server/src/dashboard/tests 
 
 
 
