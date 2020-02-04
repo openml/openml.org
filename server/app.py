@@ -15,7 +15,7 @@ def register_extensions(app):
     argon2.init_app(app)
     create_dash_app(app)
     jwt.init_app(app)
-    # bcrypt.init_app(app)
+    bcrypt.init_app(app)
 
     # Database initialisation
     #
