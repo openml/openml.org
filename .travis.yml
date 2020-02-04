@@ -1,4 +1,5 @@
 dist: trusty
+language: python
 sudo: true
 
 addons:
@@ -12,8 +13,9 @@ before_script:
   - ln --symbolic /usr/lib/chromium-browser/chromedriver "${HOME}/bin/chromedriver"
   # start Chrome and listen on localhost
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-# language: python
-# sudo: required
+  
+  
+
 # dist: xenial
 
 # cache: pip
