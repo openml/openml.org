@@ -16,7 +16,6 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y curl jq
-  - sudo installation/geckodriver.sh latest
   - sudo installation/chromedriver.sh latest
 
 
