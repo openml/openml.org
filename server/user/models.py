@@ -44,7 +44,13 @@ class User(Base):
     # TODO argon2 switch logic
     def check_password(self, passwd):
         # password = argon2.generate_password_hash(password)
-        return argon2.check_password_hash(self.password, passwd)
+        if argon2.check_password_hash(self.password, passwd):
+            return True
+        if not argon2.check_password_hash(self.password, passwd) and not bcrypt.check_password_hash(self.password, passwd):
+            return False
+        if not argon2.check_password_hash(self.password, passwd) and bcrypt.check_password_hash(self.password, passwd):
+            self.set_password(passwd)
+            return True
 
     def update_bio(self, new_bio):
         self.bio = new_bio

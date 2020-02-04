@@ -28,4 +28,4 @@ except sqlalchemy.exc.OperationalError:
 argon2 = Argon2()
 db = SQLAlchemy()
 jwt = JWTManager()
-bcrypt = Bcrypt
+bcrypt = Bcrypt()
