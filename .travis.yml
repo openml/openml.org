@@ -5,12 +5,13 @@ dist: xenial
 
 cache: pip
 addons:
-  chrome: stable
-      
+  chrome: stable      
+
 python:
   - "3.6"      # current default Python on Travis CI
   - "3.7"
   - "3.8"
+
 
 before_install:
   - sudo apt-get update
@@ -18,15 +19,22 @@ before_install:
   - sudo installation/geckodriver.sh latest
   - sudo installation/chromedriver.sh latest
 
+
 # command to install dependencies
-install:
+install: 
   - pip install -r requirements.txt
+  - pip install dash[testing]
 
   
-# command to run tests
-before_script: python autoapp.py &
+before_script:
+  # start Chrome and listen on localhost
+  - python autoapp.py &  
+
+
 after_script: pkill -9 -f "autoapp.py"
+
 script: pytest server/src/dashboard/tests 
+
 
 
 
