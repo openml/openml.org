@@ -16,6 +16,7 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y curl jq
+  - sudo chmod +x installation/chromedriver.sh
   - sudo installation/chromedriver.sh latest
 
 
