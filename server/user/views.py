@@ -30,8 +30,10 @@ def login():
     else:
         access_token = create_access_token(identity=user.email)
         timestamp = datetime.datetime.now()
-        timestamp1 = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        user.last_login = timestamp1
+        timestamp1 = timestamp.strftime("%Y-%m-%d")
+        # user.last_login = timestamp1
+        db.session.merge(user)
+        db.session.commit()
         return jsonify(access_token=access_token), 200
 
 #TODO Add more atttributes and user profile picture
