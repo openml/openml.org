@@ -40,3 +40,5 @@ idea_testing.py
 .env
 
 Internal_docs/
+
+flask-cache-dir/
