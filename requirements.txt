@@ -50,3 +50,4 @@ flask-jwt-extended
 environs
 pymysql
 flask-dance
+flask-bcrypt
