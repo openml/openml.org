@@ -486,3 +486,43 @@ def get_layout_dataset_overview():
     return layout
 
 
+def get_run_overview():
+    graph = html.Div(id='run_overview', className="twelve columns")
+    radio_button = html.Div(
+            dcc.RadioItems(
+                id='run_size',
+                options=[{'label': "10K runs", "value": 10000},
+                         {'label': "100K runs", "value": 100000},
+                         {'label': "500K runs", "value": 500000}],
+                value=10000,
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+
+            ))
+    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}),type='dot')
+
+    layout = html.Div([run_loader,
+                       graph,
+                       radio_button],
+                      style={'overflowY': 'hidden'})
+    return layout
+
+
+def get_task_overview():
+    graph = html.Div(id='task_overview', className="twelve columns")
+    radio_button = html.Div(
+            dcc.RadioItems(
+                id='task_size',
+                options=[{'label': "10K runs", "value": 10000},
+                         {'label': "100K runs", "value": 100000},
+                         {'label': "500K runs", "value": 500000}],
+                value=10000,
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+
+            ), style={'display': 'none'})
+    task_loader = dcc.Loading(html.Div(id='tloader', style={'display': 'none'}), type='dot')
+
+    layout = html.Div([task_loader,
+                       graph,
+                       radio_button],
+                      style={'overflowY': 'hidden'})
+    return layout

@@ -2,9 +2,9 @@ from server.extensions import Base
 from server.extensions import argon2
 from sqlalchemy import Column, Integer, String
 import hashlib, datetime
+from server.extensions import bcrypt
 
 
-# TODO: declare useful attributes and delete older attributes
 class User(Base):
     __table__ = Base.metadata.tables['users']
     __table_args__ = {'autoload': True}
@@ -41,9 +41,16 @@ class User(Base):
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
+    # TODO argon2 switch logic
     def check_password(self, passwd):
         # password = argon2.generate_password_hash(password)
-        return argon2.check_password_hash(self.password, passwd)
+        if argon2.check_password_hash(self.password, passwd):
+            return True
+        if not argon2.check_password_hash(self.password, passwd) and not bcrypt.check_password_hash(self.password, passwd):
+            return False
+        if not argon2.check_password_hash(self.password, passwd) and bcrypt.check_password_hash(self.password, passwd):
+            self.set_password(passwd)
+            return True
 
     def update_bio(self, new_bio):
         self.bio = new_bio

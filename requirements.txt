@@ -53,3 +53,5 @@ flask-caching
 pyOpenSSL
 selenium
 dash[testing]
+flask-bcrypt
+

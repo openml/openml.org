@@ -2,7 +2,7 @@ import smtplib, ssl
 
 context = ssl.create_default_context()
 
-
+# TODO Mail config
 def confirmation_email(user_email, token):
     sender = "m@smtp.mailtrap.io"
     receiver = user_email
