@@ -115,10 +115,10 @@ def confirm_user():
     token = parse_qs(parsed.query)['token']
     user = User.query.filter_by(activation_code=token).first()
     user.active = '1'
+    db.session.merge(user)
+    db.session.commit()
     return 'user activated'
-    #     return 'wrong token'
-    # else:
-    #     return 'userconfirmed'
+
 
 
 

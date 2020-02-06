@@ -9,7 +9,7 @@ def confirmation_email(user_email, token):
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
     header += 'Subject: %s\n\n' % 'none'
-    message = header + f"Hi to confirm your account go to https://new.openml.org/confirm-page/?token={token}"
+    message = header + f"Hi to confirm your account go to https://new.openml.org/auth/confirm-page/?token={token}"
 
     server = smtplib.SMTP('localhost', 25)# TODO chnge it from env vars
     #server.login("84be287eed57de", "6a38ff008fe618")
@@ -23,7 +23,7 @@ def forgot_password_email(user_email, token):
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
     header += 'Subject: %s\n\n' % 'none'
-    message = header + f"Hi to reset you password go to https://new.openml.org/reset-page/?&token={token}"
+    message = header + f"Hi to reset you password go to https://new.openml.org/auth/reset-page/?&token={token}"
 
     server = smtplib.SMTP('localhost', 25)
     #server.login("84be287eed57de", "6a38ff008fe618")
