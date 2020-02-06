@@ -85,6 +85,7 @@ def forgot_token():
     print(token)
     user = User.query.filter_by(forgotten_password_code=token).first()
     if user is not None:
+        print('confirmed')
         return 'CODE CONFIRMED'
     else:
         return jsonify({"msg": "Error"}), 401
@@ -94,6 +95,7 @@ def forgot_token():
 @user_blueprint.route('/resetpassword', methods=['POST'])
 def reset():
     data = request.get_json()
+    print(data)
     url = data['url']
     parsed = urlparse(url)
     token = parse_qs(parsed.query)['token']
@@ -101,13 +103,13 @@ def reset():
     user.set_password(data['password'])
     db.session.merge(user)
     db.session.commit()
-    return 'passwor changed'
+    return 'password changed'
 
 # TODO write user confirmation logic
 @user_blueprint.route('/confirmation')
 def confirm_user():
     print('confirmation linke')
-    return send_from_directory(user_blueprint.static_folder, 'auth/sign-in')
+    return send_from_directory(user_blueprint.static_folder)
     # data = request.get_json()
     # url = data['url']
     # parsed = urlparse(url)
