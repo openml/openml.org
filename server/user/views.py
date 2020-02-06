@@ -109,13 +109,13 @@ def reset():
 @user_blueprint.route('/confirmation')
 def confirm_user():
     print('confirmation linke')
-    return send_from_directory(user_blueprint.static_folder)
-    # data = request.get_json()
-    # url = data['url']
-    # parsed = urlparse(url)
-    # token = parse_qs(parsed.query)['token']
-    # user = User.query.filter_by(activation_code=token).first()
-    # if user is None:
+    data = request.get_json()
+    url = data['url']
+    parsed = urlparse(url)
+    token = parse_qs(parsed.query)['token']
+    user = User.query.filter_by(activation_code=token).first()
+    user.active = '1'
+    return 'user activated'
     #     return 'wrong token'
     # else:
     #     return 'userconfirmed'
