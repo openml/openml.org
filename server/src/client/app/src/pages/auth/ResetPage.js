@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -30,7 +30,7 @@ const Wrapper = styled(Paper)`
 function ResetPage() {
     console.log(window.location.href)
     const [verifToken, setverifToken] = useState(false);
-    const [redirect, setredirect] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     axios.post("https://127.0.0.1:5000/forgot-token",{
         url:window.location.href,
     }).then(function(response) {
@@ -39,7 +39,6 @@ function ResetPage() {
       })
       .catch(function(error) {
         console.log(error.data);
-        setredirect(true);
       });
     function sendflask(event){
      event.preventDefault();
@@ -50,6 +49,7 @@ function ResetPage() {
         password: event.target.password.value
     }).then(function(response) {
         console.log(response.data);
+        setRedirect(true);
       })
       .catch(function(error) {
           console.log('error')
@@ -84,6 +84,11 @@ function ResetPage() {
         >
           Reset password
         </Button>
+          {redirect ? (
+          <Redirect to="/auth/sign-in" />
+        ) : (
+          <t></t>//dummy values for now todo: remove the
+        )}
       </form>
     </Wrapper>
   );
