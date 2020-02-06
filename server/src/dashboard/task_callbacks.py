@@ -3,6 +3,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from .layouts import *
 from openml.extensions.sklearn import SklearnExtension
+TIMEOUT = 5*60
 
 
 def register_task_callbacks(app, cache):
@@ -13,7 +14,7 @@ def register_task_callbacks(app, cache):
                    Input('metric', 'value'),
                    Input('button', 'n_clicks')
                    ])
-    @cache.memoize(timeout=20)
+    @cache.memoize(timeout=TIMEOUT)
     def update_task_plots(pathname, metric, n_clicks):
         """
 
