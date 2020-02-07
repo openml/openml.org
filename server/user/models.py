@@ -42,12 +42,18 @@ class User(Base):
         self.password = argon2.generate_password_hash(password)
 
     def check_password(self, passwd):
-        # password = argon2.generate_password_hash(password)
+        try:
+            if bcrypt.check_password_hash(self.password, passwd):
+               bpass = True
+        except ValueError as error:
+            print(error)
+            bpass = False
+    # password = argon2.generate_password_hash(password)
         if argon2.check_password_hash(self.password, passwd):
             return True
-        if not argon2.check_password_hash(self.password, passwd) and not bcrypt.check_password_hash(self.password, passwd):
+        elif not argon2.check_password_hash(self.password, passwd) and not bpass:#TODO add exception error for bcrypt
             return False
-        if not argon2.check_password_hash(self.password, passwd) and bcrypt.check_password_hash(self.password, passwd):
+        elif not argon2.check_password_hash(self.password, passwd) and bpass:
             self.set_password(passwd)
             return True
 
