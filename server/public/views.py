@@ -17,11 +17,13 @@ blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
 
+# TODO write user confirmation logic during signup process
 # TODO EXISTING USER CHECK
-@blueprint.route('/signup', methods=['POST', 'GET'])
+@blueprint.route('/signup', methods=['POST'])
 def signupfunc():
-    if request.method == 'POST':
-        robj = request.get_json()
+    robj = request.get_json()
+    check_user = User.query.filter_by(email=robj['email']).first()
+    if check_user is None:
         user = User(username=robj['name'], email=robj['email'])
         user.set_password(robj['password'])
         user.set_session_hash()
@@ -47,11 +49,17 @@ def signupfunc():
         user.external_source = '0000'
         user.external_id = '0000'
         user.password_hash = '0000'
+        timestamp = datetime.datetime.now()
+        timestamp = timestamp.strftime("%d %H")
+        md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
+        user.update_activation_code(md5_digest)
         db.session.add(user)
         db.session.commit()
-        print('signedup')
+        confirmation_email(user.email, md5_digest)
         return 'signedup'
-    return 'notyet'
+    else:
+        return 'user exists'
+
 
 
 @blueprint.route('/forgotpassword', methods=['POST'])
