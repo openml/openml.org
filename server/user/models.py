@@ -64,7 +64,10 @@ class User(Base):
         self.forgotten_password_code = code
 
     def update_activation_code(self, code):
-        self.activation_password_code = code
+        self.activation_code = code
+
+    def update_activation(self):
+        self.active = '1'
 
     def update_forgotten_time(self, time):
         self.forgotten_password_time = time
