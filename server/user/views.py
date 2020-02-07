@@ -106,7 +106,7 @@ def reset():
     return 'password changed'
 
 # TODO write user confirmation logic
-@user_blueprint.route('/confirmation')
+@user_blueprint.route('/confirmation',  methods=['POST'])
 def confirm_user():
     print('confirmation linke')
     data = request.get_json()
@@ -114,12 +114,12 @@ def confirm_user():
     parsed = urlparse(url)
     token = parse_qs(parsed.query)['token']
     user = User.query.filter_by(activation_code=token).first()
-    user.active = '1'
+    user.update_activation()
     db.session.merge(user)
     db.session.commit()
     return 'user activated'
 
-
+#TODO LOGOUT
 
 
 
