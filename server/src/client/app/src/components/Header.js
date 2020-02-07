@@ -3,6 +3,8 @@ import styled, { withTheme } from "styled-components";
 import { darken } from "polished";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
+import axios from "axios";
+
 
 import {
   Grid,
@@ -148,7 +150,23 @@ class UserMenu extends Component {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              this.closeMenu();//TODO add api call
+                  const yourConfig = {
+                      headers: {
+                          Authorization: "Bearer " + localStorage.getItem("token")
+                      }
+                  }
+                console.log('clocked')
+              this.closeMenu();
+              axios.post("https://127.0.0.1:5000/logout", {
+                  logout:'true'
+              }, yourConfig).then(function (response) {
+                  console.log(response.data)
+
+              })
+                  .catch(function (error) {
+                      console.log(error.data)
+                  });
+              //TODO add api call, how to do it: add jwt token in the axios call then go for logout
             }}
           >
             Sign out

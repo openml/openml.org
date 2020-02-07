@@ -57,7 +57,7 @@ def profile():
         return "post user"
 
 # TODO fix request
-@user_blueprint.route('/logout', methods=['GET'])
+@user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
     jti = get_raw_jwt()['jti']
@@ -119,8 +119,7 @@ def confirm_user():
     db.session.commit()
     return 'user activated'
 
-#TODO LOGOUT
-
+#TODO replace all responses with json requests
 
 
 
