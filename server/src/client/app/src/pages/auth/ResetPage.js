@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -28,10 +28,14 @@ const Wrapper = styled(Paper)`
 `;
 
 function ResetPage() {
+    console.log(window.location.href)
+    const [verifToken, setverifToken] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     axios.post("https://127.0.0.1:5000/forgot-token",{
-        token:'jhb'
+        url:window.location.href,
     }).then(function(response) {
         console.log(response.data);
+        setverifToken(true);
       })
       .catch(function(error) {
         console.log(error.data);
@@ -40,12 +44,15 @@ function ResetPage() {
      event.preventDefault();
     const data = new FormData(event.target);
     console.log('executed');
-    axios.post("https://127.0.0.1:5000/forgotpassword",{
+    axios.post("https://127.0.0.1:5000/resetpassword",{
+        url: window.location.href,
         password: event.target.password.value
     }).then(function(response) {
         console.log(response.data);
+        setRedirect(true);
       })
       .catch(function(error) {
+          console.log('error')
         console.log(error.data);
       });
     }
@@ -77,6 +84,11 @@ function ResetPage() {
         >
           Reset password
         </Button>
+          {redirect ? (
+          <Redirect to="/auth/sign-in" />
+        ) : (
+          <t></t>//dummy values for now todo: remove the
+        )}
       </form>
     </Wrapper>
   );

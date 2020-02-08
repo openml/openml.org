@@ -1,16 +1,11 @@
 import os
 from typing import List, Tuple
-
 import dash_table as dt
-import plotly
-import plotly.graph_objs as go
-
 from .helpers import *
 from .dashapp import *
+from openml import runs, evaluations, setups, datasets
 
-from openml import runs, flows, evaluations, setups, study, datasets, tasks
-from openml.extensions.sklearn import SklearnExtension
-
+# To do: Move to assets (Copied from Joaquin's react font)
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
         "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
@@ -24,7 +19,6 @@ def get_layout_from_data(data_id):
 
     """
     # Get data and metadata
-    #df, metadata, numerical_data, nominal_data, name = get_data_metadata(data_id)
     metadata, data, name = get_metadata(data_id)
     selected_rows = list(range(0, 5))
     if metadata.shape[0] < 5:
@@ -311,8 +305,8 @@ def get_layout_from_run(run_id):
     for dic in df['results']:
         x = (dic[0])
         values = [x[elem] for elem in x]
-        mean = str(round(np.mean(np.array(values), axis=0),3))
-        std = str(round(np.std(np.array(values), axis=0),3))
+        mean = str(round(np.mean(np.array(values), axis=0), 3))
+        std = str(round(np.std(np.array(values), axis=0), 3))
         result_list.append(values)
         error.append(mean+" \u00B1 "+std)
     df.drop(['results'], axis=1, inplace=True)
@@ -550,3 +544,43 @@ def get_layout_dataset_overview():
     return layout
 
 
+def get_run_overview():
+    graph = html.Div(id='run_overview', className="twelve columns")
+    radio_button = html.Div(
+            dcc.RadioItems(
+                id='run_size',
+                options=[{'label': "10K runs", "value": 10000},
+                         {'label': "100K runs", "value": 100000},
+                         {'label': "500K runs", "value": 500000}],
+                value=10000,
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+
+            ))
+    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}),type='dot')
+
+    layout = html.Div([run_loader,
+                       graph,
+                       radio_button],
+                      style={'overflowY': 'hidden'})
+    return layout
+
+
+def get_task_overview():
+    graph = html.Div(id='task_overview', className="twelve columns")
+    radio_button = html.Div(
+            dcc.RadioItems(
+                id='task_size',
+                options=[{'label': "10K runs", "value": 10000},
+                         {'label': "100K runs", "value": 100000},
+                         {'label': "500K runs", "value": 500000}],
+                value=10000,
+                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+
+            ), style={'display': 'none'})
+    task_loader = dcc.Loading(html.Div(id='tloader', style={'display': 'none'}), type='dot')
+
+    layout = html.Div([task_loader,
+                       graph,
+                       radio_button],
+                      style={'overflowY': 'hidden'})
+    return layout

@@ -11,7 +11,7 @@ import openml
 import plotly.express as px
 
 
-def register_study_callbacks(app):
+def register_study_callbacks(app, cache):
     @app.callback(
         [Output('graph-div', 'children'),
          Output('show-fold-checkbox', 'style')],

@@ -1,10 +1,8 @@
 import re
 
-from dash.dependencies import Input, Output
 
 from .layouts import *
 from .overviews import *
-from .helpers import *
 from .data_callbacks import register_data_callbacks
 from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
@@ -13,7 +11,7 @@ from .study_callbacks import register_study_callbacks
 from .suite_callbacks import register_suite_callbacks
 
 
-def register_callbacks(app):
+def register_callbacks(app, cache):
     """Register all callbacks of the dash app
 
     :param app: the dash application
@@ -87,13 +85,13 @@ def register_callbacks(app):
             index_page = html.Div([html.H1('Welcome to dash dashboard')])
             return index_page, None
 
-    register_data_callbacks(app)
-    register_run_callbacks(app)
-    register_task_callbacks(app)
-    register_flow_callbacks(app)
-    register_study_callbacks(app)
-    register_suite_callbacks(app)
-    register_overview_callbacks(app)
+    register_data_callbacks(app, cache)
+    register_run_callbacks(app, cache)
+    register_task_callbacks(app, cache)  # Has caching for 60 seconds
+    register_flow_callbacks(app, cache)
+    register_study_callbacks(app, cache)
+    register_suite_callbacks(app, cache)
+    register_overview_callbacks(app, cache)
 
 
 

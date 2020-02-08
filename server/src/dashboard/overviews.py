@@ -10,25 +10,7 @@ from dash.dependencies import Input, Output, State
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
         "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
-
-def get_task_overview():
-    """
-
-    :return: Overview page for all tasks on openml
-    """
-    df = tasks.list_tasks(output_format='dataframe')
-    cols = ["task_type", "estimation_procedure"]
-    title = ["Types of tasks on OpenML", "Estimation procedure across tasks"]
-
-    fig = plotly.subplots.make_subplots(rows=2, cols=1, subplot_titles=tuple(title))
-    i = 0
-    for col in cols:
-        i = i+1
-        fig.add_trace(
-        go.Histogram(x=df[col], showlegend=False), row=i, col=1)
-    fig.update_layout(height=1000, width=900)
-
-    return html.Div(dcc.Graph(figure=fig))
+TIMEOUT = 5*60
 
 
 def get_flow_overview():
@@ -61,29 +43,10 @@ def get_flow_overview():
     return html.Div(dcc.Graph(figure=fig))
 
 
-def get_run_overview():
-    df = runs.list_runs(output_format='dataframe', size=10000)
-    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
-                  "Supervised data stream classification", "Clustering",
-                  "Machine Learning Challenge",
-                  "Survival Analysis", "Subgroup Discovery"]
-
-    count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
-    count.columns = ["name", "count"]
-    count["percent"] = (count["count"]/count["count"].sum())*100
-    count["name"] = [task_types[i] for i in count["name"].values]
-    data = [go.Bar(x=count["name"].values, y=count["percent"].values,
-                   )]
-    fig = go.Figure(data=data)
-    fig.update_layout(width=900, yaxis=dict(
-        title='Percentage(%)'))
-
-    return dcc.Graph(figure=fig)
-
-
-def register_overview_callbacks(app):
+def register_overview_callbacks(app, cache):
     @app.callback(Output('data_overview', 'children'),
                   [Input('status_data','value')])
+    @cache.memoize(timeout=TIMEOUT)
     def dataset_overview(radio):
         """
 
@@ -171,4 +134,63 @@ def register_overview_callbacks(app):
                          dcc.Graph(figure=fig4)],
                         )
 
+    @app.callback([Output('run_overview', 'children'),
+                   Output('loader', 'children')],
+                  [Input('run_size', 'value')])
+    @cache.memoize(timeout=TIMEOUT)
+    def run_overview(size):
+        df = runs.list_runs(output_format='dataframe', size=size, offset=0)
+        task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                      "Supervised data stream classification", "Clustering",
+                      "Machine Learning Challenge",
+                      "Survival Analysis", "Subgroup Discovery"]
+
+        count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
+        count.columns = ["name", "count"]
+        count["percent"] = (count["count"] / count["count"].sum()) * 100
+        count["name"] = [task_types[i] for i in count["name"].values]
+        colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+        data = [go.Pie(labels=count["name"], values=count['count'],
+                       marker=dict(colors=colors),
+                       showlegend=True)]
+        fig = go.Figure(data=data)
+        fig.update_layout(width=900, yaxis=dict(
+            title='Percentage(%)'))
+
+        return html.Div([html.P("Types of runs on OpenML"), dcc.Graph(figure=fig)]), "done"
+
+    @app.callback([Output('task_overview', 'children'),
+                   Output('tloader', 'children')],
+                  [Input('task_size', 'value')])
+    def get_task_overview(size):
+        """
+
+        :return: Overview page for all tasks on openml
+        """
+        df = tasks.list_tasks(output_format='dataframe')
+        title = ['Task types on OpenML', 'Estimation procedure used across tasks']
+
+        # 1. Task type
+        grouped = (df.groupby("task_type").size().reset_index(name='counts'))
+        colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+        types_chart = go.Pie(labels=grouped["task_type"], values=grouped['counts'],
+                             marker=dict(colors=colors),
+                             showlegend=True)
+        fig1 = go.Figure(data=[types_chart])
+        fig1.update_layout(height=400)
+
+        # 2. estimation procedure
+        grouped = (df.groupby("estimation_procedure").size().reset_index(name='counts'))
+        grouped = grouped.sort_values(by='counts', ascending=False)
+        data = go.Bar(x=grouped['counts'], y=grouped['estimation_procedure'],
+                      orientation='h',
+                      marker_color='#330C73', showlegend=False)
+
+        fig2 = go.Figure(data=data)
+        fig2.update_layout(bargap=0.4, width=900, height=400)
+        fig2.update_xaxes(tickfont=dict(size=10), categoryorder='total descending')
+        return html.Div([html.P(title[0]),
+                         dcc.Graph(figure=fig1),
+                         html.P(title[1]),
+                         dcc.Graph(figure=fig2)]), "done"
 

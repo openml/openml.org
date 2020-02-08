@@ -12,9 +12,10 @@ from scipy.io import arff
 import urllib.request
 import io
 import re
-
 import openml
-def register_run_callbacks(app):
+TIMEOUT = 20
+
+def register_run_callbacks(app, cache):
 
     @app.callback(
         Output('runplot', 'children'),
@@ -22,6 +23,7 @@ def register_run_callbacks(app):
          Input('runtable', 'data'),
          Input('runtable', 'selected_rows'),
          ])
+    @cache.memoize(timeout=TIMEOUT)
     def run_plot(pathname, rows, selected_row_indices):
         """
 
@@ -71,6 +73,7 @@ def register_run_callbacks(app):
          Output('roc', 'children')],
         [Input('url', 'pathname'),
          Input('runtable', 'data')])
+    @cache.memoize(timeout=TIMEOUT)
     def pr_chart(pathname, rows):
         run_id = int(re.search('run/(\d+)', pathname).group(1))
         try:

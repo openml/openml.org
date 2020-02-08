@@ -1,1 +1,1 @@
-FLASK_APP = autoapp.py
+FLASK_APP=autoapp.py

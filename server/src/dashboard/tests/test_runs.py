@@ -1,12 +1,7 @@
 import time
-from src.dash.helpers import get_data_metadata
-import os
-import shutil
 from collections import Counter
-from openml import runs, flows, evaluations
 import pandas as pd
-import numpy as np
-from openml import datasets, tasks, runs, flows, config, evaluations, study
+from openml import runs
 import numpy as np
 BASE_URL = 'http://127.0.0.1:5000/dashboard/'
 
