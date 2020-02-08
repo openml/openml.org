@@ -1,9 +1,8 @@
-import os
 from typing import List, Tuple
 import dash_table as dt
 from .helpers import *
 from .dashapp import *
-from openml import runs, evaluations, setups, datasets
+from openml import runs, evaluations, setups, datasets, study
 
 # To do: Move to assets (Copied from Joaquin's react font)
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
