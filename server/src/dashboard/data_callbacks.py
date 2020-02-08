@@ -10,9 +10,11 @@ import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .helpers import *
+TIMEOUT = 5*60
 
 
-def register_data_callbacks(app):
+def register_data_callbacks(app, cache):
+
     @app.callback(
         [Output('tab3', 'children'),
          Output('dataloaded', 'value'),
@@ -24,6 +26,7 @@ def register_data_callbacks(app):
          ],
         [State('datatable', 'columns')]
       )
+    @cache.memoize(timeout=TIMEOUT)
     def entropy_scatter(url, tableloaded, existing_columns):
         existing_columns.append({
             'id': 'Entropy', 'name': 'Entropy'
@@ -116,6 +119,7 @@ def register_data_callbacks(app):
          Input('stack', 'value'),
          Input('dataloaded', 'value')
          ])
+    @cache.memoize(timeout=TIMEOUT)
     def plot_table(rows, selected_row_indices, url, radio, stack, dataloaded):
         if dataloaded is None:
             return []
@@ -168,6 +172,7 @@ def register_data_callbacks(app):
          Input('dataloaded', 'value')
          ],
         [State('datatable', 'data')])
+    @cache.memoize(timeout=TIMEOUT)
     def feature_importance(url, tab3, rows):
         data_id = int(re.search('data/(\d+)', url).group(1))
         try:
@@ -217,6 +222,7 @@ def register_data_callbacks(app):
          Input('hidden', 'value')
          ],
     [State('datatable', 'data')])
+    @cache.memoize(timeout=TIMEOUT)
     def feature_interactions(radio, url, dummy, rows):
         data_id = int(re.search('data/(\d+)', url).group(1))
         if dummy == "done":
@@ -337,6 +343,7 @@ def register_data_callbacks(app):
         Input('dropdown2', 'value'),
         Input('dropdown3', 'value'),
         Input('url', 'pathname')])
+    @cache.memoize(timeout=TIMEOUT)
     def update_scatter_plot(at1, at2, colorCode, url):
         """
 

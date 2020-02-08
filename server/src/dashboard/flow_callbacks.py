@@ -3,15 +3,16 @@ import re
 from dash.dependencies import Input, Output
 from .helpers import *
 from openml import tasks, runs, evaluations
+TIMEOUT = 5*60
 
-
-def register_flow_callbacks(app):
+def register_flow_callbacks(app, cache):
 
     @app.callback(Output('flowplot', 'figure'),
                   [Input('url', 'pathname'),
                    Input('metric', 'value'),
                    Input('tasktype', 'value'),
                    Input('parameter', 'value')])
+    @cache.memoize(timeout=TIMEOUT)
     def update_flow_plots(pathname, metric, tasktype, parameter):
         """
 
