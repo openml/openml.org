@@ -1,7 +1,8 @@
+from typing import List, Tuple
 import dash_table as dt
 from .helpers import *
 from .dashapp import *
-from openml import runs, evaluations, setups, datasets
+from openml import runs, evaluations, setups, datasets, study
 
 # To do: Move to assets (Copied from Joaquin's react font)
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
@@ -376,33 +377,89 @@ def get_layout_from_run(run_id):
 
 
 def get_layout_from_study(study_id):
+    """ Generate the layout for the study dashboard. Data content (graphs, tables) is generated through callbacks.
+
+    study_id: id of the study to generate the dashboard for.
+    returns: a html.Div element with child elements containing all UI elements and parent divs for data content.
     """
-    params:
-    study_id: study id provided
-    outpus:
-    scatter plot for runs and studies combined
-    """
-    # items = study.get_study(int(study_id))
-    # run_ids = items.runs[1:300]
-    # item = evaluations.list_evaluations('predictive_accuracy', id=run_ids, output_format='dataframe', per_fold=False)
+    # Results may be shown in aggregate (mean of folds), or per-fold:
+    graph_type_dropdown = dcc.Dropdown(
+        id='graph-type-dropdown',
+        options=[
+            {'label': 'Show scatter plot of results', 'value': 'scatter'},
+            {'label': 'Show parallel line plot of results', 'value': 'parallel'}
+        ],
+        value='scatter'
+    )
+
+    # We construct the metric dropdown menu dynamically from computed metrics.
+    # Simply listing all metrics (evaluations.list_evaluation_measures) might include metrics that are not recorded.
+    this_study = study.get_study(int(study_id))
+    first_run = runs.get_run(this_study.runs[0])
+    # The full list of metrics contain 'prior' metrics, which are not dependent on models but on the given dataset.
+    # Moreover some metrics don't make sense as a metric (I think there are more, but I don't understand all 'metrics'):
+    illegal_metrics = ['number_of_instances', 'os_information']
+    metrics = [metric for metric in first_run.evaluations if metric not in illegal_metrics and 'prior' not in metric]
+    if 'predictive_accuracy' in metrics:
+        default_metric = 'predictive_accuracy'
+    elif 'root_mean_squared_error' in metrics:
+        default_metric = 'root_mean_squared_error'
+    else:
+        default_metric = metrics[0]
+
+    metric_dropdown = dcc.Dropdown(
+        id='metric-dropdown',
+        options=[{'label': metric.replace('_', ' ').title(), 'value': metric} for metric in metrics],
+        value=default_metric
+    )
+
+    show_fold_checkbox = dcc.Checklist(
+        id='show-fold-checkbox',
+        options=[{'label': 'Show results for each fold (can be slow)', 'value': 'fold'}],
+        value=[]
+    )
+    dataset_table = create_dataset_overview_table(
+        id_='dataset-table',
+        dataset_ids=this_study.data,
+        columns=[
+            ('Name', 'name'),
+            ('Instances', 'NumberOfInstances'),
+            ('Features', 'NumberOfFeatures'),
+            ('Classes', 'NumberOfClasses'),  # Should only be included for studies with classification tasks.
+            ('Missing Values', 'NumberOfMissingValues'),
+            ('Numeric Features', 'NumberOfNumericFeatures'),
+            ('Categorical Features', 'NumberOfSymbolicFeatures')
+        ]
+    )
     layout = html.Div([
-        dcc.Dropdown(
-            id='dropdown-study',
-            options=[
-                {'label': 'mean-value', 'value': '0'},
-                {'label': 'folded', 'value': '1'}
-            ],
-            value='0'
-        ),
-        dcc.RadioItems(
-            id='graph',
-            options=[{'label': i, 'value': i} for i in ['scatter', 'parallel-coordinate']],
-            value='scatter',
-            labelStyle={'display': 'inline-block'}
-        ),
-        html.Div(id='scatterplot-study'),
+        graph_type_dropdown,
+        metric_dropdown,
+        show_fold_checkbox,
+        html.Div(id='graph-div'),
+        dataset_table
     ])
     return layout
+
+
+def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: List[Tuple[str, str]]) -> dt.DataTable:
+    """ Download dataset qualities for the given datasets and populate a DataTable with this information. """
+    datas = datasets.get_datasets(dataset_ids, download_data=False)
+    # You might want to filter out all but the shown data, as the unshown data is also sent (but keep did for reference)
+    qualities = [{**data.qualities, 'name': data.name, 'did': data.dataset_id} for data in datas]
+    columns = [{"name": column_name, "id": quality_name} for column_name, quality_name in columns]
+    return dt.DataTable(
+        id=id_,
+        columns=columns,
+        tooltip={'name': 'This is the name of the dataset given by the uploader.'},
+        data=qualities,
+        filter_action="native",
+        sort_action="native",
+        style_as_list_view=True,  # Removes vertical grid lines
+        style_cell={'font-family': 'Segoe UI Symbol'},  # 'fontSize': 12
+        style_cell_conditional=[{'if': {'column_id': 'name'}, 'textAlign': 'left'}],
+        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(252, 252, 252)'}],
+        style_header={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold'}
+    )
 
 
 def get_layout_from_suite(suite_id):
