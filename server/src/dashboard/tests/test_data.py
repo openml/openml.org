@@ -26,7 +26,7 @@ def test_table_data(dash_br):
     data_id = 5
     shutil.rmtree('cache', ignore_errors=True)
     os.mkdir('cache')
-    _, metadata, _, _, _ = get_data_metadata(data_id)
+    df, metadata, numerical_features, nominal_features = get_data_metadata(data_id)
     dash_br.server_url = BASE_URL + 'data/5'
     time.sleep(5)
     feature_table = dash_br.find_element("#datatable")
@@ -58,13 +58,13 @@ def test_alternate_tabs(dash_br):
     assert(scatter_matrix.text is not None)
 
 
-def test_all_datasets(dash_br):
-    df = datasets.list_datasets(output_format='dataframe')
-    ids = []
-    for id in df['did'].values[100:]:
-        dash_br.server_url = BASE_URL + 'data/'+ str(id)
-        time.sleep(5)
-        if dash_br.get_logs() != []:
-            ids.append(id)
-            print(id)
-    np.save('ids.npy', np.asarray(ids))
+# def test_all_datasets(dash_br):
+#     df = datasets.list_datasets(output_format='dataframe')
+#     ids = []
+#     for id in df['did'].values[100:]:
+#         dash_br.server_url = BASE_URL + 'data/'+ str(id)
+#         time.sleep(5)
+#         if dash_br.get_logs() != []:
+#             ids.append(id)
+#             print(id)
+#     np.save('ids.npy', np.asarray(ids))
