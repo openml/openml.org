@@ -17,8 +17,6 @@ blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
 
-# TODO write user confirmation logic during signup process
-# TODO EXISTING USER CHECK
 @blueprint.route('/signup', methods=['POST'])
 def signupfunc():
     robj = request.get_json()

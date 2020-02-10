@@ -56,7 +56,6 @@ def profile():
     else:
         return "post user"
 
-# TODO fix request
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
@@ -75,7 +74,6 @@ def delete_user():
     return jsonify({"msg": "User deleted"}), 200
 
 
-#TODO token expiry logic
 @user_blueprint.route('/forgot-token', methods=['POST'])
 def forgot_token():
     data = request.get_json()
@@ -105,7 +103,6 @@ def reset():
     db.session.commit()
     return 'password changed'
 
-# TODO write user confirmation logic
 @user_blueprint.route('/confirmation',  methods=['POST'])
 def confirm_user():
     print('confirmation linke')
