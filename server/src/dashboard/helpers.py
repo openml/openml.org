@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+import time
 from sklearn.preprocessing import Imputer
 import pandas as pd
 from openml import datasets
@@ -146,13 +148,20 @@ def splitDataFrameList(df, target_column):
     returns: a dataframe with each entry for the target column separated, with each element moved into a new row.
     The values in the other columns are duplicated across the newly divided rows.
     """
-    def splitListToRows(row,row_accumulator, target_column):
+    def splitListToRows(row, row_accumulator, target_column):
         split_row = row[target_column]
         for s in split_row:
             new_row = row.to_dict()
             new_row[target_column] = s
             row_accumulator.append(new_row)
     new_rows = []
-    df.apply(splitListToRows,axis=1,args = (new_rows,target_column))
+    df.apply(splitListToRows, axis=1, args=(new_rows, target_column))
     new_df = pd.DataFrame(new_rows)
     return new_df
+
+
+@contextmanager
+def print_duration(name: str):
+    start = time.time()
+    yield
+    print(f'{name}: {time.time() - start:.3f}s')
