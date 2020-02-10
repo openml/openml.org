@@ -18,6 +18,7 @@ install:
 
 before_script:
   - ln --symbolic /usr/lib/chromium-browser/chromedriver "${HOME}/bin/chromedriver"
+  - ls ${HOME}/bin/
   - python autoapp.py &
 
 script: pytest server/src/dashboard/tests
