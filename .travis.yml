@@ -21,7 +21,7 @@ before_script:
   - ls ${HOME}/bin/
   - python autoapp.py &
 
-script: pytest server/src/dashboard/tests -- headless
+script: pytest server/src/dashboard/tests --headless
 
 after_script: pkill -9 -f "autoapp.py"
 
