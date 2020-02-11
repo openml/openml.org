@@ -41,14 +41,19 @@ class User(Base):
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
-    # TODO argon2 switch logic
     def check_password(self, passwd):
-        # password = argon2.generate_password_hash(password)
+        try:
+            if bcrypt.check_password_hash(self.password, passwd):
+               bpass = True
+        except ValueError as error:
+            print(error)
+            bpass = False
+    # password = argon2.generate_password_hash(password)
         if argon2.check_password_hash(self.password, passwd):
             return True
-        if not argon2.check_password_hash(self.password, passwd) and not bcrypt.check_password_hash(self.password, passwd):
+        elif not argon2.check_password_hash(self.password, passwd) and not bpass:#TODO add exception error for bcrypt
             return False
-        if not argon2.check_password_hash(self.password, passwd) and bcrypt.check_password_hash(self.password, passwd):
+        elif not argon2.check_password_hash(self.password, passwd) and bpass:
             self.set_password(passwd)
             return True
 
@@ -63,6 +68,12 @@ class User(Base):
 
     def update_forgotten_code(self, code):
         self.forgotten_password_code = code
+
+    def update_activation_code(self, code):
+        self.activation_code = code
+
+    def update_activation(self):
+        self.active = '1'
 
     def update_forgotten_time(self, time):
         self.forgotten_password_time = time

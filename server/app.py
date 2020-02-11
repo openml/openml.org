@@ -44,5 +44,4 @@ def register_blueprints(app):
     app.register_blueprint(github_bp, url_prefix="/login")
     return None
 
-# TODO: write tests for app
-# TODO: finish up production and test config
+

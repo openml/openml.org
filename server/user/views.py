@@ -56,8 +56,7 @@ def profile():
     else:
         return "post user"
 
-# TODO fix request
-@user_blueprint.route('/logout', methods=['GET'])
+@user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
     jti = get_raw_jwt()['jti']
@@ -75,7 +74,6 @@ def delete_user():
     return jsonify({"msg": "User deleted"}), 200
 
 
-#TODO token expiry logic
 @user_blueprint.route('/forgot-token', methods=['POST'])
 def forgot_token():
     data = request.get_json()
@@ -85,6 +83,7 @@ def forgot_token():
     print(token)
     user = User.query.filter_by(forgotten_password_code=token).first()
     if user is not None:
+        print('confirmed')
         return 'CODE CONFIRMED'
     else:
         return jsonify({"msg": "Error"}), 401
@@ -94,6 +93,7 @@ def forgot_token():
 @user_blueprint.route('/resetpassword', methods=['POST'])
 def reset():
     data = request.get_json()
+    print(data)
     url = data['url']
     parsed = urlparse(url)
     token = parse_qs(parsed.query)['token']
@@ -101,24 +101,22 @@ def reset():
     user.set_password(data['password'])
     db.session.merge(user)
     db.session.commit()
-    return 'passwor changed'
+    return 'password changed'
 
-# TODO write user confirmation logic
-@user_blueprint.route('/confirmation')
+@user_blueprint.route('/confirmation',  methods=['POST'])
 def confirm_user():
     print('confirmation linke')
-    return send_from_directory(user_blueprint.static_folder, 'auth/sign-in')
-    # data = request.get_json()
-    # url = data['url']
-    # parsed = urlparse(url)
-    # token = parse_qs(parsed.query)['token']
-    # user = User.query.filter_by(activation_code=token).first()
-    # if user is None:
-    #     return 'wrong token'
-    # else:
-    #     return 'userconfirmed'
+    data = request.get_json()
+    url = data['url']
+    parsed = urlparse(url)
+    token = parse_qs(parsed.query)['token']
+    user = User.query.filter_by(activation_code=token).first()
+    user.update_activation()
+    db.session.merge(user)
+    db.session.commit()
+    return 'user activated'
 
-
+#TODO replace all responses with json requests
 
 
 
