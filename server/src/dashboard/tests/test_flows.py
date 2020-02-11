@@ -1,7 +1,7 @@
 import time
 from openml import runs, flows, evaluations
 import numpy as np
-BASE_URL = 'http://127.0.0.1:5000/dashboard/'
+
 
 
 def test_flow_page_loading(dash_br):
