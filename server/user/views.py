@@ -52,9 +52,9 @@ def profile():
         user.update_last_name(data['last_name'])
         db.session.merge(user)
         db.session.commit()
-        return "changes executed"
+        return jsonify({"msg": "User information changed"}), 200
     else:
-        return "post user"
+        return jsonify({"msg": "profile OK"}), 200
 
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
@@ -84,7 +84,7 @@ def forgot_token():
     user = User.query.filter_by(forgotten_password_code=token).first()
     if user is not None:
         print('confirmed')
-        return 'CODE CONFIRMED'
+        return jsonify({"msg": "token confirmed"}), 200
     else:
         return jsonify({"msg": "Error"}), 401
 
@@ -101,7 +101,7 @@ def reset():
     user.set_password(data['password'])
     db.session.merge(user)
     db.session.commit()
-    return 'password changed'
+    return jsonify({"msg": "password changed"}), 200
 
 @user_blueprint.route('/confirmation',  methods=['POST'])
 def confirm_user():
@@ -114,7 +114,7 @@ def confirm_user():
     user.update_activation()
     db.session.merge(user)
     db.session.commit()
-    return 'user activated'
+    return jsonify({"msg": "User confirmed"}), 200
 
 #TODO replace all responses with json requests
 

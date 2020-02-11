@@ -6,6 +6,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    jsonify,
 )
 from server.user.models import User
 from server.extensions import db
@@ -54,9 +55,9 @@ def signupfunc():
         db.session.add(user)
         db.session.commit()
         confirmation_email(user.email, md5_digest)
-        return 'signedup'
+        return jsonify({"msg": "User created"}), 200
     else:
-        return 'user exists'
+        return jsonify({"msg": "User already exists"}), 200
 
 
 
@@ -72,4 +73,4 @@ def password():
     forgot_password_email(user.email, md5_digest)
     db.session.merge(user)
     db.session.commit()
-    return "codesent"
+    return jsonify({"msg": "Token sent"}), 200
