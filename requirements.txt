@@ -49,7 +49,6 @@ flask-jwt-extended
 environs
 pymysql
 flask-dance
-<<<<<<< HEAD
 flask-caching
 pyOpenSSL
 selenium
