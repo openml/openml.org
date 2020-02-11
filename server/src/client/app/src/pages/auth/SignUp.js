@@ -43,7 +43,7 @@ function SignUp() {
         password: event.target.password.value
       })
       .then(function(response) {
-        if (response.data === "signedup") {
+        if (response.data.msg === "User created") {
           console.log(response.data);
           setRegister(true);
         } else {
