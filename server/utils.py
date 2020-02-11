@@ -8,11 +8,6 @@ def confirmation_email(user_email, token):
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
     header += 'Subject: %s\n\n' % 'none'
-
-    message = header + f"Hi to confirm your account go to https://new.openml.org/confirm/?token={token}"
-    server = smtplib.SMTP("smtp.mailtrap.io", 2525)
-    server.login("84be287eed57de", "6a38ff008fe618")
-
     message = header + f"Hi to confirm your account go to https://new.openml.org/auth/confirm-page/?token={token}"
 
     server = smtplib.SMTP('localhost', 25)# TODO chnge it from env vars
