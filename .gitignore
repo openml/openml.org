@@ -26,7 +26,6 @@ yarn-error.log*
 /src/dashboard/__pycache__
 
 *.sql
-*.db
 *.ipynb
 src/__pycache__/
 
@@ -35,3 +34,13 @@ src/__pycache__/
 *.pyc
 
 cache/
+
+idea_testing.py
+
+.env
+
+Internal_docs/
+
+flask-cache-dir/
+
+.flaskenv

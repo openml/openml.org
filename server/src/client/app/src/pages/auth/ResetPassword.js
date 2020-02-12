@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 
 import {
   FormControl,
@@ -24,6 +26,20 @@ const Wrapper = styled(Paper)`
 `;
 
 function ResetPassword() {
+    function sendflask(event){
+     event.preventDefault();
+    const data = new FormData(event.target);
+    console.log('executed');
+    axios.post("https://127.0.0.1:5000/forgotpassword",{
+        email: event.target.email.value
+    }).then(function(response) {
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error.data);
+      });
+    }
+
   return (
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
@@ -32,14 +48,14 @@ function ResetPassword() {
       <Typography component="h2" variant="body1" align="center">
         Enter your email to reset your password
       </Typography>
-      <form>
+      <form onSubmit={sendflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
           <Input id="email" name="email" autoComplete="email" autoFocus />
         </FormControl>
         <Button
-          component={Link}
-          to="/"
+          type="Submit"
+          to=""
           fullWidth
           variant="contained"
           color="primary"
