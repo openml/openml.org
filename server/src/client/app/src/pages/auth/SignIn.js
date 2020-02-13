@@ -35,7 +35,7 @@ function SignIn() {
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("https://127.0.0.1:5000/login", {
+      .post("https://localhost:5000/login", {
         email: event.target.email.value,
         password: event.target.password.value
       })
