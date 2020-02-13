@@ -512,7 +512,8 @@ export default class SearchPanel extends React.Component {
               <div>
                 <iframe
                   src={
-                    "https://" +
+                    String(window.location.protocol) +
+                    "//" +
                     String(window.location.host) +
                     "/dashboard/" +
                     String(this.context.type) +
@@ -541,7 +542,8 @@ export default class SearchPanel extends React.Component {
               <div>
                 <iframe
                   src={
-                    "https://" +
+                    String(window.location.protocol) +
+                    "//" +
                     String(window.location.host) +
                     "/dashboard/" +
                     String(this.context.type)
