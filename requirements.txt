@@ -51,4 +51,4 @@ environs
 pymysql
 flask-dance
 flask-bcrypt
-Flask-Caching
+flask-caching
