@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def create_empty_table():
     qry = """ CREATE TABLE IF NOT EXISTS users (
-                                          id mediumint(8) PRIMARY KEY CHECK(id > 0 ),
+                                          id mediumint PRIMARY KEY CHECK(id > 0 ),
                                           username varchar(100) NOT NULL,
                                           password varchar(255) NOT NULL,
                                           email varchar(254) NOT NULL,
@@ -13,12 +13,12 @@ def create_empty_table():
                                           activation_code varchar(255) DEFAULT NULL,
                                           forgotten_password_selector varchar(255) DEFAULT NULL,
                                           forgotten_password_code varchar(255) DEFAULT NULL,
-                                          forgotten_password_time int(11) DEFAULT NULL,
+                                          forgotten_password_time int DEFAULT NULL,
                                           remember_selector varchar(255) DEFAULT NULL,
                                           remember_code varchar(255) DEFAULT NULL,
-                                          created_on int(11) NOT NULL,
-                                          last_login int(11)  DEFAULT NULL,
-                                          active tinyint(1)  DEFAULT NULL,
+                                          created_on int NOT NULL,
+                                          last_login int  DEFAULT NULL,
+                                          active tinyint  DEFAULT NULL,
                                           first_name varchar(50) DEFAULT NULL,
                                           last_name varchar(50) DEFAULT NULL,
                                           company varchar(100) NOT NULL,
