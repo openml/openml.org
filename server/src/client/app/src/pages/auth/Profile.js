@@ -50,7 +50,7 @@ function Public() {
       Authorization: "Bearer " + localStorage.getItem("token")
    }
 }
-  axios.get("https://127.0.0.1:5000/profile",yourConfig)
+  axios.get("https://new.openml.org/profile",yourConfig)
       .then(function (response) {
         console.log(response);
         setUser(response.data.username);
@@ -68,10 +68,11 @@ function Public() {
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("https://127.0.0.1:5000/profile", {
+      .post("https://new.openml.org/profile", {
         bio: event.target.biography.value,
         first_name: event.target.firstname.value,
         last_name: event.target.lastname.value,
+
 
       }, yourConfig)
       .then(function(response) {
@@ -100,7 +101,7 @@ function Public() {
               <TextField
                 label="Biography"
                 id="biography"
-                multiline={false}
+                multiline={true}
                 rows={3}
                 rowsMax={4}
                 defaultValue={bio}
@@ -124,6 +125,7 @@ function Public() {
                 id="lastname"
                 defaultValue={lname}
                 placeholder="Last name"
+                multiline={true}
               />
             </FormControl>
            <FormControl fullWidth mb={3}>
@@ -133,6 +135,7 @@ function Public() {
             type="email"
             defaultValue={email}
             placeholder="Email"
+            multiline={true}
           />
         </FormControl>
           </Grid>
