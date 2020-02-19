@@ -31,7 +31,7 @@ const Wrapper = styled(Paper)`
 function Confirm() {
     const [verifToken, setverifToken] = useState(false);
     console.log(window.location.href)
-    axios.post("https://127.0.0.1:5000/confirmation",{
+    axios.post(process.env.REACT_APP_SERVER_URL+"confirmation",{
         url:window.location.href,
     }).then(function(response) {
         console.log(response.data);
