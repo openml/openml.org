@@ -37,7 +37,7 @@ function SignUp() {
     console.log("The link was clicked.");
     const data = new FormData(event.target);
     axios
-      .post("https://localhost:5000/signup", {
+      .post(process.env.REACT_APP_SERVER_URL+"signup", {
         name: event.target.name.value,
         email: event.target.email.value,
         password: event.target.password.value

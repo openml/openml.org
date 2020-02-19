@@ -157,16 +157,15 @@ class UserMenu extends Component {
                   }
                 console.log('clocked')
               this.closeMenu();
-              axios.post("https://127.0.0.1:5000/logout", {
+              axios.post(process.env.REACT_APP_SERVER_URL+"logout", {
                   logout:'true'
               }, yourConfig).then(function (response) {
                   console.log(response.data)
-
+                    
               })
                   .catch(function (error) {
                       console.log(error.data)
                   });
-              //TODO add api call, how to do it: add jwt token in the axios call then go for logout
             }}
           >
             Sign out

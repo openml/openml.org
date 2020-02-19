@@ -50,7 +50,7 @@ function Public() {
       Authorization: "Bearer " + localStorage.getItem("token")
    }
 }
-  axios.get("https://new.openml.org/profile",yourConfig)
+  axios.get(process.env.REACT_APP_SERVER_URL+"profile",yourConfig)
       .then(function (response) {
         console.log(response);
         setUser(response.data.username);
@@ -68,7 +68,7 @@ function Public() {
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("https://new.openml.org/profile", {
+      .post(process.env.REACT_APP_SERVER_URL+"profile", {
         bio: event.target.biography.value,
         first_name: event.target.firstname.value,
         last_name: event.target.lastname.value,
