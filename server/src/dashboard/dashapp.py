@@ -43,6 +43,7 @@ def create_dash_app(flask_app):
     # Callbacks
     register_callbacks(app, cache)
 
+    print("Admin access may be required to create the cache directory")
     # Create a temporary cache for data transfer between callbacks - pkl files
     shutil.rmtree('cache', ignore_errors=True)
     os.system('sudo mkdir cache')
