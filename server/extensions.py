@@ -14,7 +14,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # specifying engine according to existing db
 try:
-    engine = create_engine('mysql+pymysql://root:''@localhost/openml', convert_unicode=True, echo=False, pool_size=20,
+    engine = create_engine(os.environ.get('DATABASE_URI'), convert_unicode=True, echo=False, pool_size=20,
                            max_overflow=0)
     Base = declarative_base()
     Base.metadata.reflect(engine)

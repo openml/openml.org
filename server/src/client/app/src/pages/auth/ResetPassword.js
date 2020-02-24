@@ -30,7 +30,7 @@ function ResetPassword() {
      event.preventDefault();
     const data = new FormData(event.target);
     console.log('executed');
-    axios.post("https://127.0.0.1:5000/forgotpassword",{
+    axios.post(process.env.REACT_APP_SERVER_URL+"forgotpassword",{
         email: event.target.email.value
     }).then(function(response) {
         console.log(response.data);

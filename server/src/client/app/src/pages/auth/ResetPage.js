@@ -31,7 +31,7 @@ function ResetPage() {
     console.log(window.location.href)
     const [verifToken, setverifToken] = useState(false);
     const [redirect, setRedirect] = useState(false);
-    axios.post("https://127.0.0.1:5000/forgot-token",{
+    axios.post(process.env.REACT_APP_SERVER_URL+"forgot-token",{
         url:window.location.href,
     }).then(function(response) {
         console.log(response.data);
@@ -44,7 +44,7 @@ function ResetPage() {
      event.preventDefault();
     const data = new FormData(event.target);
     console.log('executed');
-    axios.post("https://127.0.0.1:5000/resetpassword",{
+    axios.post(process.env.REACT_APP_SERVER_URL+"resetpassword",{
         url: window.location.href,
         password: event.target.password.value
     }).then(function(response) {

@@ -35,7 +35,7 @@ function SignIn() {
     event.preventDefault();
     const data = new FormData(event.target);
     axios
-      .post("https://127.0.0.1:5000/login", {
+      .post(process.env.REACT_APP_SERVER_URL+ "login", {
         email: event.target.email.value,
         password: event.target.password.value
       })
