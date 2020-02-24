@@ -19,7 +19,7 @@ install:
 before_script:
   - ln --symbolic /usr/lib/chromium-browser/chromedriver "${HOME}/bin/chromedriver"
   - ls ${HOME}/bin/
-  - python autoapp.py &
+  - flask run
 
 script: pytest server/src/dashboard/tests --headless
 
