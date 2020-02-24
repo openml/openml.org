@@ -16,7 +16,7 @@ TIMEOUT = 5*60
 def register_data_callbacks(app, cache):
 
     @app.callback(
-        [Output('tab3', 'children'),
+        [Output('scatterdiv', 'children'),
          Output('dataloaded', 'value'),
          Output('datatable', 'data'),
          Output('datatable','columns')],

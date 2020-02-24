@@ -3,7 +3,7 @@ from collections import Counter
 import pandas as pd
 from openml import runs
 import numpy as np
-BASE_URL = 'http://127.0.0.1:5000/dashboard/'
+from .test_config import *
 
 
 def uncommon_string(s1, s2):
@@ -15,7 +15,7 @@ def uncommon_string(s1, s2):
 
 
 def test_run_page_loading(dash_br):
-    dash_br.server_url = BASE_URL + 'run/10228060'
+    dash_br.server_url = f"{BASE_URL}run/10228060"
     time.sleep(5)
     assert dash_br.get_logs() == [], "browser console should contain no error"
 
@@ -39,7 +39,7 @@ def test_run_data(dash_br):
     df['results'] = result_list
     df['values'] = error
     d = df.drop(['results'], axis=1)
-    dash_br.server_url = BASE_URL + 'run/10228060'
+    dash_br.server_url = f"{BASE_URL}run/{run_id}"
     time.sleep(5)
     feature_table = dash_br.find_element("#runtable")
     actual_table = (feature_table.text.split("values")[-1])
@@ -48,27 +48,26 @@ def test_run_data(dash_br):
         for element in row:
             if element != ' ':
                 expected_table = expected_table + str(element) + "\n"
-    assert(sum((Counter(actual_table) & Counter(expected_table)).values()) == len(actual_table))
     assert(uncommon_string(actual_table, expected_table) == [])
 
 
 def test_run_graph_elements(dash_br):
     run_id = 10228060
-    dash_br.server_url = BASE_URL + 'run/'+str(run_id)
+    dash_br.server_url = f"{BASE_URL}run/{run_id}"
     time.sleep(10)
     distribution_plot = dash_br.find_element("#runplot") #find_element_by_css_selector("#graph1")
     pr = dash_br.find_element("#pr")
     assert("area_under_roc_curve" in distribution_plot.text)
     assert("Recall" in pr.text)
 
-
-def test_all_runs(dash_br):
-    df = runs.list_runs(output_format='dataframe')
-    ids = []
-    for id in df['run_id'].values:
-        dash_br.server_url = BASE_URL + 'run/'+ str(id)
-        time.sleep(5)
-        if dash_br.get_logs() != []:
-            ids.append(id)
-    np.save('run_ids.npy', np.asarray(ids))
+#
+# def test_all_runs(dash_br):
+#     df = runs.list_runs(output_format='dataframe')
+#     ids = []
+#     for id in df['run_id'].values:
+#         dash_br.server_url = f"{BASE_URL}run/{id}"
+#         time.sleep(5)
+#         if dash_br.get_logs() != []:
+#             ids.append(id)
+#     np.save('run_ids.npy', np.asarray(ids))
 
