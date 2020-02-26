@@ -36,7 +36,7 @@ def login():
         db.session.commit()
         return jsonify(access_token=access_token), 200
 
-#TODO Add more atttributes and user profile picture
+#TODO Add user profile picture
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
@@ -116,7 +116,6 @@ def confirm_user():
     db.session.commit()
     return jsonify({"msg": "User confirmed"}), 200
 
-#TODO replace all responses with json requests
 
 
 

@@ -31,6 +31,8 @@ const Wrapper = styled(Paper)`
 function SignIn() {
   const [logger, setLogger] = useState(false);
   const [errorlog, setError] = useState(false);
+  console.log(process.env.REACT_APP_SERVER_URL+"login");
+
   function sendtoflask(event) {
     event.preventDefault();
     const data = new FormData(event.target);
