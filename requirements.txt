@@ -42,6 +42,10 @@ flask-jwt-extended
 environs
 pymysql
 flask-dance
+flask-caching
+pyOpenSSL
+selenium
+dash[testing]
 flask-bcrypt
 flask-caching
 

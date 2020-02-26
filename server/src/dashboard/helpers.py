@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 import time
-from sklearn.preprocessing import Imputer
+
 import pandas as pd
 from openml import datasets
 import scipy.stats

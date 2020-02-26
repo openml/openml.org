@@ -131,7 +131,7 @@ def get_layout_from_data(data_id):
     ])
 
     # Scatter plot
-    scatter_plot = html.Div(id="tab3")
+    scatter_plot = html.Div(id="scatterdiv")
     # Define layout using components
     layout = html.Div(children=[
         html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
