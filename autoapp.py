@@ -10,8 +10,7 @@ def create_app():
     CORS(app)
     register_extensions(app)
     register_blueprints(app)
-    app.secret_key = 'change key here'
-
+    app.secret_key = os.environ.get("APP_SECRET_KEY")
 
     @app.route('/', defaults={'path': ''})
     @app.route("/<path:path>")
