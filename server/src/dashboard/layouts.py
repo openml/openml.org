@@ -1,22 +1,15 @@
 from typing import List, Tuple
 import dash_table as dt
+from openml import runs, evaluations, setups, datasets, study
 from .helpers import *
 from .dashapp import *
-from openml import runs, evaluations, setups, datasets, study
 
-# To do: Move to assets (Copied from Joaquin's react font)
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
-        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
+# TODO: Move to assets (Copied from Joaquin's react font)
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue",
+        "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
 def get_layout_from_data(data_id):
-    """
-
-    :param data_id: dataset id
-    :return:
-     layout: custom layout for data visualization
-
-    """
     # Get data and metadata
     metadata, data, name = get_metadata(data_id)
     selected_rows = list(range(0, 5))
@@ -170,6 +163,8 @@ def get_layout_from_task(task_id):
     # Define components in task layout
     loading_spinner = dcc.Loading(html.Div(id='dummy'), type='dot')
     hidden_div = html.Div(id='intermediate-value', style={'display': 'none'})
+    # Metrics dropdown
+    measures = (evaluations.list_evaluation_measures())
     metric_dropdown = html.Div(
         [dcc.Dropdown(
             id='metric',
@@ -184,13 +179,14 @@ def get_layout_from_task(task_id):
         style={'width': '30%', 'display': 'inline-block',
                'position': 'relative'},
     )
-
+    # Fetch more runs button
     fetch_runs_button = html.Div(html.Button('Fetch next 100 runs', id='button',
                                  style={'fontSize': 14,
                                         'color': 'black',
                                         'width': '20',
                                         'height': '30',
                                         'background-color': 'white'}))
+    # Graphs
     graph_evals = html.Div(id='tab1')
     graph_people = html.Div(id='tab2')
 
@@ -218,19 +214,9 @@ def get_layout_from_flow(flow_id):
     :param flow_id:
     :return:
     """
-
-    measures = (evaluations.list_evaluation_measures())
-
-    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
-                  "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
-                  "Survival Analysis", "Subgroup Discovery"]
-
-    setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
-    parameter_dict = setup_list['parameters'].values[0]
-    parameters = [param['full_name'] for key, param in parameter_dict.items()]
-    parameters.append('None')
-
     # Define components of flow layout
+    # Metric dropdown
+    measures = (evaluations.list_evaluation_measures())
     dropdown_metric = html.Div(
                 [dcc.Dropdown(
                     id='metric',
@@ -245,6 +231,11 @@ def get_layout_from_flow(flow_id):
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
             )
+    # Task type dropdown
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
+
     dropdown_tasktype = html.Div(
                 [dcc.Dropdown(
                     id='tasktype',
@@ -259,6 +250,11 @@ def get_layout_from_flow(flow_id):
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
             )
+    # parameters dropdown
+    setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
+    parameter_dict = setup_list['parameters'].values[0]
+    parameters = [param['full_name'] for key, param in parameter_dict.items()]
+    parameters.append('None')
     dropdown_parameter = html.Div(
                 [dcc.Dropdown(
                     id='parameter',
@@ -273,6 +269,7 @@ def get_layout_from_flow(flow_id):
                 style={'width': '30%', 'display': 'inline-block',
                        'position': 'relative'},
             )
+    # Flow evaluations plot
     flow_graph = html.Div(
                 [dcc.Loading(dcc.Graph(
                     id='flowplot',
@@ -291,38 +288,21 @@ def get_layout_from_flow(flow_id):
 
 
 def get_layout_from_run(run_id):
-    """
-
-    :param run_id: id of the run
-    :return: layout for run dashboard
-    """
-    items = vars(runs.get_run(int(run_id)))
-    ordered_dict = (items['fold_evaluations'])
-    df = pd.DataFrame(ordered_dict.items(), columns=['evaluations', 'results'])
-    result_list = []
-    error = []
-    for dic in df['results']:
-        x = (dic[0])
-        values = [x[elem] for elem in x]
-        mean = str(round(np.mean(np.array(values), axis=0), 3))
-        std = str(round(np.std(np.array(values), axis=0), 3))
-        result_list.append(values)
-        error.append(mean+" \u00B1 "+std)
-    df.drop(['results'], axis=1, inplace=True)
-    df['results'] = result_list
-    df['values'] = error
-    d = df.drop(['results'], axis=1)
-
+    run, df = get_run_df(int(run_id))
     # Define components of run layout
+    # Run table
     run_title = html.H3('Run ' + str(run_id), style={'text-align': 'left', 'text-color': 'black'})
+
+    table_data = df.drop(['results'], axis=1)
+
     run_table = html.Div(
                dt.DataTable(
-                   data=d.to_dict('records'),
-                   columns=[{"name": i, "id": i} for i in d.columns],
+                   data=table_data.to_dict('records'),
+                   columns=[{"name": i, "id": i} for i in table_data.columns],
                    row_selectable="multi",
                    sort_action="native",
                    row_deletable=False,
-                   selected_rows=[0,1,2],
+                   selected_rows=[0, 1, 2],
                    style_header={
                        'backgroundColor': 'white',
                        'fontWeight': 'bold'
@@ -330,7 +310,6 @@ def get_layout_from_run(run_id):
 
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
-                               'textAlign': 'left',
                                'textOverflow': 'ellipsis', "fontSize": 11,
                                "fontFamily": font
                                },
@@ -343,11 +322,13 @@ def get_layout_from_run(run_id):
                    id='runtable'),  style={'width': '45%', 'display': 'inline-block','position': 'relative'}
            )
 
+    # Distribution plot
     run_plot = html.Div(
-            id='runplot',
-               style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
-                      'position': 'absolute'}
-           )
+        id='runplot',
+        style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
+               'position': 'absolute'}
+    )
+    # PR and ROC plot
     pr_chart = dcc.Loading(html.Div(id='pr'))
     roc_chart = html.Div(id='roc')
     layout = html.Div([
@@ -364,15 +345,6 @@ def get_layout_from_run(run_id):
         html.H4("ROC curve:"),
         roc_chart
     ], style={'overflowY': 'hidden'})
-
-    # Add some more rows indicating prediction id
-    df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
-    df2["values"] = ""
-    df3 = pd.DataFrame({'task_type': items['task_type']}.items(), columns=['evaluations', 'results'])
-    df2["values"] = ""
-    df = df.append(df2)
-    df = df.append(df3)
-    df.to_pickle('cache/run'+str(run_id)+'.pkl')
     return layout
 
 
