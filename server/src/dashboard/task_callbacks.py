@@ -175,10 +175,7 @@ def register_task_callbacks(app, cache):
                 row_deletable=False,
                 style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                             'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
-                            'textAlign': 'left',
-                            "fontFamily": font,
-                            'textOverflow': 'ellipsis', "fontSize": 14,
-
+                            "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 14
                             },
                 style_header={
                     'backgroundColor': 'white',
@@ -187,8 +184,8 @@ def register_task_callbacks(app, cache):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        return html.Div(dcc.Graph(figure=fig), style={'display':'none'}), \
-               html.Div(dcc.Graph(figure=fig)),\
+        return html.Div(dcc.Graph(figure=fig), style={'display': 'none'}), \
+               html.Div(dcc.Graph(figure=fig)), \
                html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table]), \
 
 

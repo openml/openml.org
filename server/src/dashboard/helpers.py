@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import time
 
 import pandas as pd
-from openml import datasets
+from openml import datasets, runs
 import scipy.stats
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -10,6 +10,32 @@ import logging
 
 logger = logging.getLogger('dashboard')
 logger.setLevel(logging.DEBUG)
+
+
+def get_run_df(run_id : int):
+    run = runs.get_run(int(run_id))
+    df = pd.DataFrame(run.fold_evaluations.items(), columns=['evaluations', 'results'])
+    # Evaluations table
+    result_list = []
+    result_string = []
+    for result in df['results']:
+        k_folds = list(result[0].values())
+        mean = str(np.round(np.mean(np.array(k_folds)), 3))
+        std = str(np.round(np.std(np.array(k_folds)), 3))
+        result_list.append(k_folds)
+        result_string.append(mean + " \u00B1 " + std)
+    df.drop(['results'], axis=1, inplace=True)
+    df['results'] = result_list
+    df['values'] = result_string
+    # Add some more rows indicating output prediction file name
+    df2 = pd.DataFrame(run.output_files.items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
+    df3 = pd.DataFrame({'task_type': run.task_type}.items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
+    df = df.append(df2)
+    df = df.append(df3)
+    df.to_pickle('cache/run' + str(run_id) + '.pkl')
+    return run, df
 
 
 def clean_dataset(df):
