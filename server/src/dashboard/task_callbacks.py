@@ -3,6 +3,10 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from .layouts import *
 from openml.extensions.sklearn import SklearnExtension
+
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue",
+        "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"]
+
 TIMEOUT = 5*60
 
 
