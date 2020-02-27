@@ -31,8 +31,8 @@ def test_run_data(dash_br):
     for dic in df['results']:
         x = (dic[0])
         values = [x[elem] for elem in x]
-        mean = str(round(np.mean(np.array(values), axis=0), 3))
-        std = str(round(np.std(np.array(values), axis=0), 3))
+        mean = str(np.round(np.mean(np.array(values), axis=0), 3))
+        std = str(np.round(np.std(np.array(values), axis=0), 3))
         result_list.append(values)
         error.append(mean + " \u00B1 " + std)
     df.drop(['results'], axis=1, inplace=True)
