@@ -15,7 +15,7 @@ def register_suite_callbacks(app, cache):
          Input('xaxis-type', 'value'),
          Input('yaxis-type', 'value')])
     def scatter_data_plot(pathname, x, y, x_type, y_type):
-        suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
+        suite_id = int(re.search(r'study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         data_arr = openml.datasets.get_datasets(suite.data, download_data=False)
         arr_dataset_name = []
@@ -38,10 +38,10 @@ def register_suite_callbacks(app, cache):
     @app.callback(
         Output('suite-histogram', 'children'),
         [Input('url', 'pathname'),
-         Input('xaxis-hist','value')]
+         Input('xaxis-hist', 'value')]
     )
     def suite_histogram(pathname, key):
-        suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
+        suite_id = int(re.search(r'study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         data_arr = openml.datasets.get_datasets(suite.data, download_data=False)
         arr_id = []

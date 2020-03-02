@@ -1,15 +1,16 @@
 import re
-
+import pandas as pd
+import numpy as np
 import plotly.graph_objs as go
 import plotly.express as px
-from plotly import subplots
+
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 
 import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-from .helpers import *
+from .helpers import get_data_metadata, logger, clean_dataset
 TIMEOUT = 5*60
 
 
@@ -33,7 +34,7 @@ def register_data_callbacks(app, cache):
 
         })
         logger.debug("Downloading data and calculate entropy")
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         df, meta_features, numerical_data, nominal_data = get_data_metadata(data_id)
         scatter_div = [html.Div([html.H2('Scatter plot'),
                                  html.Div(dcc.Dropdown(
@@ -62,10 +63,9 @@ def register_data_callbacks(app, cache):
                                      clearable=False,
                                      value=nominal_data[0]), style={'width': '30%'}),
                                  html.Div(id='scatter_plot'), ])
-                       ]if len(numerical_data) > 1 and nominal_data else html.Div(id='Scatter Plot',
-                                                                         children=[html.Div(
-                                                                             html.P('No numerical-'
-                                                                                    'nominal combination found'))])
+                       ]if len(numerical_data) > 1 and nominal_data else html.Div(
+            id='Scatter Plot',
+            children=[html.Div(html.P('No numerical-nominal combination found'))])
         logger.debug("Downloaded data and calculated entropy")
         return scatter_div, "loaded", meta_features.to_dict('records'), existing_columns
 
@@ -99,12 +99,14 @@ def register_data_callbacks(app, cache):
     #         i = 0
     #         for attribute in attributes:
     #             show_legend = True if i == 0 else False
-    #             data = dist_plot(meta_data, attribute, types[i], radio_value, data_id, show_legend, df)
+    #             data = dist_plot(meta_data, attribute, types[i],
+    #             radio_value, data_id, show_legend, df)
     #             i = i + 1
     #             for trace in data:
     #                 fig.append_trace(trace, i, 1)
     #
-    #     fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100), barmode=stack,
+    #     fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100),
+    #     barmode=stack,
     #                          font=dict(size=11))
     #     for i in fig['layout']['annotations']:
     #         i['font']['size'] = 11
@@ -152,9 +154,11 @@ def register_data_callbacks(app, cache):
             col5 = html.P(row["Target"])
             col6 = html.P(row["Target"])
             show_legend = True if index == 0 else False
-            data = dist_plot(meta_data, attribute, row["DataType"], radio, data_id, show_legend, df)
+            data = dist_plot(meta_data, attribute, row["DataType"], radio,
+                             data_id, show_legend, df)
             fig = go.Figure(data=data)
-            fig['layout'].update(hovermode='closest', height=300, barmode=stack, font=dict(size=11))
+            fig['layout'].update(hovermode='closest', height=300, barmode=stack,
+                                 font=dict(size=11))
             col7 = dcc.Graph(figure=fig)
             children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
         out = html.Div(className="twelve columns",
@@ -174,7 +178,7 @@ def register_data_callbacks(app, cache):
         [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
     def feature_importance(url, tab3, rows):
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
@@ -310,7 +314,8 @@ def register_data_callbacks(app, cache):
                 #                                      index='target',
                 #                                      title="",
                 #                                      #colormap=C,
-                #                                      colormap_type=cmap_type, height=1000, width=900)
+                #                                      colormap_type=cmap_type,
+                #                                      height=1000, width=900)
                 graph = dcc.Graph(figure=px_mat)
                 px_mat.update_traces(diagonal_visible=False)
             else:
@@ -515,9 +520,6 @@ def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df
                                                                tickvals=color,
                                                                ticktext=target_vals))) for i in range(int(N))]
 
-
             else:
-
-                data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False,
-                                      )]
+                data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False)]
         return data

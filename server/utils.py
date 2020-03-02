@@ -16,6 +16,7 @@ def confirmation_email(user_email, token):
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     server.login("84be287eed57de", "6a38ff008fe618")
     problems = server.sendmail(sender, receiver, message)
+    print(problems)
     server.quit()
 
 

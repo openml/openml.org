@@ -3,17 +3,17 @@ import plotly
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
-from .helpers import *
+import pandas as pd
 import numpy as np
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
 from scipy.io import arff
-#import arff
+# import arff
 import urllib.request
 import io
 import re
-import openml
 TIMEOUT = 20
+
 
 def register_run_callbacks(app, cache):
 
@@ -134,7 +134,8 @@ def register_run_callbacks(app, cache):
             y_test = label_binarize(y_codes, classes=y_codes[np.sort(idx)])
             for i in range(n_classes):
                 y_score = df[confidence[i]].values
-                precision[i], recall[i], threshold[i] = precision_recall_curve(y_test[:, i], y_score, pos_label=1)
+                precision[i], recall[i], threshold[i] = precision_recall_curve(y_test[:, i],
+                                                                               y_score, pos_label=1)
                 fpr[i], tpr[i], roc_thresh[i] = roc_curve(y_test[:,i], y_score)
 
             for i in range(n_classes):

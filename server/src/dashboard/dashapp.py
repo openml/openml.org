@@ -9,8 +9,9 @@ from flask_caching import Cache
 from .callbacks import register_callbacks
 
 # TODO: Move to assets (Copied from Joaquin's react font)
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue",
-        "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"]
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue","Arial", "sans-serif", "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
 def create_dash_app(flask_app):

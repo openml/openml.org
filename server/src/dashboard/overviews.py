@@ -1,12 +1,12 @@
-import plotly
+import pandas as pd
 import plotly.graph_objs as go
-
-from .helpers import *
-from .dashapp import *
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
 
 from openml import runs, flows, datasets, tasks
 from openml.extensions.sklearn import SklearnExtension
-from dash.dependencies import Input, Output, State
+
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
         "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
@@ -63,8 +63,10 @@ def register_overview_callbacks(app, cache):
         # Binning
         bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
         bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
-        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
+        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1,
+                                           precision=0).astype(str)
+        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2,
+                                          precision=0).astype(str)
         for col in ["Number of instances", "Number of features"]:
             df[col] = df[col].str.replace(',', ' -')
             df[col] = df[col].str.replace('(', "")

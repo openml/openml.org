@@ -49,7 +49,7 @@ def register_study_callbacks(app, cache):
                     shared_template = (f'{metric}: ' + '%{y}<br>'
                                        f'Flow: {flow_name}<br>'
                                        '%{text}<br>'
-                                       '<extra></extra>')  # Removes a second box with trace information
+                                       '<extra></extra>')  # Removes a second box with trace info
 
                     # Connecting the results with lines also interpolates over missing values,
                     # to stop this behavior we add explicit NaNs for datasets without results.
@@ -67,49 +67,67 @@ def register_study_callbacks(app, cache):
                     mean_text = [(f'Dataset: {dataset_name}<br>'
                                   'Mean score') for dataset_name in dataset_names]
                     fig.add_trace(go.Scatter(y=scores, x=dataset_names, mode='lines+markers',
-                                             name=flow_name, text=mean_text, hovertemplate=shared_template))
+                                             name=flow_name, text=mean_text,
+                                             hovertemplate=shared_template))
 
                 # Since `pd.Series.unique` returns in order of appearance,
                 # we can match it with the data_id blindly
                 fig.update_xaxes(ticktext=list(dataset_link_map.values()), tickvals=dataset_names)
                 fig.update_layout(
                     xaxis_title="Dataset",
-                    yaxis_title=metric.replace('_', ' ').title()  # Perhaps an explicit mapping is better.
+                    yaxis_title=metric.replace('_', ' ').title()
+                    # Perhaps an explicit mapping is better.
                 )
             elif graph_type == 'scatter':
-                # We map the datasets to a y-value, so we can vary flow y-values explicitly in the scatter plot.
-                # Reversing dataset_names will visually match the order of datasets in the table.
+                # We map the datasets to a y-value, so we can vary flow y-values
+                # explicitly in the scatter plot.Reversing dataset_names will visually
+                # match the order of datasets in the table.
                 dataset_y_map = {dataset: i for i, dataset in enumerate(reversed(dataset_names))}
-                dy_range = 0.6  # Flows will be scattered +/- `dy_range / 2` around the y value (datasets are 1. apart)
+                # Flows will be scattered +/- `dy_range / 2` around the y value
+                # (datasets are 1. apart)
+                dy_range = 0.6
                 dy = dy_range/(n_flows - 1)  # Distance between individual flows
 
                 for i, (flow_name, flow_df) in enumerate(study_results.groupby('flow_name')):
                     flow_df = flow_df[flow_df['data_name'].isin(dataset_names)]
-                    # See https://plot.ly/python/discrete-color/#color-sequences-in-plotly-express for color palettes
+                    # See https://plot.ly/python/discrete-color/#color-sequences-in-plotly-express
+                    # for color palettes
                     flow_color = px.colors.qualitative.Plotly[i]
 
                     shared_template = (f'{metric}: ' + '%{x}<br>'
                                        f'Flow: {flow_name}<br>'
                                        '%{text}<br>'
-                                       '<extra></extra>')  # Removes a second box with trace information
+                                       '<extra></extra>')  # Removes a 2nd box with trace info
 
                     y_offset = i * dy - dy_range / 2
 
                     if show_folds:
                         # Individual fold results:
-                        data_per_point = [(score, row['data_name'], dataset_y_map[row['data_name']] + y_offset)
-                                          for _, row in flow_df.iterrows() for score in row['values']]
+                        data_per_point = [(score, row['data_name'],
+                                           dataset_y_map[row['data_name']] + y_offset)
+                                          for _, row in flow_df.iterrows()
+                                          for score in row['values']]
                         scores, data_names, ys = zip(*data_per_point)
 
-                        fold_text = [f'Dataset: {dataset_name}<br>Fold score' for dataset_name in data_names]
-                        fold_trace = go.Scatter(x=scores, y=ys, mode='markers', name=f'{flow_name}_fold', opacity=0.5,
-                                                legendgroup=flow_name, showlegend=False, marker=dict(color=flow_color),
-                                                text=fold_text, hovertemplate=shared_template)
+                        fold_text = [f'Dataset: {dataset_name}<br>Fold score'
+                                     for dataset_name in data_names]
+                        fold_trace = go.Scatter(x=scores, y=ys, mode='markers',
+                                                name=f'{flow_name}_fold',
+                                                opacity=0.5, legendgroup=flow_name,
+                                                showlegend=False,
+                                                marker=dict(color=flow_color), text=fold_text,
+                                                hovertemplate=shared_template)
                         fig.add_trace(fold_trace)
 
-                    ys = [dataset_y_map[dataset_name] + y_offset for dataset_name in flow_df['data_name']]
-                    mean_text = [f'Dataset: {dataset_name}<br>Mean score' for dataset_name in flow_df['data_name']]
-                    mean_trace = go.Scatter(x=flow_df['value'], y=ys, mode='markers', marker=dict(symbol='diamond', color=flow_color), legendgroup=flow_name, name=flow_name, text=mean_text, hovertemplate=shared_template)
+                    ys = [dataset_y_map[dataset_name] + y_offset
+                          for dataset_name in flow_df['data_name']]
+                    mean_text = [f'Dataset: {dataset_name}<br>Mean score'
+                                 for dataset_name in flow_df['data_name']]
+                    mean_trace = go.Scatter(x=flow_df['value'], y=ys, mode='markers',
+                                            marker=dict(symbol='diamond',
+                                                        color=flow_color),
+                                            legendgroup=flow_name, name=flow_name, text=mean_text,
+                                            hovertemplate=shared_template)
                     fig.add_trace(mean_trace)
 
                 fig.update_yaxes(
@@ -117,11 +135,13 @@ def register_study_callbacks(app, cache):
                     tickvals=list(dataset_y_map.values())
                 )
                 fig.update_layout(
-                    xaxis_title=metric.replace('_', ' ').title(),  # Perhaps an explicit mapping is better.
+                    # Perhaps an explicit mapping is better.
+                    xaxis_title=metric.replace('_', ' ').title(),
                     yaxis_title="Dataset"
                 )
             else:
-                raise ValueError(f"`graph_type` must be one of 'scatter' or 'parallel', not {graph_type}.")
+                raise ValueError(f"`graph_type` must be one of 'scatter' or 'parallel', "
+                                 f"not {graph_type}.")
 
             per_task_height = 30
             height = len(dataset_names) * per_task_height
@@ -132,7 +152,8 @@ def register_study_callbacks(app, cache):
                 legend=dict(y=1.2),
                 # legend_title='something'
                 # Should work with plotly >= 4.5, but seems to fail silently.
-                uirevision='some_constant',  # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
+                # Keeps UI settings (e.g. zoom, trace filter) consistent on updates.
+                uirevision='some_constant',
                 font=dict(
                     family="Segoe UI Symbol",
                     size=14,
