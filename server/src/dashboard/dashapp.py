@@ -32,7 +32,8 @@ def create_dash_app(flask_app):
     # 1. URL
     url = dcc.Location(id='url', refresh=False)
     # 2. Page content - loaded based on URL path
-    page_content = html.Div(id='page-content', style={"fontFamily": font, 'background-color': 'white'})
+    page_content = html.Div(id='page-content', style={"fontFamily": font,
+                                                      'background-color': 'white'})
     # 3. Loading icon
     global_loading_icon = dcc.Loading(html.Div(id='loading-indicator',
                                                style={'display': 'none'}),
