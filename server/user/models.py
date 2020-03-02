@@ -51,7 +51,7 @@ class User(Base):
     # password = argon2.generate_password_hash(password)
         if argon2.check_password_hash(self.password, passwd):
             return True
-        elif not argon2.check_password_hash(self.password, passwd) and not bpass:#TODO add exception error for bcrypt
+        elif not argon2.check_password_hash(self.password, passwd) and not bpass:
             return False
         elif not argon2.check_password_hash(self.password, passwd) and bpass:
             self.set_password(passwd)
