@@ -1,7 +1,8 @@
 from server.extensions import Base
 from server.extensions import argon2
-from sqlalchemy import Column, Integer, String
-import hashlib, datetime
+# from sqlalchemy import Column, Integer, String
+import hashlib
+import datetime
 from server.extensions import bcrypt
 
 

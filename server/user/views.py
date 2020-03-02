@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify, redirect, url_for, send_from_directory
+from flask import Blueprint, request, jsonify
+# redirect, url_for, send_from_directory
 from server.user.models import User
 from flask_cors import CORS
-import requests, datetime
+import datetime
 from flask_jwt_extended import (jwt_required, create_access_token,
                                 get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt
@@ -19,6 +20,7 @@ def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     return jti in blacklist
 
+
 @user_blueprint.route('/login', methods=['POST'])
 def login():
     jobj = request.get_json()
@@ -30,13 +32,13 @@ def login():
     else:
         access_token = create_access_token(identity=user.email)
         timestamp = datetime.datetime.now()
-        timestamp1 = timestamp.strftime("%Y-%m-%d")
+        # timestamp1 = timestamp.strftime("%Y-%m-%d")
         # user.last_login = timestamp1
         db.session.merge(user)
         db.session.commit()
         return jsonify(access_token=access_token), 200
 
-#TODO Add user profile picture
+# TODO Add user profile picture
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
@@ -55,6 +57,7 @@ def profile():
         return jsonify({"msg": "User information changed"}), 200
     else:
         return jsonify({"msg": "profile OK"}), 200
+    
 
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
@@ -89,7 +92,6 @@ def forgot_token():
         return jsonify({"msg": "Error"}), 401
 
 
-
 @user_blueprint.route('/resetpassword', methods=['POST'])
 def reset():
     data = request.get_json()
@@ -103,6 +105,7 @@ def reset():
     db.session.commit()
     return jsonify({"msg": "password changed"}), 200
 
+
 @user_blueprint.route('/confirmation',  methods=['POST'])
 def confirm_user():
     print('confirmation linke')
@@ -115,8 +118,3 @@ def confirm_user():
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "User confirmed"}), 200
-
-
-
-
-#

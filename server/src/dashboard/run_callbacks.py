@@ -33,7 +33,7 @@ def register_run_callbacks(app, cache):
         :param selected_row_indices: selected rows of the feature table
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
-        run_id = int(re.search('run/(\d+)', pathname).group(1))
+        run_id = int(re.search(r'run/(\d+)', pathname).group(1))
         try:
             df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')
         except OSError:
@@ -44,11 +44,11 @@ def register_run_callbacks(app, cache):
             selected_rows = rows.loc[selected_row_indices]["evaluations"].values
             i = 0
             fig = plotly.subplots.make_subplots(rows=len(selected_rows), cols=1,
-                                                subplot_titles = tuple(selected_rows))
+                                                subplot_titles=tuple(selected_rows))
             for metric in selected_rows:
                 measure = df.loc[df['evaluations'] == metric]
                 x = measure['results'].values[0]
-                trace1 =  {
+                trace1 = {
                             "type": 'box',
                             "showlegend": False,
                             "x": x,
@@ -60,7 +60,7 @@ def register_run_callbacks(app, cache):
                 fig.append_trace(trace1, i, 1)
 
             fig['layout'].update(title='', hovermode='closest',
-                                 height=len(selected_rows)*200, margin=dict(l=0))
+                                 height=len(selected_rows)*200, margin={'l': 0})
             for i in fig['layout']['annotations']:
                 i['font']['size'] = 11
         else:
@@ -75,7 +75,7 @@ def register_run_callbacks(app, cache):
          Input('runtable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
     def pr_chart(pathname, rows):
-        run_id = int(re.search('run/(\d+)', pathname).group(1))
+        run_id = int(re.search(r'run/(\d+)', pathname).group(1))
         try:
             df = pd.read_pickle('cache/run' + str(run_id) + '.pkl')
         except OSError:
@@ -136,7 +136,7 @@ def register_run_callbacks(app, cache):
                 y_score = df[confidence[i]].values
                 precision[i], recall[i], threshold[i] = precision_recall_curve(y_test[:, i],
                                                                                y_score, pos_label=1)
-                fpr[i], tpr[i], roc_thresh[i] = roc_curve(y_test[:,i], y_score)
+                fpr[i], tpr[i], roc_thresh[i] = roc_curve(y_test[:, i], y_score)
 
             for i in range(n_classes):
                 h = ['Threshold: ' + value for value in threshold[i].astype(str)]

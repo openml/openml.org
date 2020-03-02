@@ -2,7 +2,7 @@ import plotly.graph_objs as go
 import re
 from dash.dependencies import Input, Output
 import pandas as pd
-from openml import tasks, runs, evaluations
+from openml import tasks, evaluations
 TIMEOUT = 5*60
 
 

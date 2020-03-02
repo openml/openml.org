@@ -1,5 +1,5 @@
 import time
-from .test_config import *
+from .test_config import BASE_URL
 from ..helpers import get_data_metadata
 
 
@@ -43,8 +43,8 @@ def test_scatter_plots(dash_br):
     time.sleep(20)
     scatter_matrix = dash_br.find_element("#matrix")
     scatter_plot = dash_br.find_element("#scatter_plot")
-    assert(scatter_matrix.text is not None, "Feature importance plot is not loading")
-    assert(scatter_plot.text is not None, "Scatter plot is not loading")
+    assert(scatter_matrix.text is not None)
+    assert(scatter_plot.text is not None)
 
 
 # def catch_errors_in_datasets(dash_br):

@@ -12,7 +12,7 @@ logger = logging.getLogger('dashboard')
 logger.setLevel(logging.DEBUG)
 
 
-def get_run_df(run_id : int):
+def get_run_df(run_id: int):
     run = runs.get_run(int(run_id))
     df = pd.DataFrame(run.fold_evaluations.items(), columns=['evaluations', 'results'])
     # Evaluations table
@@ -109,7 +109,7 @@ def get_data_metadata(data_id):
             X_train, X_test, y_train, y_test = train_test_split(x, y,
                                                                 stratify=y,
                                                                 test_size=sample_size)
-        except:
+        except ValueError:
             X_train, X_test, y_train, y_test = train_test_split(x, y,
                                                                 stratify=None,
                                                                 test_size=sample_size)
@@ -144,7 +144,7 @@ def get_data_metadata(data_id):
 def get_highest_rank(df, leaderboard):
     df.sort_values(by=['upload_time'], inplace=True)
     scores = []
-    highest_rank = {}
+    # highest_rank = {}
     highest_score = {}
 
     setup_ids = []
@@ -158,7 +158,7 @@ def get_highest_rank(df, leaderboard):
             if new_user or (score not in scores):
                 scores.append(score)
                 scores.sort(reverse=True)
-                rank = scores.index(score) + 1
+                # rank = scores.index(score) + 1
                 if new_user or (highest_score[row['uploader_name']] < score):
                     # highest_rank[row['uploader_name']] = rank
                     highest_score[row['uploader_name']] = score
@@ -174,7 +174,8 @@ def splitDataFrameList(df, target_column):
     """ df = dataframe to split,
     target_column = the column containing the values to split
     separator = the symbol used to perform the split
-    returns: a dataframe with each entry for the target column separated, with each element moved into a new row.
+    returns: a dataframe with each entry for the target column separated,
+     with each element moved into a new row.
     The values in the other columns are duplicated across the newly divided rows.
     """
     def splitListToRows(row, row_accumulator, target_column):

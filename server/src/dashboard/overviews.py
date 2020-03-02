@@ -27,7 +27,7 @@ def get_flow_overview():
     for name in count["name"]:
         try:
             short.append(SklearnExtension.trim_flow_name(name))
-        except:
+        except ValueError:
             pass
     count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
@@ -36,7 +36,7 @@ def get_flow_overview():
                                  orientation="h")])
     fig.update_layout(
                       yaxis=dict(autorange="reversed"),
-                      margin=dict(l=500),
+                      margin={'l': 500},
                       title="", width=900,
                       height=700),
 
@@ -45,7 +45,7 @@ def get_flow_overview():
 
 def register_overview_callbacks(app, cache):
     @app.callback(Output('data_overview', 'children'),
-                  [Input('status_data','value')])
+                  [Input('status_data', 'value')])
     @cache.memoize(timeout=TIMEOUT)
     def dataset_overview(radio):
         """
@@ -123,11 +123,11 @@ def register_overview_callbacks(app, cache):
 
         return html.Div([html.Div([html.P(title[0]),
                                    dcc.Graph(figure=fig1)], className="row metric-row",
-                                  style={'width': '48%','text-align': 'center',
+                                  style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block',
                                          }),
                          html.Div([html.P(title[1]),
-                                   dcc.Graph(figure=fig2)],className="row metric-row",
+                                   dcc.Graph(figure=fig2)], className="row metric-row",
                                   style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block'}),
                          html.P(title[2]),
@@ -195,4 +195,3 @@ def register_overview_callbacks(app, cache):
                          dcc.Graph(figure=fig1),
                          html.P(title[1]),
                          dcc.Graph(figure=fig2)]), "done"
-

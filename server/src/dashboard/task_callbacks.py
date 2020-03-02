@@ -1,11 +1,16 @@
 import re
+import pandas as pd
 from dash.dependencies import Input, Output
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table as dt
 import plotly.graph_objs as go
 from .helpers import get_highest_rank
 from openml.extensions.sklearn import SklearnExtension
+from openml import evaluations
 
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
-        "Roboto", "Helvetica Neue","Arial", "sans-serif", "Apple Color Emoji",
+        "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
@@ -98,7 +103,7 @@ def register_task_callbacks(app, cache):
                                        colorscale='RdBu', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), height=500+15*(df['flow_name'].nunique()),
+        layout = go.Layout(autosize=False, margin={'l': 400}, height=500+15*(df['flow_name'].nunique()),
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a flow, click for details <br>'
                                  'Top '+str(n_runs)+' runs shown<br>',
@@ -139,7 +144,7 @@ def register_task_callbacks(app, cache):
                            )
                 ]
         layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
-                           autosize=True,  margin=dict(l=100), hovermode='y',
+                           autosize=True,  margin={'l': 100}, hovermode='y',
                            font=dict(size=11),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,

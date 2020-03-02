@@ -59,7 +59,7 @@ def get_layout_from_data(data_id):
                              'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
                          },
                          {
-                             'if': {'column_id':'Missing values',
+                             'if': {'column_id': 'Missing values',
                                     'filter_query': '{Missing values} > 50'
                                     },
                              'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
@@ -76,9 +76,9 @@ def get_layout_from_data(data_id):
 
     # Distribution plot
     table_graph = dcc.Loading(html.Div(id='table-graph', className="twelve columns"))
-    subplot_graph = dcc.Loading(html.Div(
-                id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                          'height': '400px'}))
+    # subplot_graph = dcc.Loading(html.Div(
+    #             id='distribution', style={'overflowY': 'scroll', 'width': '100%',
+    #                                       'height': '400px'}))
     dist_plot = html.Div([
         html.P(''),
         html.P('Choose if the color code is based on target or not',
@@ -137,7 +137,7 @@ def get_layout_from_data(data_id):
     layout = html.Div(children=[
         html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
         html.P('Choose one or more attributes for distribution plot (first 1k attributes listed)',
-               style={'text-align': 'left', 'color': 'gray','fontSize': 11
+               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
                       }),
 
         feature_table,
@@ -533,7 +533,7 @@ def get_layout_dataset_overview():
                                      }
                               ),
                        radio_button,
-                       graph], style={'overflowY':'hidden'})
+                       graph], style={'overflowY': 'hidden'})
     return layout
 
 
@@ -549,7 +549,7 @@ def get_run_overview():
                 labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
 
             ))
-    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}),type='dot')
+    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}), type='dot')
 
     layout = html.Div([run_loader,
                        graph,
