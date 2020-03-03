@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 # redirect, url_for, send_from_directory
 from server.user.models import User
 from flask_cors import CORS
-import datetime
+# import datetime
 from flask_jwt_extended import (jwt_required, create_access_token,
                                 get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt

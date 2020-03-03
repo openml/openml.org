@@ -24,7 +24,7 @@ before_script:
 
 script:
   - pytest server/src/dashboard/tests --headless
-  - flake8 --max-line-length 112
+  - flake8 --max-line-length 100
 
 #after_script: pkill -9 -f "autoapp.py"
 
