@@ -1,14 +1,9 @@
-from flask import Flask, request, send_from_directory
-from .config import Config
-from flask_migrate import Migrate
-from flask_cors import CORS
-import os
 from .src.dashboard.dashapp import create_dash_app
 from .extensions import argon2, engine, Base, db, jwt, bcrypt
 from server import user
 from server import public
 from sqlalchemy.orm import scoped_session, sessionmaker
-from flask_dance.contrib.github import make_github_blueprint, github
+from flask_dance.contrib.github import make_github_blueprint  # , github
 
 
 def register_extensions(app):
@@ -43,5 +38,3 @@ def register_blueprints(app):
     github_bp = make_github_blueprint()
     app.register_blueprint(github_bp, url_prefix="/login")
     return None
-
-

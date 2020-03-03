@@ -3,6 +3,7 @@ import logging
 from server.user.models import User
 from autoapp import app
 
+
 @pytest.fixture(scope='module')
 def new_user():
     user = User(username='test_user', email='patkennedy79@gmail.com')
@@ -17,5 +18,3 @@ def test_client():
     ctx.push()
 
     yield _app
-
-

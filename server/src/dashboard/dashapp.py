@@ -9,8 +9,9 @@ from flask_caching import Cache
 from .callbacks import register_callbacks
 
 # TODO: Move to assets (Copied from Joaquin's react font)
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue",
-        "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"]
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
 def create_dash_app(flask_app):
@@ -32,7 +33,8 @@ def create_dash_app(flask_app):
     # 1. URL
     url = dcc.Location(id='url', refresh=False)
     # 2. Page content - loaded based on URL path
-    page_content = html.Div(id='page-content', style={"fontFamily": font, 'background-color': 'white'})
+    page_content = html.Div(id='page-content', style={"fontFamily": font,
+                                                      'background-color': 'white'})
     # 3. Loading icon
     global_loading_icon = dcc.Loading(html.Div(id='loading-indicator',
                                                style={'display': 'none'}),

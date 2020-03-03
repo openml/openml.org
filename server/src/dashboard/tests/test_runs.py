@@ -1,9 +1,9 @@
 import time
-from collections import Counter
+
 import pandas as pd
 from openml import runs
 import numpy as np
-from .test_config import *
+from .test_config import BASE_URL
 
 
 def uncommon_string(s1, s2):
@@ -55,7 +55,7 @@ def test_run_graph_elements(dash_br):
     run_id = 10228060
     dash_br.server_url = f"{BASE_URL}run/{run_id}"
     time.sleep(10)
-    distribution_plot = dash_br.find_element("#runplot") #find_element_by_css_selector("#graph1")
+    distribution_plot = dash_br.find_element("#runplot")  # find_element_by_css_selector("#graph1")
     pr = dash_br.find_element("#pr")
     assert("area_under_roc_curve" in distribution_plot.text)
     assert("Recall" in pr.text)
@@ -70,4 +70,3 @@ def test_run_graph_elements(dash_br):
 #         if dash_br.get_logs() != []:
 #             ids.append(id)
 #     np.save('run_ids.npy', np.asarray(ids))
-
