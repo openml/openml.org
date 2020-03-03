@@ -29,6 +29,8 @@ def login():
         print("error")
         return jsonify({"msg": "Error"}), 401
 
+    # elif user.active=='0':
+    #     return jsonify({"msg": "user not confirmed yet"}), 200
     else:
         access_token = create_access_token(identity=user.email)
         # timestamp = datetime.datetime.now()
