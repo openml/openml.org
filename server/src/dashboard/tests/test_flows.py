@@ -1,7 +1,7 @@
 import time
-from openml import runs, flows, evaluations
-import numpy as np
-from .test_config import *
+from openml import evaluations
+
+from .test_config import BASE_URL
 
 
 # def test_flow_page_loading(dash_br):
@@ -34,7 +34,7 @@ def test_flow_dropdowns(dash_br):
     metric_dropdown.click()
     parameter_dropdown.click()
     parameter_dropdown.click()
-    assert('area_under_roc_curve' in metric_dropdown.text )
+    assert('area_under_roc_curve' in metric_dropdown.text)
     assert ('Supervised classification' in tasktype_dropdown.text)
     assert ('I' in parameter_dropdown.text)
 
