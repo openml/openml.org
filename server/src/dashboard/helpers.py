@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_run_df(run_id: int):
-    run = runs.get_run(int(run_id))
+    run = runs.get_run(int(run_id), ignore_cache=True)
     df = pd.DataFrame(run.fold_evaluations.items(), columns=['evaluations', 'results'])
     # Evaluations table
     result_list = []

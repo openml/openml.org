@@ -158,7 +158,7 @@ def register_task_callbacks(app, cache):
         # Leaderboard table
 
         top_uploader = df.sort_values('value', ascending=False).groupby(['uploader_name'],
-                                                                         sort=False)
+                                                                        sort=False)
         name = top_uploader['uploader_name'].unique()
         rank = list(range(1, len(name) + 1))
         entries = top_uploader['uploader_name'].value_counts().values
