@@ -45,7 +45,7 @@ class User(Base):
     def check_password(self, passwd):
         try:
             if bcrypt.check_password_hash(self.password, passwd):
-               bpass = True
+                bpass = True
         except ValueError as error:
             print(error)
             bpass = False

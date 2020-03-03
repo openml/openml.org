@@ -31,7 +31,7 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        timestamp = datetime.datetime.now()
+        # timestamp = datetime.datetime.now()
         # timestamp1 = timestamp.strftime("%Y-%m-%d")
         # user.last_login = timestamp1
         db.session.merge(user)
@@ -57,7 +57,7 @@ def profile():
         return jsonify({"msg": "User information changed"}), 200
     else:
         return jsonify({"msg": "profile OK"}), 200
-    
+
 
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required

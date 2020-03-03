@@ -24,7 +24,7 @@ def test_metadata_table(dash_br):
     time.sleep(5)
     feature_table = dash_br.find_element("#datatable")
     actual_table = (feature_table.text.split("Entropy")[-1])
-    assert(len(actual_table.split("\n")) >= metadata.shape[0], "meta-data table did not load correctly")
+    assert len(actual_table.split("\n")) >= metadata.shape[0]
 
 
 def test_distribution_loaded(dash_br):
@@ -33,8 +33,8 @@ def test_distribution_loaded(dash_br):
     time.sleep(10)
     distribution_plot = dash_br.find_element("#table-graph")
     fi = dash_br.find_element("#fi")
-    assert("middle-middle-square" in fi.text)
-    assert("negative" in distribution_plot.text)
+    assert "middle-middle-square" in fi.text
+    assert "negative" in distribution_plot.text
 
 
 def test_scatter_plots(dash_br):
@@ -43,8 +43,8 @@ def test_scatter_plots(dash_br):
     time.sleep(20)
     scatter_matrix = dash_br.find_element("#matrix")
     scatter_plot = dash_br.find_element("#scatter_plot")
-    assert(scatter_matrix.text is not None)
-    assert(scatter_plot.text is not None)
+    assert scatter_matrix.text is not None
+    assert scatter_plot.text is not None
 
 
 # def catch_errors_in_datasets(dash_br):
