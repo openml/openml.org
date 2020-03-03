@@ -26,20 +26,28 @@ body {
 }
 
 .metric-row {
+  margin-top: -6em;
+  margin-bottom: -5em;
+  margin-left: -2em;
   font-size: 1.0rem;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center; /* vertical center row items*/
-}
+  align-content: flex-start;
+  }
 
 #metric-div {
   padding: 1rem 2rem 1rem 1rem;
 }
 
 #metric-rows {
+  /*display: table;*/
   overflow-y: scroll;
   width: 100%;
+  display: flex;
+  align-content: flex-start;
+
  
 }
 
