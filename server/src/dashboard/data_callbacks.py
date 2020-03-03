@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
 import plotly.express as px
-
+# from plotly.subplots import make_subplots
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 
@@ -11,7 +11,7 @@ import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .helpers import get_data_metadata, logger, clean_dataset
-TIMEOUT = 5*60
+TIMEOUT = 0
 
 
 def register_data_callbacks(app, cache):
@@ -74,42 +74,49 @@ def register_data_callbacks(app, cache):
     #     [Input('datatable', 'selected_rows'),
     #      Input('radio1', 'value'),
     #      Input('stack', 'value'),
-    #      Input('url', 'pathname')],
+    #      Input('url', 'pathname'),
+    #      Input('dataloaded', 'value')],
     #     [State('datatable', 'data')])
-    # def distribution_sub_plot(selected_row_indices, radio_value, stack, url, rows):
-    #     data_id = int(re.search('data/(\d+)', url).group(1))
-
-    # try:
-    #     df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
-    # except OSError:
-    #     return []
+    # def distribution_sub_plot(selected_row_indices, radio_value,
+    #                           stack, url, data_loaded, rows):
+    #     if data_loaded is None:
+    #         return []
+    #     data_id = int(re.search(r'data/(\d+)', url).group(1))
+    #     try:
+    #         df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
+    #     except OSError:
+    #         return []
     #     meta_data = pd.DataFrame(rows)
-    #
+    #     print("distribution")
     #     if len(selected_row_indices) != 0:
     #         meta_data = meta_data.loc[selected_row_indices]
     #         attributes = meta_data["Attribute"].values
     #         types = meta_data["DataType"].values
     #
     #     if len(attributes) == 0:
-    #         fig = subplots.make_subplots(rows=1, cols=1)
+    #         fig = make_subplots(rows=1, cols=1)
     #         trace1 = go.Scatter(x=[0, 0, 0], y=[0, 0, 0])
     #         fig.append_trace(trace1, 1, 1)
     #     else:
-    #         fig = subplots.make_subplots(rows=len(attributes), cols=1)
+    #         fig = make_subplots(rows=len(attributes), cols=1,
+    #                             subplot_titles=attributes,
+    #                             )
     #         i = 0
     #         for attribute in attributes:
     #             show_legend = True if i == 0 else False
     #             data = dist_plot(meta_data, attribute, types[i],
-    #             radio_value, data_id, show_legend, df)
+    #                              radio_value, data_id, show_legend, df)
     #             i = i + 1
     #             for trace in data:
     #                 fig.append_trace(trace, i, 1)
     #
-    #     fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100),
-    #     barmode=stack,
+    #     fig['layout'].update(hovermode='closest',
+    #                          height=300 + (len(attributes) * 100),
+    #                          barmode=stack,
     #                          font=dict(size=11))
     #     for i in fig['layout']['annotations']:
     #         i['font']['size'] = 11
+    #     #print(fig['layout'])
     #     return html.Div(dcc.Graph(figure=fig), id="graph1")
 
     @app.callback(
@@ -147,7 +154,7 @@ def register_data_callbacks(app, cache):
         #                                     html.H4("Plot")))
         for index, row in meta_data.iterrows():
             attribute = row["Attribute"]
-            col1 = html.P(row["Attribute"])
+            col1 = html.P(row["Attribute"], style={'fontSize': 11})
             col2 = html.P(row["DataType"])
             col3 = html.P(row["Missing values"])
             col4 = html.P(row["# categories"])
@@ -157,11 +164,13 @@ def register_data_callbacks(app, cache):
             data = dist_plot(meta_data, attribute, row["DataType"], radio,
                              data_id, show_legend, df)
             fig = go.Figure(data=data)
-            fig['layout'].update(hovermode='closest', height=300, barmode=stack,
-                                 font=dict(size=11))
+            fig['layout'].update(hovermode='closest', height=300,
+                                 width=550, barmode=stack,
+                                 # margin={'b': 100},
+                                 font=dict(size=9))
             col7 = dcc.Graph(figure=fig)
             children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
-        out = html.Div(className="twelve columns",
+        out = html.Div(className="metric-rows",
                        style={'overflowY': 'scroll', 'height': '600px'},
                        children=children)
         logger.debug("distribution plot created")
@@ -405,9 +414,9 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
     return html.Div(
         className="row metric-row",
         children=[
-            html.Div(className="two columns",
-                     style={"margin-right": "2.5rem",
-                            "minWidth": "50px"},
+            html.Div(className="one column",
+                     # style={"margin-right": "2.5rem",
+                     #        "minWidth": "10px"},
                      children=col1),
             # html.Div(
             #

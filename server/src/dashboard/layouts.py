@@ -90,7 +90,7 @@ def get_layout_from_data(data_id):
                 id='radio1',
                 options=[{'label': "Target based distribution", "value": "target"},
                          {'label': "Individual distribution", "value": "solo"}],
-                value="solo",
+                value="target",
                 labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
 
             )),
