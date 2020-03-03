@@ -1,15 +1,16 @@
 import re
-
+import pandas as pd
+import numpy as np
 import plotly.graph_objs as go
 import plotly.express as px
-from plotly import subplots
+
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 
 import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-from .helpers import *
+from .helpers import get_data_metadata, logger, clean_dataset
 TIMEOUT = 5*60
 
 
@@ -19,7 +20,7 @@ def register_data_callbacks(app, cache):
         [Output('scatterdiv', 'children'),
          Output('dataloaded', 'value'),
          Output('datatable', 'data'),
-         Output('datatable','columns')],
+         Output('datatable', 'columns')],
         [Input('url', 'pathname'),
          Input('tableloaded', 'children'),
 
@@ -33,7 +34,7 @@ def register_data_callbacks(app, cache):
 
         })
         logger.debug("Downloading data and calculate entropy")
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         df, meta_features, numerical_data, nominal_data = get_data_metadata(data_id)
         scatter_div = [html.Div([html.H2('Scatter plot'),
                                  html.Div(dcc.Dropdown(
@@ -62,10 +63,9 @@ def register_data_callbacks(app, cache):
                                      clearable=False,
                                      value=nominal_data[0]), style={'width': '30%'}),
                                  html.Div(id='scatter_plot'), ])
-                       ]if len(numerical_data) > 1 and nominal_data else html.Div(id='Scatter Plot',
-                                                                         children=[html.Div(
-                                                                             html.P('No numerical-'
-                                                                                    'nominal combination found'))])
+                       ]if len(numerical_data) > 1 and nominal_data else html.Div(
+            id='Scatter Plot',
+            children=[html.Div(html.P('No numerical-nominal combination found'))])
         logger.debug("Downloaded data and calculated entropy")
         return scatter_div, "loaded", meta_features.to_dict('records'), existing_columns
 
@@ -99,12 +99,14 @@ def register_data_callbacks(app, cache):
     #         i = 0
     #         for attribute in attributes:
     #             show_legend = True if i == 0 else False
-    #             data = dist_plot(meta_data, attribute, types[i], radio_value, data_id, show_legend, df)
+    #             data = dist_plot(meta_data, attribute, types[i],
+    #             radio_value, data_id, show_legend, df)
     #             i = i + 1
     #             for trace in data:
     #                 fig.append_trace(trace, i, 1)
     #
-    #     fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100), barmode=stack,
+    #     fig['layout'].update(hovermode='closest', height=300 + (len(attributes) * 100),
+    #     barmode=stack,
     #                          font=dict(size=11))
     #     for i in fig['layout']['annotations']:
     #         i['font']['size'] = 11
@@ -124,7 +126,7 @@ def register_data_callbacks(app, cache):
         if dataloaded is None:
             return []
         logger.debug("loading pickle to create dist plot")
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
 
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
@@ -152,9 +154,11 @@ def register_data_callbacks(app, cache):
             col5 = html.P(row["Target"])
             col6 = html.P(row["Target"])
             show_legend = True if index == 0 else False
-            data = dist_plot(meta_data, attribute, row["DataType"], radio, data_id, show_legend, df)
+            data = dist_plot(meta_data, attribute, row["DataType"], radio,
+                             data_id, show_legend, df)
             fig = go.Figure(data=data)
-            fig['layout'].update(hovermode='closest', height=300, barmode=stack, font=dict(size=11))
+            fig['layout'].update(hovermode='closest', height=300, barmode=stack,
+                                 font=dict(size=11))
             col7 = dcc.Graph(figure=fig)
             children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
         out = html.Div(className="twelve columns",
@@ -165,7 +169,7 @@ def register_data_callbacks(app, cache):
 
     @app.callback(
         [Output('fi', 'children'),
-         Output('hidden','value')],
+         Output('hidden', 'value')],
 
         [
          Input('url', 'pathname'),
@@ -174,7 +178,7 @@ def register_data_callbacks(app, cache):
         [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
     def feature_importance(url, tab3, rows):
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
@@ -208,23 +212,22 @@ def register_data_callbacks(app, cache):
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
         layout = go.Layout(autosize=False,
-                           margin=dict(l=100), width=800, height=500, hovermode='closest')
+                           margin={'l': 100}, width=800, height=500, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
         fi.to_pickle('cache/fi' + str(data_id) + '.pkl')
 
         return html.Div(dcc.Graph(figure=figure)), "done"
 
-    @app.callback(Output('matrix', 'children'),
-        [
-         Input('radio', 'value'),
+    @app.callback(
+        Output('matrix', 'children'),
+        [Input('radio', 'value'),
          Input('url', 'pathname'),
          Input('hidden', 'value')
-         ],
-    [State('datatable', 'data')])
+         ], [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
     def feature_interactions(radio, url, dummy, rows):
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         if dummy == "done":
             df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
             fi = pd.read_pickle('cache/fi' + str(data_id) + '.pkl')
@@ -247,20 +250,20 @@ def register_data_callbacks(app, cache):
         top_numericals = (fi['index'][fi['index'].isin(numerical_features)][:4])
         top_nominals = (fi['index'][fi['index'].isin(nominal_features)][:4])
         df['target'] = df[target_attribute]
-        C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
-             'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)'
-             ]
+        # C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
+        #      'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)'
+        #      ]
         if target_type == "numeric":
-            cmap_type = 'seq'
+            # cmap_type = 'seq'
             df['target'] = y
             df['target'] = pd.cut(df['target'], 1000).astype(str)
-            cat = df['target'].str.extract('\((.*),', expand=False).astype(float)
+            cat = df['target'].str.extract(r'\((.*),', expand=False).astype(float)
             df['bin'] = pd.Series(cat)
             df.sort_values(by='bin', inplace=True)
             df.drop('bin', axis=1, inplace=True)
         else:
-            cmap_type = 'cat'
-            N = len(df['target'].unique())
+            # cmap_type = 'cat'
+            # N = len(df['target'].unique())
             try:
                 df['target'] = df['target'].astype(int)
             except ValueError:
@@ -310,7 +313,8 @@ def register_data_callbacks(app, cache):
                 #                                      index='target',
                 #                                      title="",
                 #                                      #colormap=C,
-                #                                      colormap_type=cmap_type, height=1000, width=900)
+                #                                      colormap_type=cmap_type,
+                #                                      height=1000, width=900)
                 graph = dcc.Graph(figure=px_mat)
                 px_mat.update_traces(diagonal_visible=False)
             else:
@@ -356,7 +360,7 @@ def register_data_callbacks(app, cache):
         :return:
             fig : Scatter plot of selected attributes
         """
-        data_id = int(re.search('data/(\d+)', url).group(1))
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         logger.debug("loading data for scatter plot")
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
@@ -444,80 +448,78 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
 
 
 def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df):
-        try:
-            target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
-            target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
-        except IndexError:
-            radio_value = "solo"
+    try:
+        target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
+        target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
+    except IndexError:
+        radio_value = "solo"
 
-        if radio_value == "target":
-            # Bin numeric target
-            df.sort_values(by=target, inplace=True)
-            if target_type == "numeric":
-                df[target] = pd.cut(df[target], 1000).astype(str)
-                cat = df[target].str.extract('\((.*),', expand=False).astype(float)
-                df['bin'] = pd.Series(cat)
-                df.sort_values(by='bin', inplace=True)
-            else:
-                df.sort_values(by=target, inplace=True)
-                df[target] = df[target].astype(str)
-            target_vals = list(df[target].unique())
-
-        if radio_value == "target":
-            N = len(df[target].unique())
-            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
-
-        if type == "numeric":
-            if radio_value == "target":
-                data = [go.Histogram(x=sorted(sorted(df[attribute][df[target] == target_vals[i]])),
-                                     name=str(target_vals[i]),
-                                     nbinsx=20, histfunc="count", showlegend=show_legend,
-                                     marker=dict(color=color[i],
-                                                 line=dict(
-                                                     color=color[i],
-                                                     width=1.5,
-                                                 ),
-                                                 cmin=0,
-                                                 showscale=False,
-                                                 colorbar=dict(thickness=20,
-                                                               tickvals=color,
-                                                               ticktext=target_vals
-                                                               ))) for i in range(int(N))]
-
-            else:
-                data = [{
-                    "type": 'violin',
-                    "showlegend": False,
-                    "x": df[attribute],
-                    "box": {
-                        "visible": True
-                    },
-                    "line": {
-                        "color": 'black'
-                    },
-                    "meanline": {
-                        "visible": True
-                    },
-                    "fillcolor": 'steelblue',
-                    "name": "",
-                    "opacity": 0.6,
-                    # "x0": attribute
-                }]
+    if radio_value == "target":
+        # Bin numeric target
+        df.sort_values(by=target, inplace=True)
+        if target_type == "numeric":
+            df[target] = pd.cut(df[target], 1000).astype(str)
+            cat = df[target].str.extract(r'\((.*),', expand=False).astype(float)
+            df['bin'] = pd.Series(cat)
+            df.sort_values(by='bin', inplace=True)
         else:
-            if radio_value == "target":
-                data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]),
-                                     name=str(target_vals[i]),
-                                     showlegend=show_legend,
-                                     marker=dict(color=color[i],
-                                                 cmin=0,
-                                                 showscale=False,
-                                                 colorbar=dict(thickness=20,
-                                                               tickvals=color,
-                                                               ticktext=target_vals))) for i in range(int(N))]
+            df.sort_values(by=target, inplace=True)
+            df[target] = df[target].astype(str)
+        target_vals = list(df[target].unique())
 
+    if radio_value == "target":
+        N = len(df[target].unique())
+        color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
 
-            else:
+    if type == "numeric":
+        if radio_value == "target":
+            data = [go.Histogram(x=sorted(sorted(df[attribute][df[target] == target_vals[i]])),
+                                 name=str(target_vals[i]),
+                                 nbinsx=20, histfunc="count", showlegend=show_legend,
+                                 marker=dict(color=color[i],
+                                             line=dict(
+                                                 color=color[i],
+                                                 width=1.5,
+                                             ),
+                                             cmin=0,
+                                             showscale=False,
+                                             colorbar=dict(thickness=20,
+                                                           tickvals=color,
+                                                           ticktext=target_vals
+                                                           ))) for i in range(int(N))]
 
-                data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False,
-                                      )]
-        return data
+        else:
+            data = [{
+                "type": 'violin',
+                "showlegend": False,
+                "x": df[attribute],
+                "box": {
+                    "visible": True
+                },
+                "line": {
+                    "color": 'black'
+                },
+                "meanline": {
+                    "visible": True
+                },
+                "fillcolor": 'steelblue',
+                "name": "",
+                "opacity": 0.6,
+                # "x0": attribute
+            }]
+    else:
+        if radio_value == "target":
+            data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]),
+                                 name=str(target_vals[i]),
+                                 showlegend=show_legend,
+                                 marker=dict(color=color[i],
+                                             cmin=0,
+                                             showscale=False,
+                                             colorbar=dict(thickness=20,
+                                                           tickvals=color,
+                                                           ticktext=target_vals))
+                                 ) for i in range(int(N))]
+
+        else:
+            data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False)]
+    return data

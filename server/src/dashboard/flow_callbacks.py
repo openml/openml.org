@@ -1,9 +1,10 @@
 import plotly.graph_objs as go
 import re
 from dash.dependencies import Input, Output
-from .helpers import *
-from openml import tasks, runs, evaluations
+import pandas as pd
+from openml import tasks, evaluations
 TIMEOUT = 5*60
+
 
 def register_flow_callbacks(app, cache):
 
@@ -24,7 +25,7 @@ def register_flow_callbacks(app, cache):
         """
 
         if pathname is not None and '/dashboard/flow' in pathname:
-            flow_id = int(re.search('flow/(\d+)', pathname).group(1))
+            flow_id = int(re.search(r'flow/(\d+)', pathname).group(1))
         else:
             return []
 

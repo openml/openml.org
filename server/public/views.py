@@ -1,22 +1,24 @@
 from flask import (
     Blueprint,
-    current_app,
-    flash,
-    redirect,
-    render_template,
+    # current_app,
+    # flash,
+    # redirect,
+    # render_template,
     request,
-    url_for,
+    # url_for,
     jsonify,
 )
 from server.user.models import User
 from server.extensions import db
-import datetime, hashlib
+import datetime
+import hashlib
 from server.utils import forgot_password_email, confirmation_email
 from flask_cors import CORS
 
 blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
+
 
 @blueprint.route('/signup', methods=['POST'])
 def signupfunc():
@@ -58,7 +60,6 @@ def signupfunc():
         return jsonify({"msg": "User created"}), 200
     else:
         return jsonify({"msg": "User already exists"}), 200
-
 
 
 @blueprint.route('/forgotpassword', methods=['POST'])
