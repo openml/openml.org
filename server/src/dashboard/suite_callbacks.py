@@ -1,13 +1,9 @@
 import openml
-import plotly.figure_factory as ff
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import dash_html_components as html
 import dash_core_components as dcc
-import pandas as pd
 import re
-import plotly.figure_factory as ff
-
 
 
 def register_suite_callbacks(app, cache):
@@ -18,8 +14,8 @@ def register_suite_callbacks(app, cache):
          Input('yaxis-column', 'value'),
          Input('xaxis-type', 'value'),
          Input('yaxis-type', 'value')])
-    def scatter_data_plot(pathname,x,y,x_type,y_type):
-        suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
+    def scatter_data_plot(pathname, x, y, x_type, y_type):
+        suite_id = int(re.search(r'study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         data_arr = openml.datasets.get_datasets(suite.data, download_data=False)
         arr_dataset_name = []
@@ -42,10 +38,10 @@ def register_suite_callbacks(app, cache):
     @app.callback(
         Output('suite-histogram', 'children'),
         [Input('url', 'pathname'),
-         Input('xaxis-hist','value')]
+         Input('xaxis-hist', 'value')]
     )
     def suite_histogram(pathname, key):
-        suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
+        suite_id = int(re.search(r'study/task/(\d+)', pathname).group(1))
         suite = openml.study.get_suite(suite_id)
         data_arr = openml.datasets.get_datasets(suite.data, download_data=False)
         arr_id = []
@@ -58,16 +54,7 @@ def register_suite_callbacks(app, cache):
         return html.Div(graph)
 
 
-
-
-
-
-
-
-
-
-
-#omitting distribution plot
+# omitting distribution plot
     # def distplot_suite(pathname):
     #     suite_id = int(re.search('study/task/(\d+)', pathname).group(1))
     #     suite = openml.study.get_suite(suite_id)
@@ -75,7 +62,8 @@ def register_suite_callbacks(app, cache):
     #     glist = []
     #
     #     for task_id in suite.tasks:
-    #         evaluations = openml.evaluations.list_evaluations(task = [task_id], function = 'area_under_roc_curve', output_format='dataframe', size=10000)
+    #         evaluations = openml.evaluations.list_evaluations(task = [task_id],
+#         function = 'area_under_roc_curve', output_format='dataframe', size=10000)
     #         print("eval for task id",task_id)
     #         if(len(evaluations) == 0):
     #             pass
@@ -89,8 +77,3 @@ def register_suite_callbacks(app, cache):
     #             graph = dcc.Graph(figure=fig)
     #             glist.append(html.Div(dcc.Graph(figure=fig)))
     #     return html.Div(glist)
-
-
-
-
-

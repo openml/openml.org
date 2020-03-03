@@ -12,8 +12,8 @@ logger = logging.getLogger('dashboard')
 logger.setLevel(logging.DEBUG)
 
 
-def get_run_df(run_id : int):
-    run = runs.get_run(int(run_id))
+def get_run_df(run_id: int):
+    run = runs.get_run(int(run_id), ignore_cache=True)
     df = pd.DataFrame(run.fold_evaluations.items(), columns=['evaluations', 'results'])
     # Evaluations table
     result_list = []
@@ -48,16 +48,19 @@ def clean_dataset(df):
 def get_metadata(data_id: int):
     data = datasets.get_dataset(data_id, download_data=False)
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-    is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
+    is_target = ["true" if name == data.default_target_attribute else "false"
+                 for name in features["name"]]
     features["Target"] = is_target
 
     # Extract #categories
-    size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
+    size = [str(len(value)) if value is not None else ' '
+            for value in features['nominal_values']]
     features['nominal_values'].replace({None: ' '}, inplace=True)
     features['# categories'] = size
 
     # choose features to be displayed
-    meta_features = features[["name", "data_type", "number_missing_values", '# categories', "Target"]]
+    meta_features = features[["name", "data_type", "number_missing_values",
+                              '# categories', "Target"]]
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
@@ -104,9 +107,9 @@ def get_data_metadata(data_id):
         y = df[target_attribute]
         try:
             X_train, X_test, y_train, y_test = train_test_split(x, y,
-                                                            stratify=y,
-                                                            test_size=sample_size)
-        except:
+                                                                stratify=y,
+                                                                test_size=sample_size)
+        except ValueError:
             X_train, X_test, y_train, y_test = train_test_split(x, y,
                                                                 stratify=None,
                                                                 test_size=sample_size)
@@ -127,7 +130,7 @@ def get_data_metadata(data_id):
     for column in meta_features['Attribute']:
         if column in nominal_features:
             count = df[column].value_counts()
-            ent = round(scipy.stats.entropy(count),2)
+            ent = round(scipy.stats.entropy(count), 2)
             entropy.append(ent)
         else:
             entropy.append(' ')
@@ -141,28 +144,28 @@ def get_data_metadata(data_id):
 def get_highest_rank(df, leaderboard):
     df.sort_values(by=['upload_time'], inplace=True)
     scores = []
-    highest_rank = {}
+    # highest_rank = {}
     highest_score = {}
 
     setup_ids = []
 
     for index, row in df.iterrows():
         users = list(highest_score.keys())
-        new_user = (row['uploader_name'] not in (users))
+        new_user = (row['uploader_name'] not in users)
         if row['setup_id'] not in setup_ids or new_user:
             setup_ids.append(row['setup_id'])
             score = row['value']
             if new_user or (score not in scores):
                 scores.append(score)
                 scores.sort(reverse=True)
-                rank = scores.index(score) + 1
+                # rank = scores.index(score) + 1
                 if new_user or (highest_score[row['uploader_name']] < score):
-                   # highest_rank[row['uploader_name']] = rank
+                    # highest_rank[row['uploader_name']] = rank
                     highest_score[row['uploader_name']] = score
-                   # if highest_rank[row['uploader_name']] > row['Rank']:
-                     #   highest_rank[row['uploader_name']] = row['Rank']
-    #leaderboard['highest_rank'] = list(highest_rank.values())
-    
+                # if highest_rank[row['uploader_name']] > row['Rank']:
+                #   highest_rank[row['uploader_name']] = row['Rank']
+    # leaderboard['highest_rank'] = list(highest_rank.values())
+
     leaderboard['Top Score'] = list(highest_score.values())
     return leaderboard
 
@@ -171,7 +174,8 @@ def splitDataFrameList(df, target_column):
     """ df = dataframe to split,
     target_column = the column containing the values to split
     separator = the symbol used to perform the split
-    returns: a dataframe with each entry for the target column separated, with each element moved into a new row.
+    returns: a dataframe with each entry for the target column separated,
+     with each element moved into a new row.
     The values in the other columns are duplicated across the newly divided rows.
     """
     def splitListToRows(row, row_accumulator, target_column):

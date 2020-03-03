@@ -1,15 +1,15 @@
-import plotly
+import pandas as pd
 import plotly.graph_objs as go
-
-from .helpers import *
-from .dashapp import *
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
 
 from openml import runs, flows, datasets, tasks
 from openml.extensions.sklearn import SklearnExtension
-from dash.dependencies import Input, Output, State
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
-        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol"]
 TIMEOUT = 5*60
 
 
@@ -27,7 +27,7 @@ def get_flow_overview():
     for name in count["name"]:
         try:
             short.append(SklearnExtension.trim_flow_name(name))
-        except:
+        except ValueError:
             pass
     count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
@@ -36,7 +36,7 @@ def get_flow_overview():
                                  orientation="h")])
     fig.update_layout(
                       yaxis=dict(autorange="reversed"),
-                      margin=dict(l=500),
+                      margin={'l': 500},
                       title="", width=900,
                       height=700),
 
@@ -45,7 +45,7 @@ def get_flow_overview():
 
 def register_overview_callbacks(app, cache):
     @app.callback(Output('data_overview', 'children'),
-                  [Input('status_data','value')])
+                  [Input('status_data', 'value')])
     @cache.memoize(timeout=TIMEOUT)
     def dataset_overview(radio):
         """
@@ -63,8 +63,10 @@ def register_overview_callbacks(app, cache):
         # Binning
         bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
         bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
-        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
+        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1,
+                                           precision=0).astype(str)
+        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2,
+                                          precision=0).astype(str)
         for col in ["Number of instances", "Number of features"]:
             df[col] = df[col].str.replace(',', ' -')
             df[col] = df[col].str.replace('(', "")
@@ -121,11 +123,11 @@ def register_overview_callbacks(app, cache):
 
         return html.Div([html.Div([html.P(title[0]),
                                    dcc.Graph(figure=fig1)], className="row metric-row",
-                                  style={'width': '48%','text-align': 'center',
+                                  style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block',
                                          }),
                          html.Div([html.P(title[1]),
-                                   dcc.Graph(figure=fig2)],className="row metric-row",
+                                   dcc.Graph(figure=fig2)], className="row metric-row",
                                   style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block'}),
                          html.P(title[2]),
@@ -193,4 +195,3 @@ def register_overview_callbacks(app, cache):
                          dcc.Graph(figure=fig1),
                          html.P(title[1]),
                          dcc.Graph(figure=fig2)]), "done"
-
