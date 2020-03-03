@@ -41,5 +41,5 @@ def create_empty_table():
     c.close()
     conn.close()
 
-
+#TODO Create demo user
 create_empty_table()
