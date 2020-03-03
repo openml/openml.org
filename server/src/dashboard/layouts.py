@@ -414,7 +414,8 @@ def get_layout_from_study(study_id):
             ('Name', 'name'),
             ('Instances', 'NumberOfInstances'),
             ('Features', 'NumberOfFeatures'),
-            ('Classes', 'NumberOfClasses'),  # Should only be included for studies with classification tasks.
+            # Should only be included for studies with classification tasks.
+            ('Classes', 'NumberOfClasses'),
             ('Missing Values', 'NumberOfMissingValues'),
             ('Numeric Features', 'NumberOfNumericFeatures'),
             ('Categorical Features', 'NumberOfSymbolicFeatures')

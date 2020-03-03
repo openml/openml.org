@@ -517,7 +517,8 @@ def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df
                                              showscale=False,
                                              colorbar=dict(thickness=20,
                                                            tickvals=color,
-                                                           ticktext=target_vals))) for i in range(int(N))]
+                                                           ticktext=target_vals))
+                                 ) for i in range(int(N))]
 
         else:
             data = [go.Histogram(x=(df[attribute]), name=attribute, showlegend=False)]

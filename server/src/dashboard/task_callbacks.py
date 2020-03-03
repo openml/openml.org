@@ -103,7 +103,8 @@ def register_task_callbacks(app, cache):
                                        colorscale='RdBu', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin={'l': 400}, height=500+15*(df['flow_name'].nunique()),
+        layout = go.Layout(autosize=False, margin={'l': 400},
+                           height=500+15*(df['flow_name'].nunique()),
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a flow, click for details <br>'
                                  'Top '+str(n_runs)+' runs shown<br>',
@@ -143,7 +144,8 @@ def register_task_callbacks(app, cache):
                                        colorscale='Rainbow', )
                            )
                 ]
-        layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
+        layout = go.Layout(title='Contributions over time,<br>every point is a run, '
+                                 'click for details',
                            autosize=True,  margin={'l': 100}, hovermode='y',
                            font=dict(size=11),
                            xaxis=go.layout.XAxis(showgrid=False),
@@ -155,7 +157,8 @@ def register_task_callbacks(app, cache):
 
         # Leaderboard table
 
-        top_uploader = (df.sort_values('value', ascending=False).groupby(['uploader_name'], sort=False))
+        top_uploader = df.sort_values('value', ascending=False).groupby(['uploader_name'],
+                                                                         sort=False)
         name = top_uploader['uploader_name'].unique()
         rank = list(range(1, len(name) + 1))
         entries = top_uploader['uploader_name'].value_counts().values
