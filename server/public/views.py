@@ -38,7 +38,7 @@ def signupfunc():
         user.remember_code = '0000'
         user.created_on = '0000'
         user.last_login = '0000'
-        user.active = '0000'
+        user.active = '0'
         user.first_name = '0000'
         user.last_name = '0000'
         user.company = '0000'
