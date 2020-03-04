@@ -11,7 +11,7 @@ import dash_core_components as dcc
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .helpers import get_data_metadata, logger, clean_dataset
-TIMEOUT = 0
+TIMEOUT = 5*60
 
 
 def register_data_callbacks(app, cache):
@@ -154,7 +154,7 @@ def register_data_callbacks(app, cache):
         #                                     html.H4("Plot")))
         for index, row in meta_data.iterrows():
             attribute = row["Attribute"]
-            col1 = html.P(row["Attribute"], style={'fontSize': 11})
+            col1 = html.P(row["Attribute"])
             col2 = html.P(row["DataType"])
             col3 = html.P(row["Missing values"])
             col4 = html.P(row["# categories"])
