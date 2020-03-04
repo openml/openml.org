@@ -56,3 +56,9 @@ def test_scatter_plots(dash_br):
 #         if dash_br.get_logs() != []:
 #             ids.append(id)
 #     pd.DataFrame(ids).to_csv('ids.csv')
+
+def test_data_overviews(dash_br):
+    dash_br.server_url = f"{BASE_URL}data/"
+    print(dash_br.get_logs())
+    pie_chart = dash_br.find_element('#data_overview')
+    print(pie_chart.text)

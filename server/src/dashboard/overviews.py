@@ -122,18 +122,18 @@ def register_overview_callbacks(app, cache):
         fig4.update_xaxes(tickfont=dict(size=10))
 
         return html.Div([html.Div([html.P(title[0]),
-                                   dcc.Graph(figure=fig1)], className="row metric-row",
+                                   dcc.Graph(figure=fig1, id='fig1')], className="row metric-row",
                                   style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block',
                                          }),
                          html.Div([html.P(title[1]),
-                                   dcc.Graph(figure=fig2)], className="row metric-row",
+                                   dcc.Graph(figure=fig2, id='fig2')], className="row metric-row",
                                   style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block'}),
                          html.P(title[2]),
-                         dcc.Graph(figure=fig3),
+                         dcc.Graph(figure=fig3, id='fig3'),
                          html.P(title[3]),
-                         dcc.Graph(figure=fig4)],
+                         dcc.Graph(figure=fig4, id='fig4')],
                         )
 
     @app.callback([Output('run_overview', 'children'),

@@ -81,6 +81,7 @@ def get_layout_from_data(data_id):
     #                                       'height': '400px'}))
     dist_plot = html.Div([
         html.P(''),
+        html.P(''),
         html.P('Choose if the color code is based on target or not',
                style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
                       }
