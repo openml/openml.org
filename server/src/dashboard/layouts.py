@@ -20,7 +20,7 @@ def get_layout_from_data(data_id):
         selected_rows = list(range(0, metadata.shape[0]))
 
     # Define layout components
-    logger.debug("loading skeleton layout and table")
+    logger.debug("loading skeleton data layout and table")
     # Feature table
     feature_table = html.Div(
         dt.DataTable(data=metadata.to_dict('records'),
@@ -185,7 +185,8 @@ def get_layout_from_task(task_id):
             placeholder="Select an attribute",
             value=measures[0]
         )],
-        style={'width': '30%', 'display': 'inline-block',
+        className="three columns",
+        style={'display': 'inline-block',
                'position': 'relative'},
     )
     # Fetch more runs button
@@ -211,8 +212,11 @@ def get_layout_from_task(task_id):
             html.P(" "),
             html.P(" "),
             fetch_runs_button,
+            html.Div(id="tab3")
         ]),
-    ], style={'width': '100%'})
+    ],
+        className='container',
+        style={'overflowY': 'hidden'})
 
     return layout
 
@@ -237,7 +241,8 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=measures[0]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                className="two columns",
+                style={'display': 'inline-block',
                        'position': 'relative'},
             )
     # Task type dropdown
@@ -257,8 +262,9 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=task_types[0]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                style={'display': 'inline-block',
                        'position': 'relative'},
+                className="three columns",
             )
     # parameters dropdown
     setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
@@ -276,15 +282,17 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=parameters[-1]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                style={'display': 'inline-block',
                        'position': 'relative'},
+                className="four columns",
             )
     # Flow evaluations plot
     flow_graph = html.Div(
                 [dcc.Loading(dcc.Graph(
                     id='flowplot',
-                    style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'}))])
+                    style={'height': '100%',
+                           'position': 'absolute'}))],
+                className="twelve columns")
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
@@ -292,7 +300,8 @@ def get_layout_from_flow(flow_id):
             dropdown_tasktype,
             dropdown_parameter,
             flow_graph])
-    ])
+    ], className='container',
+        style={'overflowY': 'hidden'})
 
     return layout
 
@@ -329,14 +338,16 @@ def get_layout_from_run(run_id):
                        'overflowY': 'scroll',
                        'border': 'thin lightgrey solid'
                    },
-                   id='runtable'),  style={'width': '45%', 'display': 'inline-block',
-                                           'position': 'relative'}
+                   id='runtable'
+               ), className="five columns", style={'display': 'inline-block',
+                                                   'position': 'relative'}
            )
 
     # Distribution plot
     run_plot = html.Div(
         id='runplot',
-        style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height': '400px',
+        className="six columns",
+        style={'display': 'inline-block', 'overflowY': 'scroll', 'height': '400px',
                'position': 'absolute'}
     )
     # PR and ROC plot
@@ -355,7 +366,8 @@ def get_layout_from_run(run_id):
         pr_chart,
         html.H4("ROC curve:"),
         roc_chart
-    ], style={'overflowY': 'hidden'})
+    ], className='container',
+        style={'overflowY': 'hidden'})
     return layout
 
 
@@ -485,7 +497,8 @@ def get_layout_from_suite(suite_id):
                     labelStyle={'display': 'inline-block'}
                 )
             ],
-                style={'width': '48%', 'display': 'inline-block'}),
+                className="five columns",
+                style={'display': 'inline-block'}),
 
             html.Div([
                 dcc.Dropdown(
@@ -499,7 +512,8 @@ def get_layout_from_suite(suite_id):
                     value='linear',
                     labelStyle={'display': 'inline-block'}
                 )
-            ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+            ], className="five columns", style={'float': 'right',
+                                                'display': 'inline-block'})
         ]),
 
         html.Div(id='suite-scatter-plot'),

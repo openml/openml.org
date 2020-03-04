@@ -28,7 +28,6 @@ body {
 .metric-row {
   margin-top: -6em;
   margin-bottom: -5em;
-  margin-left: -2em;
   font-size: 1.0rem;
   display: flex;
   flex-direction: row;
