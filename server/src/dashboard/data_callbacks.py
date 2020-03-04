@@ -165,7 +165,7 @@ def register_data_callbacks(app, cache):
                              data_id, show_legend, df)
             fig = go.Figure(data=data)
             fig['layout'].update(hovermode='closest', height=300,
-                                 width=550, barmode=stack,
+                                 barmode=stack,
                                  # margin={'b': 100},
                                  font=dict(size=9))
             col7 = dcc.Graph(figure=fig)
@@ -221,12 +221,12 @@ def register_data_callbacks(app, cache):
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
         layout = go.Layout(autosize=False,
-                           margin={'l': 100}, width=800, height=500, hovermode='closest')
+                           margin={'l': 100}, height=500, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
         fi.to_pickle('cache/fi' + str(data_id) + '.pkl')
 
-        return html.Div(dcc.Graph(figure=figure)), "done"
+        return html.Div(dcc.Graph(figure=figure), className="twelve columns"), "done"
 
     @app.callback(
         Output('matrix', 'children'),
@@ -285,7 +285,7 @@ def register_data_callbacks(app, cache):
             top_features['target'] = df['target']
 
             if len(top_numericals):
-                px_mat = px.scatter_matrix(top_features, color='target', height=800, width=900)
+                px_mat = px.scatter_matrix(top_features, color='target', height=800)
                 #
                 # matrix = ff.create_scatterplotmatrix(top_features, diag='box',
                 #                                      index='target',
@@ -309,7 +309,7 @@ def register_data_callbacks(app, cache):
                     hoverinfo='count+probability',
                     arrangement='freeform'
                 )]
-                layout = go.Layout(autosize=False, width=900, height=800)
+                layout = go.Layout(autosize=False, height=800)
 
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
@@ -317,7 +317,7 @@ def register_data_callbacks(app, cache):
             if len(top_numericals):
                 df_num = df[top_numericals]
                 df_num['target'] = df['target']
-                px_mat = px.scatter_matrix(df_num, color='target', height=800, width=900)
+                px_mat = px.scatter_matrix(df_num, color='target', height=800)
                 # matrix = ff.create_scatterplotmatrix(df_num,  diag='box', #'box'
                 #                                      index='target',
                 #                                      title="",
@@ -343,13 +343,14 @@ def register_data_callbacks(app, cache):
                     hoverinfo='count+probability',
                     arrangement='freeform'
                 )]
-                layout = go.Layout(autosize=False, width=900, height=900)
+                layout = go.Layout(autosize=False, height=800)
+
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
             else:
                 graph = html.P("No nominals found")
 
-        return html.Div(graph)
+        return html.Div(graph, className="twelve columns")
 
     @app.callback(Output('scatter_plot', 'children'), [
         Input('dropdown1', 'value'),
@@ -391,10 +392,10 @@ def register_data_callbacks(app, cache):
                 yaxis={'title': at2, 'autorange': True},
                 hovermode='closest',
                 height=500,
-                width=800
+
             )}
         logger.debug("scatter plot created")
-        return html.Div(dcc.Graph(figure=fig))
+        return html.Div(dcc.Graph(figure=fig), className="twelve columns")
 
     @app.callback(
         Output('stack', 'options'),
@@ -414,7 +415,7 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
     return html.Div(
         className="row metric-row",
         children=[
-            html.Div(className="one column",
+            html.Div(className="three columns",
                      # style={"margin-right": "2.5rem",
                      #        "minWidth": "10px"},
                      children=col1),
@@ -451,7 +452,7 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
             html.Div(
 
                 style={"height": "50%"},
-                className="six columns",
+                className="nine columns",
                 children=col7,
             )])
 

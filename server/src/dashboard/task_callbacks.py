@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
 import plotly.graph_objs as go
-from .helpers import get_highest_rank
+from .helpers import get_highest_rank, logger
 from openml.extensions.sklearn import SklearnExtension
 from openml import evaluations
 
@@ -20,12 +20,12 @@ TIMEOUT = 5*60
 def register_task_callbacks(app, cache):
     @app.callback([Output('dummy', 'children'),
                    Output('tab1', 'children'),
-                   Output('tab2', 'children')],
+                   ],
                   [Input('url', 'pathname'),
                    Input('metric', 'value'),
                    Input('button', 'n_clicks')
                    ])
-    @cache.memoize(timeout=TIMEOUT)
+    # @cache.memoize(timeout=TIMEOUT)
     def update_task_plots(pathname, metric, n_clicks):
         """
 
@@ -56,14 +56,16 @@ def register_task_callbacks(app, cache):
             df_old = pd.read_pickle('cache/task'+str(task_id)+'.pkl')
         except OSError:
             df_old = pd.DataFrame()
-
+        import time
+        start = time.time()
         df_new = evaluations.list_evaluations(function=metric,
                                               task=[int(task_id)],
                                               sort_order="desc",
                                               offset=n_clicks*n_runs,
                                               size=n_runs,
                                               output_format='dataframe')
-
+        end = time.time()
+        logger.debug(f"list evaluations for task {task_id} took {end-start}")
         if df_new.empty and df_old.empty:
             return html.Div(), html.Div()
         else:
@@ -109,7 +111,6 @@ def register_task_callbacks(app, cache):
                                  'Every y label is a flow, click for details <br>'
                                  'Top '+str(n_runs)+' runs shown<br>',
                            font=dict(size=11),
-                           width=1000,
                            # hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
@@ -119,7 +120,29 @@ def register_task_callbacks(app, cache):
                            ))
         fig = go.Figure(data, layout)
 
-        # Figure 2 People
+        dummy_fig = html.Div(dcc.Graph(figure=fig), style={'display': 'none'})
+        eval_div = html.Div(dcc.Graph(figure=fig), className="twelve columns")
+        end = time.time()
+        logger.debug(f"Plotting evaluations graph took {end-start} secs")
+        return dummy_fig, eval_div
+
+    @app.callback(Output('tab2', 'children'),
+                  [Input('url', 'pathname'),
+                   Input('metric', 'value'),
+                   Input('tab1', 'children')
+                   ])
+    # @cache.memoize(timeout=TIMEOUT)
+    def update_leader_board(pathname, metric,  evals):
+        import time
+        start = time.time()
+        if pathname is not None and '/dashboard/task' in pathname:
+            task_id = int(re.search(r'task/(\d+)', pathname).group(1))
+        else:
+            return html.Div()
+        try:
+            df = pd.read_pickle('cache/task'+str(task_id)+'.pkl')
+        except OSError:
+            return html.Div()
         tick_text = []
         run_link = []
         for run_id in df["run_id"].values:
@@ -146,7 +169,7 @@ def register_task_callbacks(app, cache):
                 ]
         layout = go.Layout(title='Contributions over time,<br>every point is a run, '
                                  'click for details',
-                           autosize=True,  margin={'l': 100}, hovermode='y',
+                           autosize=True, margin={'l': 100}, hovermode='y',
                            font=dict(size=11),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,
@@ -193,7 +216,8 @@ def register_task_callbacks(app, cache):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        dummy_fig = html.Div(dcc.Graph(figure=fig), style={'display': 'none'})
-        eval_div = html.Div(dcc.Graph(figure=fig))
-        return dummy_fig, eval_div, html.Div([dcc.Graph(figure=fig1),
-                                              html.Div('Leaderboard'), table])
+        end = time.time()
+        logger.debug(f"Leaderboard took {end-start} secs")
+        return html.Div([dcc.Graph(figure=fig1),
+                        html.Div('Leaderboard'), table])
+

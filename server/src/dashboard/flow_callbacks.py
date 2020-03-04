@@ -99,7 +99,7 @@ def register_flow_callbacks(app, cache):
                                  'Top 1000 runs shown',
                            font=dict(size=11),
 
-                           autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
+                           autosize=False, height=500 + 15*df['data_name'].nunique(),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,
                                                  ticktext=tick_text+df["data_name"],
