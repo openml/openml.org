@@ -7,7 +7,7 @@ from flask_jwt_extended import (jwt_required, create_access_token,
                                 get_jwt_identity, get_raw_jwt)
 from server.extensions import db, jwt
 from urllib.parse import urlparse, parse_qs
-
+import os
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
 CORS(user_blueprint)
@@ -39,6 +39,7 @@ def login():
         db.session.merge(user)
         db.session.commit()
         return jsonify(access_token=access_token), 200
+
 
 # TODO Add user profile picture
 @user_blueprint.route('/profile', methods=['GET', 'POST'])

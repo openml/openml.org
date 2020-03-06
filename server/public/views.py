@@ -54,12 +54,13 @@ def signupfunc():
         timestamp = timestamp.strftime("%d %H")
         md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
         user.update_activation_code(md5_digest)
+        confirmation_email(user.email, md5_digest)
+
         db.session.add(user)
         db.session.commit()
-        confirmation_email(user.email, md5_digest)
         return jsonify({"msg": "User created"}), 200
     else:
-        return jsonify({"msg": "User already exists"}), 200
+        return jsonify({"msg": "User already exists"}), 401
 
 
 @blueprint.route('/forgotpassword', methods=['POST'])
