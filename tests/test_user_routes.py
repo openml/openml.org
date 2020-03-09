@@ -33,6 +33,18 @@ def test_profile(test_client, init_database):
     assert User.query.filter_by(email='ss').first() == user
 
 
+def test_profile_changes(test_client, init_database):
+    access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    }
+    response = test_client.post('/profile', headers=headers, json={'bio': 'ss bio',
+                                                                   'first_name': 'ssd',
+                                                                   'last_name': 'sds'}
+                                )
+    assert response.status_code == 200
+
+
 def test_logout(test_client, init_database):
     access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
     headers = {
