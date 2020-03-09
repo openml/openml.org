@@ -1,11 +1,11 @@
 import pytest
-
-import sys, os
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
+import sys
+import os
 from autoapp import create_app
 from server.extensions import db
-from server.user.models import User
+
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
 
 
 @pytest.fixture(scope='module')
@@ -31,6 +31,4 @@ def init_database():
 
     # Insert user data
 
-
     yield db  # this is where the testing happens!
-
