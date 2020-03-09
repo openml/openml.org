@@ -1,5 +1,6 @@
 import smtplib
 import ssl
+import os
 
 context = ssl.create_default_context()
 
