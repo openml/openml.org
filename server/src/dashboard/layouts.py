@@ -165,7 +165,6 @@ def get_layout_from_task(task_id):
 
     """
 
-    measures = (evaluations.list_evaluation_measures())
     try:
         os.remove('cache/task'+str(task_id)+'.pkl')
     except OSError:
@@ -187,8 +186,7 @@ def get_layout_from_task(task_id):
             placeholder="Select an attribute",
             value=measures[0]
         )],
-        className="three columns",
-        style={'display': 'inline-block',
+        style={'width': '30%', 'display': 'inline-block',
                'position': 'relative'},
     )
     # Fetch more runs button
@@ -208,6 +206,7 @@ def get_layout_from_task(task_id):
         html.Div(children=[
             metric_dropdown,
             html.P(" "),
+            html.P(" "),
             html.H4('Evaluations:'),
             graph_evals,
             html.H4('People:'),
@@ -219,7 +218,8 @@ def get_layout_from_task(task_id):
         ]),
     ],
         className='container',
-        style={'overflowY': 'hidden'})
+        #style={'overflowY': 'hidden'}
+    )
 
     return layout
 
