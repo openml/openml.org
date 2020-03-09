@@ -1,19 +1,13 @@
-from flask import (
-    Blueprint,
-    # current_app,
-    # flash,
-    # redirect,
-    # render_template,
-    request,
-    # url_for,
-    jsonify,
-)
-from server.user.models import User
-from server.extensions import db
 import datetime
 import hashlib
-from server.utils import forgot_password_email, confirmation_email
+
+from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
+    Blueprint, jsonify, request)
 from flask_cors import CORS
+
+from server.extensions import db
+from server.user.models import User
+from server.utils import confirmation_email, forgot_password_email
 
 blueprint = Blueprint("public", __name__)
 

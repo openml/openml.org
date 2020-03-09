@@ -1,8 +1,9 @@
 import time
 
+import numpy as np
 import pandas as pd
 from openml import runs
-import numpy as np
+
 from .test_config import BASE_URL
 
 

@@ -1,12 +1,12 @@
 import os
-from flask_sqlalchemy import SQLAlchemy
-from flask_argon2 import Argon2
 
 import sqlalchemy
+from flask_argon2 import Argon2
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
 
 from server.config import Config
 

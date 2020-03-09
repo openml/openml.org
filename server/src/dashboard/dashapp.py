@@ -4,8 +4,8 @@ import shutil
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-
 from flask_caching import Cache
+
 from .callbacks import register_callbacks
 
 # TODO: Move to assets (Copied from Joaquin's react font)
