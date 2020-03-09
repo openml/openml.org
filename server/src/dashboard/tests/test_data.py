@@ -32,7 +32,7 @@ def test_metadata_table(dash_br):
 def test_distribution_loaded(dash_br):
     data_id = 50
     dash_br.server_url = f"{BASE_URL}data/{data_id}"
-    time.sleep(10)
+    time.sleep(20)
     distribution_plot = dash_br.find_element("#table-graph")
     fi = dash_br.find_element("#fi")
     assert "middle-middle-square" in fi.text
