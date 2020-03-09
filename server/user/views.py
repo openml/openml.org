@@ -33,6 +33,7 @@ def login():
     #     return jsonify({"msg": "user not confirmed yet"}), 200
     else:
         access_token = create_access_token(identity=user.email)
+        os.environ['TEST_ACCESS_TOKEN'] = access_token
         # timestamp = datetime.datetime.now()
         # timestamp1 = timestamp.strftime("%Y-%m-%d")
         # user.last_login = timestamp1

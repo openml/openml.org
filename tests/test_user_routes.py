@@ -46,6 +46,7 @@ def test_forgot_token(test_client, init_database):
                                 follow_redirects=True)
     assert response.status_code == 200
 
+
 def test_reset_password(test_client, init_database):
     user = User.query.filter_by(email='ss').first()
     url = '?token=' + str(user.forgotten_password_code)
@@ -53,4 +54,4 @@ def test_reset_password(test_client, init_database):
                                 follow_redirects=True)
     assert response.status_code == 200
 
-#TODO Tests: Profile changes, confirm user, 
+#TODO Tests: Profile changes, confirm user,
