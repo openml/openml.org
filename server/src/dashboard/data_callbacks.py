@@ -1,16 +1,20 @@
 import re
-import pandas as pd
-import numpy as np
-import plotly.graph_objs as go
-import plotly.express as px
-# from plotly.subplots import make_subplots
-from dash.dependencies import Input, Output, State
-import dash_html_components as html
 
 import dash_core_components as dcc
+import dash_html_components as html
+import numpy as np
+import pandas as pd
+import plotly.express as px
+
+# from plotly.subplots import make_subplots
+
+import plotly.graph_objs as go
+
+from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-from .helpers import get_data_metadata, logger, clean_dataset
+from .helpers import clean_dataset, get_data_metadata, logger
+
 TIMEOUT = 5*60
 
 

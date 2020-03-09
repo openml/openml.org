@@ -1,9 +1,10 @@
-from .src.dashboard.dashapp import create_dash_app
-from .extensions import argon2, engine, Base, db, jwt, bcrypt
-from server import user
-from server import public
-from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_dance.contrib.github import make_github_blueprint  # , github
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+from server import public, user
+
+from .extensions import Base, argon2, bcrypt, db, engine, jwt
+from .src.dashboard.dashapp import create_dash_app
 
 
 def register_extensions(app):

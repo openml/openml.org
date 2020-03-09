@@ -1,8 +1,10 @@
 import os
+
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
+
+from server.app import register_blueprints, register_extensions
 from server.config import Config
-from server.app import register_extensions, register_blueprints
 
 
 def create_app():
@@ -43,7 +45,6 @@ app = create_app()
 # if __name__ == '__main__':
 #     app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
 
-# TODO Unit testing
-# TODO Fnal testing
+
 # TODO Config management
 # TODO replace to production server
