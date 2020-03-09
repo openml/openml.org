@@ -1,6 +1,8 @@
-import pytest
-import sys
 import os
+import sys
+
+import pytest
+
 from autoapp import create_app
 from server.extensions import db
 

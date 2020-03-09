@@ -1,7 +1,9 @@
-from server.user.models import User
-import pytest
-from server.extensions import db
 import os
+
+import pytest
+
+from server.extensions import db
+from server.user.models import User
 
 
 @pytest.fixture(scope='module')

@@ -1,10 +1,9 @@
-import pandas as pd
-import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
+import pandas as pd
+import plotly.graph_objs as go
 from dash.dependencies import Input, Output
-
-from openml import runs, flows, datasets, tasks
+from openml import datasets, flows, runs, tasks
 from openml.extensions.sklearn import SklearnExtension
 
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
