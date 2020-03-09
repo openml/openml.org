@@ -1,7 +1,10 @@
-from server.user.models import User
-import pytest
-from server.extensions import db
 import os
+
+import pytest
+
+from server.extensions import db
+from server.user.models import User
+
 
 @pytest.fixture(scope='module')
 def test_user():
@@ -13,7 +16,7 @@ def test_user():
 
 
 def test_login(test_client, init_database):
-    response = test_client.post('/login', json={'email': 'ss', 'password':'ss'},
+    response = test_client.post('/login', json={'email': 'ss', 'password': 'ss'},
                                 follow_redirects=True)
     assert response.status_code == 200
 
@@ -30,6 +33,18 @@ def test_profile(test_client, init_database):
     assert User.query.filter_by(email='ss').first() == user
 
 
+def test_profile_changes(test_client, init_database):
+    access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    }
+    response = test_client.post('/profile', headers=headers, json={'bio': 'ss bio',
+                                                                   'first_name': 'ssd',
+                                                                   'last_name': 'sds'}
+                                )
+    assert response.status_code == 200
+
+
 def test_logout(test_client, init_database):
     access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
     headers = {
@@ -41,16 +56,17 @@ def test_logout(test_client, init_database):
 
 def test_forgot_token(test_client, init_database):
     user = User.query.filter_by(email='ss').first()
-    url = '?token='+str(user.forgotten_password_code)
-    response = test_client.post('/forgot-token', json={'url':url},
+    url = '?token=' + str(user.forgotten_password_code)
+    response = test_client.post('/forgot-token', json={'url': url},
                                 follow_redirects=True)
     assert response.status_code == 200
+
 
 def test_reset_password(test_client, init_database):
     user = User.query.filter_by(email='ss').first()
     url = '?token=' + str(user.forgotten_password_code)
-    response = test_client.post('/forgot-token', json={'url':url, 'password':'ss'},
+    response = test_client.post('/forgot-token', json={'url': url, 'password': 'ss'},
                                 follow_redirects=True)
     assert response.status_code == 200
 
-#TODO Tests: Profile changes, confirm user, 
+# TODO Tests: Profile changes, confirm user,

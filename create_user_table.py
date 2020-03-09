@@ -1,6 +1,7 @@
 # flake8: noqa
-import sqlite3
 import os
+import sqlite3
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 

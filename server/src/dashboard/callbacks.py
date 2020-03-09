@@ -1,17 +1,20 @@
 import re
-from dash.dependencies import Input, Output
-import dash_html_components as html
 
-from .layouts import get_layout_from_run, get_layout_from_data, get_layout_from_flow, \
-    get_layout_from_suite, get_run_overview, get_task_overview, get_layout_from_task, \
-    get_layout_from_study, get_layout_dataset_overview
-from .overviews import get_flow_overview, register_overview_callbacks
+import dash_html_components as html
+from dash.dependencies import Input, Output
+
 from .data_callbacks import register_data_callbacks
-from .task_callbacks import register_task_callbacks
 from .flow_callbacks import register_flow_callbacks
+from .layouts import (get_layout_dataset_overview, get_layout_from_data,
+                      get_layout_from_flow, get_layout_from_run,
+                      get_layout_from_study, get_layout_from_suite,
+                      get_layout_from_task, get_run_overview,
+                      get_task_overview)
+from .overviews import get_flow_overview, register_overview_callbacks
 from .run_callbacks import register_run_callbacks
 from .study_callbacks import register_study_callbacks
 from .suite_callbacks import register_suite_callbacks
+from .task_callbacks import register_task_callbacks
 
 TIMEOUT = 5*60  # 5 minutes
 

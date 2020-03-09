@@ -1,6 +1,7 @@
 import time
-from .test_config import BASE_URL
+
 from ..helpers import get_data_metadata
+from .test_config import BASE_URL
 
 
 def uncommon_string(s1, s2):

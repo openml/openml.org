@@ -1,13 +1,16 @@
-from flask import Blueprint, request, jsonify
-# redirect, url_for, send_from_directory
-from server.user.models import User
+import os
+from urllib.parse import parse_qs, urlparse
+
+from flask import Blueprint, jsonify, request
 from flask_cors import CORS
 # import datetime
-from flask_jwt_extended import (jwt_required, create_access_token,
-                                get_jwt_identity, get_raw_jwt)
+from flask_jwt_extended import (create_access_token, get_jwt_identity,
+                                get_raw_jwt, jwt_required)
+
 from server.extensions import db, jwt
-from urllib.parse import urlparse, parse_qs
-import os
+# redirect, url_for, send_from_directory
+from server.user.models import User
+
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
 CORS(user_blueprint)
@@ -33,6 +36,8 @@ def login():
     #     return jsonify({"msg": "user not confirmed yet"}), 200
     else:
         access_token = create_access_token(identity=user.email)
+        os.environ['TEST_ACCESS_TOKEN'] = access_token
+        print()
         # timestamp = datetime.datetime.now()
         # timestamp1 = timestamp.strftime("%Y-%m-%d")
         # user.last_login = timestamp1

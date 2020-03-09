@@ -1,13 +1,17 @@
 import re
-import pandas as pd
-from dash.dependencies import Input, Output
+
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
+import pandas as pd
 import plotly.graph_objs as go
-from .helpers import get_highest_rank, logger
-from openml.extensions.sklearn import SklearnExtension
+
+from dash.dependencies import Input, Output
+
 from openml import evaluations
+from openml.extensions.sklearn import SklearnExtension
+
+from .helpers import get_highest_rank, logger
 
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
         "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",

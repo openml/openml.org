@@ -1,17 +1,19 @@
-import plotly.graph_objs as go
-import plotly
-from dash.dependencies import Input, Output
-import dash_html_components as html
-import dash_core_components as dcc
-import pandas as pd
-import numpy as np
-from sklearn.metrics import precision_recall_curve, roc_curve
-from sklearn.preprocessing import label_binarize
-from scipy.io import arff
-# import arff
-import urllib.request
 import io
 import re
+# import arff
+import urllib.request
+
+import dash_core_components as dcc
+import dash_html_components as html
+import numpy as np
+import pandas as pd
+import plotly
+import plotly.graph_objs as go
+from dash.dependencies import Input, Output
+from scipy.io import arff
+from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.preprocessing import label_binarize
+
 TIMEOUT = 20
 
 

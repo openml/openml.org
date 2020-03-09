@@ -1,12 +1,12 @@
-from contextlib import contextmanager
-import time
-
-import pandas as pd
-from openml import datasets, runs
-import scipy.stats
-import numpy as np
-from sklearn.model_selection import train_test_split
 import logging
+import time
+from contextlib import contextmanager
+
+import numpy as np
+import pandas as pd
+import scipy.stats
+from openml import datasets, runs
+from sklearn.model_selection import train_test_split
 
 logger = logging.getLogger('dashboard')
 logger.setLevel(logging.DEBUG)
