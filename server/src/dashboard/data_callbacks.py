@@ -190,7 +190,7 @@ def register_data_callbacks(app, cache):
          ],
         [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
-    def feature_importance(url, tab3, rows):
+    def feature_importance(url, dataloaded, rows):
         data_id = int(re.search(r'data/(\d+)', url).group(1))
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')

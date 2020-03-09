@@ -207,6 +207,7 @@ def get_layout_from_task(task_id):
         hidden_div,
         html.Div(children=[
             metric_dropdown,
+            html.P(" "),
             html.H4('Evaluations:'),
             graph_evals,
             html.H4('People:'),
@@ -214,7 +215,7 @@ def get_layout_from_task(task_id):
             html.P(" "),
             html.P(" "),
             fetch_runs_button,
-            html.Div(id="tab3")
+            # html.Div(id="tab3")
         ]),
     ],
         className='container',
