@@ -243,7 +243,7 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=measures[0]
                 )],
-                className="two columns",
+                className="three columns",
                 style={'display': 'inline-block',
                        'position': 'relative'},
             )
@@ -303,7 +303,8 @@ def get_layout_from_flow(flow_id):
             dropdown_parameter,
             flow_graph])
     ], className='container',
-        style={'overflowY': 'hidden'})
+
+    )
 
     return layout
 
