@@ -1,7 +1,7 @@
 import time
 
-from ..helpers import get_data_metadata
 from .test_config import BASE_URL
+from ..helpers import get_metadata
 
 
 def uncommon_string(s1, s2):
@@ -20,7 +20,8 @@ def test_data_page_loading(dash_br):
 def test_metadata_table(dash_br):
     # Test if feature table is loaded correctly.
     data_id = 5
-    df, metadata, numerical_features, nominal_features = get_data_metadata(data_id)
+    metadata, data, _ = get_metadata(data_id)
+
     dash_br.server_url = f"{BASE_URL}data/{data_id}"
     time.sleep(5)
     feature_table = dash_br.find_element("#datatable")
