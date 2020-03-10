@@ -218,7 +218,7 @@ def get_layout_from_task(task_id):
         ]),
     ],
         className='container',
-        #style={'overflowY': 'hidden'}
+        # style={'overflowY': 'hidden'}
     )
 
     return layout
