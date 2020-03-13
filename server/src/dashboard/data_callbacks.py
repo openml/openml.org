@@ -13,9 +13,11 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
+from .dash_config import DASH_CACHING
 from .helpers import clean_dataset, get_data_metadata, logger
 
-TIMEOUT = 5*60
+
+TIMEOUT = 5*60 if DASH_CACHING else 1
 
 
 def register_data_callbacks(app, cache):
@@ -40,7 +42,7 @@ def register_data_callbacks(app, cache):
         logger.debug("Downloading data and calculate entropy")
         data_id = int(re.search(r'data/(\d+)', url).group(1))
         df, meta_features, numerical_data, nominal_data = get_data_metadata(data_id)
-        scatter_div = [html.Div([html.H2('Scatter plot'),
+        scatter_div = [html.Div([html.H3('Scatter plot'),
                                  html.Div(dcc.Dropdown(
                                      id='dropdown1',
                                      options=[
@@ -175,7 +177,8 @@ def register_data_callbacks(app, cache):
             col7 = dcc.Graph(figure=fig)
             children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
         out = html.Div(className="metric-rows",
-                       style={'overflowY': 'scroll', 'height': '600px'},
+                       style={'overflowY': 'scroll', 'height': '500px',
+                              'marginBottom': '50px'},
                        children=children)
         logger.debug("distribution plot created")
         return out
@@ -225,7 +228,8 @@ def register_data_callbacks(app, cache):
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
         layout = go.Layout(autosize=False,
-                           margin={'l': 100}, height=500, hovermode='closest')
+                           margin={'l': 100,
+                                   't': 0}, height=500, hovermode='closest')
         figure = go.Figure(data=[trace], layout=layout)
 
         fi.to_pickle('cache/fi' + str(data_id) + '.pkl')

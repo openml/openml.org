@@ -39,6 +39,7 @@ def get_layout_from_data(data_id):
                                  'maxWidth': '300px', "fontFamily": font,
                                  'textOverflow': 'ellipsis', "fontSize": 11},
                      style_table={'minHeight': '250px', 'maxHeight': '250px',
+                                  'marginBottom': '20px',
                                   'overflowY': 'scroll'},
                      page_action='none',
                      # Select special rows to highlight
@@ -82,10 +83,9 @@ def get_layout_from_data(data_id):
     #             id='distribution', style={'overflowY': 'scroll', 'width': '100%',
     #                                       'height': '400px'}))
     dist_plot = html.Div([
-        html.P(''),
-        html.P(''),
-        html.P('Choose if the color code is based on target or not',
-               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
+
+        html.P(['Choose if the color code is based on target or not'],
+               style={'text-align': 'left', 'color': 'gray'
                       }
                ),
         html.Div(
@@ -94,14 +94,15 @@ def get_layout_from_data(data_id):
                 options=[{'label': "Target based distribution", "value": "target"},
                          {'label': "Individual distribution", "value": "solo"}],
                 value="target",
-                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+                # labelStyle={'display': 'inline-block', 'text-align': 'justify',
+                #             "fontFamily": font}
 
             )),
         html.Div(
             dcc.RadioItems(
                 id='stack',
                 value='group',
-                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+                labelStyle={'display': 'inline-block', 'text-align': 'justify'}
             )),
         table_graph,
 
@@ -138,12 +139,13 @@ def get_layout_from_data(data_id):
     scatter_plot = html.Div(id="scatterdiv")
     # Define layout using components
     layout = html.Div(children=[
-        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
+        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
         html.P('Choose one or more attributes for distribution plot (first 1k attributes listed)',
                style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
                       }),
 
         feature_table,
+        html.H3('Distribution plot'),
         dist_plot,
         feature_importance,
         feature_interaction,
@@ -344,7 +346,7 @@ def get_layout_from_run(run_id):
                    },
                    id='runtable'
                ), className="five columns", style={'display': 'inline-block',
-                                                   'position': 'relative'}
+                                                   }
            )
 
     # Distribution plot

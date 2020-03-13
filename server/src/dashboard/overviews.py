@@ -6,10 +6,14 @@ from dash.dependencies import Input, Output
 from openml import datasets, flows, runs, tasks
 from openml.extensions.sklearn import SklearnExtension
 
+from .dash_config import DASH_CACHING
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
+
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
         "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol"]
-TIMEOUT = 5*60
+
 
 
 def get_flow_overview():
