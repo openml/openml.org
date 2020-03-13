@@ -2,7 +2,7 @@ import time
 
 from openml import evaluations
 
-from .test_config import BASE_URL
+from server.src.dashboard.dash_config import BASE_URL
 
 # def test_flow_page_loading(dash_br):
 #     dash_br.server_url = BASE_URL + 'flow/405'

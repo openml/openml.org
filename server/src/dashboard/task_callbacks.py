@@ -18,7 +18,10 @@ font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
         "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
-TIMEOUT = 5*60
+from .dash_config import DASH_CACHING
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
+
 
 
 def register_task_callbacks(app, cache):
