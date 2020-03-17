@@ -1,7 +1,7 @@
 import time
 
-from .test_config import BASE_URL
 from ..helpers import get_metadata
+from server.src.dashboard.dash_config import BASE_URL
 
 
 def uncommon_string(s1, s2):
@@ -42,7 +42,7 @@ def test_distribution_loaded(dash_br):
 def test_scatter_plots(dash_br):
     data_id = 5
     dash_br.server_url = f"{BASE_URL}data/{data_id}"
-    time.sleep(20)
+    time.sleep(30)
     scatter_matrix = dash_br.find_element("#matrix")
     scatter_plot = dash_br.find_element("#scatter_plot")
     assert scatter_matrix.text is not None

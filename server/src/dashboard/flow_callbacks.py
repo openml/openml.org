@@ -5,7 +5,9 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 from openml import evaluations, tasks
 
-TIMEOUT = 5*60
+from .dash_config import DASH_CACHING
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
 
 
 def register_flow_callbacks(app, cache):
