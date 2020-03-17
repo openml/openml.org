@@ -20,7 +20,8 @@ const Cover = async(() => import("../pages/cover/Cover"));
 // Auth components
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
-const Profile = async(() => import("../pages/auth/Profile"));
+const EditProfile = async(() => import("../pages/auth/Profile"));
+const ProfilePage = async(() => import("../pages/auth/ProfilePage"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const ResetPage = async(() => import("../pages/auth/ResetPage"));
 const ConfirmPage = async(() => import("../pages/auth/ConfirmPage"));
@@ -143,8 +144,19 @@ const peopleRoutes = {
 const profileRoutes = {
   id: "Profile",
   path: "/auth/profile",
-  icon: <GreenMenuIcon icon="user" fixedWidth />,
-  component: Profile
+  children: [
+    {
+      path: "/auth/profile-page",
+      name: "User Profile",
+      component: ProfilePage
+    },
+    {
+      path: "/auth/edit-profile",
+      name: "Edit Profile",
+      component: EditProfile
+    }
+    ]
+
 };
 
 const coverRoutes = {
