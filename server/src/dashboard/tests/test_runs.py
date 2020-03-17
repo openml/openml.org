@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from openml import runs
 
-from .test_config import BASE_URL
+from server.src.dashboard.dash_config import BASE_URL
 
 
 def uncommon_string(s1, s2):
