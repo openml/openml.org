@@ -82,11 +82,14 @@ def logout():
 def apikey():
     current_user = get_jwt_identity()
     user = db.session.query(User).filter(User.email == current_user).first()
-    if request.method=='GET':
+    if request.method == 'GET':
         api_key = user.session_hash
-        return jsonify({'apikey':api_key})
-    else:
-        return 'lol'
+        return jsonify({'apikey': api_key}), 200
+    elif request.method == 'POST':
+        user.set_session_hash()
+        db.session.merge(user)
+        db.session.commit()
+        return jsonify({"msg": "API Key updated"}), 200
 
 
 @user_blueprint.route('/delete', methods=['GET', 'POST'])
@@ -128,7 +131,7 @@ def reset():
     return jsonify({"msg": "password changed"}), 200
 
 
-@user_blueprint.route('/confirmation',  methods=['POST'])
+@user_blueprint.route('/confirmation', methods=['POST'])
 def confirm_user():
     print('confirmation linke')
     data = request.get_json()
