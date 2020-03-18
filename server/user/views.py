@@ -56,12 +56,13 @@ def profile():
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
         return jsonify({"username": user.username, "bio": user.bio, "first_name": user.first_name,
-                        "last_name": user.last_name, "email": user.email}), 200
+                        "last_name": user.last_name, "email": user.email, "image": user.image}), 200
     elif request.method == "POST":
         data = request.get_json()
         user.update_bio(data['bio'])
         user.update_first_name(data['first_name'])
         user.update_last_name(data['last_name'])
+        user.set_image(data['image'])
         db.session.merge(user)
         db.session.commit()
         return jsonify({"msg": "User information changed"}), 200
