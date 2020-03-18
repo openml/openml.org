@@ -32,7 +32,7 @@ def login():
         print("error")
         return jsonify({"msg": "Error"}), 401
 
-    elif user.active is 0:
+    elif user.active == 0:
         print("User not confirmed")
         return jsonify({"msg": "NotConfirmed"}), 200
 
