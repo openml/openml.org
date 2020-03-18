@@ -48,7 +48,7 @@ function APIKey() {
         event.preventDefault();
         const data = new FormData(event.target);
         axios
-            .post(process.env.REACT_APP_SERVER_URL + "reset-api-key", {
+            .post(process.env.REACT_APP_SERVER_URL + "api-key", {
                 resetapikey:true
             }, yourConfig)
             .then(function (response) {

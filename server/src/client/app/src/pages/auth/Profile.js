@@ -44,6 +44,7 @@ function Public() {
   const [bio, setBio] = useState(false);
   const [fname, setFname] = useState(false);
   const [lname, setLname] = useState(false);
+  const [image, setImage] = useState(false);
 
   const yourConfig = {
     headers: {
@@ -58,6 +59,7 @@ function Public() {
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
+        setImage(response.data.image);
         console.log(user);
 
       })
@@ -67,11 +69,13 @@ function Public() {
     function profiletoflask(event) {
     event.preventDefault();
     const data = new FormData(event.target);
+    console.log(event.target.image.value);
     axios
       .post(process.env.REACT_APP_SERVER_URL+"profile", {
         bio: event.target.biography.value,
         first_name: event.target.firstname.value,
         last_name: event.target.lastname.value,
+        image:event.target.image.value,
 
 
       }, yourConfig)
@@ -145,11 +149,11 @@ function Public() {
               <input
                 accept="image/*"
                 style={{ display: "none" }}
-                id="raised-button-file"
+                id="image"
                 multiple
                 type="file"
               />
-              <label htmlFor="raised-button-file">
+              <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">
                   <FAIcon icon="cloud-upload-alt" mr={2} /> Upload
                 </Button>
