@@ -120,7 +120,7 @@ function SignIn() {
           No account? Join OpenML
         </Button>
         {logger ? (
-          <Redirect to="/auth/profile" />
+          <Redirect to="/auth/profile-page" />
         ) : (
           <Redirect to="/auth/sign-in" />
         )}
