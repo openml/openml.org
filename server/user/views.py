@@ -3,12 +3,11 @@ from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request
 from flask_cors import CORS
-# import datetime
+
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
 
 from server.extensions import db, jwt
-# redirect, url_for, send_from_directory
 from server.user.models import User
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
@@ -28,12 +27,15 @@ def check_if_token_in_blacklist(decrypted_token):
 def login():
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
+    print(user.active)
     if user is None or not user.check_password(jobj['password']):
         print("error")
         return jsonify({"msg": "Error"}), 401
 
-    # elif user.active=='0':
-    #     return jsonify({"msg": "user not confirmed yet"}), 200
+    elif user.active is 0:
+        print("User not confirmed")
+        return jsonify({"msg": "NotConfirmed"}), 200
+
     else:
         access_token = create_access_token(identity=user.email)
         os.environ['TEST_ACCESS_TOKEN'] = access_token
@@ -73,6 +75,18 @@ def logout():
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
     return jsonify({"msg": "Successfully logged out"}), 200
+
+
+@user_blueprint.route('/api-key', methods=['POST', 'GET'])
+@jwt_required
+def apikey():
+    current_user = get_jwt_identity()
+    user = db.session.query(User).filter(User.email == current_user).first()
+    if request.method=='GET':
+        api_key = user.session_hash
+        return jsonify({'apikey':api_key})
+    else:
+        return 'lol'
 
 
 @user_blueprint.route('/delete', methods=['GET', 'POST'])
