@@ -61,6 +61,13 @@ def test_scatter_plots(dash_br):
 
 def test_data_overviews(dash_br):
     dash_br.server_url = f"{BASE_URL}data/"
-    print(dash_br.get_logs())
-    pie_chart = dash_br.find_element('#data_overview')
-    print(pie_chart.text)
+    assert dash_br.get_logs() == []
+    time.sleep(20)
+    pie_chart = dash_br.find_element('#fig1')
+    assert "mixed" in pie_chart.text
+    violin = dash_br.find_element('#fig2')
+    assert violin.text is not None
+    instances = dash_br.find_element('#fig3')
+    assert('0' in instances.text.splitlines())
+    features = dash_br.find_element('#fig4')
+    assert('1 - 500' in features.text.splitlines())

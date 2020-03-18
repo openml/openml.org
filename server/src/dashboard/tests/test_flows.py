@@ -49,3 +49,11 @@ def test_flow_dropdowns(dash_br):
 #             ids.append(id)
 #     np.save('flow_ids.npy', np.asarray(ids))
 #
+
+def test_flow_overviews(dash_br):
+    dash_br.server_url = f"{BASE_URL}flow/"
+    time.sleep(10)
+    assert dash_br.get_logs() == []
+    flow_chart = dash_br.find_element('#flow_ovplot')
+    assert flow_chart.text is not None
+    assert "sklearn" in flow_chart.text
