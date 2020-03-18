@@ -25,6 +25,7 @@ const ProfilePage = async(() => import("../pages/auth/ProfilePage"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const ResetPage = async(() => import("../pages/auth/ResetPage"));
 const ConfirmPage = async(() => import("../pages/auth/ConfirmPage"));
+const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
 
@@ -154,6 +155,11 @@ const profileRoutes = {
       path: "/auth/edit-profile",
       name: "Edit Profile",
       component: EditProfile
+    },
+    {
+      path: "/auth/api-key",
+      name: "API-Key",
+      component: APIPage
     }
     ]
 
