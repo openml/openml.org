@@ -12,16 +12,13 @@ from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
 
 from .helpers import get_highest_rank
-
+from .dash_config import DASH_CACHING
 font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
         "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
-from .dash_config import DASH_CACHING
-
 TIMEOUT = 5*60 if DASH_CACHING else 0
-
 
 
 def register_task_callbacks(app, cache):

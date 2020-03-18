@@ -15,7 +15,6 @@ font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
         "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
-
 def get_flow_overview():
     """
 
