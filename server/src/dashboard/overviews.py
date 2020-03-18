@@ -42,7 +42,7 @@ def get_flow_overview():
                       title="", width=900,
                       height=700),
 
-    return html.Div(dcc.Graph(figure=fig))
+    return html.Div(dcc.Graph(figure=fig, id='flow_ovplot'))
 
 
 def register_overview_callbacks(app, cache):
@@ -161,7 +161,8 @@ def register_overview_callbacks(app, cache):
         fig.update_layout(width=900, yaxis=dict(
             title='Percentage(%)'))
 
-        return html.Div([html.P("Types of runs on OpenML"), dcc.Graph(figure=fig)]), "done"
+        return html.Div([html.P("Types of runs on OpenML"),
+                         dcc.Graph(figure=fig, id="run_ovplt")]), "done"
 
     @app.callback([Output('task_overview', 'children'),
                    Output('tloader', 'children')],
@@ -194,6 +195,6 @@ def register_overview_callbacks(app, cache):
         fig2.update_layout(bargap=0.4, width=900, height=400)
         fig2.update_xaxes(tickfont=dict(size=10), categoryorder='total descending')
         return html.Div([html.P(title[0]),
-                         dcc.Graph(figure=fig1),
+                         dcc.Graph(figure=fig1, id='task_type'),
                          html.P(title[1]),
-                         dcc.Graph(figure=fig2)]), "done"
+                         dcc.Graph(figure=fig2, id='ep')]), "done"
