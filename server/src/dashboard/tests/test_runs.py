@@ -71,3 +71,11 @@ def test_run_graph_elements(dash_br):
 #         if dash_br.get_logs() != []:
 #             ids.append(id)
 #     np.save('run_ids.npy', np.asarray(ids))
+
+
+def test_run_overviews(dash_br):
+    dash_br.server_url = f"{BASE_URL}run/"
+    time.sleep(10)
+    assert dash_br.get_logs() == []
+    run_chart = dash_br.find_element('#run_overview')
+    assert ('Clustering' in run_chart.text)
