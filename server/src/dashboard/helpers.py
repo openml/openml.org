@@ -85,41 +85,42 @@ def get_data_metadata(data_id):
     df = pd.DataFrame(x, columns=attribute_names)
     if x.shape[0] < 50000:
         df.to_pickle('cache/df'+str(data_id)+'.pkl')
-
-    # create a subsample of data for large datasets
-    try:
-        target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
-    except IndexError:
-        target_attribute = None
-        pass
-
-    if x.shape[0] >= 50000 and target_attribute:
-        df = clean_dataset(df)
-        if x.shape[0] < 100000:
-            sample_size = 0.5
-        elif 100000 <= x.shape[0] < 500000:
-            sample_size = 0.25
-        elif 500000 <= x.shape[0] < 1e6:
-            sample_size = 0.1
-        else:
-            sample_size = 0.05
-        x = df.drop(target_attribute, axis=1)
-        y = df[target_attribute]
+    else:
+        # create a subsample of data for large datasets
         try:
-            X_train, X_test, y_train, y_test = train_test_split(x, y,
-                                                                stratify=y,
-                                                                test_size=sample_size)
-        except ValueError:
-            X_train, X_test, y_train, y_test = train_test_split(x, y,
-                                                                stratify=None,
-                                                                test_size=sample_size)
+            target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
+        except IndexError:
+            target_attribute = None
+            pass
 
-        x = X_test
-        x[target_attribute] = y_test
-        df = pd.DataFrame(x, columns=attribute_names)
-        df.to_pickle('cache/df' + str(data_id) + '.pkl')
+        if x.shape[0] >= 50000 and target_attribute:
+            df = clean_dataset(df)
+            if x.shape[0] < 100000:
+                sample_size = 0.5
+            elif 100000 <= x.shape[0] < 500000:
+                sample_size = 0.25
+            elif 500000 <= x.shape[0] < 1e6:
+                sample_size = 0.1
+            else:
+                sample_size = 0.05
+            x = df.drop(target_attribute, axis=1)
+            y = df[target_attribute]
+            try:
+                X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                                    stratify=y,
+                                                                    test_size=sample_size)
+            except ValueError:
+                X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                                    stratify=None,
+                                                                    test_size=sample_size)
 
-    df.to_pickle('cache/df' + str(data_id) + '.pkl')
+            x = X_test
+            x[target_attribute] = y_test
+            df = pd.DataFrame(x, columns=attribute_names)
+            df.to_pickle('cache/df' + str(data_id) + '.pkl')
+        else:
+            df.to_pickle('cache/df' + str(data_id) + '.pkl')
+
     meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
@@ -195,3 +196,14 @@ def print_duration(name: str):
     start = time.time()
     yield
     print(f'{name}: {time.time() - start:.3f}s')
+
+
+def bin_numeric(df, column_name, output_name):
+    df[output_name] = pd.cut(df[column_name], 1000).astype(str)
+    cat = df[output_name].str.extract(r'\((.*),', expand=False).astype(float)
+    df['bin'] = pd.Series(cat)
+    df.sort_values(by='bin', inplace=True)
+    df[output_name] = df[output_name].str.replace(',', ' -')
+    df[output_name] = df[output_name].str.replace('(', "")
+    df[output_name] = df[output_name].str.replace(']', "")
+    return df
