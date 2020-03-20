@@ -14,7 +14,7 @@ from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .dash_config import DASH_CACHING
-from .helpers import clean_dataset, get_data_metadata, logger
+from .helpers import clean_dataset, get_data_metadata, logger, bin_numeric
 
 
 TIMEOUT = 5*60 if DASH_CACHING else 1
@@ -466,32 +466,30 @@ def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
 
 
 def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df):
+
+    # Extract target name and type
     try:
         target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
         target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
     except IndexError:
         radio_value = "solo"
 
+    # If we need color code by target
     if radio_value == "target":
         # Bin numeric target
         df.sort_values(by=target, inplace=True)
         if target_type == "numeric":
-            df[target] = pd.cut(df[target], 1000).astype(str)
-            cat = df[target].str.extract(r'\((.*),', expand=False).astype(float)
-            df['bin'] = pd.Series(cat)
-            df.sort_values(by='bin', inplace=True)
+            df = bin_numeric(df, target, "target")
         else:
-            df.sort_values(by=target, inplace=True)
-            df[target] = df[target].astype(str)
-        target_vals = list(df[target].unique())
+            df["target"] = df["target"].astype(str)
 
-    if radio_value == "target":
-        N = len(df[target].unique())
-        color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
-
+    # Attribute types
     if type == "numeric":
         if radio_value == "target":
-            data = [go.Histogram(x=sorted(sorted(df[attribute][df[target] == target_vals[i]])),
+            target_vals = list(df["target"].unique())
+            N = len(df["target"].unique())
+            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+            data = [go.Histogram(x=df[attribute][df["target"] == target_vals[i]],
                                  name=str(target_vals[i]),
                                  nbinsx=20, histfunc="count", showlegend=show_legend,
                                  marker=dict(color=color[i],
@@ -525,9 +523,13 @@ def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df
                 "opacity": 0.6,
                 # "x0": attribute
             }]
+    # If given attribute is nominal
     else:
         if radio_value == "target":
-            data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]),
+            target_vals = list(df["target"].unique())
+            N = len(df["target"].unique())
+            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+            data = [go.Histogram(x=(df[attribute][df["target"] == target_vals[i]]),
                                  name=str(target_vals[i]),
                                  showlegend=show_legend,
                                  marker=dict(color=color[i],
