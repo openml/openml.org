@@ -3,9 +3,6 @@ import time
 from ..helpers import get_metadata
 from server.src.dashboard.dash_config import BASE_URL
 
-from openml import datasets
-import pandas as pd
-
 
 def uncommon_string(s1, s2):
     lst = list(set(s1) & set(s2))
@@ -51,7 +48,7 @@ def test_scatter_plots(dash_br):
     assert scatter_matrix.text is not None
     assert scatter_plot.text is not None
 
-#
+
 # def test_catch_errors_in_datasets(dash_br):
 #     df = datasets.list_datasets(output_format='dataframe')
 #     ids = []

@@ -88,12 +88,12 @@ def get_data_metadata(data_id):
     else:
         # create a subsample of data for large datasets
         try:
-            target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
+            target_feat = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
         except IndexError:
-            target_attribute = None
+            target_feat = None
             pass
 
-        if x.shape[0] >= 50000 and target_attribute:
+        if x.shape[0] >= 50000 and target_feat:
             df = clean_dataset(df)
             if x.shape[0] < 100000:
                 sample_size = 0.5
@@ -103,8 +103,8 @@ def get_data_metadata(data_id):
                 sample_size = 0.1
             else:
                 sample_size = 0.05
-            x = df.drop(target_attribute, axis=1)
-            y = df[target_attribute]
+            x = df.drop(target_feat, axis=1)
+            y = df[target_feat]
             try:
                 X_train, X_test, y_train, y_test = train_test_split(x, y,
                                                                     stratify=y,
@@ -115,7 +115,7 @@ def get_data_metadata(data_id):
                                                                     test_size=sample_size)
 
             x = X_test
-            x[target_attribute] = y_test
+            x[target_feat] = y_test
             df = pd.DataFrame(x, columns=attribute_names)
             df.to_pickle('cache/df' + str(data_id) + '.pkl')
         else:
