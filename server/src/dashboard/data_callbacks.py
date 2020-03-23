@@ -432,7 +432,7 @@ def generate_metric_row(col1, col2):
         children=[
             html.Div(className="three columns",
                      children=col1),
-              html.Div(
+            html.Div(
 
                 style={"height": "50%"},
                 className="nine columns",
