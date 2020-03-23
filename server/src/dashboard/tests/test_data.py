@@ -6,6 +6,7 @@ from server.src.dashboard.dash_config import BASE_URL
 from openml import datasets
 import pandas as pd
 
+
 def uncommon_string(s1, s2):
     lst = list(set(s1) & set(s2))
     finallist = [i for i in s1 if i not in lst] + [i for i in s2 if i not in lst]
@@ -50,16 +51,17 @@ def test_scatter_plots(dash_br):
     assert scatter_matrix.text is not None
     assert scatter_plot.text is not None
 
-
-def test_catch_errors_in_datasets(dash_br):
-    df = datasets.list_datasets(output_format='dataframe')
-    ids = []
-    for id in df['did'].values[:100]:
-        dash_br.server_url = BASE_URL + 'data/'+ str(id)
-        time.sleep(30)
-        if dash_br.get_logs() != []:
-            ids.append(id)
-    pd.DataFrame(ids).to_csv('ids100.csv')
+#
+# def test_catch_errors_in_datasets(dash_br):
+#     df = datasets.list_datasets(output_format='dataframe')
+#     ids = []
+#     for id in df['did'].values[:100]:
+#         dash_br.server_url = BASE_URL + 'data/' + str(id)
+#         time.sleep(30)
+#         logs = dash_br.get_logs()
+#         if logs and '"ax.dtick error: NaN"' not in logs[0]["message"]:
+#             ids.append(id)
+#     pd.DataFrame(ids).to_csv('ids100.csv')
 
 
 def test_data_overviews(dash_br):
