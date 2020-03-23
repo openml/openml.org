@@ -6,5 +6,5 @@ df = datasets.list_datasets(output_format='dataframe')
 for data_id in df['did']:
     try:
         datasets.get_dataset(data_id)
-    except:
+    except FileNotFoundError:
         pass
