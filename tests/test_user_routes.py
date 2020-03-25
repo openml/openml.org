@@ -15,6 +15,14 @@ def test_user():
     yield db
 
 
+def test_confirm_user(test_client, init_database):
+    user = User.query.filter_by(email='ss').first()
+    url = '?token=' + str(user.activation_code)
+    response = test_client.post('/confirmation', json={'url': url, 'password': 'ss'},
+                                follow_redirects=True)
+    assert response.status_code == 200
+
+
 def test_login(test_client, init_database):
     response = test_client.post('/login', json={'email': 'ss', 'password': 'ss'},
                                 follow_redirects=True)
@@ -69,4 +77,7 @@ def test_reset_password(test_client, init_database):
                                 follow_redirects=True)
     assert response.status_code == 200
 
-# TODO Tests: Profile changes, confirm user,
+# TODO Tests: confirm user,
+
+
+

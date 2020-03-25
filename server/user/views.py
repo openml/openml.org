@@ -112,7 +112,6 @@ def forgot_token():
     print(token)
     user = User.query.filter_by(forgotten_password_code=token).first()
     if user is not None:
-        print('confirmed')
         return jsonify({"msg": "token confirmed"}), 200
     else:
         return jsonify({"msg": "Error"}), 401
