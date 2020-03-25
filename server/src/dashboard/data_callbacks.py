@@ -14,7 +14,7 @@ from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 from .dash_config import DASH_CACHING
-from .helpers import clean_dataset, get_data_metadata, logger
+from .helpers import clean_dataset, get_data_metadata, logger, bin_numeric
 
 
 TIMEOUT = 5*60 if DASH_CACHING else 1
@@ -72,6 +72,7 @@ def register_data_callbacks(app, cache):
                        ]if len(numerical_data) > 1 and nominal_data else html.Div(
             id='Scatter Plot',
             children=[html.Div(html.P('No numerical-nominal combination found'))])
+
         logger.debug("Downloaded data and calculated entropy")
         return scatter_div, "loaded", meta_features.to_dict('records'), existing_columns
 
@@ -136,46 +137,41 @@ def register_data_callbacks(app, cache):
          ])
     @cache.memoize(timeout=TIMEOUT)
     def plot_table(rows, selected_row_indices, url, radio, stack, dataloaded):
+        # If dataset is not downloaded yet
         if dataloaded is None:
             return []
-        logger.debug("loading pickle to create dist plot")
-        data_id = int(re.search(r'data/(\d+)', url).group(1))
 
+        logger.debug("loading pickle to create dist plot")
+
+        # If pickle file is present
+        data_id = int(re.search(r'data/(\d+)', url).group(1))
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
             return []
+
+        # Get selected rows from table
         meta_data = pd.DataFrame(rows)
         if len(selected_row_indices) != 0:
             meta_data = meta_data.loc[selected_row_indices]
         else:
             return "no selected rows"
+
+        # Create distribution plots and align them as a table graph
         children = []
-        # children.append(generate_metric_row(html.H4("Attribute"),
-        #                                     html.H4("DataType"),
-        #                                     html.H4("Missing values"),
-        #                                     html.H4("Categories"),
-        #                                     html.H4("Target"),
-        #                                     html.H4("Entropy"),
-        #                                     html.H4("Plot")))
         for index, row in meta_data.iterrows():
             attribute = row["Attribute"]
             col1 = html.P(row["Attribute"])
-            col2 = html.P(row["DataType"])
-            col3 = html.P(row["Missing values"])
-            col4 = html.P(row["# categories"])
-            col5 = html.P(row["Target"])
-            col6 = html.P(row["Target"])
             show_legend = True if index == 0 else False
             data = dist_plot(meta_data, attribute, row["DataType"], radio,
                              data_id, show_legend, df)
             fig = go.Figure(data=data)
             fig['layout'].update(hovermode='closest', height=300,
                                  barmode=stack,
-                                 # margin={'b': 100},
                                  font=dict(size=9))
-            col7 = dcc.Graph(figure=fig)
-            children.append(generate_metric_row(col1, col2, col3, col4, col5, col6, col7))
+            col2 = dcc.Graph(figure=fig)
+            children.append(generate_metric_row(col1, col2))
+
         out = html.Div(className="metric-rows",
                        style={'overflowY': 'scroll', 'height': '500px',
                               'marginBottom': '50px'},
@@ -186,7 +182,6 @@ def register_data_callbacks(app, cache):
     @app.callback(
         [Output('fi', 'children'),
          Output('hidden', 'value')],
-
         [
          Input('url', 'pathname'),
          Input('dataloaded', 'value')
@@ -194,11 +189,18 @@ def register_data_callbacks(app, cache):
         [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
     def feature_importance(url, dataloaded, rows):
+        # If dataset is not loaded
+        if dataloaded is None:
+            return [], "No file"
+
+        # Get dataset if pickle exists
         data_id = int(re.search(r'data/(\d+)', url).group(1))
         try:
             df = pd.read_pickle('cache/df'+str(data_id)+'.pkl')
         except OSError:
             return [], "No file"
+
+        # Get table of metadata
         meta_data = pd.DataFrame(rows)
         try:
             target_attribute = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
@@ -207,7 +209,6 @@ def register_data_callbacks(app, cache):
             return "No target found", "No target found"
 
         # Feature importance bar plot
-
         from category_encoders.target_encoder import TargetEncoder
         x = df.drop(target_attribute, axis=1)
         y = df[target_attribute]
@@ -224,6 +225,7 @@ def register_data_callbacks(app, cache):
             x = te.fit_transform(x, y)
             rf = RandomForestRegressor(n_estimators=10, n_jobs=-1)
             rf.fit(x, y)
+
         fi = pd.DataFrame(rf.feature_importances_, index=x.columns, columns=['importance'])
         fi = fi.sort_values('importance', ascending=False).reset_index()
         trace = go.Bar(y=fi['index'], x=fi['importance'], name='fi', orientation='h')
@@ -241,46 +243,48 @@ def register_data_callbacks(app, cache):
         [Input('radio', 'value'),
          Input('url', 'pathname'),
          Input('hidden', 'value')
-         ], [State('datatable', 'data')])
+         ],
+        [State('datatable', 'data')])
     @cache.memoize(timeout=TIMEOUT)
-    def feature_interactions(radio, url, dummy, rows):
+    def feature_interactions(radio, url, feat_importance, rows):
         data_id = int(re.search(r'data/(\d+)', url).group(1))
-        if dummy == "done":
+        if feat_importance == "done":
             df = pd.read_pickle('cache/df' + str(data_id) + '.pkl')
             fi = pd.read_pickle('cache/fi' + str(data_id) + '.pkl')
         else:
             return []
+
+        # Get meta data
         meta_data = pd.DataFrame(rows)
         try:
             target_attribute = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
             target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
         except IndexError:
             return "No target found", "No target found"
+
         if target_type == "nominal" or target_type == "string":
             y = pd.Categorical(df[target_attribute]).codes
         else:
             y = df[target_attribute]
         # Feature interaction plots
         df = clean_dataset(df)
+
+        # Extract top nominal, top numeric features
         numerical_features = list(meta_data["Attribute"][meta_data["DataType"] == "numeric"])
         nominal_features = list(meta_data["Attribute"][meta_data["DataType"] == "nominal"])
         top_numericals = (fi['index'][fi['index'].isin(numerical_features)][:4])
         top_nominals = (fi['index'][fi['index'].isin(nominal_features)][:4])
         df['target'] = df[target_attribute]
-        # C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
-        #      'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)'
-        #      ]
+
+        # Bin numeric target
         if target_type == "numeric":
             # cmap_type = 'seq'
-            df['target'] = y
-            df['target'] = pd.cut(df['target'], 1000).astype(str)
-            cat = df['target'].str.extract(r'\((.*),', expand=False).astype(float)
-            df['bin'] = pd.Series(cat)
-            df.sort_values(by='bin', inplace=True)
+            df['target_var'] = y
+            df = bin_numeric(df, 'target_var', 'target')
             df.drop('bin', axis=1, inplace=True)
+            df.drop('target_var', axis=1)
         else:
             # cmap_type = 'cat'
-            # N = len(df['target'].unique())
             try:
                 df['target'] = df['target'].astype(int)
             except ValueError:
@@ -288,13 +292,16 @@ def register_data_callbacks(app, cache):
             df.sort_values(by='target', inplace=True)
             df['target'] = df['target'].astype(str)
 
+        # Radio - Display top features
         if radio == "top":
             top_features = df[fi['index'][0:4].values]
             top_features['target'] = df['target']
 
             if len(top_numericals):
                 px_mat = px.scatter_matrix(top_features, color='target', height=800)
-                #
+                # C = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)',
+                # 'rgb(51,160,44)', 'rgb(251,154,153)', 'rgb(227,26,28)']
+                # N = len(df['target'].unique())
                 # matrix = ff.create_scatterplotmatrix(top_features, diag='box',
                 #                                      index='target',
                 #                                      title="",
@@ -321,7 +328,7 @@ def register_data_callbacks(app, cache):
 
                 fig = go.Figure(data=parcats, layout=layout)
                 graph = dcc.Graph(figure=fig)
-        elif radio == "numeric":
+        elif radio == "numeric":  # Top numeric features
             if len(top_numericals):
                 df_num = df[top_numericals]
                 df_num['target'] = df['target']
@@ -419,79 +426,46 @@ def register_data_callbacks(app, cache):
             return []
 
 
-def generate_metric_row(col1, col2, col3, col4, col5, col6, col7):
+def generate_metric_row(col1, col2):
     return html.Div(
         className="row metric-row",
         children=[
             html.Div(className="three columns",
-                     # style={"margin-right": "2.5rem",
-                     #        "minWidth": "10px"},
                      children=col1),
-            # html.Div(
-            #
-            #     style={"margin-right": "2.5rem", "minWidth": "50px",
-            #            "width": "4.66666666667%"},
-            #     children=col2,
-            # ),
-            # html.Div(
-            #
-            #     style={"margin-right": "2.5rem", "minWidth": "50px",
-            #            "width": "4.66666666667%"},
-            #     children=col3,
-            # ),
-            # html.Div(
-            #
-            #     style={"margin-right": "2.5rem", "minWidth": "50px",
-            #            "width": "4.66666666667%"},
-            #     children=col4,
-            # ),
-            # html.Div(
-            #
-            #     style={"margin-right": "2.5rem", "minWidth": "50px",
-            #            "width": "4.66666666667%"},
-            #     children=col5,
-            # ),
-            # html.Div(
-            #     className="one column",
-            #
-            #     style={"margin-right": "2.5rem", "minWidth": "50px"},
-            #     children=col6,
-            # ),
             html.Div(
 
                 style={"height": "50%"},
                 className="nine columns",
-                children=col7,
+                children=col2,
             )])
 
 
 def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df):
+
+    # Extract target name and type
     try:
         target = meta_data[meta_data["Target"] == "true"]["Attribute"].values[0]
         target_type = (meta_data[meta_data["Target"] == "true"]["DataType"].values[0])
     except IndexError:
         radio_value = "solo"
 
+    # If we need color code by target
     if radio_value == "target":
         # Bin numeric target
         df.sort_values(by=target, inplace=True)
         if target_type == "numeric":
-            df[target] = pd.cut(df[target], 1000).astype(str)
-            cat = df[target].str.extract(r'\((.*),', expand=False).astype(float)
-            df['bin'] = pd.Series(cat)
-            df.sort_values(by='bin', inplace=True)
+            df = bin_numeric(df, target, "target")
         else:
-            df.sort_values(by=target, inplace=True)
-            df[target] = df[target].astype(str)
-        target_vals = list(df[target].unique())
+            df["target"] = df[target]
+            df["target"] = df["target"].astype(str)
 
-    if radio_value == "target":
-        N = len(df[target].unique())
-        color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
-
+    # Attribute types
     if type == "numeric":
         if radio_value == "target":
-            data = [go.Histogram(x=sorted(sorted(df[attribute][df[target] == target_vals[i]])),
+            target_vals = list(df["target"].unique())
+            N = len(df["target"].unique())
+            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+            data = [go.Histogram(x=df[attribute][df["target"] == target_vals[i]],
                                  name=str(target_vals[i]),
                                  nbinsx=20, histfunc="count", showlegend=show_legend,
                                  marker=dict(color=color[i],
@@ -525,9 +499,13 @@ def dist_plot(meta_data, attribute, type,  radio_value, data_id, show_legend, df
                 "opacity": 0.6,
                 # "x0": attribute
             }]
+    # If given attribute is nominal
     else:
         if radio_value == "target":
-            data = [go.Histogram(x=sorted(df[attribute][df[target] == target_vals[i]]),
+            target_vals = list(df["target"].unique())
+            N = len(df["target"].unique())
+            color = ['hsl(' + str(h) + ',80%' + ',50%)' for h in np.linspace(0, 330, N)]
+            data = [go.Histogram(x=(df[attribute][df["target"] == target_vals[i]]),
                                  name=str(target_vals[i]),
                                  showlegend=show_legend,
                                  marker=dict(color=color[i],

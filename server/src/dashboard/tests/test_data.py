@@ -49,15 +49,17 @@ def test_scatter_plots(dash_br):
     assert scatter_plot.text is not None
 
 
-# def catch_errors_in_datasets(dash_br):
+# def test_catch_errors_in_datasets(dash_br):
 #     df = datasets.list_datasets(output_format='dataframe')
 #     ids = []
-#     for id in df['did'].values[100:]:
-#         dash_br.server_url = BASE_URL + 'data/'+ str(id)
-#         time.sleep(5)
-#         if dash_br.get_logs() != []:
+#     for id in df['did'].values[:100]:
+#         dash_br.server_url = BASE_URL + 'data/' + str(id)
+#         time.sleep(30)
+#         logs = dash_br.get_logs()
+#         if logs and '"ax.dtick error: NaN"' not in logs[0]["message"]:
 #             ids.append(id)
-#     pd.DataFrame(ids).to_csv('ids.csv')
+#     pd.DataFrame(ids).to_csv('ids100.csv')
+
 
 def test_data_overviews(dash_br):
     dash_br.server_url = f"{BASE_URL}data/"
