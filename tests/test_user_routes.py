@@ -53,6 +53,23 @@ def test_profile_changes(test_client, init_database):
     assert response.status_code == 200
 
 
+def test_api_key_get(test_client, init_database):
+    access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    }
+    response = test_client.get('/api-key', headers=headers)
+    assert response.status_code == 200
+
+
+def test_api_key_post(test_client, init_database):
+    access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token)
+    }
+    response = test_client.post('/api-key', headers=headers)
+    assert response.status_code == 200
+
 def test_logout(test_client, init_database):
     access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
     headers = {
