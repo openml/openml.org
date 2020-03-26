@@ -25,6 +25,7 @@ const ProfilePage = async(() => import("../pages/auth/ProfilePage"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const ResetPage = async(() => import("../pages/auth/ResetPage"));
 const ConfirmPage = async(() => import("../pages/auth/ConfirmPage"));
+const ConfirmationToken = async(() => import("../pages/auth/ConfirmationToken"));
 const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
@@ -214,6 +215,11 @@ const authRoutes = {
       path: "/auth/confirm-page",
       name: "Confirmation Page",
       component: ConfirmPage
+    },
+    {
+      path: "/auth/confirmation-token",
+      name: "Send Confirmation Again",
+      component: ConfirmationToken
     },
     {
       path: "/auth/sign-up",
