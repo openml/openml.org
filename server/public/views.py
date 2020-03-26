@@ -71,6 +71,7 @@ def password():
     db.session.commit()
     return jsonify({"msg": "Token sent"}), 200
 
+
 @blueprint.route('/send-confirmation-token', methods=['POST'])
 def confirmation_token():
     jobj = request.get_json()
