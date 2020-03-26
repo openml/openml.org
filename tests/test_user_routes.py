@@ -96,6 +96,3 @@ def test_reset_password(test_client, init_database):
     assert response.status_code == 200
 
 # TODO Tests: confirm user,
-
-
-
