@@ -3,7 +3,6 @@ from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request
 from flask_cors import CORS
-
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
 
