@@ -17,6 +17,7 @@ def test_client():
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
     testing_client = flask_app.test_client()
+    flask_app.secret_key='abvs'
 
     # Establish an application context before running the tests.
     ctx = flask_app.app_context()

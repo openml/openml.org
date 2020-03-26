@@ -62,7 +62,6 @@ def profile():
         user.update_bio(data['bio'])
         user.update_first_name(data['first_name'])
         user.update_last_name(data['last_name'])
-        user.set_image(data['image'])
         db.session.merge(user)
         db.session.commit()
         return jsonify({"msg": "User information changed"}), 200
