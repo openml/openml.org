@@ -1,13 +1,15 @@
 import datetime
 import hashlib
 
-from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
-    Blueprint, jsonify, request)
 from flask_cors import CORS
 
 from server.extensions import db
 from server.user.models import User
 from server.utils import confirmation_email, forgot_password_email
+
+from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
+    Blueprint, jsonify, request)
+
 
 blueprint = Blueprint("public", __name__)
 
