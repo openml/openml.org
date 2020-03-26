@@ -76,7 +76,7 @@ function SignIn() {
         confirmflag &&
         (
         <Typography component="h3" variant="body1" align="center" color="red">
-        User not confirmed(send activation token again?)
+          User not confirmed<a href="/auth/confirmation-token">(send activation token again?)</a>
         </Typography>
       )
       }

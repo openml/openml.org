@@ -70,3 +70,16 @@ def password():
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "Token sent"}), 200
+
+@blueprint.route('/send-confirmation-token', methods=['POST'])
+def confirmation_token():
+    jobj = request.get_json()
+    timestamp = datetime.datetime.now()
+    timestamp = timestamp.strftime("%d %H")
+    md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
+    user = User.query.filter_by(email=jobj['email']).first()
+    user.update_activation_code(md5_digest)
+    confirmation_email(user.email, md5_digest)
+    db.session.merge(user)
+    db.session.commit()
+    return jsonify({"msg": "User confirmation token sent"}), 200
