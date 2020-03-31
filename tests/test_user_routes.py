@@ -48,7 +48,9 @@ def test_profile_changes(test_client, init_database):
     }
     response = test_client.post('/profile', headers=headers, json={'bio': 'ss bio',
                                                                    'first_name': 'ssd',
-                                                                   'last_name': 'sds'}
+                                                                   'last_name': 'sds',
+                                                                   'image': '',
+                                                                   'email': 'ss@ss.com'}
                                 )
     assert response.status_code == 200
 
@@ -94,5 +96,3 @@ def test_reset_password(test_client, init_database):
     response = test_client.post('/forgot-token', json={'url': url, 'password': 'ss'},
                                 follow_redirects=True)
     assert response.status_code == 200
-
-# TODO Tests: confirm user,
