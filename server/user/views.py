@@ -64,7 +64,7 @@ def profile():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
-        return jsonify({"username": user.username, "bio": user.bio, "first_name": user.first_name,
+        return jsonify({"username": user.email, "bio": user.bio, "first_name": user.first_name,
                         "last_name": user.last_name, "email": user.email, "image": user.image}), 200
     elif request.method == "POST":
         data = request.get_json()
@@ -79,6 +79,7 @@ def profile():
             md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
             user.update_activation_code(md5_digest)
             confirmation_email(user.email, md5_digest)
+            user.update_email(data['email'])
 
         db.session.merge(user)
         db.session.commit()
