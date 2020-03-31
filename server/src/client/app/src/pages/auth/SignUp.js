@@ -32,6 +32,7 @@ const RedIcon = styled(FontAwesomeIcon)({
 
 function SignUp() {
   const [register, setRegister] = useState(false);
+  const [duplicateUser, setDuplicateUser ] = useState(false);
   function sendflask(event) {
     event.preventDefault();
     console.log("The link was clicked.");
@@ -46,8 +47,8 @@ function SignUp() {
         if (response.data.msg === "User created") {
           console.log(response.data);
           setRegister(true);
-        } else {
-          console.log(response.data);
+        } else if(response.data.msg === "User already exists") {
+          setDuplicateUser(true);
         }
       })
       .catch(function(error) {
@@ -61,6 +62,14 @@ function SignUp() {
         Almost there
       </Typography>
       <form onSubmit={sendflask}>
+        {
+        duplicateUser &&
+        (
+        <Typography component="h3" variant="body1" align="center" color="red">
+          User already exists
+        </Typography>
+      )
+      }
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="name">Name</InputLabel>
           <Input id="name" name="name" autoFocus />
