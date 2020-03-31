@@ -45,6 +45,8 @@ function Public() {
   const [fname, setFname] = useState(false);
   const [lname, setLname] = useState(false);
   const [image, setImage] = useState(false);
+  const [error, setError] = useState(false);
+  const [errormessage, setErrorMessage] = useState(false);
 
   const yourConfig = {
     headers: {
@@ -68,23 +70,30 @@ function Public() {
       });
     function profiletoflask(event) {
     event.preventDefault();
-    const data = new FormData(event.target);
-
     console.log(event.target.image.files);
-    axios
-      .post(process.env.REACT_APP_SERVER_URL+"profile", {
-        bio: event.target.biography.value,
-        first_name: event.target.firstname.value,
-        last_name: event.target.lastname.value,
-          image:event.target.image.files,
 
-      }, yourConfig)
-      .then(function(response) {
-        console.log(response.data);
-      })
-      .catch(function(error) {
-        console.log(error.data);
-      });
+    if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+      setError(true);
+      setErrorMessage("Plase enter valid email");
+    }
+    else{
+      setError(false);
+      axios
+            .post(process.env.REACT_APP_SERVER_URL+"profile", {
+              bio: event.target.biography.value,
+              first_name: event.target.firstname.value,
+              last_name: event.target.lastname.value,
+              image:event.target.image.files,
+              email:event.target.email.value,
+
+            }, yourConfig)
+            .then(function(response) {
+              console.log(response.data);
+            })
+            .catch(function(error) {
+              console.log(error.data);
+            });
+      }
     return false;
   }
   return (
@@ -93,6 +102,14 @@ function Public() {
         <Typography variant="h6" gutterBottom>
           Public info
         </Typography>
+        {
+        error &&
+        (
+        <Typography component="h3" variant="body1" align="center" color="red">
+          {errormessage}
+        </Typography>
+      )
+      }
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>

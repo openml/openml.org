@@ -60,6 +60,9 @@ class User(Base):
     def update_bio(self, new_bio):
         self.bio = new_bio
 
+    def update_email(self, email):
+        self.email = email
+
     def update_first_name(self, first_name):
         self.first_name = first_name
 
