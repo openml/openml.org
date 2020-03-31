@@ -42,13 +42,17 @@ class User(Base):
         self.password = argon2.generate_password_hash(password)
 
     def check_password(self, passwd):
+        """
+        Check if the passwordhash  is in Argon2 or Bcrypt(old) format
+        Resets the password hash to argon2 format if stored in bcrypt
+        Returns value for login route
+        """
         try:
             if bcrypt.check_password_hash(self.password, passwd):
                 bpass = True
         except ValueError as error:
             print(error)
             bpass = False
-    # password = argon2.generate_password_hash(password)
         if argon2.check_password_hash(self.password, passwd):
             return True
         elif not argon2.check_password_hash(self.password, passwd) and not bpass:

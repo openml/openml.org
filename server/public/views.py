@@ -18,6 +18,7 @@ CORS(blueprint)
 
 @blueprint.route('/signup', methods=['POST'])
 def signupfunc():
+    """Registering user and checking for already existing user"""
     robj = request.get_json()
     check_user = User.query.filter_by(email=robj['email']).first()
     if check_user is None:
@@ -61,6 +62,7 @@ def signupfunc():
 
 @blueprint.route('/forgotpassword', methods=['POST'])
 def password():
+    """Sending forgotten password code"""
     jobj = request.get_json()
     timestamp = datetime.datetime.now()
     timestamp = timestamp.strftime("%d %H")
@@ -76,6 +78,7 @@ def password():
 
 @blueprint.route('/send-confirmation-token', methods=['POST'])
 def confirmation_token():
+    """Sending confirmation token again"""
     jobj = request.get_json()
     timestamp = datetime.datetime.now()
     timestamp = timestamp.strftime("%d %H")

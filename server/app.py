@@ -8,6 +8,11 @@ from .src.dashboard.dashapp import create_dash_app
 
 
 def register_extensions(app):
+    """Registering extensions for flask app
+
+    Keyword arguments:
+        app -- Flask app
+    """
     argon2.init_app(app)
     create_dash_app(app)
     jwt.init_app(app)
@@ -24,9 +29,9 @@ def register_extensions(app):
         db.create_all()
 
     def init_db():
-        # import all modules here that might define models so that
-        # they will be registered properly on the metadata.  Otherwise
-        # you will have to import them first before calling init_db()
+        """" Import all modules here that might define models so that
+        they will be registered properly on the metadata.  Otherwise
+        you will have to import them first before calling init_db()"""
         Base.metadata.create_all(bind=engine)
 
     return None
