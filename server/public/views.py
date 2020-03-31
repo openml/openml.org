@@ -56,7 +56,7 @@ def signupfunc():
         db.session.commit()
         return jsonify({"msg": "User created"}), 200
     else:
-        return jsonify({"msg": "User already exists"}), 401
+        return jsonify({"msg": "User already exists"}), 200
 
 
 @blueprint.route('/forgotpassword', methods=['POST'])

@@ -45,7 +45,6 @@ function SignIn() {
       .then(function(response) {
         console.log(response.data);
         if(response.data.msg=='NotConfirmed'){
-          console.log('nc')
           setConfirm(true);
         }
         else{setLogger(true);
