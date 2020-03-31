@@ -11,7 +11,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from server.config import Config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
+"""
+extension.py
+Declares extension for Flask App, connects with already existing database
+"""
 # specifying engine according to existing db
 try:
     engine = create_engine('mysql+pymysql://root:@localhost/openml', convert_unicode=True,

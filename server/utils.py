@@ -1,10 +1,12 @@
 import smtplib
 import ssl
+import os
 
 context = ssl.create_default_context()
 
 
 def confirmation_email(user_email, token):
+    """Sending confirmation email with token to user mailbox"""
     sender = "m@smtp.mailtrap.io"
     receiver = user_email
     header = 'From: %s\n' % sender
@@ -22,6 +24,7 @@ def confirmation_email(user_email, token):
 
 
 def forgot_password_email(user_email, token):
+    """Sending forgot password email woth token to user mailbox"""
     sender = "m@smtp.mailtrap.io"
     receiver = user_email
     header = 'From: %s\n' % sender

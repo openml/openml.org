@@ -21,12 +21,20 @@ blacklist = set()
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
+    """Checking if token is in blacklist token"""
     jti = decrypted_token['jti']
     return jti in blacklist
 
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
+    """
+    Login
+
+    1. Takes the Json request with email and password
+    2. Checks password and if user is confirmed
+    3. Logs in user next with access token
+    """
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
     print(user.active)
@@ -40,11 +48,6 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        os.environ['TEST_ACCESS_TOKEN'] = access_token
-        print()
-        # timestamp = datetime.datetime.now()
-        # timestamp1 = timestamp.strftime("%Y-%m-%d")
-        # user.last_login = timestamp1
         db.session.merge(user)
         db.session.commit()
         return jsonify(access_token=access_token), 200
@@ -54,13 +57,15 @@ def login():
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
+    """
+    Function to edit and retrieve user profile information
+    """
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
         return jsonify({"username": user.username, "bio": user.bio, "first_name": user.first_name,
                         "last_name": user.last_name, "email": user.email, "image": user.image}), 200
     elif request.method == "POST":
-
         data = request.get_json()
         print(data['image'])
         user.update_bio(data['bio'])
@@ -84,6 +89,7 @@ def profile():
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
+    """Function to logout user"""
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
     return jsonify({"msg": "Successfully logged out"}), 200
@@ -92,6 +98,7 @@ def logout():
 @user_blueprint.route('/api-key', methods=['POST', 'GET'])
 @jwt_required
 def apikey():
+    """Change and retrieve API-Key"""
     current_user = get_jwt_identity()
     user = db.session.query(User).filter(User.email == current_user).first()
     if request.method == 'GET':
@@ -107,15 +114,17 @@ def apikey():
 @user_blueprint.route('/delete', methods=['GET', 'POST'])
 @jwt_required
 def delete_user():
-    current_user = get_jwt_identity()
-    user = db.session.query(User).filter(User.email == current_user).first()
-    db.session.delete(user)
-    db.session.commit()
+    """Delete current user: Frontend and functionality not decided yet"""
+    # current_user = get_jwt_identity()
+    # user = db.session.query(User).filter(User.email == current_user).first()
+    # db.session.delete(user)
+    # db.session.commit()
     return jsonify({"msg": "User deleted"}), 200
 
 
 @user_blueprint.route('/forgot-token', methods=['POST'])
 def forgot_token():
+    """Check for forgotten_password_code"""
     data = request.get_json()
     url = data['url']
     parsed = urlparse(url)
@@ -130,6 +139,7 @@ def forgot_token():
 
 @user_blueprint.route('/resetpassword', methods=['POST'])
 def reset():
+    """Changes user password"""
     data = request.get_json()
     print(data)
     url = data['url']
@@ -144,6 +154,7 @@ def reset():
 
 @user_blueprint.route('/confirmation', methods=['POST'])
 def confirm_user():
+    """Activates user"""
     print('confirmation linke')
     data = request.get_json()
     url = data['url']
