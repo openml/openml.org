@@ -69,14 +69,14 @@ function Public() {
     function profiletoflask(event) {
     event.preventDefault();
     const data = new FormData(event.target);
-    console.log(event.target.image.value);
+
+    console.log(event.target.image.files);
     axios
       .post(process.env.REACT_APP_SERVER_URL+"profile", {
         bio: event.target.biography.value,
         first_name: event.target.firstname.value,
         last_name: event.target.lastname.value,
-        image:event.target.image.value,
-
+          image:event.target.image.files,
 
       }, yourConfig)
       .then(function(response) {
