@@ -48,7 +48,8 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        os.environ['TEST_ACCESS_TOKEN'] = access_token# exporting access token to environment for testing
+        os.environ['TEST_ACCESS_TOKEN'] = access_token
+        # exporting access token to environment for testing
         db.session.merge(user)
         db.session.commit()
         return jsonify(access_token=access_token), 200
@@ -68,7 +69,7 @@ def profile():
                         "last_name": user.last_name, "email": user.email, "image": user.image}), 200
     elif request.method == "POST":
         data = request.get_json()
-        #print(data['image'])
+        # print(data['image'])
         user.update_bio(data['bio'])
         user.update_first_name(data['first_name'])
         user.update_last_name(data['last_name'])
