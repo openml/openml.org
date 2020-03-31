@@ -1,3 +1,5 @@
+import datetime
+import hashlib
 import os
 from urllib.parse import parse_qs, urlparse
 
@@ -8,6 +10,7 @@ from flask_jwt_extended import (create_access_token, get_jwt_identity,
 
 from server.extensions import db, jwt
 from server.user.models import User
+from server.utils import confirmation_email
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -57,10 +60,20 @@ def profile():
         return jsonify({"username": user.username, "bio": user.bio, "first_name": user.first_name,
                         "last_name": user.last_name, "email": user.email, "image": user.image}), 200
     elif request.method == "POST":
+
         data = request.get_json()
+        print(data['image'])
         user.update_bio(data['bio'])
         user.update_first_name(data['first_name'])
         user.update_last_name(data['last_name'])
+        if data['email'] != user.email:
+            print('email changed')
+            timestamp = datetime.datetime.now()
+            timestamp = timestamp.strftime("%d %H")
+            md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
+            user.update_activation_code(md5_digest)
+            confirmation_email(user.email, md5_digest)
+
         db.session.merge(user)
         db.session.commit()
         return jsonify({"msg": "User information changed"}), 200
