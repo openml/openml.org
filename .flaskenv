@@ -5,3 +5,4 @@ FLASK_ENV=development
 DATABASE_URI=mysql+pymysql://root:@localhost/openml
 SMTP_SERVER=smtp.mailtrap.io
 SMTP_PORT=2525
+APP_SECRET_KEY=yourappssecretkey
