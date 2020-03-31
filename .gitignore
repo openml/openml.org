@@ -43,3 +43,5 @@ Internal_docs/
 
 flask-cache-dir/
 
+
+*.pem
