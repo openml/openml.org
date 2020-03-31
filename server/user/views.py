@@ -48,7 +48,7 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        os.environ['TEST_ACCESS_TOKEN'] = access_token
+        os.environ['TEST_ACCESS_TOKEN'] = access_token# exporting access token to environment for testing
         db.session.merge(user)
         db.session.commit()
         return jsonify(access_token=access_token), 200

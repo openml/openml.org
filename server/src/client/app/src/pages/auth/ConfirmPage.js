@@ -42,10 +42,8 @@ function Confirm() {
       });
     return(
         <Wrapper>
-          {verifToken ? (
+          {verifToken && (
           <Redirect to="/auth/sign-in" />
-        ) : (
-          <t></t>//dummy values for now todo: remove the
         )}
         </Wrapper>
         );
