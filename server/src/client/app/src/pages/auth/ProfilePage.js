@@ -95,7 +95,6 @@ function Public() {
 
 
         </Typography>
-        {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>
           </Grid>

@@ -84,10 +84,8 @@ function ResetPage() {
         >
           Reset password
         </Button>
-          {redirect ? (
+          {redirect && (
           <Redirect to="/auth/sign-in" />
-        ) : (
-          <t></t>//dummy values for now todo: remove the
         )}
       </form>
     </Wrapper>
