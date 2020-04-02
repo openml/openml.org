@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import os
+import json
 from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request
@@ -88,6 +89,12 @@ def profile():
     else:
         return jsonify({"msg": "profile OK"}), 200
 
+
+@user_blueprint.route('/image', methods=['POST'])
+def image():
+    data = request.get_json()
+    print(data)
+    return "image"
 
 @user_blueprint.route('/logout', methods=['POST'])
 @jwt_required

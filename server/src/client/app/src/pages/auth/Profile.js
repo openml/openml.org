@@ -69,32 +69,46 @@ function Public() {
         console.log(error);
       });
     function profiletoflask(event) {
-    event.preventDefault();
-    console.log(event.target.image.files);
+        event.preventDefault();
+        console.log(event.target.image.files);
 
-    if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
-      setError(true);
-      setErrorMessage("Plase enter valid email");
-    }
-    else{
-      setError(false);
-      axios
-            .post(process.env.REACT_APP_SERVER_URL+"profile", {
-              bio: event.target.biography.value,
-              first_name: event.target.firstname.value,
-              last_name: event.target.lastname.value,
-              image:event.target.image.files,
-              email:event.target.email.value,
+        if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+          setError(true);
+          setErrorMessage("Plase enter valid email");
+        }
+        else{
+          setError(false);
+          axios
+                .post(process.env.REACT_APP_SERVER_URL+"profile", {
+                  bio: event.target.biography.value,
+                  first_name: event.target.firstname.value,
+                  last_name: event.target.lastname.value,
+                  image:event.target.image.files,
+                  email:event.target.email.value,
 
-            }, yourConfig)
-            .then(function(response) {
+                }, yourConfig)
+                .then(function(response) {
+                  console.log(response.data);
+                })
+                .catch(function(error) {
+                  console.log(error.data);
+                });
+          let images = event.target.image.files
+          let data = new FormData();
+          // data.append('file', event.target.image.files,event.target.image.files.fileName);
+          data.append('file', images[0])
+            console.log(data);
+          axios.post(process.env.REACT_APP_SERVER_URL+"image",data,{
+              headers:{
+                  'Content-Type':'multipart/form-data'
+              }
+          }).then(function (response) {
               console.log(response.data);
-            })
-            .catch(function(error) {
+          }).catch(function (error) {
               console.log(error.data);
-            });
-      }
-    return false;
+          });
+          }
+        return false;
   }
   return (
     <Card mb={6}>
