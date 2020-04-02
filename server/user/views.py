@@ -91,7 +91,7 @@ def profile():
 
 @user_blueprint.route('/image', methods=['POST'])
 def image():
-    data = request.get_json()
+    data = request.args
     print(data)
     return "image"
 
