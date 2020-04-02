@@ -45,3 +45,5 @@ flask-cache-dir/
 
 
 *.pem
+
+script.sh

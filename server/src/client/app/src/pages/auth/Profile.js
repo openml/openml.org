@@ -94,19 +94,29 @@ function Public() {
                   console.log(error.data);
                 });
           let images = event.target.image.files
-          let data = new FormData();
-          // data.append('file', event.target.image.files,event.target.image.files.fileName);
-          data.append('file', images[0])
-            console.log(data);
-          axios.post(process.env.REACT_APP_SERVER_URL+"image",data,{
-              headers:{
-                  'Content-Type':'multipart/form-data'
-              }
-          }).then(function (response) {
-              console.log(response.data);
-          }).catch(function (error) {
-              console.log(error.data);
-          });
+          let formData = new FormData();
+
+          formData.append('file', images[0])
+            console.log(formData);
+          setImage(images[0])
+                    axios({
+            method: 'post',
+            url: process.env.REACT_APP_SERVER_URL+"image",
+            data: formData,
+            config: { headers: { 'Content-Type': 'multipart/form-data' } }
+        })
+            .then(response => console.log(response))
+            .catch(errors => console.log(errors));
+          // axios.post(process.env.REACT_APP_SERVER_URL+"image",{
+          //     data:data,
+          //     // headers:{
+          //     //     'Content-Type':'multipart/form-data'
+          //     // }
+          // }).then(function (response) {
+          //     console.log(response.data);
+          // }).catch(function (error) {
+          //     console.log(error.data);
+          // });
           }
         return false;
   }
