@@ -11,6 +11,7 @@ from flask_jwt_extended import (create_access_token, get_jwt_identity,
 from server.extensions import db, jwt
 from server.user.models import User
 from server.utils import confirmation_email
+from werkzeug.utils import secure_filename
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -91,9 +92,10 @@ def profile():
 
 @user_blueprint.route('/image', methods=['POST'])
 def image():
-    data = request.args
-    print(data)
-    return "image"
+    f = request.files['file']
+    print(f)
+    f.save(secure_filename(f.filename))
+    return "image received"
 
 
 @user_blueprint.route('/logout', methods=['POST'])
