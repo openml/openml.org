@@ -17,7 +17,7 @@ def confirmation_email(user_email, token):
 
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     # server = smtplib.SMTP('smtp.mailtrap.io', 2525)
-    server.login("84be287eed57de", "6a38ff008fe618")
+    # server.login("84be287eed57de", "6a38ff008fe618")
     problems = server.sendmail(sender, receiver, message)
     print(problems)
     server.quit()
@@ -34,7 +34,7 @@ def forgot_password_email(user_email, token):
                        f"https://new.openml.org/auth/reset-page/?&token={token}"
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     # server = smtplib.SMTP('smtp.mailtrap.io', 2525)
-    server.login("84be287eed57de", "6a38ff008fe618")
+    # server.login("84be287eed57de", "6a38ff008fe618")
     server.sendmail(sender, receiver, message)
     print('mail sent')
     server.quit()

@@ -16,15 +16,15 @@ def test_user():
 
 
 def test_confirm_user(test_client, init_database):
-    user = User.query.filter_by(email='ss').first()
+    user = User.query.filter_by(email='ff@ff.com').first()
     url = '?token=' + str(user.activation_code)
-    response = test_client.post('/confirmation', json={'url': url, 'password': 'ss'},
+    response = test_client.post('/confirmation', json={'url': url, 'password': 'ff'},
                                 follow_redirects=True)
     assert response.status_code == 200
 
 
 def test_login(test_client, init_database):
-    response = test_client.post('/login', json={'email': 'ss', 'password': 'ss'},
+    response = test_client.post('/login', json={'email': 'ff@ff.com', 'password': 'ff'},
                                 follow_redirects=True)
     assert response.status_code == 200
 
@@ -38,7 +38,7 @@ def test_profile(test_client, init_database):
     print(response.json)
     user = User.query.filter_by(email=response.json['email']).first()
     assert response.status_code == 200
-    assert User.query.filter_by(email='ss').first() == user
+    assert User.query.filter_by(email='ff@ff.com').first() == user
 
 
 def test_profile_changes(test_client, init_database):
@@ -50,7 +50,7 @@ def test_profile_changes(test_client, init_database):
                                                                    'first_name': 'ssd',
                                                                    'last_name': 'sds',
                                                                    'image': '',
-                                                                   'email': 'ss@ss.com'}
+                                                                   'email': 'ff@ff.com'}
                                 )
     assert response.status_code == 200
 
@@ -83,7 +83,7 @@ def test_logout(test_client, init_database):
 
 
 def test_forgot_token(test_client, init_database):
-    user = User.query.filter_by(email='ss').first()
+    user = User.query.filter_by(email='ff@ff.com').first()
     url = '?token=' + str(user.forgotten_password_code)
     response = test_client.post('/forgot-token', json={'url': url},
                                 follow_redirects=True)
@@ -91,8 +91,8 @@ def test_forgot_token(test_client, init_database):
 
 
 def test_reset_password(test_client, init_database):
-    user = User.query.filter_by(email='ss').first()
+    user = User.query.filter_by(email='ff@ff.com').first()
     url = '?token=' + str(user.forgotten_password_code)
-    response = test_client.post('/forgot-token', json={'url': url, 'password': 'ss'},
+    response = test_client.post('/forgot-token', json={'url': url, 'password': 'ff'},
                                 follow_redirects=True)
     assert response.status_code == 200

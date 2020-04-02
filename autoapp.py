@@ -46,5 +46,4 @@ app = create_app()
 #     app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
 
 
-# TODO Config management
-# TODO replace to production server
+
