@@ -31,6 +31,7 @@ const Wrapper = styled(Paper)`
 function SignIn() {
   const [logger, setLogger] = useState(false);
   const [errorlog, setError] = useState(false);
+  const [confirmflag, setConfirm] = useState(false);
   console.log(process.env.REACT_APP_SERVER_URL+"login");
 
   function sendtoflask(event) {
@@ -43,8 +44,11 @@ function SignIn() {
       })
       .then(function(response) {
         console.log(response.data);
-        setLogger(true);
-        localStorage.setItem("token", response.data.access_token);
+        if(response.data.msg=='NotConfirmed'){
+          setConfirm(true);
+        }
+        else{setLogger(true);
+        localStorage.setItem("token", response.data.access_token);}
       })
       .catch(function(error) {
         console.log(error.data);
@@ -67,6 +71,14 @@ function SignIn() {
       ) : (
         <Redirect to="/auth/sign-in" />
       )}
+      {
+        confirmflag &&
+        (
+        <Typography component="h3" variant="body1" align="center" color="red">
+          User not confirmed<a href="/auth/confirmation-token">(send activation token again?)</a>
+        </Typography>
+      )
+      }
       <form onSubmit={sendtoflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -107,7 +119,7 @@ function SignIn() {
           No account? Join OpenML
         </Button>
         {logger ? (
-          <Redirect to="/auth/profile" />
+          <Redirect to="/auth/profile-page" />
         ) : (
           <Redirect to="/auth/sign-in" />
         )}

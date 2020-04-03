@@ -1,25 +1,24 @@
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-    jsonify,
-)
-from server.user.models import User
-from server.extensions import db
-import datetime, hashlib
-from server.utils import forgot_password_email, confirmation_email
+import datetime
+import hashlib
+
 from flask_cors import CORS
+
+from server.extensions import db
+from server.user.models import User
+from server.utils import confirmation_email, forgot_password_email
+
+from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
+    Blueprint, jsonify, request)
+
 
 blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
 
+
 @blueprint.route('/signup', methods=['POST'])
 def signupfunc():
+    """Registering user and checking for already existing user"""
     robj = request.get_json()
     check_user = User.query.filter_by(email=robj['email']).first()
     if check_user is None:
@@ -36,7 +35,7 @@ def signupfunc():
         user.remember_code = '0000'
         user.created_on = '0000'
         user.last_login = '0000'
-        user.active = '0000'
+        user.active = '0'
         user.first_name = '0000'
         user.last_name = '0000'
         user.company = '0000'
@@ -52,17 +51,18 @@ def signupfunc():
         timestamp = timestamp.strftime("%d %H")
         md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
         user.update_activation_code(md5_digest)
+        confirmation_email(user.email, md5_digest)
+
         db.session.add(user)
         db.session.commit()
-        confirmation_email(user.email, md5_digest)
         return jsonify({"msg": "User created"}), 200
     else:
         return jsonify({"msg": "User already exists"}), 200
 
 
-
 @blueprint.route('/forgotpassword', methods=['POST'])
 def password():
+    """Sending forgotten password code"""
     jobj = request.get_json()
     timestamp = datetime.datetime.now()
     timestamp = timestamp.strftime("%d %H")
@@ -74,3 +74,18 @@ def password():
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "Token sent"}), 200
+
+
+@blueprint.route('/send-confirmation-token', methods=['POST'])
+def confirmation_token():
+    """Sending confirmation token again"""
+    jobj = request.get_json()
+    timestamp = datetime.datetime.now()
+    timestamp = timestamp.strftime("%d %H")
+    md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
+    user = User.query.filter_by(email=jobj['email']).first()
+    user.update_activation_code(md5_digest)
+    confirmation_email(user.email, md5_digest)
+    db.session.merge(user)
+    db.session.commit()
+    return jsonify({"msg": "User confirmation token sent"}), 200

@@ -1,8 +1,8 @@
 import time
-from openml import runs, flows, evaluations
-import numpy as np
-from .test_config import *
 
+from openml import evaluations
+
+from server.src.dashboard.dash_config import BASE_URL
 
 # def test_flow_page_loading(dash_br):
 #     dash_br.server_url = BASE_URL + 'flow/405'
@@ -34,7 +34,7 @@ def test_flow_dropdowns(dash_br):
     metric_dropdown.click()
     parameter_dropdown.click()
     parameter_dropdown.click()
-    assert('area_under_roc_curve' in metric_dropdown.text )
+    assert('area_under_roc_curve' in metric_dropdown.text)
     assert ('Supervised classification' in tasktype_dropdown.text)
     assert ('I' in parameter_dropdown.text)
 
@@ -49,3 +49,11 @@ def test_flow_dropdowns(dash_br):
 #             ids.append(id)
 #     np.save('flow_ids.npy', np.asarray(ids))
 #
+
+def test_flow_overviews(dash_br):
+    dash_br.server_url = f"{BASE_URL}flow/"
+    time.sleep(10)
+    assert dash_br.get_logs() == []
+    flow_chart = dash_br.find_element('#flow_ovplot')
+    assert flow_chart.text is not None
+    assert "sklearn" in flow_chart.text

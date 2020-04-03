@@ -1,16 +1,18 @@
-import plotly
+import dash_core_components as dcc
+import dash_html_components as html
+import pandas as pd
 import plotly.graph_objs as go
-
-from .helpers import *
-from .dashapp import *
-
-from openml import runs, flows, datasets, tasks
+from dash.dependencies import Input, Output
+from openml import datasets, flows, runs, tasks
 from openml.extensions.sklearn import SklearnExtension
-from dash.dependencies import Input, Output, State
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
-        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
 
-TIMEOUT = 5*60
+from .dash_config import DASH_CACHING
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
+
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
 def get_flow_overview():
@@ -27,7 +29,7 @@ def get_flow_overview():
     for name in count["name"]:
         try:
             short.append(SklearnExtension.trim_flow_name(name))
-        except:
+        except ValueError:
             pass
     count["name"] = short
     fig = go.Figure(data=[go.Bar(y=count["name"].values, x=count["count"].values,
@@ -36,16 +38,16 @@ def get_flow_overview():
                                  orientation="h")])
     fig.update_layout(
                       yaxis=dict(autorange="reversed"),
-                      margin=dict(l=500),
+                      margin={'l': 500},
                       title="", width=900,
                       height=700),
 
-    return html.Div(dcc.Graph(figure=fig))
+    return html.Div(dcc.Graph(figure=fig, id='flow_ovplot'))
 
 
 def register_overview_callbacks(app, cache):
     @app.callback(Output('data_overview', 'children'),
-                  [Input('status_data','value')])
+                  [Input('status_data', 'value')])
     @cache.memoize(timeout=TIMEOUT)
     def dataset_overview(radio):
         """
@@ -63,8 +65,10 @@ def register_overview_callbacks(app, cache):
         # Binning
         bins_1 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, max(df["NumberOfInstances"])]
         bins_2 = [1, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1, precision=0).astype(str)
-        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2, precision=0).astype(str)
+        df["Number of instances"] = pd.cut(df["NumberOfInstances"], bins=bins_1,
+                                           precision=0).astype(str)
+        df["Number of features"] = pd.cut(df["NumberOfFeatures"], bins=bins_2,
+                                          precision=0).astype(str)
         for col in ["Number of instances", "Number of features"]:
             df[col] = df[col].str.replace(',', ' -')
             df[col] = df[col].str.replace('(', "")
@@ -120,18 +124,18 @@ def register_overview_callbacks(app, cache):
         fig4.update_xaxes(tickfont=dict(size=10))
 
         return html.Div([html.Div([html.P(title[0]),
-                                   dcc.Graph(figure=fig1)], className="row metric-row",
-                                  style={'width': '48%','text-align': 'center',
+                                   dcc.Graph(figure=fig1, id='fig1')], className="row metric-row",
+                                  style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block',
                                          }),
                          html.Div([html.P(title[1]),
-                                   dcc.Graph(figure=fig2)],className="row metric-row",
+                                   dcc.Graph(figure=fig2, id='fig2')], className="row metric-row",
                                   style={'width': '48%', 'text-align': 'center',
                                          'display': 'inline-block'}),
                          html.P(title[2]),
-                         dcc.Graph(figure=fig3),
+                         dcc.Graph(figure=fig3, id='fig3'),
                          html.P(title[3]),
-                         dcc.Graph(figure=fig4)],
+                         dcc.Graph(figure=fig4, id='fig4')],
                         )
 
     @app.callback([Output('run_overview', 'children'),
@@ -157,7 +161,8 @@ def register_overview_callbacks(app, cache):
         fig.update_layout(width=900, yaxis=dict(
             title='Percentage(%)'))
 
-        return html.Div([html.P("Types of runs on OpenML"), dcc.Graph(figure=fig)]), "done"
+        return html.Div([html.P("Types of runs on OpenML"),
+                         dcc.Graph(figure=fig, id="run_ovplt")]), "done"
 
     @app.callback([Output('task_overview', 'children'),
                    Output('tloader', 'children')],
@@ -190,7 +195,6 @@ def register_overview_callbacks(app, cache):
         fig2.update_layout(bargap=0.4, width=900, height=400)
         fig2.update_xaxes(tickfont=dict(size=10), categoryorder='total descending')
         return html.Div([html.P(title[0]),
-                         dcc.Graph(figure=fig1),
+                         dcc.Graph(figure=fig1, id='task_type'),
                          html.P(title[1]),
-                         dcc.Graph(figure=fig2)]), "done"
-
+                         dcc.Graph(figure=fig2, id='ep')]), "done"

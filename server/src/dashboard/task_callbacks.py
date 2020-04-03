@@ -1,9 +1,24 @@
 import re
-from dash.dependencies import Input, Output
+
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table as dt
+import pandas as pd
 import plotly.graph_objs as go
-from .layouts import *
+
+from dash.dependencies import Input, Output
+
+from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
-TIMEOUT = 5*60
+
+from .helpers import get_highest_rank
+from .dash_config import DASH_CACHING
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol"]
+
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
 
 
 def register_task_callbacks(app, cache):
@@ -31,7 +46,7 @@ def register_task_callbacks(app, cache):
 
         # extract task id
         if pathname is not None and '/dashboard/task' in pathname:
-            task_id = int(re.search('task/(\d+)', pathname).group(1))
+            task_id = int(re.search(r'task/(\d+)', pathname).group(1))
         else:
             return html.Div(), html.Div()
 
@@ -62,8 +77,6 @@ def register_task_callbacks(app, cache):
         run_link = []
         tick_text = []
         truncated = []
-
-
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
             link = "<a href=\"https://www.openml.org/r/" + str(run_id) + "/\"> "
@@ -75,7 +88,7 @@ def register_task_callbacks(app, cache):
         # Truncate flow names (50 chars)
         for flow in df['flow_name'].values:
             truncated.append(SklearnExtension.trim_flow_name(flow))
-            #truncated.append(short[:50] + '..' if len(short) > 50 else short)
+            # truncated.append(short[:50] + '..' if len(short) > 50 else short)
 
         df['flow_name'] = truncated
 
@@ -84,7 +97,8 @@ def register_task_callbacks(app, cache):
                            x=df["value"],
                            mode='text+markers',
                            text=run_link,
-                           #hovertext=df["value"].astype(str)+['<br>'] * df.shape[0] + ['click for more info'] * df.shape[0],
+                           # hovertext=df["value"].astype(str)+['<br>'] *
+                           # df.shape[0] + ['click for more info'] * df.shape[0],
                            # hoverinfo='text',
                            # hoveron = 'points+fills',
                            hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
@@ -93,13 +107,14 @@ def register_task_callbacks(app, cache):
                                        colorscale='RdBu', )
                            )
                 ]
-        layout = go.Layout(autosize=False, margin=dict(l=400), height=500+15*(df['flow_name'].nunique()),
+        layout = go.Layout(autosize=False, margin={'l': 400},
+                           height=500+15*(df['flow_name'].nunique()),
                            title='Every point is a run, click for details <br>'
                                  'Every y label is a flow, click for details <br>'
                                  'Top '+str(n_runs)+' runs shown<br>',
                            font=dict(size=11),
                            width=1000,
-                          # hovermode='x',
+                           # hovermode='x',
                            xaxis=go.layout.XAxis(side='top'),
                            yaxis=go.layout.YAxis(
                            autorange="reversed",
@@ -133,8 +148,9 @@ def register_task_callbacks(app, cache):
                                        colorscale='Rainbow', )
                            )
                 ]
-        layout = go.Layout(title='Contributions over time,<br>every point is a run, click for details',
-                           autosize=True,  margin=dict(l=100), hovermode='y',
+        layout = go.Layout(title='Contributions over time,<br>every point is a run, '
+                                 'click for details',
+                           autosize=True,  margin={'l': 100}, hovermode='y',
                            font=dict(size=11),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,
@@ -145,7 +161,8 @@ def register_task_callbacks(app, cache):
 
         # Leaderboard table
 
-        top_uploader = (df.sort_values('value', ascending=False).groupby(['uploader_name'], sort=False))
+        top_uploader = df.sort_values('value', ascending=False).groupby(['uploader_name'],
+                                                                        sort=False)
         name = top_uploader['uploader_name'].unique()
         rank = list(range(1, len(name) + 1))
         entries = top_uploader['uploader_name'].value_counts().values
@@ -171,10 +188,7 @@ def register_task_callbacks(app, cache):
                 row_deletable=False,
                 style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                             'minWidth': '100px', 'width': '150px', 'maxWidth': '300px',
-                            'textAlign': 'left',
-                            "fontFamily": font,
-                            'textOverflow': 'ellipsis', "fontSize": 14,
-
+                            "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 14
                             },
                 style_header={
                     'backgroundColor': 'white',
@@ -183,9 +197,7 @@ def register_task_callbacks(app, cache):
                 selected_rows=[0],
                 id='tasktable'),
         )
-        return html.Div(dcc.Graph(figure=fig), style={'display':'none'}), \
-               html.Div(dcc.Graph(figure=fig)),\
-               html.Div([dcc.Graph(figure=fig1), html.Div('Leaderboard'), table]), \
-
-
-
+        dummy_fig = html.Div(dcc.Graph(figure=fig), style={'display': 'none'})
+        eval_div = html.Div(dcc.Graph(figure=fig))
+        return dummy_fig, eval_div, html.Div([dcc.Graph(figure=fig1),
+                                              html.Div('Leaderboard'), table])

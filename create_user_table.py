@@ -1,5 +1,7 @@
-import sqlite3
+# flake8: noqa
 import os
+import sqlite3
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -41,5 +43,5 @@ def create_empty_table():
     c.close()
     conn.close()
 
-
+#TODO Create demo user
 create_empty_table()

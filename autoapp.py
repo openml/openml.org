@@ -1,10 +1,17 @@
-from server.app import *
+import os
 
-# Create flask app and routing
-def create_app():
+from flask import Flask, request, send_from_directory
+from flask_cors import CORS
+
+from server.app import register_blueprints, register_extensions
+from server.config import Config
+
+
+def create_app(config_object=Config):
+    """ Create flask app and routing"""
     app = Flask(__name__, static_url_path='', static_folder='server/src/client/app/build',
                 instance_relative_config=True)
-    app.config.from_object(Config)
+    app.config.from_object(config_object)
 
     app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
     CORS(app)
@@ -22,7 +29,6 @@ def create_app():
         else:
             return send_from_directory(app.static_folder, 'index.html')
 
-
     @app.errorhandler(404)
     def page_not_found(e):
         # This seems to catch all routes! Refer link:
@@ -33,11 +39,8 @@ def create_app():
 
     return app
 
+
 app = create_app()
+
 # if __name__ == '__main__':
 #     app.run(port=int(os.environ.get("PORT", 5000)), debug=True, ssl_context='adhoc')
-
-# TODO Unit testing
-# TODO Fnal testing
-# TODO Config management
-# TODO replace to production server

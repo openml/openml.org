@@ -1,9 +1,14 @@
-import plotly.graph_objs as go
 import re
+
+import pandas as pd
+import plotly.graph_objs as go
 from dash.dependencies import Input, Output
-from .helpers import *
-from openml import tasks, runs, evaluations
-TIMEOUT = 5*60
+from openml import evaluations, tasks
+
+from .dash_config import DASH_CACHING
+
+TIMEOUT = 5*60 if DASH_CACHING else 0
+
 
 def register_flow_callbacks(app, cache):
 
@@ -24,7 +29,7 @@ def register_flow_callbacks(app, cache):
         """
 
         if pathname is not None and '/dashboard/flow' in pathname:
-            flow_id = int(re.search('flow/(\d+)', pathname).group(1))
+            flow_id = int(re.search(r'flow/(\d+)', pathname).group(1))
         else:
             return []
 
@@ -98,7 +103,7 @@ def register_flow_callbacks(app, cache):
                                  'Top 1000 runs shown',
                            font=dict(size=11),
 
-                           autosize=False, width=1000, height=500 + 15*df['data_name'].nunique(),
+                           autosize=True, height=500 + 15*df['data_name'].nunique(),
                            xaxis=go.layout.XAxis(showgrid=False),
                            yaxis=go.layout.YAxis(showgrid=True,
                                                  ticktext=tick_text+df["data_name"],

@@ -1,22 +1,20 @@
+import os
 from typing import List, Tuple
-import dash_table as dt
-from .helpers import *
-from .dashapp import *
-from openml import runs, evaluations, setups, datasets, study
 
-# To do: Move to assets (Copied from Joaquin's react font)
-font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"',
-        "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"']
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table as dt
+from openml import datasets, evaluations, runs, setups, study
+
+from .helpers import get_metadata, get_run_df, logger
+
+# TODO: Move to assets (Copied from Joaquin's react font)
+font = ["Nunito Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+        "Roboto", "Helvetica Neue",
+        "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"]
 
 
 def get_layout_from_data(data_id):
-    """
-
-    :param data_id: dataset id
-    :return:
-     layout: custom layout for data visualization
-
-    """
     # Get data and metadata
     metadata, data, name = get_metadata(data_id)
     selected_rows = list(range(0, 5))
@@ -24,7 +22,7 @@ def get_layout_from_data(data_id):
         selected_rows = list(range(0, metadata.shape[0]))
 
     # Define layout components
-    logger.debug("loading skeleton layout and table")
+    logger.debug("loading skeleton data layout and table")
     # Feature table
     feature_table = html.Div(
         dt.DataTable(data=metadata.to_dict('records'),
@@ -36,9 +34,13 @@ def get_layout_from_data(data_id):
                      filter_action="native",
                      id='datatable',
                      style_header={'backgroundColor': 'white', 'fontWeight': 'bold'},
-                     style_cell={'textAlign': 'left', 'backgroundColor': 'white', 'minWidth': '100px', 'width': '150px',
-                                 'maxWidth': '300px', "fontFamily": font, 'textOverflow': 'ellipsis', "fontSize": 11},
-                     style_table={'minHeight': '250px', 'maxHeight': '250px', 'overflowY': 'scroll'},
+                     style_cell={'textAlign': 'left', 'backgroundColor': 'white',
+                                 'minWidth': '100px', 'width': '150px',
+                                 'maxWidth': '300px', "fontFamily": font,
+                                 'textOverflow': 'ellipsis', "fontSize": 11},
+                     style_table={'minHeight': '250px', 'maxHeight': '250px',
+                                  'marginBottom': '20px',
+                                  'overflowY': 'scroll'},
                      page_action='none',
                      # Select special rows to highlight
                      style_data_conditional=[
@@ -60,7 +62,7 @@ def get_layout_from_data(data_id):
                              'backgroundColor': 'rgb(255, 100, 100)', 'color': 'white'
                          },
                          {
-                             'if': {'column_id':'Missing values',
+                             'if': {'column_id': 'Missing values',
                                     'filter_query': '{Missing values} > 50'
                                     },
                              'backgroundColor': 'rgb(255, 50, 50)', 'color': 'white'
@@ -77,13 +79,13 @@ def get_layout_from_data(data_id):
 
     # Distribution plot
     table_graph = dcc.Loading(html.Div(id='table-graph', className="twelve columns"))
-    subplot_graph = dcc.Loading(html.Div(
-                id='distribution', style={'overflowY': 'scroll', 'width': '100%',
-                                          'height': '400px'}))
+    # subplot_graph = dcc.Loading(html.Div(
+    #             id='distribution', style={'overflowY': 'scroll', 'width': '100%',
+    #                                       'height': '400px'}))
     dist_plot = html.Div([
-        html.P(''),
-        html.P('Choose if the color code is based on target or not',
-               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
+
+        html.P(['Choose if the color code is based on target or not'],
+               style={'text-align': 'left', 'color': 'gray'
                       }
                ),
         html.Div(
@@ -91,15 +93,16 @@ def get_layout_from_data(data_id):
                 id='radio1',
                 options=[{'label': "Target based distribution", "value": "target"},
                          {'label': "Individual distribution", "value": "solo"}],
-                value="solo",
-                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+                value="target",
+                # labelStyle={'display': 'inline-block', 'text-align': 'justify',
+                #             "fontFamily": font}
 
             )),
         html.Div(
             dcc.RadioItems(
                 id='stack',
                 value='group',
-                labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
+                labelStyle={'display': 'inline-block', 'text-align': 'justify'}
             )),
         table_graph,
 
@@ -119,8 +122,10 @@ def get_layout_from_data(data_id):
                 dcc.RadioItems(
                     id='radio',
                     options=[{'label': "Top four feature interactions", "value": "top"},
-                             {'label': "Top four numeric feature interactions", "value": "numeric"},
-                             {'label': "Top four nominal feature interactions", "value": "nominal"}],
+                             {'label': "Top four numeric feature interactions",
+                              "value": "numeric"},
+                             {'label': "Top four nominal feature interactions",
+                              "value": "nominal"}],
                     value="top"
 
                 ), ),
@@ -134,12 +139,13 @@ def get_layout_from_data(data_id):
     scatter_plot = html.Div(id="scatterdiv")
     # Define layout using components
     layout = html.Div(children=[
-        html.H3(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
+        html.H2(name+' dataset', style={'text-align': 'left', 'text-color': 'black'}),
         html.P('Choose one or more attributes for distribution plot (first 1k attributes listed)',
-               style={'text-align': 'left', 'color': 'gray','fontSize': 11
+               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
                       }),
 
         feature_table,
+        html.H3('Distribution plot'),
         dist_plot,
         feature_importance,
         feature_interaction,
@@ -161,7 +167,6 @@ def get_layout_from_task(task_id):
 
     """
 
-    measures = (evaluations.list_evaluation_measures())
     try:
         os.remove('cache/task'+str(task_id)+'.pkl')
     except OSError:
@@ -170,6 +175,8 @@ def get_layout_from_task(task_id):
     # Define components in task layout
     loading_spinner = dcc.Loading(html.Div(id='dummy'), type='dot')
     hidden_div = html.Div(id='intermediate-value', style={'display': 'none'})
+    # Metrics dropdown
+    measures = (evaluations.list_evaluation_measures())
     metric_dropdown = html.Div(
         [dcc.Dropdown(
             id='metric',
@@ -184,13 +191,14 @@ def get_layout_from_task(task_id):
         style={'width': '30%', 'display': 'inline-block',
                'position': 'relative'},
     )
-
+    # Fetch more runs button
     fetch_runs_button = html.Div(html.Button('Fetch next 100 runs', id='button',
                                  style={'fontSize': 14,
                                         'color': 'black',
                                         'width': '20',
                                         'height': '30',
                                         'background-color': 'white'}))
+    # Graphs
     graph_evals = html.Div(id='tab1')
     graph_people = html.Div(id='tab2')
 
@@ -199,6 +207,8 @@ def get_layout_from_task(task_id):
         hidden_div,
         html.Div(children=[
             metric_dropdown,
+            html.P(" "),
+            html.P(" "),
             html.H4('Evaluations:'),
             graph_evals,
             html.H4('People:'),
@@ -206,8 +216,12 @@ def get_layout_from_task(task_id):
             html.P(" "),
             html.P(" "),
             fetch_runs_button,
+            # html.Div(id="tab3")
         ]),
-    ], style={'width': '100%'})
+    ],
+        className='container',
+        # style={'overflowY': 'hidden'}
+    )
 
     return layout
 
@@ -218,19 +232,9 @@ def get_layout_from_flow(flow_id):
     :param flow_id:
     :return:
     """
-
-    measures = (evaluations.list_evaluation_measures())
-
-    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
-                  "Supervised data stream classification", "Clustering", "Machine Learning Challenge",
-                  "Survival Analysis", "Subgroup Discovery"]
-
-    setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
-    parameter_dict = setup_list['parameters'].values[0]
-    parameters = [param['full_name'] for key, param in parameter_dict.items()]
-    parameters.append('None')
-
     # Define components of flow layout
+    # Metric dropdown
+    measures = (evaluations.list_evaluation_measures())
     dropdown_metric = html.Div(
                 [dcc.Dropdown(
                     id='metric',
@@ -242,9 +246,16 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=measures[0]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                className="three columns",
+                style={'display': 'inline-block',
                        'position': 'relative'},
             )
+    # Task type dropdown
+    task_types = ["Supervised classification", "Supervised regression", "Learning curve",
+                  "Supervised data stream classification", "Clustering",
+                  "Machine Learning Challenge",
+                  "Survival Analysis", "Subgroup Discovery"]
+
     dropdown_tasktype = html.Div(
                 [dcc.Dropdown(
                     id='tasktype',
@@ -256,9 +267,15 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=task_types[0]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                style={'display': 'inline-block',
                        'position': 'relative'},
+                className="three columns",
             )
+    # parameters dropdown
+    setup_list = setups.list_setups(flow=flow_id, size=1, output_format='dataframe')
+    parameter_dict = setup_list['parameters'].values[0]
+    parameters = [param['full_name'] for key, param in parameter_dict.items()]
+    parameters.append('None')
     dropdown_parameter = html.Div(
                 [dcc.Dropdown(
                     id='parameter',
@@ -270,14 +287,17 @@ def get_layout_from_flow(flow_id):
                     placeholder="Select an attribute",
                     value=parameters[-1]
                 )],
-                style={'width': '30%', 'display': 'inline-block',
+                style={'display': 'inline-block',
                        'position': 'relative'},
+                className="four columns",
             )
+    # Flow evaluations plot
     flow_graph = html.Div(
                 [dcc.Loading(dcc.Graph(
                     id='flowplot',
-                    style={'height': '100%', 'width': '100%',
-                           'position': 'absolute'}))])
+                    style={'height': '100%',
+                           'position': 'absolute'}))],
+                className="twelve columns")
     layout = html.Div([
         html.Div(id='intermediate-value', style={'display': 'none'}),
         html.Div(children=[
@@ -285,44 +305,29 @@ def get_layout_from_flow(flow_id):
             dropdown_tasktype,
             dropdown_parameter,
             flow_graph])
-    ])
+    ], className='container',
+
+    )
 
     return layout
 
 
 def get_layout_from_run(run_id):
-    """
-
-    :param run_id: id of the run
-    :return: layout for run dashboard
-    """
-    items = vars(runs.get_run(int(run_id)))
-    ordered_dict = (items['fold_evaluations'])
-    df = pd.DataFrame(ordered_dict.items(), columns=['evaluations', 'results'])
-    result_list = []
-    error = []
-    for dic in df['results']:
-        x = (dic[0])
-        values = [x[elem] for elem in x]
-        mean = str(round(np.mean(np.array(values), axis=0), 3))
-        std = str(round(np.std(np.array(values), axis=0), 3))
-        result_list.append(values)
-        error.append(mean+" \u00B1 "+std)
-    df.drop(['results'], axis=1, inplace=True)
-    df['results'] = result_list
-    df['values'] = error
-    d = df.drop(['results'], axis=1)
-
+    run, df = get_run_df(int(run_id))
     # Define components of run layout
+    # Run table
     run_title = html.H3('Run ' + str(run_id), style={'text-align': 'left', 'text-color': 'black'})
+
+    table_data = df.drop(['results'], axis=1)
+
     run_table = html.Div(
                dt.DataTable(
-                   data=d.to_dict('records'),
-                   columns=[{"name": i, "id": i} for i in d.columns],
+                   data=table_data.to_dict('records'),
+                   columns=[{"name": i, "id": i} for i in table_data.columns],
                    row_selectable="multi",
                    sort_action="native",
                    row_deletable=False,
-                   selected_rows=[0,1,2],
+                   selected_rows=[0, 1, 2],
                    style_header={
                        'backgroundColor': 'white',
                        'fontWeight': 'bold'
@@ -330,7 +335,6 @@ def get_layout_from_run(run_id):
 
                    style_cell={'textAlign': 'left', 'backgroundColor': 'white',
                                'minWidth': '50px', 'width': '150px', 'maxWidth': '300px',
-                               'textAlign': 'left',
                                'textOverflow': 'ellipsis', "fontSize": 11,
                                "fontFamily": font
                                },
@@ -340,14 +344,19 @@ def get_layout_from_run(run_id):
                        'overflowY': 'scroll',
                        'border': 'thin lightgrey solid'
                    },
-                   id='runtable'),  style={'width': '45%', 'display': 'inline-block','position': 'relative'}
+                   id='runtable'
+               ), className="five columns", style={'display': 'inline-block',
+                                                   }
            )
 
+    # Distribution plot
     run_plot = html.Div(
-            id='runplot',
-               style={'width': '50%', 'display': 'inline-block', 'overflowY': 'scroll', 'height':'400px',
-                      'position': 'absolute'}
-           )
+        id='runplot',
+        className="six columns",
+        style={'display': 'inline-block', 'overflowY': 'scroll', 'height': '400px',
+               'position': 'absolute'}
+    )
+    # PR and ROC plot
     pr_chart = dcc.Loading(html.Div(id='pr'))
     roc_chart = html.Div(id='roc')
     layout = html.Div([
@@ -363,24 +372,18 @@ def get_layout_from_run(run_id):
         pr_chart,
         html.H4("ROC curve:"),
         roc_chart
-    ], style={'overflowY': 'hidden'})
-
-    # Add some more rows indicating prediction id
-    df2 = pd.DataFrame(items['output_files'].items(), columns=['evaluations', 'results'])
-    df2["values"] = ""
-    df3 = pd.DataFrame({'task_type': items['task_type']}.items(), columns=['evaluations', 'results'])
-    df2["values"] = ""
-    df = df.append(df2)
-    df = df.append(df3)
-    df.to_pickle('cache/run'+str(run_id)+'.pkl')
+    ], className='container',
+        style={'overflowY': 'hidden'})
     return layout
 
 
 def get_layout_from_study(study_id):
-    """ Generate the layout for the study dashboard. Data content (graphs, tables) is generated through callbacks.
+    """ Generate the layout for the study dashboard. Data content (graphs, tables)
+    is generated through callbacks.
 
     study_id: id of the study to generate the dashboard for.
-    returns: a html.Div element with child elements containing all UI elements and parent divs for data content.
+    returns: a html.Div element with child elements containing all UI elements
+    and parent divs for data content.
     """
     # Results may be shown in aggregate (mean of folds), or per-fold:
     graph_type_dropdown = dcc.Dropdown(
@@ -393,13 +396,17 @@ def get_layout_from_study(study_id):
     )
 
     # We construct the metric dropdown menu dynamically from computed metrics.
-    # Simply listing all metrics (evaluations.list_evaluation_measures) might include metrics that are not recorded.
+    # Simply listing all metrics (evaluations.list_evaluation_measures)
+    # might include metrics that are not recorded.
     this_study = study.get_study(int(study_id))
     first_run = runs.get_run(this_study.runs[0])
-    # The full list of metrics contain 'prior' metrics, which are not dependent on models but on the given dataset.
-    # Moreover some metrics don't make sense as a metric (I think there are more, but I don't understand all 'metrics'):
+    # The full list of metrics contain 'prior' metrics, which are not
+    # dependent on models but on the given dataset.
+    # Moreover some metrics don't make sense as a metric
+    # (I think there are more, but I don't understand all 'metrics'):
     illegal_metrics = ['number_of_instances', 'os_information']
-    metrics = [metric for metric in first_run.evaluations if metric not in illegal_metrics and 'prior' not in metric]
+    metrics = [metric for metric in first_run.evaluations if metric not in illegal_metrics
+               and 'prior' not in metric]
     if 'predictive_accuracy' in metrics:
         default_metric = 'predictive_accuracy'
     elif 'root_mean_squared_error' in metrics:
@@ -409,7 +416,8 @@ def get_layout_from_study(study_id):
 
     metric_dropdown = dcc.Dropdown(
         id='metric-dropdown',
-        options=[{'label': metric.replace('_', ' ').title(), 'value': metric} for metric in metrics],
+        options=[{'label': metric.replace('_', ' ').title(), 'value': metric}
+                 for metric in metrics],
         value=default_metric
     )
 
@@ -425,7 +433,8 @@ def get_layout_from_study(study_id):
             ('Name', 'name'),
             ('Instances', 'NumberOfInstances'),
             ('Features', 'NumberOfFeatures'),
-            ('Classes', 'NumberOfClasses'),  # Should only be included for studies with classification tasks.
+            # Should only be included for studies with classification tasks.
+            ('Classes', 'NumberOfClasses'),
             ('Missing Values', 'NumberOfMissingValues'),
             ('Numeric Features', 'NumberOfNumericFeatures'),
             ('Categorical Features', 'NumberOfSymbolicFeatures')
@@ -441,10 +450,13 @@ def get_layout_from_study(study_id):
     return layout
 
 
-def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: List[Tuple[str, str]]) -> dt.DataTable:
-    """ Download dataset qualities for the given datasets and populate a DataTable with this information. """
+def create_dataset_overview_table(id_: str, dataset_ids: List[int],
+                                  columns: List[Tuple[str, str]]) -> dt.DataTable:
+    """ Download dataset qualities for the given datasets and
+    populate a DataTable with this information. """
     datas = datasets.get_datasets(dataset_ids, download_data=False)
-    # You might want to filter out all but the shown data, as the unshown data is also sent (but keep did for reference)
+    # You might want to filter out all but the shown data,
+    # as the unshown data is also sent (but keep did for reference)
     qualities = [{**data.qualities, 'name': data.name, 'did': data.dataset_id} for data in datas]
     columns = [{"name": column_name, "id": quality_name} for column_name, quality_name in columns]
     return dt.DataTable(
@@ -457,7 +469,8 @@ def create_dataset_overview_table(id_: str, dataset_ids: List[int], columns: Lis
         style_as_list_view=True,  # Removes vertical grid lines
         style_cell={'font-family': 'Segoe UI Symbol'},  # 'fontSize': 12
         style_cell_conditional=[{'if': {'column_id': 'name'}, 'textAlign': 'left'}],
-        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(252, 252, 252)'}],
+        style_data_conditional=[{'if': {'row_index': 'odd'},
+                                 'backgroundColor': 'rgb(252, 252, 252)'}],
         style_header={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold'}
     )
 
@@ -490,7 +503,8 @@ def get_layout_from_suite(suite_id):
                     labelStyle={'display': 'inline-block'}
                 )
             ],
-                style={'width': '48%', 'display': 'inline-block'}),
+                className="five columns",
+                style={'display': 'inline-block'}),
 
             html.Div([
                 dcc.Dropdown(
@@ -504,7 +518,8 @@ def get_layout_from_suite(suite_id):
                     value='linear',
                     labelStyle={'display': 'inline-block'}
                 )
-            ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+            ], className="five columns", style={'float': 'right',
+                                                'display': 'inline-block'})
         ]),
 
         html.Div(id='suite-scatter-plot'),
@@ -534,12 +549,13 @@ def get_layout_dataset_overview():
 
     graph = html.Div(id='data_overview', className="twelve columns")
     layout = html.Div([html.H3('Overview of datasets on OpenML'),
-                       html.P('Choose whether active/all datasets are considered for overview plots',
+                       html.P('Choose whether active/all '
+                              'datasets are considered for overview plots',
                               style={'text-align': 'left', 'color': 'gray', 'fontSize': 11
                                      }
                               ),
                        radio_button,
-                       graph], style={'overflowY':'hidden'})
+                       graph], style={'overflowY': 'hidden'})
     return layout
 
 
@@ -555,7 +571,7 @@ def get_run_overview():
                 labelStyle={'display': 'inline-block', 'text-align': 'justify', 'fontSize': 11}
 
             ))
-    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}),type='dot')
+    run_loader = dcc.Loading(html.Div(id='loader', style={'display': 'none'}), type='dot')
 
     layout = html.Div([run_loader,
                        graph,

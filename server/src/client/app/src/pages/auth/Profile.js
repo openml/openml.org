@@ -44,6 +44,9 @@ function Public() {
   const [bio, setBio] = useState(false);
   const [fname, setFname] = useState(false);
   const [lname, setLname] = useState(false);
+  const [image, setImage] = useState(false);
+  const [error, setError] = useState(false);
+  const [errormessage, setErrorMessage] = useState(false);
 
   const yourConfig = {
     headers: {
@@ -58,6 +61,7 @@ function Public() {
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
+        setImage(response.data.image);
         console.log(user);
 
       })
@@ -65,23 +69,51 @@ function Public() {
         console.log(error);
       });
     function profiletoflask(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-    axios
-      .post(process.env.REACT_APP_SERVER_URL+"profile", {
-        bio: event.target.biography.value,
-        first_name: event.target.firstname.value,
-        last_name: event.target.lastname.value,
+        event.preventDefault();
+        console.log(event.target.image.files);
 
+        if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+          setError(true);
+          setErrorMessage("Plase enter valid email");
+        }
+        else{
+          setError(false);
+          axios
+                .post(process.env.REACT_APP_SERVER_URL+"profile", {
+                  bio: event.target.biography.value,
+                  first_name: event.target.firstname.value,
+                  last_name: event.target.lastname.value,
+                  image:event.target.image.files,
+                  email:event.target.email.value,
 
-      }, yourConfig)
-      .then(function(response) {
-        console.log(response.data);
-      })
-      .catch(function(error) {
-        console.log(error.data);
-      });
-    return false;
+                }, yourConfig)
+                .then(function(response) {
+                  console.log(response.data);
+                })
+                .catch(function(error) {
+                  console.log(error.data);
+                });
+          let images = event.target.image.files
+          let formData = new FormData();
+
+          formData.append('file', images[0])
+            console.log(formData);
+          setImage(images[0])
+                    axios.post(process.env.REACT_APP_SERVER_URL+"image",formData,yourConfig)
+            .then(response => console.log(response))
+            .catch(errors => console.log(errors));
+          // axios.post(process.env.REACT_APP_SERVER_URL+"image",{
+          //     data:data,
+          //     // headers:{
+          //     //     'Content-Type':'multipart/form-data'
+          //     // }
+          // }).then(function (response) {
+          //     console.log(response.data);
+          // }).catch(function (error) {
+          //     console.log(error.data);
+          // });
+          }
+        return false;
   }
   return (
     <Card mb={6}>
@@ -89,6 +121,14 @@ function Public() {
         <Typography variant="h6" gutterBottom>
           Public info
         </Typography>
+        {
+        error &&
+        (
+        <Typography component="h3" variant="body1" align="center" color="red">
+          {errormessage}
+        </Typography>
+      )
+      }
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>
@@ -145,11 +185,12 @@ function Public() {
               <input
                 accept="image/*"
                 style={{ display: "none" }}
-                id="raised-button-file"
+                id="image"
                 multiple
                 type="file"
+                defaultValue={image}
               />
-              <label htmlFor="raised-button-file">
+              <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">
                   <FAIcon icon="cloud-upload-alt" mr={2} /> Upload
                 </Button>

@@ -1,7 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
-import ReactDOM from "react-dom";
-import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -27,32 +25,17 @@ const Wrapper = styled(Paper)`
   }
 `;
 
-function ResetPage() {
-    console.log(window.location.href)
-    const [verifToken, setverifToken] = useState(false);
-    const [redirect, setRedirect] = useState(false);
-    axios.post(process.env.REACT_APP_SERVER_URL+"forgot-token",{
-        url:window.location.href,
-    }).then(function(response) {
-        console.log(response.data);
-        setverifToken(true);
-      })
-      .catch(function(error) {
-        console.log(error.data);
-      });
+function ConfirmationToken() {
     function sendflask(event){
      event.preventDefault();
     const data = new FormData(event.target);
     console.log('executed');
-    axios.post(process.env.REACT_APP_SERVER_URL+"resetpassword",{
-        url: window.location.href,
-        password: event.target.password.value
+    axios.post(process.env.REACT_APP_SERVER_URL+"send-confirmation-token",{
+        email: event.target.email.value
     }).then(function(response) {
         console.log(response.data);
-        setRedirect(true);
       })
       .catch(function(error) {
-          console.log('error')
         console.log(error.data);
       });
     }
@@ -60,19 +43,15 @@ function ResetPage() {
   return (
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Reset password
+        Send activation email
       </Typography>
       <Typography component="h2" variant="body1" align="center">
-        Enter new password
+        Enter your email to send confirmation token again
       </Typography>
       <form onSubmit={sendflask}>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">New Password</InputLabel>
-          <Input id="password" name="password" autoComplete="password" autoFocus />
-        </FormControl>
-          <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="confirmpassword">Confirm New Password</InputLabel>
-          <Input id="confirmpassword" name="confirmpassword" autoComplete="confirmpassword" autoFocus />
+          <InputLabel htmlFor="email">Email Address</InputLabel>
+          <Input id="email" name="email" autoComplete="email" autoFocus />
         </FormControl>
         <Button
           type="Submit"
@@ -84,12 +63,9 @@ function ResetPage() {
         >
           Reset password
         </Button>
-          {redirect && (
-          <Redirect to="/auth/sign-in" />
-        )}
       </form>
     </Wrapper>
   );
 }
 
-export default ResetPage;
+export default ConfirmationToken;

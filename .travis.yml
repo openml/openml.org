@@ -15,13 +15,16 @@ addons:
 install:
   - pip install -r requirements.txt
   - pip install dash[testing]
+  - pip install flake8
 
 before_script:
   - ln --symbolic /usr/lib/chromium-browser/chromedriver "${HOME}/bin/chromedriver"
   - ls ${HOME}/bin/
   - flask run & # Run in background, to run pytest next
 
-script: pytest server/src/dashboard/tests --headless
+script:
+  - flake8 --max-line-length 100
+  - pytest server/src/dashboard/tests --headless
 
 #after_script: pkill -9 -f "autoapp.py"
 

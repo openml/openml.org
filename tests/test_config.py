@@ -1,7 +1,12 @@
 import datetime
 
+from environs import Env
 
-class Config(object):
+env = Env()
+env.read_env()
+
+
+class TestConfig(object):
     """
     Config object for flask app
     """

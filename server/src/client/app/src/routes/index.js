@@ -20,10 +20,13 @@ const Cover = async(() => import("../pages/cover/Cover"));
 // Auth components
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
-const Profile = async(() => import("../pages/auth/Profile"));
+const EditProfile = async(() => import("../pages/auth/Profile"));
+const ProfilePage = async(() => import("../pages/auth/ProfilePage"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const ResetPage = async(() => import("../pages/auth/ResetPage"));
 const ConfirmPage = async(() => import("../pages/auth/ConfirmPage"));
+const ConfirmationToken = async(() => import("../pages/auth/ConfirmationToken"));
+const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
 
@@ -143,8 +146,24 @@ const peopleRoutes = {
 const profileRoutes = {
   id: "Profile",
   path: "/auth/profile",
-  icon: <GreenMenuIcon icon="user" fixedWidth />,
-  component: Profile
+  children: [
+    {
+      path: "/auth/profile-page",
+      name: "User Profile",
+      component: ProfilePage
+    },
+    {
+      path: "/auth/edit-profile",
+      name: "Edit Profile",
+      component: EditProfile
+    },
+    {
+      path: "/auth/api-key",
+      name: "API-Key",
+      component: APIPage
+    }
+    ]
+
 };
 
 const coverRoutes = {
@@ -196,6 +215,11 @@ const authRoutes = {
       path: "/auth/confirm-page",
       name: "Confirmation Page",
       component: ConfirmPage
+    },
+    {
+      path: "/auth/confirmation-token",
+      name: "Send Confirmation Again",
+      component: ConfirmationToken
     },
     {
       path: "/auth/sign-up",

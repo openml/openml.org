@@ -1,9 +1,10 @@
 import time
-from collections import Counter
+
+import numpy as np
 import pandas as pd
 from openml import runs
-import numpy as np
-from .test_config import *
+
+from server.src.dashboard.dash_config import BASE_URL
 
 
 def uncommon_string(s1, s2):
@@ -31,8 +32,8 @@ def test_run_data(dash_br):
     for dic in df['results']:
         x = (dic[0])
         values = [x[elem] for elem in x]
-        mean = str(round(np.mean(np.array(values), axis=0), 3))
-        std = str(round(np.std(np.array(values), axis=0), 3))
+        mean = str(np.round(np.mean(np.array(values), axis=0), 3))
+        std = str(np.round(np.std(np.array(values), axis=0), 3))
         result_list.append(values)
         error.append(mean + " \u00B1 " + std)
     df.drop(['results'], axis=1, inplace=True)
@@ -55,7 +56,7 @@ def test_run_graph_elements(dash_br):
     run_id = 10228060
     dash_br.server_url = f"{BASE_URL}run/{run_id}"
     time.sleep(10)
-    distribution_plot = dash_br.find_element("#runplot") #find_element_by_css_selector("#graph1")
+    distribution_plot = dash_br.find_element("#runplot")  # find_element_by_css_selector("#graph1")
     pr = dash_br.find_element("#pr")
     assert("area_under_roc_curve" in distribution_plot.text)
     assert("Recall" in pr.text)
@@ -71,3 +72,10 @@ def test_run_graph_elements(dash_br):
 #             ids.append(id)
 #     np.save('run_ids.npy', np.asarray(ids))
 
+
+def test_run_overviews(dash_br):
+    dash_br.server_url = f"{BASE_URL}run/"
+    time.sleep(10)
+    assert dash_br.get_logs() == []
+    run_chart = dash_br.find_element('#run_overview')
+    assert ('Clustering' in run_chart.text)

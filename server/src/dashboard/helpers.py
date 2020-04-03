@@ -1,15 +1,41 @@
-from contextlib import contextmanager
-import time
-
-import pandas as pd
-from openml import datasets
-import scipy.stats
-import numpy as np
-from sklearn.model_selection import train_test_split
 import logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger('dashbpoard')
+import time
+from contextlib import contextmanager
+
+import numpy as np
+import pandas as pd
+import scipy.stats
+from openml import datasets, runs
+from sklearn.model_selection import train_test_split
+
+logger = logging.getLogger('dashboard')
 logger.setLevel(logging.DEBUG)
+
+
+def get_run_df(run_id: int):
+    run = runs.get_run(int(run_id), ignore_cache=True)
+    df = pd.DataFrame(run.fold_evaluations.items(), columns=['evaluations', 'results'])
+    # Evaluations table
+    result_list = []
+    result_string = []
+    for result in df['results']:
+        k_folds = list(result[0].values())
+        mean = str(np.round(np.mean(np.array(k_folds)), 3))
+        std = str(np.round(np.std(np.array(k_folds)), 3))
+        result_list.append(k_folds)
+        result_string.append(mean + " \u00B1 " + std)
+    df.drop(['results'], axis=1, inplace=True)
+    df['results'] = result_list
+    df['values'] = result_string
+    # Add some more rows indicating output prediction file name
+    df2 = pd.DataFrame(run.output_files.items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
+    df3 = pd.DataFrame({'task_type': run.task_type}.items(), columns=['evaluations', 'results'])
+    df2["values"] = ""
+    df = df.append(df2)
+    df = df.append(df3)
+    df.to_pickle('cache/run' + str(run_id) + '.pkl')
+    return run, df
 
 
 def clean_dataset(df):
@@ -22,16 +48,19 @@ def clean_dataset(df):
 def get_metadata(data_id: int):
     data = datasets.get_dataset(data_id, download_data=False)
     features = pd.DataFrame([vars(data.features[i]) for i in range(0, len(data.features))])
-    is_target = ["true" if name == data.default_target_attribute else "false" for name in features["name"]]
+    is_target = ["true" if name == data.default_target_attribute else "false"
+                 for name in features["name"]]
     features["Target"] = is_target
 
     # Extract #categories
-    size = [str(len(value)) if value is not None else ' ' for value in features['nominal_values']]
+    size = [str(len(value)) if value is not None else ' '
+            for value in features['nominal_values']]
     features['nominal_values'].replace({None: ' '}, inplace=True)
     features['# categories'] = size
 
     # choose features to be displayed
-    meta_features = features[["name", "data_type", "number_missing_values", '# categories', "Target"]]
+    meta_features = features[["name", "data_type", "number_missing_values",
+                              '# categories', "Target"]]
     meta_features.rename(columns={"name": "Attribute", "data_type": "DataType",
                                   "number_missing_values": "Missing values"}, inplace=True)
     meta_features.sort_values(by='Target', ascending=False, inplace=True)
@@ -56,41 +85,42 @@ def get_data_metadata(data_id):
     df = pd.DataFrame(x, columns=attribute_names)
     if x.shape[0] < 50000:
         df.to_pickle('cache/df'+str(data_id)+'.pkl')
-
-    # create a subsample of data for large datasets
-    try:
-        target_attribute = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
-    except IndexError:
-        target_attribute = None
-        pass
-
-    if x.shape[0] >= 50000 and target_attribute:
-        df = clean_dataset(df)
-        if x.shape[0] < 100000:
-            sample_size = 0.5
-        elif 100000 <= x.shape[0] < 500000:
-            sample_size = 0.25
-        elif 500000 <= x.shape[0] < 1e6:
-            sample_size = 0.1
-        else:
-            sample_size = 0.05
-        x = df.drop(target_attribute, axis=1)
-        y = df[target_attribute]
+    else:
+        # create a subsample of data for large datasets
         try:
-            X_train, X_test, y_train, y_test = train_test_split(x, y,
-                                                            stratify=y,
-                                                            test_size=sample_size)
-        except:
-            X_train, X_test, y_train, y_test = train_test_split(x, y,
-                                                                stratify=None,
-                                                                test_size=sample_size)
+            target_feat = meta_features[meta_features["Target"] == "true"]["Attribute"].values[0]
+        except IndexError:
+            target_feat = None
+            pass
 
-        x = X_test
-        x[target_attribute] = y_test
-        df = pd.DataFrame(x, columns=attribute_names)
-        df.to_pickle('cache/df' + str(data_id) + '.pkl')
+        if x.shape[0] >= 50000 and target_feat:
+            df = clean_dataset(df)
+            if x.shape[0] < 100000:
+                sample_size = 0.5
+            elif 100000 <= x.shape[0] < 500000:
+                sample_size = 0.25
+            elif 500000 <= x.shape[0] < 1e6:
+                sample_size = 0.1
+            else:
+                sample_size = 0.05
+            x = df.drop(target_feat, axis=1)
+            y = df[target_feat]
+            try:
+                X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                                    stratify=y,
+                                                                    test_size=sample_size)
+            except ValueError:
+                X_train, X_test, y_train, y_test = train_test_split(x, y,
+                                                                    stratify=None,
+                                                                    test_size=sample_size)
 
-    df.to_pickle('cache/df' + str(data_id) + '.pkl')
+            x = X_test
+            x[target_feat] = y_test
+            df = pd.DataFrame(x, columns=attribute_names)
+            df.to_pickle('cache/df' + str(data_id) + '.pkl')
+        else:
+            df.to_pickle('cache/df' + str(data_id) + '.pkl')
+
     meta_features = meta_features[meta_features["Attribute"].isin(pd.Series(df.columns))]
 
     # Add entropy
@@ -101,7 +131,7 @@ def get_data_metadata(data_id):
     for column in meta_features['Attribute']:
         if column in nominal_features:
             count = df[column].value_counts()
-            ent = round(scipy.stats.entropy(count),2)
+            ent = round(scipy.stats.entropy(count), 2)
             entropy.append(ent)
         else:
             entropy.append(' ')
@@ -115,28 +145,28 @@ def get_data_metadata(data_id):
 def get_highest_rank(df, leaderboard):
     df.sort_values(by=['upload_time'], inplace=True)
     scores = []
-    highest_rank = {}
+    # highest_rank = {}
     highest_score = {}
 
     setup_ids = []
 
     for index, row in df.iterrows():
         users = list(highest_score.keys())
-        new_user = (row['uploader_name'] not in (users))
+        new_user = (row['uploader_name'] not in users)
         if row['setup_id'] not in setup_ids or new_user:
             setup_ids.append(row['setup_id'])
             score = row['value']
             if new_user or (score not in scores):
                 scores.append(score)
                 scores.sort(reverse=True)
-                rank = scores.index(score) + 1
+                # rank = scores.index(score) + 1
                 if new_user or (highest_score[row['uploader_name']] < score):
-                   # highest_rank[row['uploader_name']] = rank
+                    # highest_rank[row['uploader_name']] = rank
                     highest_score[row['uploader_name']] = score
-                   # if highest_rank[row['uploader_name']] > row['Rank']:
-                     #   highest_rank[row['uploader_name']] = row['Rank']
-    #leaderboard['highest_rank'] = list(highest_rank.values())
-    
+                # if highest_rank[row['uploader_name']] > row['Rank']:
+                #   highest_rank[row['uploader_name']] = row['Rank']
+    # leaderboard['highest_rank'] = list(highest_rank.values())
+
     leaderboard['Top Score'] = list(highest_score.values())
     return leaderboard
 
@@ -145,7 +175,8 @@ def splitDataFrameList(df, target_column):
     """ df = dataframe to split,
     target_column = the column containing the values to split
     separator = the symbol used to perform the split
-    returns: a dataframe with each entry for the target column separated, with each element moved into a new row.
+    returns: a dataframe with each entry for the target column separated,
+     with each element moved into a new row.
     The values in the other columns are duplicated across the newly divided rows.
     """
     def splitListToRows(row, row_accumulator, target_column):
@@ -165,3 +196,14 @@ def print_duration(name: str):
     start = time.time()
     yield
     print(f'{name}: {time.time() - start:.3f}s')
+
+
+def bin_numeric(df, column_name, output_name):
+    df[output_name] = pd.cut(df[column_name], 1000).astype(str)
+    cat = df[output_name].str.extract(r'\((.*),', expand=False).astype(float)
+    df['bin'] = pd.Series(cat)
+    df.sort_values(by='bin', inplace=True)
+    df[output_name] = df[output_name].str.replace(',', ' -')
+    df[output_name] = df[output_name].str.replace('(', "")
+    df[output_name] = df[output_name].str.replace(']', "")
+    return df
