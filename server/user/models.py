@@ -91,8 +91,8 @@ class User(Base):
         md5_digest = hashlib.md5(timestamp1.encode()).hexdigest()
         self.session_hash = md5_digest
 
-    def set_image(self, image):
-        self.image = image
+    def update_image_address(self, path):
+        self.image = path
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

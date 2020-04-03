@@ -7,7 +7,7 @@ from flask import Blueprint, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
-
+from pathlib import Path
 from server.extensions import db, jwt
 from server.user.models import User
 from server.utils import confirmation_email
@@ -91,11 +91,18 @@ def profile():
 
 
 @user_blueprint.route('/image', methods=['POST'])
+@jwt_required
 def image():
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(email=current_user).first()
     f = request.files['file']
     print(f)
-    f.save(secure_filename(f.filename))
-    return "image received"
+    Path("dev_data/"+str(user.email)).mkdir(parents=True, exist_ok=True)
+    path = f.save(os.path.join('dev_data/'+str(user.email), secure_filename(f.filename)))
+    user.update_image_address(path)
+    db.session.merge(user)
+    db.session.commit()
+    return jsonify({"msg": "User image changed"}), 200
 
 
 @user_blueprint.route('/logout', methods=['POST'])

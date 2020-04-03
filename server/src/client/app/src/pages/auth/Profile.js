@@ -99,12 +99,7 @@ function Public() {
           formData.append('file', images[0])
             console.log(formData);
           setImage(images[0])
-                    axios({
-            method: 'post',
-            url: process.env.REACT_APP_SERVER_URL+"image",
-            data: formData,
-            config: { headers: { 'Content-Type': 'multipart/form-data' } }
-        })
+                    axios.post(process.env.REACT_APP_SERVER_URL+"image",formData,yourConfig)
             .then(response => console.log(response))
             .catch(errors => console.log(errors));
           // axios.post(process.env.REACT_APP_SERVER_URL+"image",{
