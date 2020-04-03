@@ -56,7 +56,7 @@ def login():
         return jsonify(access_token=access_token), 200
 
 
-# TODO Add user profile picture
+# TODO Send user profile
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():

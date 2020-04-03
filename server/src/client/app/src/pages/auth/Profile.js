@@ -188,6 +188,7 @@ function Public() {
                 id="image"
                 multiple
                 type="file"
+                defaultValue={image}
               />
               <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">
