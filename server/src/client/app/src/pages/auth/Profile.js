@@ -61,13 +61,20 @@ function Public() {
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
-        setImage(response.data.image);
         console.log(user);
 
       })
       .catch(function (error) {
         console.log(error);
       });
+  axios.get(process.env.REACT_APP_SERVER_URL+"send-image",yourConfig)
+      .then(function (response) {
+          console.log(response)
+          console.log(response.data)
+      })
+      .catch(function(error) {
+          console.log(error.data);
+        });
     function profiletoflask(event) {
         event.preventDefault();
         console.log(event.target.image.files);
@@ -83,7 +90,6 @@ function Public() {
                   bio: event.target.biography.value,
                   first_name: event.target.firstname.value,
                   last_name: event.target.lastname.value,
-                  image:event.target.image.files,
                   email:event.target.email.value,
 
                 }, yourConfig)
@@ -188,7 +194,7 @@ function Public() {
                 id="image"
                 multiple
                 type="file"
-                defaultValue={image}
+
               />
               <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">

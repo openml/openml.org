@@ -3,7 +3,7 @@ import hashlib
 import os
 from urllib.parse import parse_qs, urlparse
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
@@ -56,7 +56,6 @@ def login():
         return jsonify(access_token=access_token), 200
 
 
-# TODO Send user profile
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
@@ -98,11 +97,22 @@ def image():
     f = request.files['file']
     print(f)
     Path("dev_data/"+str(user.email)).mkdir(parents=True, exist_ok=True)
-    path = f.save(os.path.join('dev_data/'+str(user.email), secure_filename(f.filename)))
+    f.save(os.path.join('dev_data/'+str(user.email)+'/', secure_filename(f.filename)))
+    path = 'dev_data/'+str(user.email)+'/'+secure_filename(f.filename)
+    print(path)
     user.update_image_address(path)
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "User image changed"}), 200
+
+
+@user_blueprint.route('/send-image', methods=['GET'])
+@jwt_required
+def send_image():
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(email=current_user).first()
+    filename = user.image
+    return send_file(filename)
 
 
 @user_blueprint.route('/logout', methods=['POST'])
