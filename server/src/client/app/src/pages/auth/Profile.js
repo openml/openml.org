@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-
+import ReactDOM from "react";
 import {
   Avatar,
   Button,
@@ -19,6 +19,7 @@ import {
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { func } from "prop-types";
+import {Redirect} from "react-router-dom";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -46,6 +47,7 @@ function Public() {
   const [lname, setLname] = useState(false);
   const [image, setImage] = useState(false);
   const [error, setError] = useState(false);
+  const [imfile, setImg] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
 
   const yourConfig = {
@@ -69,8 +71,15 @@ function Public() {
       });
   axios.get(process.env.REACT_APP_SERVER_URL+"send-image",yourConfig)
       .then(function (response) {
-          console.log(response)
           console.log(response.data)
+        setImage(true);
+          const data = new Blob([response.data]);
+
+        setImg(data);
+        // const data =  new Buffer(response.data, 'binary').toString('base64')
+        // const Example = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
+
+
       })
       .catch(function(error) {
           console.log(error.data);
@@ -187,7 +196,12 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              <BigAvatar alt="Looking Good" src="/bot.png" />
+              <BigAvatar alt="Looking Good"  id="dp"/>
+        {/*  {image ? (*/}
+        {/*  <BigAvatar alt="Looking Good"  id="dp" src={URL.createObjectURL(imfile)}/>*/}
+        {/*) : (*/}
+        {/*  <BigAvatar alt="Looking Good"  id="dp"/>*/}
+        {/*)}*/}
               <input
                 accept="image/*"
                 style={{ display: "none" }}
