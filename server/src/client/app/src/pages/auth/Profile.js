@@ -58,32 +58,39 @@ function Public() {
   axios.get(process.env.REACT_APP_SERVER_URL+"profile",yourConfig)
       .then(function (response) {
         console.log(response);
+
+        setImg(response.data.image);
+        if(image!==null){
+        setImage(true);
+        }
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
         console.log(user);
+        console.log(imfile);
+        console.log(image);
 
       })
       .catch(function (error) {
         console.log(error);
       });
-  axios.get(process.env.REACT_APP_SERVER_URL+"send-image",yourConfig)
-      .then(function (response) {
-          console.log(response.data)
-        setImage(true);
-          const data = new Blob([response.data]);
-
-        setImg(data);
-        // const data =  new Buffer(response.data, 'binary').toString('base64')
-        // const Example = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
-
-
-      })
-      .catch(function(error) {
-          console.log(error.data);
-        });
+  // axios.get(process.env.REACT_APP_SERVER_URL+"send-image",yourConfig)
+  //     .then(function (response) {
+  //         console.log(response.data)
+  //       setImage(true);
+  //         const data = new Blob([response.data]);
+  //
+  //       setImg(data);
+  //       // const data =  new Buffer(response.data, 'binary').toString('base64')
+  //       // const Example = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
+  //
+  //
+  //     })
+  //     .catch(function(error) {
+  //         console.log(error.data);
+  //       });
     function profiletoflask(event) {
         event.preventDefault();
         console.log(event.target.image.files);
@@ -117,16 +124,7 @@ function Public() {
                     axios.post(process.env.REACT_APP_SERVER_URL+"image",formData,yourConfig)
             .then(response => console.log(response))
             .catch(errors => console.log(errors));
-          // axios.post(process.env.REACT_APP_SERVER_URL+"image",{
-          //     data:data,
-          //     // headers:{
-          //     //     'Content-Type':'multipart/form-data'
-          //     // }
-          // }).then(function (response) {
-          //     console.log(response.data);
-          // }).catch(function (error) {
-          //     console.log(error.data);
-          // });
+
           }
         return false;
   }
@@ -196,12 +194,13 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              <BigAvatar alt="Looking Good"  id="dp"/>
-        {/*  {image ? (*/}
-        {/*  <BigAvatar alt="Looking Good"  id="dp" src={URL.createObjectURL(imfile)}/>*/}
-        {/*) : (*/}
-        {/*  <BigAvatar alt="Looking Good"  id="dp"/>*/}
-        {/*)}*/}
+              {/*<BigAvatar alt="Looking Good"  src={process.env.REACT_APP_SERVER_URL + {imfile}}/>*/}
+          {image && imfile && (
+          <BigAvatar alt="Looking Good"  id="dp" src={process.env.REACT_APP_SERVER_URL + {imfile}}/>
+        )
+        }
+                {imfile}
+        <img src={process.env.REACT_APP_SERVER_URL + {imfile}}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}

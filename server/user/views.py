@@ -3,7 +3,7 @@ import hashlib
 import os
 from urllib.parse import parse_qs, urlparse
 
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
@@ -12,6 +12,8 @@ from server.extensions import db, jwt
 from server.user.models import User
 from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
+from PIL import Image
+from io import BytesIO
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -98,7 +100,7 @@ def image():
     print(f)
     Path("dev_data/"+str(user.email)).mkdir(parents=True, exist_ok=True)
     f.save(os.path.join('dev_data/'+str(user.email)+'/', secure_filename(f.filename)))
-    path = 'dev_data/'+str(user.email)+'/'+secure_filename(f.filename)
+    path = 'imgs/dev_data/'+str(user.email)+'/'+secure_filename(f.filename)
     print(path)
     user.update_image_address(path)
     db.session.merge(user)
@@ -106,13 +108,26 @@ def image():
     return jsonify({"msg": "User image changed"}), 200
 
 
-@user_blueprint.route('/send-image', methods=['GET'])
-@jwt_required
-def send_image():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    filename = user.image
-    return send_file(filename)
+@user_blueprint.route("/imgs/<path:path>")
+def images(path):
+    try:
+        im = Image.open(path)
+        # im.thumbnail((w, h), Image.ANTIALIAS)
+        io = BytesIO()
+        im.save(io, format='JPEG')
+        return Response(io.getvalue(), mimetype='image/jpeg')
+
+    except IOError:
+        abort(404)
+
+    return send_from_directory('.', path)
+# @user_blueprint.route('/send-image', methods=['GET'])
+# @jwt_required
+# def send_image():
+#     current_user = get_jwt_identity()
+#     user = User.query.filter_by(email=current_user).first()
+#     filename = user.image
+#     return send_file(filename)
 
 
 @user_blueprint.route('/logout', methods=['POST'])
