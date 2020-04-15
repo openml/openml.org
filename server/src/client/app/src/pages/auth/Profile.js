@@ -194,13 +194,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              {/*<BigAvatar alt="Looking Good"  src={process.env.REACT_APP_SERVER_URL + {imfile}}/>*/}
-          {image && imfile && (
-          <BigAvatar alt="Looking Good"  id="dp" src={process.env.REACT_APP_SERVER_URL + imfile}/>
-        )
-        }
-                {process.env.REACT_APP_SERVER_URL + imfile}
-        {/*<img src={process.env.REACT_APP_SERVER_URL + {imfile}}/>*/}
+          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + imfile}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}
