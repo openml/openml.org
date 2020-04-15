@@ -98,9 +98,9 @@ def image():
     user = User.query.filter_by(email=current_user).first()
     f = request.files['file']
     print(f)
-    Path("dev_data/"+str(user.email)).mkdir(parents=True, exist_ok=True)
-    f.save(os.path.join('dev_data/'+str(user.email)+'/', secure_filename(f.filename)))
-    path = 'imgs/dev_data/'+str(user.email)+'/'+secure_filename(f.filename)
+    Path("dev_data/" + str(user.email)).mkdir(parents=True, exist_ok=True)
+    f.save(os.path.join('dev_data/' + str(user.email) + '/', secure_filename(f.filename)))
+    path = 'imgs/dev_data/' + str(user.email) + '/' + secure_filename(f.filename)
     print(path)
     user.update_image_address(path)
     db.session.merge(user)
@@ -121,6 +121,8 @@ def images(path):
         abort(404)
 
     return send_from_directory('.', path)
+
+
 # @user_blueprint.route('/send-image', methods=['GET'])
 # @jwt_required
 # def send_image():
