@@ -47,7 +47,6 @@ function Public() {
   const [lname, setLname] = useState(false);
   const [image, setImage] = useState(false);
   const [error, setError] = useState(false);
-  const [imfile, setImg] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
 
   const yourConfig = {
@@ -59,38 +58,19 @@ function Public() {
       .then(function (response) {
         console.log(response);
 
-        setImg(response.data.image);
-        if(image!==null){
-        setImage(true);
-        }
+        setImage(response.data.image);
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
-        console.log(user);
-        console.log(imfile);
-        console.log(image);
+
 
       })
       .catch(function (error) {
         console.log(error);
       });
-  // axios.get(process.env.REACT_APP_SERVER_URL+"send-image",yourConfig)
-  //     .then(function (response) {
-  //         console.log(response.data)
-  //       setImage(true);
-  //         const data = new Blob([response.data]);
-  //
-  //       setImg(data);
-  //       // const data =  new Buffer(response.data, 'binary').toString('base64')
-  //       // const Example = ({ data }) => <img src={`data:image/jpeg;base64,${data}`} />
-  //
-  //
-  //     })
-  //     .catch(function(error) {
-  //         console.log(error.data);
-  //       });
+
     function profiletoflask(event) {
         event.preventDefault();
         console.log(event.target.image.files);
@@ -194,7 +174,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + imfile}/>
+          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + image}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}
