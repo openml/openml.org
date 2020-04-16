@@ -118,6 +118,7 @@ function Public() {
         <Button variant="contained" color="primary" href='/auth/edit-profile'>
           Edit Profile
         </Button>
+          &nbsp;&nbsp;&nbsp;
           <Button variant="contained" color="primary" href='/auth/api-key'>
           API Key
         </Button>

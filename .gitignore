@@ -47,3 +47,7 @@ flask-cache-dir/
 *.pem
 
 script.sh
+
+dev_data/ff\@ff.com/
+
+server/src/client/app/dev_data/ff\@ff.com/
