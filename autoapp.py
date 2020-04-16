@@ -6,8 +6,6 @@ from flask_cors import CORS
 from server.app import register_blueprints, register_extensions
 from server.config import Config
 
-
-# def create_app(config_object=Config):
 """ Create flask app and routing"""
 app = Flask(__name__, static_url_path='', static_folder='server/src/client/app/build',
             instance_relative_config=True)
@@ -19,6 +17,7 @@ register_extensions(app)
 register_blueprints(app)
 app.secret_key = os.environ.get("APP_SECRET_KEY")
 
+
 @app.route('/', defaults={'path': ''})
 @app.route("/<path:path>")
 def serve_static(path):
@@ -29,6 +28,7 @@ def serve_static(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     # This seems to catch all routes! Refer link:
@@ -38,7 +38,6 @@ def page_not_found(e):
     return send_from_directory(app.static_folder, "index.html")
 
     # return app
-
 
 # app = create_app()
 
