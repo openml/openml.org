@@ -94,14 +94,13 @@ def profile():
 @user_blueprint.route('/image', methods=['POST'])
 @jwt_required
 def image():
+    """Function to receive and set user image"""
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     f = request.files['file']
-    print(f)
     Path("dev_data/" + str(user.email)).mkdir(parents=True, exist_ok=True)
     f.save(os.path.join('dev_data/' + str(user.email) + '/', secure_filename(f.filename)))
     path = 'imgs/dev_data/' + str(user.email) + '/' + secure_filename(f.filename)
-    print(path)
     user.update_image_address(path)
     db.session.merge(user)
     db.session.commit()

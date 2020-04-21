@@ -72,6 +72,7 @@ function Public() {
       });
 
     function profiletoflask(event) {
+        // Both request should not be clubbed together because it will give error on server side image
         event.preventDefault();
         console.log(event.target.image.files);
 
@@ -96,14 +97,17 @@ function Public() {
                   console.log(error.data);
                 });
           let images = event.target.image.files
-          let formData = new FormData();
+            console.log(images[0])
+            if(images[0]!=undefined){
+                let formData = new FormData();
 
           formData.append('file', images[0])
             console.log(formData);
-          setImage(images[0])
+          // setImage(images[0])
                     axios.post(process.env.REACT_APP_SERVER_URL+"image",formData,yourConfig)
             .then(response => console.log(response))
             .catch(errors => console.log(errors));
+            }
 
           }
         return false;

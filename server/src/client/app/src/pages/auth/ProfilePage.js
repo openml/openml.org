@@ -40,6 +40,8 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
+
+
 function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
@@ -89,10 +91,6 @@ function Public() {
           <br />
           Bio: {bio}
           <br />
-
-
-
-
         </Typography>
         <Typography variant="h6" gutterBottom>
 
