@@ -91,6 +91,7 @@ def profile():
         return jsonify({"msg": "profile OK"}), 200
 
 
+# TODO Change Address before production
 @user_blueprint.route('/image', methods=['POST'])
 @jwt_required
 def image():
