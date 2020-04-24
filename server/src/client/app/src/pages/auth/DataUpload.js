@@ -93,7 +93,7 @@ function Public() {
 
         axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
             .then(function (response) {
-                if (response.data.msg == 'data uploaded') {
+                if (response.data.msg == "dataset uploaded") {
                     setSuccess(true)
                 }
 
@@ -221,25 +221,24 @@ function Public() {
                 <Button variant="contained" color="primary" type="Submit" onClick={handleClickOpen}>
                     Upload dataset
                 </Button>
+
+                <Dialog open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Your Dataset is uploading"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Your dataset is uploading, you can edit it via dashboard later and share it with
+                            public.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    </DialogActions>
+                </Dialog>
                 {success && (
-                    <Dialog open={open}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title">{"Your Dataset has been uploaded"}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                Your dataset has been uploaded, you can edit it via dashboard later and share it with
-                                public.
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary" href='/'>
-                                Ok
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                    <Redirect to="/"/>
                 )}
 
                 &nbsp;&nbsp;&nbsp;
