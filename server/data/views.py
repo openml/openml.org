@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_jwt_extended import (get_jwt_identity, jwt_required)
 from server.user.models import User
 from werkzeug.utils import secure_filename
-from io import BytesIO
 from pathlib import Path
 import os
 import uuid
@@ -29,7 +28,9 @@ def data_edit_upload():
     data_file = request.files['file']
     Path("temp_data/").mkdir(parents=True, exist_ok=True)
     data_file_name = uuid.uuid4()
-    data_file.save(os.path.join('temp_data/' + str(user_api_key) + '?', secure_filename(data_file.filename)))
+    print(data_file_name)
+    data_file.save(os.path.join('temp_data/' + str(user_api_key) + '?',
+                                secure_filename(data_file.filename)))
     path = secure_filename(data_file.filename)
     return jsonify({"msg": path}), 200
 
@@ -61,20 +62,25 @@ def data_upload():
     licence = metadata['licence']
     language = metadata['language']
     attribute = metadata['attribute']
-    default_target_attribute = metadata['def_tar_att']
+    def_tar_att = metadata['def_tar_att']
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
     if file_extension == '.csv':
         df = pd.read_csv(path)
-        oml_dataset = openml.datasets.create_dataset(name=dataset_name, description=description,
-                                                     data=df, creator=creator, contributor=contributor,
-                                                     collection_date=collection_date, licence=licence,
-                                                     language=language, attributes=attribute,
-                                                     default_target_attribute=default_target_attribute,
-                                                     ignore_attribute=ignore_attribute, citation=citation)
+        oml_dataset = openml.datasets.create_dataset(name=dataset_name,
+                                                     description=description,
+                                                     data=df, creator=creator,
+                                                     contributor=contributor,
+                                                     collection_date=collection_date,
+                                                     licence=licence,
+                                                     language=language,
+                                                     attributes=attribute,
+                                                     default_target_attribute=def_tar_att,
+                                                     ignore_attribute=ignore_attribute,
+                                                     citation=citation)
         oml_dataset.publish()
     print(path)
     os.remove(path)
-# TODO remove dataset after upload
+    # TODO remove dataset after upload
     return jsonify({"msg": 'dataset uploaded'}), 200
