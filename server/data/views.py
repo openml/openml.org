@@ -65,7 +65,6 @@ def data_upload():
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    print(path)
     if file_extension == '.csv':
         df = pd.read_csv(path)
         oml_dataset = openml.datasets.create_dataset(name=dataset_name, description=description,
@@ -75,5 +74,7 @@ def data_upload():
                                                      default_target_attribute=default_target_attribute,
                                                      ignore_attribute=ignore_attribute, citation=citation)
         oml_dataset.publish()
+    print(path)
+    os.remove(path)
 # TODO remove dataset after upload
     return jsonify({"msg": 'dataset uploaded'}), 200

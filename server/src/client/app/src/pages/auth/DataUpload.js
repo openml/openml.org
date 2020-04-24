@@ -74,6 +74,12 @@ function Public() {
             creator: event.target.creator.value,
             contributor: event.target.contributor.value,
             collection_date: event.target.collection_date.value,
+            licence: event.target.licence.value,
+            language: event.target.language.value,
+            attribute: event.target.attribute.value,
+            ignore_attribute: event.target.ignore_attribute.value,
+            def_tar_att: event.target.def_tar_att.value,
+            citation: event.target.citation.value,
         };
         const json = JSON.stringify(obj);
         const blob = new Blob([json], {
@@ -135,7 +141,7 @@ function Public() {
                             />
                         </FormControl>
                         <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="Contributor(s)">Contributor(s)</InputLabel>
+                            <InputLabel htmlFor="contributor">Contributor(s)</InputLabel>
                             <Input
                                 id="contributor"
                                 placeholder="Last name"
@@ -145,16 +151,49 @@ function Public() {
                             <InputLabel htmlFor="Collection Date">Collection date</InputLabel>
                             <Input
                                 id="collection_date"
-                                type="email"
                                 placeholder="Collection date"
                             />
                         </FormControl>
                         <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="Collection Date">Collection date</InputLabel>
+                            <InputLabel htmlFor="language">Language</InputLabel>
                             <Input
-                                id="collection_date"
-                                type="email"
-                                placeholder="Collection date"
+                                id="language"
+                                placeholder="Language"
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="licence">Licence</InputLabel>
+                            <Input
+                                id="licence"
+                                placeholder="Licence"
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="attribute">Attribute</InputLabel>
+                            <Input
+                                id="attribute"
+                                placeholder="attribute"
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="def_tar_att">Default target attribute</InputLabel>
+                            <Input
+                                id="def_tar_att"
+                                placeholder="def_tar_att"
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="ignore_attribute">Ignore attribute</InputLabel>
+                            <Input
+                                id="ignore_attribute"
+                                placeholder="ignore attribute"
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="citation">Citation</InputLabel>
+                            <Input
+                                id="citation"
+                                placeholder="citation"
                             />
                         </FormControl>
                     </Grid>
@@ -178,29 +217,30 @@ function Public() {
                         </CenteredContent>
                     </Grid>
                 </Grid>
-                {success && (
-                    <Redirect to="/auth/sign-in"/>
-                )}
+
                 <Button variant="contained" color="primary" type="Submit" onClick={handleClickOpen}>
                     Upload dataset
                 </Button>
-                <Dialog open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Your Dataset has been uploaded"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Your dataset has been uploaded, you can edit it via dashboard later and share it with public.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                    <Button onClick={handleClose} color="primary" href='/'>
-                        Ok
-                    </Button>
-                    </DialogActions>
-                </Dialog>
+                {success && (
+                    <Dialog open={open}
+                            onClose={handleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Your Dataset has been uploaded"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Your dataset has been uploaded, you can edit it via dashboard later and share it with
+                                public.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary" href='/'>
+                                Ok
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
 
                 &nbsp;&nbsp;&nbsp;
                 <Button variant="contained" color="primary" type="Submit">
