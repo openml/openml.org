@@ -11,7 +11,6 @@ import openml
 import pandas as pd
 import json
 
-
 data_blueprint = Blueprint("data", __name__, static_folder='server/src/client/app/build')
 
 CORS(data_blueprint)
@@ -44,16 +43,30 @@ def data_upload():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
+    openml.config.apikey = ''
+    # change line below in production
+    openml.config.start_using_configuration_for_example()
     data_file = request.files['dataset']
     metadata = request.files['metadata']
+    Path("temp_data/").mkdir(parents=True, exist_ok=True)
+    data_file.save('temp_data/' + user_api_key + '?' + secure_filename(data_file.filename))
+    path = 'temp_data/' + user_api_key + '?' + secure_filename(data_file.filename)
     metadata = metadata.read()
     metadata = json.loads(metadata)
     dataset_name = metadata['dataset_name']
     description = metadata['description']
     creator = metadata['creator']
-    file_name, file_extension = os.path.splitext(data_file)
-    if file_extension == 'csv':
-        df = pd.read_csv(data_file)
+    file_name, file_extension = os.path.splitext(data_file.filename)
+    print(file_extension)
+    if file_extension == '.csv':
+        df = pd.read_csv(path)
         print(df)
-    return jsonify({"msg": 'dataset uploaded'}), 200
+        oml_dataset = openml.datasets.create_dataset(name=dataset_name, description=description,
+                                                     data=df, creator=creator, contributor='test',
+                                                     collection_date='11-09-1990', licence='MIT',
+                                                     language='english', attributes='auto',
+                                                     default_target_attribute='test',
+                                                     ignore_attribute='test', citation='test' )
+        oml_dataset.publish()
 
+    return jsonify({"msg": 'dataset uploaded'}), 200

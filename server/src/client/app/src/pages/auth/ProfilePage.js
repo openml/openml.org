@@ -58,15 +58,12 @@ function Public() {
   axios.get(process.env.REACT_APP_SERVER_URL+"profile",yourConfig)
       .then(function (response) {
         console.log(response);
-
         setImage(response.data.image);
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
-
-
       })
       .catch(function (error) {
         console.log(error);
