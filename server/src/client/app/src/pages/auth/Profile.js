@@ -16,6 +16,7 @@ import {
   Typography
 } from "@material-ui/core";
 
+
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { func } from "prop-types";
@@ -74,9 +75,7 @@ function Public() {
     function profiletoflask(event) {
         // Both request should not be clubbed together because it will give error on server side image
         event.preventDefault();
-        console.log(event.target.image.files);
-
-        if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+         if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
           setError(true);
           setErrorMessage("Plase enter valid email");
         }
