@@ -56,17 +56,24 @@ def data_upload():
     dataset_name = metadata['dataset_name']
     description = metadata['description']
     creator = metadata['creator']
+    contributor = metadata['contributor']
+    collection_date = metadata['collection_date']
+    licence = metadata['licence']
+    language = metadata['language']
+    attribute = metadata['attribute']
+    default_target_attribute = metadata['def_tar_att']
+    ignore_attribute = metadata['ignore_attribute']
+    citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    print(file_extension)
+    print(path)
     if file_extension == '.csv':
         df = pd.read_csv(path)
-        print(df)
         oml_dataset = openml.datasets.create_dataset(name=dataset_name, description=description,
-                                                     data=df, creator=creator, contributor='test',
-                                                     collection_date='11-09-1990', licence='MIT',
-                                                     language='english', attributes='auto',
-                                                     default_target_attribute='test',
-                                                     ignore_attribute='test', citation='test' )
+                                                     data=df, creator=creator, contributor=contributor,
+                                                     collection_date=collection_date, licence=licence,
+                                                     language=language, attributes=attribute,
+                                                     default_target_attribute=default_target_attribute,
+                                                     ignore_attribute=ignore_attribute, citation=citation)
         oml_dataset.publish()
-
+# TODO remove dataset after upload
     return jsonify({"msg": 'dataset uploaded'}), 200
