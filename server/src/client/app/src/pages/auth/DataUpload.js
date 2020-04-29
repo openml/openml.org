@@ -104,10 +104,15 @@ function Public() {
         data.append('dataset', dataset[0]);
         data.append('metadata', blob)
         if (uploaddata === true) {
+            setError(false);
             axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
                 .then(function (response) {
                     if (response.data.msg == "dataset uploaded") {
                         setSuccess(true)
+                    }
+                    if (response.data.msg == "format not supported") {
+                        setErrorMessage("Data format not supported");
+                        setError(true);
                     }
 
                 })
@@ -143,12 +148,6 @@ function Public() {
     } else {
         return (
             <Card mb={6}>
-                {/*{editsuccess && (*/}
-                {/*    <iframe src={"/dashboard/data-upload?uuid=" + editpath}*/}
-                {/*            height="3300px"*/}
-                {/*            width="98%"*/}
-                {/*            frameBorder="0"/>*/}
-                {/*)}*/}
                 <form onSubmit={datatoflask}>
                     <Typography variant="h6" gutterBottom>
                         Dataset info
@@ -276,6 +275,13 @@ function Public() {
                             <DialogContentText id="alert-dialog-description">
                                 Your dataset is uploading, you can edit it via dashboard later and share it with
                                 public.
+                                {
+                                    error &&
+                                    (
+
+                                        <text> {errormessage}</text>
+                                    )
+                                }
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>

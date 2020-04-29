@@ -71,7 +71,12 @@ def data_upload():
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    if file_extension == '.csv':
+    supported_extensions = ['.csv', '.parquet', '.json', ',feather']
+
+    if file_extension not in supported_extensions:
+        return jsonify({"msg": 'format not supported'})
+
+    elif file_extension == '.csv':
         df = pd.read_csv(path)
 
     elif file_extension == '.json':
