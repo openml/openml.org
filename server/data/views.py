@@ -73,18 +73,28 @@ def data_upload():
     file_name, file_extension = os.path.splitext(data_file.filename)
     if file_extension == '.csv':
         df = pd.read_csv(path)
-        oml_dataset = openml.datasets.create_dataset(name=dataset_name,
-                                                     description=description,
-                                                     data=df, creator=creator,
-                                                     contributor=contributor,
-                                                     collection_date=collection_date,
-                                                     licence=licence,
-                                                     language=language,
-                                                     attributes=attribute,
-                                                     default_target_attribute=def_tar_att,
-                                                     ignore_attribute=ignore_attribute,
-                                                     citation=citation)
-        oml_dataset.publish()
+
+    elif file_extension == '.json':
+        df = pd.read_json(path)
+
+    elif file_extension == '.parquet':
+        df = pd.read_json(path)
+
+    elif file_extension == '.feather':
+        df = pd.read_json(path)
+
+    oml_dataset = openml.datasets.create_dataset(name=dataset_name,
+                                                 description=description,
+                                                 data=df, creator=creator,
+                                                 contributor=contributor,
+                                                 collection_date=collection_date,
+                                                 licence=licence,
+                                                 language=language,
+                                                 attributes=attribute,
+                                                 default_target_attribute=def_tar_att,
+                                                 ignore_attribute=ignore_attribute,
+                                                 citation=citation)
+    oml_dataset.publish()
     print(path)
     os.remove(path)
     # TODO remove dataset after upload
