@@ -44,11 +44,17 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
+
 function Public() {
 
     const [error, setError] = useState(false);
     const [errormessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [editdata, setEditData] = useState(false);
+    const [uploaddata, setUploadData] = useState(false);
+    const [editpath, setEditPath] = useState(false);
+    const [editsuccess, setEditSuccess] = useState(false);
+
     const yourConfig = {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
@@ -61,6 +67,14 @@ function Public() {
     }
     const handleClose = () => {
         setOpen(false);
+    }
+    const handleEditData = () => {
+        setEditData(true);
+    }
+
+    const handleUploadData = () => {
+        setUploadData(true);
+        setOpen(true);
     }
 
     function datatoflask(event) {
@@ -90,8 +104,8 @@ function Public() {
 
         data.append('dataset', dataset[0]);
         data.append('metadata', blob)
-
-        axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
+        if(uploaddata===true){
+            axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
             .then(function (response) {
                 if (response.data.msg == "dataset uploaded") {
                     setSuccess(true)
@@ -99,12 +113,33 @@ function Public() {
 
             })
             .catch(errors => console.log(errors));
+        }
+
+        if(editdata===true){
+            axios.post(process.env.REACT_APP_SERVER_URL + "data-edit-upload", data, yourConfig)
+            .then(function (response) {
+                setEditPath(response.data.msg);
+                console.log(response.data.msg);
+                setEditSuccess(true);
+
+
+
+            })
+            .catch(errors => console.log(errors));
+        }
+
 
         return false;
     }
 
     return (
         <Card mb={6}>
+                            {editsuccess && (
+                    <iframe src={"/dashboard/data-upload?uuid=" + editpath}
+                            height="3300px"
+                            width="98%"
+                            frameBorder="0"/>
+                )}
             <form onSubmit={datatoflask}>
                 <Typography variant="h6" gutterBottom>
                     Dataset info
@@ -218,7 +253,7 @@ function Public() {
                     </Grid>
                 </Grid>
 
-                <Button variant="contained" color="primary" type="Submit" onClick={handleClickOpen}>
+                <Button variant="contained" color="primary" type="Submit" onClick={handleUploadData}>
                     Upload dataset
                 </Button>
 
@@ -242,7 +277,7 @@ function Public() {
                 )}
 
                 &nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="primary" type="Submit">
+                <Button variant="contained" color="primary" type="Submit" onClick={handleEditData}>
                     Edit dataset
                 </Button>
             </form>

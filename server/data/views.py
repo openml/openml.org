@@ -25,13 +25,18 @@ def data_edit_upload():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
-    data_file = request.files['file']
+    data_file = request.files['dataset']
+    metadata = request.files['metadata']
+    # metadata = metadata.read()
+    # metadata = json.loads(metadata)
+    file_name, file_extension = os.path.splitext(data_file.filename)
+    data_file_uuid = str(uuid.uuid4())
     Path("temp_data/").mkdir(parents=True, exist_ok=True)
-    data_file_name = uuid.uuid4()
-    print(data_file_name)
-    data_file.save(os.path.join('temp_data/' + str(user_api_key) + '?',
-                                secure_filename(data_file.filename)))
-    path = secure_filename(data_file.filename)
+    Path("temp_data/json/").mkdir(parents=True, exist_ok=True)
+    data_file.save('temp_data/' + user_api_key + '?' + data_file_uuid + file_extension)
+    metadata.save('temp_data/json/' + user_api_key + '?' + data_file_uuid)
+    print(data_file_uuid)
+    path = str(data_file_uuid)
     return jsonify({"msg": path}), 200
 
 
