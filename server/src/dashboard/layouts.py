@@ -357,8 +357,25 @@ def get_layout_from_run(run_id):
                'position': 'absolute'}
     )
     # PR and ROC plot
-    pr_chart = dcc.Loading(html.Div(id='pr'))
-    roc_chart = html.Div(id='roc')
+    pr_chart = dcc.Loading(html.Div([
+        html.H4("PR chart:"),
+        html.Div(id='pr')],
+        style={'display': 'inline-block',
+               'position': 'relative'},
+        className="twelve columns"
+
+    )
+    )
+    roc_chart = dcc.Loading(html.Div([
+        html.H4("ROC chart:"),
+        html.Div(id='roc')],
+        style={'display': 'inline-block',
+               'position': 'relative'},
+        className="twelve columns"
+
+    )
+    )
+
     layout = html.Div([
         run_title,
         html.P('Choose one or more measures from the table',
@@ -368,12 +385,14 @@ def get_layout_from_run(run_id):
             run_table,
             run_plot,
         ]),
-        html.H4("PR chart:"),
+
         pr_chart,
-        html.H4("ROC curve:"),
         roc_chart
-    ], className='container',
-        style={'overflowY': 'hidden'})
+    ],
+        className='container',
+        style={'overflowY': 'hidden'}
+
+    )
     return layout
 
 
