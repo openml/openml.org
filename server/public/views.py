@@ -2,7 +2,7 @@ import datetime
 import hashlib
 
 from flask_cors import CORS
-
+from flask_dance.contrib.github import github
 from server.extensions import db
 from server.user.models import User
 from server.utils import confirmation_email, forgot_password_email
@@ -58,6 +58,14 @@ def signupfunc():
         return jsonify({"msg": "User created"}), 200
     else:
         return jsonify({"msg": "User already exists"}), 200
+
+
+@blueprint.route('/github-register')
+def github_register():
+    resp = github.get("/user")
+    print(resp.json())
+    assert resp.ok
+    return "You are @{login} on GitHub".format(login=resp.json()["login"])
 
 
 @blueprint.route('/forgotpassword', methods=['POST'])

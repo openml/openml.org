@@ -1,4 +1,4 @@
-from flask_dance.contrib.github import make_github_blueprint  # , github
+from flask_dance.contrib.github import make_github_blueprint, github
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from server import public, user, data
@@ -42,6 +42,16 @@ def register_blueprints(app):
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.user_blueprint)
     app.register_blueprint(data.views.data_blueprint)
-    github_bp = make_github_blueprint()
+    github_bp = make_github_blueprint(redirect_url='/github-register')
     app.register_blueprint(github_bp, url_prefix="/login")
+    #
+    # @app.route("/git")
+    # def index():
+    #     # if not github.authorized:
+    #     #     return redirect(url_for("github.login"))
+    #     resp = github.get("/user")
+    #     print(resp.json())
+    #     assert resp.ok
+    #     return "You are @{login} on GitHub".format(login=resp.json()["login"])
     return None
+
