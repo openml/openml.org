@@ -28,6 +28,7 @@ const ConfirmPage = async(() => import("../pages/auth/ConfirmPage"));
 const ConfirmationToken = async(() => import("../pages/auth/ConfirmationToken"));
 const DataUpload = async(() => import("../pages/auth/DataUpload"));
 const CollectionRunsUpload = async(() => import("../pages/auth/CollectionRunsUpload"));
+const CollectionTasksUpload = async(() => import("../pages/auth/CollectionTasksUpload"));
 const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
@@ -173,8 +174,12 @@ const profileRoutes = {
       path: "/auth/upload-collection-runs",
       name: "Collection Runs Upload",
       component: CollectionRunsUpload
+    },
+    {
+      path: "/auth/upload-collection-tasks",
+      name: "Collection tasks Upload",
+      component: CollectionTasksUpload
     }
-
     ]
 
 };

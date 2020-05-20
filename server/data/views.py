@@ -50,7 +50,7 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = ''
-    # change line below in production
+    # TODO change line below in production
     openml.config.start_using_configuration_for_example()
     data_file = request.files['dataset']
     metadata = request.files['metadata']
