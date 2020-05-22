@@ -3,15 +3,14 @@ from flask_cors import CORS
 from flask_jwt_extended import (get_jwt_identity, jwt_required)
 from server.user.models import User
 import openml
-import json
 import uuid
 
-collection_blueprint = Blueprint("collection", __name__, static_folder='server/src/client/app/build')
+collection_bp = Blueprint("collection", __name__, static_folder='server/src/client/app/build')
 
-CORS(collection_blueprint)
+CORS(collection_bp)
 
 
-@collection_blueprint.route('/upload-collection-runs', methods=['POST'])
+@collection_bp.route('/upload-collection-runs', methods=['POST'])
 @jwt_required
 def upload_collection_runs():
     """
@@ -21,9 +20,9 @@ def upload_collection_runs():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
-    # openml.config.apikey = user_api_key
+    openml.config.apikey = user_api_key
     # TODO change line below in production
-    openml.config.start_using_configuration_for_example()
+    # openml.config.start_using_configuration_for_example()
     data = request.get_json()
     collection_name = data['collectionname']
     description = data['description']
@@ -41,7 +40,7 @@ def upload_collection_runs():
     return jsonify({'msg': 'collection uploaded'}), 200
 
 
-@collection_blueprint.route('/upload-collection-tasks', methods=['POST'])
+@collection_bp.route('/upload-collection-tasks', methods=['POST'])
 @jwt_required
 def upload_collection_task():
     """
@@ -51,9 +50,9 @@ def upload_collection_task():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
-    # openml.config.apikey = user_api_key
-    # TODO change line below in production
-    openml.config.start_using_configuration_for_example()
+    openml.config.apikey = user_api_key
+    # change line below in testing
+    # openml.config.start_using_configuration_for_example()
     data = request.get_json()
     collection_name = data['collectionname']
     description = data['description']

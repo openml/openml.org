@@ -3,8 +3,6 @@ from flask_cors import CORS
 from flask_jwt_extended import (get_jwt_identity, jwt_required)
 from server.user.models import User
 import openml
-import json
-import uuid
 
 task_blueprint = Blueprint("task", __name__, static_folder='server/src/client/app/build')
 
@@ -17,9 +15,9 @@ def upload_task():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
-    # openml.config.apikey = user_api_key
-    # TODO change line below in production
-    openml.config.start_using_configuration_for_example()
+    openml.config.apikey = user_api_key
+    # change line below in testing
+    # openml.config.start_using_configuration_for_example()
     data = request.get_json()
     tasktypes = openml.tasks.TaskTypeEnum
     type = data['task_type']
@@ -33,13 +31,13 @@ def upload_task():
     elif type == 'learningcurve':
         task_type = tasktypes.LEARNING_CURVE
 
-    # Task Type Mapping here https://github.com/openml/openml-python/blob/develop/openml/tasks/task.py
+    # Task Type Mapping here:
+    # https://github.com/openml/openml-python/blob/develop/openml/tasks/task.py
     dataset_ids = data['dataset_id']
     dataset_ids = int(dataset_ids)
     target_name = data['target_name']
     evaluation_measure = data['evaluation_measure']
     estimation = 1
-    print(dataset_ids,task_type,target_name,evaluation_measure)
     task = openml.tasks.create_task(target_name=target_name,
                                     task_type_id=task_type,
                                     dataset_id=dataset_ids,

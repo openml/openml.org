@@ -27,6 +27,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
 const Card = styled(MuiCard)(spacing);
 
 const Divider = styled(MuiDivider)(spacing);
@@ -54,7 +55,7 @@ function Public() {
 
     const handleChange = (event) => {
         setTask(event.target.value);
-      };
+    };
 
 
     const yourConfig = {
@@ -112,9 +113,9 @@ function Public() {
                             <Select
                                 labelId="tasktype"
                                 id="tasktype"
-                                value = {task}
+                                value={task}
                                 onChange={handleChange}
-                                >
+                            >
                                 {/*TODO change values and axios request*/}
                                 <MenuItem value={'regression'}>RegressionTask</MenuItem>
                                 <MenuItem value={'classification'}>ClassificationTask</MenuItem>
