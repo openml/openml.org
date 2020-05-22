@@ -28,11 +28,12 @@ def upload_collection_runs():
     collection_name = data['collectionname']
     description = data['description']
     run_ids = data['run_ids']
+    benchmark = data['benchmark']
     run_ids = [int(s) for s in run_ids.split(',')]
     print(run_ids)
     alias = uuid.uuid4().hex
     study = openml.study.create_study(alias=alias,
-                                      benchmark_suite=23,
+                                      benchmark_suite=int(benchmark),
                                       name=collection_name,
                                       description=description,
                                       run_ids=run_ids)
