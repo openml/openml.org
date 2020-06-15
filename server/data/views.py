@@ -49,7 +49,7 @@ def data_upload():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
-    openml.config.apikey = ''
+    openml.config.apikey = user.session_hash
     # TODO change line below in production
     openml.config.start_using_configuration_for_example()
     data_file = request.files['dataset']

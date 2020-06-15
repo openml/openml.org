@@ -49,6 +49,7 @@ def login():
 
     elif user.active == 0:
         print("User not confirmed")
+
         return jsonify({"msg": "NotConfirmed"}), 200
 
     else:

@@ -12,6 +12,10 @@ CORS(task_blueprint)
 @task_blueprint.route('/upload-task', methods=['POST'])
 @jwt_required
 def upload_task():
+    """
+    Function to upload task
+    TODO: test for all possible tasks
+    """
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
@@ -38,11 +42,23 @@ def upload_task():
     target_name = data['target_name']
     evaluation_measure = data['evaluation_measure']
     estimation = 1
-    task = openml.tasks.create_task(target_name=target_name,
-                                    task_type_id=task_type,
-                                    dataset_id=dataset_ids,
-                                    evaluation_measure=evaluation_measure,
-                                    estimation_procedure_id=estimation)
-    task.publish()
+    try:
+        task = openml.tasks.create_task(target_name=target_name,
+                                        task_type_id=task_type,
+                                        dataset_id=dataset_ids,
+                                        evaluation_measure=evaluation_measure,
+                                        estimation_procedure_id=estimation)
+        task.publish()
+        return jsonify({'msg': 'task uploaded'})
 
-    return jsonify({'msg': 'task uploaded'})
+    except openml.exceptions.OpenMLServerException as e:
+        # Error code for 'task already exists'
+        if e.code == 614:
+            # Lookup task
+            tasks = openml.tasks.list_tasks(data_id=128, output_format='dataframe')
+            tasks = tasks.query('task_type == "Supervised Classification" '
+                                'and estimation_procedure == "10-fold Crossvalidation" '
+                                'and evaluation_measures == "predictive_accuracy"')
+            task_id = tasks.loc[:, "tid"].values[0]
+            return jsonify({'msg': 'task exists'})
+

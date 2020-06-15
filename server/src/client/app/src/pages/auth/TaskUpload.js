@@ -49,7 +49,7 @@ const BigAvatar = styled(Avatar)`
 function Public() {
 
     const [error, setError] = useState(false);
-    const [errormessage, setErrorMessage] = useState(false);
+    const [errormessage, setErrorMessage] = useState('');
     const [success, setSuccess] = useState(false);
     const [task, setTask] = useState('');
 
@@ -75,8 +75,12 @@ function Public() {
                 evaluation_measure: event.target.evaluation_measure.value,
             }, yourConfig)
             .then(function (response) {
-                if (response.data.msg == "task uploaded") {
+                if (response.data.msg === "task uploaded") {
                     setSuccess(true)
+                }
+                if (response.data.msg === "task exists"){
+                    setError(true)
+                    setErrorMessage('Task Already Exists')
                 }
                 console.log(response.data);
             })
