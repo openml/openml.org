@@ -16,7 +16,6 @@ from PIL import Image
 from io import BytesIO
 from flask_dance.contrib.github import github
 
-
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
 CORS(user_blueprint)
@@ -45,6 +44,7 @@ def login():
     print(user.active)
     if user is None or not user.check_password(jobj['password']):
         print("error")
+
         return jsonify({"msg": "Error"}), 401
 
     elif user.active == 0:

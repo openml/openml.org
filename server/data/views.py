@@ -50,8 +50,8 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    # TODO change line below in production
-    openml.config.start_using_configuration_for_example()
+    # TODO change line below in development
+    # openml.config.start_using_configuration_for_example()
     data_file = request.files['dataset']
     metadata = request.files['metadata']
     Path("temp_data/").mkdir(parents=True, exist_ok=True)

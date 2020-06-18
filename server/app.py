@@ -1,7 +1,6 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from server import public, user, data, collection, task
-
 from .extensions import Base, argon2, bcrypt, db, engine, jwt
 from .src.dashboard.dashapp import create_dash_app
 # from flask_cors import CORS
@@ -49,4 +48,4 @@ def register_blueprints(app):
     # app.register_blueprint(github_bp, url_prefix="/login")
     return None
 
-# TODO write code for already exiting dataset tasks and collections
+# TODO write code for already existing dataset tasks and collections

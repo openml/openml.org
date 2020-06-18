@@ -5,7 +5,6 @@ import pytest
 
 from autoapp import app
 from server.extensions import db
-from tests.test_config import TestConfig
 
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')

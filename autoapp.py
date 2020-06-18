@@ -6,11 +6,11 @@ from flask_cors import CORS
 from server.app import register_blueprints, register_extensions
 from server.config import Config
 
+
 """ Create flask app and routing"""
 app = Flask(__name__, static_url_path='', static_folder='server/src/client/app/build',
             instance_relative_config=True)
 app.config.from_object(Config)
-
 app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 CORS(app)
 register_extensions(app)

@@ -1,11 +1,3 @@
-import os
-
-import pytest
-
-from server.extensions import db
-from server.user.models import User
-
-
 def test_data_upload(test_client,  init_database):
     # access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
     # headers = {

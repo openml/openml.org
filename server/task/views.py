@@ -61,8 +61,6 @@ def upload_task():
             tasks = tasks.query('task_type == "Supervised Classification" '
                                 'and estimation_procedure == "10-fold Crossvalidation" '
                                 'and evaluation_measures == "predictive_accuracy"')
-            task_id = tasks.loc[:, "tid"].values[0]
             return jsonify({'msg': 'task exists'}), 200
         elif e.code == 622:
             return jsonify({'msg': 'task not supported'}), 200
-
