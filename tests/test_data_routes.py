@@ -1,0 +1,20 @@
+import os
+
+import pytest
+
+from server.extensions import db
+from server.user.models import User
+
+
+def test_data_upload(test_client,  init_database):
+    # access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
+    # headers = {
+    #     'Authorization': 'Bearer {}'.format(access_token)
+    # }
+    # response = test_client.post('/confirmation', json={'url': url, 'password': 'ff'},
+    #                             follow_redirects=True)
+    pass
+
+
+def test_data_edit_upload():
+    pass
