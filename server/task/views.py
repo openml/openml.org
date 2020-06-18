@@ -14,7 +14,6 @@ CORS(task_blueprint)
 def upload_task():
     """
     Function to upload task
-    TODO: test for all possible tasks
     """
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
@@ -24,16 +23,20 @@ def upload_task():
     # openml.config.start_using_configuration_for_example()
     data = request.get_json()
     tasktypes = openml.tasks.TaskTypeEnum
-    type = data['task_type']
+    t_type = data['task_type']
     task_type = ''
-    if type == 'regression':
+    if t_type == 'regression':
         task_type = tasktypes.SUPERVISED_REGRESSION
-    elif type == 'classification':
+        estimation = 7
+    elif t_type == 'classification':
         task_type = tasktypes.SUPERVISED_CLASSIFICATION
-    elif type == 'clustering':
+        estimation = 1
+    elif t_type == 'clustering':
+        estimation = 17
         task_type = tasktypes.CLUSTERING
-    elif type == 'learningcurve':
+    elif t_type == 'learningcurve':
         task_type = tasktypes.LEARNING_CURVE
+        estimation = 13
 
     # Task Type Mapping here:
     # https://github.com/openml/openml-python/blob/develop/openml/tasks/task.py
@@ -41,15 +44,14 @@ def upload_task():
     dataset_ids = int(dataset_ids)
     target_name = data['target_name']
     evaluation_measure = data['evaluation_measure']
-    estimation = 1
+    task = openml.tasks.create_task(target_name=target_name,
+                                    task_type_id=task_type,
+                                    dataset_id=dataset_ids,
+                                    evaluation_measure=evaluation_measure,
+                                    estimation_procedure_id=estimation)
     try:
-        task = openml.tasks.create_task(target_name=target_name,
-                                        task_type_id=task_type,
-                                        dataset_id=dataset_ids,
-                                        evaluation_measure=evaluation_measure,
-                                        estimation_procedure_id=estimation)
         task.publish()
-        return jsonify({'msg': 'task uploaded'})
+        return jsonify({'msg': 'task uploaded'}), 200
 
     except openml.exceptions.OpenMLServerException as e:
         # Error code for 'task already exists'
@@ -60,5 +62,7 @@ def upload_task():
                                 'and estimation_procedure == "10-fold Crossvalidation" '
                                 'and evaluation_measures == "predictive_accuracy"')
             task_id = tasks.loc[:, "tid"].values[0]
-            return jsonify({'msg': 'task exists'})
+            return jsonify({'msg': 'task exists'}), 200
+        elif e.code == 622:
+            return jsonify({'msg': 'task not supported'}), 200
 
