@@ -16,6 +16,7 @@ CORS(app)
 register_extensions(app)
 register_blueprints(app)
 app.secret_key = os.environ.get("APP_SECRET_KEY")
+app.config['SESSION_COOKIE_NAME'] = 'google-login-session'
 
 
 @app.route('/', defaults={'path': ''})

@@ -3,24 +3,68 @@ import hashlib
 import os
 from urllib.parse import parse_qs, urlparse
 
-from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
+from flask import Blueprint, jsonify, request, send_from_directory, abort, Response, url_for, session, redirect
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
 from pathlib import Path
-from server.extensions import db, jwt
+from server.extensions import db, jwt, oauth
 from server.user.models import User
 from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
 from io import BytesIO
 from flask_dance.contrib.github import github
+from server.user.auth_decorator import login_required
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
 CORS(user_blueprint)
 
 blacklist = set()
+
+google = oauth.register(
+    name='google',
+    client_id='809743007582-7777tcokc4fqrser2kts6p180p5jmkcg.apps.googleusercontent.com',
+    client_secret='LnuGWdB1FsTCoP9d_kBhKCXm',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
+    # This is only needed if using openId to fetch user info
+    client_kwargs={'scope': 'openid email profile'},
+)
+
+
+@user_blueprint.route('/google')
+def google():
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('user.authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@user_blueprint.route('/authorize')
+def authorize():
+    google = oauth.create_client('google')  # create the google oauth client
+    token = google.authorize_access_token()  # Access token from google (needed to get user info)
+    resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
+    user_info = resp.json()
+    user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
+    # Here you use the profile/user data that you got and query your database find/register the user
+    # and set ur own data in the session not the profile from google
+    session['profile'] = user_info
+    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+    return redirect('/getoauthuser')
+
+
+@user_blueprint.route('/getoauthuser')
+@login_required
+def hello_world():
+    email = dict(session)['profile']['email']
+    print(email)
+    return redirect('/')
 
 
 @jwt.token_in_blacklist_loader

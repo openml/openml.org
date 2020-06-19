@@ -1,10 +1,10 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from server import public, user, data, collection, task
-from .extensions import Base, argon2, bcrypt, db, engine, jwt
+from .extensions import Base, argon2, bcrypt, db, engine, jwt, oauth
 from .src.dashboard.dashapp import create_dash_app
-# from flask_cors import CORS
-# from flask_dance.contrib.github import make_github_blueprint, github
+from flask_cors import CORS
+from flask import url_for, session
 
 
 def register_extensions(app):
@@ -17,6 +17,7 @@ def register_extensions(app):
     create_dash_app(app)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    oauth.init_app(app)
 
     # Database initialisation
     db_session = scoped_session(sessionmaker(autocommit=False,

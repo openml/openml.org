@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from authlib.integrations.flask_client import OAuth
 
 from server.config import Config
 
@@ -33,3 +34,4 @@ argon2 = Argon2()
 db = SQLAlchemy()
 jwt = JWTManager()
 bcrypt = Bcrypt()
+oauth = OAuth()
