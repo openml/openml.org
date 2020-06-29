@@ -40,11 +40,14 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 
+
+
 function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
   const [bio, setBio] = useState(false);
   const [fname, setFname] = useState(false);
+  const [image, setImage] = useState(false);
   const [lname, setLname] = useState(false);
 
   const yourConfig = {
@@ -55,13 +58,12 @@ function Public() {
   axios.get(process.env.REACT_APP_SERVER_URL+"profile",yourConfig)
       .then(function (response) {
         console.log(response);
+        setImage(response.data.image);
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
-        console.log(user);
-
       })
       .catch(function (error) {
         console.log(error);
@@ -86,10 +88,6 @@ function Public() {
           <br />
           Bio: {bio}
           <br />
-
-
-
-
         </Typography>
         <Typography variant="h6" gutterBottom>
 
@@ -100,7 +98,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              <BigAvatar alt="Looking Good" src="/bot.png" />
+          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + image}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}
@@ -115,6 +113,7 @@ function Public() {
         <Button variant="contained" color="primary" href='/auth/edit-profile'>
           Edit Profile
         </Button>
+          &nbsp;&nbsp;&nbsp;
           <Button variant="contained" color="primary" href='/auth/api-key'>
           API Key
         </Button>

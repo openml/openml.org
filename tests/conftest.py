@@ -3,9 +3,8 @@ import sys
 
 import pytest
 
-from autoapp import create_app
+from autoapp import app
 from server.extensions import db
-from tests.test_config import TestConfig
 
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
@@ -13,7 +12,7 @@ sys.path.insert(0, myPath + '/../')
 
 @pytest.fixture(scope='module')
 def test_client():
-    flask_app = create_app(config_object=TestConfig)
+    flask_app = app
 
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.

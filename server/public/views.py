@@ -2,7 +2,6 @@ import datetime
 import hashlib
 
 from flask_cors import CORS
-
 from server.extensions import db
 from server.user.models import User
 from server.utils import confirmation_email, forgot_password_email

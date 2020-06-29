@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-
+import ReactDOM from "react";
 import {
   Avatar,
   Button,
@@ -16,9 +16,11 @@ import {
   Typography
 } from "@material-ui/core";
 
+
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { func } from "prop-types";
+import {Redirect} from "react-router-dom";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -56,23 +58,24 @@ function Public() {
   axios.get(process.env.REACT_APP_SERVER_URL+"profile",yourConfig)
       .then(function (response) {
         console.log(response);
+
+        setImage(response.data.image);
         setUser(response.data.username);
         setEmail(response.data.email);
         setBio(response.data.bio);
         setFname(response.data.first_name);
         setLname(response.data.last_name);
-        setImage(response.data.image);
-        console.log(user);
+
 
       })
       .catch(function (error) {
         console.log(error);
       });
-    function profiletoflask(event) {
-        event.preventDefault();
-        console.log(event.target.image.files);
 
-        if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+    function profiletoflask(event) {
+        // Both request should not be clubbed together because it will give error on server side image
+        event.preventDefault();
+         if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
           setError(true);
           setErrorMessage("Plase enter valid email");
         }
@@ -83,7 +86,6 @@ function Public() {
                   bio: event.target.biography.value,
                   first_name: event.target.firstname.value,
                   last_name: event.target.lastname.value,
-                  image:event.target.image.files,
                   email:event.target.email.value,
 
                 }, yourConfig)
@@ -94,24 +96,18 @@ function Public() {
                   console.log(error.data);
                 });
           let images = event.target.image.files
-          let formData = new FormData();
+            console.log(images[0])
+            if(images[0]!=undefined){
+                let formData = new FormData();
 
           formData.append('file', images[0])
             console.log(formData);
-          setImage(images[0])
+          // setImage(images[0])
                     axios.post(process.env.REACT_APP_SERVER_URL+"image",formData,yourConfig)
             .then(response => console.log(response))
             .catch(errors => console.log(errors));
-          // axios.post(process.env.REACT_APP_SERVER_URL+"image",{
-          //     data:data,
-          //     // headers:{
-          //     //     'Content-Type':'multipart/form-data'
-          //     // }
-          // }).then(function (response) {
-          //     console.log(response.data);
-          // }).catch(function (error) {
-          //     console.log(error.data);
-          // });
+            }
+
           }
         return false;
   }
@@ -181,14 +177,14 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-              <BigAvatar alt="Looking Good" src="/bot.png" />
+          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + image}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}
                 id="image"
                 multiple
                 type="file"
-                defaultValue={image}
+
               />
               <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">

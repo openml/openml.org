@@ -3,7 +3,7 @@ import hashlib
 import os
 from urllib.parse import parse_qs, urlparse
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
 from flask_cors import CORS
 from flask_jwt_extended import (create_access_token, get_jwt_identity,
                                 get_raw_jwt, jwt_required)
@@ -12,6 +12,9 @@ from server.extensions import db, jwt
 from server.user.models import User
 from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
+from PIL import Image
+from io import BytesIO
+from flask_dance.contrib.github import github
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -40,6 +43,31 @@ def login():
     user = User.query.filter_by(email=jobj['email']).first()
     if user is None or not user.check_password(jobj['password']):
         print("error")
+
+        return jsonify({"msg": "Error"}), 401
+
+    elif user.active == 0:
+        print("User not confirmed")
+
+        return jsonify({"msg": "NotConfirmed"}), 200
+
+    else:
+        access_token = create_access_token(identity=user.email)
+        # os.environ['TEST_ACCESS_TOKEN'] = access_token
+        # # exporting access token to environment for testing
+        # db.session.merge(user)
+        # db.session.commit()
+        return jsonify(access_token=access_token), 200
+
+
+@user_blueprint.route('/github-login')
+def github_register():
+    resp = github.get("/user")
+    assert resp.ok
+    git_obj = resp.json()
+    user = User.query.filter_by(email=git_obj['email']).first()
+    if user is None:
+        print("error")
         return jsonify({"msg": "Error"}), 401
 
     elif user.active == 0:
@@ -48,14 +76,31 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        os.environ['TEST_ACCESS_TOKEN'] = access_token
-        # exporting access token to environment for testing
-        db.session.merge(user)
-        db.session.commit()
-        return jsonify(access_token=access_token), 200
+
+    return jsonify(access_token=access_token), 200
 
 
-# TODO Send user profile
+@user_blueprint.route('/github-user', methods=['GET'])
+def gituser():
+    resp = github.get("/user")
+    print(resp.json())
+    assert resp.ok
+    git_obj = resp.json()
+    user = User.query.filter_by(email=git_obj['email']).first()
+    if user is None:
+        print("error")
+        return jsonify({"msg": "Error"}), 401
+
+    elif user.active == 0:
+        print("User not confirmed")
+        return jsonify({"msg": "NotConfirmed"}), 200
+
+    else:
+        access_token = create_access_token(identity=user.email)
+
+    return jsonify(access_token=access_token), 200
+
+
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @jwt_required
 def profile():
@@ -89,19 +134,45 @@ def profile():
         return jsonify({"msg": "profile OK"}), 200
 
 
+# TODO Change Address before production
 @user_blueprint.route('/image', methods=['POST'])
 @jwt_required
 def image():
+    """Function to receive and set user image"""
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     f = request.files['file']
-    print(f)
-    Path("dev_data/"+str(user.email)).mkdir(parents=True, exist_ok=True)
-    path = f.save(os.path.join('dev_data/'+str(user.email), secure_filename(f.filename)))
+    Path("dev_data/" + str(user.email)).mkdir(parents=True, exist_ok=True)
+    f.save(os.path.join('dev_data/' + str(user.email) + '/', secure_filename(f.filename)))
+    path = 'imgs/dev_data/' + str(user.email) + '/' + secure_filename(f.filename)
     user.update_image_address(path)
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "User image changed"}), 200
+
+
+@user_blueprint.route("/imgs/<path:path>")
+def images(path):
+    try:
+        im = Image.open(path)
+        # im.thumbnail((w, h), Image.ANTIALIAS)
+        io = BytesIO()
+        im.save(io, format='JPEG')
+        return Response(io.getvalue(), mimetype='image/jpeg')
+
+    except IOError:
+        abort(404)
+
+    return send_from_directory('.', path)
+
+
+# @user_blueprint.route('/send-image', methods=['GET'])
+# @jwt_required
+# def send_image():
+#     current_user = get_jwt_identity()
+#     user = User.query.filter_by(email=current_user).first()
+#     filename = user.image
+#     return send_file(filename)
 
 
 @user_blueprint.route('/logout', methods=['POST'])
