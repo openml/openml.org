@@ -98,7 +98,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + image}/>
+          <BigAvatar alt="User Image"  id="dp" src={image}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}

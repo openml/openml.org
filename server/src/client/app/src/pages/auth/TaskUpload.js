@@ -152,7 +152,7 @@ function Public() {
                 </Grid>
 
                 <Button variant="contained" color="primary" type="Submit">
-                    Upload Collection
+                    Upload Task
                 </Button>
 
                 {success && (

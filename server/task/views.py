@@ -64,3 +64,6 @@ def upload_task():
             return jsonify({'msg': 'task exists'}), 200
         elif e.code == 622:
             return jsonify({'msg': 'task not supported'}), 200
+        else:
+            print(e)
+            return str(e)

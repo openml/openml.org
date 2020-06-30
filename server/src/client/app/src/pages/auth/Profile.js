@@ -77,7 +77,7 @@ function Public() {
         event.preventDefault();
          if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
           setError(true);
-          setErrorMessage("Plase enter valid email");
+          setErrorMessage("Please enter valid email");
         }
         else{
           setError(false);
@@ -177,7 +177,7 @@ function Public() {
           </Grid>
           <Grid item md={4}>
             <CenteredContent>
-          <BigAvatar alt="User Image"  id="dp" src={process.env.REACT_APP_SERVER_URL + image}/>
+          <BigAvatar alt="User Image"  id="dp" src={image}/>
               <input
                 accept="image/*"
                 style={{ display: "none" }}
