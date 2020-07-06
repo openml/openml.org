@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ReactDOM from "react";
 import {
   Avatar,
   Button,
@@ -19,8 +18,6 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { func } from "prop-types";
-import {Redirect} from "react-router-dom";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -97,7 +94,7 @@ function Public() {
                 });
           let images = event.target.image.files
             console.log(images[0])
-            if(images[0]!=undefined){
+            if(images[0]!==undefined){
                 let formData = new FormData();
 
           formData.append('file', images[0])

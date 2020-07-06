@@ -18,13 +18,8 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
 import {Redirect} from "react-router-dom";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -34,17 +29,6 @@ const Divider = styled(MuiDivider)(spacing);
 
 const FormControl = styled(MuiFormControl)(spacing);
 
-const FAIcon = styled(FontAwesomeIcon)(spacing);
-
-const CenteredContent = styled.div`
-  text-align: center;
-`;
-
-const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${props => props.theme.spacing(2)}px;
-`;
 
 function Public() {
 

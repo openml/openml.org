@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ReactDOM from "react";
 import {
     Avatar,
     Button,
@@ -18,13 +17,8 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
 import {Redirect} from "react-router-dom";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 const Card = styled(MuiCard)(spacing);
 
@@ -47,6 +41,7 @@ const BigAvatar = styled(Avatar)`
 function Public() {
 
     const [error, setError] = useState(false);
+    //todo set error messages for task uploads
     const [errormessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
 

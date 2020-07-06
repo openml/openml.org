@@ -18,13 +18,8 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
 import {Redirect} from "react-router-dom";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 const Card = styled(MuiCard)(spacing);
 
@@ -68,7 +63,7 @@ function Public() {
                 benchmark:event.target.benchmark.value,
             }, yourConfig)
             .then(function (response) {
-                if (response.data.msg == "collection uploaded") {
+                if (response.data.msg === "collection uploaded") {
                     setSuccess(true)
                 }
                 console.log(response.data);

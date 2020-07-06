@@ -1,12 +1,10 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ReactDOM from "react";
 import {
     Avatar,
     Button,
     Card as MuiCard,
-    CardContent,
     Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
@@ -18,7 +16,6 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
 import {Redirect} from "react-router-dom";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -107,10 +104,10 @@ function Public() {
             setError(false);
             axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
                 .then(function (response) {
-                    if (response.data.msg == "dataset uploaded") {
+                    if (response.data.msg === "dataset uploaded") {
                         setSuccess(true)
                     }
-                    if (response.data.msg == "format not supported") {
+                    if (response.data.msg === "format not supported") {
                         setErrorMessage("Data format not supported");
                         setError(true);
                     }

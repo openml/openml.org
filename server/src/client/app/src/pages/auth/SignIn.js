@@ -15,7 +15,6 @@ import {
     Typography
 } from "@material-ui/core";
 import {spacing} from "@material-ui/system";
-import {logincontext, MainContext} from "../../App";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -36,7 +35,6 @@ function SignIn() {
 
     function sendtoflask(event) {
         event.preventDefault();
-        const data = new FormData(event.target);
         axios
             .post(process.env.REACT_APP_SERVER_URL + "login", {
                 email: event.target.email.value,
@@ -44,7 +42,7 @@ function SignIn() {
             })
             .then(function (response) {
                 console.log(response.data);
-                if (response.data.msg == 'NotConfirmed') {
+                if (response.data.msg === 'NotConfirmed') {
                     setConfirm(true);
                 } else {
                     setLogger(true);

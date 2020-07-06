@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 
@@ -28,7 +27,6 @@ const Wrapper = styled(Paper)`
 function ConfirmationToken() {
     function sendflask(event){
      event.preventDefault();
-    const data = new FormData(event.target);
     console.log('executed');
     axios.post(process.env.REACT_APP_SERVER_URL+"send-confirmation-token",{
         email: event.target.email.value

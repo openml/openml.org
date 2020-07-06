@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import ReactDOM from "react-dom";
-import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
-import { Link } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import axios from "axios";
 
 
@@ -42,7 +40,6 @@ function ResetPage() {
       });
     function sendflask(event){
      event.preventDefault();
-    const data = new FormData(event.target);
     console.log('executed');
     axios.post(process.env.REACT_APP_SERVER_URL+"resetpassword",{
         url: window.location.href,

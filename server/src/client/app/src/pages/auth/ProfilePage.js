@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
-
 
 import {
   Avatar,
@@ -12,23 +10,15 @@ import {
   Divider as MuiDivider,
   FormControl as MuiFormControl,
   Grid,
-  Input,
-  InputLabel,
-  TextField,
   Typography
 } from "@material-ui/core";
 
 import { spacing } from "@material-ui/system";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { func } from "prop-types";
+
 
 const Card = styled(MuiCard)(spacing);
 
 const Divider = styled(MuiDivider)(spacing);
-
-const FormControl = styled(MuiFormControl)(spacing);
-
-const FAIcon = styled(FontAwesomeIcon)(spacing);
 
 const CenteredContent = styled.div`
   text-align: center;

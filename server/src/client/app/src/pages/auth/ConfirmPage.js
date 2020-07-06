@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import ReactDOM from "react-dom";
-import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
-import { Link } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import axios from "axios";
 
 
@@ -14,10 +12,7 @@ import {
   Paper,
   Typography
 } from "@material-ui/core";
-import { spacing } from "@material-ui/system";
-import ResetPage from "./ResetPage";
 
-const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
   padding: ${props => props.theme.spacing(6)}px;
