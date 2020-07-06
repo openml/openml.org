@@ -146,7 +146,7 @@ class UserMenu extends Component {
               this.closeMenu();
             }}
           >
-            <StyledLink to="/auth/profile">Profile</StyledLink>
+            <StyledLink to="/auth/profile-page">Profile</StyledLink>
           </MenuItem>
           <MenuItem
             onClick={() => {

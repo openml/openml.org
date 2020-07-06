@@ -127,11 +127,7 @@ function Public() {
       }
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
-          <Grid item md={8}>
-            <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" defaultValue={user} />
-            </FormControl>
+          <Grid item md={8}>f
 
             <FormControl fullWidth mb={3}>
               <TextField
