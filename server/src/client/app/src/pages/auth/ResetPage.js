@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
-
 
 import {
   FormControl,
@@ -18,7 +17,6 @@ const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
   padding: ${props => props.theme.spacing(6)}px;
-  width: 100%;
 
   ${props => props.theme.breakpoints.up("md")} {
     padding: ${props => props.theme.spacing(10)}px;
@@ -26,33 +24,37 @@ const Wrapper = styled(Paper)`
 `;
 
 function ResetPage() {
-    console.log(window.location.href)
-    const [verifToken, setverifToken] = useState(false);
-    const [redirect, setRedirect] = useState(false);
-    axios.post(process.env.REACT_APP_SERVER_URL+"forgot-token",{
-        url:window.location.href,
-    }).then(function(response) {
-        console.log(response.data);
-        setverifToken(true);
-      })
-      .catch(function(error) {
-        console.log(error.data);
-      });
-    function sendflask(event){
-     event.preventDefault();
-    console.log('executed');
-    axios.post(process.env.REACT_APP_SERVER_URL+"resetpassword",{
+  console.log(window.location.href);
+  const [verifToken, setverifToken] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+  axios
+    .post(process.env.REACT_APP_SERVER_URL + "forgot-token", {
+      url: window.location.href
+    })
+    .then(function(response) {
+      console.log(response.data);
+      setverifToken(true);
+    })
+    .catch(function(error) {
+      console.log(error.data);
+    });
+  function sendflask(event) {
+    event.preventDefault();
+    console.log("executed");
+    axios
+      .post(process.env.REACT_APP_SERVER_URL + "resetpassword", {
         url: window.location.href,
         password: event.target.password.value
-    }).then(function(response) {
+      })
+      .then(function(response) {
         console.log(response.data);
         setRedirect(true);
       })
       .catch(function(error) {
-          console.log('error')
+        console.log("error");
         console.log(error.data);
       });
-    }
+  }
 
   return (
     <Wrapper>
@@ -65,11 +67,23 @@ function ResetPage() {
       <form onSubmit={sendflask}>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="password">New Password</InputLabel>
-          <Input id="password" name="password" autoComplete="password" autoFocus />
+          <Input
+            id="password"
+            name="password"
+            autoComplete="password"
+            autoFocus
+          />
         </FormControl>
-          <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="confirmpassword">Confirm New Password</InputLabel>
-          <Input id="confirmpassword" name="confirmpassword" autoComplete="confirmpassword" autoFocus />
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="confirmpassword">
+            Confirm New Password
+          </InputLabel>
+          <Input
+            id="confirmpassword"
+            name="confirmpassword"
+            autoComplete="confirmpassword"
+            autoFocus
+          />
         </FormControl>
         <Button
           type="Submit"
@@ -81,9 +95,7 @@ function ResetPage() {
         >
           Reset password
         </Button>
-          {redirect && (
-          <Redirect to="/auth/sign-in" />
-        )}
+        {redirect && <Redirect to="/auth/sign-in" />}
       </form>
     </Wrapper>
   );

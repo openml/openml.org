@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import axios from "axios";
 
-
 import {
   FormControl,
   Input,
@@ -12,12 +11,12 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
   padding: ${props => props.theme.spacing(6)}px;
-  width: 100%;
 
   ${props => props.theme.breakpoints.up("md")} {
     padding: ${props => props.theme.spacing(10)}px;
@@ -25,18 +24,20 @@ const Wrapper = styled(Paper)`
 `;
 
 function ResetPassword() {
-    function sendflask(event){
-     event.preventDefault();
-    console.log('executed');
-    axios.post(process.env.REACT_APP_SERVER_URL+"forgotpassword",{
+  function sendflask(event) {
+    event.preventDefault();
+    console.log("executed");
+    axios
+      .post(process.env.REACT_APP_SERVER_URL + "forgotpassword", {
         email: event.target.email.value
-    }).then(function(response) {
+      })
+      .then(function(response) {
         console.log(response.data);
       })
       .catch(function(error) {
         console.log(error.data);
       });
-    }
+  }
 
   return (
     <Wrapper>
@@ -44,7 +45,7 @@ function ResetPassword() {
         Reset password
       </Typography>
       <Typography component="h2" variant="body1" align="center">
-        Enter your email to reset your password
+        Please enter your email. We send you a link to reset your password.
       </Typography>
       <form onSubmit={sendflask}>
         <FormControl margin="normal" required fullWidth>

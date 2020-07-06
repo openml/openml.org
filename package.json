@@ -39,12 +39,13 @@
     "react-dragula": "^1.1.17",
     "react-markdown": "^4.2.2",
     "react-perfect-scrollbar": "1.5.3",
-    "react-router-dom": "5.0.1",
+    "react-router-dom": "5.2.0",
     "react-router-hash-link": "^1.2.2",
     "react-scripts": "^3.3.1",
     "react-scrollbar": "^0.5.6",
     "react-syntax-highlighter": "^11.0.2",
     "react-timeago": "^4.4.0",
-    "styled-components": "4.3.2"
+    "styled-components": "4.3.2",
+    "typescript": "^3.9.6"
   }
 }

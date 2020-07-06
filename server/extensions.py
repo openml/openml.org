@@ -17,7 +17,7 @@ Declares extension for Flask App, connects with already existing database
 """
 # specifying engine according to existing db
 try:
-    engine = create_engine('mysql+pymysql://root:@localhost/openml', convert_unicode=True,
+    engine = create_engine('mysql+pymysql://root@localhost/openml', convert_unicode=True,
                            echo=False, pool_size=20, max_overflow=0, pool_pre_ping=True)
     Base = declarative_base()
     Base.metadata.reflect(engine)

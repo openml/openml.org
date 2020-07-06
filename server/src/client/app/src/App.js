@@ -3,6 +3,7 @@ import React from "react";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
+import axios from "axios";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -41,6 +42,15 @@ class App extends React.Component {
         miniDrawer: !this.state.miniDrawer,
         drawerWidth: this.state.miniDrawer ? 260 : 60
       }),
+
+    // Auth context
+    loggedIn: false,
+    logIn: () => {
+      this.setState({ loggedIn: true });
+    },
+    logOut: () => {
+      this.setState({ loggedIn: false });
+    },
 
     // Search context
     displaySearch: true, // hide search on small screens
@@ -223,6 +233,24 @@ class App extends React.Component {
         </MainContext.Provider>
       </StylesProvider>
     );
+  }
+
+  componentDidMount() {
+    console.log("Checking login");
+    const yourConfig = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
+    };
+    axios
+      .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
+      .then(function(response) {
+        console.log(response);
+        this.setState({ loggedIn: true });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 }
 

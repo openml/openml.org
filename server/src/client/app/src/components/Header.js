@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import Loader from "./Loader";
 import axios from "axios";
 
-
 import {
   Grid,
   Hidden,
   InputBase,
   Menu,
+  Button,
   MenuItem,
   AppBar as MuiAppBar,
   IconButton as MuiIconButton,
@@ -101,6 +101,11 @@ const WhiteIcon = styled(FontAwesomeIcon)`
   color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
 `;
 
+const UserButton = styled(Button)`
+  color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+  border-color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+`;
+
 class UserMenu extends Component {
   state = {
     anchorMenu: null
@@ -117,17 +122,36 @@ class UserMenu extends Component {
   render() {
     const { anchorMenu } = this.state;
     const open = Boolean(anchorMenu);
-
+    const loggedOut = !this.props.loggedIn;
     return (
       <React.Fragment>
-        <IconButton
-          aria-owns={open ? "menu-appbar" : undefined}
-          aria-haspopup="true"
-          onClick={this.toggleMenu}
-          color="inherit"
-        >
-          <WhiteIcon icon={["far", "user"]} bg={this.props.bg} />
-        </IconButton>
+        {loggedOut ? (
+          <React.Fragment>
+            <StyledLink to="/auth/sign-in">
+              <UserButton bg={this.props.bg}>Sign In</UserButton>
+            </StyledLink>
+            <StyledLink to="/auth/sign-up">
+              <UserButton
+                bg={this.props.bg}
+                variant="outlined"
+                style={{ marginLeft: 10 }}
+              >
+                Sign Up
+              </UserButton>
+            </StyledLink>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <IconButton
+              aria-owns={open ? "menu-appbar" : undefined}
+              aria-haspopup="true"
+              onClick={this.toggleMenu}
+              color="inherit"
+            >
+              <WhiteIcon icon={["far", "user"]} bg={this.props.bg} />
+            </IconButton>
+          </React.Fragment>
+        )}
         <Menu
           id="menu-appbar"
           anchorEl={anchorMenu}
@@ -139,33 +163,31 @@ class UserMenu extends Component {
               this.closeMenu();
             }}
           >
-            <StyledLink to="/auth/sign-in">Sign In</StyledLink>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this.closeMenu();
-            }}
-          >
             <StyledLink to="/auth/profile-page">Profile</StyledLink>
           </MenuItem>
           <MenuItem
             onClick={() => {
-                  const yourConfig = {
-                      headers: {
-                          Authorization: "Bearer " + localStorage.getItem("token")
-                      }
-                  }
-                console.log('clocked')
+              const yourConfig = {
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token")
+                }
+              };
+              console.log("clocked");
               this.closeMenu();
-              axios.post(process.env.REACT_APP_SERVER_URL+"logout", {
-                  logout:'true'
-              }, yourConfig).then(function (response) {
-                  console.log(response.data)
-                    
-              })
-                  .catch(function (error) {
-                      console.log(error.data)
-                  });
+              axios
+                .post(
+                  process.env.REACT_APP_SERVER_URL + "logout",
+                  {
+                    logout: "true"
+                  },
+                  yourConfig
+                )
+                .then(function(response) {
+                  console.log(response.data);
+                })
+                .catch(function(error) {
+                  console.log(error.data);
+                });
             }}
           >
             Sign out
@@ -207,7 +229,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                   </IconButton>
                 </Grid>
               </Hidden>
-              <Grid item xs={8}>
+              <Grid item xs={6} md={8}>
                 <Search bg={context.opaqueSearch ? "" : bg}>
                   <SearchIconWrapper>
                     <WhiteIcon
@@ -229,7 +251,10 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
               </Grid>
               <Grid item xs />
               <Grid item>
-                <UserMenu bg={context.opaqueSearch ? "" : bg} />
+                <UserMenu
+                  bg={context.opaqueSearch ? "" : bg}
+                  loggedIn={context.loggedIn}
+                />
               </Grid>
             </Grid>
           </Toolbar>
