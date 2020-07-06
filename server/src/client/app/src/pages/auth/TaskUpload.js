@@ -1,12 +1,9 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ReactDOM from "react";
 import {
-    Avatar,
     Button,
     Card as MuiCard,
-    CardContent,
     Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
@@ -17,7 +14,6 @@ import {
 } from "@material-ui/core";
 
 import {spacing} from "@material-ui/system";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Redirect} from "react-router-dom";
 
 import Select from '@material-ui/core/Select';

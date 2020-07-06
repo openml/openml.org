@@ -5,7 +5,6 @@ import {
   Avatar,
   Button,
   Card as MuiCard,
-  CardContent,
   Divider as MuiDivider,
   FormControl as MuiFormControl,
   Grid,

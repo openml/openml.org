@@ -58,9 +58,6 @@ function Public() {
     }
     //alert dialogue code
     const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
     const handleClose = () => {
         setOpen(false);
     }
@@ -132,7 +129,7 @@ function Public() {
         return false;
     }
 
-    if (editsuccess == true) {
+    if (editsuccess === true) {
         return (
             <Card mb={6}>
                 <iframe src={"/dashboard/data-upload?uuid=" + editpath}
