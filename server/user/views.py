@@ -39,8 +39,10 @@ def login():
     2. Checks password and if user is confirmed
     3. Logs in user next with access token
     """
+
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
+
     if user is None or not user.check_password(jobj['password']):
         print("error")
 
@@ -60,45 +62,45 @@ def login():
         return jsonify(access_token=access_token), 200
 
 
-@user_blueprint.route('/github-login')
-def github_register():
-    resp = github.get("/user")
-    assert resp.ok
-    git_obj = resp.json()
-    user = User.query.filter_by(email=git_obj['email']).first()
-    if user is None:
-        print("error")
-        return jsonify({"msg": "Error"}), 401
-
-    elif user.active == 0:
-        print("User not confirmed")
-        return jsonify({"msg": "NotConfirmed"}), 200
-
-    else:
-        access_token = create_access_token(identity=user.email)
-
-    return jsonify(access_token=access_token), 200
-
-
-@user_blueprint.route('/github-user', methods=['GET'])
-def gituser():
-    resp = github.get("/user")
-    print(resp.json())
-    assert resp.ok
-    git_obj = resp.json()
-    user = User.query.filter_by(email=git_obj['email']).first()
-    if user is None:
-        print("error")
-        return jsonify({"msg": "Error"}), 401
-
-    elif user.active == 0:
-        print("User not confirmed")
-        return jsonify({"msg": "NotConfirmed"}), 200
-
-    else:
-        access_token = create_access_token(identity=user.email)
-
-    return jsonify(access_token=access_token), 200
+# @user_blueprint.route('/github-login')
+# def github_register():
+#     resp = github.get("/user")
+#     assert resp.ok
+#     git_obj = resp.json()
+#     user = User.query.filter_by(email=git_obj['email']).first()
+#     if user is None:
+#         print("error")
+#         return jsonify({"msg": "Error"}), 401
+#
+#     elif user.active == 0:
+#         print("User not confirmed")
+#         return jsonify({"msg": "NotConfirmed"}), 200
+#
+#     else:
+#         access_token = create_access_token(identity=user.email)
+#
+#     return jsonify(access_token=access_token), 200
+#
+#
+# @user_blueprint.route('/github-user', methods=['GET'])
+# def gituser():
+#     resp = github.get("/user")
+#     print(resp.json())
+#     assert resp.ok
+#     git_obj = resp.json()
+#     user = User.query.filter_by(email=git_obj['email']).first()
+#     if user is None:
+#         print("error")
+#         return jsonify({"msg": "Error"}), 401
+#
+#     elif user.active == 0:
+#         print("User not confirmed")
+#         return jsonify({"msg": "NotConfirmed"}), 200
+#
+#     else:
+#         access_token = create_access_token(identity=user.email)
+#
+#     return jsonify(access_token=access_token), 200
 
 
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
@@ -132,6 +134,12 @@ def profile():
         return jsonify({"msg": "User information changed"}), 200
     else:
         return jsonify({"msg": "profile OK"}), 200
+
+
+@user_blueprint.route('/verifytoken', methods=['GET'])
+@jwt_required
+def verifytoken():
+    return 'token-valid'
 
 
 # TODO Change Address before production
