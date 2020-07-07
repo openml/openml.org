@@ -5,11 +5,10 @@ class Config(object):
     """
     Config object for flask app
     """
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://'+os.environ.get('DB_USER')+':'+os.environ.get('DB_PASS')+'@localhost/openml'
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     #     'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # Argon 2 passowrd hashing parameters
+    # Argon 2 password hashing parameters
     ARGON2_TIME_COST = 4
     ARGON2_MEMORY_COST = 16384
     ARGON2_PARALLELISM = 2
