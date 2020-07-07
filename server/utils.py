@@ -16,8 +16,8 @@ def confirmation_email(user_email, token):
                        f"https://new.openml.org/auth/confirm-page/?token={token}"
 
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
-    # server = smtplib.SMTP('smtp.mailtrap.io', 2525)
-    # server.login("84be287eed57de", "6a38ff008fe618")
+    if(len(os.environ.get('SMTP_LOGIN'))>0):
+        server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
     problems = server.sendmail(sender, receiver, message)
     print(problems)
     server.quit()

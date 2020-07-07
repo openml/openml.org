@@ -1,11 +1,11 @@
 import datetime
-
+import os
 
 class Config(object):
     """
     Config object for flask app
     """
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@localhost/openml'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://'+os.environ.get('DB_USER')+':'+os.environ.get('DB_PASS')+'@localhost/openml'
     # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     #     'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
