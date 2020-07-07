@@ -1,5 +1,7 @@
 # dependencies
 **/node_modules/
+**/package-lock.json
+
 /.pnp
 .pnp.js
 
@@ -41,8 +43,6 @@ idea_testing.py
 Internal_docs/
 
 flask-cache-dir/
-
-package-lock.json
 
 *.pem
 
