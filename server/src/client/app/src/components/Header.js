@@ -124,76 +124,81 @@ class UserMenu extends Component {
     const open = Boolean(anchorMenu);
     const loggedOut = !this.props.loggedIn;
     return (
-      <React.Fragment>
-        {loggedOut ? (
+      <MainContext.Consumer>
+        {context => (
           <React.Fragment>
-            <StyledLink to="/auth/sign-in">
-              <UserButton bg={this.props.bg}>Sign In</UserButton>
-            </StyledLink>
-            <StyledLink to="/auth/sign-up">
-              <UserButton
-                bg={this.props.bg}
-                variant="outlined"
-                style={{ marginLeft: 10 }}
-              >
-                Sign Up
-              </UserButton>
-            </StyledLink>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <IconButton
-              aria-owns={open ? "menu-appbar" : undefined}
-              aria-haspopup="true"
-              onClick={this.toggleMenu}
-              color="inherit"
+            {loggedOut ? (
+              <React.Fragment>
+                <StyledLink to="/auth/sign-in">
+                  <UserButton bg={this.props.bg}>Sign In</UserButton>
+                </StyledLink>
+                <StyledLink to="/auth/sign-up">
+                  <UserButton
+                    bg={this.props.bg}
+                    variant="outlined"
+                    style={{ marginLeft: 10 }}
+                  >
+                    Sign Up
+                  </UserButton>
+                </StyledLink>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <IconButton
+                  aria-owns={open ? "menu-appbar" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.toggleMenu}
+                  color="inherit"
+                >
+                  <WhiteIcon icon={["far", "user"]} bg={this.props.bg} />
+                </IconButton>
+              </React.Fragment>
+            )}
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorMenu}
+              open={open}
+              onClose={this.closeMenu}
             >
-              <WhiteIcon icon={["far", "user"]} bg={this.props.bg} />
-            </IconButton>
+              <MenuItem
+                onClick={() => {
+                  this.closeMenu();
+                }}
+              >
+                <StyledLink to="/auth/profile-page">Profile</StyledLink>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  const yourConfig = {
+                    headers: {
+                      Authorization: "Bearer " + localStorage.getItem("token")
+                    }
+                  };
+                  axios
+                    .post(
+                      process.env.REACT_APP_SERVER_URL + "logout",
+                      {
+                        logout: "true"
+                      },
+                      yourConfig
+                    )
+                    .then(response => {
+                      console.log(response.data);
+                      context.logOut();
+                      context.setOpaqueSearch(false);
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+                  this.closeMenu();
+                }}
+              >
+                <StyledLink to="/">Sign out</StyledLink>
+              </MenuItem>
+            </Menu>
           </React.Fragment>
         )}
-        <Menu
-          id="menu-appbar"
-          anchorEl={anchorMenu}
-          open={open}
-          onClose={this.closeMenu}
-        >
-          <MenuItem
-            onClick={() => {
-              this.closeMenu();
-            }}
-          >
-            <StyledLink to="/auth/profile-page">Profile</StyledLink>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              const yourConfig = {
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("token")
-                }
-              };
-              console.log("clocked");
-              this.closeMenu();
-              axios
-                .post(
-                  process.env.REACT_APP_SERVER_URL + "logout",
-                  {
-                    logout: "true"
-                  },
-                  yourConfig
-                )
-                .then(function(response) {
-                  console.log(response.data);
-                })
-                .catch(function(error) {
-                  console.log(error.data);
-                });
-            }}
-          >
-            Sign out
-          </MenuItem>
-        </Menu>
-      </React.Fragment>
+      </MainContext.Consumer>
     );
   }
 }

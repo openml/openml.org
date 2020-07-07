@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
 import {
   Checkbox,
   Grid,
@@ -16,6 +14,8 @@ import {
   Typography
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { MainContext } from "../../App.js";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -32,7 +32,7 @@ function SignIn() {
   const [logger, setLogger] = useState(false);
   const [errorlog, setError] = useState(false);
   const [confirmflag, setConfirm] = useState(false);
-  console.log(process.env.REACT_APP_SERVER_URL + "login");
+  const context = useContext(MainContext);
 
   function sendtoflask(event) {
     event.preventDefault();
@@ -41,17 +41,18 @@ function SignIn() {
         email: event.target.email.value,
         password: event.target.password.value
       })
-      .then(function(response) {
+      .then(response => {
         console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
         } else {
           localStorage.setItem("token", response.data.access_token);
+          context.logIn();
           setLogger(true);
         }
       })
-      .catch(function(error) {
-        console.log(error.data);
+      .catch(error => {
+        console.log(error);
         setError(true);
       });
     return false;
@@ -59,6 +60,11 @@ function SignIn() {
 
   return (
     <Grid container spacing={3} justify="center">
+      {logger ? (
+        <Redirect to="/auth/profile-page" />
+      ) : (
+        <Redirect to="/auth/sign-in" />
+      )}
       <Grid item md={7} xs={10}>
         <Wrapper>
           <Typography component="h1" variant="h4" align="center" gutterBottom>
@@ -68,12 +74,11 @@ function SignIn() {
             Sign in to continue
           </Typography>
           {errorlog ? (
-            <Typography
-              component="h3"
-              variant="body1"
-              align="center"
-              color="red"
-            >
+            <Typography component="h3" align="center" style={{ color: "red" }}>
+              <FontAwesomeIcon
+                icon="exclamation-triangle"
+                style={{ marginRight: 5 }}
+              />
               Wrong username or password
             </Typography>
           ) : (
@@ -84,12 +89,10 @@ function SignIn() {
               component="h3"
               variant="body1"
               align="center"
-              color="red"
+              style={{ color: "red" }}
             >
               User not confirmed
-              <a href="/auth/confirmation-token">
-                (send activation token again?)
-              </a>
+              <a href="/auth/confirmation-token">(resend activation token)</a>
             </Typography>
           )}
           <form onSubmit={sendtoflask}>
@@ -111,7 +114,7 @@ function SignIn() {
               label="Remember me"
             />
             <Button
-              type="Submit"
+              type="submit"
               fullWidth
               variant="contained"
               color="primary"
@@ -141,11 +144,6 @@ function SignIn() {
         >
           No account? Join OpenML
         </Button>
-        {logger ? (
-          <Redirect to="/auth/profile-page" />
-        ) : (
-          <Redirect to="/auth/sign-in" />
-        )}
       </Grid>
     </Grid>
   );

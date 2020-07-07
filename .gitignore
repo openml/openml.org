@@ -25,7 +25,6 @@ yarn-error.log*
 /migrations
 /src/dashboard/__pycache__
 
-*.sql
 *.ipynb
 src/__pycache__/
 
@@ -43,6 +42,7 @@ Internal_docs/
 
 flask-cache-dir/
 
+package-lock.json
 
 *.pem
 

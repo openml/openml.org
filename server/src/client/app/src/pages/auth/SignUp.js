@@ -37,16 +37,18 @@ function SignUp() {
   const [errormessage, setErrorMessage] = useState(false);
   function sendflask(event) {
     event.preventDefault();
+    console.log(event.target.email.value);
+    console.log(event.target.password.value);
     if (event.target.password.value.length < 6) {
       setError(true);
       setErrorMessage("Password too weak");
     } else if (
-      /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(
+      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(
         event.target.email.value
       ) !== true
     ) {
       setError(true);
-      setErrorMessage("Plase enter valid email");
+      setErrorMessage("Please enter valid email");
     } else {
       axios
         .post(process.env.REACT_APP_SERVER_URL + "signup", {
@@ -89,7 +91,10 @@ function SignUp() {
           <Input id="name" name="name" autoFocus />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
+          <InputLabel htmlFor="email">
+            Email Address (we never share your email and only send critical
+            emails)
+          </InputLabel>
           <Input id="email" name="email" autoComplete="email" />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
