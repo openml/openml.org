@@ -52,7 +52,8 @@ function SignUp() {
     } else {
       axios
         .post(process.env.REACT_APP_SERVER_URL + "signup", {
-          name: event.target.name.value,
+          first_name: event.target.fname.value,
+          last_name:event.target.lname.value,
           email: event.target.email.value,
           password: event.target.password.value
         })
@@ -87,8 +88,12 @@ function SignUp() {
           </Typography>
         )}
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="name">Name</InputLabel>
-          <Input id="name" name="name" autoFocus />
+          <InputLabel htmlFor="fname">First name</InputLabel>
+          <Input id="fname" name="fname" autoFocus />
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="lname">Last name</InputLabel>
+          <Input id="lname" name="lname" autoFocus />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">
