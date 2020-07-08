@@ -4,7 +4,7 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
 import axios from "axios";
-
+import * as path from "path";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -68,12 +68,40 @@ class App extends React.Component {
           console.log("Error");
           this.setState({ loggedIn: false });
         });
+      axios
+        .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+        .then(response => {
+          let img = undefined;
+          if (response.data.image.includes(path.sep)) {
+            img = response.data.image;
+          }
+          let ini =
+            response.data.first_name.charAt(0) +
+            response.data.last_name.charAt(0);
+          this.setState({ userImage: img, userInitials: ini });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     logIn: () => {
       this.setState({ loggedIn: true });
     },
     logOut: () => {
       this.setState({ loggedIn: false });
+    },
+    userImage: undefined,
+    userInitials: undefined,
+    setUserImage: value => {
+      console.log(value);
+      if (value.includes(path.sep)) {
+        //check if valid path
+        this.setState({ userImage: value });
+      }
+    },
+    setUserInitials: value => {
+      console.log(value);
+      this.setState({ userInitials: value });
     },
 
     // Search context

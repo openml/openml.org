@@ -8,7 +8,6 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  Link,
   CssBaseline
 } from "@material-ui/core";
 
