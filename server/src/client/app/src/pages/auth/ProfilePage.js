@@ -13,7 +13,7 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {green,yellow,blue,red} from "@material-ui/core/colors";
+import {green, yellow, blue, red} from "@material-ui/core/colors";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -29,21 +29,22 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
 const GreenMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: green[400]
+    cursor: "pointer",
+    color: green[400]
 });
 const YellowMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: yellow[700]
+    cursor: "pointer",
+    color: yellow[700]
 });
 const BlueMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: blue[800]
+    cursor: "pointer",
+    color: blue[800]
 });
 const RedMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: red[400]
+    cursor: "pointer",
+    color: red[400]
 });
+
 function Public() {
     const [user, setUser] = useState(null);
     const [email, setEmail] = useState(false);
@@ -75,15 +76,15 @@ function Public() {
             setLname(response.data.last_name);
             setId(response.data.id);
             console.log(id.toString());
-            if(id!==false){
-                fetch( 'https://openml.org/es/user/user/'+id.toString() )
-        .then(response=>response.json())
-        .then(data=>{
-            setDataset(data._source.datasets_uploaded);
-            setRun(data._source.runs_uploaded);
-            setTask(data._source.tasks_uploaded);
-            setFlow(data._source.flows_uploaded);
-        });
+            if (id !== false) {
+                fetch('https://openml.org/es/user/user/' + id.toString())
+                    .then(response => response.json())
+                    .then(data => {
+                        setDataset(data._source.datasets_uploaded);
+                        setRun(data._source.runs_uploaded);
+                        setTask(data._source.tasks_uploaded);
+                        setFlow(data._source.flows_uploaded);
+                    });
             }
 
         })
@@ -94,60 +95,65 @@ function Public() {
 
     return (
         <Card mb={6}>
-            <CardContent>
-                <Typography variant="h1" gutterBottom>
-                    {fname} {lname}
-                </Typography>
-                <br/>
+            <Grid container spacing={6}>
+                <Grid item md={8}>
 
-                <Typography gutterBottom>
-                    <br/>
-                    User ID: {id}
-                    <br/>
-                    Email: {email}
-                    <br/>
-                    Bio: {bio}
 
-                </Typography>
+                    <CardContent>
+                        <Typography variant="h1" gutterBottom>
+                            {fname} {lname}
+                        </Typography>
+                        <br/>
 
-            </CardContent>
-            <CardContent>
-                <br/>
-                <GreenMenuIcon icon="database" fixedWidth/>
-                Datasets uploaded: {dataset}
-                <br/>
-                <YellowMenuIcon icon={["fas", "flag"]} fixedWidth/>
-                Tasks uploaded: {task}
-                <br/>
-                <BlueMenuIcon icon="cog" fixedWidth/>
-                Flows uploaded: {flow}
-                <br/>
-                <RedMenuIcon icon="flask" fixedWidth/>
-                Runs uploaded: {run}
-            </CardContent>
-                <Typography variant="h6" gutterBottom></Typography>
-                <Grid container spacing={6}>
-                    <Grid item md={8}></Grid>
-                    <Grid item md={4}>
-                        <CenteredContent>
-                            <BigAvatar alt="User Image" id="dp" src={image}/>
-                            <input
-                                accept="image/*"
-                                style={{display: "none"}}
-                                id="raised-button-file"
-                                multiple
-                                type="file"
-                            />
-                        </CenteredContent>
-                    </Grid>
+                        <Typography gutterBottom>
+                            <br/>
+                            User ID: {id}
+                            <br/>
+                            Email: {email}
+                            <br/>
+                            Bio: {bio}
+
+                        </Typography>
+
+                    </CardContent>
                 </Grid>
-                <Button variant="contained" color="primary" href="/auth/edit-profile">
-                    Edit Profile
-                </Button>
-                &nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="primary" href="/auth/api-key">
-                    API Key
-                </Button>
+                <Grid item md={8}>
+
+                    <CardContent>
+                        <br/>
+                        <GreenMenuIcon icon="database" fixedWidth/>
+                        Datasets uploaded: {dataset}
+                        <br/>
+                        <YellowMenuIcon icon={["fas", "flag"]} fixedWidth/>
+                        Tasks uploaded: {task}
+                        <br/>
+                        <BlueMenuIcon icon="cog" fixedWidth/>
+                        Flows uploaded: {flow}
+                        <br/>
+                        <RedMenuIcon icon="flask" fixedWidth/>
+                        Runs uploaded: {run}
+                    </CardContent>
+                </Grid>
+                <Grid item md={4}>
+                    <CenteredContent>
+                        <BigAvatar alt="User Image" id="dp" src={image}/>
+                        <input
+                            accept="image/*"
+                            style={{display: "none"}}
+                            id="raised-button-file"
+                            multiple
+                            type="file"
+                        />
+                    </CenteredContent>
+                </Grid>
+            </Grid>
+            <Button variant="contained" color="primary" href="/auth/edit-profile">
+                Edit Profile
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button variant="contained" color="primary" href="/auth/api-key">
+                API Key
+            </Button>
 
         </Card>
     );
