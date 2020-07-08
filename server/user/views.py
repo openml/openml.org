@@ -113,7 +113,7 @@ def profile():
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
         return jsonify({"username": user.email, "bio": user.bio, "first_name": user.first_name,
-                        "last_name": user.last_name, "email": user.email, "image": user.image}), 200
+                        "last_name": user.last_name, "email": user.email, "image": user.image, "id": user.id}), 200
     elif request.method == "POST":
         data = request.get_json()
         # print(data['image'])
