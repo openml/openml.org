@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 import sqlalchemy
 from flask_argon2 import Argon2
@@ -16,6 +17,7 @@ extension.py
 Declares extension for Flask App, connects with already existing database
 """
 # specifying engine according to existing db
+load_dotenv(".flaskenv")
 try:
     engine = create_engine(os.environ.get('DATABASE_URI'),
                            convert_unicode=True, echo=False, pool_size=20,

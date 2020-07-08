@@ -1,10 +1,12 @@
 import datetime
 import os
+from dotenv import load_dotenv
 
 class Config(object):
     """
     Config object for flask app
     """
+    load_dotenv(".flaskenv")
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     #     'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
