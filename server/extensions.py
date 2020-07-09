@@ -31,7 +31,6 @@ except sqlalchemy.exc.OperationalError:
     Base = declarative_base()
     Base.metadata.reflect(engine)
 
-
 argon2 = Argon2()
 db = SQLAlchemy()
 jwt = JWTManager()
