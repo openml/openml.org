@@ -44,7 +44,7 @@ function Public() {
                 description: event.target.description.value,
                 collectionname: event.target.collectionname.value,
                 run_ids: event.target.runids.value,
-                benchmark:event.target.benchmark.value,
+                benchmark: event.target.benchmark.value,
             }, yourConfig)
             .then(function (response) {
                 if (response.data.msg === "collection uploaded") {
@@ -61,9 +61,10 @@ function Public() {
 
     return (
         <Card mb={6}>
+
             <form onSubmit={datatoflask}>
                 <Typography variant="h6" gutterBottom>
-                    Dataset info
+                    Collection info
                 </Typography>
                 {
                     error &&
@@ -126,7 +127,12 @@ function Settings() {
             <Typography variant="h3" gutterBottom display="inline">
                 Collection Runs Upload
             </Typography>
+            <Divider my={3}/>
 
+            <div>
+                <Button color="primary" href='/auth/upload-collection-tasks'> Upload task collection</Button>
+                <Button color="Blue" href='/auth/upload-collection-runs'> Upload run collection</Button>
+            </div>
             <Divider my={6}/>
 
             <Grid container spacing={6}>
