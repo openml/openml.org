@@ -7,7 +7,7 @@ context = ssl.create_default_context()
 
 def confirmation_email(user_email, token):
     """Sending confirmation email with token to user mailbox"""
-    sender = "m@smtp.mailtrap.io"
+    sender = str(os.environ.get('EMAIL_SENDER'))
     receiver = user_email
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
@@ -16,7 +16,7 @@ def confirmation_email(user_email, token):
                        f"https://new.openml.org/auth/confirm-page/?token={token}"
 
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
-    if(len(os.environ.get('SMTP_LOGIN'))>0):
+    if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
     problems = server.sendmail(sender, receiver, message)
     print(problems)
@@ -24,8 +24,8 @@ def confirmation_email(user_email, token):
 
 
 def forgot_password_email(user_email, token):
-    """Sending forgot password email woth token to user mailbox"""
-    sender = "m@smtp.mailtrap.io"
+    """Sending forgot password email with token to user mailbox"""
+    sender = str(os.environ.get('EMAIL_SENDER'))
     receiver = user_email
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
@@ -33,8 +33,8 @@ def forgot_password_email(user_email, token):
     message = header + f"Hi to reset you password go to " \
                        f"https://new.openml.org/auth/reset-page/?&token={token}"
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
-    # server = smtplib.SMTP('smtp.mailtrap.io', 2525)
-    # server.login("84be287eed57de", "6a38ff008fe618")
+    if (len(os.environ.get('SMTP_LOGIN')) > 0):
+        server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
     server.sendmail(sender, receiver, message)
     print('mail sent')
     server.quit()

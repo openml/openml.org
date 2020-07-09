@@ -45,6 +45,7 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
   color: red[400]
 });
+
 function Public() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
@@ -92,38 +93,40 @@ function Public() {
 
   return (
     <Card mb={6}>
-      <CardContent>
-        <Typography variant="h1" gutterBottom>
-          {fname} {lname}
-        </Typography>
-        <br />
-
-        <Typography gutterBottom>
-          <br />
-          User ID: {id}
-          <br />
-          Email: {email}
-          <br />
-          Bio: {bio}
-        </Typography>
-      </CardContent>
-      <CardContent>
-        <br />
-        <GreenMenuIcon icon="database" fixedWidth />
-        Datasets uploaded: {dataset}
-        <br />
-        <YellowMenuIcon icon={["fas", "flag"]} fixedWidth />
-        Tasks uploaded: {task}
-        <br />
-        <BlueMenuIcon icon="cog" fixedWidth />
-        Flows uploaded: {flow}
-        <br />
-        <RedMenuIcon icon="flask" fixedWidth />
-        Runs uploaded: {run}
-      </CardContent>
-      <Typography variant="h6" gutterBottom></Typography>
       <Grid container spacing={6}>
-        <Grid item md={8}></Grid>
+        <Grid item md={8}>
+          <CardContent>
+            <Typography variant="h1" gutterBottom>
+              {fname} {lname}
+            </Typography>
+            <br />
+
+            <Typography gutterBottom>
+              <br />
+              User ID: {id}
+              <br />
+              Email: {email}
+              <br />
+              Bio: {bio}
+            </Typography>
+          </CardContent>
+        </Grid>
+        <Grid item md={8}>
+          <CardContent>
+            <br />
+            <GreenMenuIcon icon="database" fixedWidth />
+            Datasets uploaded: {dataset}
+            <br />
+            <YellowMenuIcon icon={["fas", "flag"]} fixedWidth />
+            Tasks uploaded: {task}
+            <br />
+            <BlueMenuIcon icon="cog" fixedWidth />
+            Flows uploaded: {flow}
+            <br />
+            <RedMenuIcon icon="flask" fixedWidth />
+            Runs uploaded: {run}
+          </CardContent>
+        </Grid>
         <Grid item md={4}>
           <CenteredContent>
             <BigAvatar alt="User Image" id="dp" src={image} />
