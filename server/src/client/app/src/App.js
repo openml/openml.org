@@ -53,7 +53,6 @@ class App extends React.Component {
             Authorization: "Bearer " + token
           }
         };
-        console.log(localStorage.getItem("token"));
         axios
           .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
           .then(response => {
@@ -66,25 +65,24 @@ class App extends React.Component {
             } else if (this.state.loggedIn) {
               this.setState({ loggedIn: false });
             }
+            axios
+              .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+              .then(response => {
+                let img = undefined;
+                if (response.data.image.includes(path.sep)) {
+                  img = response.data.image;
+                }
+                let ini =
+                  response.data.first_name.charAt(0) +
+                  response.data.last_name.charAt(0);
+                this.setState({ userImage: img, userInitials: ini });
+              })
+              .catch(function(error) {
+                console.log("Could not fetch profile.");
+              });
           })
           .catch(error => {
-            console.log("Error");
             this.setState({ loggedIn: false });
-          });
-        axios
-          .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-          .then(response => {
-            let img = undefined;
-            if (response.data.image.includes(path.sep)) {
-              img = response.data.image;
-            }
-            let ini =
-              response.data.first_name.charAt(0) +
-              response.data.last_name.charAt(0);
-            this.setState({ userImage: img, userInitials: ini });
-          })
-          .catch(function(error) {
-            console.log(error);
           });
       }
     },
@@ -110,7 +108,7 @@ class App extends React.Component {
 
     // Search context
     displaySearch: true, // hide search on small screens
-    searchCollapsed: false, // hide search entirely
+    lapsed: false, // hide search entirely
     query: undefined,
     counts: 0, //counts of hits
     type: undefined, //the entity type
@@ -126,6 +124,9 @@ class App extends React.Component {
     getColor: () => {
       return this.getColor();
     },
+    getSearchTopic: () => {
+      return this.getSearchTopic();
+    },
     collapseSearch: value => {
       this.setState({ searchCollapsed: value });
     },
@@ -133,6 +134,9 @@ class App extends React.Component {
       if (value !== this.state.displaySearch) {
         this.setState({ displaySearch: value });
       }
+    },
+    setType: value => {
+      this.setState({ type: value });
     },
     setLoading: value => {
       this.setState({ loading: value });
@@ -259,7 +263,7 @@ class App extends React.Component {
       case "data":
         return green[500];
       case "task":
-        return orange[400];
+        return orange[500];
       case "flow":
         return blue[800];
       case "run":
@@ -273,7 +277,30 @@ class App extends React.Component {
       case "user":
         return blue[300];
       default:
-        return grey[700];
+        return undefined;
+    }
+  };
+
+  getSearchTopic = () => {
+    switch (this.state.type) {
+      case "data":
+        return "data sets";
+      case "task":
+        return "tasks";
+      case "flow":
+        return "flows";
+      case "run":
+        return "runs";
+      case "study":
+        return "collections";
+      case "task_type":
+        return "task types";
+      case "measure":
+        return "measures";
+      case "user":
+        return "users";
+      default:
+        return "data sets";
     }
   };
 

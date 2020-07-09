@@ -273,7 +273,7 @@ const lightVariant = {
     background: "#FFF",
     header: {
       color: "#FFF",
-      background: blue[700],
+      background: "#FFF",
       brand: {
         color: "#FFFFFF"
       }

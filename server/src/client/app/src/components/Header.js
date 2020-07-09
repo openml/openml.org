@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styled, { withTheme } from "styled-components";
+import styled, { withTheme, css } from "styled-components";
 import { darken } from "polished";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
@@ -47,9 +47,19 @@ const IconButton = styled(MuiIconButton)`
 `;
 
 const Search = styled.div`
+  ${props =>
+    props.bg === "Gradient" &&
+    css`
+      background: transparent;
+    `}
+  ${props =>
+    props.bg !== "Gradient" &&
+    props.searchcolor &&
+    props.currenttheme === 1 &&
+    css`
+      background-color: ${props => props.searchcolor};
+    `}
   border-radius: 2px;
-  background-color: ${props =>
-    props.bg === "Gradient" ? "transparent" : props.theme.header.background};
   display: none;
   position: relative;
   width: 100%;
@@ -59,6 +69,13 @@ const Search = styled.div`
       props.bg === "Gradient"
         ? "transparent"
         : darken(0.05, props.theme.header.background)};
+    ${props =>
+      props.bg !== "Gradient" &&
+      props.searchcolor &&
+      props.currenttheme === 1 &&
+      css`
+        background-color: ${props => darken(0.05, props.searchcolor)};
+      `}
   }
 
   ${props => props.theme.breakpoints.up("xs")} {
@@ -115,7 +132,8 @@ const WhiteIcon = styled(FontAwesomeIcon)`
 `;
 
 const UserButton = styled(Button)`
-  color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+  color: ${props =>
+    props.bg === "Gradient" || props.theme === 1 ? "white" : "inherit"};
   border-color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
 `;
 const SlimCardHeader = styled(CardHeader)({
@@ -195,11 +213,14 @@ class UserMenu extends Component {
             {loggedOut ? (
               <React.Fragment>
                 <StyledLink to="/auth/sign-in">
-                  <UserButton bg={this.props.bg}>Sign In</UserButton>
+                  <UserButton bg={this.props.bg} theme={context.currentTheme}>
+                    Sign In
+                  </UserButton>
                 </StyledLink>
                 <StyledLink to="/auth/sign-up">
                   <UserButton
                     bg={this.props.bg}
+                    theme={context.currentTheme}
                     variant="outlined"
                     style={{ marginLeft: 10 }}
                   >
@@ -354,7 +375,18 @@ class UserMenu extends Component {
 }
 
 const FlexAppBar = styled(AppBar)`
-  background: ${props => (props.bg === "Gradient" ? "transparent" : "")};
+  ${props =>
+    props.bg === "Gradient" &&
+    css`
+      background: transparent;
+    `}
+  ${props =>
+    props.bg !== "Gradient" &&
+    props.searchcolor &&
+    props.currenttheme === 1 &&
+    css`
+      background-color: ${props => props.searchcolor};
+    `}
   box-shadow: ${props => (props.bg === "Gradient" ? "none" : "")};
 `;
 
@@ -366,6 +398,8 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
           position="sticky"
           elevation={0}
           bg={context.opaqueSearch ? "" : bg}
+          searchcolor={context.getColor()}
+          currenttheme={context.currentTheme}
         >
           <Toolbar>
             <Grid container alignItems="center">
@@ -386,6 +420,8 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
               <Grid item xs={6} md={8}>
                 <Search
                   bg={context.opaqueSearch ? "" : bg}
+                  searchcolor={context.getColor()}
+                  currenttheme={context.currentTheme}
                   onClick={() => context.setOpaqueSearch(true)}
                 >
                   <SearchIconWrapper>
@@ -395,7 +431,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                     />
                   </SearchIconWrapper>
                   <Input
-                    placeholder="Search datasets…"
+                    placeholder={"Search " + context.getSearchTopic()}
                     bg={context.opaqueSearch ? "" : bg}
                     onKeyPress={event => {
                       if (event.charCode === 13) {
