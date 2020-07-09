@@ -321,7 +321,7 @@ const darkVariant = {
     background: "#1B2430",
     header: {
       color: grey[200],
-      background: "#232f3e",
+      background: "#1B2430",
       brand: {
         color: blue[500]
       }
