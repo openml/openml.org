@@ -129,7 +129,6 @@ function Public() {
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
           <Grid item md={8}>
-            f
             <FormControl fullWidth mb={3}>
               <TextField
                 label="Biography"

@@ -2,6 +2,7 @@ import datetime
 import os
 from dotenv import load_dotenv
 
+
 class Config(object):
     """
     Config object for flask app

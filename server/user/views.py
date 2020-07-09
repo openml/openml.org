@@ -14,7 +14,6 @@ from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
 from io import BytesIO
-from flask_dance.contrib.github import github
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -113,7 +112,8 @@ def profile():
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
         return jsonify({"username": user.email, "bio": user.bio, "first_name": user.first_name,
-                        "last_name": user.last_name, "email": user.email, "image": user.image, "id": user.id}), 200
+                        "last_name": user.last_name, "email": user.email,
+                        "image": user.image, "id": user.id}), 200
     elif request.method == "POST":
         data = request.get_json()
         # print(data['image'])

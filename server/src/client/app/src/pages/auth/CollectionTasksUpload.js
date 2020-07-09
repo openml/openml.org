@@ -15,6 +15,7 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {Redirect} from "react-router-dom";
+import {makeStyles} from '@material-ui/core/styles';
 
 
 const Card = styled(MuiCard)(spacing);
@@ -62,9 +63,10 @@ function Public() {
 
     return (
         <Card mb={6}>
+
             <form onSubmit={datatoflask}>
                 <Typography variant="h6" gutterBottom>
-                    Dataset info
+                    Collection info
                 </Typography>
                 {
                     error &&
@@ -119,6 +121,12 @@ function Settings() {
             <Typography variant="h3" gutterBottom display="inline">
                 Collection Tasks Upload
             </Typography>
+            <Divider my={3}/>
+
+            <div>
+                <Button color="primary" href='/auth/upload-collection-tasks'> Upload task collection</Button>
+                <Button color="Blue" href='/auth/upload-collection-runs'> Upload run collection</Button>
+            </div>
 
             <Divider my={6}/>
 

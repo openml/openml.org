@@ -75,7 +75,7 @@ function Public() {
         <Card mb={6}>
             <form onSubmit={datatoflask}>
                 <Typography variant="h6" gutterBottom>
-                    Dataset info
+                    Task info
                 </Typography>
                 {
                     error &&

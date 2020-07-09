@@ -9,7 +9,6 @@ from server.utils import confirmation_email, forgot_password_email
 from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
     Blueprint, jsonify, request)
 
-
 blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
@@ -21,7 +20,7 @@ def signupfunc():
     register_obj = request.get_json()
     check_user = User.query.filter_by(email=register_obj['email']).first()
     if check_user is None:
-        user = User(username=register_obj['email'],email=register_obj['email'])
+        user = User(username=register_obj['email'], email=register_obj['email'])
         user.set_password(register_obj['password'])
         user.set_session_hash()
         user.ip_address = request.remote_addr
