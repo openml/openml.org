@@ -46,6 +46,7 @@
     "react-syntax-highlighter": "^11.0.2",
     "react-timeago": "^4.4.0",
     "styled-components": "4.3.2",
+    "typeface-lato": "0.0.75",
     "typescript": "^3.9.6"
   }
 }

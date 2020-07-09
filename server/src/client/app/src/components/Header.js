@@ -187,7 +187,6 @@ class UserMenu extends Component {
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
-    const { theme, ...other } = this.props;
 
     return (
       <MainContext.Consumer>

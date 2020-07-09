@@ -84,7 +84,7 @@ const GreyMenuIcon = styled(FontAwesomeIcon)({
 const dataRoutes = {
   id: "Data sets",
   path: "/search",
-  header: "Discover",
+  header: "Search",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
   component: SearchPanel,
   entity_type: "data"
@@ -145,13 +145,13 @@ const taskTypeRoutes = {
   entity_type: "task_type"
 };
 
-const peopleRoutes = {
-  id: "People",
-  path: "/search",
-  icon: <LightBlueMenuIcon icon="users" fixedWidth />,
-  component: SearchPanel,
-  entity_type: "user"
-};
+//const peopleRoutes = {
+//  id: "People",
+//  path: "/search",
+//  icon: <LightBlueMenuIcon icon="users" fixedWidth />,
+//  component: SearchPanel,
+//  entity_type: "user"
+//};
 
 const profileRoutes = {
   id: "Profile",
@@ -281,7 +281,7 @@ const authRoutes = {
 const documentationRoutes = {
   id: "Documentation",
   path: "https://docs.openml.org",
-  header: "Learn more",
+  header: "Learn",
   icon: <GreenMenuIcon icon="book-open" fixedWidth />,
   component: null
 };
