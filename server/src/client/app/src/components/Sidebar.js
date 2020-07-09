@@ -125,6 +125,7 @@ const Scrollbar = styled(PerfectScrollbar)`
 
 const List = styled(MuiList)`
   background-color: ${props => props.theme.sidebar.background};
+  margin-top: -18px;
 `;
 
 const Items = styled.div`
@@ -153,7 +154,7 @@ const Category = styled(ListItem)`
   padding-left: ${props => props.theme.spacing(4)}px;
   padding-right: ${props => props.theme.spacing(1)}px;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
-  border-left: ${props => (props.activecategory === "true" ? "2px" : "0px")}
+  border-left: ${props => (props.activecategory === "true" ? "3px" : "0px")}
     solid ${props => props.currentcolor};
 
   svg {
@@ -167,8 +168,6 @@ const Category = styled(ListItem)`
   }
 
   &.${props => props.activeClassName} {
-    background-color: ${props => darken(0.05, props.theme.sidebar.background)};
-
     span {
       color: ${props => props.theme.sidebar.color};
     }
@@ -181,7 +180,7 @@ const CategoryText = styled(ListItemText)`
     color: ${props => props.theme.sidebar.color};
     font-size: ${props => props.theme.typography.body1.fontSize}px;
     font-weight: ${props => props.theme.typography.fontWeightRegular};
-    padding: 0 ${props => props.theme.spacing(5)}px;
+    padding: 0 ${props => props.theme.spacing(4)}px;
   }
 `;
 
@@ -202,10 +201,13 @@ const CountBadge = styled(Chip)`
 
 const SidebarSection = styled(Typography)`
   color: ${props => props.theme.sidebar.color};
-  padding: ${props => props.theme.spacing(2)}px
-    ${props => props.theme.spacing(6)}px ${props => props.theme.spacing(1)}px;
+  padding: ${props => props.theme.spacing(0)}px
+    ${props => props.theme.spacing(4)}px ${props => props.theme.spacing(0)}px;
   opacity: 0.9;
   display: block;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-top: 20px;
 `;
 
 const SidebarFooter = styled.div`
@@ -294,7 +296,15 @@ function SidebarLink({ name, to, badge, icon }) {
     <SimpleLink href={to} target="_blank" rel="noreferrer">
       <Category>
         {icon}
-        <CategoryText>{name}</CategoryText>
+        <CategoryText>
+          {name}
+          {(name === "Documentation" || name === "Blog") && (
+            <FontAwesomeIcon
+              icon="external-link-alt"
+              style={{ paddingLeft: 6, paddingRight: 6 }}
+            />
+          )}
+        </CategoryText>
       </Category>
     </SimpleLink>
   );
@@ -427,11 +437,7 @@ class Sidebar extends React.Component {
                           {category.header}
                         </SidebarSection>
                       ) : null}
-                      {category.header &&
-                      category.header !== "Discover" &&
-                      context.miniDrawer ? (
-                        <hr />
-                      ) : null}
+                      {category.header && context.miniDrawer ? <hr /> : null}
                       {category.component ? (
                         category.children ? (
                           <React.Fragment key={index}>
@@ -543,7 +549,8 @@ class Sidebar extends React.Component {
                                   : 0
                               }
                               activecategory={
-                                category.entity_type === context.type
+                                category.entity_type === context.type &&
+                                context.type !== undefined
                                   ? "true"
                                   : "false"
                               }

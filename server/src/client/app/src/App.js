@@ -40,49 +40,53 @@ class App extends React.Component {
     miniDrawerToggle: () =>
       this.setState({
         miniDrawer: !this.state.miniDrawer,
-        drawerWidth: this.state.miniDrawer ? 260 : 60
+        drawerWidth: this.state.miniDrawer ? 260 : 57
       }),
 
     // Auth context
     loggedIn: false,
     checkLogIn: () => {
-      const yourConfig = {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token")
-        }
-      };
-      axios
-        .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
-        .then(response => {
-          if (
-            response.statusText !== undefined &&
-            response.statusText === "OK" &&
-            !this.state.loggedIn
-          ) {
-            this.setState({ loggedIn: true });
-          } else if (this.state.loggedIn) {
+      let token = localStorage.getItem("token");
+      if (token != null) {
+        const yourConfig = {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        };
+        console.log(localStorage.getItem("token"));
+        axios
+          .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
+          .then(response => {
+            if (
+              response.statusText !== undefined &&
+              response.statusText === "OK" &&
+              !this.state.loggedIn
+            ) {
+              this.setState({ loggedIn: true });
+            } else if (this.state.loggedIn) {
+              this.setState({ loggedIn: false });
+            }
+          })
+          .catch(error => {
+            console.log("Error");
             this.setState({ loggedIn: false });
-          }
-        })
-        .catch(error => {
-          console.log("Error");
-          this.setState({ loggedIn: false });
-        });
-      axios
-        .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-        .then(response => {
-          let img = undefined;
-          if (response.data.image.includes(path.sep)) {
-            img = response.data.image;
-          }
-          let ini =
-            response.data.first_name.charAt(0) +
-            response.data.last_name.charAt(0);
-          this.setState({ userImage: img, userInitials: ini });
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+          });
+        axios
+          .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+          .then(response => {
+            let img = undefined;
+            if (response.data.image.includes(path.sep)) {
+              img = response.data.image;
+            }
+            let ini =
+              response.data.first_name.charAt(0) +
+              response.data.last_name.charAt(0);
+            this.setState({ userImage: img, userInitials: ini });
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
     },
     logIn: () => {
       this.setState({ loggedIn: true });

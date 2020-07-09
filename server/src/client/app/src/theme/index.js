@@ -52,11 +52,13 @@ const shadows = [
 const typography = {
   useNextVariants: true,
   fontFamily: [
+    "Lato",
+    "Quicksand",
+    "Roboto",
     "Nunito Sans",
     "-apple-system",
     "BlinkMacSystemFont",
     '"Segoe UI"',
-    "Roboto",
     '"Helvetica Neue"',
     "Arial",
     "sans-serif",
