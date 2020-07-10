@@ -2,8 +2,19 @@
     "openapi": "3.0.0",
     "info": {
         "title": "OpenML API",
+        "description": "REST API for sharing, organizing and reusing machine learning datasets, code, and experiments. Follows a predictive URL scheme from endpoint https://www.openml.org/api/v1/json (or /xml). You need to add your api_key for every call except GET calls. The API key can be found in your profile on openml.org.",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "https://openml.org/api/v1/json",
+            "description": "The current OpenML API"
+        },
+        {
+            "url": "https://test.openml.org/api/v1/json",
+            "description": "The test OpenML API"
+        }
+    ],
     "paths": {
         "/data/tag": {
             "post": {
@@ -164,15 +175,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -273,15 +275,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "Api key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -531,15 +524,6 @@
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "Api key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -662,17 +646,6 @@
                 "summary": "List all data qualities",
                 "description": "Returns a list of all data qualities in the system.",
                 "operationId": "Api_data::data_qualities_list",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "A list of data qualities",
@@ -726,15 +699,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "Api key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -872,15 +836,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -1011,17 +966,6 @@
                 "summary": "List all estimation procedures",
                 "description": "Returns an array with all model performance estimation procedures in the system.",
                 "operationId": "Api_estimationprocedure::estimationprocedure_list",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "A list of estimation procedures",
@@ -1096,15 +1040,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -1158,15 +1093,6 @@
                         "in": "path",
                         "description": "Any combination of these filters\r\n  /function/{name} - name of the evaluation measure, e.g. area_under_auc or predictive_accuracy. See the OpenML website for the complete list of measures.\r\n  /tag/{tag} - returns only evaluations of runs tagged with the given tag.\r\n  /run/{ids} - return only evaluations for specific runs, specified as a comma-separated list of run IDs, e.g. ''1,2,3''\r\n  /task/{ids} - return only evaluations for specific tasks, specified as a comma-separated list of task IDs, e.g. ''1,2,3''\r\n  /flow/{ids} - return only evaluations for specific flows, specified as a comma-separated list of flow IDs, e.g. ''1,2,3''\r\n  /setup/{ids} - return only evaluations for specific setups, specified as a comma-separated list of setup IDs, e.g. ''1,2,3''\r\n  /uploader/{ids} - return only evaluations uploaded by specific users, specified as a comma-separated list of user IDs, e.g. ''1,2,3''\r\n  /limit/{limit}/offset/{offset} - returns only {limit} results starting from result number {offset}. Useful for paginating results. With /limit/5/offset/10, results 11..15 will be returned. Both limit and offset need to be specified.\r\n  /per_fold/{true,false} - whether or not to return crossvalidation scores per fold. Defaults to 'false'. Setting it to 'true' leads to large numbers of results, use only for very specific sets of runs.\r\n  /sort_order/{asc,desc} - sorts the results by the evaluation value, according to the selected evaluation measure (function)\r\n  ",
                         "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -1240,17 +1166,6 @@
                 "summary": "List all evaluation measures",
                 "description": "Returns an array with all model evaluation measures in the system.",
                 "operationId": "Api_evaluationmeasure::evaluationmeasure_list",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "A list of evaluation measures",
@@ -1291,15 +1206,6 @@
                         "in": "path",
                         "description": "Any combination of these filters\r\n  /limit/{limit}/offset/{offset} - returns only {limit} results starting from result number {offset}. Useful for paginating results. With /limit/5/offset/10, tasks 11..15 will be returned. Both limit and offset need to be specified.\r\n  /tag/{tag} - returns only tasks tagged with the given tag.\r\n  /uploader/{id} - return only evaluations uploaded by a specific user, specified by user ID.\r\n  ",
                         "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -1527,15 +1433,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -1589,15 +1486,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -1942,15 +1830,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -2026,15 +1905,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -2217,15 +2087,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -2367,15 +2228,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -2709,15 +2561,6 @@
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -2853,15 +2696,6 @@
                         "in": "path",
                         "description": "Any combination of these filters\r\n  /tag/{tag} - returns only setups tagged with the given tag.\r\n  /flow/{ids} - return only setups for specific flows, specified as a comma-separated list of flow IDs, e.g. ''1,2,3''\r\n  /setup/{ids} - return only specific setups, specified as a comma-separated list of setup IDs, e.g. ''1,2,3''\r\n  /limit/{limit}/offset/{offset} - returns only {limit} results starting from result number {offset}. Useful for paginating results. With /limit/5/offset/10, results 11..15 will be returned. Both limit and offset need to be specified.\r\n  ",
                         "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -3148,15 +2982,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "Api key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -3281,15 +3106,6 @@
                         "in": "path",
                         "description": "Any combination of these filters\r\n  /main_entity_type/{type} - only return studies collecting entities of a given type (e.g. 'task' or 'run').\r\n  /uploader/{ids} - return only evaluations uploaded by specific users, specified as a comma-separated list of user IDs, e.g. ''1,2,3''\r\n  /limit/{limit}/offset/{offset} - returns only {limit} results starting from result number {offset}. Useful for paginating results. With /limit/5/offset/10, results 11..15 will be returned. Both limit and offset need to be specified.\r\n  ",
                         "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -3498,15 +3314,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -3634,15 +3441,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "Api key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -3882,17 +3680,6 @@
                 ],
                 "summary": "List all task types",
                 "description": "Returns an array with all task types in the system.",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "default": {
                         "description": "Unexpected error",
@@ -3950,15 +3737,6 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -4045,17 +3823,6 @@
                 "summary": "List all users by user id",
                 "description": "Returns an array with all user ids and names.",
                 "operationId": "Api_user::username_list",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "query",
-                        "description": "API key to authenticate the user",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "A list of users",
