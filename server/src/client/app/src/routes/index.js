@@ -44,6 +44,7 @@ const Page500 = async(() => import("./Page500"));
 const About = async(() => import("../pages/docs/About"));
 const GetInvolved = async(() => import("../pages/docs/GetInvolved"));
 const Terms = async(() => import("../pages/docs/Terms"));
+const API = async(() => import("../pages/docs/API"));
 
 // Search
 const SearchPanel = async(() => import("../pages/search/SearchPanel"));
@@ -286,6 +287,13 @@ const documentationRoutes = {
   component: null
 };
 
+const apiRoutes = {
+  id: "API",
+  path: "/api",
+  icon: <BlueMenuIcon icon="code" fixedWidth />,
+  component: API
+};
+
 const blogRoutes = {
   id: "Blog",
   path: "https://openml.github.io/blog",
@@ -303,14 +311,14 @@ const contributeRoutes = {
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
-  icon: <BlueMenuIcon icon="heart" fixedWidth />,
+  icon: <PurpleMenuIcon icon="heart" fixedWidth />,
   component: Terms
 };
 
 const teamRoutes = {
   id: "About us",
   path: "/about",
-  icon: <PurpleMenuIcon icon="user-friends" fixedWidth />,
+  icon: <OrangeMenuIcon icon="user-friends" fixedWidth />,
   component: About
 };
 
@@ -327,8 +335,9 @@ export const mainRoutes = [
   // peopleRoutes,
   documentationRoutes,
   blogRoutes,
-  termsRoutes,
+  apiRoutes,
   contributeRoutes,
+  termsRoutes,
   teamRoutes
 ];
 
@@ -345,7 +354,8 @@ export default [
   // peopleRoutes,
   documentationRoutes,
   blogRoutes,
-  termsRoutes,
+  apiRoutes,
   contributeRoutes,
+  termsRoutes,
   teamRoutes
 ];
