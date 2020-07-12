@@ -6,6 +6,7 @@ import Loader from "./Loader";
 import axios from "axios";
 
 import {
+  Box,
   Grid,
   Hidden,
   InputBase,
@@ -224,14 +225,16 @@ class UserMenu extends Component {
                   </UserButton>
                 </StyledLink>
                 <StyledLink to="/auth/sign-up">
-                  <UserButton
-                    bg={this.props.bg}
-                    theme={context.currentTheme}
-                    variant="outlined"
-                    style={{ marginLeft: 10 }}
-                  >
-                    Sign Up
-                  </UserButton>
+                  <Box display={{ xs: "none", sm: "inline-block" }}>
+                    <UserButton
+                      bg={this.props.bg}
+                      theme={context.currentTheme}
+                      variant="outlined"
+                      style={{ marginLeft: 10 }}
+                    >
+                      Sign Up
+                    </UserButton>
+                  </Box>
                 </StyledLink>
               </React.Fragment>
             ) : (

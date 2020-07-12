@@ -88,7 +88,7 @@ class Main extends React.Component {
     return (
       <MainContext.Consumer>
         {context => (
-          <Root bg={background} style={{ minWidth: 430 }}>
+          <Root bg={background}>
             {context.query !== undefined && context.type === undefined && (
               <Redirect to="/search?type=data" />
             )}
