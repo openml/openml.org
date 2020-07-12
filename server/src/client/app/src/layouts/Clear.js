@@ -62,37 +62,54 @@ const MainContent = styled.div`
 
 function Page({ children }) {
   const history = useHistory();
+  let whitebg = history.location.pathname.startsWith("/dashboard");
   return (
-    <Root bg="Gradient" bgrunning={animation}>
-      <CssBaseline />
-      <GlobalStyle />
-      <AppContent>
-        <AppBar
-          position="fixed"
-          style={{ background: "transparent", boxShadow: "none", height: "50" }}
-        >
-          <Toolbar variant="dense">
-            <IconButton
-              style={{ backgroundColor: "transparent" }}
-              color="inherit"
-              onClick={() => {
-                history.goBack();
+    <React.Fragment>
+      {whitebg ? (
+        <Root>
+          <CssBaseline />
+          <GlobalStyle />
+          <AppContent>
+            <MainContent>{children}</MainContent>
+          </AppContent>
+        </Root>
+      ) : (
+        <Root bg="Gradient" bgrunning={animation}>
+          <CssBaseline />
+          <GlobalStyle />
+          <AppContent>
+            <AppBar
+              position="fixed"
+              style={{
+                background: "transparent",
+                boxShadow: "none",
+                height: "50"
               }}
             >
-              <FontAwesomeIcon icon="chevron-left" />
-              <Typography
-                variant="h6"
-                color="inherit"
-                style={{ paddingLeft: 15 }}
-              >
-                Back
-              </Typography>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <MainContent>{children}</MainContent>
-      </AppContent>
-    </Root>
+              <Toolbar variant="dense">
+                <IconButton
+                  style={{ backgroundColor: "transparent" }}
+                  color="inherit"
+                  onClick={() => {
+                    history.goBack();
+                  }}
+                >
+                  <FontAwesomeIcon icon="chevron-left" />
+                  <Typography
+                    variant="h6"
+                    color="inherit"
+                    style={{ paddingLeft: 15 }}
+                  >
+                    Back
+                  </Typography>
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+            <MainContent>{children}</MainContent>
+          </AppContent>
+        </Root>
+      )}
+    </React.Fragment>
   );
 }
 

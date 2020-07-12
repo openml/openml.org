@@ -263,7 +263,7 @@ class App extends React.Component {
       case "data":
         return green[500];
       case "task":
-        return orange[500];
+        return orange[600];
       case "flow":
         return blue[800];
       case "run":

@@ -7,7 +7,8 @@ const breakpoints = {
     sm: 600,
     md: 960,
     lg: 1280,
-    xl: 1440
+    xl: 1440,
+    xxl: 1600
   }
 };
 
@@ -70,6 +71,7 @@ const typography = {
   fontWeightLight: 300,
   fontWeightRegular: 400,
   fontWeightMedium: 600,
+  fontWeightBold: 800,
   h1: {
     fontSize: "2rem",
     fontWeight: 600
@@ -262,7 +264,7 @@ const lightVariant = {
     color: grey[200],
     background: blue[700],
     search: {
-      color: grey[100]
+      color: "#FFF"
     },
     indicator: {
       background: red[700]

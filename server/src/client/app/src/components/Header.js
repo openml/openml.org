@@ -111,6 +111,12 @@ const Input = styled(InputBase)`
     padding-left: ${props => props.theme.spacing(12)}px;
     width: 80%;
   }
+
+  > input::placeholder {
+    color: ${props =>
+      props.bg === "Gradient" ? "white" : props.theme.header.search.color};
+    opacity: 0.8;
+  }
 `;
 
 const StyledLink = styled(Link)`

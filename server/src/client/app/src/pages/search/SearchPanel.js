@@ -11,7 +11,7 @@ import { MainContext } from "../../App.js";
 import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
 
 const SearchTabs = styled(Tabs)`
-  height: 51px;
+  height: 61px;
   background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
@@ -21,6 +21,8 @@ const SearchTabs = styled(Tabs)`
 `;
 const SearchTab = styled(Tab)`
   color: ${props => props.searchcolor} !important;
+  font-size: 11pt;
+  margin-top: 5px;
 `;
 const DetailPanel = styled.div`
   width: 90%;
@@ -468,11 +470,21 @@ export default class SearchPanel extends React.Component {
           item
           xs={12}
           sm={4}
-          style={{ display: this.context.searchCollapsed ? "none" : "block" }}
+          lg={3}
+          xxl={2}
+          style={{
+            display: this.context.searchCollapsed ? "none" : "block"
+          }}
         >
           {this.getEntityList()}
         </Grid>
-        <Grid item xs={12} sm={this.context.searchCollapsed ? 12 : 8}>
+        <Grid
+          item
+          xs={12}
+          sm={this.context.searchCollapsed ? 12 : 8}
+          lg={this.context.searchCollapsed ? 12 : 9}
+          xxl={this.context.searchCollapsed ? 12 : 10}
+        >
           <SearchTabs
             value={activeTab}
             onChange={this.tabChange}
@@ -509,7 +521,7 @@ export default class SearchPanel extends React.Component {
               // TODO: Add logic to call subtypes (e.g. run collection,
               // task collection). E.g.:
               // if(context.filter.study_type === 'run') ...
-              <div>
+              <div style={{ height: "100%" }}>
                 <iframe
                   src={
                     String(window.location.protocol) +
@@ -528,7 +540,7 @@ export default class SearchPanel extends React.Component {
                       : "") +
                     String(this.context.id)
                   }
-                  height="3300px"
+                  height="100%"
                   width="98%"
                   frameBorder="0"
                   id="dash_iframe"
@@ -539,7 +551,7 @@ export default class SearchPanel extends React.Component {
                 ></iframe>
               </div>
             ) : (
-              <div>
+              <div style={{ height: "100%" }}>
                 <iframe
                   src={
                     String(window.location.protocol) +
@@ -548,7 +560,7 @@ export default class SearchPanel extends React.Component {
                     "/dashboard/" +
                     String(this.context.type)
                   }
-                  height="1500px"
+                  height="100%"
                   width="98%"
                   frameBorder="0"
                   id="dash_iframe_overview"
