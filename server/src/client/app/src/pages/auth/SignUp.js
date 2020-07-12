@@ -53,7 +53,7 @@ function SignUp() {
       axios
         .post(process.env.REACT_APP_SERVER_URL + "signup", {
           first_name: event.target.fname.value,
-          last_name:event.target.lname.value,
+          last_name: event.target.lname.value,
           email: event.target.email.value,
           password: event.target.password.value
         })
@@ -97,8 +97,7 @@ function SignUp() {
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">
-            Email Address (we never share your email and only send critical
-            emails)
+            Email Address (we never share your email)
           </InputLabel>
           <Input id="email" name="email" autoComplete="email" />
         </FormControl>
