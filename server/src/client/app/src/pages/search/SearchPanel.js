@@ -471,7 +471,7 @@ export default class SearchPanel extends React.Component {
           xs={12}
           sm={4}
           lg={3}
-          xxl={2}
+          xl={2}
           style={{
             display: this.context.searchCollapsed ? "none" : "block"
           }}
@@ -483,7 +483,7 @@ export default class SearchPanel extends React.Component {
           xs={12}
           sm={this.context.searchCollapsed ? 12 : 8}
           lg={this.context.searchCollapsed ? 12 : 9}
-          xxl={this.context.searchCollapsed ? 12 : 10}
+          xl={this.context.searchCollapsed ? 12 : 10}
         >
           <SearchTabs
             value={activeTab}
