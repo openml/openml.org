@@ -135,7 +135,8 @@ const StyledLink = styled(Link)`
 `;
 
 const WhiteIcon = styled(FontAwesomeIcon)`
-  color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+  color: ${props =>
+    props.bg === "Gradient" ? "white" : props.theme.header.color};
 `;
 
 const UserButton = styled(Button)`
@@ -225,7 +226,7 @@ class UserMenu extends Component {
                   </UserButton>
                 </StyledLink>
                 <StyledLink to="/auth/sign-up">
-                  <Box display={{ xs: "none", sm: "inline-block" }}>
+                  <Box display={{ xs: "none", sm: "none", md: "inline-block" }}>
                     <UserButton
                       bg={this.props.bg}
                       theme={context.currentTheme}
@@ -414,16 +415,24 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
             <Grid container alignItems="center">
               <Hidden mdUp>
                 <Grid item>
-                  <IconButton
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={onDrawerToggle}
-                  >
+                  <IconButton aria-label="Open drawer" onClick={onDrawerToggle}>
                     <WhiteIcon
                       icon="bars"
                       bg={context.opaqueSearch ? "" : bg}
+                      color="inherit"
                     />
                   </IconButton>
+                </Grid>
+                <Grid item xs={3} sm={2}>
+                  <StyledLink to="/">
+                    <UserButton
+                      bg={context.opaqueSearch ? "" : bg}
+                      theme={context.currentTheme}
+                      style={{ fontSize: 18 }}
+                    >
+                      Open ML
+                    </UserButton>
+                  </StyledLink>
                 </Grid>
               </Hidden>
               <Grid item xs={6} md={8}>

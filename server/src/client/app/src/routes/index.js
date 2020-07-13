@@ -71,7 +71,7 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
 });
 const PurpleMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
-  color: purple[600]
+  color: purple[400]
 });
 const OrangeMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
@@ -311,14 +311,14 @@ const contributeRoutes = {
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
-  icon: <PurpleMenuIcon icon="heart" fixedWidth />,
+  icon: <PurpleMenuIcon icon="balance-scale" fixedWidth />,
   component: Terms
 };
 
 const teamRoutes = {
   id: "About us",
   path: "/about",
-  icon: <OrangeMenuIcon icon="user-friends" fixedWidth />,
+  icon: <OrangeMenuIcon icon="users" fixedWidth />,
   component: About
 };
 

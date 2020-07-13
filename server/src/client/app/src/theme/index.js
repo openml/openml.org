@@ -309,7 +309,7 @@ const darkVariant = {
     }
   },
   header: {
-    color: grey[500],
+    color: grey[900],
     background: "#FFFFFF",
     search: {
       color: grey[800]

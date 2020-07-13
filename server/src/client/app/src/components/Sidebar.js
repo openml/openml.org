@@ -231,7 +231,7 @@ const SidebarFooter = styled.div`
   color: ${props => props.theme.sidebar.color};
   background-color: ${props => props.theme.sidebar.background};
   width: 260px;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 const LightIcon = styled(FontAwesomeIcon)({
@@ -259,6 +259,7 @@ function SidebarCategory({
   activecategory,
   searchExpand,
   currentcolor,
+  showTooltip,
   ...rest
 }) {
   return (
@@ -267,7 +268,9 @@ function SidebarCategory({
       currentcolor={currentcolor}
       {...rest}
     >
-      {icon}
+      <Tooltip title={showTooltip ? name : ""} placement="right">
+        <div>{icon}</div>
+      </Tooltip>
       <CategoryText>{name}</CategoryText>
       {isCollapsable ? (
         isOpen ? (
@@ -290,11 +293,13 @@ function SidebarCategory({
   );
 }
 
-function SidebarLink({ name, to, badge, icon }) {
+function SidebarLink({ name, to, badge, icon, showTooltip }) {
   return (
     <SimpleLink href={to} target="_blank" rel="noreferrer">
       <Category>
-        {icon}
+        <Tooltip title={showTooltip ? name : ""} placement="right">
+          <div>{icon}</div>
+        </Tooltip>
         <CategoryText>
           {name}
           {(name === "Documentation" || name === "Blog") && (
@@ -488,6 +493,7 @@ class Sidebar extends React.Component {
                                   ? this.state.counts[category.entity_type]
                                   : 0
                               }
+                              showTooltip={context.miniDrawer}
                             />
                             <Collapse
                               in={
@@ -583,6 +589,7 @@ class Sidebar extends React.Component {
                                   : undefined
                               }
                               currentcolor={context.getColor()}
+                              showTooltip={context.miniDrawer}
                             />
                           </React.Fragment>
                         )
@@ -609,6 +616,7 @@ class Sidebar extends React.Component {
                               : undefined
                           }
                           currentcolor={context.getColor()}
+                          showTooltip={context.miniDrawer}
                         />
                       )}
                     </React.Fragment>

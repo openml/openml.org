@@ -300,7 +300,7 @@ class App extends React.Component {
       case "user":
         return "users";
       default:
-        return "data sets";
+        return "";
     }
   };
 
