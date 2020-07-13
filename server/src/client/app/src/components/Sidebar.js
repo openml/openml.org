@@ -8,8 +8,6 @@ import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { spacing } from "@material-ui/system";
-
 import { MainContext } from "../App.js";
 
 import { errorCheck } from "../pages/search/api.js";

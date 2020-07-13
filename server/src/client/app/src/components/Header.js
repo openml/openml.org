@@ -79,9 +79,14 @@ const Search = styled.div`
       `}
   }
 
-  ${props => props.theme.breakpoints.up("xs")} {
-    display: block;
+  ${props => props.theme.breakpoints.up("md")} {
+    display: inline-block;
   }
+  ${props =>
+    props.bg === "" &&
+    css`
+      display: block;
+    `}
 `;
 
 const SearchIconWrapper = styled.div`
@@ -140,9 +145,18 @@ const WhiteIcon = styled(FontAwesomeIcon)`
 `;
 
 const UserButton = styled(Button)`
+  display: ${props => (props.bg === "" ? "none" : "inline-block")};
+  color: ${props =>
+    props.bg === "Gradient" || props.currenttheme === 1 ? "white" : "inherit"};
+  border-color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+
+  ${props => props.theme.breakpoints.up("md")} {
+    display: inline-block;
+  }
+`;
+const SearchButton = styled(Button)`
   color: ${props =>
     props.bg === "Gradient" || props.theme === 1 ? "white" : "inherit"};
-  border-color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
 `;
 const SlimCardHeader = styled(CardHeader)({
   padding: 0,
@@ -221,7 +235,10 @@ class UserMenu extends Component {
             {loggedOut ? (
               <React.Fragment>
                 <StyledLink to="/auth/sign-in">
-                  <UserButton bg={this.props.bg} theme={context.currentTheme}>
+                  <UserButton
+                    bg={this.props.bg}
+                    currenttheme={context.currentTheme}
+                  >
                     Sign In
                   </UserButton>
                 </StyledLink>
@@ -229,7 +246,7 @@ class UserMenu extends Component {
                   <Box display={{ xs: "none", sm: "none", md: "inline-block" }}>
                     <UserButton
                       bg={this.props.bg}
-                      theme={context.currentTheme}
+                      currenttheme={context.currentTheme}
                       variant="outlined"
                       style={{ marginLeft: 10 }}
                     >
@@ -363,7 +380,7 @@ class UserMenu extends Component {
                     .then(response => {
                       console.log(response.data);
                       context.logOut();
-                      context.setOpaqueSearch(false);
+                      context.setSearchActive(false);
                     })
                     .catch(error => {
                       console.log(error);
@@ -407,7 +424,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
         <FlexAppBar
           position="sticky"
           elevation={0}
-          bg={context.opaqueSearch ? "" : bg}
+          bg={context.searchActive ? "" : bg}
           searchcolor={context.getColor()}
           currenttheme={context.currentTheme}
         >
@@ -418,7 +435,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                   <IconButton aria-label="Open drawer" onClick={onDrawerToggle}>
                     <WhiteIcon
                       icon="bars"
-                      bg={context.opaqueSearch ? "" : bg}
+                      bg={context.searchActive ? "" : bg}
                       color="inherit"
                     />
                   </IconButton>
@@ -426,31 +443,40 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                 <Grid item>
                   <StyledLink to="/">
                     <UserButton
-                      bg={context.opaqueSearch ? "" : bg}
-                      theme={context.currentTheme}
-                      style={{ fontSize: 18, width: 100 }}
+                      bg={context.searchActive ? "" : bg}
+                      currenttheme={context.currentTheme}
+                      style={{
+                        fontSize: 18,
+                        width: 90
+                      }}
                     >
                       Open ML
                     </UserButton>
                   </StyledLink>
                 </Grid>
               </Hidden>
-              <Grid item xs={4} sm={6} md={8}>
+              <Grid
+                item
+                xs={context.searchActive ? 7 : 1}
+                sm={context.searchActive ? 9 : 1}
+                md={context.searchActive ? 9 : 5}
+                lg={context.searchActive ? 10 : 5}
+              >
                 <Search
-                  bg={context.opaqueSearch ? "" : bg}
+                  bg={context.searchActive ? "" : bg}
                   searchcolor={context.getColor()}
                   currenttheme={context.currentTheme}
-                  onClick={() => context.setOpaqueSearch(true)}
+                  onClick={() => context.setSearchActive(true)}
                 >
                   <SearchIconWrapper>
                     <WhiteIcon
                       icon="search"
-                      bg={context.opaqueSearch ? "" : bg}
+                      bg={context.searchActive ? "" : bg}
                     />
                   </SearchIconWrapper>
                   <Input
                     placeholder={"Search " + context.getSearchTopic()}
-                    bg={context.opaqueSearch ? "" : bg}
+                    bg={context.searchActive ? "" : bg}
                     onKeyPress={event => {
                       if (event.charCode === 13) {
                         event.preventDefault();
@@ -462,8 +488,23 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
               </Grid>
               <Grid item xs />
               <Grid item>
+                <Box display={{ xs: "inline-block", md: "none" }}>
+                  <SearchButton
+                    bg={context.searchActive ? "" : bg}
+                    theme={context.currentTheme}
+                    onClick={context.toggleSearch}
+                  >
+                    {context.searchActive ? (
+                      <FontAwesomeIcon icon="times" />
+                    ) : (
+                      "Search"
+                    )}
+                  </SearchButton>
+                </Box>
+              </Grid>
+              <Grid item>
                 <UserMenu
-                  bg={context.opaqueSearch ? "" : bg}
+                  bg={context.searchActive ? "" : bg}
                   loggedIn={context.loggedIn}
                 />
               </Grid>
