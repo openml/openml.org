@@ -767,37 +767,6 @@ class Cover extends React.Component {
               </ListItem>
             </CardContent>
           </FrontPaper>
-
-          <CoverTitle variant="h5" gutterBottom>
-            <MainContext.Consumer>
-              {context => (
-                <Tooltip
-                  title={
-                    context.animation
-                      ? "Stop gradient descent"
-                      : "Start gradient descent"
-                  }
-                  placement="top-start"
-                >
-                  <div style={{ display: "inline-block" }}>
-                    {context.animation ? (
-                      <PauseIcon
-                        icon={["far", "pause-circle"]}
-                        size="lg"
-                        onClick={() => context.toggleAnimation(false)}
-                      />
-                    ) : (
-                      <PauseIcon
-                        icon={["far", "play-circle"]}
-                        size="lg"
-                        onClick={() => context.toggleAnimation(true)}
-                      />
-                    )}
-                  </div>
-                </Tooltip>
-              )}
-            </MainContext.Consumer>
-          </CoverTitle>
         </Grid>
       </Container>
     );

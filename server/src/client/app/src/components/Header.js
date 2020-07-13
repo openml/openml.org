@@ -85,7 +85,7 @@ const Search = styled.div`
 `;
 
 const SearchIconWrapper = styled.div`
-  width: 50px;
+  width: 30px;
   height: 100%;
   position: absolute;
   pointer-events: none;
@@ -109,7 +109,7 @@ const Input = styled(InputBase)`
     padding-top: ${props => props.theme.spacing(2.5)}px;
     padding-right: ${props => props.theme.spacing(2.5)}px;
     padding-bottom: ${props => props.theme.spacing(2.5)}px;
-    padding-left: ${props => props.theme.spacing(12)}px;
+    padding-left: ${props => props.theme.spacing(8)}px;
     width: 80%;
   }
 
@@ -423,19 +423,19 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                     />
                   </IconButton>
                 </Grid>
-                <Grid item xs={3} sm={2}>
+                <Grid item>
                   <StyledLink to="/">
                     <UserButton
                       bg={context.opaqueSearch ? "" : bg}
                       theme={context.currentTheme}
-                      style={{ fontSize: 18 }}
+                      style={{ fontSize: 18, width: 100 }}
                     >
                       Open ML
                     </UserButton>
                   </StyledLink>
                 </Grid>
               </Hidden>
-              <Grid item xs={6} md={8}>
+              <Grid item xs={4} sm={6} md={8}>
                 <Search
                   bg={context.opaqueSearch ? "" : bg}
                   searchcolor={context.getColor()}
