@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import (get_jwt_identity, jwt_required)
 from server.user.models import User
 import openml
+import os
 
 task_blueprint = Blueprint("task", __name__, static_folder='server/src/client/app/build')
 
@@ -20,7 +21,9 @@ def upload_task():
     user_api_key = user.session_hash
     openml.config.apikey = user_api_key
     # change line below in testing
-    # openml.config.start_using_configuration_for_example()
+    testing = os.environ.get('TESTING')
+    if testing:
+        openml.config.start_using_configuration_for_example()
     data = request.get_json()
     tasktypes = openml.tasks.TaskTypeEnum
     t_type = data['task_type']
