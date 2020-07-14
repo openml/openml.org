@@ -287,7 +287,8 @@ const apiRoutes = {
   id: "API",
   path: "/api",
   icon: <BlueMenuIcon icon="code" fixedWidth />,
-  component: API
+  component: API,
+  color: blue[800]
 };
 
 const blogRoutes = {
@@ -301,21 +302,24 @@ const contributeRoutes = {
   id: "Get involved",
   path: "/contribute",
   icon: <RedMenuIcon icon="hand-holding-heart" fixedWidth />,
-  component: GetInvolved
+  component: GetInvolved,
+  color: red[400]
 };
 
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
   icon: <PurpleMenuIcon icon="balance-scale" fixedWidth />,
-  component: Terms
+  component: Terms,
+  color: purple[400]
 };
 
 const teamRoutes = {
   id: "About us",
   path: "/about",
   icon: <OrangeMenuIcon icon="users" fixedWidth />,
-  component: About
+  component: About,
+  color: orange[400]
 };
 
 export const mainRoutes = [

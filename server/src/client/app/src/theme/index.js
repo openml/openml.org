@@ -51,21 +51,7 @@ const shadows = [
 
 const typography = {
   useNextVariants: true,
-  fontFamily: [
-    "Lato",
-    "Quicksand",
-    "Roboto",
-    "Nunito Sans",
-    "-apple-system",
-    "BlinkMacSystemFont",
-    '"Segoe UI"',
-    '"Helvetica Neue"',
-    "Arial",
-    "sans-serif",
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"'
-  ].join(","),
+  fontFamily: ["Lato", "Roboto", "Arial", "sans-serif"].join(","),
   fontSize: 14,
   fontWeightLight: 300,
   fontWeightRegular: 400,
