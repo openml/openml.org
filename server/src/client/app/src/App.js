@@ -31,12 +31,14 @@ class App extends React.Component {
     // Theme context
     currentTheme: 0,
     miniDrawer: false,
-    opaqueSearch: false,
+    searchActive: false,
     animation: true,
     drawerWidth: 260,
     setTheme: value => this.setState({ currentTheme: value }),
     toggleAnimation: value => this.setState({ animation: value }),
-    setOpaqueSearch: value => this.setState({ opaqueSearch: value }),
+    setSearchActive: value => this.setState({ searchActive: value }),
+    toggleSearch: () =>
+      this.setState({ searchActive: !this.state.searchActive }),
     miniDrawerToggle: () =>
       this.setState({
         miniDrawer: !this.state.miniDrawer,

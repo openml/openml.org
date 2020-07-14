@@ -57,10 +57,6 @@ const YellowMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
   color: yellow[700]
 });
-const LightBlueMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: blue[300]
-});
 const BlueMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
   color: blue[800]
