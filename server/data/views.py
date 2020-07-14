@@ -50,8 +50,10 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    # TODO change line below in development
-    # openml.config.start_using_configuration_for_example()
+    # TODO change line below in development\
+    testing = os.environ.get('TESTING')
+    if testing:
+        openml.config.start_using_configuration_for_example()
     data_file = request.files['dataset']
     metadata = request.files['metadata']
     Path("temp_data/").mkdir(parents=True, exist_ok=True)
@@ -71,7 +73,7 @@ def data_upload():
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    supported_extensions = ['.csv', '.parquet', '.json', ',feather']
+    supported_extensions = ['.csv', '.parquet', '.json', '.feather']
 
     if file_extension not in supported_extensions:
         return jsonify({"msg": 'format not supported'})
@@ -83,10 +85,10 @@ def data_upload():
         df = pd.read_json(path)
 
     elif file_extension == '.parquet':
-        df = pd.read_json(path)
+        df = pd.read_parquet(path)
 
     elif file_extension == '.feather':
-        df = pd.read_json(path)
+        df = pd.read_feather(path)
 
     oml_dataset = openml.datasets.create_dataset(name=dataset_name,
                                                  description=description,

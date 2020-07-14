@@ -6,7 +6,8 @@ uname = 'test_user' + names.get_first_name()
 def test_signup(test_client, init_database):
     response = test_client.post('/signup', json={'email': uname,
                                                  'password': 'abab',
-                                                 'name': 'asas'},
+                                                 'first_name': 'asas',
+                                                 'last_name': 'abcbc'},
                                 follow_redirects=True)
     assert response.status_code == 200
 
