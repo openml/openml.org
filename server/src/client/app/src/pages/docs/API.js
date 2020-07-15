@@ -26,12 +26,30 @@ const StyledSwaggerUI = styled.div`
   }
   .swagger-ui section.models .model-container {
     background: inherit;
+    margin: 0;
+    border-bottom: 1px solid rgba(59, 65, 81, 0.3);
+    border-radius: 0px;
+  }
+  .swagger-ui section.models .model-container:last-of-type {
+    margin: 0;
+  }
+  .swagger-ui section.models.is-open {
+    padding: 0px;
+  }
+  .swagger-ui section.models h4 {
+    margin-bottom: 0px;
+  }
+  .swagger-ui section.models.is-open h4 {
+    margin-bottom: 0px;
   }
   .swagger-ui .info {
     margin-bottom: 0px;
   }
   .swagger-ui .servers > label select {
     height: 40px;
+  }
+  .swagger-ui .servers {
+    width: 320px;
   }
   .swagger-ui table.model tr.property-row td {
     padding: 0.6em;
