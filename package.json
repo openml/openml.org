@@ -47,6 +47,7 @@
     "react-timeago": "^4.4.0",
     "styled-components": "4.3.2",
     "swagger-ui-react": "^3.28.0",
+    "swagger-ui-themes": "^3.0.1",
     "typeface-lato": "0.0.75",
     "typescript": "^3.9.6"
   }
