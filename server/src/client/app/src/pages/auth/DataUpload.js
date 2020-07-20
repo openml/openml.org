@@ -22,6 +22,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -50,7 +52,11 @@ function Public() {
     const [uploaddata, setUploadData] = useState(false);
     const [editpath, setEditPath] = useState(false);
     const [editsuccess, setEditSuccess] = useState(false);
+    const [licence, setLicence] = useState('');
 
+    const handleChange = (event) => {
+        setLicence(event.target.value);
+    };
     const yourConfig = {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
@@ -199,13 +205,24 @@ function Public() {
                                     placeholder="Language"
                                 />
                             </FormControl>
-                            <FormControl fullWidth mb={3}>
-                                <InputLabel htmlFor="licence">Licence</InputLabel>
-                                <Input
-                                    id="licence"
-                                    placeholder="Licence"
-                                />
-                            </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel id="licence">Licence Type</InputLabel>
+                            <Select
+                                labelId="licence"
+                                id="licence"
+                                value={licence}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value={'Public Domain (CCO)'}>Public Domain (CCO)</MenuItem>
+                                <MenuItem value={'Publicly available'}>Publicly available</MenuItem>
+                                <MenuItem value={'Attribution (CC BY)'}>Attribution (CC BY)</MenuItem>
+                                <MenuItem value={'Attribution-ShareAlike (CC BY-SA)'}>Attribution-ShareAlike (CC BY-SA)</MenuItem>
+                                <MenuItem value={'Attribution-NoDerivs (CC BY-ND)'}>Attribution-NoDerivs (CC BY-ND)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial (CC BY-NC)'}>Attribution-NonCommercial (CC BY-NC)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)'}>Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)'}>Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)</MenuItem>
+                            </Select>
+                        </FormControl>
                             {/*<FormControl fullWidth mb={3}>*/}
                             {/*    <InputLabel htmlFor="attribute">Attribute</InputLabel>*/}
                             {/*    <Input*/}
