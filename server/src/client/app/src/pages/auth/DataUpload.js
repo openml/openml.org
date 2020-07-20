@@ -83,7 +83,7 @@ function Public() {
             collection_date: event.target.collection_date.value,
             licence: event.target.licence.value,
             language: event.target.language.value,
-            attribute: event.target.attribute.value,
+            // attribute: event.target.attribute.value,
             ignore_attribute: event.target.ignore_attribute.value,
             def_tar_att: event.target.def_tar_att.value,
             citation: event.target.citation.value,
@@ -97,6 +97,7 @@ function Public() {
 
         data.append('dataset', dataset[0]);
         data.append('metadata', blob)
+        console.log(data);
         if (uploaddata === true) {
             setError(false);
             axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
@@ -205,13 +206,13 @@ function Public() {
                                     placeholder="Licence"
                                 />
                             </FormControl>
-                            <FormControl fullWidth mb={3}>
-                                <InputLabel htmlFor="attribute">Attribute</InputLabel>
-                                <Input
-                                    id="attribute"
-                                    placeholder="attribute"
-                                />
-                            </FormControl>
+                            {/*<FormControl fullWidth mb={3}>*/}
+                            {/*    <InputLabel htmlFor="attribute">Attribute</InputLabel>*/}
+                            {/*    <Input*/}
+                            {/*        id="attribute"*/}
+                            {/*        placeholder="attribute"*/}
+                            {/*    />*/}
+                            {/*</FormControl>*/}
                             <FormControl fullWidth mb={3}>
                                 <InputLabel htmlFor="def_tar_att">Default target attribute</InputLabel>
                                 <Input
@@ -287,7 +288,7 @@ function Public() {
 
                     &nbsp;&nbsp;&nbsp;
                     <Button variant="contained" color="primary" type="Submit" onClick={handleEditData}>
-                        Edit dataset
+                        Edit dataset (In progress)
                     </Button>
                 </form>
             </Card>

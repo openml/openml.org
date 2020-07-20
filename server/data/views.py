@@ -54,8 +54,11 @@ def data_upload():
     testing = os.environ.get('TESTING')
     if testing:
         openml.config.start_using_configuration_for_example()
+    print(request)
     data_file = request.files['dataset']
+    print(data_file)
     metadata = request.files['metadata']
+    print(metadata)
     Path("temp_data/").mkdir(parents=True, exist_ok=True)
     data_file.save('temp_data/' + user_api_key + '?' + secure_filename(data_file.filename))
     path = 'temp_data/' + user_api_key + '?' + secure_filename(data_file.filename)
@@ -68,7 +71,7 @@ def data_upload():
     collection_date = metadata['collection_date']
     licence = metadata['licence']
     language = metadata['language']
-    attribute = metadata['attribute']
+    # attribute = metadata['attribute']
     def_tar_att = metadata['def_tar_att']
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
@@ -97,7 +100,7 @@ def data_upload():
                                                  collection_date=collection_date,
                                                  licence=licence,
                                                  language=language,
-                                                 attributes=attribute,
+                                                 attributes='auto',
                                                  default_target_attribute=def_tar_att,
                                                  ignore_attribute=ignore_attribute,
                                                  citation=citation)
