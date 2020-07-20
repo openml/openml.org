@@ -403,8 +403,7 @@ class Sidebar extends React.Component {
   };
 
   render() {
-    const { classes, staticContext, ...other } = this.props;
-
+    const { classes, staticContext, location, ...other } = this.props;
     return (
       <MainContext.Consumer>
         {context => (
@@ -575,8 +574,10 @@ class Sidebar extends React.Component {
                                   : 0
                               }
                               activecategory={
-                                category.entity_type === context.type &&
-                                context.type !== undefined
+                                (location.pathname !== "/search" &&
+                                  location.pathname === category.path) ||
+                                (category.entity_type === context.type &&
+                                  context.type !== undefined)
                                   ? "true"
                                   : "false"
                               }
@@ -586,7 +587,11 @@ class Sidebar extends React.Component {
                                   ? () => context.collapseSearch(false)
                                   : undefined
                               }
-                              currentcolor={context.getColor()}
+                              currentcolor={
+                                location.pathname === "/search"
+                                  ? context.getColor()
+                                  : category.color
+                              }
                               showTooltip={context.miniDrawer}
                             />
                           </React.Fragment>

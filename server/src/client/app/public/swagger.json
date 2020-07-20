@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://www.openml.org/api/v1/json",
+            "url": "https://openml.org/api/v1/json",
             "description": "The current OpenML API"
         },
         {
@@ -3863,14 +3863,6 @@
                 },
                 "type": "object"
             },
-            "inline_response_200": {
-                "properties": {
-                    "data_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_data_delete"
-                    }
-                },
-                "type": "object"
-            },
             "EvaluationMeasureList_evaluation_measures_measures": {
                 "properties": {
                     "measure": {
@@ -4441,83 +4433,11 @@
                 },
                 "type": "object"
             },
-            "inline_response_200_12": {
-                "properties": {
-                    "flow_tag": {
-                        "$ref": "#/components/schemas/inline_response_200_12_flow_tag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_13": {
-                "properties": {
-                    "flow_untag": {
-                        "$ref": "#/components/schemas/inline_response_200_13_flow_untag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_10": {
-                "properties": {
-                    "flow_exists": {
-                        "$ref": "#/components/schemas/inline_response_200_10_flow_exists"
-                    }
-                },
-                "type": "object"
-            },
             "inline_response_200_23_upload_flow": {
                 "properties": {
                     "id": {
                         "description": "ID of the run with the trace, a positive integer",
                         "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_16": {
-                "properties": {
-                    "flow_untag": {
-                        "$ref": "#/components/schemas/inline_response_200_16_flow_untag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_17": {
-                "properties": {
-                    "data_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_17_data_delete"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_14": {
-                "properties": {
-                    "study_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_14_study_delete"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_15": {
-                "properties": {
-                    "flow_tag": {
-                        "$ref": "#/components/schemas/inline_response_200_15_flow_tag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_18": {
-                "properties": {
-                    "upload_flow": {
-                        "$ref": "#/components/schemas/inline_response_200_18_upload_flow"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_19": {
-                "properties": {
-                    "run_tag": {
-                        "$ref": "#/components/schemas/inline_response_200_19_run_tag"
                     }
                 },
                 "type": "object"
@@ -5054,22 +4974,6 @@
                 },
                 "type": "object"
             },
-            "inline_response_200_8": {
-                "properties": {
-                    "flow_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_8_flow_delete"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_9": {
-                "properties": {
-                    "upload_flow": {
-                        "$ref": "#/components/schemas/inline_response_200_9_upload_flow"
-                    }
-                },
-                "type": "object"
-            },
             "Study_study_data": {
                 "properties": {
                     "data_id": {
@@ -5077,62 +4981,6 @@
                         "items": {
                             "type": "string"
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_1": {
-                "properties": {
-                    "upload_data_set": {
-                        "$ref": "#/components/schemas/inline_response_200_1_upload_data_set"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_2": {
-                "properties": {
-                    "data_tag": {
-                        "$ref": "#/components/schemas/inline_response_200_2_data_tag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_3": {
-                "properties": {
-                    "data_untag": {
-                        "$ref": "#/components/schemas/inline_response_200_3_data_untag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_4": {
-                "properties": {
-                    "task_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_4_task_delete"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_5": {
-                "properties": {
-                    "upload_task": {
-                        "$ref": "#/components/schemas/inline_response_200_5_upload_task"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_6": {
-                "properties": {
-                    "task_tag": {
-                        "$ref": "#/components/schemas/inline_response_200_6_task_tag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_7": {
-                "properties": {
-                    "task_untag": {
-                        "$ref": "#/components/schemas/inline_response_200_7_task_untag"
                     }
                 },
                 "type": "object"
@@ -5321,70 +5169,6 @@
                 },
                 "type": "object"
             },
-            "inline_response_200_23": {
-                "properties": {
-                    "upload_flow": {
-                        "$ref": "#/components/schemas/inline_response_200_23_upload_flow"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_22": {
-                "properties": {
-                    "run_reset": {
-                        "$ref": "#/components/schemas/inline_response_200_21_upload_flow"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_21": {
-                "properties": {
-                    "upload_flow": {
-                        "$ref": "#/components/schemas/inline_response_200_21_upload_flow"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_20": {
-                "properties": {
-                    "run_untag": {
-                        "$ref": "#/components/schemas/inline_response_200_20_run_untag"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_27": {
-                "properties": {
-                    "upload_study": {
-                        "$ref": "#/components/schemas/inline_response_200_26_study_attach"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_26": {
-                "properties": {
-                    "study_attach": {
-                        "$ref": "#/components/schemas/inline_response_200_26_study_attach"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_25": {
-                "properties": {
-                    "upload_study": {
-                        "$ref": "#/components/schemas/inline_response_200_25_upload_study"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_24": {
-                "properties": {
-                    "study_delete": {
-                        "$ref": "#/components/schemas/inline_response_200_24_study_delete"
-                    }
-                },
-                "type": "object"
-            },
             "EstimationProcedureList_estimationprocedures_estimationprocedure": {
                 "properties": {
                     "name": {
@@ -5485,14 +5269,6 @@
                 },
                 "type": "object"
             },
-            "inline_response_200_11": {
-                "properties": {
-                    "flow_owned": {
-                        "$ref": "#/components/schemas/inline_response_200_11_flow_owned"
-                    }
-                },
-                "type": "object"
-            },
             "StudyList": {
                 "properties": {
                     "study_list": {
@@ -5541,17 +5317,6 @@
                     "id": {
                         "description": "The ID of the study",
                         "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "inline_response_200_11_flow_owned": {
-                "properties": {
-                    "id": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
                     }
                 },
                 "type": "object"
