@@ -71,6 +71,7 @@ function ResetPage() {
             id="password"
             name="password"
             autoComplete="password"
+            type="password"
             autoFocus
           />
         </FormControl>
@@ -82,6 +83,7 @@ function ResetPage() {
             id="confirmpassword"
             name="confirmpassword"
             autoComplete="confirmpassword"
+            type="password"
             autoFocus
           />
         </FormControl>
