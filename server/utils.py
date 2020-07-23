@@ -12,8 +12,9 @@ def confirmation_email(user_email, token):
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
     header += 'Subject: %s\n\n' % 'none'
-    message = header + f"Hi to confirm your account go to " \
-                       f"https://new.openml.org/auth/confirm-page/?token={token}"
+    message = header + "Hi to confirm your account go to " \
+                       "https://" + str(os.environ.get('EMAIL_SERVER')) + \
+                       f"/auth/confirm-page/?token={token}"
 
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
@@ -30,8 +31,9 @@ def forgot_password_email(user_email, token):
     header = 'From: %s\n' % sender
     header += 'To: %s\n' % user_email
     header += 'Subject: %s\n\n' % 'none'
-    message = header + f"Hi to reset you password go to " \
-                       f"https://new.openml.org/auth/reset-page/?&token={token}"
+    message = header + "Hi to reset your password go to " \
+                       "https://" + str(os.environ.get('EMAIL_SERVER')) + \
+                       f"/auth/confirm-page/?token={token}"
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
