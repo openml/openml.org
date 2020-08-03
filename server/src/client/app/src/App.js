@@ -26,6 +26,12 @@ export const MainContext = React.createContext();
 //TODO: only import necessary icons
 library.add(fas, far, fab);
 
+// Adds interceptor to axios to catch network errors during authentication
+const axios_instance = axios.create();
+axios_instance.interceptors.request.use(error => {
+  return Promise.reject(error);
+});
+
 class App extends React.Component {
   state = {
     // Theme context
@@ -55,7 +61,7 @@ class App extends React.Component {
             Authorization: "Bearer " + token
           }
         };
-        axios
+        axios_instance
           .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
           .then(response => {
             if (
@@ -79,7 +85,7 @@ class App extends React.Component {
                   response.data.last_name.charAt(0);
                 this.setState({ userImage: img, userInitials: ini });
               })
-              .catch(function(error) {
+              .catch(error => {
                 console.log("Could not fetch profile.");
               });
           })
