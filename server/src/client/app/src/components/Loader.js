@@ -5,7 +5,7 @@ import { LinearProgress } from "@material-ui/core";
 import { MainContext } from "../App.js";
 
 const Root = styled.div`
-  margin-top: -4px;
+  margin-bottom: -4px;
   z-index: 5000;
 `;
 

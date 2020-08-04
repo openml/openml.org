@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css, keyframes, createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -30,21 +30,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-var gradientBG = keyframes`
-  	0% { background-position: 0% 50%; }
-  	50% {	background-position: 100% 50%; }
-  	100% { background-position: 0% 50%;	}
-  `;
-
-const animation = props =>
-  css`
-    ${gradientBG} 15s ease infinite;
-  `;
-
 const Root = styled.div`
-  animation: ${props => (props.bg === "Gradient" ? animation : "none")};
-  animation-play-state: ${props => (props.bgrunning ? "running" : "paused")};
-  -webkit-animation-timing-function: linear;
   display: flex;
   min-height: 100vh;
   background: ${props =>
@@ -102,13 +88,13 @@ class Main extends React.Component {
     return (
       <MainContext.Consumer>
         {context => (
-          <Root bg={background} bgrunning={context.animation}>
+          <Root bg={background}>
             {context.query !== undefined && context.type === undefined && (
               <Redirect to="/search?type=data" />
             )}
             <CssBaseline />
             <GlobalStyle />
-            <Drawer drawerWidth={context.drawerWidth}>
+            <Drawer drawerWidth={context.drawerWidth} open={false}>
               <Hidden mdUp implementation="js">
                 <Sidebar
                   routes={routes}

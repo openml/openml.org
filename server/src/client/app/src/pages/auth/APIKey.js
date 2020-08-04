@@ -1,14 +1,10 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import ReactDOM from "react-dom";
-import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
-import {Link} from "react-router-dom";
 import axios from "axios";
 
 
 import {
     FormControl,
-    Input,
     InputLabel,
     Button as MuiButton,
     Paper,
@@ -46,7 +42,6 @@ function APIKey() {
 
     function apiFlask(event) {
         event.preventDefault();
-        const data = new FormData(event.target);
         axios
             .post(process.env.REACT_APP_SERVER_URL + "api-key", {
                 resetapikey:true

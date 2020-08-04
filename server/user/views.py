@@ -14,7 +14,6 @@ from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
 from io import BytesIO
-from flask_dance.contrib.github import github
 
 user_blueprint = Blueprint("user", __name__, static_folder='server/src/client/app/build')
 
@@ -39,9 +38,10 @@ def login():
     2. Checks password and if user is confirmed
     3. Logs in user next with access token
     """
+
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
-    print(user.active)
+
     if user is None or not user.check_password(jobj['password']):
         print("error")
 
@@ -54,52 +54,15 @@ def login():
 
     else:
         access_token = create_access_token(identity=user.email)
-        # os.environ['TEST_ACCESS_TOKEN'] = access_token
-        # # exporting access token to environment for testing
+        testing = os.environ.get('TESTING')
+        print(testing)
+        if testing:
+            print('executed')
+            os.environ['TEST_ACCESS_TOKEN'] = access_token
+            # exporting access token to environment for testing
         # db.session.merge(user)
         # db.session.commit()
         return jsonify(access_token=access_token), 200
-
-
-@user_blueprint.route('/github-login')
-def github_register():
-    resp = github.get("/user")
-    assert resp.ok
-    git_obj = resp.json()
-    user = User.query.filter_by(email=git_obj['email']).first()
-    if user is None:
-        print("error")
-        return jsonify({"msg": "Error"}), 401
-
-    elif user.active == 0:
-        print("User not confirmed")
-        return jsonify({"msg": "NotConfirmed"}), 200
-
-    else:
-        access_token = create_access_token(identity=user.email)
-
-    return jsonify(access_token=access_token), 200
-
-
-@user_blueprint.route('/github-user', methods=['GET'])
-def gituser():
-    resp = github.get("/user")
-    print(resp.json())
-    assert resp.ok
-    git_obj = resp.json()
-    user = User.query.filter_by(email=git_obj['email']).first()
-    if user is None:
-        print("error")
-        return jsonify({"msg": "Error"}), 401
-
-    elif user.active == 0:
-        print("User not confirmed")
-        return jsonify({"msg": "NotConfirmed"}), 200
-
-    else:
-        access_token = create_access_token(identity=user.email)
-
-    return jsonify(access_token=access_token), 200
 
 
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
@@ -112,7 +75,8 @@ def profile():
     user = User.query.filter_by(email=current_user).first()
     if request.method == 'GET':
         return jsonify({"username": user.email, "bio": user.bio, "first_name": user.first_name,
-                        "last_name": user.last_name, "email": user.email, "image": user.image}), 200
+                        "last_name": user.last_name, "email": user.email,
+                        "image": user.image, "id": user.id}), 200
     elif request.method == "POST":
         data = request.get_json()
         # print(data['image'])
@@ -133,6 +97,12 @@ def profile():
         return jsonify({"msg": "User information changed"}), 200
     else:
         return jsonify({"msg": "profile OK"}), 200
+
+
+@user_blueprint.route('/verifytoken', methods=['GET'])
+@jwt_required
+def verifytoken():
+    return 'token-valid'
 
 
 # TODO Change Address before production

@@ -9,7 +9,6 @@ from server.utils import confirmation_email, forgot_password_email
 from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
     Blueprint, jsonify, request)
 
-
 blueprint = Blueprint("public", __name__)
 
 CORS(blueprint)
@@ -18,11 +17,11 @@ CORS(blueprint)
 @blueprint.route('/signup', methods=['POST'])
 def signupfunc():
     """Registering user and checking for already existing user"""
-    robj = request.get_json()
-    check_user = User.query.filter_by(email=robj['email']).first()
+    register_obj = request.get_json()
+    check_user = User.query.filter_by(email=register_obj['email']).first()
     if check_user is None:
-        user = User(username=robj['name'], email=robj['email'])
-        user.set_password(robj['password'])
+        user = User(username=register_obj['email'], email=register_obj['email'])
+        user.set_password(register_obj['password'])
         user.set_session_hash()
         user.ip_address = request.remote_addr
         user.activation_selector = None
@@ -35,13 +34,13 @@ def signupfunc():
         user.created_on = '0000'
         user.last_login = '0000'
         user.active = '0'
-        user.first_name = '0000'
-        user.last_name = '0000'
+        user.first_name = register_obj['first_name']
+        user.last_name = register_obj['last_name']
         user.company = '0000'
         user.phone = '0000'
         user.country = '0000'
         user.image = '0000'
-        user.bio = '0000'
+        user.bio = 'No Bio'
         user.core = '0000'
         user.external_source = '0000'
         user.external_id = '0000'

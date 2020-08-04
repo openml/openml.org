@@ -1,5 +1,7 @@
 # dependencies
 **/node_modules/
+**/package-lock.json
+
 /.pnp
 .pnp.js
 
@@ -15,6 +17,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.flaskenv
+.env
 
 npm-debug.log*
 yarn-debug.log*
@@ -25,7 +29,6 @@ yarn-error.log*
 /migrations
 /src/dashboard/__pycache__
 
-*.sql
 *.ipynb
 src/__pycache__/
 
@@ -37,12 +40,9 @@ cache/
 
 idea_testing.py
 
-.env
-
 Internal_docs/
 
 flask-cache-dir/
-
 
 *.pem
 
@@ -51,3 +51,5 @@ script.sh
 dev_data/ff\@ff.com/
 
 temp_data/
+
+dataset_31_credit-g.csv

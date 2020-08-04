@@ -50,10 +50,15 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    # TODO change line below in development
-    # openml.config.start_using_configuration_for_example()
+    # TODO change line below in development\
+    testing = os.environ.get('TESTING')
+    if testing:
+        openml.config.start_using_configuration_for_example()
+    print(request)
     data_file = request.files['dataset']
+    print(data_file)
     metadata = request.files['metadata']
+    print(metadata)
     Path("temp_data/").mkdir(parents=True, exist_ok=True)
     data_file.save('temp_data/' + user_api_key + '?' + secure_filename(data_file.filename))
     path = 'temp_data/' + user_api_key + '?' + secure_filename(data_file.filename)
@@ -66,12 +71,12 @@ def data_upload():
     collection_date = metadata['collection_date']
     licence = metadata['licence']
     language = metadata['language']
-    attribute = metadata['attribute']
+    # attribute = metadata['attribute']
     def_tar_att = metadata['def_tar_att']
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    supported_extensions = ['.csv', '.parquet', '.json', ',feather']
+    supported_extensions = ['.csv', '.parquet', '.json', '.feather']
 
     if file_extension not in supported_extensions:
         return jsonify({"msg": 'format not supported'})
@@ -83,10 +88,10 @@ def data_upload():
         df = pd.read_json(path)
 
     elif file_extension == '.parquet':
-        df = pd.read_json(path)
+        df = pd.read_parquet(path)
 
     elif file_extension == '.feather':
-        df = pd.read_json(path)
+        df = pd.read_feather(path)
 
     oml_dataset = openml.datasets.create_dataset(name=dataset_name,
                                                  description=description,
@@ -95,7 +100,7 @@ def data_upload():
                                                  collection_date=collection_date,
                                                  licence=licence,
                                                  language=language,
-                                                 attributes=attribute,
+                                                 attributes='auto',
                                                  default_target_attribute=def_tar_att,
                                                  ignore_attribute=ignore_attribute,
                                                  citation=citation)

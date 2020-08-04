@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 import sqlalchemy
 from flask_argon2 import Argon2
@@ -16,9 +17,11 @@ extension.py
 Declares extension for Flask App, connects with already existing database
 """
 # specifying engine according to existing db
+load_dotenv(".flaskenv")
 try:
-    engine = create_engine('mysql+pymysql://root:@localhost/openml', convert_unicode=True,
-                           echo=False, pool_size=20, max_overflow=0, pool_pre_ping=True)
+    engine = create_engine(os.environ.get('DATABASE_URI'),
+                           convert_unicode=True, echo=False, pool_size=20,
+                           max_overflow=0, pool_pre_ping=True)
     Base = declarative_base()
     Base.metadata.reflect(engine)
 except sqlalchemy.exc.OperationalError:
@@ -27,7 +30,6 @@ except sqlalchemy.exc.OperationalError:
     Config.SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'openml.db')
     Base = declarative_base()
     Base.metadata.reflect(engine)
-
 
 argon2 = Argon2()
 db = SQLAlchemy()

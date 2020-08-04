@@ -61,6 +61,7 @@ const SubTitle = styled.div`
 const SearchPanel = styled(Paper)`
   overflow: none;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 0px;
   z-index: 100;
   position: relative;

@@ -15,25 +15,28 @@ import { MainContext } from "../../App.js";
 
 const FilterButton = styled(Button)`
   min-width: 0;
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
+  width: 45px;
+  height: 45px;
+  font-size: 20px;
+  margin-top: 2px;
   color: ${props => props.textcolor};
 `;
 const FilterStats = styled.div`
   padding-left: 15px;
   padding-top: 15px;
-  width: calc(100% - 120px);
+  width: calc(100% - 135px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 11pt;
   float: left;
   color: ${props => props.textcolor};
 `;
 const FilterBox = styled.div`
-  height: 50px;
+  height: 60px;
   padding-top: 5px;
   padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 `;
 const FilterContainer = styled.div`
   background-color: #fff;

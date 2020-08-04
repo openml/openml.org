@@ -1,12 +1,10 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ReactDOM from "react";
 import {
     Avatar,
     Button,
     Card as MuiCard,
-    CardContent,
     Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
@@ -18,13 +16,14 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {func} from "prop-types";
 import {Redirect} from "react-router-dom";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -53,7 +52,11 @@ function Public() {
     const [uploaddata, setUploadData] = useState(false);
     const [editpath, setEditPath] = useState(false);
     const [editsuccess, setEditSuccess] = useState(false);
+    const [licence, setLicence] = useState('');
 
+    const handleChange = (event) => {
+        setLicence(event.target.value);
+    };
     const yourConfig = {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
@@ -61,9 +64,6 @@ function Public() {
     }
     //alert dialogue code
     const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
     const handleClose = () => {
         setOpen(false);
     }
@@ -89,7 +89,7 @@ function Public() {
             collection_date: event.target.collection_date.value,
             licence: event.target.licence.value,
             language: event.target.language.value,
-            attribute: event.target.attribute.value,
+            // attribute: event.target.attribute.value,
             ignore_attribute: event.target.ignore_attribute.value,
             def_tar_att: event.target.def_tar_att.value,
             citation: event.target.citation.value,
@@ -103,14 +103,15 @@ function Public() {
 
         data.append('dataset', dataset[0]);
         data.append('metadata', blob)
+        console.log(data);
         if (uploaddata === true) {
             setError(false);
             axios.post(process.env.REACT_APP_SERVER_URL + "data-upload", data, yourConfig)
                 .then(function (response) {
-                    if (response.data.msg == "dataset uploaded") {
+                    if (response.data.msg === "dataset uploaded") {
                         setSuccess(true)
                     }
-                    if (response.data.msg == "format not supported") {
+                    if (response.data.msg === "format not supported") {
                         setErrorMessage("Data format not supported");
                         setError(true);
                     }
@@ -135,7 +136,7 @@ function Public() {
         return false;
     }
 
-    if (editsuccess == true) {
+    if (editsuccess === true) {
         return (
             <Card mb={6}>
                 <iframe src={"/dashboard/data-upload?uuid=" + editpath}
@@ -204,20 +205,31 @@ function Public() {
                                     placeholder="Language"
                                 />
                             </FormControl>
-                            <FormControl fullWidth mb={3}>
-                                <InputLabel htmlFor="licence">Licence</InputLabel>
-                                <Input
-                                    id="licence"
-                                    placeholder="Licence"
-                                />
-                            </FormControl>
-                            <FormControl fullWidth mb={3}>
-                                <InputLabel htmlFor="attribute">Attribute</InputLabel>
-                                <Input
-                                    id="attribute"
-                                    placeholder="attribute"
-                                />
-                            </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel id="licence">Licence Type</InputLabel>
+                            <Select
+                                labelId="licence"
+                                id="licence"
+                                value={licence}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value={'Public Domain (CCO)'}>Public Domain (CCO)</MenuItem>
+                                <MenuItem value={'Publicly available'}>Publicly available</MenuItem>
+                                <MenuItem value={'Attribution (CC BY)'}>Attribution (CC BY)</MenuItem>
+                                <MenuItem value={'Attribution-ShareAlike (CC BY-SA)'}>Attribution-ShareAlike (CC BY-SA)</MenuItem>
+                                <MenuItem value={'Attribution-NoDerivs (CC BY-ND)'}>Attribution-NoDerivs (CC BY-ND)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial (CC BY-NC)'}>Attribution-NonCommercial (CC BY-NC)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)'}>Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)</MenuItem>
+                                <MenuItem value={'Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)'}>Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)</MenuItem>
+                            </Select>
+                        </FormControl>
+                            {/*<FormControl fullWidth mb={3}>*/}
+                            {/*    <InputLabel htmlFor="attribute">Attribute</InputLabel>*/}
+                            {/*    <Input*/}
+                            {/*        id="attribute"*/}
+                            {/*        placeholder="attribute"*/}
+                            {/*    />*/}
+                            {/*</FormControl>*/}
                             <FormControl fullWidth mb={3}>
                                 <InputLabel htmlFor="def_tar_att">Default target attribute</InputLabel>
                                 <Input
@@ -293,7 +305,7 @@ function Public() {
 
                     &nbsp;&nbsp;&nbsp;
                     <Button variant="contained" color="primary" type="Submit" onClick={handleEditData}>
-                        Edit dataset
+                        Edit dataset (In progress)
                     </Button>
                 </form>
             </Card>

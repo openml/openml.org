@@ -31,30 +31,33 @@ const RedIcon = styled(FontAwesomeIcon)({
 });
 
 function SignUp() {
-
   const [register, setRegister] = useState(false);
-  const [duplicateUser, setDuplicateUser ] = useState(false);
+  const [duplicateUser, setDuplicateUser] = useState(false);
   const [error, setError] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
   function sendflask(event) {
     event.preventDefault();
+    console.log(event.target.email.value);
+    console.log(event.target.password.value);
     if (event.target.password.value.length < 6) {
       setError(true);
       setErrorMessage("Password too weak");
-    }
-    else if (/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(event.target.email.value) !== true){
+    } else if (
+      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(
+        event.target.email.value
+      ) !== true
+    ) {
       setError(true);
-      setErrorMessage("Plase enter valid email");
-    }
-    else
-    {
+      setErrorMessage("Please enter valid email");
+    } else {
       axios
         .post(process.env.REACT_APP_SERVER_URL + "signup", {
-          name: event.target.name.value,
+          first_name: event.target.fname.value,
+          last_name: event.target.lname.value,
           email: event.target.email.value,
           password: event.target.password.value
         })
-        .then(function (response) {
+        .then(function(response) {
           if (response.data.msg === "User created") {
             console.log(response.data);
             setRegister(true);
@@ -62,10 +65,10 @@ function SignUp() {
             setDuplicateUser(true);
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error.data);
         });
-  }
+    }
     return false;
   }
   return (
@@ -74,28 +77,28 @@ function SignUp() {
         Almost there
       </Typography>
       <form onSubmit={sendflask}>
-        {
-        duplicateUser &&
-        (
-        <Typography component="h3" variant="body1" align="center" color="red">
-          User already exists
-        </Typography>
-      )
-      }
-      {
-        error &&
-        (
-        <Typography component="h3" variant="body1" align="center" color="red">
-          {errormessage}
-        </Typography>
-      )
-      }
+        {duplicateUser && (
+          <Typography component="h3" variant="body1" align="center" color="red">
+            User already exists
+          </Typography>
+        )}
+        {error && (
+          <Typography component="h3" variant="body1" align="center" color="red">
+            {errormessage}
+          </Typography>
+        )}
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="name">Name</InputLabel>
-          <Input id="name" name="name" autoFocus />
+          <InputLabel htmlFor="fname">First name</InputLabel>
+          <Input id="fname" name="fname" autoFocus />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
+          <InputLabel htmlFor="lname">Last name</InputLabel>
+          <Input id="lname" name="lname" autoFocus />
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="email">
+            Email Address (we never share your email)
+          </InputLabel>
           <Input id="email" name="email" autoComplete="email" />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
@@ -115,6 +118,7 @@ function SignUp() {
           variant="contained"
           color="primary"
           mt={2}
+          style={{ marginTop: 20 }}
         >
           Sign up for OpenML
         </Button>

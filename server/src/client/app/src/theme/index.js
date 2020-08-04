@@ -7,7 +7,7 @@ const breakpoints = {
     sm: 600,
     md: 960,
     lg: 1280,
-    xl: 1440
+    xl: 2100
   }
 };
 
@@ -51,23 +51,12 @@ const shadows = [
 
 const typography = {
   useNextVariants: true,
-  fontFamily: [
-    "Nunito Sans",
-    "-apple-system",
-    "BlinkMacSystemFont",
-    '"Segoe UI"',
-    "Roboto",
-    '"Helvetica Neue"',
-    "Arial",
-    "sans-serif",
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"'
-  ].join(","),
+  fontFamily: ["Lato", "Roboto", "Arial", "sans-serif"].join(","),
   fontSize: 14,
   fontWeightLight: 300,
   fontWeightRegular: 400,
   fontWeightMedium: 600,
+  fontWeightBold: 800,
   h1: {
     fontSize: "2rem",
     fontWeight: 600
@@ -260,7 +249,7 @@ const lightVariant = {
     color: grey[200],
     background: blue[700],
     search: {
-      color: grey[100]
+      color: "#FFF"
     },
     indicator: {
       background: red[700]
@@ -271,7 +260,7 @@ const lightVariant = {
     background: "#FFF",
     header: {
       color: "#FFF",
-      background: blue[700],
+      background: "#FFF",
       brand: {
         color: "#FFFFFF"
       }
@@ -305,7 +294,7 @@ const darkVariant = {
     }
   },
   header: {
-    color: grey[500],
+    color: grey[900],
     background: "#FFFFFF",
     search: {
       color: grey[800]
@@ -319,7 +308,7 @@ const darkVariant = {
     background: "#1B2430",
     header: {
       color: grey[200],
-      background: "#232f3e",
+      background: "#1B2430",
       brand: {
         color: blue[500]
       }

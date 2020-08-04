@@ -3,7 +3,8 @@ import React from "react";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
-
+import axios from "axios";
+import * as path from "path";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -25,26 +26,97 @@ export const MainContext = React.createContext();
 //TODO: only import necessary icons
 library.add(fas, far, fab);
 
+// Adds interceptor to axios to catch network errors during authentication
+const axios_instance = axios.create();
+axios_instance.interceptors.request.use(error => {
+  return Promise.reject(error);
+});
+
 class App extends React.Component {
   state = {
     // Theme context
     currentTheme: 0,
     miniDrawer: false,
-    opaqueSearch: false,
+    searchActive: false,
     animation: true,
     drawerWidth: 260,
     setTheme: value => this.setState({ currentTheme: value }),
     toggleAnimation: value => this.setState({ animation: value }),
-    setOpaqueSearch: value => this.setState({ opaqueSearch: value }),
+    setSearchActive: value => this.setState({ searchActive: value }),
+    toggleSearch: () =>
+      this.setState({ searchActive: !this.state.searchActive }),
     miniDrawerToggle: () =>
       this.setState({
         miniDrawer: !this.state.miniDrawer,
-        drawerWidth: this.state.miniDrawer ? 260 : 60
+        drawerWidth: this.state.miniDrawer ? 260 : 57
       }),
+
+    // Auth context
+    loggedIn: false,
+    checkLogIn: () => {
+      let token = localStorage.getItem("token");
+      if (token != null) {
+        const yourConfig = {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        };
+        axios_instance
+          .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
+          .then(response => {
+            if (
+              response.statusText !== undefined &&
+              response.statusText === "OK" &&
+              !this.state.loggedIn
+            ) {
+              this.setState({ loggedIn: true });
+            } else if (this.state.loggedIn) {
+              this.setState({ loggedIn: false });
+            }
+            axios
+              .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+              .then(response => {
+                let img = undefined;
+                if (response.data.image.includes(path.sep)) {
+                  img = response.data.image;
+                }
+                let ini =
+                  response.data.first_name.charAt(0) +
+                  response.data.last_name.charAt(0);
+                this.setState({ userImage: img, userInitials: ini });
+              })
+              .catch(error => {
+                console.log("Could not fetch profile.");
+              });
+          })
+          .catch(error => {
+            this.setState({ loggedIn: false });
+          });
+      }
+    },
+    logIn: () => {
+      this.setState({ loggedIn: true });
+    },
+    logOut: () => {
+      this.setState({ loggedIn: false });
+    },
+    userImage: undefined,
+    userInitials: undefined,
+    setUserImage: value => {
+      console.log(value);
+      if (value.includes(path.sep)) {
+        //check if valid path
+        this.setState({ userImage: value });
+      }
+    },
+    setUserInitials: value => {
+      console.log(value);
+      this.setState({ userInitials: value });
+    },
 
     // Search context
     displaySearch: true, // hide search on small screens
-    searchCollapsed: false, // hide search entirely
+    lapsed: false, // hide search entirely
     query: undefined,
     counts: 0, //counts of hits
     type: undefined, //the entity type
@@ -60,6 +132,9 @@ class App extends React.Component {
     getColor: () => {
       return this.getColor();
     },
+    getSearchTopic: () => {
+      return this.getSearchTopic();
+    },
     collapseSearch: value => {
       this.setState({ searchCollapsed: value });
     },
@@ -67,6 +142,9 @@ class App extends React.Component {
       if (value !== this.state.displaySearch) {
         this.setState({ displaySearch: value });
       }
+    },
+    setType: value => {
+      this.setState({ type: value });
     },
     setLoading: value => {
       this.setState({ loading: value });
@@ -193,7 +271,7 @@ class App extends React.Component {
       case "data":
         return green[500];
       case "task":
-        return orange[400];
+        return orange[600];
       case "flow":
         return blue[800];
       case "run":
@@ -207,7 +285,30 @@ class App extends React.Component {
       case "user":
         return blue[300];
       default:
-        return grey[700];
+        return undefined;
+    }
+  };
+
+  getSearchTopic = () => {
+    switch (this.state.type) {
+      case "data":
+        return "data sets";
+      case "task":
+        return "tasks";
+      case "flow":
+        return "flows";
+      case "run":
+        return "runs";
+      case "study":
+        return "collections";
+      case "task_type":
+        return "task types";
+      case "measure":
+        return "measures";
+      case "user":
+        return "users";
+      default:
+        return "";
     }
   };
 
@@ -223,6 +324,10 @@ class App extends React.Component {
         </MainContext.Provider>
       </StylesProvider>
     );
+  }
+
+  componentDidMount() {
+    this.state.checkLogIn();
   }
 }
 

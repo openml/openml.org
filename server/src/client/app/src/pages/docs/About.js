@@ -76,8 +76,8 @@ const BigBadge = styled(Badge)`
 `;
 
 const core_ids = [1, 2, 27, 86, 348, 970, 1140];
-const active_ids = [869, 10700, 5348, 8111, 9186, 2902, 8309];
-const contributor_ids = [29, 232, 568, 1478, 5341];
+const active_ids = [869, 10700, 5348, 8111, 9186, 2902, 8309, 3744];
+const contributor_ids = [1478, 5341];
 
 const Person = ({ id, name, bio, image }) => {
   return (

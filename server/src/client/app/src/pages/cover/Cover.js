@@ -2,18 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  green,
-  red,
-  blue,
-  amber,
-  purple,
-  grey
-} from "@material-ui/core/colors";
+import { green, red, blue, amber, purple } from "@material-ui/core/colors";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
-
-import { MainContext } from "../../App.js";
 
 import {
   Grid,
@@ -21,7 +12,6 @@ import {
   Card,
   CardContent as MuiCardContent,
   Typography,
-  Tooltip,
   ListItem,
   ListItemIcon,
   ListItemText,
@@ -121,11 +111,6 @@ const AmberIcon = styled(FontAwesomeIcon)`
 const PurpleIcon = styled(FontAwesomeIcon)`
   color: ${purple[500]};
 `;
-const PauseIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  marginLeft: 10,
-  color: grey[100]
-});
 
 function OpenMLGraph() {
   return (
@@ -767,37 +752,6 @@ class Cover extends React.Component {
               </ListItem>
             </CardContent>
           </FrontPaper>
-
-          <CoverTitle variant="h5" gutterBottom>
-            <MainContext.Consumer>
-              {context => (
-                <Tooltip
-                  title={
-                    context.animation
-                      ? "Stop gradient descent"
-                      : "Start gradient descent"
-                  }
-                  placement="top-start"
-                >
-                  <div style={{ display: "inline-block" }}>
-                    {context.animation ? (
-                      <PauseIcon
-                        icon={["far", "pause-circle"]}
-                        size="lg"
-                        onClick={() => context.toggleAnimation(false)}
-                      />
-                    ) : (
-                      <PauseIcon
-                        icon={["far", "play-circle"]}
-                        size="lg"
-                        onClick={() => context.toggleAnimation(true)}
-                      />
-                    )}
-                  </div>
-                </Tooltip>
-              )}
-            </MainContext.Consumer>
-          </CoverTitle>
         </Grid>
       </Container>
     );
