@@ -15,7 +15,6 @@ import {
 
 import {spacing} from "@material-ui/system";
 import {Redirect} from "react-router-dom";
-import {makeStyles} from '@material-ui/core/styles';
 
 
 const Card = styled(MuiCard)(spacing);

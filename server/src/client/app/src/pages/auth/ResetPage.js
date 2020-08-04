@@ -25,7 +25,6 @@ const Wrapper = styled(Paper)`
 
 function ResetPage() {
   console.log(window.location.href);
-  const [verifToken, setverifToken] = useState(false);
   const [redirect, setRedirect] = useState(false);
   axios
     .post(process.env.REACT_APP_SERVER_URL + "forgot-token", {
@@ -33,7 +32,6 @@ function ResetPage() {
     })
     .then(function(response) {
       console.log(response.data);
-      setverifToken(true);
     })
     .catch(function(error) {
       console.log(error.data);

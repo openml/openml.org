@@ -47,7 +47,6 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
 });
 
 function Public() {
-  const [user, setUser] = useState(null);
   const [email, setEmail] = useState(false);
   const [bio, setBio] = useState(false);
   const [fname, setFname] = useState(false);
@@ -69,7 +68,6 @@ function Public() {
     .then(function(response) {
       console.log(response);
       setImage(response.data.image);
-      setUser(response.data.username);
       setEmail(response.data.email);
       setBio(response.data.bio);
       setFname(response.data.first_name);
