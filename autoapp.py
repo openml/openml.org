@@ -40,32 +40,28 @@ def page_not_found(e):
         print('Data in URL')
         url = str(request.url)
         url = url.split('/d/')
-        print(url[1])
         return redirect(os.environ.get('REDIRECT_URL')+'/search?type=data&sort=runs&id='+url[1])
     elif '/t/' in request.url:
         print('Task in URL')
         url = str(request.url)
         url = url.split('/t/')
-        print(url[1])
         return redirect(os.environ.get('REDIRECT_URL')+'/search?type=task&sort=runs&id='+url[1])
     elif '/f/' in request.url:
         print('Flow in URL')
         url = str(request.url)
         url = url.split('/f/')
-        print(url[1])
         return redirect(os.environ.get('REDIRECT_URL')+'/search?type=flow&sort=runs&id='+url[1])
     elif '/r/' in request.url:
         print('Run in URL')
         url = str(request.url)
         url = url.split('/r/')
-        print(url[1])
         return redirect(os.environ.get('REDIRECT_URL')+'/search?type=run&sort=date&id='+url[1])
     elif '/s/' in request.url:
         print('Study in URL')
         url = str(request.url)
         url = url.split('/s/')
-        print(url[1])
-        return redirect(os.environ.get('REDIRECT_URL')+'/search?type=study&study_type=run&id='+url[1])
+        url = url[1]
+        return redirect(os.environ.get('REDIRECT_URL')+'/search?type=study&study_type=run&id='+url)
 
     return send_from_directory(app.static_folder, "index.html")
 
