@@ -42,14 +42,16 @@ def login():
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj['email']).first()
 
-    if user is None or not user.check_password(jobj['password']):
-        print("error")
+    if user is None:
+        print('user does not exist')
+        return jsonify({"msg": "User does not exist"}), 200
 
-        return jsonify({"msg": "Error"}), 401
+    elif not user.check_password(jobj['password']):
+        print('Wrong password')
+        return jsonify({"msg": "wrong password"}), 200
 
     elif user.active == 0:
         print("User not confirmed")
-
         return jsonify({"msg": "NotConfirmed"}), 200
 
     else:
