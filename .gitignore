@@ -52,4 +52,8 @@ dev_data/ff\@ff.com/
 
 temp_data/
 
+<<<<<<< Updated upstream
 dataset_31_credit-g.csv
+=======
+.flaskenv
+>>>>>>> Stashed changes
