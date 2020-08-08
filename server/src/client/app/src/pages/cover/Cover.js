@@ -85,7 +85,7 @@ const OpenMLSubSubTitle = styled.div`
 
 const WhiteText = styled.div`
   height: auto;
-  display: inline-block;
+  display: inline;
   color: white;
   padding-top: 10px;
   padding-bottom: 5px;
@@ -231,7 +231,7 @@ const PurpleIcon = styled(FontAwesomeIcon)`
 `;
 
 const CoverInput = styled(InputBase)`
-  width: 75%;
+  width: 70%;
   border-radius: 4px;
   background-color: #fff;
   padding: 3px;
@@ -280,92 +280,90 @@ const CustomInput = styled(InputBase)`
 
 function IntroGraph() {
   return (
-    <div style={{ paddingLeft: 30 }}>
-      <div
+    <div
+      style={{
+        position: "relative",
+        margin: "auto"
+      }}
+    >
+      <svg
         style={{
-          position: "relative",
-          margin: "auto"
+          minHeight: 250,
+          minWidth: 350
         }}
       >
-        <svg
-          style={{
-            minHeight: 250,
-            minWidth: 350
-          }}
-        >
-          <defs>
-            <marker
-              id="arrowhead"
-              markerWidth="7"
-              markerHeight="7"
-              refX="0"
-              refY="3.5"
-              orient="auto"
-              fill="white"
-            >
-              <polygon points="0 0, 6 3, 0 6" />
-            </marker>
-          </defs>
-          <path
-            d="M 40 160 C 40 60, 120 30, 130 30"
-            stroke="white"
-            strokeWidth="2"
-            fill="transparent"
-            markerEnd="url(#arrowhead)"
-          />
-          <path
-            d="M 240 30 C 300 30, 340 100, 340 150"
-            stroke="white"
-            strokeWidth="2"
-            fill="transparent"
-            markerEnd="url(#arrowhead)"
-          />
-          <path
-            d="M 300 180 C 250 180, 190 130, 190 80"
-            stroke="white"
-            strokeWidth="2"
-            fill="transparent"
-            markerEnd="url(#arrowhead)"
-          />
-          <rect
-            x="60"
-            y="150"
-            rx="16"
-            ry="20"
-            width="160"
-            height="32"
-            stroke="#2979ff"
-            fill="#2979ff"
-          />
-          <text x="70" y="170" fill="white">
-            I shared a new data set
-          </text>
-          <rect
-            x="150"
-            y="190"
-            rx="16"
-            ry="20"
-            width="160"
-            height="32"
-            stroke="#2979ff"
-            fill="#2979ff"
-          />
-          <text x="160" y="210" fill="white">
-            I found a better model!
-          </text>
-          <text x="160" y="62" fill="white">
-            OpenML
-          </text>
-        </svg>
+        <defs>
+          <marker
+            id="arrowhead"
+            markerWidth="7"
+            markerHeight="7"
+            refX="0"
+            refY="3.5"
+            orient="auto"
+            fill="white"
+          >
+            <polygon points="0 0, 6 3, 0 6" />
+          </marker>
+        </defs>
+        <path
+          d="M 40 160 C 40 60, 120 30, 130 30"
+          stroke="white"
+          strokeWidth="2"
+          fill="transparent"
+          markerEnd="url(#arrowhead)"
+        />
+        <path
+          d="M 240 30 C 300 30, 340 100, 340 150"
+          stroke="white"
+          strokeWidth="2"
+          fill="transparent"
+          markerEnd="url(#arrowhead)"
+        />
+        <path
+          d="M 300 180 C 250 180, 190 130, 190 80"
+          stroke="white"
+          strokeWidth="2"
+          fill="transparent"
+          markerEnd="url(#arrowhead)"
+        />
+        <rect
+          x="60"
+          y="150"
+          rx="16"
+          ry="20"
+          width="160"
+          height="32"
+          stroke="#2979ff"
+          fill="#2979ff"
+        />
+        <text x="70" y="170" fill="white">
+          I shared a new data set
+        </text>
+        <rect
+          x="150"
+          y="190"
+          rx="16"
+          ry="20"
+          width="160"
+          height="32"
+          stroke="#2979ff"
+          fill="#2979ff"
+        />
+        <text x="160" y="210" fill="white">
+          I found a better model!
+        </text>
+        <text x="160" y="62" fill="white">
+          OpenML
+        </text>
+      </svg>
 
-        <WhiteFixedIcon icon="desktop" l="0" t="170" sizept="45" />
-        <WhiteFixedIcon icon="laptop" l="300" t="170" sizept="45" />
-        <WhiteFixedIcon icon="brain" l="160" t="0" sizept="35" />
-        <LightGreenFixedIcon icon="database" l="40" t="40" sizept="20" />
-        <LightGreenFixedIcon icon="database" l="320" t="40" sizept="20" />
-        <LightBlueFixedIcon icon="cog" l="200" t="80" sizept="20" />
-        <LightRedFixedIcon icon="flask" l="225" t="110" sizept="20" />
-      </div>
+      <WhiteFixedIcon icon="desktop" l="0" t="170" sizept="45" />
+      <WhiteFixedIcon icon="laptop" l="300" t="170" sizept="45" />
+      <WhiteFixedIcon icon="brain" l="160" t="0" sizept="35" />
+      <LightGreenFixedIcon icon="database" l="40" t="40" sizept="20" />
+      <LightGreenFixedIcon icon="database" l="320" t="40" sizept="20" />
+      <LightBlueFixedIcon icon="cog" l="200" t="80" sizept="20" />
+      <LightRedFixedIcon icon="flask" l="225" t="110" sizept="20" />
     </div>
   );
 }
@@ -799,26 +797,29 @@ class Cover extends React.Component {
                 </Grid>
                 <Grid item xs={2} md={1}>
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg"
+                    src="logo-sklearn.svg"
                     height="50"
                     width="50"
                     alt="sklearn"
+                    rel="noreferrer"
                   />
                 </Grid>
                 <Grid item xs={2} md={1}>
                   <img
-                    src="https://avatars2.githubusercontent.com/u/12941794?s=200&v=4"
+                    src="logo-mlr.png"
                     height="50"
                     width="50"
                     alt="mlr"
+                    rel="noreferrer"
                   />
                 </Grid>
                 <Grid item xs={2} md={1}>
                   <img
-                    src="https://waikato.github.io/weka-site/images/weka.png"
+                    src="logo-WEKA.png"
                     height="50"
                     width="50"
                     alt="WEKA"
+                    rel="noreferrer"
                   />
                 </Grid>
                 <Grid item xs={2} md={1}>
@@ -943,8 +944,9 @@ class Cover extends React.Component {
                     href="https://docs.openml.org"
                     target="_blank"
                     style={{ fontSize: "1.1em" }}
+                    rel="noreferrer"
                   >
-                    Learn more{" "}
+                    Learn how OpenML works{" "}
                     <ListIcon icon="arrow-right" style={{ marginLeft: 5 }} />
                   </MoreLinkExternal>
                 </Grid>
@@ -999,6 +1001,7 @@ class Cover extends React.Component {
                     href="https://openml.github.io/blog/"
                     target="_blank"
                     style={{ fontSize: "1.1em" }}
+                    rel="noreferrer"
                   >
                     Read stories{" "}
                     <ListIcon icon="arrow-right" style={{ marginLeft: 5 }} />
@@ -1052,14 +1055,16 @@ class Cover extends React.Component {
                         color="primary"
                         href="https://docs.openml.org/benchmark/"
                         target="_blank"
+                        rel="noreferrer"
                       >
-                        Learn more
+                        Documentation
                       </Button>
                       <Button
                         size="small"
                         color="primary"
                         href="https://arxiv.org/pdf/1708.03731.pdf"
                         target="_blank"
+                        rel="noreferrer"
                       >
                         Paper
                       </Button>
@@ -1100,14 +1105,16 @@ class Cover extends React.Component {
                         color="primary"
                         href="https://openml.github.io/automlbenchmark/paper.html"
                         target="_blank"
+                        rel="noreferrer"
                       >
-                        Learn more
+                        Documentation
                       </Button>
                       <Button
                         size="small"
                         color="primary"
                         href="https://www.automl.org/wp-content/uploads/2019/06/automlws2019_Paper45.pdf"
                         target="_blank"
+                        rel="noreferrer"
                       >
                         Paper
                       </Button>
@@ -1121,7 +1128,7 @@ class Cover extends React.Component {
                       image="cover-automl.png"
                       title="AutoML Tools"
                     />
-                    <CardContent style={{ paddingBottom: 0 }}>
+                    <CardContent style={{ paddingBottom: 10 }}>
                       <Typography gutterBottom variant="h5" component="h2">
                         AutoML Tools
                       </Typography>
@@ -1136,24 +1143,28 @@ class Cover extends React.Component {
                           to="https://arxiv.org/abs/2007.04074"
                           target="_blank"
                           style={{ marginLeft: 10 }}
+                          rel="noreferrer"
                         >
                           autosklearn
                         </QuickLink>
                         <QuickLink
                           to="https://arxiv.org/abs/1712.02902"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           SageMaker AutoML
                         </QuickLink>
                         <QuickLink
                           to="https://papers.nips.cc/paper/7595-probabilistic-matrix-factorization-for-automated-machine-learning.pdf"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           Azure AutoML
                         </QuickLink>
                         <QuickLink
                           to="https://github.com/PGijsbers/gama"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           GAMA
                         </QuickLink>
@@ -1168,7 +1179,7 @@ class Cover extends React.Component {
                       image="cover-hyperimp.png"
                       title="Hackathon"
                     />
-                    <CardContent style={{ paddingBottom: 0 }}>
+                    <CardContent style={{ paddingBottom: 10 }}>
                       <Typography gutterBottom variant="h5" component="h2">
                         Learn to tune
                       </Typography>
@@ -1182,18 +1193,21 @@ class Cover extends React.Component {
                         <QuickLink
                           to="https://arxiv.org/abs/1710.04725"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           parameter importance
                         </QuickLink>
                         <QuickLink
                           to="https://arxiv.org/abs/1811.09409"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           default learning
                         </QuickLink>
                         <QuickLink
                           to="http://metalearning.ml/2018/papers/metalearn2018_paper70.pdf"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           symbolic defaults
                         </QuickLink>
@@ -1206,6 +1220,7 @@ class Cover extends React.Component {
                 href="https://scholar.google.be/scholar?oi=bibs&cites=17799286834300265378"
                 target="_blank"
                 style={{ fontSize: "1.1em", paddingTop: 10 }}
+                rel="noreferrer"
               >
                 Read more research based on OpenML{" "}
                 <ListIcon icon="arrow-right" style={{ marginLeft: 5 }} />
@@ -1318,29 +1333,14 @@ class Cover extends React.Component {
                 }}
               >
                 {" "}
-                <Grid item xs={3}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/7/78/Eindhoven_University_of_Technology_logo_new.png"
-                    height="50"
-                    width="180"
-                    alt="TU/e"
-                  />
+                <Grid item xs={12} sm={6} md={4}>
+                  <img src="logo-tue.png" height="50" alt="TU/e" />
                 </Grid>
-                <Grid item xs={3}>
-                  <img
-                    src="https://assets.amazon.science/07/d9/d204ca2242bea8215dbf9ca5c43e/amazon-science-logo.svg"
-                    height="50"
-                    width="200"
-                    alt="Amazon Science"
-                  />
+                <Grid item xs={12} sm={6} md={4}>
+                  <img src="logo-amazon.svg" height="40" alt="Amazon Science" />
                 </Grid>
-                <Grid item xs={3}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/NWO_logo_-_RGB.jpg/370px-NWO_logo_-_RGB.jpg"
-                    height="70"
-                    width="50"
-                    alt="NWO"
-                  />
+                <Grid item xs={12} sm={6} md={4}>
+                  <img src="logo-NWO.jpg" height="70" alt="NWO" />
                 </Grid>
               </Grid>
 
@@ -1358,21 +1358,22 @@ class Cover extends React.Component {
                   textAlign: "center"
                 }}
               >
-                <Grid item xs={4} md={3}>
+                <Grid item xs={12} md={3}>
                   <ContactChipFull
                     link="/auth/sign-up"
                     icon={"sign-in-alt"}
                     text="Sign Up"
                   />
                 </Grid>
-                <Grid item xs={4} md={3}>
+                <Grid item xs={12} md={3}>
                   <ContactChipFull
                     link="https://docs.openml.org/"
                     icon="book-open"
                     text="OpenML guides"
+                    rel="noreferrer"
                   />
                 </Grid>
-                <Grid item xs={4} md={3}>
+                <Grid item xs={12} md={3}>
                   <ContactChipFull
                     link="/contribute"
                     icon="hand-holding-heart"
