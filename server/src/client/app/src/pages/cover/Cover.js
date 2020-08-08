@@ -1032,7 +1032,7 @@ class Cover extends React.Component {
                     <CardActionArea>
                       <CardMedia
                         style={{ height: 140 }}
-                        image="cover-suites.png"
+                        image="cover-suites.webp"
                         title="Benchmarking suites"
                       />
                       <CardContent>
@@ -1082,7 +1082,7 @@ class Cover extends React.Component {
                     <CardActionArea>
                       <CardMedia
                         style={{ height: 140 }}
-                        image="cover-automlbm.png"
+                        image="cover-automlbm.webp"
                         title="AutoML Benchmark"
                       />
                       <CardContent>
@@ -1125,7 +1125,7 @@ class Cover extends React.Component {
                   <Card style={{ width: "100%" }}>
                     <CardMedia
                       style={{ height: 140 }}
-                      image="cover-automl.png"
+                      image="cover-automl.webp"
                       title="AutoML Tools"
                     />
                     <CardContent style={{ paddingBottom: 10 }}>
@@ -1176,7 +1176,7 @@ class Cover extends React.Component {
                   <Card style={{ width: "100%" }}>
                     <CardMedia
                       style={{ height: 140 }}
-                      image="cover-hyperimp.png"
+                      image="cover-hyperimp.webp"
                       title="Hackathon"
                     />
                     <CardContent style={{ paddingBottom: 10 }}>
