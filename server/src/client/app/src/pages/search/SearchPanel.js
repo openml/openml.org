@@ -502,7 +502,7 @@ export default class SearchPanel extends React.Component {
               // TODO: Add logic to call subtypes (e.g. run collection,
               // task collection). E.g.:
               // if(context.filter.study_type === 'run') ...
-              <div style={{ height: "100%" }}>
+              <div style={{ height: "calc(100vh - 125px)" }}>
                 <iframe
                   src={
                     String(window.location.protocol) +
@@ -522,7 +522,7 @@ export default class SearchPanel extends React.Component {
                     String(this.context.id)
                   }
                   height="100%"
-                  width="98%"
+                  width="100%"
                   frameBorder="0"
                   id="dash_iframe"
                   title={"dash_iframe_data_" + this.state.searchEntity}
@@ -532,7 +532,7 @@ export default class SearchPanel extends React.Component {
                 ></iframe>
               </div>
             ) : (
-              <div style={{ height: "100%" }}>
+              <div style={{ height: "calc(100vh - 125px)" }}>
                 <iframe
                   src={
                     String(window.location.protocol) +
@@ -542,7 +542,7 @@ export default class SearchPanel extends React.Component {
                     String(this.context.type)
                   }
                   height="100%"
-                  width="98%"
+                  width="100%"
                   frameBorder="0"
                   id="dash_iframe_overview"
                   title={"dash_iframe_over_"}
