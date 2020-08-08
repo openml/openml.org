@@ -26,7 +26,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${props => props.theme.body.background};
+    background: ${props =>
+      window.location.pathname === "/" ? "#fff" : props.theme.body.background};
   }
 `;
 
@@ -35,9 +36,10 @@ const Root = styled.div`
   min-height: 100vh;
   background: ${props =>
     props.bg === "Gradient"
-      ? "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)"
+      ? "linear-gradient(217deg, rgba(255,0,0,1), rgba(255,0,0,0) 70.71%), linear-gradient(336deg, rgba(0,200,0,1), rgba(0,200,0,0) 70.71%), linear-gradient(127deg, rgba(0,0,255,1), rgba(0,0,255,0) 70.71%)"
       : "none"};
-  background-size: 300% 300%;
+  background-size: 100vw ${props => (props.width <= 960 ? "880px" : "600px")};
+  background-repeat: no-repeat;
 `;
 
 const AppContent = styled.div`
@@ -60,14 +62,10 @@ const MainContent = styled(Paper)`
   @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     flex: none;
   }
-
-  .MuiPaper-root .MuiPaper-root {
-    box-shadow: none;
-  }
 `;
 
 const Drawer = styled.div`
-  ${props => props.theme.breakpoints.up("md")} {
+  ${props => props.theme.breakpoints.up("lg")} {
     width: ${props => props.drawerWidth}px;
     flex-shrink: 0;
   }
@@ -76,26 +74,53 @@ const Drawer = styled.div`
 class Main extends React.Component {
   state = {
     mobileOpen: false,
-    miniDrawer: false
+    miniDrawer: false,
+    activeSearch: false,
+    mode: "wide"
   };
 
   handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));
   };
 
+  listenToScroll = () => {
+    const position = document.documentElement.clientHeight - window.pageYOffset;
+    if (!this.state.activeSearch && position < 260) {
+      this.setState(state => ({ activeSearch: true }));
+    } else if (this.state.activeSearch && position > 260) {
+      this.setState(state => ({ activeSearch: false }));
+    }
+  };
+
+  updateDimensions = () => {
+    if (this.state.mode !== "wide" && window.innerWidth > 960) {
+      this.setState({ mode: "wide" });
+    } else if (this.state.mode !== "small" && window.innerWidth < 960) {
+      this.setState({ mode: "small" });
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.listenToScroll);
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
   render() {
     const { children, routes, width, background } = this.props;
     return (
       <MainContext.Consumer>
         {context => (
-          <Root bg={background}>
+          <Root bg={background} width={window.innerWidth}>
             {context.query !== undefined && context.type === undefined && (
               <Redirect to="/search?type=data" />
+            )}
+            {context.query !== undefined && context.type !== undefined && (
+              <Redirect to={"/search?type=" + context.type} />
             )}
             <CssBaseline />
             <GlobalStyle />
             <Drawer drawerWidth={context.drawerWidth} open={false}>
-              <Hidden mdUp implementation="js">
+              <Hidden lgUp implementation="js">
                 <Sidebar
                   routes={routes}
                   PaperProps={{ style: { width: context.drawerWidth } }}
@@ -104,7 +129,7 @@ class Main extends React.Component {
                   onClose={this.handleDrawerToggle}
                 />
               </Hidden>
-              <Hidden smDown implementation="css">
+              <Hidden mdDown implementation="css">
                 <Sidebar
                   routes={routes}
                   PaperProps={{ style: { width: context.drawerWidth } }}
@@ -114,7 +139,7 @@ class Main extends React.Component {
             <AppContent>
               <Header
                 onDrawerToggle={this.handleDrawerToggle}
-                bg={background}
+                bg={this.state.activeSearch ? "none" : background}
                 routes={routes}
               />
               <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>

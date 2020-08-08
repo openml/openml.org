@@ -32,6 +32,9 @@ function SignIn() {
   const [logger, setLogger] = useState(false);
   const [errorlog, setError] = useState(false);
   const [confirmflag, setConfirm] = useState(false);
+  const [errormsg, setErrorMsg] = useState(false);
+  const [notexist, setNotExist] = useState(false);
+  const [wrongpass, setWrongPass] =useState(false);
   const context = useContext(MainContext);
 
   function sendtoflask(event) {
@@ -45,7 +48,14 @@ function SignIn() {
         console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
-        } else {
+        }
+        else if(response.data.msg === "User does not exist"){
+          setNotExist(true);
+        }
+        else if(response.data.msg === "wrong password"){
+          setWrongPass(true);
+        }
+        else {
           localStorage.setItem("token", response.data.access_token);
           context.logIn();
           setLogger(true);
@@ -54,6 +64,7 @@ function SignIn() {
       .catch(error => {
         console.log(error);
         setError(true);
+        setErrorMsg(String(error));
       });
     return false;
   }
@@ -73,7 +84,16 @@ function SignIn() {
           <Typography component="h2" variant="body1" align="center">
             Sign in to continue
           </Typography>
-          {errorlog ? (
+          {errorlog &&(
+              <Typography component="h3" align="center" style={{ color: "red" }}>
+              <FontAwesomeIcon
+                icon="exclamation-triangle"
+                style={{ marginRight: 5 }}
+              />
+                {errormsg}
+            </Typography>
+          )}
+          {wrongpass && (
             <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"
@@ -81,8 +101,6 @@ function SignIn() {
               />
               Wrong username or password
             </Typography>
-          ) : (
-            <Redirect to="/auth/sign-in" />
           )}
           {confirmflag && (
             <Typography
@@ -93,6 +111,15 @@ function SignIn() {
             >
               User not confirmed
               <a href="/auth/confirmation-token">(resend activation token)</a>
+            </Typography>
+          )}
+          {notexist && (
+              <Typography component="h3" align="center" style={{ color: "red" }}>
+              <FontAwesomeIcon
+                icon="exclamation-triangle"
+                style={{ marginRight: 5 }}
+              />
+              User does not exist
             </Typography>
           )}
           <form onSubmit={sendtoflask}>

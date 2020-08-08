@@ -113,7 +113,7 @@ function SignUp() {
           />
         </FormControl>
         <Button
-          type="Submit"
+          type="submit"
           fullWidth
           variant="contained"
           color="primary"

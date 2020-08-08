@@ -81,6 +81,11 @@ const Search = styled.div`
 
   ${props => props.theme.breakpoints.up("md")} {
     display: inline-block;
+    margin-left: 60px;
+  }
+  ${props => props.theme.breakpoints.up("lg")} {
+    display: inline-block;
+    margin-left: 0px;
   }
   ${props =>
     props.bg === "" &&
@@ -430,7 +435,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
         >
           <Toolbar>
             <Grid container alignItems="center">
-              <Hidden mdUp>
+              <Hidden lgUp>
                 <Grid item>
                   <IconButton aria-label="Open drawer" onClick={onDrawerToggle}>
                     <WhiteIcon
@@ -459,7 +464,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                 item
                 xs={context.searchActive ? 7 : 1}
                 sm={context.searchActive ? 9 : 1}
-                md={context.searchActive ? 9 : 5}
+                md={context.searchActive ? 7 : 5}
                 lg={context.searchActive ? 10 : 5}
               >
                 <Search

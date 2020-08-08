@@ -181,7 +181,7 @@ function Public() {
               />
               <label htmlFor="image">
                 <Button variant="contained" color="primary" component="span">
-                  <FAIcon icon="cloud-upload-alt" mr={2} /> Upload
+                  <FAIcon icon="cloud-upload-alt" mr={2} /> Upload(Not supported)
                 </Button>
 
                 <Typography variant="caption" display="block" gutterBottom>

@@ -1,5 +1,4 @@
 import React from "react";
-
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
@@ -40,18 +39,27 @@ class App extends React.Component {
     searchActive: false,
     animation: true,
     drawerWidth: 260,
-    setTheme: value => this.setState({ currentTheme: value }),
-    toggleAnimation: value => this.setState({ animation: value }),
-    setSearchActive: value => this.setState({ searchActive: value }),
+    setTheme: value =>
+      this.setState({ currentTheme: value }, this.log("Theme changed")),
+    toggleAnimation: value =>
+      this.setState({ animation: value }, this.log("Animation changed")),
+    setSearchActive: value =>
+      this.setState({ searchActive: value }, this.log("Search bar changed")),
     toggleSearch: () =>
-      this.setState({ searchActive: !this.state.searchActive }),
+      this.setState(
+        { searchActive: !this.state.searchActive },
+        this.log("Search bar changed")
+      ),
     miniDrawerToggle: () =>
-      this.setState({
-        miniDrawer: !this.state.miniDrawer,
-        drawerWidth: this.state.miniDrawer ? 260 : 57
-      }),
+      this.setState(
+        {
+          miniDrawer: !this.state.miniDrawer,
+          drawerWidth: this.state.miniDrawer ? 260 : 57
+        },
+        this.log("Drawer changed")
+      ),
 
-    // Auth context
+    // Auth
     loggedIn: false,
     checkLogIn: () => {
       let token = localStorage.getItem("token");
@@ -69,36 +77,52 @@ class App extends React.Component {
               response.statusText === "OK" &&
               !this.state.loggedIn
             ) {
-              this.setState({ loggedIn: true });
+              axios
+                .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+                .then(response => {
+                  let img = undefined;
+                  if (response.data.image.includes(path.sep)) {
+                    img = response.data.image;
+                  }
+                  let ini =
+                    response.data.first_name.charAt(0) +
+                    response.data.last_name.charAt(0);
+                  this.setState(
+                    { loggedIn: true, userImage: img, userInitials: ini },
+                    this.log("Login changed: User profile loaded")
+                  );
+                })
+                .catch(error => {
+                  console.log("Could not fetch profile.");
+                });
             } else if (this.state.loggedIn) {
-              this.setState({ loggedIn: false });
+              this.setState(
+                { loggedIn: false },
+                this.log("Login changed: Authentication failed")
+              );
             }
-            axios
-              .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-              .then(response => {
-                let img = undefined;
-                if (response.data.image.includes(path.sep)) {
-                  img = response.data.image;
-                }
-                let ini =
-                  response.data.first_name.charAt(0) +
-                  response.data.last_name.charAt(0);
-                this.setState({ userImage: img, userInitials: ini });
-              })
-              .catch(error => {
-                console.log("Could not fetch profile.");
-              });
           })
           .catch(error => {
-            this.setState({ loggedIn: false });
+            if (this.state.loggedIn) {
+              this.setState(
+                { loggedIn: false },
+                this.log("Login changed: Authentication check failed")
+              );
+            }
           });
       }
     },
     logIn: () => {
-      this.setState({ loggedIn: true });
+      this.setState(
+        { loggedIn: true },
+        this.log("Login changed: user logged in")
+      );
     },
     logOut: () => {
-      this.setState({ loggedIn: false });
+      this.setState(
+        { loggedIn: false },
+        this.log("Login changed: user logged out")
+      );
     },
     userImage: undefined,
     userInitials: undefined,
@@ -106,12 +130,12 @@ class App extends React.Component {
       console.log(value);
       if (value.includes(path.sep)) {
         //check if valid path
-        this.setState({ userImage: value });
+        this.setState({ userImage: value }, this.log("User image changed"));
       }
     },
     setUserInitials: value => {
       console.log(value);
-      this.setState({ userInitials: value });
+      this.setState({ userInitials: value }, this.log("User initials changed"));
     },
 
     // Search context
@@ -136,40 +160,49 @@ class App extends React.Component {
       return this.getSearchTopic();
     },
     collapseSearch: value => {
-      this.setState({ searchCollapsed: value });
+      this.setState({ searchCollapsed: value }, this.log("Search collapsed"));
     },
     toggleSearchList: value => {
       if (value !== this.state.displaySearch) {
-        this.setState({ displaySearch: value });
+        this.setState(
+          { displaySearch: value },
+          this.log("Search list changed")
+        );
       }
     },
     setType: value => {
-      this.setState({ type: value });
+      this.setState({ type: value }, this.log("Type changed"));
     },
     setLoading: value => {
-      this.setState({ loading: value });
+      this.setState({ loading: value }, this.log("Loading changed"));
     },
     setQuery: value => {
-      this.setState({ query: value, updateType: "query" });
+      this.setState(
+        { query: value, updateType: "query" },
+        this.log("Query changed")
+      );
     },
     setFields: value => {
-      this.setState({ fields: value });
+      this.setState({ fields: value }, this.log("Fields changed"));
     },
     setSort: value => {
-      this.setState({ sort: value });
+      this.setState({ sort: value }, this.log("Sort changed"));
     },
     setOrder: value => {
-      this.setState({ order: value });
+      this.setState({ order: value }, this.log("Order changed"));
     },
     setID: value => {
-      this.setState({ id: value });
+      this.setState({ id: value }, this.log("ID changed"));
     },
     setResults: (counts, results) => {
-      this.setState({
-        counts: counts,
-        results: results,
-        updateType: "results"
-      });
+      this.setState(
+        {
+          counts: counts,
+          results: results,
+          updateType: "results"
+        },
+        this.log("Search results changed")
+      );
     },
     setSearch: (qp, fields) => {
       if (JSON.stringify(qp) === this.state.qjson) return;
@@ -266,26 +299,47 @@ class App extends React.Component {
     }
   };
 
+  // Logs state change when in developer mode.
+  log = message => {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      console.log(message);
+    }
+  };
+
   getColor = () => {
-    switch (this.state.type) {
-      case "data":
-        return green[500];
-      case "task":
-        return orange[600];
-      case "flow":
-        return blue[800];
-      case "run":
-        return red[400];
-      case "study":
-        return purple[600];
-      case "task_type":
-        return orange[400];
-      case "measure":
-        return grey[700];
-      case "user":
-        return blue[300];
-      default:
-        return undefined;
+    if (this.state.type === "data") {
+      return green[500];
+    } else if (this.state.type === "task") {
+      return orange[600];
+    } else if (
+      this.state.type === "task" ||
+      window.location.pathname.startsWith("/api")
+    ) {
+      return blue[800];
+    } else if (
+      this.state.type === "run" ||
+      window.location.pathname.startsWith("/contribute")
+    ) {
+      return red[400];
+    } else if (
+      this.state.type === "study" ||
+      window.location.pathname.startsWith("/meet")
+    ) {
+      return purple[600];
+    } else if (
+      this.state.type === "task_type" ||
+      window.location.pathname.startsWith("/about")
+    ) {
+      return orange[400];
+    } else if (
+      this.state.type === "measure" ||
+      window.location.pathname.startsWith("/terms")
+    ) {
+      return grey[700];
+    } else if (this.state.type === "user") {
+      return blue[300];
+    } else {
+      return undefined;
     }
   };
 

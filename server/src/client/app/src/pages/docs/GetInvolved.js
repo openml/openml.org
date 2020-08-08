@@ -68,7 +68,7 @@ const ContactChip = ({ link, icon, text }) => {
   );
 };
 
-const ContactChipFull = ({ link, icon, text }) => {
+export const ContactChipFull = ({ link, icon, text }) => {
   return (
     <Chip
       icon={<ListIcon icon={icon} size="lg" style={{ marginRight: 0 }} />}
@@ -111,9 +111,6 @@ export default class GetInvolved extends React.Component {
             <TopLink smooth to="/contribute#support">
               Support
             </TopLink>
-            <TopLink smooth to="/contribute#meetup">
-              Meetup
-            </TopLink>
           </List>
           <HeroTitle variant="h3" align="center">
             Want to get involved?
@@ -150,7 +147,6 @@ export default class GetInvolved extends React.Component {
                   size="lg"
                   style={{ color: green[500] }}
                 />
-                .
               </Typography>
             </CardContent>
           </Card>
@@ -319,8 +315,8 @@ export default class GetInvolved extends React.Component {
                   </Typography>
                   <List component="nav">
                     <ContactChip
-                      link="https://medium.com/open-machine-learning"
-                      icon={["fab", "medium"]}
+                      link="https://openml.github.io/blog"
+                      icon={["fas", "blog"]}
                       text="OpenML blog"
                     />
                     <ContactChip
@@ -344,34 +340,6 @@ export default class GetInvolved extends React.Component {
           </HeroTitle>
           <Card>
             <CardContent>We'll set up an OpenCollective page here.</CardContent>
-          </Card>
-          <HeroTitle variant="h3" align="center" id="meetup">
-            <ListIcon
-              icon="campground"
-              size="lg"
-              style={{ color: purple[400], marginTop: 70 }}
-            />
-            <br />
-            Let's meet up
-          </HeroTitle>
-          <Card>
-            <CardContent>
-              We run regular hackathons and workshops. Please join us or let's
-              set up a new event together.
-              <List component="nav">
-                <ContactChip
-                  link="https://meet.openml.org"
-                  icon="campground"
-                  text="Check out the upcoming meetups"
-                />
-                <ContactChip
-                  link="/about#contact"
-                  icon={"phone"}
-                  color={green[400]}
-                  text="Contact us"
-                />
-              </List>
-            </CardContent>
           </Card>
         </MainPaper>
       </React.Fragment>

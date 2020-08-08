@@ -96,7 +96,8 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 20,
   cursor: "pointer",
-  maxWidth: 600
+  maxWidth: 600,
+  boxShadow: "none"
 });
 const dataStatus = {
   active: {
