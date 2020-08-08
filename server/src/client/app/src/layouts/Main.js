@@ -38,7 +38,7 @@ const Root = styled.div`
     props.bg === "Gradient"
       ? "linear-gradient(217deg, rgba(255,0,0,1), rgba(255,0,0,0) 70.71%), linear-gradient(336deg, rgba(0,200,0,1), rgba(0,200,0,0) 70.71%), linear-gradient(127deg, rgba(0,0,255,1), rgba(0,0,255,0) 70.71%)"
       : "none"};
-  background-size: 100vw ${props => (props.width <= 960 ? "880px" : "600px")};
+  background-size: 100vw ${props => (props.width <= 960 ? "900px" : "600px")};
   background-repeat: no-repeat;
 `;
 
