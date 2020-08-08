@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-import { blue, green, grey, indigo, red } from "@material-ui/core/colors";
+import { blue, green, grey, red } from "@material-ui/core/colors";
 
 const breakpoints = {
   values: {
@@ -18,7 +18,7 @@ const props = {
 };
 
 function createShadow(px) {
-  return `0 0 ${px}px 0 rgba(53,64,82,.05)`;
+  return `0 0 ${px}px 0 rgba(53,64,82,.15)`;
 }
 
 const shadows = [
@@ -86,151 +86,6 @@ const typography = {
   },
   button: {
     textTransform: "none"
-  }
-};
-
-const blueVariant = {
-  name: "Blue",
-  palette: {
-    primary: {
-      main: blue[800],
-      contrastText: "#FFF"
-    },
-    secondary: {
-      main: blue[600],
-      contrastText: "#FFF"
-    }
-  },
-  header: {
-    color: grey[500],
-    background: "#FFF",
-    search: {
-      color: grey[800]
-    },
-    indicator: {
-      background: red[700]
-    }
-  },
-  sidebar: {
-    color: "#FFF",
-    background: blue[700],
-    header: {
-      color: "#FFF",
-      background: blue[800],
-      brand: {
-        color: "#FFFFFF"
-      }
-    },
-    footer: {
-      color: "#FFF",
-      background: blue[800],
-      online: {
-        background: "#FFF"
-      }
-    },
-    badge: {
-      color: "#000",
-      background: "#FFF"
-    }
-  },
-  body: {
-    background: "#F9F9FC"
-  }
-};
-const greenVariant = {
-  name: "Green",
-  palette: {
-    primary: {
-      main: green[800],
-      contrastText: "#FFF"
-    },
-    secondary: {
-      main: green[500],
-      contrastText: "#FFF"
-    }
-  },
-  header: {
-    color: grey[500],
-    background: "#FFF",
-    search: {
-      color: grey[800]
-    },
-    indicator: {
-      background: green[500]
-    }
-  },
-  sidebar: {
-    color: "#FFF",
-    background: green[700],
-    header: {
-      color: "#FFF",
-      background: green[800],
-      brand: {
-        color: "#FFFFFF"
-      }
-    },
-    footer: {
-      color: "#FFF",
-      background: green[800],
-      online: {
-        background: "#FFF"
-      }
-    },
-    badge: {
-      color: "#000",
-      background: "#FFF"
-    }
-  },
-  body: {
-    background: "#F9F9FC"
-  }
-};
-const indigoVariant = {
-  name: "Indigo",
-  palette: {
-    primary: {
-      main: indigo[700],
-      contrastText: "#FFF"
-    },
-    secondary: {
-      main: indigo[500],
-      contrastText: "#FFF"
-    }
-  },
-  header: {
-    color: grey[500],
-    background: "#FFF",
-    search: {
-      color: grey[800]
-    },
-    indicator: {
-      background: indigo[500]
-    }
-  },
-  sidebar: {
-    color: "#FFF",
-    background: indigo[600],
-    header: {
-      color: "#FFF",
-      background: indigo[700],
-      brand: {
-        color: "#FFFFFF"
-      }
-    },
-    footer: {
-      color: "#FFF",
-      background: indigo[700],
-      online: {
-        background: "#FFF"
-      }
-    },
-    badge: {
-      color: "#000",
-      background: "#FFF"
-    }
-  },
-  body: {
-    background: "#F9F9FC"
   }
 };
 const lightVariant = {
@@ -330,13 +185,7 @@ const darkVariant = {
   }
 };
 
-const variants = [
-  darkVariant,
-  lightVariant,
-  blueVariant,
-  greenVariant,
-  indigoVariant
-];
+const variants = [darkVariant, lightVariant];
 
 const theme = variant => {
   return createMuiTheme(

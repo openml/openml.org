@@ -3,7 +3,7 @@ import { SearchResultsPanel } from "./search.js";
 import { EntryDetails } from "./ItemDetail.js";
 import { Grid, Tabs, Tab } from "@material-ui/core";
 import styled from "styled-components";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import Scrollbar from "react-scrollbars-custom";
 import queryString from "query-string";
 import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
@@ -27,26 +27,7 @@ const SearchTab = styled(Tab)`
 const DetailPanel = styled.div`
   width: 90%;
   margin: 0 auto;
-`;
-const Scrollbar = styled(PerfectScrollbar)`
-  overflow-x: hidden;
-  position: relative;
-  height: calc(100vh - 115px);
-
-  .ps {
-    overflow: hidden;
-    touch-action: auto;
-  }
-
-  .ps__rail-x,
-  .ps__rail-y {
-    display: none;
-    opacity: 0;
-    transition: background-color 0.2s linear, opacity 0.2s linear;
-    height: 15px;
-    bottom: 0px;
-    position: absolute;
-  }
+  margin-top: 12px;
 `;
 
 export default class SearchPanel extends React.Component {
@@ -502,7 +483,7 @@ export default class SearchPanel extends React.Component {
               searchcolor={this.context.getColor()}
             />
           </SearchTabs>
-          <Scrollbar>
+          <Scrollbar style={{ width: "100%", height: "calc(100vh - 125px)" }}>
             {activeTab === 0 ? (
               this.context.id ? (
                 <DetailPanel>

@@ -43,6 +43,7 @@ const Page500 = async(() => import("./Page500"));
 // Documentation
 const About = async(() => import("../pages/docs/About"));
 const GetInvolved = async(() => import("../pages/docs/GetInvolved"));
+const Meet = async(() => import("../pages/docs/Meet"));
 const Terms = async(() => import("../pages/docs/Terms"));
 const API = async(() => import("../pages/docs/API"));
 
@@ -284,7 +285,7 @@ const documentationRoutes = {
 };
 
 const apiRoutes = {
-  id: "API",
+  id: "API's",
   path: "/api",
   icon: <BlueMenuIcon icon="code" fixedWidth />,
   component: API,
@@ -306,12 +307,20 @@ const contributeRoutes = {
   color: red[400]
 };
 
+const meetRoutes = {
+  id: "Meet up",
+  path: "/meet",
+  icon: <PurpleMenuIcon icon="campground" fixedWidth />,
+  component: Meet,
+  color: purple[400]
+};
+
 const termsRoutes = {
   id: "Terms & Citation",
   path: "/terms",
-  icon: <PurpleMenuIcon icon="balance-scale" fixedWidth />,
+  icon: <GreyMenuIcon icon="balance-scale" fixedWidth />,
   component: Terms,
-  color: purple[400]
+  color: grey[400]
 };
 
 const teamRoutes = {
@@ -337,8 +346,9 @@ export const mainRoutes = [
   blogRoutes,
   apiRoutes,
   contributeRoutes,
-  termsRoutes,
-  teamRoutes
+  meetRoutes,
+  teamRoutes,
+  termsRoutes
 ];
 
 export const clearRoutes = [authRoutes];
@@ -356,6 +366,7 @@ export default [
   blogRoutes,
   apiRoutes,
   contributeRoutes,
-  termsRoutes,
-  teamRoutes
+  meetRoutes,
+  teamRoutes,
+  termsRoutes
 ];

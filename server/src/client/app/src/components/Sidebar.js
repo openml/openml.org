@@ -3,14 +3,13 @@ import styled from "styled-components";
 import Icon from "@material-ui/core/Icon";
 import Tooltip from "@material-ui/core/Tooltip";
 import { grey } from "@material-ui/core/colors";
+import axios from "axios";
 
 import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
 
-import PerfectScrollbar from "react-perfect-scrollbar";
+import CustomScrollbar from "react-scrollbars-custom";
 
 import { MainContext } from "../App.js";
-
-import { errorCheck } from "../pages/search/api.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -53,69 +52,9 @@ const Drawer = styled(MuiDrawer)`
   }
 `;
 
-const Scrollbar = styled(PerfectScrollbar)`
+const Scrollbar = styled(CustomScrollbar)`
   background-color: ${props => props.theme.sidebar.background};
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  width: 260px;
-  overflow-x: hidden;
-  position: relative;
-  height: 100%;
-
-  .ps {
-    overflow: hidden;
-    touch-action: auto;
-  }
-
-  .ps__rail-x {
-    display: none;
-    opacity: 0;
-    transition: background-color 0.2s linear, opacity 0.2s linear;
-    height: 15px;
-    bottom: 0px;
-    position: absolute;
-  }
-
-  .ps__rail-y {
-    display: none;
-    opacity: 0;
-    transition: background-color 0.2s linear, opacity 0.2s linear;
-    width: 15px;
-    right: 0;
-    position: absolute;
-  }
-
-  .ps--active-x > .ps__rail-x,
-  .ps--active-y > .ps__rail-y {
-    display: block;
-    background-color: transparent;
-  }
-
-  .ps:hover > .ps__rail-x,
-  .ps:hover > .ps__rail-y,
-  .ps--focus > .ps__rail-x,
-  .ps--focus > .ps__rail-y,
-  .ps--scrolling-x > .ps__rail-x,
-  .ps--scrolling-y > .ps__rail-y {
-    opacity: 0.6;
-  }
-
-  .ps__thumb-x {
-    background-color: #aaa;
-    border-radius: 6px;
-    transition: background-color 0.2s linear, height 0.2s ease-in-out;
-    height: 6px;
-    bottom: 2px;
-    position: absolute;
-  }
-
-  .ps__thumb-y {
-    background-color: #aaa;
-    border-radius: 6px;
-    transition: background-color 0.2s linear, width 0.2s ease-in-out;
-    width: 6px;
-    right: 2px;
-    position: absolute;
-  }
 `;
 
 const List = styled(MuiList)`
@@ -161,8 +100,8 @@ const BrandIcon = styled(Icon)`
 `;
 
 const Category = styled(ListItem)`
-  padding-top: ${props => props.theme.spacing(3)}px;
-  padding-bottom: ${props => props.theme.spacing(3)}px;
+  padding-top: ${props => props.theme.spacing(2.4)}px;
+  padding-bottom: ${props => props.theme.spacing(2.4)}px;
   padding-left: ${props => props.theme.spacing(4)}px;
   padding-right: ${props => props.theme.spacing(1)}px;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
@@ -176,7 +115,7 @@ const Category = styled(ListItem)`
   }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.15);
   }
 
   &.${props => props.activeClassName} {
@@ -217,8 +156,8 @@ const SidebarSection = styled(Typography)`
     ${props => props.theme.spacing(4)}px ${props => props.theme.spacing(0)}px;
   opacity: 0.9;
   display: block;
-  margin-bottom: 10px;
-  font-size: 1rem;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
   margin-top: 20px;
 `;
 
@@ -350,9 +289,9 @@ class Sidebar extends React.Component {
     });
 
     this.countUpdate();
-    this.intervalID = setInterval(() => {
-      this.countUpdate();
-    }, 20000);
+    //this.intervalID = setInterval(() => {
+    //  this.countUpdate();
+    //}, 20000);
   }
 
   componentWillUnmount() {
@@ -376,29 +315,31 @@ class Sidebar extends React.Component {
   };
 
   // Fetch the document counts for all OpenML entity types
-  countUpdate = () => {
+  countUpdate = async () => {
     const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
-    fetch(ELASTICSEARCH_SERVER + "_all/_search", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify({
-        size: 0,
-        aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
-      })
-    })
-      .then(errorCheck)
-      .then(request => request.json())
+
+    const data = {
+      size: 0,
+      aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
+    };
+
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    };
+
+    axios
+      .post(ELASTICSEARCH_SERVER + "_all/_search", data, headers)
       .then(response => {
-        let res = response.aggregations.count_by_type.buckets;
+        let res = response.data.aggregations.count_by_type.buckets;
         let counts = {};
         res.forEach(r => {
           counts[r.key] = this.abbreviateNumber(r.doc_count);
         });
         this.setState({ counts: counts });
+      })
+      .catch(error => {
+        console.log(error);
       });
   };
 
@@ -407,7 +348,7 @@ class Sidebar extends React.Component {
     return (
       <MainContext.Consumer>
         {context => (
-          <Drawer variant="permanent" {...other}>
+          <Drawer variant="permanent" open={false} {...other}>
             <SimpleLink href="/">
               <Brand
                 searchcolor={context.getColor()}
@@ -451,7 +392,7 @@ class Sidebar extends React.Component {
                 <Box>Open ML</Box>
               </Brand>
             </SimpleLink>
-            <Scrollbar>
+            <Scrollbar style={{ width: "260px", height: "100%" }}>
               <List disablePadding>
                 <Items>
                   {routes.map((category, index) => (
@@ -630,7 +571,7 @@ class Sidebar extends React.Component {
             <SidebarFooter>
               <MainContext.Consumer>
                 {context => (
-                  <Grid container spacing={8}>
+                  <Grid container spacing={6}>
                     <Grid item>
                       {context.miniDrawer ? (
                         <Tooltip title="Expand" placement="top-start">
