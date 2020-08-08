@@ -483,7 +483,7 @@ export default class SearchPanel extends React.Component {
               searchcolor={this.context.getColor()}
             />
           </SearchTabs>
-          <Scrollbar style={{ width: "100%", height: "calc(100vh - 125px)" }}>
+          <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)" }}>
             {activeTab === 0 ? (
               this.context.id ? (
                 <DetailPanel>
