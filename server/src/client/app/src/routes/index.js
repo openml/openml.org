@@ -80,7 +80,7 @@ const GreyMenuIcon = styled(FontAwesomeIcon)({
 });
 
 const dataRoutes = {
-  id: "Data sets",
+  id: "Datasets",
   path: "/search",
   header: "Search",
   icon: <GreenMenuIcon icon="database" fixedWidth />,
