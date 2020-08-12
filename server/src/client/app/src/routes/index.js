@@ -32,6 +32,7 @@ const DataUpload = async(() => import("../pages/auth/DataUpload"));
 const CollectionRunsUpload = async(() =>
   import("../pages/auth/CollectionRunsUpload")
 );
+const Feedback = async(()=> import("../pages/auth/Feedback"));
 const CollectionTasksUpload = async(() =>
   import("../pages/auth/CollectionTasksUpload")
 );
@@ -234,6 +235,11 @@ const authRoutes = {
   path: "/auth",
   children: [
     {
+      path:"/feedback",
+      name: "Feedback",
+      component: Feedback
+    },
+      {
       path: "/auth/sign-in",
       name: "Sign In",
       component: SignIn
