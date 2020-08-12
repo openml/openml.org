@@ -482,9 +482,24 @@ export default class SearchPanel extends React.Component {
               key="dash"
               searchcolor={this.context.getColor()}
             />
+            {this.context.type === "data" && this.context.id !== undefined && (
+              <SearchTab
+                label="Tasks"
+                key="data_tasks"
+                searchcolor={this.context.getColor()}
+              />
+            )}
+            {(this.context.type === "task" || this.context.type === "flow") &&
+              this.context.id !== undefined && (
+                <SearchTab
+                  label="Runs"
+                  key="runs_tasks"
+                  searchcolor={this.context.getColor()}
+                />
+              )}
           </SearchTabs>
-          <Scrollbar style={{ width: "100%", height: "calc(100vh - 125px)" }}>
-            {activeTab === 0 ? (
+          <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)" }}>
+            {activeTab === 0 ? ( // Detail panel
               this.context.id ? (
                 <DetailPanel>
                   <EntryDetails
@@ -498,60 +513,73 @@ export default class SearchPanel extends React.Component {
                   table_select={this.tableSelect}
                 />
               )
-            ) : this.context.id ? (
-              // TODO: Add logic to call subtypes (e.g. run collection,
-              // task collection). E.g.:
-              // if(context.filter.study_type === 'run') ...
-              <div style={{ height: "100%" }}>
-                <iframe
-                  src={
-                    String(window.location.protocol) +
-                    "//" +
-                    String(window.location.host) +
-                    "/dashboard/" +
-                    String(this.context.type) +
-                    "/" +
-                    (this.context.type === "study" &&
-                    this.context.filters.study_type
-                      ? this.context.filters.study_type.value + "/"
-                      : "") +
-                    (this.context.type === "measure" &&
-                    this.context.filters.measure_type
-                      ? this.context.filters.measure_type.value + "/"
-                      : "") +
-                    String(this.context.id)
-                  }
-                  height="100%"
-                  width="98%"
-                  frameBorder="0"
-                  id="dash_iframe"
-                  title={"dash_iframe_data_" + this.state.searchEntity}
-                  allowFullScreen
-                  sandbox="allow-popups
+            ) : // Dashboard for detail
+            activeTab === 1 ? (
+              this.context.id ? (
+                // TODO: Add logic to call subtypes (e.g. run collection,
+                // task collection). E.g.:
+                // if(context.filter.study_type === 'run') ...
+                <div style={{ height: "calc(100vh - 125px)" }}>
+                  <iframe
+                    src={
+                      String(window.location.protocol) +
+                      "//" +
+                      String(window.location.host) +
+                      "/dashboard/" +
+                      String(this.context.type) +
+                      "/" +
+                      (this.context.type === "study" &&
+                      this.context.filters.study_type
+                        ? this.context.filters.study_type.value + "/"
+                        : "") +
+                      (this.context.type === "measure" &&
+                      this.context.filters.measure_type
+                        ? this.context.filters.measure_type.value + "/"
+                        : "") +
+                      String(this.context.id)
+                    }
+                    height="100%"
+                    width="100%"
+                    frameBorder="0"
+                    id="dash_iframe"
+                    title={"dash_iframe_data_" + this.state.searchEntity}
+                    allowFullScreen
+                    sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
-                ></iframe>
-              </div>
+                  ></iframe>
+                </div>
+              ) : (
+                // Dashboard for list
+                <div style={{ height: "calc(100vh - 125px)" }}>
+                  <iframe
+                    src={
+                      String(window.location.protocol) +
+                      "//" +
+                      String(window.location.host) +
+                      "/dashboard/" +
+                      String(this.context.type)
+                    }
+                    height="100%"
+                    width="100%"
+                    frameBorder="0"
+                    id="dash_iframe_overview"
+                    title={"dash_iframe_over_"}
+                    allowFullScreen
+                    sandbox="allow-popups
+                            allow-scripts allow-same-origin allow-top-navigation"
+                  ></iframe>
+                  .
+                </div>
+              )
             ) : (
-              <div style={{ height: "100%" }}>
-                <iframe
-                  src={
-                    String(window.location.protocol) +
-                    "//" +
-                    String(window.location.host) +
-                    "/dashboard/" +
-                    String(this.context.type)
-                  }
-                  height="100%"
-                  width="98%"
-                  frameBorder="0"
-                  id="dash_iframe_overview"
-                  title={"dash_iframe_over_"}
-                  allowFullScreen
-                  sandbox="allow-popups
-                            allow-scripts allow-same-origin allow-top-navigation"
-                ></iframe>
-                .
-              </div>
+              this.context.id &&
+              (this.context.type === "data" ? (
+                // Drilldowns
+                <div>Task list not supported yet</div>
+              ) : (
+                // Drilldowns
+                <div>Run list not supported yet</div>
+              ))
             )}
           </Scrollbar>
         </Grid>
