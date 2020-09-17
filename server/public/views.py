@@ -4,7 +4,7 @@ import hashlib
 from flask_cors import CORS
 from server.extensions import db
 from server.user.models import User
-from server.utils import confirmation_email, forgot_password_email
+from server.utils import confirmation_email, forgot_password_email, send_feedback
 
 from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
     Blueprint, jsonify, request)
@@ -87,3 +87,11 @@ def confirmation_token():
     db.session.merge(user)
     db.session.commit()
     return jsonify({"msg": "User confirmation token sent"}), 200
+
+@blueprint.route('/feedback', methods=['POST'])
+def feedback():
+    jobj =request.get_json()
+    email = jobj['email']
+    feedback = jobj['feedback']
+    send_feedback(email,feedback)
+    return 'email sent'
