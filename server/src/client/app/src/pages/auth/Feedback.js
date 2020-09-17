@@ -71,7 +71,7 @@ return (
                         />
                     </FormControl>
                     <FormControl fullWidth mb={3}>
-                        <InputLabel htmlFor="feedback">Last name</InputLabel>
+                        <InputLabel htmlFor="feedback">Message</InputLabel>
                         <Input
                             id="feedback"
                             placeholder="Message"
