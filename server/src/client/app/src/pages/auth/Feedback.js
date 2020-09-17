@@ -39,54 +39,57 @@ function Public() {
 
     function feedbacktoflask(event) {
         event.preventDefault();
-        axios.post(process.env.REACT_APP_SERVER_URL + "feedback", {
-            email: event.target.email.value,
-            feedback: event.target.feedback.value,
-        })
+        axios
+            .post(process.env.REACT_APP_SERVER_URL + "feedback", {
+                email: event.target.email.value,
+                feedback: event.target.feedback.value,
+            })
             .then(response => {
                 console.log(response.data);
             })
-            return false;
+            .catch(error => {
+                console.log(error);
+            });
+        return false;
 
     }
 
 
+    return (
+        <Card mb={6}>
+            <form onSubmit={feedbacktoflask}>
+                <Typography variant="h6" gutterBottom>
+                    Feedback info
+                </Typography>
+                <Grid container spacing={6}>
+                    <Grid item md={8}>
 
-return (
-    <Card mb={6}>
-        <form onSubmit={feedbacktoflask}>
-            <Typography variant="h6" gutterBottom>
-                Feedback info
-            </Typography>
-            <Grid container spacing={6}>
-                <Grid item md={8}>
-
-                    <FormControl fullWidth mb={3}>
-                        <InputLabel htmlFor="email">Email</InputLabel>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            multiline={true}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth mb={3}>
-                        <InputLabel htmlFor="feedback">Message</InputLabel>
-                        <Input
-                            id="feedback"
-                            placeholder="Message"
-                            multiline={true}
-                        />
-                    </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="email">Email</InputLabel>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="Email"
+                                multiline={true}
+                            />
+                        </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="feedback">Message</InputLabel>
+                            <Input
+                                id="feedback"
+                                placeholder="Message"
+                                multiline={true}
+                            />
+                        </FormControl>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-            <Button variant="contained" color="primary" type="Submit">
-                Send feedback
-            </Button>
-        </form>
-    </Card>
-);
+                <Button variant="contained" color="primary" type="Submit">
+                    Send feedback
+                </Button>
+            </form>
+        </Card>
+    );
 }
 
 function Settings() {

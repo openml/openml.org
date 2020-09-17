@@ -88,10 +88,11 @@ def confirmation_token():
     db.session.commit()
     return jsonify({"msg": "User confirmation token sent"}), 200
 
+
 @blueprint.route('/feedback', methods=['POST'])
 def feedback():
-    jobj =request.get_json()
+    jobj = request.get_json()
     email = jobj['email']
-    feedback = jobj['feedback']
-    send_feedback(email,feedback)
+    feedback_msg = jobj['feedback']
+    send_feedback(email, feedback_msg)
     return 'email sent'
