@@ -44,14 +44,14 @@ def forgot_password_email(user_email, token):
 
 def send_feedback(email, feedback):
     sender = str(os.environ.get('EMAIL_SENDER'))
-    receiver = 'openmachinelearning@gmail.com'
+    receiver = 'prabhantsingh@gmail.com'
     header = 'From: %s\n' % email
     header += 'To: %s\n' % 'openmachinelearning@gmail.com'
     header += 'Subject: %s\n\n' % 'none'
-    message = header + feedback
+    message = header + feedback +'/ Sender: ' + email
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
     server.sendmail(sender, receiver, message)
-    print('mail sent')
+    print('Email sent')
     server.quit()

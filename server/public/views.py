@@ -95,4 +95,4 @@ def feedback():
     email = jobj['email']
     feedback_msg = jobj['feedback']
     send_feedback(email, feedback_msg)
-    return 'email sent'
+    return jsonify({"msg": "Email sent"}), 200
