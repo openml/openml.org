@@ -65,11 +65,10 @@ function Public() {
                 <Typography variant="h6" gutterBottom>
                     Feedback info
                 </Typography>
-                          {msg &&(
-              <Typography component="h3" align="center" style={{ color: "green" }}>
-                Your Feedback has been sent.
-            </Typography>
-          )}
+                {msg && (
+                    <Typography component="h3" align="center" style={{color: "green"}}>
+                        Thank you. We’ll get back to you </Typography>
+                )}
                 <Grid container spacing={6}>
                     <Grid item md={8}>
                         <FormControl fullWidth mb={3}>
