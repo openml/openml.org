@@ -36,6 +36,7 @@ const BigAvatar = styled(Avatar)`
 `;
 
 function Public() {
+    const [msg, setMessage] = useState(false);
 
     function feedbacktoflask(event) {
         event.preventDefault();
@@ -46,6 +47,9 @@ function Public() {
             })
             .then(response => {
                 console.log(response.data);
+                if (response.data.msg === "Email sent") {
+                    setMessage(true);
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -61,18 +65,12 @@ function Public() {
                 <Typography variant="h6" gutterBottom>
                     Feedback info
                 </Typography>
+                {msg && (
+                    <Typography component="h3" align="center" style={{color: "green"}}>
+                        Thank you. We’ll get back to you </Typography>
+                )}
                 <Grid container spacing={6}>
                     <Grid item md={8}>
-
-                        <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="email">Email</InputLabel>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="Email"
-                                multiline={true}
-                            />
-                        </FormControl>
                         <FormControl fullWidth mb={3}>
                             <InputLabel htmlFor="feedback">Message</InputLabel>
                             <Input
@@ -81,6 +79,16 @@ function Public() {
                                 multiline={true}
                             />
                         </FormControl>
+                        <FormControl fullWidth mb={3}>
+                            <InputLabel htmlFor="email">Email(Optional)</InputLabel>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="Email"
+                                multiline={true}
+                            />
+                        </FormControl>
+
                     </Grid>
                 </Grid>
 
