@@ -159,11 +159,10 @@ export default class GetInvolved extends React.Component {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2020 Fall Hackathon - To Be Decided
+                  2020 Fall Hackathon - 26-30 October, Virtual
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Due to the covid-19 situation, we haven't yet planned the next
-                  workshop, but we hope to organize one in the fall of 2020.
+                  Due to the covid-19 regulations, this will be a virtual event, but equally fun. We will participate in #Hacktoberfest and set up a virtual meeting place in GatherTown.
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -171,8 +170,7 @@ export default class GetInvolved extends React.Component {
               <Button
                 size="small"
                 color="primary"
-                href="https://docs.google.com/forms/d/1yzDcGbOL0_WYY_MZ_amsDkvXa3cvWHh-uQVlTv6NO_Q"
-                disabled
+                href="https://forms.gle/zPcE2uyfXHNafy1b7"
               >
                 Register (free)
               </Button>
@@ -194,7 +192,6 @@ export default class GetInvolved extends React.Component {
               <Button
                 size="small"
                 color="primary"
-                disabled
                 href="https://docs.google.com/document/d/1-cjXSqjbce0Gq5zydkp-RNQQmxmcSW4WQ0fWTHUwU9E/edit#"
               >
                 Schedule
