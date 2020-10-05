@@ -75,8 +75,10 @@ const BigBadge = styled(Badge)`
   position: absolute;
 `;
 
-const core_ids = [1, 2, 27, 86, 348, 970, 1140];
-const active_ids = [869, 10700, 5348, 8111, 9186, 2902, 8309, 3744];
+
+const TC_ids = [1, 2, 27, 86, 348, 970];
+const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186];
+const active_ids = [10700, 5348, 2902, 8309, 3744];
 const contributor_ids = [1478, 5341];
 
 const Person = ({ id, name, bio, image }) => {
@@ -87,8 +89,11 @@ const Person = ({ id, name, bio, image }) => {
           <BigAvatar alt="..." src={image} align="center">
             {name.match(/\b(\w)/g).join("")}
           </BigAvatar>
-          {core_ids.includes(id) && (
+          {core_ids.includes(id) && !TC_ids.includes(id)(
             <BigBadge badgeContent="core" color="primary" align="center" />
+          )}
+          {core_ids.includes(id) && TC_ids.includes(id)(
+            <BigBadge badgeContent="TC,core" color="primary" align="center" />
           )}
           <Typography variant="h6" display="block" align="center" gutterBottom>
             {name}
@@ -222,6 +227,14 @@ export default class About extends React.Component {
           </HeroTitle>
           <Card>
             <CardContent>
+              <Typography variant="body1" gutterBottom my={4}>
+                OpenML is built by an awesome open source community with many <b>contributors</b> that contribute in concrete
+                ways (code, documentation, community engagement,...). Within this community, <b>core developers</b> 
+                have shown that they are dedicated, engaged with the community, and can be trusted to maintain OpenML
+                with care. The Technical Committee (TC) members are core developers with additional responsibilities
+                to ensure the smooth running of the project. Core and TC members are nominated and voted in by other
+                core members.
+              </Typography>
               <Grid container spacing={6}>
                 {this.state.people.map(
                   ({ user_id, first_name, last_name, bio, image }) => (
@@ -242,6 +255,46 @@ export default class About extends React.Component {
                   image=""
                 />
               </Grid>
+              <Typography variant="body1" gutterBottom my={4}>
+                <b>We are infinitely grateful to the many contributor who helped in small or big ways.</b> Check out the contributors for each sub-project:
+              </Typography>
+              <List component="nav">
+                <ContactChip
+                  link="https://github.com/openml/openml.org#contributors-"
+                  icon={["fab", "react"]}
+                  text="OpenML website"
+                />
+                <ContactChip
+                  link="https://github.com/openml/OpenML#contributors-"
+                  icon={["fas", "cloud"]}
+                  text="OpenML REST API"
+                />
+                <ContactChip
+                  link="https://github.com/openml/openml-python#contributors-"
+                  icon={["fab", "python"]}
+                  text="Python API"
+                />
+                <ContactChip
+                  link="https://github.com/openml/openml-r#contributors-"
+                  icon={["fab", "r-project"]}
+                  text="R API"
+                />
+                <ContactChip
+                  link="https://github.com/openml/openml-java#contributors-"
+                  icon={["fab", "java"]}
+                  text="Java API"
+                />
+                <ContactChip
+                  link="https://github.com/openml/openml-data#contributors-"
+                  icon={["fas", "database"]}
+                  text="Datasets"
+                />  
+                <ContactChip
+                  link="https://github.com/openml/blog#contributors-"
+                  icon={["fas", "blog"]}
+                  text="Blog"
+                />
+              </List>
             </CardContent>
           </Card>
           <HeroTitle variant="h3" align="center" id="contact">
