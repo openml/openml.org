@@ -65,6 +65,9 @@ function Public() {
                 <Typography variant="h6" gutterBottom>
                     Feedback info
                 </Typography>
+                <Typography variant="h7" gutterBottom>
+                    You can also create a github issue at <a href="https://github.com/openml/OpenML">https://github.com/openml/OpenML</a>
+                </Typography>
                 {msg && (
                     <Typography component="h3" align="center" style={{color: "green"}}>
                         Thank you. We’ll get back to you </Typography>
