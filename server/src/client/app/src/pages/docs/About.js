@@ -46,7 +46,8 @@ const HeroSubTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
   fontSize: "1.1rem",
-  paddingTop: "0.5vw"
+  paddingTop: "0.2vw",
+  paddingBottom: "0.5vw"
 });
 
 const Paragraph = styled(Typography)({
@@ -233,21 +234,12 @@ export default class About extends React.Component {
             Meet the team
           </HeroTitle>
           <HeroSubTitle>
-             OpenML is built by an awesome open source community with many <b>contributors</b> that contribute in concrete
-             ways (code, documentation, community engagement,...). Within this community, <b>core developers</b> 
-             have shown that they are dedicated, engaged with the community, and can be trusted to maintain OpenML
-             with care. The Technical Committee (TC) members are core developers with additional responsibilities
-             to ensure the smooth running of the project. Core and TC members are nominated and voted in by other
-             core members.
+            OpenML is built by an awesome open source community with many contributors. Within this community, the 
+            core developers are dedicated and trusted to maintain OpenML with care, and the Technical Committee (TC)
+            members otherwise ensure the smooth running of the project. They are nominated by other core members.
           </HeroSubTitle>
           <Card>
             <CardContent>
-              <Typography variant="body1" gutterBottom my={4}>
-                OpenML is built by an awesome open source community with many <b>contributors</b>. Within this community, 
-                <b>core developers</b> have shown that they are dedicated and can be trusted to maintain OpenML with care.
-                The Technical Committee (TC) members ensure the smooth running of the project. Core and TC members are 
-                nominated and voted in by other core members.
-              </Typography>
               <Grid container spacing={6}>
                 {this.state.people.map(
                   ({ user_id, first_name, last_name, bio, image }) => (
@@ -269,7 +261,7 @@ export default class About extends React.Component {
                 />
               </Grid>
               <Typography variant="body1" gutterBottom my={4}>
-                <b>We are infinitely grateful to the many contributors who helped in small or big ways (code, documentation, community engagement,...).</b> Check out the contributors for each sub-project:
+                <b>We are infinitely grateful to the many contributors who helped in small or big ways.</b> Check out the contributors for each sub-project:
               </Typography>
               <List component="nav">
                 <ContactChip
