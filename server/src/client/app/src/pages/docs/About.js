@@ -42,6 +42,13 @@ const HeroTitle = styled(Typography)({
   padding: "2vw 5vw"
 });
 
+const HeroSubTitle = styled(Typography)({
+  textAlign: "center",
+  lineHeight: "150%",
+  fontSize: "1.1rem",
+  paddingTop: "0.5vw"
+});
+
 const Paragraph = styled(Typography)({
   paddingBottom: "2vw"
 });
