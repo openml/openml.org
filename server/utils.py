@@ -51,10 +51,6 @@ def send_feedback(email, feedback):
     header += 'Subject: %s\n\n' % 'none'
     message = header + feedback +'/ Sender: ' + email
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
-    message = header + f"Hi to reset you password go to " \
-                       f"https://new.openml.org/auth/reset-page/?&token={token}"
-    server = smtplib.SMTP(str(os.environ.get('SMTP_SERVER')), int(os.environ.get('SMTP_PORT')))
-
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
     server.sendmail(sender, receiver, message)
