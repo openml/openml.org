@@ -44,7 +44,7 @@ def forgot_password_email(user_email, token):
 
 def send_feedback(email, feedback):
     sender = str(os.environ.get('EMAIL_SENDER'))
-    receiver = 'prabhantsingh@gmail.com'
+    receiver = 'openmachinelearning@gmail.com'
     header = 'From: %s\n' % email
     header += 'To: %s\n' % 'openmachinelearning@gmail.com'
     header += 'Subject: %s\n\n' % 'none'
