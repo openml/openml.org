@@ -76,7 +76,7 @@ const BigBadge = styled(Badge)`
 `;
 
 
-const TC_ids = [1, 2, 27, 86, 348, 970];
+const tc_ids = [1, 2, 27, 86, 348, 970];
 const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186];
 const active_ids = [10700, 5348, 2902, 8309, 3744];
 const contributor_ids = [1478, 5341];
@@ -89,10 +89,10 @@ const Person = ({ id, name, bio, image }) => {
           <BigAvatar alt="..." src={image} align="center">
             {name.match(/\b(\w)/g).join("")}
           </BigAvatar>
-          {core_ids.includes(id) && !TC_ids.includes(id)(
+          {core_ids.includes(id) && !tc_ids.includes(id)(
             <BigBadge badgeContent="core" color="primary" align="center" />
           )}
-          {core_ids.includes(id) && TC_ids.includes(id)(
+          {core_ids.includes(id) && tc_ids.includes(id)(
             <BigBadge badgeContent="TC,core" color="primary" align="center" />
           )}
           <Typography variant="h6" display="block" align="center" gutterBottom>
