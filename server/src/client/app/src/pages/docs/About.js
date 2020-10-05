@@ -89,10 +89,10 @@ const Person = ({ id, name, bio, image }) => {
           <BigAvatar alt="..." src={image} align="center">
             {name.match(/\b(\w)/g).join("")}
           </BigAvatar>
-          {core_ids.includes(id) && !tc_ids.includes(id)(
+          {core_ids.includes(id) && !tc_ids.includes(id) && (
             <BigBadge badgeContent="core" color="primary" align="center" />
           )}
-          {core_ids.includes(id) && tc_ids.includes(id)(
+          {core_ids.includes(id) && tc_ids.includes(id) && (
             <BigBadge badgeContent="TC,core" color="primary" align="center" />
           )}
           <Typography variant="h6" display="block" align="center" gutterBottom>
