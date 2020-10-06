@@ -103,7 +103,7 @@ def feedback():
 @blueprint.route('/d/<id>', methods=['GET', 'POST'])
 def data_reroute(id):
     url = str(os.environ.get('SERVER_URL')) + "search?type=data&sort=runs&id=" + id
-    return redirect(url, code=302)
+    return redirect(url, code=301)
 
 
 @blueprint.route('/t/<id>', methods=['GET', 'POST'])
