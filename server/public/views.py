@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 
+from flask import redirect
 from flask_cors import CORS
 from server.extensions import db
 from server.user.models import User
@@ -8,6 +9,7 @@ from server.utils import confirmation_email, forgot_password_email, send_feedbac
 
 from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
     Blueprint, jsonify, request)
+import os
 
 blueprint = Blueprint("public", __name__)
 
@@ -96,3 +98,33 @@ def feedback():
     feedback_msg = jobj['feedback']
     send_feedback(email, feedback_msg)
     return jsonify({"msg": "Email sent"}), 200
+
+
+@blueprint.route('/d/<id>', methods=['GET', 'POST'])
+def data_reroute(id):
+    url = str(os.environ.get('SERVER_URL')) + "search?type=data&sort=runs&id=" + id
+    return redirect(url, code=302)
+
+
+@blueprint.route('/t/<id>', methods=['GET', 'POST'])
+def task_reroute(id):
+    url = str(os.environ.get('SERVER_URL')) + "search?type=task&sort=runs&id=" + id
+    return redirect(url, code=302)
+
+
+@blueprint.route('/f/<id>', methods=['GET', 'POST'])
+def flow_reroute(id):
+    url = str(os.environ.get('SERVER_URL')) + "search?type=flow&sort=runs&id=" + id
+    return redirect(url, code=302)
+
+
+@blueprint.route('/r/<id>', methods=['GET', 'POST'])
+def run_reroute(id):
+    url = str(os.environ.get('SERVER_URL')) + "search?type=run&sort=date&id=" + id
+    return redirect(url, code=302)
+
+
+@blueprint.route('/s/<id>', methods=['GET', 'POST'])
+def study_reroute(id):
+    url = str(os.environ.get('SERVER_URL')) + "search?type=study&study_type=run&id=" + id
+    return redirect(url, code=302)
