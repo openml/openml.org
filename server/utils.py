@@ -47,8 +47,8 @@ def send_feedback(email, feedback):
     receiver = 'openmachinelearning@gmail.com'
     header = 'From: %s\n' % email
     header += 'To: %s\n' % 'openmachinelearning@gmail.com'
-    header += 'Subject: %s\n\n' % 'none'
-    message = header + feedback +'/ Sender: ' + email
+    header += 'Subject: %s\n\n' % 'OpenML website feedback'
+    message = header+ "The following feedback was posted by " + email + feedback
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
