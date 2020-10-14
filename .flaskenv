@@ -1,0 +1,11 @@
+FLASK_APP=autoapp.py
+ELASTICSEARCH_SERVER=https://www.openml.org/es
+OPENML_SERVER=https://www.openml.org
+FLASK_ENV=development
+DATABASE_URI=mysql+pymysql://root:@localhost/openml
+SMTP_SERVER=smtp.mailtrap.io
+SMTP_PORT=2525
+SMTP_LOGIN=
+SMTP_PASS=
+APP_SECRET_KEY=
+EMAIL_SERVER=localhost:5000
