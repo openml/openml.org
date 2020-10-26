@@ -44,13 +44,12 @@ def data_edit_upload():
 @data_blueprint.route('/data-edit', methods=['POST'])
 @jwt_required
 def data_edit():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    user_api_key = user.session_hash
-    j_obj = request.get_json()
-    dataset_id = j_obj['dataset_id']
-    dataset = openml.datasets.get_dataset(int(dataset_id))
-
+    # current_user = get_jwt_identity()
+    # user = User.query.filter_by(email=current_user).first()
+    # user_api_key = user.session_hash
+    # j_obj = request.get_json()
+    # dataset_id = j_obj['dataset_id']
+    # dataset = openml.datasets.get_dataset(int(dataset_id))
     return 'tested'
 
 
@@ -92,8 +91,8 @@ def data_upload():
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    #TODO : Support ARFF
-    #TODO: Support custom attribute types
+    # TODO : Support ARFF
+    # TODO: Support custom attribute types
     supported_extensions = ['.csv', '.parquet', '.json', '.feather', '.arff']
 
     if file_extension not in supported_extensions:
