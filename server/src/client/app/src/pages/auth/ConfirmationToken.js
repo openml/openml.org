@@ -59,7 +59,7 @@ function ConfirmationToken() {
           color="primary"
           mt={2}
         >
-          Reset password
+          Resend confirmation email
         </Button>
       </form>
     </Wrapper>

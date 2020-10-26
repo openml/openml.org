@@ -81,6 +81,7 @@ class User(Base):
 
     def update_activation(self):
         self.active = '1'
+        print('user activated successfully')
 
     def update_forgotten_time(self, time):
         self.forgotten_password_time = time
