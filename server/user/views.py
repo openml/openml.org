@@ -217,7 +217,6 @@ def reset():
 @user_blueprint.route('/confirmation', methods=['POST'])
 def confirm_user():
     """Activates user"""
-    print('confirmation linke')
     data = request.get_json()
     url = data['url']
     parsed = urlparse(url)

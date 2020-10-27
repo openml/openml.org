@@ -19,7 +19,7 @@ def register_extensions(app):
     bcrypt.init_app(app)
 
     # Database initialisation
-    db_session = scoped_session(sessionmaker(autocommit=False,
+    db_session = scoped_session(sessionmaker(autocommit=True,
                                              autoflush=False,
                                              bind=engine))
     Base.query = db_session.query_property()
