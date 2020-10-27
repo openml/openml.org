@@ -33,7 +33,7 @@ def forgot_password_email(user_email, token):
     header += 'Subject: %s\n\n' % 'none'
     message = header + "Hi to reset your password go to "
     message = message + "https://" + str(os.environ.get('EMAIL_SERVER'))
-    message = message + f"/auth/confirm-page/?token={token}"
+    message = message + f"/auth/reset-page/?token={token}"
     server = smtplib.SMTP(os.environ.get('SMTP_SERVER'), os.environ.get('SMTP_PORT'))
     if (len(os.environ.get('SMTP_LOGIN')) > 0):
         server.login(os.environ.get('SMTP_LOGIN'), os.environ.get('SMTP_PASS'))
