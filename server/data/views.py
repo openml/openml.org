@@ -16,41 +16,43 @@ data_blueprint = Blueprint("data", __name__, static_folder='server/src/client/ap
 CORS(data_blueprint)
 
 
-@data_blueprint.route('/data-edit-upload', methods=['POST'])
-@jwt_required
-def data_edit_upload():
-    """
-    Function to save the dataset with apikey and name
-    returns: path without api_key
-    """
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    user_api_key = user.session_hash
-    data_file = request.files['dataset']
-    metadata = request.files['metadata']
-    # metadata = metadata.read()
-    # metadata = json.loads(metadata)
-    file_name, file_extension = os.path.splitext(data_file.filename)
-    data_file_uuid = str(uuid.uuid4())
-    Path("temp_data/").mkdir(parents=True, exist_ok=True)
-    Path("temp_data/json/").mkdir(parents=True, exist_ok=True)
-    data_file.save('temp_data/' + user_api_key + '?' + data_file_uuid + file_extension)
-    metadata.save('temp_data/json/' + user_api_key + '?' + data_file_uuid)
-    print(data_file_uuid)
-    path = str(data_file_uuid)
-    return jsonify({"msg": path}), 200
-
-
 @data_blueprint.route('/data-edit', methods=['POST'])
 @jwt_required
 def data_edit():
-    # current_user = get_jwt_identity()
-    # user = User.query.filter_by(email=current_user).first()
-    # user_api_key = user.session_hash
-    # j_obj = request.get_json()
-    # dataset_id = j_obj['dataset_id']
-    # dataset = openml.datasets.get_dataset(int(dataset_id))
-    return 'tested'
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(email=current_user).first()
+    openml.config.apikey = user.session_hash
+    # TODO change line below in development\
+    testing = os.environ.get('TESTING')
+    if testing:
+        openml.config.start_using_configuration_for_example()
+    j_obj = request.get_json()
+    dataset_id = j_obj['dataset_id']
+    dataset_id = int(dataset_id)
+    dataset = openml.datasets.get_dataset(int(dataset_id))
+    description = j_obj['description']
+    creator = j_obj['creator']
+    collection_date = j_obj['date']
+    citation = j_obj['citation']
+    language = j_obj['language']
+    if description == '':
+        description = None
+    if creator == '':
+        creator = None
+    if collection_date == '':
+        collection_date = None
+    if citation == '':
+        citation = None
+    if language == '':
+        language = None
+    data_id = openml.datasets.edit_dataset(dataset_id,
+                                           description=description,
+                                           creator=creator,
+                                           collection_date=collection_date,
+                                           citation=citation,
+                                           language=language)
+
+    return str(data_id)
 
 
 @data_blueprint.route('/data-upload', methods=['POST'])
@@ -67,7 +69,7 @@ def data_upload():
     testing = os.environ.get('TESTING')
     if testing:
         openml.config.start_using_configuration_for_example()
-    openml.config.start_using_configuration_for_example()
+    # openml.config.start_using_configuration_for_example()
 
     print(request)
     data_file = request.files['dataset']
@@ -91,7 +93,6 @@ def data_upload():
     ignore_attribute = metadata['ignore_attribute']
     citation = metadata['citation']
     file_name, file_extension = os.path.splitext(data_file.filename)
-    # TODO : Support ARFF
     # TODO: Support custom attribute types
     supported_extensions = ['.csv', '.parquet', '.json', '.feather', '.arff']
 

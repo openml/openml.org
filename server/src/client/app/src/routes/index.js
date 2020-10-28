@@ -36,6 +36,7 @@ const Feedback = async(() => import("../pages/auth/Feedback"));
 const CollectionTasksUpload = async(() =>
     import("../pages/auth/CollectionTasksUpload")
 );
+const DataEdit = async(() => import("../pages/auth/DataEdit"));
 const TaskUpload = async(() => import("../pages/auth/TaskUpload"));
 const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
@@ -195,6 +196,11 @@ const profileRoutes = {
             path: "/auth/upload-task",
             name: "Task Upload",
             component: TaskUpload
+        },
+        {
+            path: "/auth/data-edit",
+            name: "Dataset Edit",
+            component: DataEdit
         }
     ]
 };
