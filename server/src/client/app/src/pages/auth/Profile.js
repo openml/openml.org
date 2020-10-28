@@ -16,6 +16,7 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {Redirect} from "react-router-dom";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -43,6 +44,7 @@ function Public() {
   const [image, setImage] = useState(false);
   const [error, setError] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const yourConfig = {
     headers: {
@@ -89,6 +91,10 @@ function Public() {
         )
         .then(function(response) {
           console.log(response.data);
+          if(response.data.msg === "User information changed")
+          {
+            setSuccess(true);
+          }
         })
         .catch(function(error) {
           console.log(error.data);
@@ -123,6 +129,9 @@ function Public() {
           <Typography component="h3" variant="body1" align="center" color="red">
             {errormessage}
           </Typography>
+        )}
+        {success && (
+            <Redirect to="/auth/profile-page" />
         )}
         {/*TODO : find why the update only works with multiline*/}
         <Grid container spacing={6}>
