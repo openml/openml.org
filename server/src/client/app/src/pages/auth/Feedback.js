@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {
-    Avatar,
     Button,
     Card as MuiCard,
     Divider as MuiDivider,
@@ -10,12 +9,10 @@ import {
     Grid,
     Input,
     InputLabel,
-    TextField,
     Typography
 } from "@material-ui/core";
 
 import {spacing} from "@material-ui/system";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -23,17 +20,6 @@ const Divider = styled(MuiDivider)(spacing);
 
 const FormControl = styled(MuiFormControl)(spacing);
 
-const FAIcon = styled(FontAwesomeIcon)(spacing);
-
-const CenteredContent = styled.div`
-  text-align: center;
-`;
-
-const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${props => props.theme.spacing(2)}px;
-`;
 
 function Public() {
     const [msg, setMessage] = useState(false);
