@@ -131,7 +131,7 @@ function Public() {
                     </Typography>
                 )}
                 {success && (
-                    <Redirect to="/auth/profile-page"/>
+                    <Redirect to="/auth/profile-page" />
                 )}
                 {/*TODO : find why the update only works with multiline*/}
                 <Grid container spacing={6}>

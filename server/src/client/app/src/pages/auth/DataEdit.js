@@ -55,7 +55,7 @@ function Public() {
             })
             .catch(function (error) {
                 setError(true);
-                setErrorMessage("Cannot not edit");
+                setErrorMessage("Cannot edit");
                 console.log(error.data);
             });
 
