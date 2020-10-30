@@ -389,7 +389,7 @@ class Sidebar extends React.Component {
                     </g>
                   </svg>
                 </BrandIcon>
-                <Box>Open ML</Box>
+                <Box>OpenML</Box>
               </Brand>
             </SimpleLink>
             <Scrollbar style={{ width: "260px", height: "100%" }}>
