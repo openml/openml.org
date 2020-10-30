@@ -87,7 +87,7 @@ def register_overview_callbacks(app, cache):
         df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
         df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
         grouped = (df.groupby("Attribute Type").size().reset_index(name='counts'))
-        colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+        colors = ['darkblue', 'steelblue', 'lightsteelblue']
         types_chart = go.Pie(labels=grouped["Attribute Type"], values=grouped['counts'],
                              marker=dict(colors=colors),
                              showlegend=True)
@@ -152,7 +152,7 @@ def register_overview_callbacks(app, cache):
         count = pd.DataFrame(df["task_type"].value_counts()).reset_index()
         count.columns = ["name", "count"]
         count["percent"] = (count["count"] / count["count"].sum()) * 100
-        count["name"] = [task_types[i] for i in count["name"].values]
+        count["name"] = [task_types[i.value] for i in count["name"].values]
         colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
         data = [go.Pie(labels=count["name"], values=count['count'],
                        marker=dict(colors=colors),

@@ -18,7 +18,7 @@ def test_task_graph_elements(dash_br):
     task_plot = dash_br.find_element("#tab1")
     evals = evaluations.list_evaluations(function='area_under_roc_curve', size=10,
                                          sort_order='desc',
-                                         task=[task_id], output_format='dataframe')
+                                         tasks=[task_id], output_format='dataframe')
     assert (task_plot.text is not None if evals is not None else None)
 
 

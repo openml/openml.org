@@ -15,7 +15,7 @@ def test_flow_graph_elements(dash_br):
     dash_br.server_url = BASE_URL + 'flow/'+str(flow_id)
     time.sleep(15)
     flow_plot = dash_br.find_element("#flowplot")
-    evals = evaluations.list_evaluations(function='area_under_roc_curve', flow=[flow_id],
+    evals = evaluations.list_evaluations(function='area_under_roc_curve', flows=[flow_id],
                                          sort_order='desc', size=10,
                                          output_format='dataframe')
     # Check if the data of first 10 evaluations match
