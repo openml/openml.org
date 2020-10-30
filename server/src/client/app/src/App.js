@@ -25,12 +25,6 @@ export const MainContext = React.createContext();
 //TODO: only import necessary icons
 library.add(fas, far, fab);
 
-// Adds interceptor to axios to catch network errors during authentication
-const axios_instance = axios.create();
-axios_instance.interceptors.request.use(error => {
-  return Promise.reject(error);
-});
-
 class App extends React.Component {
   state = {
     // Theme context
