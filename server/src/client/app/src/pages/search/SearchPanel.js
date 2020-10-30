@@ -1,6 +1,7 @@
 import React from "react";
 import { SearchResultsPanel } from "./search.js";
 import { EntryDetails } from "./ItemDetail.js";
+import { FilterBar } from "./FilterBar.js";
 import { Grid, Tabs, Tab } from "@material-ui/core";
 import styled from "styled-components";
 import Scrollbar from "react-scrollbars-custom";
@@ -14,6 +15,7 @@ const SearchTabs = styled(Tabs)`
   height: 61px;
   background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 
   .MuiTabs-indicator {
     background-color: ${props => props.searchcolor} !important;
@@ -370,12 +372,13 @@ export default class SearchPanel extends React.Component {
   // Translate sort options to URL query parameters
   sortChange = filters => {
     if ("sort" in filters) {
+      //this.context.setSort(filters.sort);
       this.updateQuery("sort", filters.sort);
     }
     if ("order" in filters) {
       this.updateQuery("order", filters.order);
     }
-    this.reload();
+    //this.reload();
   };
 
   // Translate filters to URL query parameters
@@ -384,9 +387,16 @@ export default class SearchPanel extends React.Component {
   filterChange = filters => {
     console.log("Filter change", filters);
     filters.forEach(filter => {
-      this.updateQuery(filter.name, filter.type + "_" + filter.value);
+      if (filter.value2 === "") {
+        this.updateQuery(filter.name, filter.type + "_" + filter.value);
+      } else {
+        this.updateQuery(
+          filter.name,
+          filter.type + "_" + filter.value + "_" + filter.value2
+        );
+      }
     });
-    this.reload();
+    //this.reload();
   };
 
   // New dataset selected
@@ -413,12 +423,151 @@ export default class SearchPanel extends React.Component {
     this.setState(state => ({ activeTab }));
   };
 
+  getFilterOptions = () => {
+    switch (this.context.type) {
+      case "data":
+        return {
+          Instances: {
+            name: "Instances",
+            value: "qualities.NumberOfInstances",
+            options: [
+              { name: "100s", type: "lte", value: "1000", value2: "" },
+              {
+                name: "1000s",
+                type: "between",
+                value: "1000",
+                value2: "10000"
+              },
+              {
+                name: "10000s",
+                type: "between",
+                value: "10000",
+                value2: "100000"
+              },
+              {
+                name: "100000s",
+                type: "between",
+                value: "100000",
+                value2: "1000000"
+              },
+              {
+                name: "Millions",
+                type: "gte",
+                value: "1000000",
+                value2: ""
+              }
+            ]
+          },
+          Features: {
+            name: "Features",
+            value: "qualities.NumberOfFeatures",
+            options: [
+              { name: "Less than 10", type: "lte", value: "10", value2: "" },
+              {
+                name: "10s",
+                type: "between",
+                value: "10",
+                value2: "100"
+              },
+              {
+                name: "100s",
+                type: "between",
+                value: "100",
+                value2: "1000"
+              },
+              {
+                name: "1000s",
+                type: "between",
+                value: "1000",
+                value2: "10000"
+              },
+              {
+                name: "10000s",
+                type: "gte",
+                value: "10000",
+                value2: ""
+              }
+            ]
+          },
+          Target: {
+            name: "Target",
+            value: "qualities.NumberOfClasses",
+            options: [
+              { name: "Numeric", type: "lte", value: "1", value2: "" },
+              { name: "Binary", type: "=", value: "2", value2: "" },
+              { name: "Multi-class", type: "gte", value: "2", value2: "" }
+            ]
+          }
+        };
+      case "task":
+        return {
+          "Task type": {
+            name: "Task type",
+            value: "tasktype.tt_id",
+            options: [
+              { name: "Classification", type: "=", value: "1", value2: "" },
+              { name: "Regression", type: "=", value: "2", value2: "" },
+              {
+                name: "Stream classification",
+                type: "=",
+                value: "4",
+                value2: ""
+              },
+              { name: "Clustering", type: "=", value: "5", value2: "" }
+            ]
+          }
+        };
+      default:
+        return [];
+    }
+  };
+
+  getSortOptions = () => {
+    switch (this.context.type) {
+      case "data":
+        return [
+          //{"name": "best match", "value": "match "},
+          { name: "Runs", value: "runs" },
+          { name: "Likes", value: "nr_of_likes" },
+          { name: "Downloads", value: "nr_of_downloads" },
+          { name: "Date uploaded", value: "date" },
+          { name: "Instances", value: "qualities.NumberOfInstances" },
+          { name: "Features", value: "qualities.NumberOfFeatures" },
+          {
+            name: "Numeric Features",
+            value: "qualities.NumberOfNumericFeatures"
+          },
+          { name: "Missing Values", value: "qualities.NumberOfMissingValues" },
+          { name: "Classes", value: "qualities.NumberOfClasses" }
+        ];
+      case "task":
+        return [
+          //{"name": "best match", "value": "match "},
+          { name: "Runs", value: "runs" },
+          { name: "Likes", value: "nr_of_likes" },
+          { name: "Downloads", value: "nr_of_downloads" }
+        ];
+      case "flow":
+        return [{ name: "Runs", value: "runs" }];
+      case "run":
+        return [{ name: "Downloads", value: "total_downloads" }];
+      case "study":
+        return [
+          { name: "Date", value: "date" },
+          { name: "Datasets", value: "datasets_included" }, // This does not work, since for some reason
+          { name: "Tasks", value: "tasks_included" }, // these three variables are not numbers, but
+          { name: "Flows", value: "flows_included" } // are actually strings, which ES cannot sort
+        ];
+      case "user":
+        return [{ name: "Date", value: "date" }];
+      default:
+        return [];
+    }
+  };
+
   getEntityList = () => {
     let attrs = {
-      searchcolor: this.context.getColor(),
-      selectEntity: this.selectEntity.bind(this),
-      sortChange: this.sortChange,
-      filterChange: this.filterChange
+      selectEntity: this.selectEntity.bind(this)
     };
     switch (this.context.type) {
       case "data":
@@ -445,8 +594,26 @@ export default class SearchPanel extends React.Component {
   render() {
     const activeTab = this.state.activeTab;
 
+    const ucfirst = s => {
+      return s && s[0].toUpperCase() + s.slice(1);
+    };
+
     return (
       <Grid container spacing={0}>
+        {!this.context.searchCollapsed && (
+          <Grid item xs={12}>
+            <FilterBar
+              sortOptions={this.getSortOptions()}
+              filterOptions={this.getFilterOptions()}
+              searchColor={this.context.getColor()}
+              resultSize={this.context.counts}
+              resultType={this.context.type}
+              sortChange={this.sortChange}
+              filterChange={this.filterChange}
+              selectEntity={this.selectEntity.bind(this)}
+            />
+          </Grid>
+        )}
         <Grid
           item
           xs={12}
@@ -473,12 +640,16 @@ export default class SearchPanel extends React.Component {
             searchcolor={this.context.getColor()}
           >
             <SearchTab
-              label="Detail"
+              label={
+                this.context.id !== undefined
+                  ? ucfirst(this.context.type)
+                  : "Statistics"
+              }
               key="detail"
               searchcolor={this.context.getColor()}
             />
             <SearchTab
-              label="Analysis"
+              label={this.context.id !== undefined ? "Analysis" : "Overview"}
               key="dash"
               searchcolor={this.context.getColor()}
             />
@@ -593,52 +764,6 @@ export class DataListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[
-          //{"name": "best match", "value": "match "},
-          { name: "Runs", value: "runs" },
-          { name: "Likes", value: "nr_of_likes" },
-          { name: "Downloads", value: "nr_of_downloads" },
-          { name: "Reach", value: "reach" },
-          { name: "Impact", value: "impact" },
-          { name: "Date uploaded", value: "date" },
-          { name: "Date updated", value: "last_update" },
-          { name: "Instances", value: "qualities.NumberOfInstances" },
-          { name: "Features", value: "qualities.NumberOfFeatures" },
-          {
-            name: "Numeric Features",
-            value: "qualities.NumberOfNumericFeatures"
-          },
-          { name: "Missing Values", value: "qualities.NumberOfMissingValues" },
-          { name: "Classes", value: "qualities.NumberOfClasses" }
-        ]}
-        filterOptions={[
-          {
-            name: "Instances",
-            value: "qualities.NumberOfInstances",
-            type: "numeric"
-          },
-          {
-            name: "Features",
-            value: "qualities.NumberOfFeatures",
-            type: "numeric"
-          },
-          {
-            name: "Number of Missing values",
-            value: "qualities.NumberOfMissingValues",
-            type: "numeric"
-          },
-          {
-            name: "Classes",
-            value: "qualities.NumberOfClasses",
-            type: "numeric"
-          },
-          {
-            name: "Default Accuracy",
-            value: "qualities.DefaultAccuracy",
-            type: "numeric"
-          },
-          { name: "Uploader", value: "uploader", type: "string" }
-        ]}
         type="data"
         idField="data_id"
         stats={[
@@ -662,9 +787,6 @@ export class DataListPanel extends React.PureComponent {
           { param: "qualities.NumberOfClasses", unit: "classes" },
           { param: "qualities.NumberOfMissingValues", unit: "missing" }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -676,8 +798,6 @@ export class FlowListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[{ name: "Runs", value: "runs" }]}
-        filterOptions={[]}
         type="flow"
         nameField="name"
         descriptionField="description"
@@ -698,9 +818,6 @@ export class FlowListPanel extends React.PureComponent {
             icon: "cloud-download-alt"
           }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -711,8 +828,6 @@ export class UserListPanel extends React.PureComponent {
   render() {
     return (
       <SearchResultsPanel
-        sortOptions={[{ name: "Date", value: "date" }]}
-        filterOptions={[]}
         type="user"
         firstName="first_name"
         nameField="last_name"
@@ -752,9 +867,6 @@ export class UserListPanel extends React.PureComponent {
             icon: "bolt"
           }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -765,14 +877,6 @@ export class StudyListPanel extends React.PureComponent {
   render() {
     return (
       <SearchResultsPanel
-        sortOptions={[
-          { name: "Date", value: "date" },
-          { name: "Datasets", value: "datasets_included" }, // This does not work, since for some reason
-          { name: "Tasks", value: "tasks_included" }, // these three variables are not numbers, but
-          { name: "Flows", value: "flows_included" } // are actually strings, which ES cannot
-        ]} // sort properly
-        filterOptions={[]}
-        type="study"
         nameField="name"
         descriptionField="description"
         processDescription={false}
@@ -803,9 +907,6 @@ export class StudyListPanel extends React.PureComponent {
             icon: "flask"
           }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -817,19 +918,6 @@ export class TaskListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[
-          //{"name": "best match", "value": "match "},
-          { name: "Runs", value: "runs" },
-          { name: "Likes", value: "nr_of_likes" },
-          { name: "Downloads", value: "nr_of_downloads" }
-        ]}
-        filterOptions={[
-          {
-            name: "Estimation Procedure",
-            value: "estimation_procedure.name",
-            type: "string"
-          }
-        ]}
         type="task"
         nameField={"tasktype.name"}
         descriptionField="source_data.name"
@@ -850,9 +938,6 @@ export class TaskListPanel extends React.PureComponent {
             icon: "cloud-download-alt"
           }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -864,16 +949,11 @@ export class TaskTypeListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[]}
-        filterOptions={[]}
         type="task_type"
         nameField={"task_type.name"}
         descriptionField="blabla"
         processDescription={false}
         idField="tt_id"
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -885,16 +965,11 @@ export class MeasureListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[]}
-        filterOptions={[]}
         type="measure"
         nameField={"measure.name"}
         descriptionField="blabla"
         processDescription={false}
         idField="measure_id"
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );
@@ -906,8 +981,6 @@ export class RunListPanel extends React.PureComponent {
     return (
       <SearchResultsPanel
         tag={this.props.tag} // for nested query in study page
-        sortOptions={[{ name: "Downloads", value: "total_downloads" }]}
-        filterOptions={[]}
         type="run"
         nameField="run_flow.name"
         descriptionField="output_files.model_readable.url"
@@ -922,9 +995,6 @@ export class RunListPanel extends React.PureComponent {
             icon: "fa-chart-bar"
           }
         ]}
-        sortChange={this.props.attrs.sortChange}
-        filterChange={this.props.attrs.filterChange}
-        searchColor={this.props.attrs.searchcolor}
         selectEntity={this.props.attrs.selectEntity}
       ></SearchResultsPanel>
     );

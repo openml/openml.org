@@ -169,7 +169,7 @@ const CoverTitle = styled(Typography)`
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  padding-top: 80px;
+  padding-top: 180px;
   padding-bottom: 10px;
 `;
 const CoverSubTitle = styled(Typography)`
@@ -261,8 +261,8 @@ const CoverInput = styled(InputBase)`
 const CustomInput = styled(InputBase)`
   border-radius: 4px;
   background-color: #fff;
-  padding-top: 4px;
-  padding-bottom: 3px;
+  padding-top: 5px;
+  padding-bottom: 4px;
   padding-left: 15px;
   margin-left: -7px;
 
@@ -715,7 +715,7 @@ class Cover extends React.Component {
                 container
                 spacing={3}
                 style={{
-                  paddingTop: 80
+                  paddingTop: 100
                 }}
               >
                 <Grid item xs={12} md={4}>
@@ -860,7 +860,7 @@ class Cover extends React.Component {
                 container
                 spacing={3}
                 style={{
-                  paddingTop: 80,
+                  paddingTop: 180,
                   paddingBottom: 30
                 }}
               >
@@ -956,7 +956,7 @@ class Cover extends React.Component {
                 container
                 spacing={3}
                 style={{
-                  paddingTop: 40,
+                  paddingTop: 140,
                   paddingBottom: 30
                 }}
               >
