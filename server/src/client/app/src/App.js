@@ -69,7 +69,7 @@ class App extends React.Component {
             Authorization: "Bearer " + token
           }
         };
-        axios_instance
+        axios
           .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
           .then(response => {
             if (
