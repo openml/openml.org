@@ -1,5 +1,5 @@
 import React from "react";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { StylesProvider } from "@material-ui/styles";
 import { ThemeProvider } from "styled-components";
 import axios from "axios";
@@ -229,10 +229,17 @@ class App extends React.Component {
           // e.g. {number_of_instances: {value: 1000, type: ">"}}
         } else {
           let type = "=";
-          if (value.split("_") === 2) {
+          let value2 = undefined;
+          if (value.split("_").length === 2) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
+          }
+          if (value.split("_").length === 3) {
+            let vals = value.split("_");
+            type = vals[0];
+            value = vals[1];
+            value2 = vals[2];
           }
           if (key in this.state.filters) {
             // Update filter
@@ -242,6 +249,9 @@ class App extends React.Component {
             ) {
               update.filters[key].type = type;
               update.filters[key].value = value;
+              if (typeof value2 !== "undefined") {
+                update.filters[key].value2 = value2;
+              }
               qchanged = true;
             }
           } else {
@@ -346,7 +356,7 @@ class App extends React.Component {
   getSearchTopic = () => {
     switch (this.state.type) {
       case "data":
-        return "data sets";
+        return "datasets";
       case "task":
         return "tasks";
       case "flow":

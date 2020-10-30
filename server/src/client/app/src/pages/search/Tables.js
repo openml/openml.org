@@ -212,7 +212,9 @@ export class DetailTable extends React.Component {
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
+    if (event.target.value !== 0) {
+      this.setState({ rowsPerPage: event.target.value });
+    }
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -286,13 +288,13 @@ export class DetailTable extends React.Component {
           </Table>
         </TableWrapper>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
+          rowsPerPageOptions={[10, 25, 50, 100]}
           component="div"
           count={this.context.counts}
           style={
             this.context.counts ? { display: "block" } : { display: "none" }
           }
-          rowsPerPage={Math.min(rowsPerPage, this.context.counts)}
+          rowsPerPage={Math.max(Math.min(rowsPerPage, this.context.counts), 10)}
           page={page}
           backIconButtonProps={{
             "aria-label": "Previous Page"

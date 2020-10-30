@@ -39,7 +39,7 @@ export function getProperty(obj, param) {
     let index = param.indexOf(".");
     if (index !== -1) {
       if (!obj.hasOwnProperty(param.substring(0, index))) {
-        console.log("Cannot load property");
+        // console.log("Cannot load property");
         return undefined;
       }
       return getProperty(
