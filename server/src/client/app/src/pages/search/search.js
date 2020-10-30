@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { FilterBar } from "./FilterBar.js";
 import { Card, Tooltip, Paper, CardHeader, Avatar } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import TimeAgo from "react-timeago";
@@ -347,16 +346,6 @@ export class SearchResultsPanel extends React.Component {
       return (
         <React.Fragment>
           <SearchPanel>
-            <FilterBar
-              sortOptions={this.props.sortOptions}
-              filterOptions={this.props.filterOptions}
-              searchColor={this.props.searchColor}
-              resultSize={this.context.counts}
-              resultType={this.props.type}
-              sortChange={this.props.sortChange}
-              filterChange={this.props.filterChange}
-              selectEntity={this.props.selectEntity}
-            />
             <Scrollbar
               style={{
                 display: this.context.displaySearch ? "block" : "none"
