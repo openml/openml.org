@@ -419,7 +419,8 @@ const FlexAppBar = styled(AppBar)`
     css`
       background-color: ${props => props.searchcolor};
     `}
-  box-shadow: ${props => (props.bg === "Gradient" ? "none" : "")};
+  box-shadow: ${props =>
+    props.bg === "Gradient" || props.searchcolor ? "none" : ""};
 `;
 
 const Header = ({ onDrawerToggle, bg, routes }) => (
