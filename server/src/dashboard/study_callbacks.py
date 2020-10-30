@@ -173,7 +173,7 @@ def load_run_data(study_id: int, metric: str, include_each_fold: bool, max_runs:
      Optionally with results per fold. """
     study = openml.study.get_study(study_id)
     runs = study.runs[:max_runs]
-    df = openml.evaluations.list_evaluations(metric, run=runs,
+    df = openml.evaluations.list_evaluations(metric, runs=runs,
                                              output_format='dataframe', per_fold=include_each_fold)
 
     if include_each_fold:

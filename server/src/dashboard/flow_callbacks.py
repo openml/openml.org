@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output
 from openml import evaluations, tasks
 
 from .dash_config import DASH_CACHING
+from openml.tasks import TaskType
 
 TIMEOUT = 5*60 if DASH_CACHING else 0
 
@@ -34,17 +35,22 @@ def register_flow_callbacks(app, cache):
             return []
 
         # Get all tasks of selected task type
+        task_type_enum = [TaskType.SUPERVISED_CLASSIFICATION, TaskType.SUPERVISED_REGRESSION,
+                          TaskType.LEARNING_CURVE, TaskType.SUPERVISED_DATASTREAM_CLASSIFICATION,
+                          TaskType.SUPERVISED_DATASTREAM_CLASSIFICATION, TaskType.CLUSTERING,
+                          TaskType.MACHINE_LEARNING_CHALLENGE, TaskType.SURVIVAL_ANALYSIS,
+                          TaskType.SUBGROUP_DISCOVERY]
         task_types = ["Supervised classification", "Supervised regression", "Learning curve",
                       "Supervised data stream classification", "Clustering",
                       "Machine Learning Challenge",
                       "Survival Analysis", "Subgroup Discovery"]
-        t_list = tasks.list_tasks(task_type_id=task_types.index(tasktype)+1)
+        t_list = tasks.list_tasks(task_type=task_type_enum[task_types.index(tasktype)])
         task_id = [value['tid'] for key, value in t_list.items()]
 
         # Get all evaluations of selected metric and flow
         import time
         start = time.time()
-        df = evaluations.list_evaluations_setups(function=metric, flow=[flow_id],
+        df = evaluations.list_evaluations_setups(function=metric, flows=[flow_id],
                                                  size=1000, output_format='dataframe',
                                                  sort_order='desc'
                                                  )

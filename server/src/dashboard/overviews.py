@@ -87,7 +87,7 @@ def register_overview_callbacks(app, cache):
         df["Attribute Type"][df['NumberOfSymbolicFeatures'] <= 1] = 'numeric'
         df["Attribute Type"][df['NumberOfNumericFeatures'] == 0] = 'categorical'
         grouped = (df.groupby("Attribute Type").size().reset_index(name='counts'))
-        colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+        colors = ['darkblue', 'steelblue', 'lightsteelblue']
         types_chart = go.Pie(labels=grouped["Attribute Type"], values=grouped['counts'],
                              marker=dict(colors=colors),
                              showlegend=True)

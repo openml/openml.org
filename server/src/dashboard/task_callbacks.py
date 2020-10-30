@@ -62,7 +62,7 @@ def register_task_callbacks(app, cache):
             df_old = pd.DataFrame()
 
         df_new = evaluations.list_evaluations(function=metric,
-                                              task=[int(task_id)],
+                                              tasks=[int(task_id)],
                                               sort_order="desc",
                                               offset=n_clicks*n_runs,
                                               size=n_runs,

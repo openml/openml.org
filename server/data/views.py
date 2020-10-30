@@ -5,7 +5,6 @@ from server.user.models import User
 from werkzeug.utils import secure_filename
 from pathlib import Path
 import os
-import uuid
 import openml
 import pandas as pd
 import json
@@ -29,7 +28,7 @@ def data_edit():
     j_obj = request.get_json()
     dataset_id = j_obj['dataset_id']
     dataset_id = int(dataset_id)
-    dataset = openml.datasets.get_dataset(int(dataset_id))
+    # dataset = openml.datasets.get_dataset(int(dataset_id))
     description = j_obj['description']
     creator = j_obj['creator']
     collection_date = j_obj['date']
