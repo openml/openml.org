@@ -141,6 +141,7 @@ class Main extends React.Component {
                 onDrawerToggle={this.handleDrawerToggle}
                 bg={this.state.activeSearch ? "none" : background}
                 routes={routes}
+                loggedIn={context.loggedIn}
               />
               <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
                 {children}
