@@ -232,7 +232,13 @@ class UserMenu extends Component {
   }
 
   render() {
-    const { anchorMenu, anchorNewMenu, avatarColor } = this.state;
+    const {
+      anchorMenu,
+      anchorNewMenu,
+      avatarColor,
+      userImage,
+      userInitials
+    } = this.state;
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
