@@ -514,6 +514,8 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
                 <UserMenu
                   bg={context.searchActive ? "" : bg}
                   loggedIn={context.loggedIn}
+                  userImage={context.userImage}
+                  userInitials={context.userInitials}
                 />
               </Grid>
             </Grid>
