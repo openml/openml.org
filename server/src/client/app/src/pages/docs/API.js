@@ -155,7 +155,7 @@ const StyledSwaggerUI = styled.div`
 function OpenMLSwaggerUI() {
   return (
     <StyledSwaggerUI>
-      <SwaggerUI url="swagger.json" />
+      <SwaggerUI url="openml-api.json" />
     </StyledSwaggerUI>
   );
 }
