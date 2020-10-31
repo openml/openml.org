@@ -510,7 +510,7 @@ export default class SearchPanel extends React.Component {
                 {
                   name: "Mine",
                   type: "=",
-                  value: this.context.userID,
+                  value: "" + this.context.userID,
                   value2: ""
                 }
               ]
