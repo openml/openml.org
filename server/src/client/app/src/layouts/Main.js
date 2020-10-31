@@ -142,6 +142,8 @@ class Main extends React.Component {
                 bg={this.state.activeSearch ? "none" : background}
                 routes={routes}
                 loggedIn={context.loggedIn}
+                userImage={context.userImage}
+                userInitials={context.userInitials}
               />
               <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
                 {children}

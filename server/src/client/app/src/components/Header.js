@@ -232,6 +232,8 @@ class UserMenu extends Component {
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
+    const userImage = this.props.userImage;
+    const userInitials = this.props.userInitials;
 
     return (
       <MainContext.Consumer>
@@ -286,7 +288,7 @@ class UserMenu extends Component {
                   <SlimCardHeader
                     avatar={
                       <Avatar
-                        src={context.userImage}
+                        src={userImage}
                         style={{
                           height: 40,
                           width: 40,
@@ -294,7 +296,7 @@ class UserMenu extends Component {
                           backgroundColor: avatarColor
                         }}
                       >
-                        {context.userInitials}
+                        {userInitials}
                       </Avatar>
                     }
                   />
