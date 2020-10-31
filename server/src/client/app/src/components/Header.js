@@ -202,7 +202,9 @@ class UserMenu extends Component {
   state = {
     anchorMenu: null,
     anchorNewMenu: null,
-    avatarColor: blue
+    avatarColor: blue,
+    userImage: null,
+    userInitials: null
   };
 
   toggleMenu = event => {
@@ -225,6 +227,8 @@ class UserMenu extends Component {
 
   componentDidMount() {
     this.setState({ avatarColor: this.randomColor() });
+    this.setState({ userImage: this.props.userImage });
+    this.setState({ userInitials: this.props.userInitials });
   }
 
   render() {
@@ -232,10 +236,6 @@ class UserMenu extends Component {
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
-    const userImage = this.props.userImage;
-    const userInitials = this.props.userInitials;
-    console.log("userimage", userImage);
-    console.log("userinitials", userInitials);
 
     return (
       <MainContext.Consumer>
@@ -290,7 +290,7 @@ class UserMenu extends Component {
                   <SlimCardHeader
                     avatar={
                       <Avatar
-                        src={this.props.userImage}
+                        src={userImage}
                         style={{
                           height: 40,
                           width: 40,
@@ -298,7 +298,7 @@ class UserMenu extends Component {
                           backgroundColor: avatarColor
                         }}
                       >
-                        {this.props.userInitials}
+                        {userInitials}
                       </Avatar>
                     }
                   />
