@@ -306,6 +306,7 @@ class App extends React.Component {
       if (filters) {
         update.filters = filters;
       }
+      console.log(filters);
       this.setState(update);
     }
   };
