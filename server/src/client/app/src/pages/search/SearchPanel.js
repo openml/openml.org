@@ -497,7 +497,22 @@ export default class SearchPanel extends React.Component {
               { name: "Binary", type: "=", value: "2", value2: "" },
               { name: "Multi-class", type: "gte", value: "2", value2: "" }
             ]
-          }
+          },
+          ...(this.context.userID && {
+            Uploader: {
+              name: "Uploader",
+              value: "uploader",
+              options: [
+                { name: "All", type: "gte", value: "0", value2: "" },
+                {
+                  name: "Mine",
+                  type: "=",
+                  value: this.context.userID,
+                  value2: ""
+                }
+              ]
+            }
+          })
         };
       case "task":
         return {

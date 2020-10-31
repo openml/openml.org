@@ -55,6 +55,7 @@ class App extends React.Component {
 
     // Auth
     loggedIn: false,
+    userID: undefined,
     checkLogIn: () => {
       let token = localStorage.getItem("token");
       if (token != null) {
@@ -81,8 +82,14 @@ class App extends React.Component {
                   let ini =
                     response.data.first_name.charAt(0) +
                     response.data.last_name.charAt(0);
+                  let userID = response.data.id;
                   this.setState(
-                    { loggedIn: true, userImage: img, userInitials: ini },
+                    {
+                      loggedIn: true,
+                      userImage: img,
+                      userInitials: ini,
+                      userID: userID
+                    },
                     this.log("Login changed: User profile loaded")
                   );
                 })
