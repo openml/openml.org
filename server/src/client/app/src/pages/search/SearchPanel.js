@@ -431,6 +431,7 @@ export default class SearchPanel extends React.Component {
             name: "Instances",
             value: "qualities.NumberOfInstances",
             options: [
+              { name: "All", type: "gte", value: "0", value2: "" },
               { name: "100s", type: "lte", value: "1000", value2: "" },
               {
                 name: "1000s",
@@ -462,6 +463,7 @@ export default class SearchPanel extends React.Component {
             name: "Features",
             value: "qualities.NumberOfFeatures",
             options: [
+              { name: "All", type: "gte", value: "0", value2: "" },
               { name: "Less than 10", type: "lte", value: "10", value2: "" },
               {
                 name: "10s",
@@ -493,6 +495,7 @@ export default class SearchPanel extends React.Component {
             name: "Target",
             value: "qualities.NumberOfClasses",
             options: [
+              { name: "All", type: "gte", value: "-1", value2: "" },
               { name: "Numeric", type: "lte", value: "1", value2: "" },
               { name: "Binary", type: "=", value: "2", value2: "" },
               { name: "Multi-class", type: "gte", value: "2", value2: "" }
@@ -501,7 +504,7 @@ export default class SearchPanel extends React.Component {
           ...(this.context.userID && {
             Uploader: {
               name: "Uploader",
-              value: "uploader",
+              value: "uploader_id",
               options: [
                 { name: "All", type: "gte", value: "0", value2: "" },
                 {
