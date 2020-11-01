@@ -202,9 +202,7 @@ class UserMenu extends Component {
   state = {
     anchorMenu: null,
     anchorNewMenu: null,
-    avatarColor: blue,
-    userImage: null,
-    userInitials: null
+    avatarColor: blue
   };
 
   toggleMenu = event => {
@@ -234,6 +232,7 @@ class UserMenu extends Component {
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
+    console.log("Render User menu");
 
     return (
       <MainContext.Consumer>
