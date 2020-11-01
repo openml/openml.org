@@ -90,7 +90,7 @@ function Public() {
       .catch(function(error) {
         console.log(error);
       });
-  });
+  }, []);
 
   return (
     <Card mb={6}>
