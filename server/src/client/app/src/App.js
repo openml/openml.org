@@ -56,6 +56,8 @@ class App extends React.Component {
     // Auth
     loggedIn: false,
     userID: undefined,
+    userImage: undefined,
+    userInitials: undefined,
     checkLogIn: () => {
       let token = localStorage.getItem("token");
       if (token != null) {
@@ -79,13 +81,10 @@ class App extends React.Component {
                   if (response.data.image.includes(path.sep)) {
                     img = response.data.image;
                   }
-                  console.log(img);
                   let ini =
                     response.data.first_name.charAt(0) +
                     response.data.last_name.charAt(0);
                   let userID = response.data.id;
-                  console.log(ini);
-                  console.log(userID);
                   this.setState(
                     {
                       loggedIn: true,
@@ -124,12 +123,15 @@ class App extends React.Component {
     },
     logOut: () => {
       this.setState(
-        { loggedIn: false },
+        {
+          loggedIn: false,
+          userImage: undefined,
+          userInitials: undefined,
+          userID: undefined
+        },
         this.log("Login changed: user logged out")
       );
     },
-    userImage: undefined,
-    userInitials: undefined,
     setUserImage: value => {
       console.log(value);
       if (value.includes(path.sep)) {
