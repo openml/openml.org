@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -63,31 +63,34 @@ function Public() {
       Authorization: "Bearer " + localStorage.getItem("token")
     }
   };
-  axios
-    .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-    .then(function(response) {
-      console.log(response);
-      setImage(response.data.image);
-      setEmail(response.data.email);
-      setBio(response.data.bio);
-      setFname(response.data.first_name);
-      setLname(response.data.last_name);
-      setId(response.data.id);
-      console.log(id.toString());
-      if (id !== false) {
-        fetch("https://openml.org/es/user/user/" + id.toString())
-          .then(response => response.json())
-          .then(data => {
-            setDataset(data._source.datasets_uploaded);
-            setRun(data._source.runs_uploaded);
-            setTask(data._source.tasks_uploaded);
-            setFlow(data._source.flows_uploaded);
-          });
-      }
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+      .then(function(response) {
+        console.log(response);
+        setImage(response.data.image);
+        setEmail(response.data.email);
+        setBio(response.data.bio);
+        setFname(response.data.first_name);
+        setLname(response.data.last_name);
+        setId(response.data.id);
+        console.log(id.toString());
+        if (id !== false) {
+          fetch("https://openml.org/es/user/user/" + id.toString())
+            .then(response => response.json())
+            .then(data => {
+              setDataset(data._source.datasets_uploaded);
+              setRun(data._source.runs_uploaded);
+              setTask(data._source.tasks_uploaded);
+              setFlow(data._source.flows_uploaded);
+            });
+        }
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  });
 
   return (
     <Card mb={6}>
