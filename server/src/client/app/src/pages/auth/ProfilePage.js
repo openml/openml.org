@@ -47,16 +47,16 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
 });
 
 function Public() {
-  const [email, setEmail] = useState();
-  const [bio, setBio] = useState();
-  const [fname, setFname] = useState();
-  const [image, setImage] = useState();
-  const [lname, setLname] = useState();
-  const [flow, setFlow] = useState();
-  const [dataset, setDataset] = useState();
-  const [run, setRun] = useState();
-  const [task, setTask] = useState();
-  const [id, setId] = useState();
+  const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("");
+  const [fname, setFname] = useState("");
+  const [image, setImage] = useState(false);
+  const [lname, setLname] = useState("");
+  const [flow, setFlow] = useState(0);
+  const [dataset, setDataset] = useState(0);
+  const [run, setRun] = useState(0);
+  const [task, setTask] = useState(0);
+  const [id, setId] = useState(false);
 
   const yourConfig = {
     headers: {
