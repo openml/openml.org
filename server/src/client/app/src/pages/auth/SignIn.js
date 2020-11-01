@@ -34,7 +34,7 @@ function SignIn() {
   const [confirmflag, setConfirm] = useState(false);
   const [errormsg, setErrorMsg] = useState(false);
   const [notexist, setNotExist] = useState(false);
-  const [wrongpass, setWrongPass] =useState(false);
+  const [wrongpass, setWrongPass] = useState(false);
   const context = useContext(MainContext);
 
   function sendtoflask(event) {
@@ -48,16 +48,13 @@ function SignIn() {
         console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
-        }
-        else if(response.data.msg === "User does not exist"){
+        } else if (response.data.msg === "User does not exist") {
           setNotExist(true);
-        }
-        else if(response.data.msg === "wrong password"){
+        } else if (response.data.msg === "wrong password") {
           setWrongPass(true);
-        }
-        else {
+        } else {
           localStorage.setItem("token", response.data.access_token);
-          context.logIn();
+          context.checkLogIn();
           setLogger(true);
         }
       })
@@ -84,13 +81,13 @@ function SignIn() {
           <Typography component="h2" variant="body1" align="center">
             Sign in to continue
           </Typography>
-          {errorlog &&(
-              <Typography component="h3" align="center" style={{ color: "red" }}>
+          {errorlog && (
+            <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"
                 style={{ marginRight: 5 }}
               />
-                {errormsg}
+              {errormsg}
             </Typography>
           )}
           {wrongpass && (
@@ -114,7 +111,7 @@ function SignIn() {
             </Typography>
           )}
           {notexist && (
-              <Typography component="h3" align="center" style={{ color: "red" }}>
+            <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"
                 style={{ marginRight: 5 }}
