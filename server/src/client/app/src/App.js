@@ -79,10 +79,13 @@ class App extends React.Component {
                   if (response.data.image.includes(path.sep)) {
                     img = response.data.image;
                   }
+                  console.log(img);
                   let ini =
                     response.data.first_name.charAt(0) +
                     response.data.last_name.charAt(0);
                   let userID = response.data.id;
+                  console.log(ini);
+                  console.log(userID);
                   this.setState(
                     {
                       loggedIn: true,
