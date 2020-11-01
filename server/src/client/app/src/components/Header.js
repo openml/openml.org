@@ -227,18 +227,10 @@ class UserMenu extends Component {
 
   componentDidMount() {
     this.setState({ avatarColor: this.randomColor() });
-    this.setState({ userImage: this.props.userImage });
-    this.setState({ userInitials: this.props.userInitials });
   }
 
   render() {
-    const {
-      anchorMenu,
-      anchorNewMenu,
-      avatarColor,
-      userImage,
-      userInitials
-    } = this.state;
+    const { anchorMenu, anchorNewMenu, avatarColor } = this.state;
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
@@ -296,7 +288,7 @@ class UserMenu extends Component {
                   <SlimCardHeader
                     avatar={
                       <Avatar
-                        src={userImage}
+                        src={context.userImage}
                         style={{
                           height: 40,
                           width: 40,
@@ -304,7 +296,7 @@ class UserMenu extends Component {
                           backgroundColor: avatarColor
                         }}
                       >
-                        {userInitials}
+                        {context.userInitials}
                       </Avatar>
                     }
                   />
@@ -433,7 +425,7 @@ const FlexAppBar = styled(AppBar)`
     props.bg === "Gradient" || props.searchcolor ? "none" : ""};
 `;
 
-const Header = ({ onDrawerToggle, bg, routes }) => (
+const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
   <React.Fragment>
     <MainContext.Consumer>
       {context => (
@@ -521,9 +513,7 @@ const Header = ({ onDrawerToggle, bg, routes }) => (
               <Grid item>
                 <UserMenu
                   bg={context.searchActive ? "" : bg}
-                  loggedIn={context.loggedIn}
-                  userImage={context.userImage}
-                  userInitials={context.userInitials}
+                  loggedIn={loggedIn}
                 />
               </Grid>
             </Grid>
