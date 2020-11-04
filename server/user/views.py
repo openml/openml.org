@@ -91,7 +91,7 @@ def profile():
             timestamp = timestamp.strftime("%d %H")
             md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
             user.update_activation_code(md5_digest)
-            confirmation_email(user.email, md5_digest)
+            confirmation_email(data['email'], md5_digest)
             user.update_email(data['email'])
 
         db.session.merge(user)
