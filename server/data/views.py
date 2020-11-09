@@ -26,7 +26,7 @@ def data_edit():
     testing = os.environ.get('TESTING')
     if testing:
         openml.config.start_using_configuration_for_example()
-        url = request.args.get('url')
+    url = request.args.get('url')
     parsed = urlparse(url)
     dataset_id = parse_qs(parsed.query)['id']
     dataset_id = int(dataset_id[0])
