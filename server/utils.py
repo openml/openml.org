@@ -23,6 +23,7 @@ def confirmation_email(user_email, token):
     print(problems)
     server.quit()
 
+
 def forgot_password_email(user_email, token):
     """Sending forgot password email with token to user mailbox"""
     sender = str(os.environ.get('EMAIL_SENDER'))

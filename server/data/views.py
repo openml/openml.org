@@ -10,7 +10,6 @@ import pandas as pd
 import json
 import arff
 from urllib.parse import parse_qs, urlparse
-import pdb 
 
 data_blueprint = Blueprint("data", __name__, static_folder='server/src/client/app/build')
 
@@ -35,20 +34,23 @@ def data_edit():
 
         dataset_info = openml.datasets.list_datasets([dataset_id])
         dataset_info = list(dataset_info.items())
-        # Its a nested ordered dictionary the first index is to get id, second to get info and third for upload
+        # Its a nested ordered dictionary the first index is to get id,
+        # second to get info and third for upload
         uploader_id = dataset_info[0][1]['uploader']
         owner = 'false'
         dataset = openml.datasets.get_dataset(dataset_id)
         if (int(user.id) == int(uploader_id)):
             owner = 'true'
         print(jsonify({"user_id": user.id,
-                       "description": dataset.description, "creator": dataset.creator, "date": dataset.collection_date,
+                       "description": dataset.description, "creator": dataset.creator,
+                       "date": dataset.collection_date,
                        "citation": dataset.citation, "language": dataset.language,
                        "default_target_attribute": dataset.default_target_attribute,
                        "ignore_attribute": dataset.ignore_attribute,
                        "row_id_attribute": dataset.row_id_attribute, "owner": owner}))
         return jsonify({"user_id": user.id,
-                        "description": dataset.description, "creator": dataset.creator, "date": dataset.collection_date,
+                        "description": dataset.description, "creator": dataset.creator,
+                        "date": dataset.collection_date,
                         "citation": dataset.citation, "language": dataset.language,
                         "default_target_attribute": dataset.default_target_attribute,
                         "ignore_attribute": dataset.ignore_attribute,
@@ -73,12 +75,12 @@ def data_edit():
         if language == '':
             language = None
         if owner == 'false':
-            data_id = openml.datasets.edit_dataset(dataset_id,
-                                                   description=description,
-                                                   creator=creator,
-                                                   collection_date=collection_date,
-                                                   citation=citation,
-                                                   language=language)
+            openml.datasets.edit_dataset(dataset_id,
+                                         description=description,
+                                         creator=creator,
+                                         collection_date=collection_date,
+                                         citation=citation,
+                                         language=language)
         elif owner == 'true':
             default_target_attribute = j_obj['default_target_attribute']
             ignore_attribute = j_obj['ignore_attribute']
@@ -89,21 +91,15 @@ def data_edit():
                 ignore_attribute = None
             if row_id_attribute == '':
                 row_id_attribute = None
-            try:
-                data_id = openml.datasets.edit_dataset(dataset_id,
-                                                       description=description,
-                                                       creator=creator,
-                                                       collection_date=collection_date,
-                                                       citation=citation,
-                                                       language=language,
-                                                       default_target_attribute=default_target_attribute,
-                                                       ignore_attribute=ignore_attribute,
-                                                       row_id_attribute=row_id_attribute)
-            except:
-                return 'error'
-                # print(e)
-                # if e.code == 1065:
-                #     return e
+            openml.datasets.edit_dataset(dataset_id,
+                                         description=description,
+                                         creator=creator,
+                                         collection_date=collection_date,
+                                         citation=citation,
+                                         language=language,
+                                         default_target_attribute=default_target_attribute,
+                                         ignore_attribute=ignore_attribute,
+                                         row_id_attribute=row_id_attribute)
 
         return str('data edit successful')
 
