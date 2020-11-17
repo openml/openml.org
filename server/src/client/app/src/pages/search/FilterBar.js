@@ -6,7 +6,8 @@ import {
   FormControl,
   Collapse,
   Chip as MuiChip,
-  Tooltip
+  Tooltip,
+  TextField
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
@@ -129,6 +130,17 @@ export class FilterBar extends React.Component {
 
   toggleSelect = () => {
     this.props.selectEntity(null);
+  };
+
+  getExampleTags = () => {
+    return [
+      "OpenML-CC18",
+      "OpenML-Reg19",
+      "uci",
+      "concept_drift",
+      "artificial",
+      "finance"
+    ].join(", ");
   };
 
   isActiveOption = option => {
@@ -295,8 +307,20 @@ export class FilterBar extends React.Component {
                     />
                   )
                 )}
+                <FilterChip
+                  label={"Tag"}
+                  key={"Tag"}
+                  clickable
+                  onClick={() => this.activateFilter("Tag")}
+                  color={
+                    this.state.activeFilter === "Tag" ? "primary" : "default"
+                  }
+                  variant={
+                    this.state.activeFilter === "Tag" ? "default" : "outlined"
+                  }
+                  icon={<FilterIcon icon="chevron-down" />}
+                />
               </FilterFormControl>
-
               <FilterFormControl key="options">
                 {this.state.activeFilter &&
                   this.props.filterOptions[this.state.activeFilter] &&
@@ -316,6 +340,23 @@ export class FilterBar extends React.Component {
                       />
                     )
                   )}
+              </FilterFormControl>
+              <FilterFormControl key="tag">
+                {this.state.activeFilter === "Tag" && (
+                  <TextField
+                    style={{ margin: 8, paddingRight: 16 }}
+                    placeholder={"Type tag name. e.g. " + this.getExampleTags()}
+                    fullWidth
+                    margin="dense"
+                    variant="outlined"
+                    onKeyPress={event => {
+                      if (event.charCode === 13) {
+                        event.preventDefault();
+                        this.props.tagChange(event.target.value);
+                      }
+                    }}
+                  />
+                )}
               </FilterFormControl>
             </FilterPanel>
           </Collapse>

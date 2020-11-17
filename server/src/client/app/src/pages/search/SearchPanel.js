@@ -399,6 +399,11 @@ export default class SearchPanel extends React.Component {
     //this.reload();
   };
 
+  tagChange = tag => {
+    console.log("Tag change", tag);
+    this.updateQuery("tags.tag", tag);
+  };
+
   // New dataset selected
   // Note: We update the context first, then update the URL,
   // because we want to render before waiting for the browser.
@@ -628,6 +633,7 @@ export default class SearchPanel extends React.Component {
               resultType={this.context.type}
               sortChange={this.sortChange}
               filterChange={this.filterChange}
+              tagChange={this.tagChange}
               selectEntity={this.selectEntity.bind(this)}
             />
           </Grid>

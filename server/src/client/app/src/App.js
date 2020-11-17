@@ -146,7 +146,7 @@ class App extends React.Component {
 
     // Search context
     displaySearch: true, // hide search on small screens
-    lapsed: false, // hide search entirely
+    searchCollapsed: false, // hide search entirely
     query: undefined,
     counts: 0, //counts of hits
     type: undefined, //the entity type
@@ -178,6 +178,9 @@ class App extends React.Component {
     },
     setType: value => {
       this.setState({ type: value }, this.log("Type changed"));
+    },
+    setTag: value => {
+      this.setState({ tag: value }, this.log("Tag changed"));
     },
     setLoading: value => {
       this.setState({ loading: value }, this.log("Loading changed"));
