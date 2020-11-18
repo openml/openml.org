@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchResultsPanel } from "./search.js";
+import { SearchResultsPanel } from "./SearchResultsPanel.js";
 import { EntryDetails } from "./ItemDetail.js";
 import { FilterBar } from "./FilterBar.js";
 import { Grid, Tabs, Tab } from "@material-ui/core";
