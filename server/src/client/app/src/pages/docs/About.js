@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { search } from "../search/api";
-import { green, red, blue, grey } from "@material-ui/core/colors";
+import { green, red, blue, grey, purple } from "@material-ui/core/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -83,7 +83,6 @@ const BigBadge = styled(Badge)`
   position: absolute;
 `;
 
-
 const tc_ids = [1, 2, 27, 86, 348, 970];
 const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186];
 const active_ids = [10700, 5348, 2902, 8309, 3744];
@@ -101,7 +100,7 @@ const Person = ({ id, name, bio, image }) => {
             <BigBadge badgeContent="core" color="primary" align="center" />
           )}
           {core_ids.includes(id) && tc_ids.includes(id) && (
-            <BigBadge badgeContent="TC, core" color="primary" align="center" />
+            <BigBadge badgeContent="SC, core" color="primary" align="center" />
           )}
           <Typography variant="h6" display="block" align="center" gutterBottom>
             {name}
@@ -139,7 +138,13 @@ const ContactLink = ({ link, icon, color, text }) => {
 const ContactChip = ({ link, icon, text }) => {
   return (
     <Chip
-      icon={<ListIcon icon={icon} size="lg" style={{ marginRight: 0 }} />}
+      icon={
+        <ListIcon
+          icon={icon}
+          size="lg"
+          style={{ marginLeft: 10, marginRight: 0 }}
+        />
+      }
       component="a"
       href={link}
       label={text}
@@ -220,6 +225,9 @@ export default class About extends React.Component {
               marginBottom: 20
             }}
           >
+            <TopLink smooth to="/about#about">
+              OpenML
+            </TopLink>
             <TopLink smooth to="/about#team">
               Team
             </TopLink>
@@ -230,14 +238,97 @@ export default class About extends React.Component {
               Foundation
             </TopLink>
           </List>
-          <HeroTitle variant="h3" align="center" id="team">
+          <HeroTitle variant="h3" align="center" id="about">
+            About OpenML
+          </HeroTitle>
+          <Card>
+            <CardContent>
+              <Typography
+                variant="h6"
+                align="center"
+                style={{ marginBottom: 20 }}
+              >
+                <ListIcon
+                  icon="rocket"
+                  size="lg"
+                  style={{ color: blue[400] }}
+                />
+                Mission
+              </Typography>
+              <Paragraph>
+                <b>
+                  We believe that machine learning research should be open, but
+                  also well-organized and easily accessible for others to build
+                  on.
+                </b>{" "}
+                Machine learning is a complex process, from collecting and
+                preparing data to developing and training models. A lot of
+                information gets lost along the way, leading to scattered
+                results, repeated work, and irreproducible models. We aim to
+                create an environment where results from the entire machine
+                learning lifecycle can be easily and accurately shared with
+                others, and organized online so that anybody can reuse them and
+                learn from them.
+              </Paragraph>
+              <Paragraph>
+                <b>
+                  Much like we share open source code to build better software,
+                  we aim to share well-documented machine learning artefacts and
+                  results to do better machine learning, creating a collective
+                  working memory that anyone can tap in to.
+                </b>{" "}
+                Built around open interfaces, OpenML can be used to share
+                results from many different tools and environments, and can be
+                integrated in other systems that use the available datasets and
+                experiments to analyse and learn from them, even in
+                collaborative and/or automated ways.
+              </Paragraph>
+              <Typography
+                variant="h6"
+                align="center"
+                style={{ marginBottom: 20 }}
+              >
+                <ListIcon icon="heart" size="lg" style={{ color: red[400] }} />
+                From the ML community for the ML community
+              </Typography>
+              <Paragraph>
+                OpenML is being built by an awesome open source community.
+                Anyone with an interest in the project can join the community,
+                contribute to the project design, and participate in the
+                decision making process, as well as meetings (e.g. hackathons)
+                and online discussions. Dedicated contributors can be nominated
+                to become core members, trusted to develop and maintain OpenML
+                with care. Core members, in turn, can be nominated for the
+                steering committee, and keep the project running smoothly with
+                the help of the Open Machine Learning Foundation.
+              </Paragraph>
+
+              <ContactChip
+                link="https://docs.openml.org/Contributing/"
+                icon={["fas", "hand-holding-heart"]}
+                text="Contribution guide"
+              />
+              <ContactChip
+                link="https://docs.openml.org/Governance/"
+                icon={["fas", "users"]}
+                text="Governance model"
+              />
+              <ContactChip
+                link="/about#foundation"
+                icon={["fas", "hands-helping"]}
+                text="Open Machine Learning Foundation"
+              />
+            </CardContent>
+          </Card>
+          <HeroTitle variant="h3" align="center" id="contact">
+            <ListIcon
+              icon="child"
+              size="lg"
+              style={{ color: purple[400], marginTop: 70 }}
+            />
+            <br />
             Meet the team
           </HeroTitle>
-          <HeroSubTitle>
-            OpenML is built by an awesome open source community with many contributors. Within this community, the 
-            core developers are dedicated and trusted to maintain OpenML with care, and the Technical Committee (TC)
-            members otherwise ensure the smooth running of the project. They are nominated by other core members.
-          </HeroSubTitle>
           <Card>
             <CardContent>
               <Grid container spacing={6}>
@@ -261,7 +352,11 @@ export default class About extends React.Component {
                 />
               </Grid>
               <Typography variant="body1" gutterBottom my={4}>
-                <b>We are infinitely grateful to the many contributors who helped in small or big ways.</b> Check out the contributors for each sub-project:
+                <b>
+                  We are infinitely grateful to the many contributors who helped
+                  in small or big ways.
+                </b>{" "}
+                Check out the contributors for each sub-project:
               </Typography>
               <List component="nav">
                 <ContactChip
@@ -293,7 +388,7 @@ export default class About extends React.Component {
                   link="https://github.com/openml/openml-data#contributors-"
                   icon={["fas", "database"]}
                   text="Datasets"
-                />  
+                />
                 <ContactChip
                   link="https://github.com/openml/blog#contributors-"
                   icon={["fas", "blog"]}
@@ -384,13 +479,15 @@ export default class About extends React.Component {
           <Card>
             <CardContent>
               <Paragraph>
-                OpenML is built by a community of machine learning scientists
-                and enthousiasts that make machine learning datasets,
-                algorithms, and experiments accessible and beneficial to all of
-                humanity. The <b>Open Machine Learning Foundation</b> is a
-                not-for-profit organization supporting, but not controlling, the
-                OpenML initiative. We are open to engage with universities,
-                companies, or anyone sharing the same goals.
+                The <b>Open Machine Learning Foundation</b> is a not-for-profit
+                organization supporting, but not controlling, the OpenML
+                project. We are open to collaborate and engage with
+                universities, companies, or anyone sharing the same goals and
+                willing to support the project. This can involve sponsorship,
+                the co-development of new features, or other forms of
+                partnership, insofar they align with the Foundation's mission
+                and do not affect the independence of the OpenML open source
+                project itself.
               </Paragraph>
               <Typography
                 variant="h6"
@@ -441,7 +538,9 @@ export default class About extends React.Component {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Foundation Board</Typography>
+              <Typography>
+                <b>Foundation Board</b>
+              </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
@@ -461,7 +560,9 @@ export default class About extends React.Component {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Annual General Meetings</Typography>
+              <Typography>
+                <b>Annual General Meetings</b>
+              </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>We'll post meeting reports here.</Typography>
@@ -473,7 +574,9 @@ export default class About extends React.Component {
               aria-controls="panel2a-content"
               id="panel2a-header"
             >
-              <Typography>Finances</Typography>
+              <Typography>
+                <b>Finances</b>
+              </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>We'll post financial overviews here.</Typography>
