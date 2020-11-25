@@ -261,14 +261,16 @@ export default class About extends React.Component {
                   also well-organized and easily accessible for others to build
                   on.
                 </b>{" "}
-                Machine learning is a complex process, from collecting and
-                preparing data to developing and training models. A lot of
-                information gets lost along the way, leading to scattered
-                results, repeated work, and irreproducible models. We aim to
-                create an environment where results from the entire machine
-                learning lifecycle can be easily and accurately shared with
-                others, and organized online so that anybody can reuse them and
-                learn from them.
+                Don't you hate it when datasets are hard to find or badly
+                documented, or when results (even your own results) cannot be
+                reproduced later on? Machine learning is a complex process: from
+                preparing data to developing models, a plethora of decisions
+                need to be made. A lot of information gets lost along the way,
+                leading to scattered results, repeated work, and irreproducible
+                models. We aim to create an environment where results from the
+                entire machine learning lifecycle can be easily and accurately
+                shared and organized online, so that anybody can discover,
+                reuse, and learn from them.
               </Paragraph>
               <Paragraph>
                 <b>
@@ -292,7 +294,8 @@ export default class About extends React.Component {
                 From the ML community for the ML community
               </Typography>
               <Paragraph>
-                OpenML is being built by an awesome open source community.
+                OpenML is being built by an awesome open source community. All
+                code of the OpenML project carries the BSD-3 Clause licence.
                 Anyone with an interest in the project can join the community,
                 contribute to the project design, and participate in the
                 decision making process, as well as meetings (e.g. hackathons)
@@ -320,7 +323,7 @@ export default class About extends React.Component {
               />
             </CardContent>
           </Card>
-          <HeroTitle variant="h3" align="center" id="contact">
+          <HeroTitle variant="h3" align="center" id="team">
             <ListIcon
               icon="child"
               size="lg"
