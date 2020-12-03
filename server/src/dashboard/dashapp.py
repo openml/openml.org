@@ -5,7 +5,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from flask_caching import Cache
-
+from .dash_config import COMMON_CACHE
 from .callbacks import register_callbacks
 
 # TODO: Move to assets (Copied from Joaquin's react font)
@@ -20,8 +20,12 @@ def create_dash_app(flask_app):
     :param flask_app: flask_app passed is the flask server for the dash app
     :return:
     """
-    root_dir = os.path.abspath(os.sep)
-    openml.config.cache_directory = os.path.join(root_dir, "public", "python-cache", ".openml", "cache")
+    if COMMON_CACHE:
+        root_dir = os.path.abspath(os.sep)
+        if not os.path.exists(os.path.join(root_dir, 'public')):
+            os.system(f"sudo mkdir {root_dir}/public")
+        os.system(f"sudo chmod 777 {root_dir}/public")
+        openml.config.cache_directory = os.path.join(root_dir, "public", "python-cache", ".openml", "cache")
 
     app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
     cache = Cache(app.server, config={

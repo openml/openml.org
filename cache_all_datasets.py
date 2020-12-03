@@ -6,7 +6,7 @@ from openml.datasets.functions import DATASETS_CACHE_DIR_NAME
 from openml.utils import _create_cache_directory_for_id
 root_dir = os.path.abspath(os.sep)
 openml.config.cache_directory = os.path.join(root_dir, "public", "python-cache", ".openml", "cache")
-df = datasets.list_datasets(output_format='dataframe', size=3)
+df = datasets.list_datasets(output_format='dataframe')
 
 for idx, row in df.iterrows():
     data_id = row['did']
