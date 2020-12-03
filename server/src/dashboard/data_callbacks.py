@@ -17,7 +17,7 @@ from .dash_config import DASH_CACHING
 from .helpers import clean_dataset, get_data_metadata, logger, bin_numeric
 
 
-TIMEOUT = 5*60 if DASH_CACHING else 1
+TIMEOUT = 60*60 if DASH_CACHING else 1
 
 
 def register_data_callbacks(app, cache):

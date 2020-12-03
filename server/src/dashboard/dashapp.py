@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import openml
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -20,6 +20,8 @@ def create_dash_app(flask_app):
     :param flask_app: flask_app passed is the flask server for the dash app
     :return:
     """
+    root_dir = os.path.abspath(os.sep)
+    openml.config.cache_directory = os.path.join(root_dir, "public", "python-cache", ".openml", "cache")
 
     app = dash.Dash(__name__, server=flask_app, url_base_pathname='/dashboard/')
     cache = Cache(app.server, config={

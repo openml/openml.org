@@ -34,7 +34,7 @@ def test_task_graph_elements(dash_br):
 
 def test_task_overviews(dash_br):
     dash_br.server_url = f"{BASE_URL}task/"
-    time.sleep(30)
+    time.sleep(60)
     assert dash_br.get_logs() == []
     task_chart = dash_br.find_element('#task_type')
     assert task_chart.text is not None
