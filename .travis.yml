@@ -27,7 +27,7 @@ before_script:
   - flask run & # Run in background, to run pytest next
 
 script:
-  - flake8 --max-line-length 100
+  - flake8 --max-line-length 120
   - pytest server/src/dashboard/tests --headless
 
 #after_script: pkill -9 -f "autoapp.py"
