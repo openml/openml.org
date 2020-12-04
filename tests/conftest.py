@@ -7,17 +7,17 @@ from autoapp import app
 from server.extensions import db
 
 myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
+sys.path.insert(0, myPath + "/../")
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def test_client():
     flask_app = app
 
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
     testing_client = flask_app.test_client()
-    flask_app.secret_key = 'abvs'
+    flask_app.secret_key = "abvs"
 
     # Establish an application context before running the tests.
     ctx = flask_app.app_context()
@@ -28,7 +28,7 @@ def test_client():
     ctx.pop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def init_database():
     # Create the database and the database table
 

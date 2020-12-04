@@ -36,12 +36,15 @@ def create_empty_table():
                                           gamification_visibility varchar(32) NOT NULL DEFAULT 'show'
                                    
                                       ); """
-    conn = sqlite3.connect(os.path.join(basedir, 'server/openml.db'),  check_same_thread=False)
+    conn = sqlite3.connect(
+        os.path.join(basedir, "server/openml.db"), check_same_thread=False
+    )
     c = conn.cursor()
     c.execute(qry)
     conn.commit()
     c.close()
     conn.close()
 
-#TODO Create demo user
+
+# TODO Create demo user
 create_empty_table()

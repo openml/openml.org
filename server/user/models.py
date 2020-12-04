@@ -1,4 +1,5 @@
 import datetime
+
 # from sqlalchemy import Column, Integer, String
 import hashlib
 
@@ -6,8 +7,8 @@ from server.extensions import Base, argon2, bcrypt
 
 
 class User(Base):
-    __table__ = Base.metadata.tables['users']
-    __table_args__ = {'autoload': True}
+    __table__ = Base.metadata.tables["users"]
+    __table_args__ = {"autoload": True}
 
     # Attribute names to help out with functions
     # id = Column(Integer, primary_key=True, unique=True)
@@ -80,8 +81,8 @@ class User(Base):
         self.activation_code = code
 
     def update_activation(self):
-        self.active = '1'
-        print('user activated successfully')
+        self.active = "1"
+        print("user activated successfully")
 
     def update_forgotten_time(self, time):
         self.forgotten_password_time = time
@@ -96,4 +97,4 @@ class User(Base):
         self.image = path
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return "<User {}>".format(self.username)

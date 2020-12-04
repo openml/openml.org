@@ -25,7 +25,7 @@ def test_metadata_table(dash_br):
     dash_br.server_url = f"{BASE_URL}data/{data_id}"
     time.sleep(5)
     feature_table = dash_br.find_element("#datatable")
-    actual_table = (feature_table.text.split("Entropy")[-1])
+    actual_table = feature_table.text.split("Entropy")[-1]
     assert len(actual_table.split("\n")) >= metadata.shape[0]
 
 
@@ -65,11 +65,11 @@ def test_data_overviews(dash_br):
     dash_br.server_url = f"{BASE_URL}data/"
     assert dash_br.get_logs() == []
     time.sleep(20)
-    pie_chart = dash_br.find_element('#fig1')
+    pie_chart = dash_br.find_element("#fig1")
     assert "mixed" in pie_chart.text
-    violin = dash_br.find_element('#fig2')
+    violin = dash_br.find_element("#fig2")
     assert violin.text is not None
-    instances = dash_br.find_element('#fig3')
-    assert('0' in instances.text.splitlines())
-    features = dash_br.find_element('#fig4')
-    assert('1 - 500' in features.text.splitlines())
+    instances = dash_br.find_element("#fig3")
+    assert "0" in instances.text.splitlines()
+    features = dash_br.find_element("#fig4")
+    assert "1 - 500" in features.text.splitlines()

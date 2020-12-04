@@ -16,10 +16,14 @@ def test_task_graph_elements(dash_br):
     dash_br.server_url = f"{BASE_URL}task/{task_id}"
     time.sleep(10)
     task_plot = dash_br.find_element("#tab1")
-    evals = evaluations.list_evaluations(function='area_under_roc_curve', size=10,
-                                         sort_order='desc',
-                                         tasks=[task_id], output_format='dataframe')
-    assert (task_plot.text is not None if evals is not None else None)
+    evals = evaluations.list_evaluations(
+        function="area_under_roc_curve",
+        size=10,
+        sort_order="desc",
+        tasks=[task_id],
+        output_format="dataframe",
+    )
+    assert task_plot.text is not None if evals is not None else None
 
 
 # def test_all_tasks(dash_br):
@@ -32,10 +36,11 @@ def test_task_graph_elements(dash_br):
 #             ids.append(id)
 #     np.save('task_ids.npy', np.asarray(ids))
 
+
 def test_task_overviews(dash_br):
     dash_br.server_url = f"{BASE_URL}task/"
     time.sleep(60)
     assert dash_br.get_logs() == []
-    task_chart = dash_br.find_element('#task_type')
+    task_chart = dash_br.find_element("#task_type")
     assert task_chart.text is not None
     assert "Supervised Classification" in task_chart.text
