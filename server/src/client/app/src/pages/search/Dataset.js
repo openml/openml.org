@@ -1,5 +1,5 @@
 import React from "react";
-import { SizeLimiter, CollapsibleDataTable } from "./sizeLimiter.js";
+import { CollapsibleDataTable } from "./sizeLimiter.js";
 import { FeatureDetail } from "./ItemDetail.js";
 import { QualityDetail } from "./ItemDetail.js";
 
@@ -13,7 +13,7 @@ import {
   Grid
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {MyDataTable} from "./sizeLimiter";
+import {MetaTag} from "./MetaItems"
 
 export class DatasetItem extends React.Component {
   constructor() {
@@ -29,21 +29,19 @@ export class DatasetItem extends React.Component {
       <React.Fragment>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Grid container className="dataStats">
-              <Grid item md={2} ><FontAwesomeIcon icon="table" />&nbsp;{this.props.object.format}</Grid>
-              <Grid item md={2}><FontAwesomeIcon icon="closed-captioning" />&nbsp;{this.props.object.licence}</Grid>
-              <Grid item md={2}><FontAwesomeIcon icon="heart" />&nbsp;{this.props.object.nr_of_likes} likes</Grid>
-              <Grid item md={2}><FontAwesomeIcon icon="cloud" />&nbsp;{this.props.object.nr_of_downloads} downloads</Grid>
-              <Grid item md={2}><FontAwesomeIcon icon="exclamation-triangle" />&nbsp;{this.props.object.nr_of_issues} issues</Grid>
-              <Grid item md={2}><FontAwesomeIcon icon="thumbs-down" />&nbsp;{this.props.object.nr_of_downvotes} downvotes</Grid>
-            </Grid>
-
             <Grid container style={{"padding": "25px 0"}}>
               <Grid item md={12}>
                 <Typography variant="h1" style={{"margin-bottom": "15px"}}><FontAwesomeIcon icon="database" />&nbsp;&nbsp;&nbsp;{this.props.object.name}</Typography>
               </Grid>
-              <Grid item md={12}>uploaded <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date} by{" "}
-                <Chip size="small" variant="outlined" color="primary" avatar={<Avatar>{this.props.object.uploader.charAt(0)}</Avatar>} label={this.props.object.uploader}/>
+              <Grid item md={12}>
+                <MetaTag type={"format"} value={this.props.object.format} />
+                <MetaTag type={"licence"} value={this.props.object.licence} />
+                uploaded <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date} by{" "}
+                <Chip size="small" variant="outlined" color="primary" avatar={<Avatar>{this.props.object.uploader.charAt(0)}</Avatar>} label={this.props.object.uploader}/><br />
+                <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
+                <MetaTag type={"issues"} value={this.props.object.nr_of_issues} />
+                <MetaTag type={"downvotes"} value={this.props.object.nr_of_downvotes} />
+                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads+ " downloads"} />
               </Grid>
             </Grid>
 
@@ -67,14 +65,14 @@ export class DatasetItem extends React.Component {
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                <CollapsibleDataTable title={"Features"} subtitle={this.props.object.features.length + " features in total"} columns={featureTableColumns} data={this.props.object.features} rowrenderer={(m) => (<FeatureDetail key={"fd_" + m.name} item={m} type={m.type}></FeatureDetail>)} maxLength={7} />
+                <CollapsibleDataTable title={this.props.object.features.length + " Features"} columns={featureTableColumns} data={this.props.object.features} rowrenderer={(m) => (<FeatureDetail key={"fd_" + m.name} item={m} type={m.type}></FeatureDetail>)} maxLength={7} />
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                <CollapsibleDataTable title={"Qualities"} subtitle={Object.keys(this.props.object.qualities).length + " qualities in total"} data={Object.keys(this.props.object.qualities)} rowrenderer={(m) => (<QualityDetail key={"q_" + m} item={{ name: m, value: this.props.object.qualities[m] }} />)} columns={qualityTableColumns} maxLength={7}/>
+                <CollapsibleDataTable title={Object.keys(this.props.object.qualities).length + " Qualities"} data={Object.keys(this.props.object.qualities)} rowrenderer={(m) => (<QualityDetail key={"q_" + m} item={{ name: m, value: this.props.object.qualities[m] }} />)} columns={qualityTableColumns} maxLength={7}/>
               </CardContent>
             </Card>
           </Grid>

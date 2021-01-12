@@ -11,10 +11,7 @@ import { StudyItem } from "./Study.js";
 import { UserItem } from "./User.js";
 import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Table } from "@material-ui/core";
-import { TableRow } from "@material-ui/core";
-import { TableCell } from "@material-ui/core";
-import { TableBody } from "@material-ui/core";
+import { TableRow, TableCell } from "@material-ui/core";
 
 function fixUpperCase(str) {
   let o = "";
