@@ -11,6 +11,10 @@ import { StudyItem } from "./Study.js";
 import { UserItem } from "./User.js";
 import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Table } from "@material-ui/core";
+import { TableRow } from "@material-ui/core";
+import { TableCell } from "@material-ui/core";
+import { TableBody } from "@material-ui/core";
 
 function fixUpperCase(str) {
   let o = "";
@@ -38,25 +42,22 @@ export class FeatureDetail extends React.Component {
         break;
     }
     return (
-      <div className="contentSection item">
-        <div className={"itemHead"}>
-          <FontAwesomeIcon icon={icon} />
-        </div>
-        <div className={"itemName"}>
-          {this.props.item.name}
-          {this.props.item.target ? (
-            <span className={"subtitle"}>(target)</span>
-          ) : (
-            ""
-          )}
-        </div>
-        <div className={"itemDetail-small"}>{this.props.item.type}</div>
-        <div className={"itemDetail-small"}>
-          {this.props.item.distinct} distinct values
-          <br />
-          {this.props.item.missing} missing attributes
-        </div>
-      </div>
+          <TableRow className="contentSection item">
+            <TableCell width={25}><FontAwesomeIcon icon={icon} /></TableCell>
+            <TableCell className={"itemName"}>
+              {this.props.item.name}
+              {this.props.item.target ? (
+                <span className={"subtitle"}> (target)</span>
+              ) : (
+                ""
+              )}
+            </TableCell>
+            <TableCell className={"itemDetail-small"}>{this.props.item.type}</TableCell>
+            <TableCell className={"itemDetail-small"}>
+              {this.props.item.distinct} distinct values<br />
+              {this.props.item.missing} missing attributes
+            </TableCell>
+          </TableRow>
     );
   }
 }
@@ -64,13 +65,11 @@ export class FeatureDetail extends React.Component {
 export class QualityDetail extends React.Component {
   render() {
     return (
-      <div className={"contentSection item"}>
-        <div className={"itemHead"}>
-          <span className={"fa fa-chart-bar"} />
-        </div>
-        <div className={"itemName"}>{fixUpperCase(this.props.item.name)}</div>
-        <div className={"itemDetail-small"}>{this.props.item.value}</div>
-      </div>
+      <TableRow>
+        <TableCell className={"itemHead"}><FontAwesomeIcon icon={"chart-bar"} /></TableCell>
+        <TableCell className={"itemName"}>{fixUpperCase(this.props.item.name)}</TableCell>
+        <TableCell className={"itemDetail-small"}>{this.props.item.value}</TableCell>
+      </TableRow>
     );
   }
 }
