@@ -1,9 +1,16 @@
 import React from "react";
-import { SizeLimiter } from "./sizeLimiter.js";
-import { ParameterDetail } from "./ItemDetail.js";
+import { StringLimiter, CollapsibleDataTable } from "./sizeLimiter.js";
+import { LightTooltip, ParameterDetail, DependencyDetail } from "./ItemDetail.js";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
-import { Typography } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid
+} from "@material-ui/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {MetaTag} from "./MetaItems"
 
 const FlowName = styled(Typography)`
   width: 100vw;
@@ -15,74 +22,72 @@ const FlowName = styled(Typography)`
 
 export class FlowItem extends React.Component {
   render() {
+    let dependenciesMap = this.props.object.dependencies.split(", ").map(x => x.split("_"));
+    let parameterCols = ["Name", "Description", "Type", "Default Value"];
+
     return (
       <React.Fragment>
-        <FlowName variant="h1">
-          <span className={"fa fa-cogs"} />
-          {this.props.object.name}
-        </FlowName>
-        <div className="dataStats">
-          <div className="subtitle"></div>
-          <span>
-            <span className="fa fa-eye-slash" />
-            Visibility:{this.props.object.visibility}
-          </span>
-          <span>
-            <span className="fa fa-cloud-upload" />
-            uploaded {this.props.object.date} by {this.props.object.uploader}
-          </span>
-          <span>
-            <span className="fa fa-cloud-upload" />
-            {this.props.object.dependencies}
-          </span>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Grid container style={{"padding": "25px 0"}}>
+              <Grid item md={12}>
+                <LightTooltip title={this.props.object.name}>
+                <Typography variant={"h1"} style={{"marginBottom": "15px", "wordWrap": "break-word"}}><FontAwesomeIcon icon={"cogs"} />&nbsp;&nbsp;&nbsp;<StringLimiter maxLength={65} value={this.props.object.name} /></Typography>
+                </LightTooltip>
+              </Grid>
+              <Grid item md={12}>
+                <MetaTag type={"status"} value={this.props.object.visibility} />
+                <MetaTag type={"uploaded"} date={this.props.object.date} uploader={this.props.object.uploader} /><br />
 
-          <span>
-            <span className="fa fa-star" />
-            {this.props.object.runs} runs
-          </span>
-          <span>
-            <span className="fa fa-heart" />
-            {this.props.object.nr_of_likes} likes
-          </span>
-          <span>
-            <span className="fa fa-cloud" />
-            downloaded by {this.props.object.nr_of_downlaods}{" "}
-          </span>
-          <span>
-            <span className="fa fa-exclamation-triangle" />
-            {this.props.object.nr_of_issues} issues
-          </span>
-          <span>
-            <span className="fa fa-thumbs-down" />
-            {this.props.object.nr_of_downvotes} downvotes
-          </span>
-          <span>
-            <span className="fa fa-thumbs-down" />
-            {this.props.object.total_downloads}total downloads
-          </span>
-          <span>
-            <span className="fa fa-tags" />
-            {this.props.tags}
-          </span>
-        </div>
-        <div className="contentSection">
-          <ReactMarkdown source={this.props.object.description} />
-        </div>
-        <h1>Parameters</h1>
-        <SizeLimiter maxLength={7}>
-          {this.props.object.parameters
-            ? this.props.object.parameters.map(m => (
-                <ParameterDetail
-                  key={"fd_" + m.name}
-                  item={m}
-                ></ParameterDetail>
-              ))
-            : ""}
-        </SizeLimiter>
-        <h1>{this.props.object.runs} Runs</h1>
-        <div className={"subtitle"}>
-          Run visualization not currently supported
-        </div>
+                <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
+                <MetaTag type={"issues"} value={this.props.object.nr_of_issues} />
+                <MetaTag type={"downvotes"} value={this.props.object.nr_of_downvotes} />
+                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads} />
+                <MetaTag type={"runs"} value={this.props.object.runs} />
+              </Grid>
+
+            </Grid>
+
+            <Grid container>
+              <Grid item md={12}><FontAwesomeIcon icon="tags" />{" "}{this.props.tags}</Grid>
+            </Grid>
+          </Grid>{/* End of header area */}
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant={"h4"}>Description of <span style={{"word-wrap": "break-word"}}>{this.props.object.name}</span></Typography>
+                <ReactMarkdown source={this.props.object.description} />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                  <CollapsibleDataTable title={"Dependencies"} data={dependenciesMap} rowrenderer={dep => (<DependencyDetail name={dep[0]} version={dep[1]} />)} />
+              </CardContent>
+            </Card>
+          </Grid>
+
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                  <CollapsibleDataTable title={"Parameters"} data={this.props.object.parameters} rowrenderer={m => (<ParameterDetail key={"fd_"+m.name} item={m} />)} maxLength={7} columns={parameterCols} />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant={"h4"}>Runs ({this.props.object.runs})</Typography><br />
+                Run visualization not currently supported
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </React.Fragment>
     );
   }

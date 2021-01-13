@@ -43,6 +43,13 @@ export class SizeLimiter extends React.Component {
   }
 }
 
+export class StringLimiter extends React.Component {
+  render() {
+    let string = this.props.value.substring(0,this.props.maxLength);
+    return string + ((string.length < this.props.value.length) ? "..." : "");
+  }
+}
+
 export class CollapsibleDataTable extends React.Component {
   constructor() {
     super();

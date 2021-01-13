@@ -1,7 +1,6 @@
 import React from "react";
 import { CollapsibleDataTable } from "./sizeLimiter.js";
-import { FeatureDetail } from "./ItemDetail.js";
-import { QualityDetail } from "./ItemDetail.js";
+import { FeatureDetail, QualityDetail } from "./ItemDetail.js";
 
 import ReactMarkdown from "react-markdown";
 import {
@@ -34,14 +33,16 @@ export class DatasetItem extends React.Component {
                 <Typography variant="h1" style={{"margin-bottom": "15px"}}><FontAwesomeIcon icon="database" />&nbsp;&nbsp;&nbsp;{this.props.object.name}</Typography>
               </Grid>
               <Grid item md={12}>
+                <MetaTag type={"status"} value={this.props.object.status} />
                 <MetaTag type={"format"} value={this.props.object.format} />
                 <MetaTag type={"licence"} value={this.props.object.licence} />
+                <MetaTag type={"uploaded"} date={this.props.object.date} uploader={this.props.object.uploader}/><br />
                 uploaded <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date} by{" "}
                 <Chip size="small" variant="outlined" color="primary" avatar={<Avatar>{this.props.object.uploader.charAt(0)}</Avatar>} label={this.props.object.uploader}/><br />
                 <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
                 <MetaTag type={"issues"} value={this.props.object.nr_of_issues} />
                 <MetaTag type={"downvotes"} value={this.props.object.nr_of_downvotes} />
-                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads+ " downloads"} />
+                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads} />
               </Grid>
             </Grid>
 
@@ -69,6 +70,7 @@ export class DatasetItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
+
           <Grid item xs={12}>
             <Card>
               <CardContent>
@@ -76,6 +78,7 @@ export class DatasetItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
+
           <Grid item xs={12}>
             <Card>
               <CardContent>
@@ -88,6 +91,7 @@ export class DatasetItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
+
         </Grid>
       </React.Fragment>
     );

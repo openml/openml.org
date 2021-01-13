@@ -17,34 +17,34 @@ import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/c
 export class TaskItem extends React.Component {
   render() {
     let taskDescription = [
-      { key: "Task ID", value: this.props.object.task_id},
-      { key: "Task Type", value: this.props.object.tasktype.name},
-      { key: "Source Data", value: this.props.object.source_data.name},
-      { key: "Target Feature", value: this.props.object.target_feature},
-      { key: "Estimation Procedure", value: this.props.object.estimation_procedure.name}
+      { name: "Task ID", value: this.props.object.task_id},
+      { name: "Task Type", value: this.props.object.tasktype.name},
+      { name: "Source Data", value: this.props.object.source_data.name},
+      { name: "Target Feature", value: this.props.object.target_feature},
+      { name: "Estimation Procedure", value: this.props.object.estimation_procedure.name}
     ];
-    console.log(this.props.object)
     return (
       <React.Fragment>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container style={{"padding": "25px 0"}}>
               <Grid item md={12}>
-                <Typography variant="h1" className={"sectionTitle"} style={{"margin-bottom": "15px"}}>
+                <Typography variant="h1" className={"sectionTitle"} style={{"marginBottom": "15px"}}>
                   <FontAwesomeIcon icon="trophy" />{" "}
                   {this.props.object.tasktype.name} on{" "}
                   {this.props.object.source_data.name}{" "}
                 </Typography>
               </Grid>
-              <Grid item md={12}>created <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date}<br />
-                <MetaTag type={"task"} value={"Task " + this.props.object.task_id} />
+              <Grid item md={12}>
+                <MetaTag type={"task"} value={this.props.object.task_id} />
                 <MetaTag type={"task-type"} value={this.props.object.tasktype.name} />
-                <MetaTag type={"dataset"} value={"Task " + this.props.object.source_data.name} />
-                <MetaTag type={"runs"} value={this.props.object.runs + " runs submitted"} />
+                <MetaTag type={"dataset"} value={this.props.object.source_data.name} />
+                created <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date}<br />
                 <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
-                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads} />
                 <MetaTag type={"issues"} value={this.props.object.nr_of_issues} />
                 <MetaTag type={"downvotes"} value={this.props.object.nr_of_downvotes} />
+                <MetaTag type={"downloads"} value={this.props.object.nr_of_downloads} />
+                <MetaTag type={"runs"} value={this.props.object.runs} />
                 {/*{" "}by{" "} <Grid item md={2} ><MetaDownvotes value={this.props.object.downvotes} /></Grid>*/}
               </Grid>
             </Grid>
@@ -59,12 +59,14 @@ export class TaskItem extends React.Component {
               <CardContent>
                 <Typography variant="h4" mb={6}>Details</Typography>
                 <Table>
+                  <TableBody>
                     {taskDescription.map(x => (
-                      <TableRow>
-                        <TableCell>{x.key}</TableCell>
+                      <TableRow  key={"row_"+x.name}>
+                        <TableCell>{x.name}</TableCell>
                         <TableCell>{x.value}</TableCell>
                       </TableRow>
-                      ))}
+                    ))}
+                  </TableBody>
                 </Table>
               </CardContent>
             </Card>
