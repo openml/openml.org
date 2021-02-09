@@ -1,3 +1,4 @@
+# flake8: noqa
 import os
 import openml
 from openml import datasets
@@ -26,12 +27,13 @@ for idx, row in df.iterrows():
     if os.path.exists(did_cache_dir):
         openml.utils._remove_cache_dir_for_id(DATASETS_CACHE_DIR_NAME, did_cache_dir)
 
-    # download dataset and cache again
+    # download dataset and cache again, # (FileNotFoundError, openml.exceptions.OpenMLServerException)
     try:
         # feather is faster when rows are higher and cols are lower
         if instances > 100000 and cols < 10000:
             datasets.get_dataset(data_id, cache_format="feather")
         else:
             datasets.get_dataset(data_id)
-    except (FileNotFoundError, openml.exceptions.OpenMLServerException):
+    except:
         pass
+    
