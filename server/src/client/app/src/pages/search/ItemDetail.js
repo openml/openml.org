@@ -11,6 +11,8 @@ import { StudyItem } from "./Study.js";
 import { UserItem } from "./User.js";
 import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tooltip, TableRow, TableCell} from "@material-ui/core";
+import { withStyles } from '@material-ui/core/styles';
 
 function fixUpperCase(str) {
   let o = "";
@@ -38,39 +40,43 @@ export class FeatureDetail extends React.Component {
         break;
     }
     return (
-      <div className="contentSection item">
-        <div className={"itemHead"}>
-          <FontAwesomeIcon icon={icon} />
-        </div>
-        <div className={"itemName"}>
-          {this.props.item.name}
-          {this.props.item.target ? (
-            <span className={"subtitle"}>(target)</span>
-          ) : (
-            ""
-          )}
-        </div>
-        <div className={"itemDetail-small"}>{this.props.item.type}</div>
-        <div className={"itemDetail-small"}>
-          {this.props.item.distinct} distinct values
-          <br />
-          {this.props.item.missing} missing attributes
-        </div>
-      </div>
+          <TableRow className="contentSection item">
+            <TableCell width={25}><FontAwesomeIcon icon={icon} /></TableCell>
+            <TableCell className={"itemName"}>
+              {this.props.item.name}
+              {this.props.item.target ? (
+                <span className={"subtitle"}> (target)</span>
+              ) : (
+                ""
+              )}
+            </TableCell>
+            <TableCell className={"itemDetail-small"}>{this.props.item.type}</TableCell>
+            <TableCell className={"itemDetail-small"}>
+              {this.props.item.distinct} distinct values<br />
+              {this.props.item.missing} missing attributes
+            </TableCell>
+          </TableRow>
     );
   }
 }
 
+export const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 16,
+  },
+}))(Tooltip);
+
 export class QualityDetail extends React.Component {
   render() {
     return (
-      <div className={"contentSection item"}>
-        <div className={"itemHead"}>
-          <span className={"fa fa-chart-bar"} />
-        </div>
-        <div className={"itemName"}>{fixUpperCase(this.props.item.name)}</div>
-        <div className={"itemDetail-small"}>{this.props.item.value}</div>
-      </div>
+      <TableRow>
+        <TableCell className={"itemHead"}><FontAwesomeIcon icon={"chart-bar"} /></TableCell>
+        <TableCell className={"itemName"}>{fixUpperCase(this.props.item.name)}</TableCell>
+        <TableCell className={"itemDetail-small"}>{this.props.item.value}</TableCell>
+      </TableRow>
     );
   }
 }
@@ -88,73 +94,57 @@ export class ParameterDetail extends React.Component {
   }
   render() {
     return (
-      <div className={"contentSection item"}>
-        <div className={"itemName"}>{fixUpperCase(this.props.item.name)}</div>
-        <div className={"itemDetail-small"}>
-          {this.props.item.default_value}
-        </div>
-      </div>
+      <TableRow>
+        <TableCell>{fixUpperCase(this.props.item.name)}</TableCell>
+        <TableCell>{this.props.item.description}</TableCell>
+        <TableCell>{this.props.item.data_type}</TableCell>
+        <TableCell>{this.props.item.default_value}</TableCell>
+      </TableRow>
+    );
+  }
+}
+export class DependencyDetail extends React.Component {
+  render() {
+    return (
+      <TableRow>
+        <TableCell>{this.props.name}</TableCell>
+        <TableCell>{this.props.version}</TableCell>
+      </TableRow>
     );
   }
 }
 export class EvaluationDetail extends React.Component {
   render() {
+    let classWiseEval = "";
     if (this.props.item.array_data != null) {
-      let classes = this.props.target_values.map(item => (
-        <td key={"key_" + item}> {item} </td>
-      ));
       //same values result in same keys, counter is used to prevent it
       var ID = 0;
-      let values = this.props.item.array_data.map(item => (
-        <td key={ID++}> {item} </td>
-      ));
-      return (
-        <div className="evaluationContentSection">
-          <div className="leftContentSection">
-            {this.props.item.evaluation_measure}
-          </div>
-          <div className="rightContentSection">
-            <div className="smallContentSection">{this.props.item.value}</div>
-            <div className="smallContentSection">
-              <table>
-                <tbody>
-                  <tr>{classes}</tr>
-                  <tr>{values}</tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="smallContentSection">
-              Cross-validation details (10-fold Crossvalidation)
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="evaluationContentSection">
-          <div className="leftContentSection">
-            {this.props.item.evaluation_measure}
-          </div>
-          <div className="rightContentSection">
-            <div className="smallContentSection">{this.props.item.value}</div>
-            <div className="smallContentSection">
-              Cross-validation details (10-fold Crossvalidation)
-            </div>
-          </div>
-        </div>
-      );
+      let rows = [];
+      this.props.target_values.forEach((item, i) => {
+        let val = this.props.item.array_data[i];
+        rows.push((<tr><td key={"key_"+item} style={{"width": "50%"}}>{item}</td><td key={ID++}>{val}</td></tr>));
+      });
+      classWiseEval = (<table width={"100%"}><tbody>
+        {rows}
+      </tbody></table>);
     }
+
+    return (
+      <TableRow>
+        <TableCell style={{"width": "50%"}}>{this.props.item.evaluation_measure}</TableCell>
+        <TableCell style={{"width": "25%"}}>{this.props.item.value}</TableCell>
+        <TableCell style={{"width": "25%"}}>{classWiseEval}</TableCell>
+      </TableRow>
+    );
   }
 }
 export class FlowDetail extends React.Component {
   render() {
     return (
-      <div className={"contentSection item"}>
-        <div className={"itemName"}>
-          {fixUpperCase(this.props.item.parameter)}
-        </div>
-        <div className={"itemDetail-small"}>{this.props.item.value}</div>
-      </div>
+      <TableRow>
+        <TableCell style={{"width": "50%"}}><span style={{"wordWrap": "break-word"}}>{this.props.item.parameter}</span></TableCell>
+        <TableCell>{this.props.item.value}</TableCell>
+      </TableRow>
     );
   }
 }
