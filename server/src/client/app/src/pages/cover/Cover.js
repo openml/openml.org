@@ -262,7 +262,7 @@ const CustomInput = styled(InputBase)`
   border-radius: 4px;
   background-color: #fff;
   padding-top: 5px;
-  padding-bottom: 4px;
+  padding-bottom: 5px;
   padding-left: 15px;
   margin-left: -7px;
 
