@@ -294,7 +294,7 @@ export class DetailTable extends React.Component {
           style={
             this.context.counts ? { display: "block" } : { display: "none" }
           }
-          rowsPerPage={Math.max(Math.min(rowsPerPage, this.context.counts), 10)}
+          rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
             "aria-label": "Previous Page"

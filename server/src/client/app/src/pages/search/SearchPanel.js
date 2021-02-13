@@ -74,7 +74,7 @@ export default class SearchPanel extends React.Component {
   updateQuery = (param, value) => {
     if (param !== undefined && value !== undefined) {
       let currentUrlParams = new URLSearchParams(this.props.location.search);
-      if (value === null) {
+      if (value === null || value === "") {
         currentUrlParams.delete(param);
       } else {
         currentUrlParams.set(param, value);
@@ -241,42 +241,50 @@ export default class SearchPanel extends React.Component {
     }
   };
 
-  // translate single search filter to ElasticSearch filters
+  // translate search filters to ElasticSearch filters
   toFilterQuery = filters => {
+    let queryFilters = [];
     for (var key in filters) {
       if (filters[key].type === "=") {
-        return {
-          term: { [key]: filters[key].value }
-        };
+        if (key.startsWith("tags")) {
+          queryFilters.push({
+            nested: { path: "tags", query: { "term": { [key]: filters[key].value } } }
+          });
+        }
+        else {
+          queryFilters.push({
+            term: { [key]: filters[key].value }
+          });
+        }
       } else if (filters[key].type === "gte" || filters[key].type === "lte") {
-        return {
+        queryFilters.push({
           range: {
             [key]: {
               [filters[key].type]: filters[key].value
             }
           }
-        };
+        });
       } else if (filters[key].type === "between") {
-        return {
+        queryFilters.push({
           range: {
             [key]: {
               gte: filters[key].value,
               lte: filters[key].value2
             }
           }
-        };
+        });
       } else if (filters[key].type === "in") {
-        return {
+        queryFilters.push({
           prefix: { [key]: filters[key].value }
-        };
-      } else {
-        return null;
+        });
       }
     }
+    return queryFilters;
   };
 
   // call search engine for initial listing
   reload() {
+    console.log("Searchpanel reloads. Start search.");
     search(
       this.context.query,
       this.context.tag,
@@ -703,79 +711,79 @@ export default class SearchPanel extends React.Component {
                   />
                 </DetailPanel>
               ) : (
-                <DetailTable
-                  entity_type={this.props.entity_type}
-                  table_select={this.tableSelect}
-                />
-              )
+                  <DetailTable
+                    entity_type={this.props.entity_type}
+                    table_select={this.tableSelect}
+                  />
+                )
             ) : // Dashboard for detail
-            activeTab === 1 ? (
-              this.context.id ? (
-                // TODO: Add logic to call subtypes (e.g. run collection,
-                // task collection). E.g.:
-                // if(context.filter.study_type === 'run') ...
-                <div style={{ height: "calc(100vh - 125px)" }}>
-                  <iframe
-                    src={
-                      String(window.location.protocol) +
-                      "//" +
-                      String(window.location.host) +
-                      "/dashboard/" +
-                      String(this.context.type) +
-                      "/" +
-                      (this.context.type === "study" &&
-                      this.context.filters.study_type
-                        ? this.context.filters.study_type.value + "/"
-                        : "") +
-                      (this.context.type === "measure" &&
-                      this.context.filters.measure_type
-                        ? this.context.filters.measure_type.value + "/"
-                        : "") +
-                      String(this.context.id)
-                    }
-                    height="100%"
-                    width="100%"
-                    frameBorder="0"
-                    id="dash_iframe"
-                    title={"dash_iframe_data_" + this.state.searchEntity}
-                    allowFullScreen
-                    sandbox="allow-popups
+              activeTab === 1 ? (
+                this.context.id ? (
+                  // TODO: Add logic to call subtypes (e.g. run collection,
+                  // task collection). E.g.:
+                  // if(context.filter.study_type === 'run') ...
+                  <div style={{ height: "calc(100vh - 125px)" }}>
+                    <iframe
+                      src={
+                        String(window.location.protocol) +
+                        "//" +
+                        String(window.location.host) +
+                        "/dashboard/" +
+                        String(this.context.type) +
+                        "/" +
+                        (this.context.type === "study" &&
+                          this.context.filters.study_type
+                          ? this.context.filters.study_type.value + "/"
+                          : "") +
+                        (this.context.type === "measure" &&
+                          this.context.filters.measure_type
+                          ? this.context.filters.measure_type.value + "/"
+                          : "") +
+                        String(this.context.id)
+                      }
+                      height="100%"
+                      width="100%"
+                      frameBorder="0"
+                      id="dash_iframe"
+                      title={"dash_iframe_data_" + this.state.searchEntity}
+                      allowFullScreen
+                      sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
-                  ></iframe>
-                </div>
-              ) : (
-                // Dashboard for list
-                <div style={{ height: "calc(100vh - 125px)" }}>
-                  <iframe
-                    src={
-                      String(window.location.protocol) +
-                      "//" +
-                      String(window.location.host) +
-                      "/dashboard/" +
-                      String(this.context.type)
-                    }
-                    height="100%"
-                    width="100%"
-                    frameBorder="0"
-                    id="dash_iframe_overview"
-                    title={"dash_iframe_over_"}
-                    allowFullScreen
-                    sandbox="allow-popups
+                    ></iframe>
+                  </div>
+                ) : (
+                    // Dashboard for list
+                    <div style={{ height: "calc(100vh - 125px)" }}>
+                      <iframe
+                        src={
+                          String(window.location.protocol) +
+                          "//" +
+                          String(window.location.host) +
+                          "/dashboard/" +
+                          String(this.context.type)
+                        }
+                        height="100%"
+                        width="100%"
+                        frameBorder="0"
+                        id="dash_iframe_overview"
+                        title={"dash_iframe_over_"}
+                        allowFullScreen
+                        sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
-                  ></iframe>
+                      ></iframe>
                   .
-                </div>
-              )
-            ) : (
-              this.context.id &&
-              (this.context.type === "data" ? (
-                // Drilldowns
-                <div>Task list not supported yet</div>
+                    </div>
+                  )
               ) : (
-                // Drilldowns
-                <div>Run list not supported yet</div>
-              ))
-            )}
+                  this.context.id &&
+                  (this.context.type === "data" ? (
+                    // Drilldowns
+                    <div>Task list not supported yet</div>
+                  ) : (
+                      // Drilldowns
+                      <div>Run list not supported yet</div>
+                    ))
+                )}
           </Scrollbar>
         </Grid>
       </Grid>

@@ -199,10 +199,18 @@ const StyledMenuItem = styled(MenuItem)`
 `;
 
 class UserMenu extends Component {
+
+  randomColor = () => {
+    let colors = [blue, orange, red, green, purple];
+    return colors[Math.floor(Math.random() * colors.length)][
+      Math.floor(Math.random() * 7 + 3) * 100
+    ];
+  };
+
   state = {
     anchorMenu: null,
     anchorNewMenu: null,
-    avatarColor: blue
+    avatarColor: this.randomColor
   };
 
   toggleMenu = event => {
@@ -216,23 +224,11 @@ class UserMenu extends Component {
     this.setState({ anchorMenu: null, anchorNewMenu: null });
   };
 
-  randomColor = () => {
-    let colors = [blue, orange, red, green, purple];
-    return colors[Math.floor(Math.random() * colors.length)][
-      Math.floor(Math.random() * 7 + 3) * 100
-    ];
-  };
-
-  componentDidMount() {
-    this.setState({ avatarColor: this.randomColor() });
-  }
-
   render() {
     const { anchorMenu, anchorNewMenu, avatarColor } = this.state;
     const open = Boolean(anchorMenu);
     const newOpen = Boolean(anchorNewMenu);
     const loggedOut = !this.props.loggedIn;
-    console.log("Render User menu");
 
     return (
       <MainContext.Consumer>
@@ -457,7 +453,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                         width: 90
                       }}
                     >
-                      Open ML
+                      OpenML
                     </UserButton>
                   </StyledLink>
                 </Grid>
@@ -483,6 +479,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                   </SearchIconWrapper>
                   <Input
                     placeholder={"Search " + context.getSearchTopic()}
+                    defaultValue={context.query ? context.query : null}
                     bg={context.searchActive ? "" : bg}
                     onKeyPress={event => {
                       if (event.charCode === 13) {

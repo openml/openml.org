@@ -124,7 +124,7 @@ export function search(
     },
     _source: fields.filter(l => !!l)
   };
-  console.log("Search started", params);
+  console.log(JSON.stringify(params));
   //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
   return fetch(
     ELASTICSEARCH_SERVER + type + "/" + type + "/_search?type=" + type,
