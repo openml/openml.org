@@ -708,6 +708,8 @@ export default class SearchPanel extends React.Component {
                   <EntryDetails
                     type={this.context.type}
                     entity={this.context.id}
+                    history={this.props.history}
+                    location={this.props.location}
                   />
                 </DetailPanel>
               ) : (

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { CollapsibleDataTable } from "./sizeLimiter.js";
 import { FeatureDetail, QualityDetail } from "./ItemDetail.js";
 
@@ -13,6 +14,10 @@ import {
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MetaTag } from "./MetaItems";
+
+const UserChip = styled(Chip)`
+  margin-bottom: 5px;
+`;
 
 export class DatasetItem extends React.Component {
   constructor() {
@@ -44,15 +49,9 @@ export class DatasetItem extends React.Component {
                 <MetaTag type={"status"} value={this.props.object.status} />
                 <MetaTag type={"format"} value={this.props.object.format} />
                 <MetaTag type={"licence"} value={this.props.object.licence} />
-                <MetaTag
-                  type={"uploaded"}
-                  date={this.props.object.date}
-                  uploader={this.props.object.uploader}
-                />
-                <br />
-                uploaded <FontAwesomeIcon icon="clock" />{" "}
-                {this.props.object.date} by{" "}
-                <Chip
+                <FontAwesomeIcon icon="clock" />{" "}
+                {this.props.object.date.split(" ")[0]} by{" "}
+                <UserChip
                   size="small"
                   variant="outlined"
                   color="primary"
@@ -60,16 +59,15 @@ export class DatasetItem extends React.Component {
                     <Avatar>{this.props.object.uploader.charAt(0)}</Avatar>
                   }
                   label={this.props.object.uploader}
+                  href={"u/"+ this.props.object.uploader_id}
+                  component="a"
+                  clickable
                 />
                 <br />
-                <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
+                <MetaTag type={"likes"} value={this.props.object.nr_of_likes + " likes"} />
                 <MetaTag
                   type={"issues"}
-                  value={this.props.object.nr_of_issues}
-                />
-                <MetaTag
-                  type={"downvotes"}
-                  value={this.props.object.nr_of_downvotes}
+                  value={this.props.object.nr_of_issues + " issues"}
                 />
                 <MetaTag
                   type={"downloads"}

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { getItem } from "./api.js";
 //items
 import { DatasetItem } from "./Dataset.js";
@@ -13,6 +14,11 @@ import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, TableRow, TableCell } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+
+const TagChip = styled(Chip)`
+  margin-bottom: 5px;
+  margin-left: 5px;
+`;
 
 function fixUpperCase(str) {
   let o = "";
@@ -49,8 +55,8 @@ export class FeatureDetail extends React.Component {
           {this.props.item.target ? (
             <span className={"subtitle"}> (target)</span>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </TableCell>
         <TableCell className={"itemDetail-small"}>
           {this.props.item.type}
@@ -207,6 +213,14 @@ export class EntryDetails extends React.Component {
     this.componentDidUpdate();
   }
 
+  updateTag = (value) => {
+    let currentUrlParams = new URLSearchParams(this.props.location.search);
+    currentUrlParams.set("tags.tag", value);
+    this.props.history.push(
+      this.props.location.pathname + "?" + currentUrlParams.toString()
+    );
+  };
+
   render() {
     if (this.state.error !== null) {
       return (
@@ -229,10 +243,12 @@ export class EntryDetails extends React.Component {
         this.props.type === "run"
       ) {
         var tags = undefined;
-        if (this.state.obj.tags)
+        if (this.state.obj.tags) {
           tags = this.state.obj.tags.map(t => (
-            <Chip key={"tag_" + t.tag} label={"" + t.tag} size="small" />
+            t.tag.startsWith("study") ? "" :
+              <TagChip key={"tag_" + t.tag} label={"  " + t.tag + "  "} size="small" onClick={() => this.updateTag(t.tag)}/>
           ));
+        }
       }
 
       switch (this.props.type) {
