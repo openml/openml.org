@@ -67,14 +67,14 @@ const Search = styled.div`
 
   &:hover {
     background-color: ${props =>
-      props.bg === "Gradient"
-        ? "transparent"
-        : darken(0.05, props.theme.header.background)};
+    props.bg === "Gradient"
+      ? "transparent"
+      : darken(0.05, props.theme.header.background)};
     ${props =>
-      props.bg !== "Gradient" &&
-      props.searchcolor &&
-      props.currenttheme === 1 &&
-      css`
+    props.bg !== "Gradient" &&
+    props.searchcolor &&
+    props.currenttheme === 1 &&
+    css`
         background-color: ${props => darken(0.05, props.searchcolor)};
       `}
   }
@@ -115,7 +115,7 @@ const Input = styled(InputBase)`
 
   > input {
     color: ${props =>
-      props.bg === "Gradient" ? "white" : props.theme.header.search.color};
+    props.bg === "Gradient" ? "white" : props.theme.header.search.color};
     padding-top: ${props => props.theme.spacing(2.5)}px;
     padding-right: ${props => props.theme.spacing(2.5)}px;
     padding-bottom: ${props => props.theme.spacing(2.5)}px;
@@ -125,7 +125,7 @@ const Input = styled(InputBase)`
 
   > input::placeholder {
     color: ${props =>
-      props.bg === "Gradient" ? "white" : props.theme.header.search.color};
+    props.bg === "Gradient" ? "white" : props.theme.header.search.color};
     opacity: 0.8;
   }
 `;
@@ -258,46 +258,46 @@ class UserMenu extends Component {
                 </StyledLink>
               </React.Fragment>
             ) : (
-              <React.Fragment>
-                <IconButton
-                  aria-owns={newOpen ? "menu-new" : undefined}
-                  aria-haspopup="true"
-                  onClick={this.toggleNewMenu}
-                  color="inherit"
-                >
-                  <WhiteIcon
-                    bg={this.props.bg}
-                    icon="plus"
-                    style={{
-                      height: 20,
-                      width: 20
-                    }}
-                  />
-                </IconButton>
-                <IconButton
-                  aria-owns={open ? "menu-appbar" : undefined}
-                  aria-haspopup="true"
-                  onClick={this.toggleMenu}
-                  color="inherit"
-                >
-                  <SlimCardHeader
-                    avatar={
-                      <Avatar
-                        src={context.userImage}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          marginRight: -16,
-                          backgroundColor: avatarColor
-                        }}
-                      >
-                        {context.userInitials}
-                      </Avatar>
-                    }
-                  />
-                </IconButton>
-              </React.Fragment>
-            )}
+                <React.Fragment>
+                  <IconButton
+                    aria-owns={newOpen ? "menu-new" : undefined}
+                    aria-haspopup="true"
+                    onClick={this.toggleNewMenu}
+                    color="inherit"
+                  >
+                    <WhiteIcon
+                      bg={this.props.bg}
+                      icon="plus"
+                      style={{
+                        height: 20,
+                        width: 20
+                      }}
+                    />
+                  </IconButton>
+                  <IconButton
+                    aria-owns={open ? "menu-appbar" : undefined}
+                    aria-haspopup="true"
+                    onClick={this.toggleMenu}
+                    color="inherit"
+                  >
+                    <SlimCardHeader
+                      avatar={
+                        <Avatar
+                          src={context.userImage}
+                          style={{
+                            height: 40,
+                            width: 40,
+                            marginRight: -16,
+                            backgroundColor: avatarColor
+                          }}
+                        >
+                          {context.userInitials}
+                        </Avatar>
+                      }
+                    />
+                  </IconButton>
+                </React.Fragment>
+              )}
             <StyledMenu
               id="menu-new"
               anchorEl={anchorNewMenu}
@@ -501,8 +501,8 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     {context.searchActive ? (
                       <FontAwesomeIcon icon="times" />
                     ) : (
-                      "Search"
-                    )}
+                        "Search"
+                      )}
                   </SearchButton>
                 </Box>
               </Grid>

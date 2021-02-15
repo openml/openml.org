@@ -186,6 +186,9 @@ class App extends React.Component {
       this.setState({ loading: value }, this.log("Loading changed"));
     },
     setQuery: value => {
+      if (value === "") {
+        value = undefined;
+      }
       this.setState(
         { query: value, updateType: "query" },
         this.log("Query changed")
@@ -239,12 +242,12 @@ class App extends React.Component {
         } else {
           let type = "=";
           let value2 = undefined;
-          if (value.split("_").length === 2) {
+          if (!key.startsWith("tags") && value.split("_").length === 2) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
           }
-          if (value.split("_").length === 3) {
+          if (!key.startsWith("tags") && value.split("_").length === 3) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
@@ -270,6 +273,14 @@ class App extends React.Component {
           }
         }
       });
+      // check for removed keys
+      Object.keys(this.state.filters).forEach(key => {
+        if (!(key in qp)) {
+          delete this.state.filters[key];
+          qchanged = true;
+        }
+      }
+      );
       // search visibility
       if (window.innerWidth < 600) {
         if (update.id !== undefined) {

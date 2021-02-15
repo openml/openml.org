@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { MainContext } from "../../App.js";
 
+
 const FilterButton = styled(Button)`
   min-width: 0;
   width: 45px;
@@ -124,6 +125,10 @@ export class FilterBar extends React.Component {
     this.setState(state => ({ showFilter: !state.showFilter }));
   };
 
+  closeFilter = () => {
+    this.setState(state => ({ showFilter: false }));
+  };
+
   flipSorter = () => {
     this.setState(state => ({ sortVisible: !state.sortVisible }));
   };
@@ -157,6 +162,7 @@ export class FilterBar extends React.Component {
   };
 
   render() {
+    let nr_filters = Object.keys(this.context.filters).length;
     return (
       <React.Fragment>
         <FilterContainer>
@@ -167,6 +173,17 @@ export class FilterBar extends React.Component {
                 typeName[this.props.resultType] +
                 " found"}
             </FilterStats>
+            {nr_filters > 0 &&
+              <FilterChip
+                label={nr_filters + (nr_filters > 1 ? " filters " : " filter ")}
+                key="filtercounter"
+                clickable
+                color="secondary"
+                variant="outlined"
+                onClick={this.flipFilter}
+                onDelete={() => {this.props.clearFilters(); this.closeFilter();}}
+                deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
+              />}
             <Tooltip title="Filter results" placement="top-start">
               <FilterControl
                 style={{
@@ -273,8 +290,8 @@ export class FilterBar extends React.Component {
                     this.context.order === "desc" ? (
                       <FilterIcon icon="chevron-down" />
                     ) : (
-                      <FilterIcon icon="chevron-up" />
-                    )
+                        <FilterIcon icon="chevron-up" />
+                      )
                   }
                 />
               </FilterFormControl>
@@ -346,11 +363,12 @@ export class FilterBar extends React.Component {
                   <TextField
                     style={{ margin: 8, paddingRight: 16 }}
                     placeholder={"Type tag name. e.g. " + this.getExampleTags()}
+                    defaultValue={this.context.filters['tags.tag'] ? this.context.filters['tags.tag']['value'] : undefined}
                     fullWidth
                     margin="dense"
                     variant="outlined"
                     onKeyPress={event => {
-                      if (event.charCode === 13) {
+                      if (event.key === "Enter") {
                         event.preventDefault();
                         this.props.tagChange(event.target.value);
                       }

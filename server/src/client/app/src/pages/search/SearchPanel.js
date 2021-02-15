@@ -72,9 +72,9 @@ export default class SearchPanel extends React.Component {
   // Note: includes an async call. Don't expect that the URL is already
   // updated when this call returns.
   updateQuery = (param, value) => {
-    if (param !== undefined && value !== undefined) {
+    if (param !== undefined) {
       let currentUrlParams = new URLSearchParams(this.props.location.search);
-      if (value === null || value === "") {
+      if (value === null || value === "" || value === undefined) {
         currentUrlParams.delete(param);
       } else {
         currentUrlParams.set(param, value);
@@ -83,6 +83,15 @@ export default class SearchPanel extends React.Component {
         this.props.location.pathname + "?" + currentUrlParams.toString()
       );
     }
+  };
+
+  clearFilters = () => {
+    let currentUrlParams = new URLSearchParams(this.props.location.search);
+    Object.keys(this.context.filters).forEach(key => {
+      currentUrlParams.delete(key);
+    });
+    this.props.history.push(
+      this.props.location.pathname + "?" + currentUrlParams.toString());
   };
 
   updateWindowDimensions = () => {
@@ -247,8 +256,10 @@ export default class SearchPanel extends React.Component {
     for (var key in filters) {
       if (filters[key].type === "=") {
         if (key.startsWith("tags")) {
-          queryFilters.push({
-            nested: { path: "tags", query: { "term": { [key]: filters[key].value } } }
+          filters[key].value.split("-").forEach(t => {
+            queryFilters.push({
+              nested: { path: "tags", query: { "term": { "tags.tag": t.toLowerCase() } } }
+            })
           });
         }
         else {
@@ -641,6 +652,7 @@ export default class SearchPanel extends React.Component {
               resultType={this.context.type}
               sortChange={this.sortChange}
               filterChange={this.filterChange}
+              clearFilters={this.clearFilters}
               tagChange={this.tagChange}
               selectEntity={this.selectEntity.bind(this)}
             />
