@@ -58,7 +58,11 @@ export default class SearchPanel extends React.Component {
       }
       this.updateQuery("sort", qstring.sort);
     }
-    if (qstring.type === "measure" && qstring.measure_type === undefined) {
+    // Other sensible defaults
+    if (qstring.type === "data" && qstring.status === undefined) {
+      qstring.status = "active";
+      this.updateQuery("status", "active");
+    } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
       qstring.measure_type = "data_quality";
       this.updateQuery("measure_type", "data_quality");
     } else if (qstring.type === "study" && qstring.study_type === undefined) {
@@ -85,13 +89,12 @@ export default class SearchPanel extends React.Component {
     }
   };
 
-  clearFilters = () => {
-    let currentUrlParams = new URLSearchParams(this.props.location.search);
-    Object.keys(this.context.filters).forEach(key => {
-      currentUrlParams.delete(key);
-    });
-    this.props.history.push(
-      this.props.location.pathname + "?" + currentUrlParams.toString());
+  clearFilters = (key) => {
+    if (key === "status") {
+      this.updateQuery("status", "any");
+    } else {
+      this.updateQuery(key, undefined);
+    }
   };
 
   updateWindowDimensions = () => {
@@ -262,7 +265,7 @@ export default class SearchPanel extends React.Component {
             })
           });
         }
-        else {
+        else if (filters[key].value !== "any") {
           queryFilters.push({
             term: { [key]: filters[key].value }
           });
@@ -406,7 +409,9 @@ export default class SearchPanel extends React.Component {
   filterChange = filters => {
     console.log("Filter change", filters);
     filters.forEach(filter => {
-      if (filter.value2 === "") {
+      if (filter.value2 === undefined) {
+        this.updateQuery(filter.name, filter.value);
+      } else if (filter.value2 === "") {
         this.updateQuery(filter.name, filter.type + "_" + filter.value);
       } else {
         this.updateQuery(
@@ -451,6 +456,16 @@ export default class SearchPanel extends React.Component {
     switch (this.context.type) {
       case "data":
         return {
+          Status: {
+            name: "Status",
+            value: "status",
+            options: [
+              { name: "Verified", type: "=", value: "active" },
+              { name: "In preparation", type: "=", value: "in_preparation" },
+              { name: "Deactivated", type: "=", value: "deactivated" },
+              { name: "Any", type: "=", value: "any" }
+            ]
+          },
           Instances: {
             name: "Instances",
             value: "qualities.NumberOfInstances",

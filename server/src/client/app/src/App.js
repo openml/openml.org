@@ -228,6 +228,14 @@ class App extends React.Component {
         displaySearch: true,
         filters: this.state.type === qp.type ? this.state.filters : []
       };
+      // check for removed keys
+      Object.keys(this.state.filters).forEach(key => {
+        if (!(key in qp)) {
+          delete this.state.filters[key];
+          qchanged = true;
+        }
+      }
+      );
       // process query parameters
       Object.entries(qp).forEach(([key, value]) => {
         // Sorting and ID filters
@@ -242,12 +250,12 @@ class App extends React.Component {
         } else {
           let type = "=";
           let value2 = undefined;
-          if (!key.startsWith("tags") && value.split("_").length === 2) {
+          if (!key.startsWith("tags") && !key.startsWith("status") && value.split("_").length === 2) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
           }
-          if (!key.startsWith("tags") && value.split("_").length === 3) {
+          if (!key.startsWith("tags") && !key.startsWith("status") && value.split("_").length === 3) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
@@ -273,14 +281,6 @@ class App extends React.Component {
           }
         }
       });
-      // check for removed keys
-      Object.keys(this.state.filters).forEach(key => {
-        if (!(key in qp)) {
-          delete this.state.filters[key];
-          qchanged = true;
-        }
-      }
-      );
       // search visibility
       if (window.innerWidth < 600) {
         if (update.id !== undefined) {

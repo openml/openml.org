@@ -162,7 +162,6 @@ export class FilterBar extends React.Component {
   };
 
   render() {
-    let nr_filters = Object.keys(this.context.filters).length;
     return (
       <React.Fragment>
         <FilterContainer>
@@ -173,20 +172,21 @@ export class FilterBar extends React.Component {
                 typeName[this.props.resultType] +
                 " found"}
             </FilterStats>
-            {nr_filters > 0 &&
+            {Object.keys(this.context.filters).map((key) => {
+              return this.context.filters[key]["value"] !== "any" &&
               <FilterChip
-                label={nr_filters + (nr_filters > 1 ? " filters " : " filter ")}
-                key="filtercounter"
+                label={this.context.filters[key]["value"] === "active" ? "verified" : this.context.filters[key]["value"]}
+                key={key + this.context.filters[key]["value"]}
                 clickable
                 color="secondary"
                 variant="outlined"
                 onClick={this.flipFilter}
                 onDelete={() => {
-                  this.props.clearFilters(); 
-                  this.closeFilter(); 
+                  this.props.clearFilters(key); 
+                  this.closeFilter();
                   this.setState({activeFilter: false})}}
                 deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
-              />}
+              />})}
             <Tooltip title="Filter results" placement="top-start">
               <FilterControl
                 style={{
