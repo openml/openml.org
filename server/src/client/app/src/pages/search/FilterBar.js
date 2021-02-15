@@ -181,7 +181,10 @@ export class FilterBar extends React.Component {
                 color="secondary"
                 variant="outlined"
                 onClick={this.flipFilter}
-                onDelete={() => {this.props.clearFilters(); this.closeFilter();}}
+                onDelete={() => {
+                  this.props.clearFilters(); 
+                  this.closeFilter(); 
+                  this.setState({activeFilter: false})}}
                 deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
               />}
             <Tooltip title="Filter results" placement="top-start">
