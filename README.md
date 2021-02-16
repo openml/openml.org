@@ -1,12 +1,11 @@
 # OpenML Frontend
 This is a novel standalone frontend for OpenML, built on Flask, React, and Dash.
-Master Branch:
 
+
+Master Branch:
 [![Build Status](https://travis-ci.com/openml/openml.org.svg?branch=master)](https://travis-ci.com/openml/openml.org)
 
-
 Development branch:
-
 [![Build Status](https://travis-ci.com/openml/openml.org.svg?branch=develop)](https://travis-ci.com/openml/openml.org)
 
 ## Getting started
