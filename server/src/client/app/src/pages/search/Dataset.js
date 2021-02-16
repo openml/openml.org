@@ -59,7 +59,7 @@ export class DatasetItem extends React.Component {
                     <Avatar>{this.props.object.uploader.charAt(0)}</Avatar>
                   }
                   label={this.props.object.uploader}
-                  href={"u/"+ this.props.object.uploader_id}
+                  href={"search?type=user&id="+ this.props.object.uploader_id}
                   component="a"
                   clickable
                 />
