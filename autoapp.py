@@ -78,6 +78,13 @@ def page_not_found(e):
             + "/search?type=study&study_type=run&id="
             + url
         )
+    elif "/u/" in request.url:
+        print("User in URL")
+        url = str(request.url)
+        url = url.split("/u/")
+        return redirect(
+            os.environ.get("REDIRECT_URL") + "/search?type=user&sort=date&id=" + url[1]
+        )
 
     return send_from_directory(app.static_folder, "index.html")
 
