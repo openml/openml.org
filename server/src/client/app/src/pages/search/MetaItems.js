@@ -3,13 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Avatar,
-  Chip } from "@material-ui/core";
+  Tooltip,
+  Chip
+} from "@material-ui/core";
 export class MetaTag extends React.Component {
   render() {
     let icon;
     let prefix = "";
     let suffix = "";
-    switch(this.props.type) {
+    switch (this.props.type) {
       case "format":
         icon = "table";
         break;
@@ -23,7 +25,7 @@ export class MetaTag extends React.Component {
         icon = "database";
         break;
       case "likes":
-        icon ="heart";
+        icon = "heart";
         break;
       case "downloads":
         icon = "cloud";
@@ -41,35 +43,43 @@ export class MetaTag extends React.Component {
         break;
       case "task":
         icon = "trophy";
-        prefix = "Task "
+        prefix = "Task ";
         break;
       case "status":
-        icon = "eye";
+        icon = "check-circle";
+        break;
+      case "id":
+        icon = "id-badge";
         break;
       case "uploaded":
         let uploadedDate = this.props.date !== undefined ? (<span><FontAwesomeIcon icon={"clock"} />{" "}{this.props.date}{" "}</span>) : "";
         let uploadedBy = this.props.uploader !== undefined ? (<span>by <Chip size="small" variant="outlined" color="primary" avatar={<Avatar>{this.props.uploader.charAt(0)}</Avatar>} label={this.props.uploader} /></span>) : "";
-        return(<span style={{"paddingRight": "10px"}}>
-          <FontAwesomeIcon icon={"cloud-upload-alt"} />{" "}
+        return (
+          <Tooltip title="Date uploaded" placement="top-start">
+            <span style={{ paddingRight: 15, paddingBottom: 5, display: "inline-block" }}>
+              <FontAwesomeIcon icon={"cloud-upload-alt"} />{" "}
           uploaded{" "}
-          {uploadedDate}
-          {uploadedBy}
-        </span>);
+              {uploadedDate}
+              {uploadedBy}
+            </span>
+          </Tooltip>);
       default:
         icon = "questionmark";
         break;
     }
 
     return (
-      <span style={{"paddingRight": "10px"}}>
-        <FontAwesomeIcon icon={icon} />{" "}{prefix}{this.props.value}{suffix}
-      </span>
+      <Tooltip title={this.props.type} placement="top-start">
+        <span style={{ paddingRight: 15, paddingBottom: 5, display: "inline-block" }}>
+          <FontAwesomeIcon icon={icon} />{" "}{prefix}{this.props.value}{suffix}
+        </span>
+      </Tooltip>
     )
   }
 }
 
 export class VisibilityChip extends React.Component {
   render() {
-    return (<Chip variant="outlined" color="primary" size={"small"} label={this.props.visibility} style={{"margin-right": "10px"}} />);
+    return (<Chip variant="outlined" color="primary" size={"small"} label={this.props.visibility} style={{ "margin-right": "10px" }} />);
   }
 }

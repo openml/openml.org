@@ -10,13 +10,27 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid
+  Grid,
+  IconButton,
+  Tooltip
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MetaTag } from "./MetaItems";
 
 const UserChip = styled(Chip)`
   margin-bottom: 5px;
+`;
+
+const ActionButton = styled(IconButton)`
+  float: right;
+  border-radius: 0;
+`;
+
+const Action = styled.div`
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 export class DatasetItem extends React.Component {
@@ -38,7 +52,31 @@ export class DatasetItem extends React.Component {
       <React.Fragment>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Grid container style={{ padding: "25px 0" }}>
+          <ActionButton href={"https://www.openml.org/api/v1/data/" + this.props.object.data_id}>
+              <Action>
+                <FontAwesomeIcon icon="file-alt" />
+                <Typography>xml</Typography>
+              </Action>
+            </ActionButton>
+            <ActionButton href={"https://www.openml.org/api/v1/json/data/" + this.props.object.data_id}>
+              <Action>
+                <FontAwesomeIcon icon="file-alt" />
+                <Typography>json</Typography>
+              </Action>
+            </ActionButton>
+            <ActionButton href={"auth/data-edit?id="+this.props.object.data_id}>
+              <Action>
+                <FontAwesomeIcon icon="edit" />
+                <Typography>edit</Typography>
+              </Action>
+            </ActionButton>
+            <ActionButton href={this.props.object.url}>
+              <Action>
+                <FontAwesomeIcon icon="cloud-download-alt" />
+                <Typography>download</Typography>
+              </Action>
+            </ActionButton>
+            <Grid container>
               <Grid item md={12}>
                 <Typography variant="h1" style={{ marginBottom: "15px" }}>
                   <FontAwesomeIcon icon="database" />
@@ -46,11 +84,13 @@ export class DatasetItem extends React.Component {
                 </Typography>
               </Grid>
               <Grid item md={12}>
+                <MetaTag type={"id"} value={this.props.object.data_id} />
                 <MetaTag type={"status"} value={this.props.object.status} />
                 <MetaTag type={"format"} value={this.props.object.format} />
                 <MetaTag type={"licence"} value={this.props.object.licence} />
                 <FontAwesomeIcon icon="clock" />{" "}
-                {this.props.object.date.split(" ")[0]} by{" "}
+                {this.props.object.date.split(" ")[0]}
+                <br />
                 <UserChip
                   size="small"
                   variant="outlined"
@@ -62,8 +102,7 @@ export class DatasetItem extends React.Component {
                   href={"search?type=user&id="+ this.props.object.uploader_id}
                   component="a"
                   clickable
-                />
-                <br />
+                />{" "}
                 <MetaTag type={"likes"} value={this.props.object.nr_of_likes + " likes"} />
                 <MetaTag
                   type={"issues"}

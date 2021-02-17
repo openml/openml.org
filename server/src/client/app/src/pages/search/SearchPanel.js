@@ -121,7 +121,8 @@ export default class SearchPanel extends React.Component {
       "reach",
       "impact",
       "status",
-      "date"
+      "date",
+      "url"
     ],
     task_type: ["tt_id", "name", "description", "date"],
     task: [
