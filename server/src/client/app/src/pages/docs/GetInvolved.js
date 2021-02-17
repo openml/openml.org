@@ -161,7 +161,7 @@ export default class GetInvolved extends React.Component {
           </HeroTitle>
           <Grid container spacing={4}>
             <Grid item style={{ display: "flex" }} xs={12} sm={6} lg={4}>
-              <Card>
+              <Card style={{ width: "100%" }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom my={4}>
                     <ListIcon
@@ -211,7 +211,7 @@ export default class GetInvolved extends React.Component {
               </Card>
             </Grid>
             <Grid item style={{ display: "flex" }} xs={12} sm={6} lg={4}>
-              <Card>
+              <Card style={{ width: "100%" }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom my={4}>
                     <ListIcon
@@ -241,7 +241,7 @@ export default class GetInvolved extends React.Component {
               </Card>
             </Grid>
             <Grid item style={{ display: "flex" }} xs={12} sm={6} lg={4}>
-              <Card>
+              <Card style={{ width: "100%" }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom my={4}>
                     <ListIcon
@@ -272,7 +272,7 @@ export default class GetInvolved extends React.Component {
               </Card>
             </Grid>
             <Grid item style={{ display: "flex" }} xs={12} sm={6} lg={4}>
-              <Card>
+              <Card style={{ width: "100%" }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom my={4}>
                     <ListIcon
@@ -298,7 +298,7 @@ export default class GetInvolved extends React.Component {
               </Card>
             </Grid>
             <Grid item style={{ display: "flex" }} xs={12} sm={6} lg={4}>
-              <Card>
+              <Card style={{ width: "100%" }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom my={4}>
                     <ListIcon
