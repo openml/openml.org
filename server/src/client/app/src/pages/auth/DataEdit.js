@@ -3,26 +3,31 @@ import styled from "styled-components";
 import axios from "axios";
 import {
     Button,
-    Card as MuiCard,
+    Paper,
     Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
     Input,
     InputLabel,
     TextField,
-    Typography
+    Typography,
+    Box
 } from "@material-ui/core";
-import Box from '@material-ui/core/Box';
+import {Alert} from '@material-ui/lab';
 import {spacing} from "@material-ui/system";
 import {Redirect} from "react-router-dom";
 
-const Card = styled(MuiCard)(spacing);
-
-const Divider = styled(MuiDivider)(spacing);
-
 const FormControl = styled(MuiFormControl)(spacing);
 
-function Public() {
+const Wrapper = styled(Paper)`
+  padding: ${props => props.theme.spacing(6)}px;
+
+  ${props => props.theme.breakpoints.up("md")} {
+    padding: ${props => props.theme.spacing(10)}px;
+  }
+`;
+
+function DataEdit() {
     const [description, setDescription] = useState("");
     const [creator, setCreator] = useState("");
     const [date, setDate] = useState("");
@@ -126,25 +131,27 @@ function Public() {
     }
 
     return (
-        <Card mb={6}>
+        <Grid container spacing={3} justify="center">
+      <Grid item md={7} xs={10}>
+        <Wrapper>
             <form onSubmit={datatoflask}>
-                <Typography variant="h6" gutterBottom>
-                    Dataset Edit info
+                <Typography variant="h1" gutterBottom>
+                    Edit data set
+                </Typography>
+                <Typography variant="h3" gutterBottom>
+                    Dataset name, version 1
                 </Typography>
                 {error && (
-                    <Typography component="h3" variant="body1" align="center" color="red">
-                        {errormessage}
-                    </Typography>
+                    <Alert severity="error">{errormessage}</Alert>
                 )}
-                <Grid container spacing={6}>
-                    <Grid item md={8}>
-                        <FormControl fullWidth mb={3}>
+                <Grid container spacing={10}>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
                             <TextField
                                 label="Description"
                                 id="description"
-                                rows={3}
+                                rows={15}
                                 multiline={true}
-                                rowsMax={4}
                                 defaultValue={description}
                             />
                         </FormControl>
@@ -153,7 +160,7 @@ function Public() {
                             <Input id="citation" placeholder="citation" defaultValue={citation} multiline={true}/>
                         </FormControl>
                         <FormControl fullWidth mb={3}>
-                            <TextField label="Creator" id="creator" rows={3} rowsMax={4} defaultValue={creator}
+                            <TextField label="Creator" id="creator" rowsMax={4} defaultValue={creator}
                                        multiline={true}/>
                         </FormControl>
                         <FormControl fullWidth mb={3}>
@@ -167,9 +174,9 @@ function Public() {
                             <InputLabel htmlFor="language">Language</InputLabel>
                             <Input id="language" placeholder="Language" defaultValue={language} multiline={true}/>
                         </FormControl>
-                        {owner && (
-                            <Box p={1} bgcolor="grey.300">
-                                <b>Danger Zone(can only be edited by author)</b>
+                        {(owner && (
+                            <Box p={1} border="3px solid red" borderRadius={5} padding={5} marginTop={10} marginBottom={10}>
+                                <b>Danger Zone (can only be edited by author)</b>
                                 <FormControl fullWidth mb={3}>
                                     <InputLabel htmlFor="default_target_attribute">default_target_attribute</InputLabel>
                                     <Input id="default_target_attribute" placeholder="default_target_attribute"
@@ -199,25 +206,10 @@ function Public() {
 
                 {success && <Redirect to="/"/>}
             </form>
-        </Card>
+        </Wrapper>
+        </Grid>
+        </Grid>
     );
 }
 
-function Settings() {
-    return (
-        <React.Fragment>
-            <Typography variant="h3" gutterBottom display="inline">
-                Edit Dataset
-            </Typography>
-            <Divider my={3}/>
-            <Grid container spacing={6}>
-                <Grid item xs={12}>
-                    <Public/>
-                    {/*<Private />*/}
-                </Grid>
-            </Grid>
-        </React.Fragment>
-    );
-}
-
-export default Settings;
+export default DataEdit;

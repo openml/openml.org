@@ -47,6 +47,7 @@ def data_edit():
             jsonify(
                 {
                     "user_id": user.id,
+                    "name": dataset.name,
                     "description": dataset.description,
                     "creator": dataset.creator,
                     "date": dataset.collection_date,
@@ -63,6 +64,7 @@ def data_edit():
             jsonify(
                 {
                     "user_id": user.id,
+                    "name": dataset.name,
                     "description": dataset.description,
                     "creator": dataset.creator,
                     "date": dataset.collection_date,
