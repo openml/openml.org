@@ -174,7 +174,7 @@ function DataEdit() {
                             <InputLabel htmlFor="language">Language</InputLabel>
                             <Input id="language" placeholder="Language" defaultValue={language} multiline={true}/>
                         </FormControl>
-                        {(owner && (
+                        {owner && (
                             <Box p={1} border="3px solid red" borderRadius={5} padding={5} marginTop={10} marginBottom={10}>
                                 <b>Danger Zone (can only be edited by author)</b>
                                 <FormControl fullWidth mb={3}>
