@@ -91,7 +91,8 @@ export class FilterBar extends React.Component {
     this.state = {
       showFilter: false,
       sortVisible: false,
-      activeFilter: false
+      activeFilter: false,
+      splitToggleVisible: (window.innerWidth >= 600 ? true : false)
     };
   }
 
@@ -134,7 +135,19 @@ export class FilterBar extends React.Component {
   };
 
   toggleSelect = () => {
-    this.props.selectEntity(null);
+    if (!this.context.displaySplit) {
+      if (this.context.id) {
+        this.props.selectEntity(null);
+        this.context.setID(undefined);
+      } else {
+        this.context.toggleStats();
+      }
+    } else if (this.context.displayStats){
+      this.context.toggleSplit();
+    } else {
+      this.context.toggleStats();
+      this.context.toggleSplit();
+    }
   };
 
   getExampleTags = () => {
@@ -162,36 +175,38 @@ export class FilterBar extends React.Component {
   };
 
   render() {
+    console.log("Render filter bar");
     return (
       <React.Fragment>
         <FilterContainer>
           <FilterBox>
             <FilterStats textcolor={this.props.searchColor}>
-              {this.context.counts +
+              {this.context.updateType === "query" ? "Loading..." : this.context.counts +
                 " " +
                 typeName[this.props.resultType] +
                 " found"}
             </FilterStats>
             {Object.keys(this.context.filters).map((key) => {
               return this.context.filters[key]["value"] !== "any" &&
-              <FilterChip
-                label={this.context.filters[key]["value"] === "active" ? "verified" : this.context.filters[key]["value"]}
-                key={key + this.context.filters[key]["value"]}
-                clickable
-                color="secondary"
-                variant="outlined"
-                onClick={this.flipFilter}
-                onDelete={() => {
-                  this.props.clearFilters(key); 
-                  this.closeFilter();
-                  this.setState({activeFilter: false})}}
-                deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
-              />})}
-            <Tooltip title="Filter results" placement="top-start">
+                <FilterChip
+                  label={this.context.filters[key]["value"] === "active" ? "verified" : this.context.filters[key]["value"]}
+                  key={key + this.context.filters[key]["value"]}
+                  clickable
+                  color="secondary"
+                  variant="outlined"
+                  onClick={this.flipFilter}
+                  onDelete={() => {
+                    this.props.clearFilters(key);
+                    this.closeFilter();
+                    this.setState({ activeFilter: false })
+                  }}
+                  deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
+                />
+            })}
+            <Tooltip title="Filter results" placement="bottom-start">
               <FilterControl
                 style={{
                   marginRight: window.innerWidth < 600 ? 10 : 3,
-                  display: this.context.displaySearch ? "block" : "none"
                 }}
                 control={
                   <FilterButton
@@ -203,10 +218,12 @@ export class FilterBar extends React.Component {
                 }
               />
             </Tooltip>
-            <Tooltip title="Sort results" placement="top-start">
+            <Tooltip title="Sort results" placement="bottom-start">
               <FilterControl
                 style={{
-                  display: this.context.displaySearch ? "block" : "none"
+                  borderLeft: "1px solid rgba(0,0,0,0.12)",
+                  paddingLeft: 10,
+                  marginLeft: 0
                 }}
                 control={
                   <FilterButton
@@ -218,39 +235,42 @@ export class FilterBar extends React.Component {
                 }
               />
             </Tooltip>
+            {this.state.splitToggleVisible &&
+              <Tooltip
+                title="Toggle split pane"
+                placement="bottom-start"
+              >
+                <FilterControl
+                  control={
+                    <FilterButton
+                      onClick={this.context.toggleSplit}
+                      textcolor={this.props.searchColor}
+                    >
+                      <FontAwesomeIcon
+                        icon={this.context.displaySplit ? ["far", "window-maximize"] : "columns"}
+                      />
+                    </FilterButton>
+                  }
+                />
+              </Tooltip>
+            }
             <Tooltip
               title={
-                window.innerWidth < 600 ? "Statistics" : "Hide result list"
+                this.context.displaySplit ? (this.context.id  ? "Maximize view" : "Show overview") :
+                (this.context.id ? "Back to list" : (this.context.displayStats ? "Show list" : "Show overview"))
               }
-              placement="top-start"
+              placement="bottom-start"
             >
               <FilterControl
-                style={{
-                  display: this.context.displaySearch ? "block" : "none"
-                }}
-                control={
-                  <FilterButton
-                    onClick={this.context.collapseSearch}
-                    textcolor={this.props.searchColor}
-                  >
-                    <FontAwesomeIcon
-                      icon={window.innerWidth < 600 ? "chart-pie" : "times"}
-                    />
-                  </FilterButton>
-                }
-              />
-            </Tooltip>
-            <Tooltip title="Show result list" placement="top-start">
-              <FilterControl
-                style={{
-                  display: this.context.displaySearch ? "none" : "block"
-                }}
                 control={
                   <FilterButton
                     onClick={this.toggleSelect}
                     textcolor={this.props.searchColor}
                   >
-                    <FontAwesomeIcon icon="chevron-left" />
+                    <FontAwesomeIcon
+                      icon={this.context.displaySplit ? (this.context.id ? "expand-alt" : "poll") :
+                        (this.context.id ? "chevron-left" : (this.context.displayStats ? "align-justify" : "poll"))}
+                    />
                   </FilterButton>
                 }
               />
@@ -385,4 +405,18 @@ export class FilterBar extends React.Component {
       </React.Fragment>
     );
   }
+
+  updateWindowDimensions = () => {
+    if( window.innerWidth < 600) {
+      this.setState({splitToggleVisible: false});
+    } else {
+      this.setState({splitToggleVisible: true});
+    }
+  };
+
+  componentDidMount() {
+    // Reflow when the user changes the window size
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
 }
