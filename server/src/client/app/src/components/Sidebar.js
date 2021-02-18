@@ -217,15 +217,6 @@ function SidebarCategory({
         )
       ) : null}
       {badge ? <CountBadge label={badge} /> : ""}
-      {searchExpand !== undefined ? (
-        <CategoryIcon
-          icon="chevron-right"
-          onClick={searchExpand}
-          color={currentcolor}
-        />
-      ) : (
-        ""
-      )}
     </Category>
   );
 }

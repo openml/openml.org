@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { CollapsibleDataTable } from "./sizeLimiter.js";
 import { FeatureDetail, QualityDetail } from "./ItemDetail.js";
+import { MainContext } from "../../App.js";
 
 import ReactMarkdown from "react-markdown";
 import {
@@ -47,35 +48,48 @@ export class DatasetItem extends React.Component {
       "Distinct/Missing Values"
     ];
     let qualityTableColumns = ["", "Quality Name", "Value"];
-
     return (
       <React.Fragment>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-          <ActionButton href={"https://www.openml.org/api/v1/data/" + this.props.object.data_id}>
-              <Action>
-                <FontAwesomeIcon icon="file-alt" />
-                <Typography>xml</Typography>
-              </Action>
-            </ActionButton>
-            <ActionButton href={"https://www.openml.org/api/v1/json/data/" + this.props.object.data_id}>
-              <Action>
-                <FontAwesomeIcon icon="file-alt" />
-                <Typography>json</Typography>
-              </Action>
-            </ActionButton>
-            <ActionButton href={"auth/data-edit?id="+this.props.object.data_id}>
-              <Action>
-                <FontAwesomeIcon icon="edit" />
-                <Typography>edit</Typography>
-              </Action>
-            </ActionButton>
-            <ActionButton href={this.props.object.url}>
-              <Action>
-                <FontAwesomeIcon icon="cloud-download-alt" />
-                <Typography>download</Typography>
-              </Action>
-            </ActionButton>
+            <MainContext.Consumer>
+              {context => (
+                <React.Fragment>
+                  <Tooltip title="Download XML description" placement="bottom-start">
+                    <ActionButton color="primary" href={"https://www.openml.org/api/v1/data/" + this.props.object.data_id}>
+                      <Action>
+                        <FontAwesomeIcon icon="file-alt" />
+                        <Typography>xml</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
+                  <Tooltip title="Download JSON description" placement="bottom-start">
+                    <ActionButton color="primary" href={"https://www.openml.org/api/v1/json/data/" + this.props.object.data_id}>
+                      <Action>
+                        <FontAwesomeIcon icon="file-alt" />
+                        <Typography>json</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
+                  <Tooltip title="Edit dataset (requires login)" placement="bottom-start">
+                    <ActionButton color={context.loggedIn ? "primary" : "default"} href={context.loggedIn ? "auth/data-edit?id=" + this.props.object.data_id : "auth/sign-in"}>
+                      <Action>
+                        <FontAwesomeIcon icon="edit" />
+                        <Typography>edit</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
+                  <Tooltip title="Download dataset" placement="bottom-start">
+                    <ActionButton color="primary" href={this.props.object.url}>
+                      <Action>
+                        <FontAwesomeIcon icon="cloud-download-alt" />
+                        <Typography>download</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
+                </React.Fragment>
+              )}
+            </MainContext.Consumer>
             <Grid container>
               <Grid item md={12}>
                 <Typography variant="h1" style={{ marginBottom: "15px" }}>
@@ -84,7 +98,7 @@ export class DatasetItem extends React.Component {
                 </Typography>
               </Grid>
               <Grid item md={12}>
-                <MetaTag type={"id"} value={this.props.object.data_id} />
+                <MetaTag type={"id"} value={"ID: " + this.props.object.data_id} />
                 <MetaTag type={"status"} value={this.props.object.status} />
                 <MetaTag type={"format"} value={this.props.object.format} />
                 <MetaTag type={"licence"} value={this.props.object.licence} />
@@ -99,7 +113,7 @@ export class DatasetItem extends React.Component {
                     <Avatar>{this.props.object.uploader.charAt(0)}</Avatar>
                   }
                   label={this.props.object.uploader}
-                  href={"search?type=user&id="+ this.props.object.uploader_id}
+                  href={"search?type=user&id=" + this.props.object.uploader_id}
                   component="a"
                   clickable
                 />{" "}

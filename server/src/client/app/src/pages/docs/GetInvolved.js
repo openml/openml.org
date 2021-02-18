@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { green, red, blue, grey, purple } from "@material-ui/core/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   Card as MuiCard,
   Paper,

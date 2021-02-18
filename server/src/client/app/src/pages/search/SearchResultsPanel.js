@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar, Grid } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import TimeAgo from "react-timeago";
 
@@ -24,6 +24,12 @@ const Stats = styled.div`
   display: inline-block;
   font-size: 12px;
 `;
+const ColorStats = styled.div`
+  padding-right: 8px;
+  display: inline-block;
+  font-size: 12px;
+  color: ${props => props.color};
+`;
 const Metric = styled.div`
   color: ${red[500]}
   padding-left: 5px;
@@ -36,6 +42,12 @@ const SubStats = styled.div`
 `;
 const RightStats = styled.div`
   float: right;
+`;
+const VersionStats = styled.div`
+  float: right;
+  color: #666;
+  font-size: 12px;
+  padding-right: 8px;
 `;
 const LeftStats = styled.div`
   float: left;
@@ -55,7 +67,6 @@ const SubTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 36px;
-  max-width: 475px;
 `;
 const SearchPanel = styled(Paper)`
   overflow: none;
@@ -64,6 +75,7 @@ const SearchPanel = styled(Paper)`
   border-radius: 0px;
   z-index: 100;
   position: relative;
+  background-color: transparent;
 `;
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -95,7 +107,7 @@ const ResultCard = styled(Card)({
   paddingTop: 15,
   paddingBottom: 20,
   cursor: "pointer",
-  maxWidth: 600,
+  maxWidth: 1600,
   boxShadow: "none"
 });
 const dataStatus = {
@@ -231,15 +243,12 @@ class SearchElement extends React.Component {
           </Tooltip>
         )}
         {this.props.stats2 !== undefined && this.props.type === "run" && scores}
-
-        <SubStats color={grey[400]}>
-          <LeftStats>
+        <ColorStats color={grey[400]}>
             <ColoredIcon icon="history" fixedWidth />
             <TimeAgo date={new Date(this.props.date)} minPeriod={60} />
-          </LeftStats>
-          {this.props.version !== undefined && (
-            <LeftStats>v.{this.props.version}</LeftStats>
-          )}
+        </ColorStats>
+
+        <SubStats color={grey[400]}>
           {dataStatus[this.props.data_status] !== undefined && (
             <Tooltip
               title={dataStatus[this.props.data_status]["title"]}
@@ -253,6 +262,9 @@ class SearchElement extends React.Component {
                 />
               </RightStats>
             </Tooltip>
+          )}
+          {this.props.version !== undefined && (
+            <VersionStats>v.{this.props.version}</VersionStats>
           )}
         </SubStats>
       </ResultCard>
@@ -302,7 +314,7 @@ export class SearchResultsPanel extends React.Component {
     if (
       this.context.results.length >= 1 &&
       this.context.results[0][
-        (this.context.type === "task_type" ? "tt" : this.context.type) + "_id"
+      (this.context.type === "task_type" ? "tt" : this.context.type) + "_id"
       ] !== undefined
     ) {
       let key =
@@ -319,8 +331,8 @@ export class SearchResultsPanel extends React.Component {
           onclick={() =>
             this.props.selectEntity(
               result[
-                (this.context.type === "task_type" ? "tt" : this.context.type) +
-                  "_id"
+              (this.context.type === "task_type" ? "tt" : this.context.type) +
+              "_id"
               ] + ""
             )
           }
@@ -336,10 +348,8 @@ export class SearchResultsPanel extends React.Component {
       component = (
         <p style={{ paddingLeft: 10 }}>Error: {this.context.error}</p>
       );
-    } else if (this.context.updateType === "query") {
-      component = <p style={{ paddingLeft: 10 }}>Loading...</p>;
-    } else {
-      component = <p style={{ paddingLeft: 10 }}>No search results found</p>;
+    } else if (!this.context.updateType === "query") {
+      component = <Card style={{ paddingLeft: 10 }}>No search results found</Card>;
     }
 
     if (this.props.tag === undefined) {
@@ -351,7 +361,13 @@ export class SearchResultsPanel extends React.Component {
                 display: this.context.displaySearch ? "block" : "none"
               }}
             >
-              {component}
+              <Grid container direction="column" justify="center" alignItems="center" style={{paddingTop: (this.context.displaySplit ? 0 : 20)}}>
+                <Grid item xs={12} sm={(this.context.displaySplit ? 12 : 10)} xl={(this.context.displaySplit ? 12 : 9)}>
+                  <Paper>
+                    {component}
+                  </Paper>
+                </Grid>
+              </Grid>
             </Scrollbar>
           </SearchPanel>
         </React.Fragment>

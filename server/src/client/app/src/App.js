@@ -145,8 +145,8 @@ class App extends React.Component {
     },
 
     // Search context
-    displaySearch: true, // hide search on small screens
-    searchCollapsed: false, // hide search entirely
+    displayStats: false, // show statistics results
+    displaySplit: false, // show split pane
     query: undefined,
     counts: 0, //counts of hits
     type: undefined, //the entity type
@@ -165,17 +165,16 @@ class App extends React.Component {
     getSearchTopic: () => {
       return this.getSearchTopic();
     },
-    collapseSearch: value => {
-      this.setState({ searchCollapsed: value }, this.log("Search collapsed"));
-    },
-    toggleSearchList: value => {
-      if (value !== this.state.displaySearch) {
-        this.setState(
-          { displaySearch: value },
-          this.log("Search list changed")
-        );
-      }
-    },
+    toggleSplit: () =>
+      this.setState(
+        { displaySplit: !this.state.displaySplit },
+        this.log("Split view changed")
+      ),
+    toggleStats: () =>
+      this.setState(
+        { displayStats: !this.state.displayStats },
+        this.log("Stats view changed")
+      ),
     setType: value => {
       this.setState({ type: value }, this.log("Type changed"));
     },
@@ -343,7 +342,7 @@ class App extends React.Component {
     } else if (this.state.type === "task") {
       return orange[600];
     } else if (
-      this.state.type === "task" ||
+      this.state.type === "flow" ||
       window.location.pathname.startsWith("/api")
     ) {
       return blue[800];

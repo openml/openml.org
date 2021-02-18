@@ -98,10 +98,8 @@ export default class SearchPanel extends React.Component {
   };
 
   updateWindowDimensions = () => {
-    if (this.context.id !== undefined && window.innerWidth < 600) {
-      this.context.toggleSearchList(false);
-    } else {
-      this.context.toggleSearchList(true);
+    if (this.context.displaySplit && window.innerWidth < 600) {
+        this.context.toggleSplit();
     }
   };
 
@@ -651,6 +649,7 @@ export default class SearchPanel extends React.Component {
 
   render() {
     const activeTab = this.state.activeTab;
+    console.log("Render search pane");
 
     const ucfirst = s => {
       return s && s[0].toUpperCase() + s.slice(1);
@@ -658,30 +657,27 @@ export default class SearchPanel extends React.Component {
 
     return (
       <Grid container spacing={0}>
-        {!this.context.searchCollapsed && (
-          <Grid item xs={12}>
-            <FilterBar
-              sortOptions={this.getSortOptions()}
-              filterOptions={this.getFilterOptions()}
-              searchColor={this.context.getColor()}
-              resultSize={this.context.counts}
-              resultType={this.context.type}
-              sortChange={this.sortChange}
-              filterChange={this.filterChange}
-              clearFilters={this.clearFilters}
-              tagChange={this.tagChange}
-              selectEntity={this.selectEntity.bind(this)}
-            />
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <FilterBar
+            sortOptions={this.getSortOptions()}
+            filterOptions={this.getFilterOptions()}
+            searchColor={this.context.getColor()}
+            resultSize={this.context.counts}
+            resultType={this.context.type}
+            sortChange={this.sortChange}
+            filterChange={this.filterChange}
+            clearFilters={this.clearFilters}
+            tagChange={this.tagChange}
+            selectEntity={this.selectEntity.bind(this)}
+          />
+        </Grid>
         <Grid
           item
           xs={12}
-          sm={4}
-          lg={3}
-          xl={2}
+          sm={!this.context.displaySplit ? 12 : 4}
+          xl={!this.context.displaySplit ? 12 : 3}
           style={{
-            display: this.context.searchCollapsed ? "none" : "block"
+            display: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "block" : "none"
           }}
         >
           {this.getEntityList()}
@@ -689,9 +685,11 @@ export default class SearchPanel extends React.Component {
         <Grid
           item
           xs={12}
-          sm={this.context.searchCollapsed ? 12 : 8}
-          lg={this.context.searchCollapsed ? 12 : 9}
-          xl={this.context.searchCollapsed ? 12 : 10}
+          sm={!this.context.displaySplit ? 12 : 8}
+          xl={!this.context.displaySplit ? 12 : 9}
+          style={{
+            display: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "block" : "none"
+          }}
         >
           <SearchTabs
             value={activeTab}
