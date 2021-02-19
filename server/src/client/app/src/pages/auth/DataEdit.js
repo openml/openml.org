@@ -41,6 +41,8 @@ function DataEdit() {
     const [success, setSuccess] = useState(false);
     const [user_id, setUserId] = useState("");
     const [owner, setOwner] = useState(false);
+    const [original_data_url, setODUrl] = useState("");
+    const [paper_url, setPaperUrl] = useState("");
     const yourConfig = {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
@@ -65,6 +67,8 @@ function DataEdit() {
             setDefTatt(response.data.default_target_attribute);
             setRowIdatt(response.data.row_id_attribute);
             setIgnoreatt(response.data.ignore_attribute);
+            setODUrl(response.data.original_data_url);
+            setPaperUrl(response.data.paper_url);
             if (response.data.owner === 'true') {
                 setOwner(true);
             }
@@ -88,7 +92,9 @@ function DataEdit() {
                         language: event.target.language.value,
                         default_target_attribute: event.target.default_target_attribute.value,
                         ignore_attribute: event.target.ignore_attribute.value,
-                        row_id_attribute: event.target.row_id_attribute.value
+                        row_id_attribute: event.target.row_id_attribute.value,
+                        original_data_url: event.target.original_data_url.value,
+                        paper_url: event.target.paper_url.value
                     },
                     yourConfig
                 )
@@ -100,9 +106,7 @@ function DataEdit() {
                     setErrorMessage("Cannot edit");
                     console.log(error)
                 });
-        }
-        else if(owner === false)
-        {
+        } else if (owner === false) {
             axios
                 .post(
                     process.env.REACT_APP_SERVER_URL + "data-edit",
@@ -113,6 +117,8 @@ function DataEdit() {
                         date: event.target.collection_date.value,
                         citation: event.target.citation.value,
                         language: event.target.language.value,
+                        original_data_url: event.target.original_data_url.value,
+                        paper_url: event.target.paper_url.value
                     },
                     yourConfig
                 )
@@ -132,82 +138,102 @@ function DataEdit() {
 
     return (
         <Grid container spacing={3} justify="center">
-      <Grid item md={7} xs={10}>
-        <Wrapper>
-            <form onSubmit={datatoflask}>
-                <Typography variant="h1" gutterBottom>
-                    Edit data set
-                </Typography>
-                <Typography variant="h3" gutterBottom>
-                    Dataset name, version 1
-                </Typography>
-                {error && (
-                    <Alert severity="error">{errormessage}</Alert>
-                )}
-                <Grid container spacing={10}>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <TextField
-                                label="Description"
-                                id="description"
-                                rows={15}
-                                multiline={true}
-                                defaultValue={description}
-                            />
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="citation">Citation</InputLabel>
-                            <Input id="citation" placeholder="citation" defaultValue={citation} multiline={true}/>
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            <TextField label="Creator" id="creator" rowsMax={4} defaultValue={creator}
-                                       multiline={true}/>
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="Collection Date">
-                                Collection date
-                            </InputLabel>
-                            <Input id="collection_date" placeholder="Collection date" defaultValue={date}
-                                   multiline={true}/>
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="language">Language</InputLabel>
-                            <Input id="language" placeholder="Language" defaultValue={language} multiline={true}/>
-                        </FormControl>
-                        {owner && (
-                            <Box p={1} border="3px solid red" borderRadius={5} padding={5} marginTop={10} marginBottom={10}>
-                                <b>Danger Zone (can only be edited by author)</b>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="default_target_attribute">default_target_attribute</InputLabel>
-                                    <Input id="default_target_attribute" placeholder="default_target_attribute"
-                                           defaultValue={def_tar_att} multiline={true}/>
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="ignore_attribute">ignore_attribute</InputLabel>
-                                    <Input id="ignore_attribute" placeholder="ignore_attribute"
-                                           defaultValue={ignore_att} multiline={true}/>
-                                </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="row_id_attribute">
-                                        row_id_attribute
-                                    </InputLabel>
-                                    <Input id="row_id_attribute" placeholder="row_id_attribute"
-                                           defaultValue={row_id_att} multiline={true}/>
-                                </FormControl>
-                            </Box>
+            <Grid item md={7} xs={10}>
+                <Wrapper>
+                    <form onSubmit={datatoflask}>
+                        <Typography variant="h1" gutterBottom>
+                            Edit data set
+                        </Typography>
+                        <Typography variant="h3" gutterBottom>
+                            Dataset name, version 1
+                        </Typography>
+                        {error && (
+                            <Alert severity="error">{errormessage}</Alert>
                         )}
+                        <Grid container spacing={10}>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label="Description"
+                                        id="description"
+                                        rows={15}
+                                        multiline={true}
+                                        defaultValue={description}
+                                    />
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <InputLabel htmlFor="citation">Citation</InputLabel>
+                                    <Input id="citation" placeholder="citation" defaultValue={citation}
+                                           multiline={true}/>
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <TextField label="Creator" id="creator" rowsMax={4} defaultValue={creator}
+                                               multiline={true}/>
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <InputLabel htmlFor="Collection Date">
+                                        Collection date
+                                    </InputLabel>
+                                    <Input id="collection_date" placeholder="Collection date" defaultValue={date}
+                                           multiline={true}/>
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <InputLabel htmlFor="language">Language</InputLabel>
+                                    <Input id="language" placeholder="Language" defaultValue={language}
+                                           multiline={true}/>
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <InputLabel htmlFor="original_data_url">
+                                        Original data URL
+                                    </InputLabel>
+                                    <Input id="original_data_url" placeholder="original_data_url"
+                                           defaultValue={original_data_url} multiline={true}/>
+                                </FormControl>
+                                <FormControl fullWidth mb={3}>
+                                    <InputLabel htmlFor="paper_url">
+                                        Paper Url
+                                    </InputLabel>
+                                    <Input id="paper_url" placeholder="paper_url"
+                                           defaultValue={paper_url} multiline={true}/>
+                                </FormControl>
+                                {owner && (
+                                    <Box p={1} border="3px solid red" borderRadius={5} padding={5} marginTop={10}
+                                         marginBottom={10}>
+                                        <b>Danger Zone (can only be edited by author)</b>
+                                        <FormControl fullWidth mb={3}>
+                                            <InputLabel
+                                                htmlFor="default_target_attribute">default_target_attribute</InputLabel>
+                                            <Input id="default_target_attribute" placeholder="default_target_attribute"
+                                                   defaultValue={def_tar_att} multiline={true}/>
+                                        </FormControl>
+                                        <FormControl fullWidth mb={3}>
+                                            <InputLabel htmlFor="ignore_attribute">ignore_attribute</InputLabel>
+                                            <Input id="ignore_attribute" placeholder="ignore_attribute"
+                                                   defaultValue={ignore_att} multiline={true}/>
+                                        </FormControl>
+                                        <FormControl fullWidth mb={3}>
+                                            <InputLabel htmlFor="row_id_attribute">
+                                                row_id_attribute
+                                            </InputLabel>
+                                            <Input id="row_id_attribute" placeholder="row_id_attribute"
+                                                   defaultValue={row_id_att} multiline={true}/>
+                                        </FormControl>
 
-                    </Grid>
-                </Grid>
 
-                <Button variant="contained" color="primary" type="Submit">
-                    Edit Dataset
-                </Button>
+                                    </Box>
+                                )}
 
-                {success && <Redirect to="/"/>}
-            </form>
-        </Wrapper>
-        </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Button variant="contained" color="primary" type="Submit">
+                            Edit Dataset
+                        </Button>
+
+                        {success && <Redirect to="/"/>}
+                    </form>
+                </Wrapper>
+            </Grid>
         </Grid>
     );
 }

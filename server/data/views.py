@@ -57,6 +57,8 @@ def data_edit():
                     "ignore_attribute": dataset.ignore_attribute,
                     "row_id_attribute": dataset.row_id_attribute,
                     "owner": owner,
+                    "original_data_url": dataset.original_data_url,
+                    "paper_url": dataset.paper_url,
                 }
             )
         )
@@ -74,6 +76,8 @@ def data_edit():
                     "ignore_attribute": dataset.ignore_attribute,
                     "row_id_attribute": dataset.row_id_attribute,
                     "owner": owner,
+                    "original_data_url": dataset.original_data_url,
+                    "paper_url":dataset.paper_url,
                 }
             ),
             200,
@@ -87,6 +91,8 @@ def data_edit():
         collection_date = j_obj["date"]
         citation = j_obj["citation"]
         language = j_obj["language"]
+        original_data_url = j_obj["original_data_url"]
+        paper_url = j_obj["paper_url"]
         if description == "":
             description = None
         if creator == "":
@@ -97,6 +103,10 @@ def data_edit():
             citation = None
         if language == "":
             language = None
+        if original_data_url == "":
+            original_data_url = None
+        if paper_url == "":
+            paper_url = None
         if owner == "false":
             openml.datasets.edit_dataset(
                 dataset_id,
@@ -105,6 +115,8 @@ def data_edit():
                 collection_date=collection_date,
                 citation=citation,
                 language=language,
+                original_data_url=original_data_url,
+                paper_url=paper_url
             )
         elif owner == "true":
             default_target_attribute = j_obj["default_target_attribute"]
@@ -126,6 +138,8 @@ def data_edit():
                 default_target_attribute=default_target_attribute,
                 ignore_attribute=ignore_attribute,
                 row_id_attribute=row_id_attribute,
+                original_data_url=original_data_url,
+                paper_url=paper_url
             )
 
         return str("data edit successful")
