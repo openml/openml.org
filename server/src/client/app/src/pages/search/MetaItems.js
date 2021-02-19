@@ -46,7 +46,7 @@ export class MetaTag extends React.Component {
         prefix = "Task ";
         break;
       case "status":
-        icon = "check-circle";
+        icon = (this.props.value === 'verified' ? "check-circle" : (this.props.value === 'deactivated' ? "times" : "wrench"));
         break;
       case "id":
         icon = "id-badge";
@@ -57,8 +57,7 @@ export class MetaTag extends React.Component {
         return (
           <Tooltip title="Date uploaded" placement="top-start">
             <span style={{ paddingRight: 15, paddingBottom: 5, display: "inline-block" }}>
-              <FontAwesomeIcon icon={"cloud-upload-alt"} />{" "}
-          uploaded{" "}
+              <FontAwesomeIcon icon={"cloud-upload-alt"} />{" "}uploaded{" "}
               {uploadedDate}
               {uploadedBy}
             </span>
@@ -71,7 +70,7 @@ export class MetaTag extends React.Component {
     return (
       <Tooltip title={this.props.type} placement="top-start">
         <span style={{ paddingRight: 15, paddingBottom: 5, display: "inline-block" }}>
-          <FontAwesomeIcon icon={icon} />{" "}{prefix}{this.props.value}{suffix}
+          <FontAwesomeIcon icon={icon} color={this.props.color} />{" "}{prefix}{this.props.value}{suffix}
         </span>
       </Tooltip>
     )

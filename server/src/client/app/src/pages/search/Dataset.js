@@ -99,7 +99,8 @@ export class DatasetItem extends React.Component {
               </Grid>
               <Grid item md={12}>
                 <MetaTag type={"id"} value={"ID: " + this.props.object.data_id} />
-                <MetaTag type={"status"} value={this.props.object.status} />
+                <MetaTag type={"status"} value={this.props.object.status === 'active' ? 'verified' : this.props.object.status}
+                  color={this.props.object.status === 'active' ? 'green' : (this.props.object.status === 'deactivated' ? 'red' : 'orange')} />
                 <MetaTag type={"format"} value={this.props.object.format} />
                 <MetaTag type={"licence"} value={this.props.object.licence} />
                 <FontAwesomeIcon icon="clock" />{" "}

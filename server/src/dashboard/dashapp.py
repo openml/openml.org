@@ -32,6 +32,7 @@ def create_dash_app(flask_app):
     """
     if COMMON_CACHE:
         root_dir = os.path.abspath(os.sep)
+        root_dir = os.getcwd()
         if not os.path.exists(os.path.join(root_dir, "public")):
             os.system(f"sudo mkdir {root_dir}/public")
         os.system(f"sudo chmod 777 {root_dir}/public")

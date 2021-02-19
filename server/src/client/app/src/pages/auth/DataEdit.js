@@ -98,7 +98,7 @@ function DataEdit() {
                 .catch(function (error) {
                     setError(true);
                     setErrorMessage("Cannot edit");
-                    console.log(error.data);
+                    console.log(error)
                 });
         }
         else if(owner === false)
