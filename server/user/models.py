@@ -98,3 +98,12 @@ class User(Base):
 
     def __repr__(self):
         return "<User {}>".format(self.username)
+
+
+class UserGroups(Base):
+    __table__ = Base.metadata.tables["users_groups"]
+    __table_args__ = {"autoload": True}
+
+    def set_group(self):
+        self.group_id = 2
+        print('group updated')
