@@ -3,7 +3,7 @@ import hashlib
 
 from flask_cors import CORS
 from server.extensions import db
-from server.user.models import User
+from server.user.models import User, UserGroups
 from server.utils import confirmation_email, forgot_password_email, send_feedback
 
 from flask import (  # current_app,; flash,; redirect,; render_template,; url_for,
@@ -55,6 +55,8 @@ def signupfunc():
         user.update_activation_code(md5_digest)
         confirmation_email(user.email, md5_digest)
         db.session.add(user)
+        # db.session.commit()
+        # user_ = User.query.filter_by(email=register_obj["email"]).first()
         db.session.commit()
 
         return jsonify({"msg": "User created"}), 200
@@ -88,7 +90,10 @@ def confirmation_token():
     user = User.query.filter_by(email=jobj["email"]).first()
     user.update_activation_code(md5_digest)
     confirmation_email(user.email, md5_digest)
+    #updating user groups here
+    user_ = UserGroups(user_id=user.id, group_id=2)
     db.session.merge(user)
+    db.session.add(user_)
     db.session.commit()
     return jsonify({"msg": "User confirmation token sent"}), 200
 

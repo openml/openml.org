@@ -13,7 +13,7 @@ from flask_jwt_extended import (
 )
 from pathlib import Path
 from server.extensions import db, jwt
-from server.user.models import User, UserGroups
+from server.user.models import User
 from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -61,12 +61,6 @@ def login():
         return jsonify({"msg": "NotConfirmed"}), 200
 
     else:
-        user_g = UserGroups.query.filter_by(user_id=user.id).first()
-        if user_g is None:
-            user_ = UserGroups(user_id=user.id)
-            user_.set_group()
-            db.session.add(user_)
-            db.session.commit()
         access_token = create_access_token(identity=user.email)
         testing = os.environ.get("TESTING")
         print(testing)

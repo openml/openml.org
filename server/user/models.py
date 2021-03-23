@@ -107,6 +107,3 @@ class UserGroups(Base):
     def set_group(self):
         self.group_id = 2
         print('group updated')
-
-    def __repr__(self):
-        return "<User {}>".format(self.user_id)
