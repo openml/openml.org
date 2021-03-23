@@ -105,7 +105,7 @@ def profile():
         if data["email"] != user.email:
             print("email changed")
             timestamp = datetime.datetime.now()
-            timestamp = timestamp.strftime("%d %H")
+            timestamp = timestamp.strftime("%d %H:%M:%S")
             md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
             user.update_activation_code(md5_digest)
             confirmation_email(data["email"], md5_digest)

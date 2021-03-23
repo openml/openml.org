@@ -50,7 +50,7 @@ def signupfunc():
         user.external_id = "0000"
         user.password_hash = "0000"
         timestamp = datetime.datetime.now()
-        timestamp = timestamp.strftime("%d %H")
+        timestamp = timestamp.strftime("%d %H:%M:%S")
         md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
         user.update_activation_code(md5_digest)
         confirmation_email(user.email, md5_digest)
@@ -69,7 +69,7 @@ def password():
     """Sending forgotten password code"""
     jobj = request.get_json()
     timestamp = datetime.datetime.now()
-    timestamp = timestamp.strftime("%d %H")
+    timestamp = timestamp.strftime("%d %H:%M:%S")
     md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
     user = User.query.filter_by(email=jobj["email"]).first()
     user.update_forgotten_code(md5_digest)
@@ -85,7 +85,7 @@ def confirmation_token():
     """Sending confirmation token again"""
     jobj = request.get_json()
     timestamp = datetime.datetime.now()
-    timestamp = timestamp.strftime("%d %H")
+    timestamp = timestamp.strftime("%d %H:%M:%S")
     md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
     user = User.query.filter_by(email=jobj["email"]).first()
     user.update_activation_code(md5_digest)
