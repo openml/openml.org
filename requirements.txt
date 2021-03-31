@@ -45,7 +45,7 @@ idna==2.8
 importlib-metadata==1.4.0
 isort==4.3.21
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 jinja2-time==0.2.0
 joblib==0.14.0
 kiwisolver==1.1.0
