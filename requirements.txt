@@ -27,7 +27,7 @@ Flask-BabelEx==0.9.3
 Flask-Bcrypt==0.7.1
 Flask-Caching==1.8.0
 Flask-Compress==1.4.0
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 Flask-Dance==3.0.0
 Flask-DebugToolbar==0.10.1
 Flask-JWT-Extended==3.24.1
