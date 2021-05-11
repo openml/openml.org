@@ -29,7 +29,7 @@ try:
     )
     Base = declarative_base()
     Base.metadata.reflect(engine)
-except sqlalchemy.exc.OperationalError:
+except TypeError:
     engine = create_engine(
         "sqlite:///" + os.path.join(basedir, "openml.db"),
         echo=False,
