@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-import sqlalchemy
+# import sqlalchemy
 from flask_argon2 import Argon2
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager

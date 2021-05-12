@@ -77,7 +77,7 @@ def data_edit():
                     "row_id_attribute": dataset.row_id_attribute,
                     "owner": owner,
                     "original_data_url": dataset.original_data_url,
-                    "paper_url":dataset.paper_url,
+                    "paper_url": dataset.paper_url,
                 }
             ),
             200,
