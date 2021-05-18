@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-import sqlalchemy
+# import sqlalchemy
 from flask_argon2 import Argon2
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
@@ -29,7 +29,7 @@ try:
     )
     Base = declarative_base()
     Base.metadata.reflect(engine)
-except sqlalchemy.exc.OperationalError:
+except TypeError:
     engine = create_engine(
         "sqlite:///" + os.path.join(basedir, "openml.db"),
         echo=False,

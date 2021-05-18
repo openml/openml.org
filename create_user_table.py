@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 def create_empty_table():
-    qry = """ CREATE TABLE IF NOT EXISTS users (
+    qry_users = """ CREATE TABLE IF NOT EXISTS users (
                                           id mediumint PRIMARY KEY CHECK(id > 0 ),
                                           username varchar(100) NOT NULL,
                                           password varchar(255) NOT NULL,
@@ -36,11 +36,21 @@ def create_empty_table():
                                           gamification_visibility varchar(32) NOT NULL DEFAULT 'show'
                                    
                                       ); """
+
+
+
+    query_user_groups = """ CREATE TABLE IF NOT EXISTS users_groups (
+                                          id mediumint PRIMARY KEY CHECK(id > 0 ),
+                                          user_id mediumint NOT NULL,
+                                          group_id mediumint NOT NULL                                 
+                                      ); """
     conn = sqlite3.connect(
         os.path.join(basedir, "server/openml.db"), check_same_thread=False
     )
     c = conn.cursor()
-    c.execute(qry)
+    c.execute(qry_users)
+    conn.commit()
+    c.execute(query_user_groups)
     conn.commit()
     c.close()
     conn.close()

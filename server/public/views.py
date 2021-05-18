@@ -90,7 +90,7 @@ def confirmation_token():
     user = User.query.filter_by(email=jobj["email"]).first()
     user.update_activation_code(md5_digest)
     confirmation_email(user.email, md5_digest)
-    #updating user groups here
+    # updating user groups here
     user_ = UserGroups(user_id=user.id, group_id=2)
     db.session.merge(user)
     db.session.add(user_)
