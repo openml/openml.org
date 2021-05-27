@@ -307,7 +307,7 @@ const apiRoutes = {
 
 const blogRoutes = {
   id: "Blog",
-  path: "https://openml.github.io/blog",
+  path: "http://blog.openml.org/",
   icon: <YellowMenuIcon icon="rss" fixedWidth />,
   component: null
 };
