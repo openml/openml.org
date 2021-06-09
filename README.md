@@ -22,7 +22,7 @@ If you want to contribute new features, or you need additional functionality fro
 
 ## OpenML Server interaction
 The frontend mainly works on data from an ElasticSearch index of OpenML data.
-Additional interactions with an OpenML backend (e.g. dataset upload) go via the [OpenML Python API](https://openml.github.io/openml-python/master/)
+Additional interactions with an OpenML backend (e.g. dataset upload) go via the [OpenML Python API](https://openml.github.io/openml-python/main/)
 
 ## Help
 This code is currently underdocumented. We are working on this. Feel very free to open issues to ask questions!
