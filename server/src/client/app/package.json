@@ -10,7 +10,7 @@
     "test": "react-scripts test"
   },
   "dependencies": {
-    "lodash": "^4.17.20",
-    "react-scripts": "^4.0.2"
+    "lodash": "^4.17.21",
+    "react-scripts": "^4.0.3"
   }
 }
