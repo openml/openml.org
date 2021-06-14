@@ -31,7 +31,7 @@ var gradientBG = keyframes`
 
 const animation = props =>
   css`
-    ${gradientBG} 15s ease infinite;
+    ${gradientBG} 15s ease 10;
   `;
 
 const Root = styled.div`

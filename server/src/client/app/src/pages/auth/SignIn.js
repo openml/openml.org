@@ -67,7 +67,7 @@ function SignIn() {
   }
 
   return (
-    <Grid container spacing={3} justify="center">
+    <Grid container justify="center">
       {logger ? (
         <Redirect to="/auth/profile-page" />
       ) : (
