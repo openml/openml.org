@@ -234,3 +234,24 @@ def data_upload():
     os.remove(path)
     # TODO Add error for bad dataset
     return jsonify({"msg": "dataset uploaded"}), 200
+
+
+@data_blueprint.route("/data-tag", methods=["POST"])
+@jwt_required
+def data_tag():
+    j_obj = request.get_json()
+    tag = j_obj['tag']
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(email=current_user).first()
+    openml.config.apikey = user.session_hash
+    testing = os.environ.get("TESTING")
+    if testing:
+        openml.config.start_using_configuration_for_example()
+    url = request.args.get("url")
+    parsed = urlparse(url)
+    dataset_id = parse_qs(parsed.query)["id"]
+    dataset_id = int(dataset_id[0])
+
+    dataset = openml.datasets.get_dataset(dataset_id)
+    dataset.push_tag(tag)
+    pass
