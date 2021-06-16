@@ -145,36 +145,6 @@ def data_edit():
         return str("data edit successful")
 
 
-# @data_blueprint.route('/data-edit-critical', methods=['POST'])
-# @jwt_required
-# def data_edit_critical():
-#     current_user = get_jwt_identity()
-#     user = User.query.filter_by(email=current_user).first()
-#     openml.config.apikey = user.session_hash
-#     # TODO change line below in development\
-#     testing = os.environ.get('TESTING')
-#     if testing:
-#         openml.config.start_using_configuration_for_example()
-#     j_obj = request.get_json()
-#     dataset_id = j_obj['dataset_id']
-#     dataset_id = int(dataset_id)
-#     default_target_attribute = j_obj['default_target_attribute']
-#     ignore_attribute = j_obj['ignore_attribute']
-#     row_id_attribute = j_obj['row_id_attribute']
-#     if default_target_attribute == '':
-#         default_target_attribute = None
-#     if ignore_attribute == '':
-#         ignore_attribute = None
-#     if row_id_attribute == '':
-#         row_id_attribute = None
-#     data_id = openml.datasets.edit_dataset(dataset_id,
-#                                            default_target_attribute=default_target_attribute,
-#                                            ignore_attribute=ignore_attribute,
-#                                            row_id_attribute=row_id_attribute
-#                                            )
-#     return str(data_id)
-
-
 @data_blueprint.route("/data-upload", methods=["POST"])
 @jwt_required
 def data_upload():
@@ -185,7 +155,6 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    # TODO change line below in development\
     testing = os.environ.get("TESTING")
     if testing:
         openml.config.start_using_configuration_for_example()
