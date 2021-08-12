@@ -4,7 +4,6 @@ import axios from "axios";
 import {
     Button,
     Paper,
-    Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
     Input,
@@ -150,6 +149,7 @@ function DataEdit() {
                 )
                 .then(function (response) {
                     console.log(response.data);
+                    setSuccess(true);
                 })
                 .catch(function (error) {
                     setError(true);

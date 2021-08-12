@@ -37,7 +37,6 @@ const CollectionTasksUpload = async(() =>
   import("../pages/auth/CollectionTasksUpload")
 );
 const DataEdit = async(() => import("../pages/auth/DataEdit"));
-const DataCriticalEdit = async(() => import("../pages/auth/DataCriticalEdit"));
 const TaskUpload = async(() => import("../pages/auth/TaskUpload"));
 const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));

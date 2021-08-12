@@ -6,18 +6,9 @@ import {
   DependencyDetail
 } from "./ItemDetail.js";
 import ReactMarkdown from "react-markdown";
-import styled from "styled-components";
 import { Card, CardContent, Typography, Grid } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MetaTag } from "./MetaItems";
-
-const FlowName = styled(Typography)`
-  width: 100vw;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  float: left;
-`;
 
 export class FlowItem extends React.Component {
   render() {

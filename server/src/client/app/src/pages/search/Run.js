@@ -6,7 +6,6 @@ import { MetaTag } from "./MetaItems.js";
 import { Card, CardContent, Typography, Grid } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollapsibleDataTable } from "./sizeLimiter";
-import { QualityDetail } from "./ItemDetail";
 
 export class RunItem extends React.Component {
   render() {

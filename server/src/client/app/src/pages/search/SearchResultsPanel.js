@@ -49,10 +49,6 @@ const VersionStats = styled.div`
   font-size: 12px;
   padding-right: 8px;
 `;
-const LeftStats = styled.div`
-  float: left;
-  padding-right: 8px;
-`;
 const Title = styled.div`
   padding-bottom: 5px;
   font-size: 16px;

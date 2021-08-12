@@ -1,8 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Chip,
-  Avatar,
   Card,
   CardContent,
   Typography,
@@ -12,7 +10,7 @@ import {
   MetaTag
 } from "./MetaItems"
 
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
+import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
 
 export class TaskItem extends React.Component {
   render() {
