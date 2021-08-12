@@ -236,6 +236,7 @@ const CoverInput = styled(InputBase)`
   background-color: #fff;
   padding: 3px;
   padding-left: 15px;
+  padding-bottom: 4px;
   font-size: 1.2em;
   display: flex-inline;
 
@@ -253,7 +254,7 @@ const CoverInput = styled(InputBase)`
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       opacity: 0.9;
-      width: 100px;
+      width: 120px;
     }
   }
 `;
@@ -777,7 +778,7 @@ class Cover extends React.Component {
               <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 style={{
                   marginTop: 20,
@@ -1323,7 +1324,7 @@ class Cover extends React.Component {
               <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 style={{
                   marginTop: 20,
@@ -1350,7 +1351,7 @@ class Cover extends React.Component {
               <Grid
                 container
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 style={{
                   marginTop: 20,

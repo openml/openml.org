@@ -67,7 +67,7 @@ function SignIn() {
   }
 
   return (
-    <Grid container justify="center">
+    <Grid container justifyContent="center">
       {logger ? (
         <Redirect to="/auth/profile-page" />
       ) : (

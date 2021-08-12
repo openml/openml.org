@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 import { blue, green, grey, red } from "@material-ui/core/colors";
 
 const breakpoints = {
@@ -188,7 +188,7 @@ const darkVariant = {
 const variants = [darkVariant, lightVariant];
 
 const theme = variant => {
-  return createMuiTheme(
+  return createTheme(
     {
       spacing: 4,
       breakpoints: breakpoints,

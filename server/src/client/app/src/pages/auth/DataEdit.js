@@ -163,7 +163,7 @@ function DataEdit() {
     }
 
     return (
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={3} justifyContent="center">
             <Grid item md={7} xs={10}>
                 <Wrapper>
                     <form onSubmit={datatoflask}>

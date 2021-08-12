@@ -357,7 +357,7 @@ export class SearchResultsPanel extends React.Component {
                 display: this.context.displaySearch ? "block" : "none"
               }}
             >
-              <Grid container direction="column" justify="center" alignItems="center" style={{paddingTop: (this.context.displaySplit ? 0 : 20)}}>
+              <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.context.displaySplit ? 0 : 20)}}>
                 <Grid item xs={12} sm={(this.context.displaySplit ? 12 : 10)} xl={(this.context.displaySplit ? 12 : 9)}>
                   <Paper>
                     {component}
