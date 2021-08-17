@@ -299,7 +299,7 @@ class Sidebar extends React.Component {
         newValue /= 1000;
         suffixNum++;
       }
-      newValue = newValue.toPrecision(3);
+      newValue = newValue.toFixed(1); // .toPrecision(3);
       newValue += suffixes[suffixNum];
     }
     return newValue;
@@ -311,6 +311,8 @@ class Sidebar extends React.Component {
 
     const data = {
       size: 0,
+      query: { bool: { should: [ { term: { status: "active" } },
+                                 { bool: { must_not: { exists: { field: "status" } } } } ] } },
       aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
     };
 

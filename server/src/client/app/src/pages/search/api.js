@@ -47,7 +47,7 @@ export function getProperty(obj, param) {
         param.substring(index + 1)
       );
     } else {
-      console.log("Cannot load property " + param);
+      //console.log("Cannot load property " + param);
       return undefined;
     }
   }

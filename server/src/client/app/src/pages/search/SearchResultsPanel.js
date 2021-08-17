@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar, Grid } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import TimeAgo from "react-timeago";
 
@@ -13,7 +13,6 @@ import {
   grey,
   purple
 } from "@material-ui/core/colors";
-import { MainContext } from "../../App.js";
 
 const ColoredIcon = styled(FontAwesomeIcon)`
   cursor: 'pointer',
@@ -64,7 +63,7 @@ const SubTitle = styled.div`
   text-overflow: ellipsis;
   max-height: 36px;
 `;
-const SearchPanel = styled(Paper)`
+const SearchListPanel = styled(Paper)`
   overflow: none;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   border-left: 1px solid rgba(0, 0, 0, 0.12);
@@ -96,16 +95,18 @@ const Scrollbar = styled(PerfectScrollbar)`
 const SlimCardHeader = styled(CardHeader)({
   paddingTop: 0
 });
-const ResultCard = styled(Card)({
-  borderTop: "1px solid rgba(0, 0, 0, 0.12)",
-  paddingLeft: 20,
-  paddingRight: 20,
-  paddingTop: 15,
-  paddingBottom: 20,
-  cursor: "pointer",
-  maxWidth: 1600,
-  boxShadow: "none"
-});
+const ResultCard = styled(Card)`
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: ${props => props.color};
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 15px;
+  padding-bottom: 20px;
+  cursor: pointer;
+  max-width: 1600px;
+  box-shadow: none;
+  ${props => props.fullwidth && `width: 100%`}
+`
 const dataStatus = {
   active: {
     title: "verified",
@@ -125,6 +126,7 @@ const dataStatus = {
 };
 
 class SearchElement extends React.Component {
+
   randomColor = () => {
     let colors = [blue, orange, red, green, purple];
     return colors[Math.floor(Math.random() * colors.length)][
@@ -133,8 +135,11 @@ class SearchElement extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    // Cards are static. No need to rerender.
-    return false;
+    if (this.props.selected || nextProps.selected){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   render() {
@@ -188,7 +193,11 @@ class SearchElement extends React.Component {
     }
 
     return (
-      <ResultCard onClick={this.props.onclick} square>
+      <ResultCard 
+        onClick={this.props.onclick} 
+        color={this.props.selected ? "#f1f3f4" : "#fff"}
+        fullwidth={this.props.fullwidth.toString()}
+        square>
         {this.props.type === "user" && (
           <SlimCardHeader
             avatar={
@@ -206,7 +215,12 @@ class SearchElement extends React.Component {
             title={this.props.name}
           />
         )}
-        {this.props.type !== "user" && <Title>{this.props.name}</Title>}
+        {this.props.type !== "user" && 
+          <Title>
+            <ColoredIcon color={this.props.color} icon={this.props.icon} fixedWidth/>
+            {"\u00A0\u00A0"}{this.props.name}
+          </Title>
+        }
         <SubTitle>{this.props.teaser}</SubTitle>
         {this.props.stats !== undefined && (
           <React.Fragment>
@@ -238,6 +252,12 @@ class SearchElement extends React.Component {
             </Stats>
           </Tooltip>
         )}
+        <Tooltip title={this.props.type + " ID"} placement="top-start">
+          <Stats>
+            <ColoredIcon color={grey[400]} icon="id-badge" fixedWidth />{" "}
+            {this.props.id}
+          </Stats>
+        </Tooltip>
         {this.props.stats2 !== undefined && this.props.type === "run" && scores}
         <ColorStats color={grey[400]}>
             <ColoredIcon icon="history" fixedWidth />
@@ -269,7 +289,16 @@ class SearchElement extends React.Component {
 }
 
 export class SearchResultsPanel extends React.Component {
-  static contextType = MainContext;
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // Only render if there are new results or when the display size changes
+    if (nextProps.context.results.length >= 1 && nextProps.context.updateType !== undefined){
+      return true;
+    } else if (this.props.context.displaySplit !== nextProps.context.displaySplit){
+      return true;
+    }
+    return false;
+  }
 
   capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -305,29 +334,48 @@ export class SearchResultsPanel extends React.Component {
     }
   };
 
+  getTypeName = (type) => {
+    switch (type) {
+      case "data":
+        return "dataset";
+      case "study":
+        return "collection";
+      default:
+        return type;
+    }
+  }
+
   render() {
     let component = null;
+    let results = this.props.context.results;
+    let qtype = this.props.context.type;
+    if (this.props.listType === "drilldown"){
+      results = this.props.context.subResults;
+      qtype = this.props.context.subType;
+    } else {
+    }
     if (
-      this.context.results.length >= 1 &&
-      this.context.results[0][
-      (this.context.type === "task_type" ? "tt" : this.context.type) + "_id"
+      results.length >= 1 &&
+      results[0][
+      (qtype === "task_type" ? "tt" : qtype) + "_id"
       ] !== undefined
     ) {
       let key =
-        (this.context.type === "task_type" ? "tt" : this.context.type) + "_id";
+        (qtype === "task_type" ? "tt" : qtype) + "_id";
 
-      component = this.context.results.map(result => (
+      component = results.map(result => (
         <SearchElement
           name={result.name ? result.name : result.comp_name}
           version={result.version}
           teaser={this.getTeaser(result.description)}
           stats={this.getStats(this.props.stats, result)}
           stats2={this.getStats(this.props.stats2, result)}
-          id={result[this.context.type + "_id"]}
-          onclick={() =>
+          id={result[qtype + "_id"]}
+          selected={result[qtype + "_id"] + "" === this.props.context.id}
+          onclick={() => 
             this.props.selectEntity(
               result[
-              (this.context.type === "task_type" ? "tt" : this.context.type) +
+              (qtype === "task_type" ? "tt" : qtype) +
               "_id"
               ] + ""
             )
@@ -338,41 +386,57 @@ export class SearchResultsPanel extends React.Component {
           initials={result.initials}
           data_status={result.status}
           date={result.date}
+          fullwidth={this.props.context.displaySplit}
+          color={this.props.context.getColor(qtype)}
+          icon={this.props.context.getIcon(qtype)}
         ></SearchElement>
       ));
-    } else if (this.context.error !== null) {
+    } else if (this.props.context.error !== null) {
       component = (
-        <p style={{ paddingLeft: 10 }}>Error: {this.context.error}</p>
+        <p style={{ paddingLeft: 10 }}>Error: {this.props.context.error}</p>
       );
-    } else if (!this.context.updateType === "query") {
+    } else if (!this.props.context.updateType === "query") {
       component = <Card style={{ paddingLeft: 10 }}>No search results found</Card>;
     }
 
     if (this.props.tag === undefined) {
       return (
         <React.Fragment>
-          <SearchPanel>
-            <Scrollbar
-              style={{
-                display: this.context.displaySearch ? "block" : "none"
-              }}
-            >
-              <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.context.displaySplit ? 0 : 20)}}>
-                <Grid item xs={12} sm={(this.context.displaySplit ? 12 : 10)} xl={(this.context.displaySplit ? 12 : 9)}>
-                  <Paper>
-                    {component}
-                  </Paper>
+          <SearchListPanel>
+              <Scrollbar
+                style={{
+                  display: this.props.context.displaySearch ? "block" : "none"
+                }}
+              >
+                <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
+                  <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
+                    {this.props.listType === "drilldown" && // Header for drilldown lists            
+                      <Grid item md={12}>
+                        <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                          Tasks
+                        </Typography>
+                        <Typography style={{ marginBottom: "15px" }}>
+                          Tasks define specific problems to be solved using this {this.getTypeName(this.props.context.type)}. They specify train and test sets, 
+                          which target feature(s) to predict for supervised problems, and possibly which evaluation measure
+                          to optimize. They make the problem reproducible and machine-readable.
+                        </Typography>
+                      </Grid>
+                    }
+                    <Paper>
+                      {component}
+                    </Paper>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Scrollbar>
-          </SearchPanel>
+              </Scrollbar>
+          </SearchListPanel>
         </React.Fragment>
       );
     } else {
       //nested query
+      console.log("Tag defined - Does this ever come up?")
       return (
         <React.Fragment>
-          <SearchPanel>{component}</SearchPanel>
+          {component}
         </React.Fragment>
       );
     }

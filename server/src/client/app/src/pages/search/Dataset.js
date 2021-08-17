@@ -111,7 +111,7 @@ export class DatasetItem extends React.Component {
                   variant="outlined"
                   color="primary"
                   avatar={
-                    <Avatar>{this.props.object.uploader.charAt(0)}</Avatar>
+                    <Avatar>{this.props.object.uploader ? this.props.object.uploader.charAt(0) : "X"}</Avatar>
                   }
                   label={this.props.object.uploader}
                   href={"search?type=user&id=" + this.props.object.uploader_id}
@@ -144,7 +144,7 @@ export class DatasetItem extends React.Component {
                   Description
                 </Typography>
                 <div className="contentSection">
-                  <ReactMarkdown source={this.props.object.description} />
+                  <ReactMarkdown children={this.props.object.description} />
                 </div>
               </CardContent>
             </Card>

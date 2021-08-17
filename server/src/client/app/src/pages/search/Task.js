@@ -19,7 +19,7 @@ export class TaskItem extends React.Component {
       { name: "Task Type", value: this.props.object.tasktype.name},
       { name: "Source Data", value: this.props.object.source_data.name},
       { name: "Target Feature", value: this.props.object.target_feature},
-      { name: "Estimation Procedure", value: this.props.object.estimation_procedure.name}
+      { name: "Estimation Procedure", value: (this.props.object.estimation_procedure ? this.props.object.estimation_procedure.name : undefined)}
     ];
     return (
       <React.Fragment>

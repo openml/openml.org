@@ -149,18 +149,26 @@ class App extends React.Component {
     displaySplit: false, // show split pane
     query: undefined,
     counts: 0, //counts of hits
+    subCounts: 0, //counts of hits
     type: undefined, //the entity type
+    subType: undefined, //the entity subtype
     id: undefined, //the entity ID
     tag: undefined, //tag filter
     results: [], //the search result list (hits)
+    subResults: [], //the search subresult list (hits)
     updateType: undefined, //query, results, id
     error: null, //search error message
     sort: null, // current sort
     order: "desc", // current sort order
     filters: {}, // current filters
+    subFilters: {}, // current subfilters
+    activeTab: 0, // search tab currently shown
     fields: ["data_id", "name"], // current fields
-    getColor: () => {
-      return this.getColor();
+    getColor: (type = this.state.type) => {
+      return this.getColor(type);
+    },
+    getIcon: (type = this.state.type) => {
+      return this.getIcon(type);
     },
     getSearchTopic: () => {
       return this.getSearchTopic();
@@ -177,6 +185,12 @@ class App extends React.Component {
       ),
     setType: value => {
       this.setState({ type: value }, this.log("Type changed"));
+    },
+    setActiveTab: value => {
+      this.setState({ activeTab: value }, this.log("Active tab changed"));
+    },
+    setSubType: value => {
+      this.setState({ subType: value }, this.log("SubType changed"));
     },
     setTag: value => {
       this.setState({ tag: value }, this.log("Tag changed"));
@@ -215,7 +229,26 @@ class App extends React.Component {
         this.log("Search results changed")
       );
     },
-    setSearch: (qp, fields) => {
+    setSubResults: (counts, results) => {
+      this.setState(
+        {
+          subCounts: counts,
+          subResults: results,
+          updateType: "subresults"
+        },
+        this.log("Search subresults changed")
+      );
+    },
+    setSubSearch: (type, filters) => {
+      let update = {
+        subType: type,
+        subFilters: filters,
+        updateType: "subquery",
+        subResults: []
+      };
+      this.setState(update);
+    },
+    setSearch: (qp, fields) => { // parses search from url query parameters 
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
       let idChanged = false;
@@ -242,6 +275,9 @@ class App extends React.Component {
           update[key] = value;
           if (this.state[key] !== value && key !== "id") {
             qchanged = true;
+          }
+          if (key === "type" && this.state[key] !== value ) { //reset active tab if type changes
+            update["activeTab"] = 0;
           }
           // Process FILTERS
           // Filters have shape {key: {value: v, type: t}}
@@ -299,7 +335,8 @@ class App extends React.Component {
         update.results = [];
         this.setState(update);
       } else if (
-        (qp["id"] !== undefined && this.state.id !== qp["id"]) ||
+        (qp["id"] !== undefined && this.state.id !== qp["id"]) || 
+        (qp["id"] === undefined && this.state.id !== undefined) ||
         idChanged
       ) {
         console.log("SetState: id changed");
@@ -336,40 +373,61 @@ class App extends React.Component {
     }
   };
 
-  getColor = () => {
-    if (this.state.type === "data") {
+  getColor = (type) => {
+    if (type === "data") {
       return green[500];
-    } else if (this.state.type === "task") {
+    } else if (type === "task") {
       return orange[600];
     } else if (
-      this.state.type === "flow" ||
+      type === "flow" ||
       window.location.pathname.startsWith("/api")
     ) {
       return blue[800];
     } else if (
-      this.state.type === "run" ||
+      type === "run" ||
       window.location.pathname.startsWith("/contribute")
     ) {
       return red[400];
     } else if (
-      this.state.type === "study" ||
+      type === "study" ||
       window.location.pathname.startsWith("/meet")
     ) {
       return purple[600];
     } else if (
-      this.state.type === "task_type" ||
+      type === "task_type" ||
       window.location.pathname.startsWith("/about")
     ) {
       return orange[400];
     } else if (
-      this.state.type === "measure" ||
+      type === "measure" ||
       window.location.pathname.startsWith("/terms")
     ) {
       return grey[700];
-    } else if (this.state.type === "user") {
+    } else if (type === "user") {
       return blue[300];
     } else {
       return undefined;
+    }
+  };
+
+  getIcon = (type) => {
+    switch (type) {
+      case "data":
+        return "database";
+      case "task":
+        return ["fas", "flag"];
+      case "flow":
+        return "cog";
+      case "run":
+        return "flask";      
+      case "study":
+        return "layer-group";
+      case "tasktype":
+        return ["far", "flag"];
+      case "measure":
+        return "chart-bar";
+      default:
+        return "database";
     }
   };
 

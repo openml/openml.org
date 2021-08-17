@@ -365,7 +365,7 @@ export const mainRoutes = [
 
 export const clearRoutes = [authRoutes];
 
-export default [
+const defaultRoutes = [
   dataRoutes,
   taskRoutes,
   flowRoutes,
@@ -382,3 +382,6 @@ export default [
   teamRoutes,
   termsRoutes
 ];
+
+
+export default defaultRoutes;

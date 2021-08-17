@@ -41,7 +41,6 @@ export default class SearchPanel extends React.Component {
   static contextType = MainContext;
 
   state = {
-    activeTab: 0, //O: detail, 1: dash
     previousWidth: 0
   };
 
@@ -49,26 +48,32 @@ export default class SearchPanel extends React.Component {
   getQueryParams = () => {
     let qstring = queryString.parse(this.props.location.search);
 
+      // Sensible defaults
+      if (qstring.type === "data" && qstring.status === undefined) {
+        qstring.status = "active";
+        this.updateQuery("status", "active");
+      } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
+        qstring.measure_type = "data_quality";
+        this.updateQuery("measure_type", "data_quality");
+      } else if (qstring.type === "study" && qstring.study_type === undefined) {
+        qstring.study_type = "task";
+        this.updateQuery("study_type", "task");
+      }
+
     // If no sort is defined, set a sensible default
     if (this.context.sort === null || this.context.type !== qstring.type) {
       if (["data", "flow", "task"].includes(qstring.type)) {
         qstring.sort = "runs";
+      } else if (qstring.type === "study" && qstring.study_type === "task") {
+        qstring.sort = "tasks_included";
+      } else if (qstring.type === "study" && qstring.study_type === "run") {
+        qstring.sort = "runs_included";
       } else {
         qstring.sort = "date";
       }
       this.updateQuery("sort", qstring.sort);
     }
-    // Other sensible defaults
-    if (qstring.type === "data" && qstring.status === undefined) {
-      qstring.status = "active";
-      this.updateQuery("status", "active");
-    } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
-      qstring.measure_type = "data_quality";
-      this.updateQuery("measure_type", "data_quality");
-    } else if (qstring.type === "study" && qstring.study_type === undefined) {
-      qstring.study_type = "task";
-      this.updateQuery("study_type", "task");
-    }
+
     return qstring;
   };
 
@@ -87,6 +92,18 @@ export default class SearchPanel extends React.Component {
         this.props.location.pathname + "?" + currentUrlParams.toString()
       );
     }
+  };
+
+  goToSubType = (type, id, filter, filter_id) => {
+    let currentUrlParams = new URLSearchParams(this.props.location.search);
+    currentUrlParams.set("type", type);
+    currentUrlParams.set(filter, filter_id);
+    currentUrlParams.set("id", id);
+    currentUrlParams.delete("status");
+    currentUrlParams.delete("study_type");
+    this.props.history.push(
+      this.props.location.pathname + "?" + currentUrlParams.toString()
+    );
   };
 
   clearFilters = (key) => {
@@ -128,7 +145,10 @@ export default class SearchPanel extends React.Component {
       "tasktype.name",
       "source_data.name",
       "target_feature",
+      "evaluation_measures",
       "estimation_procedure.name",
+      "target_values",
+      "target_value",
       "nr_of_likes",
       "nr_of_downloads",
       "runs",
@@ -227,6 +247,8 @@ export default class SearchPanel extends React.Component {
   componentDidUpdate() {
     if (this.context.updateType === "query") {
       this.reload();
+    } else if (this.context.updateType === "subquery") {
+      this.loadSubQuery();
     } else {
       this.updateSearch();
     }
@@ -295,6 +317,79 @@ export default class SearchPanel extends React.Component {
     return queryFilters;
   };
 
+  processSearchResults = (data, type) => {
+    // Add in non-standard properties
+    if (type === "task") {
+      data.results.forEach(res => {
+        res["comp_name"] = getProperty(res, "source_data.name") + " " + getProperty(res, "tasktype.name").replace("Supervised ","").toLowerCase(); 
+        if (getProperty(res, "tasktype.name").includes("Supervised")) {
+          res["description"] = "Predict feature '" + getProperty(res, "target_feature") + "'. "
+          if(getProperty(res, "target_values") && getProperty(res, "target_values").length<=10){
+            res["description"] += "Possible values are '" + getProperty(res, "target_values") + "'. "
+          }
+        } else if (getProperty(res, "tasktype.name").includes("curve")) {
+          res["description"] = "Perform '" + getProperty(res, "tasktype.name") + " analysis. "
+        } else {
+          res["description"] = "Perform " + getProperty(res, "tasktype.name") + ". "
+          if(getProperty(res, "target_value")){
+            res["description"] += "The target value is '" + getProperty(res, "target_value") + "'. "
+          }
+        }
+        if (getProperty(res, "estimation_procedure.name")){
+          res["description"] += "Evaluate models using " + getProperty(res, "estimation_procedure.name") + ". ";
+        }
+        res["description"] += "The evaluation measure is " + getProperty(res, "evaluation_measures") + ". ";
+      });
+    } else if (type === "run") {
+      data.results.forEach(res => {
+        let flow_name = getProperty(res, "run_flow.name");
+        let data_name = getProperty(res, "run_task.source_data.name");
+        res["comp_name"] = this.sliceFlow(flow_name) + " on " + data_name;
+        res["description"] =
+          this.sliceDescription(flow_name) +
+          " on " +
+          data_name +
+          " by " +
+          getProperty(res, "uploader");
+        res.evaluations.forEach(score => {
+          res[score.evaluation_measure] = score.value;
+        });
+        delete res.evaluations;
+      });
+    } else if (type === "user") {
+      data.results.forEach(res => {
+        res["comp_name"] =
+          getProperty(res, "first_name") +
+          " " +
+          getProperty(res, "last_name");
+        res["description"] =
+          getProperty(res, "bio") +
+          " - " +
+          getProperty(res, "company") +
+          " - " +
+          getProperty(res, "country");
+        res["initials"] =
+          getProperty(res, "first_name")
+            .charAt(0)
+            .toUpperCase() +
+          getProperty(res, "last_name")
+            .charAt(0)
+            .toUpperCase();
+      });
+    } else if (type === "measure") {
+      let mtype = this.context.filters.measure_type.value;
+      data.results.forEach(res => {
+        if (mtype === "estimation_procedure")
+          res["measure_id"] = getProperty(res, "proc_id");
+        else if (mtype === "data_quality")
+          res["measure_id"] = getProperty(res, "quality_id");
+        else if (mtype === "evaluation_measure")
+          res["measure_id"] = getProperty(res, "eval_id");
+      });
+    }
+    return { counts: data.counts, results: data.results };
+  };
+
   // call search engine for initial listing
   reload() {
     console.log("Searchpanel reloads. Start search.");
@@ -308,70 +403,10 @@ export default class SearchPanel extends React.Component {
       this.toFilterQuery(this.context.filters)
     )
       .then(data => {
-        // Add in non-standard properties
-        if (this.context.type === "task") {
-          data.results.forEach(res => {
-            res["comp_name"] = getProperty(res, "source_data.name");
-            res["description"] =
-              getProperty(res, "tasktype.name") +
-              ": predict '" +
-              getProperty(res, "target_feature") +
-              "', evaluate with " +
-              getProperty(res, "estimation_procedure.name");
-            if (data.hasOwnProperty("evaluation_measures")) {
-              res["description"] +=
-                ", optimize '" + getProperty(res, "evaluation_measures");
-            }
-          });
-        } else if (this.context.type === "run") {
-          data.results.forEach(res => {
-            let flow_name = getProperty(res, "run_flow.name");
-            let data_name = getProperty(res, "run_task.source_data.name");
-            res["comp_name"] = this.sliceFlow(flow_name) + " on " + data_name;
-            res["description"] =
-              this.sliceDescription(flow_name) +
-              " on " +
-              data_name +
-              " by " +
-              getProperty(res, "uploader");
-            res.evaluations.forEach(score => {
-              res[score.evaluation_measure] = score.value;
-            });
-            delete res.evaluations;
-          });
-        } else if (this.context.type === "user") {
-          data.results.forEach(res => {
-            res["comp_name"] =
-              getProperty(res, "first_name") +
-              " " +
-              getProperty(res, "last_name");
-            res["description"] =
-              getProperty(res, "bio") +
-              " - " +
-              getProperty(res, "company") +
-              " - " +
-              getProperty(res, "country");
-            res["initials"] =
-              getProperty(res, "first_name")
-                .charAt(0)
-                .toUpperCase() +
-              getProperty(res, "last_name")
-                .charAt(0)
-                .toUpperCase();
-          });
-        } else if (this.context.type === "measure") {
-          let mtype = this.context.filters.measure_type.value;
-          data.results.forEach(res => {
-            if (mtype === "estimation_procedure")
-              res["measure_id"] = getProperty(res, "proc_id");
-            else if (mtype === "data_quality")
-              res["measure_id"] = getProperty(res, "quality_id");
-            else if (mtype === "evaluation_measure")
-              res["measure_id"] = getProperty(res, "eval_id");
-          });
+          let res = this.processSearchResults(data, this.context.type)
+          this.context.setResults(res.counts, res.results);
         }
-        this.context.setResults(data.counts, data.results);
-      })
+      )
       .catch(error => {
         console.error(error);
         try {
@@ -383,6 +418,42 @@ export default class SearchPanel extends React.Component {
                 ? " (" + error.fileName + ":" + error.lineNumber + ")"
                 : "")
           });
+        } catch (ex) {
+          console.error("There was an error displaying the above error");
+          console.error(ex);
+        }
+      });
+  }
+
+
+  // call search engine for sub-listing (e.g. tasks for a given dataset)
+  loadSubQuery() {
+    search(
+      undefined, // query
+      undefined, // tag
+      this.context.subType,
+      this.fields[this.context.subType],
+      (this.context.subType === "task" ? "runs" : "date"),
+      (this.context.subType === "task" ? "desc" : "asc"),
+      this.toFilterQuery(this.context.subFilters)
+    )
+      .then(data => {
+          let res = this.processSearchResults(data, this.context.subType)
+          this.context.setSubResults(res.counts, res.results);
+        }
+      )
+      .catch(error => {
+        console.error(error);
+        try {
+          this.setState({
+            error:
+              "" +
+              error +
+              (error.hasOwnProperty("fileName")
+                ? " (" + error.fileName + ":" + error.lineNumber + ")"
+                : "")
+          });
+          this.context.setSubResults(0, []);
         } catch (ex) {
           console.error("There was an error displaying the above error");
           console.error(ex);
@@ -441,14 +512,46 @@ export default class SearchPanel extends React.Component {
     this.updateQuery("id", value);
   };
 
+  selectSubEntity = value => {
+    let qstring = {
+      id: value,
+      type: this.context.subType
+    }
+    if (this.context.type === "data"){
+      qstring["source_data.data_id"] = this.context.id;
+    } else if (this.context.type === "study"){
+      qstring["collections.id"] = this.context.id;
+    } 
+    this.context.setSearch(qstring, this.fields[qstring.type]);
+    if (this.context.type === "data"){
+      this.goToSubType(this.context.subType, value, "source_data.data_id", this.context.id);
+    } else if (this.context.type === "study"){
+      this.goToSubType(this.context.subType, value, "collections.id", this.context.id);
+    }
+  };
+
   tableSelect = (event, id) => {
     this.updateQuery("id", id);
   };
 
   // Switch between tabs
   tabChange = (event, activeTab) => {
+    console.log("Tab changed!")
+    // Drilldown queries
+    if (this.context.type === "data" && activeTab === 2 && 
+        this.context.updatetype !== "subquery"){
+      let filters = []
+      filters["source_data.data_id"] = { value: this.context.id, type: "=" };
+      this.context.setSubSearch("task", filters);
+    } else if (this.context.type === "study" && activeTab === 2 && 
+      this.context.updatetype !== "subquery"){
+      let filters = []
+      filters["collections.id"] = { value: this.context.id, type: "=" };
+      this.context.setSubSearch("task", filters);
+    }
+    // Set new active tab
     console.log("SetState: activeTab");
-    this.setState(state => ({ activeTab }));
+    this.context.setActiveTab(activeTab);
   };
 
   getFilterOptions = () => {
@@ -623,7 +726,9 @@ export default class SearchPanel extends React.Component {
 
   getEntityList = () => {
     let attrs = {
-      selectEntity: this.selectEntity.bind(this)
+      selectEntity: this.selectEntity.bind(this),
+      listType: "search",
+      context: this.context // Passing context as prop to avoid unnecessary rendering 
     };
     switch (this.context.type) {
       case "data":
@@ -647,9 +752,28 @@ export default class SearchPanel extends React.Component {
     }
   };
 
+  getSubEntityList = (entitytype) => {
+    let attrs = {
+      selectEntity: this.selectSubEntity.bind(this),
+      listType: "drilldown",
+      context: this.context // Passing context as prop to avoid unnecessary rendering
+    };
+    switch (entitytype) {
+      case "data":
+        return <DataListPanel attrs={attrs} />;
+      case "task":
+        return <TaskListPanel attrs={attrs} />;
+      case "flow":
+        return <FlowListPanel attrs={attrs} />;
+      case "run":
+        return <RunListPanel attrs={attrs} />;
+      default:
+        return <DataListPanel attrs={attrs} />;
+    }
+  };
+
   render() {
-    const activeTab = this.state.activeTab;
-    console.log("Render search pane");
+    const activeTab = this.context.activeTab;
 
     const ucfirst = s => {
       return s && s[0].toUpperCase() + s.slice(1);
@@ -700,7 +824,9 @@ export default class SearchPanel extends React.Component {
             <SearchTab
               label={
                 this.context.id !== undefined
-                  ? ucfirst(this.context.type)
+                  ? (this.context.type === 'study' ? 
+                  ucfirst(this.context.filters.study_type.value) + " Collection" : 
+                  ucfirst(this.context.type).replace("_"," ") + " Detail")
                   : "Statistics"
               }
               key="detail"
@@ -726,6 +852,20 @@ export default class SearchPanel extends React.Component {
                   searchcolor={this.context.getColor()}
                 />
               )}
+            {this.context.type === "study" && this.context.id !== undefined && (
+              <SearchTab
+                label="Tasks"
+                key="collection_tasks"
+                searchcolor={this.context.getColor()}
+              />
+            )}
+            {this.context.type === "study" && this.context.filters.study_type.value === "run" && this.context.id !== undefined && (
+              <SearchTab
+                label="Runs"
+                key="collection_runs"
+                searchcolor={this.context.getColor()}
+              />
+            )}
           </SearchTabs>
           <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)" }}>
             {activeTab === 0 ? ( // Detail panel
@@ -747,9 +887,6 @@ export default class SearchPanel extends React.Component {
             ) : // Dashboard for detail
               activeTab === 1 ? (
                 this.context.id ? (
-                  // TODO: Add logic to call subtypes (e.g. run collection,
-                  // task collection). E.g.:
-                  // if(context.filter.study_type === 'run') ...
                   <div style={{ height: "calc(100vh - 125px)" }}>
                     <iframe
                       src={
@@ -802,11 +939,13 @@ export default class SearchPanel extends React.Component {
                   .
                     </div>
                   )
-              ) : (
+              ) : ( // Other tabs are drilldowns 
                   this.context.id &&
-                  (this.context.type === "data" ? (
+                  ((this.context.type === "data" && activeTab === 2) ||
+                   (this.context.type === "study" && activeTab === 2)
+                   ? (
                     // Drilldowns
-                    <div>Task list not supported yet</div>
+                    this.getSubEntityList("task")
                   ) : (
                       // Drilldowns
                       <div>Run list not supported yet</div>
@@ -848,6 +987,8 @@ export class DataListPanel extends React.PureComponent {
           { param: "qualities.NumberOfMissingValues", unit: "missing" }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -879,6 +1020,8 @@ export class FlowListPanel extends React.PureComponent {
           }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -928,6 +1071,8 @@ export class UserListPanel extends React.PureComponent {
           }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -968,6 +1113,8 @@ export class StudyListPanel extends React.PureComponent {
           }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -999,6 +1146,8 @@ export class TaskListPanel extends React.PureComponent {
           }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -1015,6 +1164,8 @@ export class TaskTypeListPanel extends React.PureComponent {
         processDescription={false}
         idField="tt_id"
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -1031,6 +1182,8 @@ export class MeasureListPanel extends React.PureComponent {
         processDescription={false}
         idField="measure_id"
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }
@@ -1056,6 +1209,8 @@ export class RunListPanel extends React.PureComponent {
           }
         ]}
         selectEntity={this.props.attrs.selectEntity}
+        listType={this.props.attrs.listType}
+        context={this.props.attrs.context}
       ></SearchResultsPanel>
     );
   }

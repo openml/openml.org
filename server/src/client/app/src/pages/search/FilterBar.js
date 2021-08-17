@@ -174,8 +174,17 @@ export class FilterBar extends React.Component {
     return false;
   };
 
+  filterLabel = key => {
+    if (this.context.filters[key]["value"] === "active"){
+      return "verified";
+    } else if (key.includes(".")) {
+      return key.split(".")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
+    } else {
+      return this.context.filters[key]["value"];
+    }
+  }
+
   render() {
-    console.log("Render filter bar");
     return (
       <React.Fragment>
         <FilterContainer>
@@ -189,7 +198,7 @@ export class FilterBar extends React.Component {
             {Object.keys(this.context.filters).map((key) => {
               return this.context.filters[key]["value"] !== "any" &&
                 <FilterChip
-                  label={this.context.filters[key]["value"] === "active" ? "verified" : this.context.filters[key]["value"]}
+                  label={this.filterLabel(key)}
                   key={key + this.context.filters[key]["value"]}
                   clickable
                   color="secondary"
