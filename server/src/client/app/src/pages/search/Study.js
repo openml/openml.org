@@ -1,5 +1,22 @@
 import React from "react";
+import styled from "styled-components";
 import SearchPanel from "./SearchPanel.js";
+import { MetaTag } from "./MetaItems";
+import {
+  Chip,
+  Avatar,
+  Card,
+  CardContent,
+  Typography,
+  Grid
+} from "@material-ui/core";
+import ReactMarkdown from "react-markdown";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const UserChip = styled(Chip)`
+  margin-bottom: 5px;
+  margin-left: 10px;
+`;
 
 class DescriptionView extends React.Component {
   render() {
@@ -90,49 +107,49 @@ export class StudyItem extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <h1 className={"sectionTitle"}>
-          <span className={"fa fa-flask"} />
-          {this.props.object.name}
-        </h1>
-        <div className="dataStats">
-          <div className="subtitle"></div>
-          <span>
-            <span className="fa fa-cloud-upload" />
-            uploaded {this.props.object.date} by {this.props.object.uploader}
-          </span>
-          <span>
-            <span className="fa fa-upload" />
-            Visibility:{this.props.object.visibility}
-          </span>
-        </div>
-        <div className="contentSection">
-          <button
-            className="button"
-            onClick={() => this.handleClick("Description")}
-          >
-            {" "}
-            Description
-          </button>
-          <button
-            className="button"
-            onClick={() => this.handleClick("Datasets")}
-          >
-            {" "}
-            {this.props.object.datasets_included} Datasets
-          </button>
-          <button className="button" onClick={() => this.handleClick("Tasks")}>
-            {" "}
-            {this.props.object.tasks_included} Tasks
-          </button>
-          <button className="button" onClick={() => this.handleClick("Flows")}>
-            {" "}
-            {this.props.object.flows_included} Flows
-          </button>
-          <button className="button" onClick={() => this.handleClick("Runs")}>
-            {this.props.object.runs_included} Runs
-          </button>
-        </div>
-        <div className="contentSection">{this.state.view}</div>
+        <Grid container spacing={6}>
+          <Grid item md={12}>
+            <Typography variant="h1" style={{ marginTop: "15px" }}>
+              <FontAwesomeIcon icon="layer-group" />
+              &nbsp;&nbsp;&nbsp;{this.props.object.name}
+            </Typography>
+          </Grid>
+          <Grid item md={12}>
+            <MetaTag type={"id"} value={"ID: " + this.props.object.study_id} />
+            <MetaTag type={"visibility"} value={this.props.object.visibility} />
+            <FontAwesomeIcon icon="clock" />{" "}
+            {this.props.object.date.split(" ")[0]}
+            <UserChip
+              size="small"
+              variant="outlined"
+              color="primary"
+              avatar={
+                <Avatar>{this.props.object.uploader ? this.props.object.uploader.charAt(0) : "X"}</Avatar>
+              }
+              label={this.props.object.uploader}
+              href={"search?type=user&id=" + this.props.object.uploader_id}
+              component="a"
+              clickable
+            />
+            <br />
+            <MetaTag type={"data"} value={this.props.object.datasets_included} />
+            <MetaTag type={"tasks"} value={this.props.object.tasks_included} />
+            <MetaTag type={"flows"} value={this.props.object.flows_included} />
+            <MetaTag type={"runs"} value={this.props.object.runs_included} />
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h4" mb={6}>
+                  Description
+                </Typography>
+                <div className="contentSection">
+                  <ReactMarkdown children={this.props.object.description} />
+                </div>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </React.Fragment>
     );
   }

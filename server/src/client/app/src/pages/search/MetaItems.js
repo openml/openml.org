@@ -18,6 +18,9 @@ export class MetaTag extends React.Component {
       case "licence":
         icon = "closed-captioning";
         break;
+      case "visibility":
+        icon = "eye";
+        break;
       case "task-type":
         icon = "flag";
         break;
@@ -45,6 +48,18 @@ export class MetaTag extends React.Component {
         icon = "trophy";
         prefix = "Task ";
         break;
+      case "tasks":
+        icon = "trophy";
+        suffix = " tasks";
+        break;
+      case "data":
+        icon = "database";
+        suffix = " datasets";
+        break;
+      case "flows":
+        icon = "cogs";
+        suffix = " flows";
+        break;
       case "status":
         icon = (this.props.value === 'verified' ? "check-circle" : (this.props.value === 'deactivated' ? "times" : "wrench"));
         break;
@@ -63,7 +78,7 @@ export class MetaTag extends React.Component {
             </span>
           </Tooltip>);
       default:
-        icon = "questionmark";
+        icon = "question";
         break;
     }
 

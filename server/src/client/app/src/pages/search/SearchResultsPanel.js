@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import TimeAgo from "react-timeago";
 
@@ -349,10 +349,10 @@ export class SearchResultsPanel extends React.Component {
     let component = null;
     let results = this.props.context.results;
     let qtype = this.props.context.type;
+
     if (this.props.listType === "drilldown"){
       results = this.props.context.subResults;
       qtype = this.props.context.subType;
-    } else {
     }
     if (
       results.length >= 1 &&
@@ -409,22 +409,23 @@ export class SearchResultsPanel extends React.Component {
                 }}
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
+                {this.props.listType === "drilldown" && // Header for drilldown lists            
                   <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
-                    {this.props.listType === "drilldown" && // Header for drilldown lists            
-                      <Grid item md={12}>
-                        <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                          Tasks
-                        </Typography>
-                        <Typography style={{ marginBottom: "15px" }}>
-                          Tasks define specific problems to be solved using this {this.getTypeName(this.props.context.type)}. They specify train and test sets, 
-                          which target feature(s) to predict for supervised problems, and possibly which evaluation measure
-                          to optimize. They make the problem reproducible and machine-readable.
-                        </Typography>
-                      </Grid>
-                    }
-                    <Paper>
-                      {component}
-                    </Paper>
+                    <Box m={2} pt={3}>
+                      <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                        {this.capitalize(qtype)}s
+                      </Typography>
+                      <Typography style={{ marginBottom: "15px" }}>
+                        Tasks define specific problems to be solved using this {this.getTypeName(this.props.context.type)}. They specify train and test sets, 
+                        which target feature(s) to predict for supervised problems, and possibly which evaluation measure
+                        to optimize. They make the problem reproducible and machine-readable.
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  }
+                  <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
+                    {component && <Paper>{component}</Paper>}
+                    {component === null && this.props.listType === "drilldown" && <CircularProgress />}
                   </Grid>
                 </Grid>
               </Scrollbar>
