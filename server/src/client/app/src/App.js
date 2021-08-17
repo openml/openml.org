@@ -249,6 +249,7 @@ class App extends React.Component {
       this.setState(update);
     },
     setSearch: (qp, fields) => { // parses search from url query parameters 
+      console.log(qp);
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
       let idChanged = false;

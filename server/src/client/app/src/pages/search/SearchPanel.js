@@ -101,6 +101,7 @@ export default class SearchPanel extends React.Component {
     currentUrlParams.set("id", id);
     currentUrlParams.delete("status");
     currentUrlParams.delete("study_type");
+    currentUrlParams.delete("sort");
     this.props.history.push(
       this.props.location.pathname + "?" + currentUrlParams.toString()
     );
@@ -513,9 +514,11 @@ export default class SearchPanel extends React.Component {
   };
 
   selectSubEntity = value => {
+    console.log("New sub entity delected");
     let qstring = {
       id: value,
-      type: this.context.subType
+      type: this.context.subType,
+      sort: "runs"
     }
     if (this.context.type === "data"){
       qstring["source_data.data_id"] = this.context.id;
