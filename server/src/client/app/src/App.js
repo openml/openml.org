@@ -150,6 +150,8 @@ class App extends React.Component {
     query: undefined,
     counts: 0, //counts of hits
     subCounts: 0, //counts of hits
+    startCount: 0, //current start of paged hits 
+    startSubCount: 0, //current start of paged hits 
     type: undefined, //the entity type
     subType: undefined, //the entity subtype
     id: undefined, //the entity ID
@@ -184,7 +186,7 @@ class App extends React.Component {
         this.log("Stats view changed")
       ),
     setType: value => {
-      this.setState({ type: value }, this.log("Type changed"));
+      this.setState({ type: value, activeTab: 0 }, this.log("Type changed"));
     },
     setActiveTab: value => {
       this.setState({ activeTab: value }, this.log("Active tab changed"));
@@ -213,18 +215,22 @@ class App extends React.Component {
     setSort: value => {
       this.setState({ sort: value }, this.log("Sort changed"));
     },
+    resetStartCount: () => {
+      this.setState({ startCount: 0, startSubCount: 0 }, this.log("StartCount reset"));
+    },
     setOrder: value => {
       this.setState({ order: value }, this.log("Order changed"));
     },
     setID: value => {
-      this.setState({ id: value }, this.log("ID changed"));
+      this.setState({ id: value, activeTab: 0 }, this.log("ID changed"));
     },
     setResults: (counts, results) => {
       this.setState(
         {
           counts: counts,
           results: results,
-          updateType: "results"
+          updateType: "results",
+          startCount: results.length
         },
         this.log("Search results changed")
       );
@@ -234,7 +240,8 @@ class App extends React.Component {
         {
           subCounts: counts,
           subResults: results,
-          updateType: "subresults"
+          updateType: "subresults",
+          startSubCount: results.length
         },
         this.log("Search subresults changed")
       );
@@ -249,7 +256,7 @@ class App extends React.Component {
       this.setState(update);
     },
     setSearch: (qp, fields) => { // parses search from url query parameters 
-      console.log(qp);
+      //console.log(qp);
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
       let idChanged = false;
@@ -326,25 +333,24 @@ class App extends React.Component {
         }
         if (this.state.displaySearch !== update.displaySearch) idChanged = true;
       }
-      // Unset ID
-      //if (this.state.id !== undefined && qp["id"] === undefined)
-      //  qchanged = true;
       // If anything changed, set the new state
       if (qchanged) {
-        console.log("SetState: query changed");
+        console.log("Query changed");
         update.updateType = "query";
         update.results = [];
+        update.startCount = 0;
         this.setState(update);
       } else if (
         (qp["id"] !== undefined && this.state.id !== qp["id"]) || 
         (qp["id"] === undefined && this.state.id !== undefined) ||
         idChanged
       ) {
-        console.log("SetState: id changed");
+        console.log("ID changed");
         this.setState({
           id: qp["id"],
           updateType: "id",
-          displaySearch: update["displaySearch"]
+          displaySearch: update["displaySearch"],
+          activeTab: 0
         });
       } else {
         if (this.state.updateType !== undefined) {
@@ -352,7 +358,7 @@ class App extends React.Component {
             updateType: undefined
           });
         }
-        console.log("SetState: nothing to do");
+        //console.log("Nothing to do");
       }
     },
     updateSearch: (sort, order, filters) => {

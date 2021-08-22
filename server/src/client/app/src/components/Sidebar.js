@@ -158,7 +158,7 @@ const SidebarSection = styled(Typography)`
   display: block;
   margin-bottom: 6px;
   font-size: 0.9rem;
-  margin-top: 20px;
+  margin-top: 19px;
 `;
 
 const SidebarFooter = styled.div`

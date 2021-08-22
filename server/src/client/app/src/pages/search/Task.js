@@ -46,10 +46,10 @@ export class TaskItem extends React.Component {
                 {/*{" "}by{" "} <Grid item md={2} ><MetaDownvotes value={this.props.object.downvotes} /></Grid>*/}
               </Grid>
             </Grid>
-
+            {this.props.tags[0].length > 0 && (
             <Grid container>
               <Grid item md={12}><FontAwesomeIcon icon="tags" />{" "}{this.props.tags}</Grid>
-            </Grid>
+            </Grid>)}
           </Grid>
 
           <Grid item xs={12}>

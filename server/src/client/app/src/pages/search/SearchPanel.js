@@ -250,6 +250,8 @@ export default class SearchPanel extends React.Component {
       this.reload();
     } else if (this.context.updateType === "subquery") {
       this.loadSubQuery();
+    } else if (this.context.updateType === "id" && this.context.activeTab>1) {
+      this.loadSubQuery();
     } else {
       this.updateSearch();
     }
@@ -391,7 +393,7 @@ export default class SearchPanel extends React.Component {
     return { counts: data.counts, results: data.results };
   };
 
-  // call search engine for initial listing
+  // call search engine to load more results
   reload() {
     console.log("Searchpanel reloads. Start search.");
     search(
@@ -401,11 +403,16 @@ export default class SearchPanel extends React.Component {
       this.context.fields,
       this.context.sort,
       this.context.order,
-      this.toFilterQuery(this.context.filters)
+      this.toFilterQuery(this.context.filters),
+      this.context.startCount
     )
       .then(data => {
           let res = this.processSearchResults(data, this.context.type)
-          this.context.setResults(res.counts, res.results);
+          if (this.context.startCount === 0){
+            this.context.setResults(res.counts, res.results);
+          } else {
+            this.context.setResults(res.counts, this.context.results.concat(res.results));
+          }
         }
       )
       .catch(error => {
@@ -429,6 +436,7 @@ export default class SearchPanel extends React.Component {
 
   // call search engine for sub-listing (e.g. tasks for a given dataset)
   loadSubQuery() {
+    console.log("Searchpanel reloads. Start sub-search.");
     search(
       undefined, // query
       undefined, // tag
@@ -436,11 +444,16 @@ export default class SearchPanel extends React.Component {
       this.fields[this.context.subType],
       (this.context.subType === "task" ? "runs" : "date"),
       (this.context.subType === "task" ? "desc" : "asc"),
-      this.toFilterQuery(this.context.subFilters)
+      this.toFilterQuery(this.drillDownFilter()),
+      this.context.startSubCount
     )
       .then(data => {
           let res = this.processSearchResults(data, this.context.subType)
-          this.context.setSubResults(res.counts, res.results);
+          if (this.context.startSubCount === 0){
+            this.context.setSubResults(res.counts, res.results);
+          } else {
+            this.context.setSubResults(res.counts, this.context.subResults.concat(res.results));
+          }
         }
       )
       .catch(error => {
@@ -537,23 +550,26 @@ export default class SearchPanel extends React.Component {
     this.updateQuery("id", id);
   };
 
-  // Switch between tabs
-  tabChange = (event, activeTab) => {
-    console.log("Tab changed!")
-    // Drilldown queries
-    if (this.context.type === "data" && activeTab === 2 && 
+  // Drilldown filter
+  drillDownFilter = () => {
+    if (this.context.type === "data" && this.context.activeTab === 2 && 
         this.context.updatetype !== "subquery"){
       let filters = []
       filters["source_data.data_id"] = { value: this.context.id, type: "=" };
-      this.context.setSubSearch("task", filters);
-    } else if (this.context.type === "study" && activeTab === 2 && 
+      return filters;
+    } else if (this.context.type === "study" && this.context.activeTab === 2 && 
       this.context.updatetype !== "subquery"){
       let filters = []
       filters["collections.id"] = { value: this.context.id, type: "=" };
-      this.context.setSubSearch("task", filters);
+      return filters;
     }
+  };
+
+  // Switch between tabs
+  tabChange = (event, activeTab) => {
+    // Drilldown queries
+    this.context.setSubSearch("task", this.drillDownFilter());
     // Set new active tab
-    console.log("SetState: activeTab");
     this.context.setActiveTab(activeTab);
   };
 
@@ -731,27 +747,28 @@ export default class SearchPanel extends React.Component {
     let attrs = {
       selectEntity: this.selectEntity.bind(this),
       listType: "search",
-      context: this.context // Passing context as prop to avoid unnecessary rendering 
+      context: this.context, // Passing context as prop to avoid unnecessary rendering 
+      reload: this.reload.bind(this)
     };
     switch (this.context.type) {
       case "data":
-        return <DataListPanel attrs={attrs} />;
+        return <DataListPanel id="searchPanelScroll" attrs={attrs} />;
       case "task":
-        return <TaskListPanel attrs={attrs} />;
+        return <TaskListPanel id="searchPanelScroll" attrs={attrs} />;
       case "flow":
-        return <FlowListPanel attrs={attrs} />;
+        return <FlowListPanel id="searchPanelScroll" attrs={attrs} />;
       case "run":
-        return <RunListPanel attrs={attrs} />;
+        return <RunListPanel id="searchPanelScroll" attrs={attrs} />;
       case "task_type":
-        return <TaskTypeListPanel attrs={attrs} />;
+        return <TaskTypeListPanel id="searchPanelScroll" attrs={attrs} />;
       case "measure":
-        return <MeasureListPanel attrs={attrs} />;
+        return <MeasureListPanel id="searchPanelScroll" attrs={attrs} />;
       case "study":
-        return <StudyListPanel attrs={attrs} />;
+        return <StudyListPanel id="searchPanelScroll" attrs={attrs} />;
       case "user":
-        return <UserListPanel attrs={attrs} />;
+        return <UserListPanel id="searchPanelScroll" attrs={attrs} />;
       default:
-        return <DataListPanel attrs={attrs} />;
+        return <DataListPanel id="searchPanelScroll" attrs={attrs} />;
     }
   };
 
@@ -759,7 +776,8 @@ export default class SearchPanel extends React.Component {
     let attrs = {
       selectEntity: this.selectSubEntity.bind(this),
       listType: "drilldown",
-      context: this.context // Passing context as prop to avoid unnecessary rendering
+      context: this.context, // Passing context as prop to avoid unnecessary rendering
+      reload: this.loadSubQuery.bind(this)
     };
     switch (entitytype) {
       case "data":
@@ -870,7 +888,7 @@ export default class SearchPanel extends React.Component {
               />
             )}
           </SearchTabs>
-          <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)" }}>
+          <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)", overflow: "auto" }}>
             {activeTab === 0 ? ( // Detail panel
               this.context.id ? (
                 <DetailPanel>
@@ -992,6 +1010,7 @@ export class DataListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1025,6 +1044,7 @@ export class FlowListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1076,6 +1096,7 @@ export class UserListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1118,6 +1139,7 @@ export class StudyListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1151,6 +1173,7 @@ export class TaskListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1169,6 +1192,7 @@ export class TaskTypeListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1187,6 +1211,7 @@ export class MeasureListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }
@@ -1214,6 +1239,7 @@ export class RunListPanel extends React.PureComponent {
         selectEntity={this.props.attrs.selectEntity}
         listType={this.props.attrs.listType}
         context={this.props.attrs.context}
+        reload={this.props.attrs.reload}
       ></SearchResultsPanel>
     );
   }

@@ -70,7 +70,7 @@ export function search(
   order = "desc",
   filter = [],
   from = 0,
-  size = 100
+  size = 50
 ) {
   if (tag !== undefined) {
     //nested query for tag
@@ -124,7 +124,7 @@ export function search(
     },
     _source: fields.filter(l => !!l)
   };
-  console.log(JSON.stringify(params));
+  console.log("Search: " + JSON.stringify(params));
   //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
   return fetch(
     ELASTICSEARCH_SERVER + type + "/" + type + "/_search?type=" + type,
