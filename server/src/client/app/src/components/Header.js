@@ -482,7 +482,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     defaultValue={context.query ? context.query : null}
                     bg={context.searchActive ? "" : bg}
                     onKeyPress={event => {
-                      if (event.charCode === 13) {
+                      if (event.key === 'Enter') {
                         event.preventDefault();
                         context.setQuery(event.target.value);
                       }

@@ -4,13 +4,36 @@ import { EntryDetails } from "./ItemDetail.js";
 import { FilterBar } from "./FilterBar.js";
 import { Grid, Tabs, Tab } from "@material-ui/core";
 import styled from "styled-components";
-import Scrollbar from "react-scrollbars-custom";
+//import Scrollbar from "react-scrollbars-custom";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import queryString from "query-string";
 import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
 import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
 
+const Scrollbar = styled(PerfectScrollbar)`
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 186px);
+  overflow: "auto";
+
+  .ps {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .ps__rail-x,
+  .ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color 0.2s linear, opacity 0.2s linear;
+    height: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+`;
 const SearchTabs = styled(Tabs)`
   height: 61px;
   background-color: #fff;
@@ -96,12 +119,14 @@ export default class SearchPanel extends React.Component {
 
   goToSubType = (type, id, filter, filter_id) => {
     let currentUrlParams = new URLSearchParams(this.props.location.search);
+    currentUrlParams.delete("status");
+    currentUrlParams.delete("source_data.data_id");
+    currentUrlParams.delete("run_task.task_id");
+    currentUrlParams.delete("study_type");
+    currentUrlParams.delete("sort");
     currentUrlParams.set("type", type);
     currentUrlParams.set(filter, filter_id);
     currentUrlParams.set("id", id);
-    currentUrlParams.delete("status");
-    currentUrlParams.delete("study_type");
-    currentUrlParams.delete("sort");
     this.props.history.push(
       this.props.location.pathname + "?" + currentUrlParams.toString()
     );
@@ -233,8 +258,9 @@ export default class SearchPanel extends React.Component {
     }
   };
 
+  // important: don't update while waiting for queries
   shouldComponentUpdate(nextProps, nextState) {
-    return this.context.results.length > 0;
+    return this.context.updateType !== "query" || this.context.results.length > 0;
   }
 
   componentDidMount() {
@@ -245,9 +271,9 @@ export default class SearchPanel extends React.Component {
   }
 
   // check if update requires a query reload
-  componentDidUpdate() {
+  componentDidUpdate() {      
     if (this.context.updateType === "query") {
-      this.reload();
+      this.reload(); // Does initial load or when query changes
     } else if (this.context.updateType === "subquery") {
       this.loadSubQuery();
     } else if (this.context.updateType === "id" && this.context.activeTab>1) {
@@ -395,7 +421,6 @@ export default class SearchPanel extends React.Component {
 
   // call search engine to load more results
   reload() {
-    console.log("Searchpanel reloads. Start search.");
     search(
       this.context.query,
       this.context.tag,
@@ -410,7 +435,7 @@ export default class SearchPanel extends React.Component {
           let res = this.processSearchResults(data, this.context.type)
           if (this.context.startCount === 0){
             this.context.setResults(res.counts, res.results);
-          } else {
+          } else { //add to infinite list
             this.context.setResults(res.counts, this.context.results.concat(res.results));
           }
         }
@@ -436,7 +461,6 @@ export default class SearchPanel extends React.Component {
 
   // call search engine for sub-listing (e.g. tasks for a given dataset)
   loadSubQuery() {
-    console.log("Searchpanel reloads. Start sub-search.");
     search(
       undefined, // query
       undefined, // tag
@@ -512,7 +536,7 @@ export default class SearchPanel extends React.Component {
     this.updateQuery("tags.tag", tag);
   };
 
-  // New dataset selected
+  // New entity (id) selected
   // Note: We update the context first, then update the URL,
   // because we want to render before waiting for the browser.
   selectEntity = value => {
@@ -527,7 +551,6 @@ export default class SearchPanel extends React.Component {
   };
 
   selectSubEntity = value => {
-    console.log("New sub entity delected");
     let qstring = {
       id: value,
       type: this.context.subType,
@@ -535,12 +558,21 @@ export default class SearchPanel extends React.Component {
     }
     if (this.context.type === "data"){
       qstring["source_data.data_id"] = this.context.id;
+    } else if (this.context.type === "task"){
+      qstring["run_task.task_id"] = this.context.id;
+      qstring["sort"] = "date";
     } else if (this.context.type === "study"){
       qstring["collections.id"] = this.context.id;
-    } 
+      if (this.context.filters.study_type.value === "run"){
+        qstring["sort"] = "date";
+      }
+    }
+
     this.context.setSearch(qstring, this.fields[qstring.type]);
     if (this.context.type === "data"){
       this.goToSubType(this.context.subType, value, "source_data.data_id", this.context.id);
+    } else if (this.context.type === "task"){
+      this.goToSubType(this.context.subType, value, "run_task.task_id", this.context.id);
     } else if (this.context.type === "study"){
       this.goToSubType(this.context.subType, value, "collections.id", this.context.id);
     }
@@ -557,7 +589,12 @@ export default class SearchPanel extends React.Component {
       let filters = []
       filters["source_data.data_id"] = { value: this.context.id, type: "=" };
       return filters;
-    } else if (this.context.type === "study" && this.context.activeTab === 2 && 
+    } else if (this.context.type === "task" && this.context.activeTab === 2 && 
+        this.context.updatetype !== "subquery"){
+      let filters = []
+      filters["run_task.task_id"] = { value: this.context.id, type: "=" };
+      return filters;
+    } else if (this.context.type === "study" && 
       this.context.updatetype !== "subquery"){
       let filters = []
       filters["collections.id"] = { value: this.context.id, type: "=" };
@@ -568,7 +605,25 @@ export default class SearchPanel extends React.Component {
   // Switch between tabs
   tabChange = (event, activeTab) => {
     // Drilldown queries
-    this.context.setSubSearch("task", this.drillDownFilter());
+    let type = "task";
+    let toggling = false;
+    // Reset search when toggling between different sub-searches
+    if (this.context.type === "study" && this.context.filters.study_type.value === "run"){
+      if ((activeTab === 3 && this.context.subType === "task") || 
+          (activeTab === 2 && this.context.subType === "run") ){
+        toggling = true;
+      }
+    }    
+    // Only repeat search if current sub-search is empty
+    if (this.context.startSubCount === 0 || toggling){
+      if (this.context.type === "task"){
+        type = "run";
+      } else if (activeTab === 3 && this.context.type === "study" && 
+                this.context.filters.study_type.value === "run"){
+        type = "run";    
+      }
+      this.context.setSubSearch(type, this.drillDownFilter());
+    }
     // Set new active tab
     this.context.setActiveTab(activeTab);
   };
@@ -888,9 +943,9 @@ export default class SearchPanel extends React.Component {
               />
             )}
           </SearchTabs>
-          <Scrollbar style={{ width: "100%", height: "calc(100vh - 100px)", overflow: "auto" }}>
-            {activeTab === 0 ? ( // Detail panel
+            {activeTab === 0 ? ( // Detail panel, 176 or 115
               this.context.id ? (
+                <Scrollbar>
                 <DetailPanel>
                   <EntryDetails
                     type={this.context.type}
@@ -899,15 +954,19 @@ export default class SearchPanel extends React.Component {
                     location={this.props.location}
                   />
                 </DetailPanel>
+                </Scrollbar>
               ) : (
+                  <Scrollbar>
                   <DetailTable
                     entity_type={this.props.entity_type}
                     table_select={this.tableSelect}
                   />
+                  </Scrollbar>
                 )
             ) : // Dashboard for detail
               activeTab === 1 ? (
                 this.context.id ? (
+                  <Scrollbar>
                   <div style={{ height: "calc(100vh - 125px)" }}>
                     <iframe
                       src={
@@ -937,8 +996,10 @@ export default class SearchPanel extends React.Component {
                             allow-scripts allow-same-origin allow-top-navigation"
                     ></iframe>
                   </div>
+                  </Scrollbar>
                 ) : (
                     // Dashboard for list
+                    <Scrollbar>
                     <div style={{ height: "calc(100vh - 125px)" }}>
                       <iframe
                         src={
@@ -957,22 +1018,23 @@ export default class SearchPanel extends React.Component {
                         sandbox="allow-popups
                             allow-scripts allow-same-origin allow-top-navigation"
                       ></iframe>
-                  .
                     </div>
+                    </Scrollbar>
                   )
               ) : ( // Other tabs are drilldowns 
                   this.context.id &&
                   ((this.context.type === "data" && activeTab === 2) ||
                    (this.context.type === "study" && activeTab === 2)
                    ? (
-                    // Drilldowns
                     this.getSubEntityList("task")
                   ) : (
-                      // Drilldowns
-                      <div>Run list not supported yet</div>
+                    (this.context.type === "task" && activeTab === 2)
+                    ? (
+                      this.getSubEntityList("run")
+                    ) : (
+                    this.getSubEntityList("run")
                     ))
-                )}
-          </Scrollbar>
+                ))}
         </Grid>
       </Grid>
     );

@@ -139,8 +139,8 @@ export class EvaluationDetail extends React.Component {
       this.props.target_values.forEach((item, i) => {
         let val = this.props.item.array_data[i];
         rows.push(
-          <tr>
-            <td key={"key_" + item} style={{ width: "50%" }}>
+          <tr key={"key_" + this.props.item.evaluation_measure + i}>
+            <td key={ID++} style={{ width: "50%" }}>
               {item}
             </td>
             <td key={ID++}>{val}</td>

@@ -11,7 +11,6 @@ export class RunItem extends React.Component {
   render() {
     let flowCols = ["Parameter", "Value"];
     let evaluationMeasureCols = ["Evaluation Measure", "Value", ""];
-    console.log(this.props.object);
 
     //remove evaluations that do not have 'value' property from the retrieved api data
     var evaluations = [];
@@ -114,17 +113,6 @@ export class RunItem extends React.Component {
                   maxLength={7}
                   columns={evaluationMeasureCols}
                 />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant={"h4"}>Tasks</Typography>
-
-                <div className={"subtitle"}>
-                  Task visualization not currently supported
-                </div>
               </CardContent>
             </Card>
           </Grid>

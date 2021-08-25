@@ -146,26 +146,26 @@ class App extends React.Component {
 
     // Search context
     displayStats: false, // show statistics results
-    displaySplit: false, // show split pane
-    query: undefined,
-    counts: 0, //counts of hits
-    subCounts: 0, //counts of hits
-    startCount: 0, //current start of paged hits 
-    startSubCount: 0, //current start of paged hits 
-    type: undefined, //the entity type
-    subType: undefined, //the entity subtype
-    id: undefined, //the entity ID
+    displaySplit: false, // show split pane (search left, detail right)
+    query: undefined, // the query in the search bar
+    counts: 0, //number of hits in the main search
+    subCounts: 0, //number of hits in the sub-search (e.g. tasks of a dataset)
+    startCount: 0, //from where to start the next search (for pagination / infinite scroll)
+    startSubCount: 0, //from where to start the next sub-search (for pagination / infinite scroll)
+    type: undefined, //the main entity type
+    subType: undefined, //the entity subtype (e.g. tasks when the main entity is data)
+    id: undefined, //the entity ID selected for showing details
     tag: undefined, //tag filter
     results: [], //the search result list (hits)
-    subResults: [], //the search subresult list (hits)
-    updateType: undefined, //query, results, id
+    subResults: [], //the sub-search result list (hits)
+    updateType: undefined, //what kind of update was done (query changed, results arrived, id changed,...)
     error: null, //search error message
     sort: null, // current sort
     order: "desc", // current sort order
     filters: {}, // current filters
     subFilters: {}, // current subfilters
     activeTab: 0, // search tab currently shown
-    fields: ["data_id", "name"], // current fields
+    fields: ["data_id", "name"], // current fields to be returned by search
     getColor: (type = this.state.type) => {
       return this.getColor(type);
     },
@@ -205,8 +205,8 @@ class App extends React.Component {
         value = undefined;
       }
       this.setState(
-        { query: value, updateType: "query" },
-        this.log("Query changed")
+        { query: value, updateType: "query", startCount: 0, results: [] },
+        this.log("Query set")
       );
     },
     setFields: value => {
@@ -232,7 +232,7 @@ class App extends React.Component {
           updateType: "results",
           startCount: results.length
         },
-        this.log("Search results changed")
+        this.log("Search results changed. Total: "+results.length)
       );
     },
     setSubResults: (counts, results) => {
@@ -251,7 +251,8 @@ class App extends React.Component {
         subType: type,
         subFilters: filters,
         updateType: "subquery",
-        subResults: []
+        subResults: [],
+        startSubCount: 0
       };
       this.setState(update);
     },
@@ -286,6 +287,11 @@ class App extends React.Component {
           }
           if (key === "type" && this.state[key] !== value ) { //reset active tab if type changes
             update["activeTab"] = 0;
+            update["startSubCount"] = 0;            
+          }
+          else if (key === "study_type" && this.state.filters.study_type.value !== value ) { //reset active tab if study type changes
+            update["activeTab"] = 0;
+            update["startSubCount"] = 0;            
           }
           // Process FILTERS
           // Filters have shape {key: {value: v, type: t}}
@@ -350,6 +356,7 @@ class App extends React.Component {
           id: qp["id"],
           updateType: "id",
           displaySearch: update["displaySearch"],
+          startSubCount: 0,
           activeTab: 0
         });
       } else {

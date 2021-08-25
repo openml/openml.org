@@ -41,7 +41,6 @@ const FilterBox = styled.div`
   height: 60px;
   padding-top: 5px;
   padding-bottom: 5px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 `;
 const FilterContainer = styled(Card)`
   background-color: #fff;

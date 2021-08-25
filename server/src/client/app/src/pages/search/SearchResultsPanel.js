@@ -4,6 +4,7 @@ import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, Circul
 import PerfectScrollbar from "react-perfect-scrollbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TimeAgo from "react-timeago";
+import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,6 +15,23 @@ import {
   grey,
   purple
 } from "@material-ui/core/colors";
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: ${props => props.color};
+  padding-left: 5px;
+  padding-right: 1px;
+  font-weight: 800;
+
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+    color: ${props => props.color};
+  }
+`;
 
 const ColoredIcon = styled(FontAwesomeIcon)`
   cursor: 'pointer',
@@ -76,7 +94,6 @@ const SearchListPanel = styled(Paper)`
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
   position: relative;
-  height: calc(100vh - 115px);
 
   .ps {
     overflow: hidden;
@@ -361,31 +378,55 @@ export class SearchResultsPanel extends React.Component {
 
     // List header
     const header = (type, qtype) => {
-      return <Box m={2} pt={3}>
-              <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                {this.capitalize(qtype)}s
-              </Typography>
-              <Typography style={{ marginBottom: "15px" }}>
-                Tasks define specific problems to be solved using this {type}. 
-                They specify train and test sets, which target feature(s) to predict for 
-                supervised problems, and possibly which evaluation measure to optimize. 
-                They make the problem reproducible and machine-readable.
-              </Typography>
-            </Box>
+      if (qtype === "task"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}s
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Tasks define specific problems to be solved using this {type}. 
+                  They specify train and test sets, which target feature(s) to predict for 
+                  supervised problems, and possibly which evaluation measure to optimize. 
+                  They make the problem reproducible and machine-readable.
+                </Typography>
+              </Box>
+      } else if (qtype === "run"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}s
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Runs are evaluations of machine learning pipelines or models on this {type}. 
+                  They are shared directly from machine learning libraries in high detail to
+                  ensure reproducibility.
+                </Typography>
+              </Box>
+      } else {
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}s
+                </Typography>
+              </Box>
+      }
     };
 
     // List end
     const endMessage = (length) => {
-      return <React.Fragment>
-        <Box m={2} pt={5} display="flex" justifyContent="center" alignItems="center">
-          <ColoredIcon color={this.props.context.getColor(qtype)} icon={"sad-tear"} size="2x" fixedWidth/> 
-          {"\u00A0\u00A0"}Didn't find what you where looking for?
-        </Box>
-        <Box pb={5} pt={5} display="flex" justifyContent="center" alignItems="center">
-          <ColoredIcon color={this.props.context.getColor("run")} icon="heart" size="2x" fixedWidth/>
-          {"\u00A0\u00A0"}Share new datasets and results and start something great!
-        </Box>
-      </React.Fragment>
+      if (this.props.context.updateType !== "query"){
+        return <React.Fragment>
+          <Box m={2} pt={5} display="flex" justifyContent="center" alignItems="center">
+            <ColoredIcon color={this.props.context.getColor(qtype)} icon={"flag-checkered"} size="2x" fixedWidth/> 
+            {"\u00A0\u00A0"}All {length} results shown. Missing something?
+          </Box>
+          <Box pb={5} pt={5} display="flex" justifyContent="center" alignItems="center">
+            <ColoredIcon color={this.props.context.getColor("run")} icon="heart" size="2x" fixedWidth/>
+            {"\u00A0\u00A0"}Share new <StyledLink to="/auth/upload-dataset" color={this.props.context.getColor("data")}> datasets</StyledLink>, 
+            <StyledLink to="/auth/upload-task" color={this.props.context.getColor("task")}> tasks</StyledLink>, 
+            <StyledLink to="/auth/upload-collection-tasks" color={this.props.context.getColor("study")}> collections</StyledLink>, or 
+            <StyledLink to="https://docs.openml.org/APIs/" color={this.props.context.getColor("run")}> results</StyledLink>.
+          </Box>
+        </React.Fragment>
+      }
     }
 
     if (
@@ -432,25 +473,32 @@ export class SearchResultsPanel extends React.Component {
       );
     } else if (!this.props.context.updateType === "query") {
       component = <Card style={{ paddingLeft: 10 }}>No search results found</Card>;
+    } else {
+      component = <div></div>;
     }
 
     //if (component){ 
     //  console.log("Count: "+count);
     //  console.log("Length: "+component.length);
     //}
+    let dataLength = component.length;
+    if (dataLength === undefined){
+      dataLength = 0;
+    }
 
     if (this.props.tag === undefined) {
       return (
         <React.Fragment>
-          <SearchListPanel>
+          <SearchListPanel style={this.props.listType === "drilldown" ? {boxShadow:"none"} : {}}>
               <Scrollbar
                 id={scrollID}
                 style={{
-                  display: this.props.context.displaySearch ? "block" : "none"
+                  display: this.props.context.displaySearch ? "block" : "none",
+                  height: "calc(100vh - "+(this.props.listType === "drilldown" ? "176" : "115")+"px)"
                 }}
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
-                  {this.props.listType === "drilldown" && (
+                  {this.props.listType === "drilldown" && ( // show header for drilldowns
                     <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} 
                     xl={(this.props.context.displaySplit ? 12 : 9)}>
                       {header(this.props.context.type,qtype)}
@@ -459,10 +507,10 @@ export class SearchResultsPanel extends React.Component {
                   <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
                     {component && 
                       <InfiniteScroll
-                        dataLength={component.length}
+                        dataLength={dataLength}
                         next={this.props.reload}
-                        scrollThreshold="50px"
-                        hasMore={component.length !== count}
+                        scrollThreshold="10px"
+                        hasMore={dataLength !== count}
                         endMessage={endMessage(component.length)}
                         loader={<Box pb={5} pt={5} display="flex" justifyContent="center" alignItems="center"><CircularProgress disableShrink/></Box>}
                         scrollableTarget={scrollID}

@@ -190,19 +190,6 @@ export class DatasetItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
-
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" mb={6}>
-                  Tasks
-                </Typography>
-                <div className={"subtitle"}>
-                  Task visualization not currently supported
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
         </Grid>
       </React.Fragment>
     );
