@@ -315,6 +315,11 @@ export default class SearchPanel extends React.Component {
             })
           });
         }
+        else if (key.startsWith("collections")) {
+            queryFilters.push({
+              nested: { path: "collections", query: { "term": { "collections.id": filters[key].value } } }
+            });
+        }
         else if (filters[key].value !== "any") {
           queryFilters.push({
             term: { [key]: filters[key].value }
