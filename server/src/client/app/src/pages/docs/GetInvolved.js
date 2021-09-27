@@ -1,27 +1,55 @@
 import React from "react";
 import styled from "styled-components";
-import { yellow, green, red, blue, grey, purple } from "@material-ui/core/colors";
+import { yellow, green, red, blue, orange, grey, purple } from "@material-ui/core/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Card as MuiCard,
   Paper,
   CardContent,
   Grid,
-  Chip,
+  Chip,  
+  Fab,
   Link,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography as MuiTypography
+  Typography as MuiTypography,
+  Zoom
 } from "@material-ui/core";
 
 import { spacing } from "@material-ui/system";
 import { HashLink } from "react-router-hash-link";
 
+import useBoop from 'use-boop';
+import { animated } from 'react-spring';
+
+const OpenMLDove = (props) => {
+  const [style, trigger] = useBoop({ rotation: -45, scale:3, x:50, y:-50, timing: 300 });
+  style.color = props.color;
+  style.display = "inline-block";
+  style.paddingLeft = 20;
+  style.zIndex = 5000;
+  style.position = "relative";
+  return (
+    <animated.div style={style} onMouseEnter={trigger}>
+      {/* Child can be anything */}
+      <FontAwesomeIcon icon="dove" size="lg" />
+    </animated.div>
+  )
+};
+
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
+
+const ContactButton = styled(Fab)({
+  margin: 0,
+  top: 85,
+  bottom: 'auto',
+  left: 'auto',
+  position: 'fixed'
+});
 
 const TopLink = styled(HashLink)({
   color: grey[600],
@@ -64,18 +92,18 @@ const ContactLink = ({ link, icon, color, text }) => {
   return (
     <ListItemLink button href={link}>
       <ListItemIcon>
-        <ListIcon icon={icon} size="lg" style={{ color: color }} />
+        <ListIcon icon={icon} size="2x" style={{ color: color }} />
       </ListItemIcon>
       <ListItemText>{text}</ListItemText>
     </ListItemLink>
   );
 };
 
-const SponsorTier = ({ icon, color, text }) => {
+const SponsorTier = ({ icon, color, text, size }) => {
   return (
     <ListItemLink button href="about#contact">
       <ListItemIcon>
-        <ListIcon icon={icon} fixedWidth size="3x" style={{ color: color }} />
+        <ListIcon icon={icon} fixedWidth size={size} style={{ color: color }} />
       </ListItemIcon>
       <ListItemText>{text}</ListItemText>
     </ListItemLink>
@@ -140,51 +168,149 @@ export default class GetInvolved extends React.Component {
               marginBottom: 20
             }}
           >
+            <TopLink smooth to="/contribute">
+              How you can help
+            </TopLink>
             <TopLink smooth to="/contribute#help">
-              Contribute
+              Contributing
             </TopLink>
             <TopLink smooth to="/contribute#sponsor">
-              Sponsor us
+              Sponsorship
             </TopLink>
           </List>
+          <Zoom in={true} style={{ transitionDelay: '1000ms'}}>
+            <ContactButton color="secondary" size="medium" style={{ right: 16}}
+              href="https://opencollective.com/openml" target="_blank">
+              <FontAwesomeIcon icon="donate" size="lg"/>
+            </ContactButton>
+          </Zoom>
           <HeroTitle variant="h3" align="center">
-            Want to get involved?
-            <HeroSubTitle>
-              <FontAwesomeIcon
-                icon="thumbs-up"
-                size="lg"
-                style={{ color: blue[500] }}
-              />
-              <br />
-              Awesome, we're happy to have you!
-            </HeroSubTitle>
+              <OpenMLDove color={red[500]} />
+              <OpenMLDove color={yellow[800]} />
+              <OpenMLDove color={green[500]} />
+              <OpenMLDove color={blue[500]} />
+            <HeroSubTitle style={{paddingTop:20}}>
+              Here's to the crazy ones. The open science rebels.<br />
+              The ones who believe that machine learning should be set free.<br />
+              They're not fond of the hype, and they have no respect for irreproducible results.<br />
+              They believe that with openness, we can push the human race forward.<br />
+              Because by combining the best data, tools, methods, and ideas,<br />
+              we can change the world, together.
+              </HeroSubTitle>
           </HeroTitle>
           <Card>
             <CardContent>
+              <Typography variant="h4" gutterBottom display="block">
+                Contributing
+              </Typography>
               <Paragraph>
-                <b>We want to create better AI and machine learning systems</b>,
-                and we want to help anybody who has the same goal. We do this by
-                making it easier to train and thoroughy test machine learning
-                models in an open and collaborative way. Open science is the
-                best way to ensure trustworthy AI.
+                The people who contribute to OpenML do so for the love of machine learning and because they want to help build a more
+                inclusive and frictionless ecosystem of data, tools and clear results. You can contribute in different ways:
               </Paragraph>
-              <Typography variant="h6" gutterBottom>
-                You can help us, too!
-              </Typography>
-              <Typography>
-                OpenML is created entirely by many small and large contributions
-                from a community of enthousiastic (and smart!) people. You can
-                get involved by donating some of your time, your knowledge, or
-                even some of your money for the greater good. In return, you get
-                a more useful OpenML, more visibility, plus it can be really fun{" "}
-                <FontAwesomeIcon
-                  icon={["far", "laugh-wink"]}
-                  size="lg"
-                  style={{ color: green[500] }}
+              <List component="nav" style={{marginTop:0, paddingTop:0, paddingBottom:0}}>  
+                <ContactLink
+                    icon="hand-holding-heart"
+                    link="contribute#help"
+                    color={red[500]}
+                    text="Help us improve the OpenML platform and interfaces."
+                  />       
+                <ContactLink
+                    icon="hand-holding-usd"
+                    link="contribute#sponsor"
+                    color={green[500]}
+                    text="Make a donation to support our community and keep OpenML free."
+                  />
+                <ContactLink
+                  icon="hand-holding-medical"
+                  link="contribute#help"
+                  color={blue[500]}
+                  text="Share new interesting datasets, models, and experiments."
                 />
-              </Typography>
-            </CardContent>
+              </List>
+            </CardContent> 
           </Card>
+          <Grid container spacing={4} style={{marginTop:20}}>
+            <Grid item style={{ display: "flex" }} xs={12} md={6} lg={3}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom my={4}>
+                    <ListIcon
+                      icon="users-cog"
+                      size="lg"
+                      style={{ color: red[400], marginRight: 20 }}
+                    />
+                    Are you a developer?
+                  </Typography>
+                  <Paragraph style={{paddingBottom:0}}>
+                    We want to make OpenML ridiculously easy to use and empowering.{" "}
+                    <Link href="contribute#help">Contribute your skill and expertise</Link>{" "}
+                    to make OpenML better for you and others, either online (on GitHub)
+                    or during one of our coding sprints. You can also help by telling
+                    your employer about us.
+                  </Paragraph>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item style={{ display: "flex" }} xs={12} md={6} lg={3}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom my={4}>
+                    <ListIcon
+                      icon="user-astronaut"
+                      size="lg"
+                      style={{ color: orange[700], marginRight: 20 }}
+                    />
+                    Are you a scientist?
+                  </Typography>
+                  <Paragraph style={{paddingBottom:0}}>
+                    We want to empower people to change the world for the better.
+                    You can help by contributing useful datasets and machine learning
+                    pipelines, or by <Link href="contribute#help">extending OpenML to make it more useful in
+                    science and discovery</Link>.
+                  </Paragraph>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item style={{ display: "flex" }} xs={12} md={6} lg={3}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom my={4}>
+                    <ListIcon
+                      icon="seedling"
+                      size="lg"
+                      style={{ color: green[800], marginRight: 20 }}
+                    />
+                    <b>Do you want to help?</b>
+                    </Typography>
+                  <Paragraph style={{paddingBottom:0}}>
+                    OpenML depends on all of us. You can support our community by telling your friends about us, 
+                    by joining or organizing OpenML events or, if you can, by{" "}
+                    <Link href="contribute#sponsor">financially backing our community</Link>.
+                    Or maybe you have another great idea? Please don't hesitate to reach out! 
+                  </Paragraph>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item style={{ display: "flex" }} xs={12} md={6} lg={3}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom my={4}>
+                    <ListIcon
+                      icon="user-tie"
+                      size="lg"
+                      style={{ color: blue[400], marginRight: 20 }}
+                    />
+                    Are you an executive?
+                  </Typography>
+                  <Paragraph style={{paddingBottom:0}}>
+                    OpenML helps your team to discover machine learning assets and 
+                    automate processes, so that they can focus on what matters. You can encourage your developers to help out, host a coding sprint,{" "} 
+                    <Link href="contribute#sponsor">become an official sponsor</Link>, or <Link href="contribute#sponsor">partner with us</Link>. We'd love to work with you!
+                  </Paragraph>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
           <HeroTitle variant="h3" align="center" id="help">
             <ListIcon
               icon="hand-holding-heart"
@@ -366,79 +492,172 @@ export default class GetInvolved extends React.Component {
           </Grid>
           <HeroTitle variant="h3" align="center" id="sponsor">
             <ListIcon
-              icon="hands-helping"
+              icon={["fab","angellist"]}
               size="lg"
-              style={{ color: blue[400], marginTop: 70 }}
+              style={{ color: blue[500], marginTop: 40 }}
             />
             <br />
-            Call for sponsorship
+            Support the OpenML community
           </HeroTitle>
           <Card>
-            <CardContent>
+            <CardContent>  
               <Paragraph>
-                Simply put, without our generous sponsors, OpenML would not be able
-                to make all its resources and services available <b>for free</b> to 
-                the entire world. 
-                We need to support our open source community by running events such 
-                as hackathons, keep our services running, and do a whole lot of development
-                and maintenance work.
-                By donating to OpenML you further the project's mission to democratize
-                machine learning research.
+                Hi, we could use your help. By making a small donation, you help us run coding sprints and outreach activities, keep our
+                community happy and engaged, and ensure that we have the basic infrastructure to run the platform. 
+                Also, if OpenML sometimes sucks, we promise to do better!
+                We use the <Link href="https://opencollective.com/openml">Open Collective</Link> model
+                to accept donations, so we can celebrate you in our hall of fame as an official backer, and be fully
+                transparent on how your contributions are used to support OpenML. Please click the button below. Thank you so much!
               </Paragraph>
-              <Paragraph>           
-                Your donations will be used to run community events, which require venues, 
-                catering and thank-you packages, and to maintain and improve our platform services, 
-                which requires server hardware, running costs, as well as technical development
-                and maintenance. Donations go to the not-for-profit <Link href="about#foundation">Open Machine
-                Learning Foundation</Link>.
+              <Paragraph style={{paddingBottom:0}}>
+                <a href="https://opencollective.com/openml/donate" target="_blank" rel="noreferrer">
+                <img src="https://opencollective.com/openml/donate/button@2x.png?color=blue" width="265" alt="OpenCollective button"/>
+                </a>
               </Paragraph>
-              We are open to many forms of sponsorship, both in kind and in cash. We generally
-              offer the following sponsorship bands, and would love to hear your own wishes
-              about partnering with OpenML.
-              <List component="nav">
-                <SponsorTier
-                  icon={"award"}
-                  color={yellow[800]}
-                  text="Principal – Premium level sponsors of our entire organisation or biggest events. Generally valued at over $400,000 pa in cash and/or contra. Maximum of three sponsors in this category, and must have a contracted term of 3+ years."
-                />
-                <SponsorTier
-                  icon={"award"}
-                  color={grey[400]}
-                  text="Major – Major partners using the sponsorship to achieve a wide range of marketing and business objectives. Generally falling in the range of $100-400,000 pa in cash and/or contra, with a contracted term of 2+ years."
-                />
-                <SponsorTier
-                  icon={"award"}
-                  color={red[800]}
-                  text="Supporting – Lower level sponsors usually using the sponsorship to achieve a more limited number of marketing and business objectives. Generally valued at sub-$100,000 pa in cash and/or contra."
-                />
-              </List>
             </CardContent>
           </Card>
           <HeroTitle variant="h3" align="center" id="sponsor">
             <ListIcon
-              icon="hand-holding-usd"
+              icon="hands-helping"
               size="lg"
-              style={{ color: green[400], marginTop: 70 }}
+              style={{ color: blue[500], marginTop: 40 }}
             />
             <br />
-            Community supporters
+            Call for Sponsorship
           </HeroTitle>
           <Card>
             <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Why sponsor us?
+              </Typography>
               <Paragraph>
-                If OpenML is useful to you, or you would like to help us making machine 
-                learning more easily available to everyone, please consider making a donation 
-                via our OpenCollective page. As with <Link href="contribute#sponsor">sponsorships</Link>,
-                we will use your donations to run community events and keep our services free
-                for everyone.
+                Simply put, without our generous sponsors, OpenML would not be able
+                to make all its resources and services available <b>for free</b> to 
+                the entire world. 
+                By donating to OpenML you further the project's mission to democratize
+                machine learning research.
+                Your donations will be used to run engaging community events (which require venues, 
+                catering and thank-you packages), to enable internships, and to maintain and improve our platform services, 
+                which requires compute and storage infrastructure, as well as technical development
+                and maintenance. With your support, we can bring OpenML to the next level, together!
               </Paragraph>
-              <List component="nav">
-                <SponsorTier
-                  icon={"donate"}
-                  color={yellow[800]}
-                  text="Make a donation on our OpenCollective page. You are awesome!"
-                />
+              <Typography variant="h5" gutterBottom>
+                How do you want to work with us?
+              </Typography>
+              <Paragraph style={{paddingBottom:0}}>
+              We are open to many forms of sponsorship, both in kind and in cash. Rather than providing fixed sponsorship levels, 
+              we would love to hear from you and learn how we could better align with your goals. Below are examples of possible benefits, 
+              but we are open to new ideas to collaborate with you.
+              </Paragraph>
+              <List dense>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="medal"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Your logo on our website and in our presentations"
+                    secondary="Included in all sponsorships, but more prominent for larger sponsors"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="tshirt"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="We will send you OpenML T-shirts, stickers,..."
+                    secondary="Or you can send us materials to hand out at our events"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="comments"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="We will mention your support in talks and videos"
+                    secondary="We'll work with you to get the right message across"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="glass-cheers"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Come give a talk at one of our coding sprints or events"
+                    secondary="Or simply come to work together with us"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="lightbulb"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="New features!"
+                    secondary="Let us know what you would like to see, and we'll realize it together"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ListIcon
+                      icon="hands-helping"
+                      size="2x"
+                      style={{ color: purple[700], marginRight: 20 }}
+                      fixedWidth
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Become a partner"
+                    secondary="If you support one full time developer (anywhere), you can help shape the future of OpenML"
+                  />
+                </ListItem>
               </List>
+              <Typography variant="h1" gutterBottom my={4}>
+                <ContactChipFull
+                        link="mailto:openmlhq@googlegroups.com"
+                        icon="envelope"
+                        text="Get in touch"
+                        style={{ backgroundColor: purple[700], marginRight: 20 }}
+                      />
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                Where can I make a donation?
+              </Typography>
+              <Paragraph>
+                We use the <Link href="https://opencollective.com/openml">Open Collective</Link> model to accept sponsorships. Click the button below to get started.
+                All sponsors and the amount of sponsoring are acknowledged in our hall of fame, and we'll be fully transparent on how your sponsorship makes OpenML better every day. 
+                This collective is fiscally hosted by our not-for-profit <Link href="about#foundation">Open Machine Learning Foundation</Link>. If preferred, you can also
+                donate directly to the Foundation.
+              </Paragraph>
+              <Paragraph style={{paddingBottom:10}}>
+                <a href="https://opencollective.com/openml/donate" target="_blank" rel="noreferrer">
+                <img src="https://opencollective.com/openml/donate/button@2x.png?color=blue" width="265" alt="OpenCollective button"/>
+                </a>
+              </Paragraph>
+              <Paragraph style={{paddingBottom:0}}>Thank you!</Paragraph>
             </CardContent>
           </Card>
         </MainPaper>

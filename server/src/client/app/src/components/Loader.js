@@ -9,7 +9,7 @@ const Root = styled.div`
   z-index: 5000;
 `;
 
-function Loader() {
+const Loader = () => {
   const context = useContext(MainContext);
 
   return (

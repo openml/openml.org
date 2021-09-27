@@ -11,7 +11,8 @@ import {
   red,
   green,
   grey,
-  purple
+  purple,
+  pink
 } from "@material-ui/core/colors";
 
 // Cover components
@@ -71,6 +72,10 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
 const PurpleMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
   color: purple[400]
+});
+const PinkMenuIcon = styled(FontAwesomeIcon)({
+  cursor: "pointer",
+  color: pink[400]
 });
 const OrangeMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
@@ -137,6 +142,29 @@ const studyRoutes = {
   ]
 };
 
+const benchmarkRoutes = {
+  id: "Benchmarks",
+  path: "/search",
+  icon: <PinkMenuIcon icon="chart-bar" fixedWidth />,
+  component: SearchPanel,
+  entity_type: "study",
+  subtype_filter: "study_type",
+  children: [
+    {
+      path: "/search",
+      name: "Suites",
+      component: SearchPanel,
+      subtype: "task"
+    },
+    {
+      path: "/search",
+      name: "Studies",
+      component: SearchPanel,
+      subtype: "run"
+    }
+  ]
+};
+
 const taskTypeRoutes = {
   id: "Task Types",
   path: "/search",
@@ -190,7 +218,7 @@ const coverRoutes = {
 const measureRoutes = {
   id: "Measures",
   path: "/search",
-  icon: <GreyMenuIcon icon="chart-bar" fixedWidth />,
+  icon: <GreyMenuIcon icon="ruler-combined" fixedWidth />,
   component: SearchPanel,
   entity_type: "measure",
   subtype_filter: "measure_type",
@@ -312,7 +340,7 @@ const blogRoutes = {
 };
 
 const contributeRoutes = {
-  id: "Get involved",
+  id: "Contribute",
   path: "/contribute",
   icon: <RedMenuIcon icon="hand-holding-heart" fixedWidth />,
   component: GetInvolved,
@@ -350,6 +378,7 @@ export const mainRoutes = [
   flowRoutes,
   runRoutes,
   studyRoutes,
+  benchmarkRoutes,
   taskTypeRoutes,
   profileRoutes,
   measureRoutes,
@@ -371,6 +400,7 @@ const defaultRoutes = [
   flowRoutes,
   runRoutes,
   studyRoutes,
+  benchmarkRoutes,
   taskTypeRoutes,
   measureRoutes,
   // peopleRoutes,

@@ -59,7 +59,7 @@ function DataEdit() {
     const [original_data_url, setODUrl] = useState("");
     const [paper_url, setPaperUrl] = useState("");
     const [tabValue, setTabValue] = useState(0);
-    const yourConfig = {
+    const yourConfig = () => {return {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
         },
@@ -67,8 +67,7 @@ function DataEdit() {
             url: window.location.href,
         },
 
-
-    };
+    }};
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);

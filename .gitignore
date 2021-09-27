@@ -1,5 +1,6 @@
 # dependencies
 **/node_modules/
+**/node_modules.nosync/
 
 /.pnp
 .pnp.js
@@ -53,3 +54,5 @@ temp_data/
 .flaskenv
 
 users.sql
+node_modules
+node_modules.nosync
