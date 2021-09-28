@@ -14,7 +14,8 @@ import {
   red,
   green,
   grey,
-  purple
+  purple,
+  pink
 } from "@material-ui/core/colors";
 
 import maTheme from "./theme";
@@ -287,11 +288,8 @@ class App extends React.Component {
           }
           if (key === "type" && this.state[key] !== value ) { //reset active tab if type changes
             update["activeTab"] = 0;
-            update["startSubCount"] = 0;            
-          }
-          else if (key === "study_type" && this.state.filters.study_type.value !== value ) { //reset active tab if study type changes
-            update["activeTab"] = 0;
-            update["startSubCount"] = 0;            
+            update["startSubCount"] = 0;
+            qchanged = true;
           }
           // Process FILTERS
           // Filters have shape {key: {value: v, type: t}}
@@ -316,8 +314,10 @@ class App extends React.Component {
               this.state.filters[key].type !== type ||
               this.state.filters[key].value !== value
             ) {
-              update.filters[key].type = type;
-              update.filters[key].value = value;
+              if (update.filters[key] !== undefined){
+                update.filters[key].type = type;
+                update.filters[key].value = value;
+              }
               if (typeof value2 !== "undefined") {
                 update.filters[key].value2 = value2;
               }
@@ -341,7 +341,7 @@ class App extends React.Component {
       }
       // If anything changed, set the new state
       if (qchanged) {
-        console.log("Query changed");
+        //console.log("Query changed");
         update.updateType = "query";
         update.results = [];
         update.startCount = 0;
@@ -351,7 +351,7 @@ class App extends React.Component {
         (qp["id"] === undefined && this.state.id !== undefined) ||
         idChanged
       ) {
-        console.log("ID changed");
+        //console.log("ID changed");
         this.setState({
           id: qp["id"],
           updateType: "id",
@@ -375,7 +375,7 @@ class App extends React.Component {
       if (filters) {
         update.filters = filters;
       }
-      console.log(filters);
+      //console.log(filters);
       this.setState(update);
     }
   };
@@ -383,7 +383,7 @@ class App extends React.Component {
   // Logs state change when in developer mode.
   log = message => {
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-      console.log(message);
+      // console.log(message);
     }
   };
 
@@ -407,6 +407,8 @@ class App extends React.Component {
       window.location.pathname.startsWith("/meet")
     ) {
       return purple[600];
+    } else if ( type === "benchmark" ) {
+      return pink[400];
     } else if (
       type === "task_type" ||
       window.location.pathname.startsWith("/about")
@@ -436,10 +438,12 @@ class App extends React.Component {
         return "flask";      
       case "study":
         return "layer-group";
+      case "benchmark":
+        return "chart-bar";
       case "tasktype":
         return ["far", "flag"];
       case "measure":
-        return "chart-bar";
+        return "tachometer-alt";
       default:
         return "database";
     }
@@ -457,6 +461,8 @@ class App extends React.Component {
         return "runs";
       case "study":
         return "collections";
+      case "benchmark":
+        return "benchmarks";
       case "task_type":
         return "task types";
       case "measure":

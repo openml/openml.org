@@ -71,14 +71,15 @@ const FilterIcon = styled(FontAwesomeIcon)`
 `;
 
 const typeName = {
-  data: "datasets",
-  flow: "flows",
-  run: "runs",
-  study: "collections",
-  task: "tasks",
-  task_type: "task types",
-  user: "users",
-  measure: "measures"
+  data: "dataset",
+  flow: "flow",
+  run: "run",
+  study: "collection",
+  benchmark: "benchmark",
+  task: "task",
+  task_type: "task type",
+  user: "user",
+  measure: "measure"
 };
 
 export class FilterBar extends React.Component {
@@ -176,6 +177,8 @@ export class FilterBar extends React.Component {
   filterLabel = key => {
     if (this.context.filters[key]["value"] === "active"){
       return "verified";
+    } else if (key.includes("s.")) {
+      return key.split("s.")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
     } else if (key.includes(".")) {
       return key.split(".")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
     } else {
@@ -191,7 +194,7 @@ export class FilterBar extends React.Component {
             <FilterStats textcolor={this.props.searchColor}>
               {this.context.updateType === "query" ? "Loading..." : this.context.counts +
                 " " +
-                typeName[this.props.resultType] +
+                typeName[this.context.type] + (this.context.counts !== 1 ? "s" : "") + 
                 " found"}
             </FilterStats>
             {Object.keys(this.context.filters).map((key) => {

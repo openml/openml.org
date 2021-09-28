@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress, Link as MuiLink } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TimeAgo from "react-timeago";
@@ -31,6 +31,12 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     color: ${props => props.color};
   }
+`;
+
+const SimpleLink = styled(MuiLink)`
+  text-decoration: none;
+  padding-right: 1px;
+  font-weight: 800;
 `;
 
 const ColoredIcon = styled(FontAwesomeIcon)`
@@ -365,19 +371,45 @@ export class SearchResultsPanel extends React.Component {
   }
   render() {
     let component = null;
-    let qtype = this.props.context.type;
+    let qtype = this.props.context.type; // query object type
+    let result_type = qtype; // result type, same as qtype, except for benchmarks
+
+    // distinguishing benchmarks and studies in frontend
+    if (this.props.context.type === "benchmark"){
+      qtype = "study";
+      result_type = this.props.context.type;
+    }
     let results = this.props.context.results
     let count = this.props.context.counts;
     let scrollID = "resultScroll"
     if (this.props.listType === "drilldown"){
       qtype = this.props.context.subType;
+      result_type = qtype;
       results = this.props.context.subResults;
       count = this.props.context.subCounts;
       scrollID = "subResultScroll"
     }
 
+    // ID field
+    const id_field = (qtype) => {
+      if (qtype === "task_type"){
+        return "tt_id"
+      } else if (qtype === "measure") {
+        let mtype = this.props.context.filters["measure_type"].value;
+        if (mtype === "procedure"){
+          return "proc_id";
+        } else if (mtype === "measure"){
+          return "eval_id";
+        } else {
+          return mtype + "_id"
+        }
+      }
+      else {
+        return qtype + "_id"
+      }
+    }
     // List header
-    const header = (type, qtype) => {
+    const header = (type, qtype, study_type) => {
       if (qtype === "task"){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
@@ -399,6 +431,33 @@ export class SearchResultsPanel extends React.Component {
                   Runs are evaluations of machine learning pipelines or models on this {type}. 
                   They are shared directly from machine learning libraries in high detail to
                   ensure reproducibility.
+                </Typography>
+              </Box>
+      } else if (type === "benchmark" && study_type === "task"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Benchmarking suites
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  <SimpleLink href="https://docs.openml.org/benchmark" style={{color:this.props.context.getColor("benchmark")}}>Benchmarking suites</SimpleLink>{" "}
+                  are comprehensive and curated collections of OpenML tasks designed to evaluate algorihms under well-defined conditions. They make it much
+                  easier to benchmark algorithms, and make the results objectively interpretable,
+                  comparable, and reproducible. You can also
+                  <StyledLink to="/auth/upload-collection-tasks" color={this.props.context.getColor("benchmark")}>create your own suites</StyledLink>.
+
+                </Typography>
+              </Box>
+      } else if (type === "benchmark" && study_type === "run"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Benchmarking studies
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Benchmarking studies are curated collections of OpenML runs obtained through a systematic evaluation of algorithms on a{" "}
+                  <SimpleLink href="https://docs.openml.org/benchmark" style={{color:this.props.context.getColor("benchmark")}}>benchmarking suite</SimpleLink>.
+                  The results can be viewed online (see their Analysis tab) or easily downloaded via our APIs and analyzed further. You can also
+                  <StyledLink to="/auth/upload-collection-tasks" color={this.props.context.getColor("benchmark")}>create your own benchmark studies</StyledLink>.
+
                 </Typography>
               </Box>
       } else {
@@ -428,16 +487,10 @@ export class SearchResultsPanel extends React.Component {
         </React.Fragment>
       }
     }
-
     if (
-      results.length >= 1 &&
-      results[0][
-      (qtype === "task_type" ? "tt" : qtype) + "_id"
-      ] !== undefined
+      results.length >= 1 && 
+      results[0][id_field(qtype)] !== undefined
     ) {
-      let key =
-        (qtype === "task_type" ? "tt" : qtype) + "_id";
-
       component = results.map(result => (
           <SearchElement
             name={result.name ? result.name : result.comp_name}
@@ -450,21 +503,18 @@ export class SearchResultsPanel extends React.Component {
                       this.props.listType !== "drilldown"}
             onclick={() => 
               this.props.selectEntity(
-                result[
-                (qtype === "task_type" ? "tt" : qtype) +
-                "_id"
-                ] + ""
+                result[id_field(qtype)] + ""
               )
             }
-            key={result[key]}
+            key={result[id_field(qtype)]+result_type}
             type={this.props.type}
             image={result.image}
             initials={result.initials}
             data_status={result.status}
             date={result.date}
             fullwidth={this.props.context.displaySplit}
-            color={this.props.context.getColor(qtype)}
-            icon={this.props.context.getIcon(qtype)}
+            color={this.props.context.getColor(result_type)}
+            icon={this.props.context.getIcon(result_type)}
           ></SearchElement>
       ));
     } else if (this.props.context.error !== null) {
@@ -477,10 +527,6 @@ export class SearchResultsPanel extends React.Component {
       component = <div></div>;
     }
 
-    //if (component){ 
-    //  console.log("Count: "+count);
-    //  console.log("Length: "+component.length);
-    //}
     let dataLength = component.length;
     if (dataLength === undefined){
       dataLength = 0;
@@ -498,10 +544,10 @@ export class SearchResultsPanel extends React.Component {
                 }}
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
-                  {this.props.listType === "drilldown" && ( // show header for drilldowns
+                  {(this.props.listType === "drilldown" || this.props.context.type === "benchmark") && ( // show header for drilldowns and benchmarks
                     <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} 
                     xl={(this.props.context.displaySplit ? 12 : 9)}>
-                      {header(this.props.context.type,qtype)}
+                      {header(this.props.context.type,qtype,this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null)}
                     </Grid>
                   )}
                   <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>

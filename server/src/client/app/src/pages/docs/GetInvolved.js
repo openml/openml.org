@@ -99,17 +99,6 @@ const ContactLink = ({ link, icon, color, text }) => {
   );
 };
 
-const SponsorTier = ({ icon, color, text, size }) => {
-  return (
-    <ListItemLink button href="about#contact">
-      <ListItemIcon>
-        <ListIcon icon={icon} fixedWidth size={size} style={{ color: color }} />
-      </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
-    </ListItemLink>
-  );
-};
-
 const ContactChip = ({ link, icon, text }) => {
   return (
     <Chip
@@ -283,9 +272,9 @@ export default class GetInvolved extends React.Component {
                     <b>Do you want to help?</b>
                     </Typography>
                   <Paragraph style={{paddingBottom:0}}>
-                    OpenML depends on all of us. You can support our community by telling your friends about us, 
-                    by joining or organizing OpenML events or, if you can, by{" "}
-                    <Link href="contribute#sponsor">financially backing our community</Link>.
+                    OpenML depends on all of us. You can help keep OpenML free and support our community by{" "}
+                    <Link href="contribute#sponsor">making a donation</Link> (no pressure). You can also 
+                    join us at an OpenML event, or organize one yourself!
                     Or maybe you have another great idea? Please don't hesitate to reach out! 
                   </Paragraph>
                 </CardContent>
@@ -503,7 +492,7 @@ export default class GetInvolved extends React.Component {
             <CardContent>  
               <Paragraph>
                 Hi, we could use your help. By making a small donation, you help us run coding sprints and outreach activities, keep our
-                community happy and engaged, and ensure that we have the basic infrastructure to run the platform. 
+                community happy and engaged, and ensure that we have the basic infrastructure to keep the platform free for everyone. 
                 Also, if OpenML sometimes sucks, we promise to do better!
                 We use the <Link href="https://opencollective.com/openml">Open Collective</Link> model
                 to accept donations, so we can celebrate you in our hall of fame as an official backer, and be fully

@@ -207,6 +207,17 @@ export class EntryDetails extends React.Component {
           });
         });
     }
+
+    // Sanity check for bad ID types before rendering
+    if ((this.props.type === "study" || this.props.type === "benchmark") && this.state.obj !== null &&
+    this.props.filters["study_type"]["value"] !== this.state.obj.study_type
+    ){ // auto-redirect for bad study type in URL
+      let currentUrlParams = new URLSearchParams(this.props.location.search);
+      currentUrlParams.set("study_type", this.state.obj.study_type);
+      this.props.history.push(
+        this.props.location.pathname + "?" + currentUrlParams.toString()
+      );
+    }
   }
 
   componentDidMount() {

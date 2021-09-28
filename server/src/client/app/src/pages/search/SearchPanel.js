@@ -78,18 +78,22 @@ export default class SearchPanel extends React.Component {
       } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
         qstring.measure_type = "data_quality";
         this.updateQuery("measure_type", "data_quality");
-      } else if (qstring.type === "study" && qstring.study_type === undefined) {
+      } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === undefined) {
         qstring.study_type = "task";
         this.updateQuery("study_type", "task");
+      } else if ((qstring.type === "study" || qstring.type === "benchmark") && 
+          this.context.filters.study_type !== undefined && qstring.study_type !== this.context.filters.study_type.value) {
+        //study type changed, reset active tab
+        this.context.activeTab = 0
       }
 
     // If no sort is defined, set a sensible default
     if (this.context.sort === null || this.context.type !== qstring.type) {
       if (["data", "flow", "task"].includes(qstring.type)) {
         qstring.sort = "runs";
-      } else if (qstring.type === "study" && qstring.study_type === "task") {
+      } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === "task") {
         qstring.sort = "tasks_included";
-      } else if (qstring.type === "study" && qstring.study_type === "run") {
+      } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === "run") {
         qstring.sort = "runs_included";
       } else {
         qstring.sort = "date";
@@ -201,6 +205,18 @@ export default class SearchPanel extends React.Component {
       "date"
     ],
     study: [
+      "study_id",
+      "study_type",
+      "name",
+      "description",
+      "uploader",
+      "datasets_included",
+      "tasks_included",
+      "flows_included",
+      "runs_included",
+      "date"
+    ],
+    benchmark: [
       "study_id",
       "study_type",
       "name",
@@ -325,6 +341,19 @@ export default class SearchPanel extends React.Component {
             term: { [key]: filters[key].value }
           });
         }
+        // type-specific filters for benchmarks
+        // TODO: replace when meta-data field exists to indicate benchmarks
+        if (this.context.type === "benchmark" && key === "study_type") {
+          if (filters[key].value === "task") {
+            queryFilters.push({
+              bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] }
+            });
+          } else if (filters[key].value === "run") {
+            queryFilters.push({
+              bool: { should: [ {"wildcard": { "name": "*study*" }}, {"wildcard": { "name": "*benchmark*" }}, ] }
+            });
+          }
+        }
       } else if (filters[key].type === "gte" || filters[key].type === "lte") {
         queryFilters.push({
           range: {
@@ -346,8 +375,14 @@ export default class SearchPanel extends React.Component {
         queryFilters.push({
           prefix: { [key]: filters[key].value }
         });
+      } 
+      if (this.context.type === "measure" && key === "measure_type") {
+        queryFilters.push({
+          term: { [key]: filters[key].type + "_" + filters[key].value}
+        });
       }
     }
+
     return queryFilters;
   };
 
@@ -426,18 +461,24 @@ export default class SearchPanel extends React.Component {
 
   // call search engine to load more results
   reload() {
+    // distinguishing benchmarks and studies in frontend
+    let querytype = this.context.type;
+    if (this.context.type === "benchmark"){
+      querytype = "study";
+    }
+    // process query
     search(
       this.context.query,
       this.context.tag,
-      this.context.type,
+      querytype,
       this.context.fields,
       this.context.sort,
-      this.context.order,
+      (querytype === "measure" ? "asc" : this.context.order),
       this.toFilterQuery(this.context.filters),
       this.context.startCount
     )
       .then(data => {
-          let res = this.processSearchResults(data, this.context.type)
+          let res = this.processSearchResults(data, querytype)
           if (this.context.startCount === 0){
             this.context.setResults(res.counts, res.results);
           } else { //add to infinite list
@@ -566,7 +607,7 @@ export default class SearchPanel extends React.Component {
     } else if (this.context.type === "task"){
       qstring["run_task.task_id"] = this.context.id;
       qstring["sort"] = "date";
-    } else if (this.context.type === "study"){
+    } else if (this.context.type === "study" || this.context.type === "benchmark"){
       qstring["collections.id"] = this.context.id;
       if (this.context.filters.study_type.value === "run"){
         qstring["sort"] = "date";
@@ -578,7 +619,7 @@ export default class SearchPanel extends React.Component {
       this.goToSubType(this.context.subType, value, "source_data.data_id", this.context.id);
     } else if (this.context.type === "task"){
       this.goToSubType(this.context.subType, value, "run_task.task_id", this.context.id);
-    } else if (this.context.type === "study"){
+    } else if (this.context.type === "study" || this.context.type === "benchmark"){
       this.goToSubType(this.context.subType, value, "collections.id", this.context.id);
     }
   };
@@ -599,7 +640,7 @@ export default class SearchPanel extends React.Component {
       let filters = []
       filters["run_task.task_id"] = { value: this.context.id, type: "=" };
       return filters;
-    } else if (this.context.type === "study" && 
+    } else if ((this.context.type === "study" || this.context.type === "benchmark") && 
       this.context.updatetype !== "subquery"){
       let filters = []
       filters["collections.id"] = { value: this.context.id, type: "=" };
@@ -613,7 +654,7 @@ export default class SearchPanel extends React.Component {
     let type = "task";
     let toggling = false;
     // Reset search when toggling between different sub-searches
-    if (this.context.type === "study" && this.context.filters.study_type.value === "run"){
+    if ((this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type.value === "run"){
       if ((activeTab === 3 && this.context.subType === "task") || 
           (activeTab === 2 && this.context.subType === "run") ){
         toggling = true;
@@ -623,7 +664,7 @@ export default class SearchPanel extends React.Component {
     if (this.context.startSubCount === 0 || toggling){
       if (this.context.type === "task"){
         type = "run";
-      } else if (activeTab === 3 && this.context.type === "study" && 
+      } else if (activeTab === 3 && (this.context.type === "study" || this.context.type === "benchmark") && 
                 this.context.filters.study_type.value === "run"){
         type = "run";    
       }
@@ -792,11 +833,20 @@ export default class SearchPanel extends React.Component {
       case "study":
         return [
           { name: "Date", value: "date" },
-          { name: "Datasets", value: "datasets_included" }, // This does not work, since for some reason
-          { name: "Tasks", value: "tasks_included" }, // these three variables are not numbers, but
-          { name: "Flows", value: "flows_included" } // are actually strings, which ES cannot sort
+          { name: "Datasets", value: "datasets_included" }, 
+          { name: "Tasks", value: "tasks_included" }, 
+          { name: "Flows", value: "flows_included" }
+        ];
+      case "benchmark":
+        return [
+          { name: "Date", value: "date" },
+          { name: "Datasets", value: "datasets_included" },
+          { name: "Tasks", value: "tasks_included" },
+          { name: "Flows", value: "flows_included" }
         ];
       case "user":
+        return [{ name: "Date", value: "date" }];
+      case "measure":
         return [{ name: "Date", value: "date" }];
       default:
         return [];
@@ -824,6 +874,8 @@ export default class SearchPanel extends React.Component {
       case "measure":
         return <MeasureListPanel id="searchPanelScroll" attrs={attrs} />;
       case "study":
+        return <StudyListPanel id="searchPanelScroll" attrs={attrs} />;
+      case "benchmark":
         return <StudyListPanel id="searchPanelScroll" attrs={attrs} />;
       case "user":
         return <UserListPanel id="searchPanelScroll" attrs={attrs} />;
@@ -860,6 +912,12 @@ export default class SearchPanel extends React.Component {
       return s && s[0].toUpperCase() + s.slice(1);
     };
 
+    // distinguishing benchmarks and studies in frontend
+    let querytype = this.context.type;
+    if (this.context.type === "benchmark"){
+      querytype = "study";
+    }
+
     return (
       <Grid container spacing={0}>
         <Grid item xs={12}>
@@ -868,7 +926,7 @@ export default class SearchPanel extends React.Component {
             filterOptions={this.getFilterOptions()}
             searchColor={this.context.getColor()}
             resultSize={this.context.counts}
-            resultType={this.context.type}
+            resultType={querytype}
             sortChange={this.sortChange}
             filterChange={this.filterChange}
             clearFilters={this.clearFilters}
@@ -905,7 +963,7 @@ export default class SearchPanel extends React.Component {
             <SearchTab
               label={
                 this.context.id !== undefined
-                  ? (this.context.type === 'study' ? 
+                  ? ((this.context.type === 'study' || this.context.type === 'benchmark') ? 
                   ucfirst(this.context.filters.study_type.value) + " Collection" : 
                   ucfirst(this.context.type).replace("_"," ") + " Detail")
                   : "Statistics"
@@ -933,14 +991,14 @@ export default class SearchPanel extends React.Component {
                   searchcolor={this.context.getColor()}
                 />
               )}
-            {this.context.type === "study" && this.context.id !== undefined && (
+            {(this.context.type === "study" || this.context.type === "benchmark") && this.context.id !== undefined && (
               <SearchTab
                 label="Tasks"
                 key="collection_tasks"
                 searchcolor={this.context.getColor()}
               />
             )}
-            {this.context.type === "study" && this.context.filters.study_type.value === "run" && this.context.id !== undefined && (
+            {(this.context.type === "study" || this.context.type === "benchmark") && this.context.filters.study_type && this.context.filters.study_type.value === "run" && this.context.id !== undefined && (
               <SearchTab
                 label="Runs"
                 key="collection_runs"
@@ -948,13 +1006,14 @@ export default class SearchPanel extends React.Component {
               />
             )}
           </SearchTabs>
-            {activeTab === 0 ? ( // Detail panel, 176 or 115
+            {activeTab === 0 ? ( // Detail panel
               this.context.id ? (
                 <Scrollbar>
                 <DetailPanel>
                   <EntryDetails
-                    type={this.context.type}
+                    type={querytype}
                     entity={this.context.id}
+                    filters={this.context.filters}
                     history={this.props.history}
                     location={this.props.location}
                   />
@@ -981,7 +1040,7 @@ export default class SearchPanel extends React.Component {
                         "/dashboard/" +
                         String(this.context.type) +
                         "/" +
-                        (this.context.type === "study" &&
+                        ((this.context.type === "study" || this.context.type === "benchmark") &&
                           this.context.filters.study_type
                           ? this.context.filters.study_type.value + "/"
                           : "") +
@@ -1029,7 +1088,7 @@ export default class SearchPanel extends React.Component {
               ) : ( // Other tabs are drilldowns 
                   this.context.id &&
                   ((this.context.type === "data" && activeTab === 2) ||
-                   (this.context.type === "study" && activeTab === 2)
+                   ((this.context.type === "study" || this.context.type === "benchmark") && activeTab === 2)
                    ? (
                     this.getSubEntityList("task")
                   ) : (

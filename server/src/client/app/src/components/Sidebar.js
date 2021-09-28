@@ -334,6 +334,22 @@ class Sidebar extends React.Component {
       .catch(error => {
         console.log(error);
       });
+    
+    // second query for benchmark counts
+    const bench_data = {
+      size: 0,
+      query: { bool : { filter : { bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] } }}}
+    };
+    axios
+      .post(ELASTICSEARCH_SERVER + "study/study/_search", bench_data, headers)
+      .then(response => {
+        let counts = this.state.counts;
+        counts["benchmark"] = response.data.hits.total;
+        this.setState({ counts: counts });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   render() {
@@ -342,6 +358,7 @@ class Sidebar extends React.Component {
       <MainContext.Consumer>
         {context => (
           <Drawer variant="permanent" open={false} {...other}>
+            {/* The OpenML logo in svg format */}
             <SimpleLink href="/">
               <Brand
                 searchcolor={context.getColor()}
@@ -386,6 +403,7 @@ class Sidebar extends React.Component {
               </Brand>
             </SimpleLink>
             <Scrollbar style={{ width: "260px", height: "100%" }}>
+              {/* Loop over all categories */}
               <List disablePadding>
                 <Items>
                   {routes.map((category, index) => (
@@ -399,6 +417,7 @@ class Sidebar extends React.Component {
                       {category.component ? (
                         category.children ? (
                           <React.Fragment key={index}>
+                            {/* Main sidebar menu items with children */}
                             <SidebarCategory
                               isCollapsable={false}
                               name={category.id}
@@ -426,6 +445,7 @@ class Sidebar extends React.Component {
                               }
                               showTooltip={context.miniDrawer}
                             />
+                            {/* Collapsable submenu for children */}
                             <Collapse
                               in={
                                 context.type === category.entity_type &&
@@ -466,15 +486,15 @@ class Sidebar extends React.Component {
                                   badge={
                                     category.entity_type === context.type
                                       ? (context.filters.measure_type &&
-                                          route.subtype ===
+                                          route.subtype.split("_")[1] ===
                                             context.filters.measure_type
                                               .value) ||
                                         (context.filters.study_type &&
                                           route.subtype ===
-                                            context.filters.study_type.value)
+                                            context.filters.study_type.value) // Only show subtype counts if a subtype is selected
                                         ? context.counts
                                         : 0
-                                      : this.state.counts[category.entity_type]
+                                      : this.state.counts[category.entity_type] 
                                       ? this.state.counts[category.entity_type]
                                       : 0
                                   }
@@ -484,6 +504,7 @@ class Sidebar extends React.Component {
                           </React.Fragment>
                         ) : (
                           <React.Fragment key={index}>
+                            {/* Main sidebar menu items without children */}
                             <SidebarCategory
                               isCollapsable={false}
                               name={category.id}
@@ -531,7 +552,7 @@ class Sidebar extends React.Component {
                           </React.Fragment>
                         )
                       ) : (
-                        <SidebarLink
+                        <SidebarLink // All the other menu items: links to documentation
                           isCollapsable={false}
                           name={category.id}
                           to={category.path}

@@ -147,18 +147,18 @@ const benchmarkRoutes = {
   path: "/search",
   icon: <PinkMenuIcon icon="chart-bar" fixedWidth />,
   component: SearchPanel,
-  entity_type: "study",
+  entity_type: "benchmark",
   subtype_filter: "study_type",
   children: [
     {
       path: "/search",
-      name: "Suites",
+      name: "Task Suites",
       component: SearchPanel,
       subtype: "task"
     },
     {
       path: "/search",
-      name: "Studies",
+      name: "Run Studies",
       component: SearchPanel,
       subtype: "run"
     }
@@ -218,7 +218,7 @@ const coverRoutes = {
 const measureRoutes = {
   id: "Measures",
   path: "/search",
-  icon: <GreyMenuIcon icon="ruler-combined" fixedWidth />,
+  icon: <GreyMenuIcon icon="tachometer-alt" fixedWidth />,
   component: SearchPanel,
   entity_type: "measure",
   subtype_filter: "measure_type",
