@@ -539,7 +539,7 @@ export class SearchResultsPanel extends React.Component {
               <Scrollbar
                 id={scrollID}
                 style={{
-                  display: this.props.context.displaySearch ? "block" : "none",
+                  display: (this.props.context.displaySearch || this.props.listType === "drilldown") ? "block" : "none",
                   height: "calc(100vh - "+(this.props.listType === "drilldown" ? "176" : "115")+"px)"
                 }}
               >

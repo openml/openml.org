@@ -12,13 +12,29 @@ import { StudyItem } from "./Study.js";
 import { UserItem } from "./User.js";
 import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, TableRow, TableCell } from "@material-ui/core";
+import { Tooltip, TableRow, TableCell, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import useBoop from 'use-boop';
+import { animated } from 'react-spring';
 
 const TagChip = styled(Chip)`
   margin-bottom: 5px;
   margin-left: 5px;
 `;
+
+const PaperPlane = (props) => {
+  const [style, trigger] = useBoop({ rotation: -10, scale:3, x:500, y:-500, timing: 1000 });
+  style.color = props.color;
+  style.display = "inline-block";
+  style.paddingLeft = 20;
+  style.zIndex = 5000;
+  style.position = "relative";
+  return (
+    <animated.div style={style} onMouseEnter={trigger}>
+      <FontAwesomeIcon icon={["far","paper-plane"]} size="4x" />
+    </animated.div>
+  )
+};
 
 function fixUpperCase(str) {
   let o = "";
@@ -234,20 +250,21 @@ export class EntryDetails extends React.Component {
 
   render() {
     if (this.state.error !== null) {
-      return (
-        <div className="mainBar">
-          <h1>An error occured</h1>
-          <p>{"" + this.state.error}</p>
-        </div>
-      );
+      if (!this.state.error.includes("404")){
+        return (
+          <div className="mainBar">
+            <h1>An error occured</h1>
+            <p>{"" + this.state.error}</p>
+          </div>
+        );
+      }
     } else if (this.state.obj === null) {
       return (
         <div className="mainBar">
           <h2>Loading...</h2>
         </div>
       );
-    } else {
-      if (
+    } else if (
         this.props.type === "data" ||
         this.props.type === "task" ||
         this.props.type === "flow" ||
@@ -260,8 +277,26 @@ export class EntryDetails extends React.Component {
               <TagChip key={"tag_" + t.tag} label={"  " + t.tag + "  "} size="small" onClick={() => this.updateTag(t.tag)}/>
           ));
         }
-      }
+    }
 
+    // A nice 404 message for 404s and restricted access
+    if ((this.state.error !== null && this.state.error.includes("404")) || 
+        (this.state.obj !== null && this.state.obj.visibility === "private" && 
+         this.state.obj.uploader_id !== this.props.userID)){
+      return (
+        <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '50vh' }}>
+          <Grid item xs={6}>
+            <h2>This is not the {this.props.type} you are looking for.</h2>
+            { this.props.userID === undefined &&
+            <p>We couldn't find this. You might see more after logging in.</p>
+            }
+          </Grid>   
+          <Grid item xs={3} style={{marginTop:50}}>
+           <PaperPlane color={this.props.color}/>
+          </Grid>   
+        </Grid> 
+      );
+    } else {
       switch (this.props.type) {
         case "data":
           return (

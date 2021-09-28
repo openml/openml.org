@@ -1016,6 +1016,8 @@ export default class SearchPanel extends React.Component {
                     filters={this.context.filters}
                     history={this.props.history}
                     location={this.props.location}
+                    userID={this.context.userID}
+                    color={this.context.getColor(querytype)}
                   />
                 </DetailPanel>
                 </Scrollbar>
