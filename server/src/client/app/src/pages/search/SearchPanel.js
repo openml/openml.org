@@ -1040,7 +1040,7 @@ export default class SearchPanel extends React.Component {
                         "//" +
                         String(window.location.host) +
                         "/dashboard/" +
-                        String(this.context.type) +
+                        String(querytype) +
                         "/" +
                         ((this.context.type === "study" || this.context.type === "benchmark") &&
                           this.context.filters.study_type
