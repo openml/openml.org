@@ -3,11 +3,10 @@ import styled from "styled-components";
 import axios from "axios";
 import {
     Button,
-    Card as MuiCard,
-    Divider as MuiDivider,
     FormControl as MuiFormControl,
     Grid,
     Input,
+    Paper,
     InputLabel,
     TextField,
     Typography
@@ -19,9 +18,15 @@ import {Redirect} from "react-router-dom";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const Card = styled(MuiCard)(spacing);
+const Wrapper = styled(Paper)`
+  padding: ${props => props.theme.spacing(6)}px;
+  margin-top:20px;
+  margin-bottom:20px;
 
-const Divider = styled(MuiDivider)(spacing);
+  ${props => props.theme.breakpoints.up("md")} {
+    padding: ${props => props.theme.spacing(10)}px;
+  }
+`;
 
 const FormControl = styled(MuiFormControl)(spacing);
 
@@ -72,10 +77,9 @@ function Public() {
     }
 
     return (
-        <Card mb={6}>
             <form onSubmit={datatoflask}>
-                <Typography variant="h6" gutterBottom>
-                    Task info
+                <Typography variant="h1" gutterBottom>
+                    Create Task
                 </Typography>
                 {
                     error &&
@@ -139,26 +143,19 @@ function Public() {
                     <Redirect to="/"/>
                 )}
             </form>
-        </Card>
     );
 }
 
 function Settings() {
     return (
-        <React.Fragment>
-            <Typography variant="h3" gutterBottom display="inline">
-                Task Upload
-            </Typography>
-
-            <Divider my={6}/>
-
-            <Grid container spacing={6}>
-                <Grid item xs={12}>
-                    <Public/>
-                    {/*<Private />*/}
-                </Grid>
-            </Grid>
-        </React.Fragment>
+        <Grid container spacing={3} justifyContent="center">
+        <Grid item md={7} xs={10}>
+          <Wrapper>
+            <Public />
+            {/*<Private />*/}
+          </Wrapper>
+        </Grid>
+      </Grid >
     );
 }
 

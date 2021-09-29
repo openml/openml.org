@@ -3,10 +3,9 @@ import styled from "styled-components";
 import axios from "axios";
 import {
   Button,
-  Card as MuiCard,
-  Divider as MuiDivider,
   FormControl as MuiFormControl,
   Grid,
+  Paper,
   Input,
   InputLabel,
   TextField,
@@ -16,9 +15,15 @@ import {
 import { spacing } from "@material-ui/system";
 import { Redirect } from "react-router-dom";
 
-const Card = styled(MuiCard)(spacing);
+const Wrapper = styled(Paper)`
+  padding: ${props => props.theme.spacing(6)}px;
+  margin-top:20px;
+  margin-bottom:20px;
 
-const Divider = styled(MuiDivider)(spacing);
+  ${props => props.theme.breakpoints.up("md")} {
+    padding: ${props => props.theme.spacing(10)}px;
+  }
+`;
 
 const FormControl = styled(MuiFormControl)(spacing);
 
@@ -63,11 +68,13 @@ function Public() {
   }
 
   return (
-    <Card mb={6}>
       <form onSubmit={datatoflask}>
-        <Typography variant="h6" gutterBottom>
-          Collection info
-        </Typography>
+        <Typography variant="h1" gutterBottom>
+          Create Task Collection
+        </Typography>          
+          <Button color="primary" href="/auth/upload-collection-runs">
+            Want to create a run collection instead?
+          </Button>
         {error && (
           <Typography component="h3" variant="body1" align="center" color="red">
             {errormessage}
@@ -100,38 +107,19 @@ function Public() {
 
         {success && <Redirect to="/" />}
       </form>
-    </Card>
   );
 }
 
 function Settings() {
   return (
-    <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Collection Tasks Upload
-      </Typography>
-      <Divider my={3} />
-
-      <div>
-        <Button color="primary" href="/auth/upload-collection-tasks">
-          {" "}
-          Upload task collection
-        </Button>
-        <Button color="Blue" href="/auth/upload-collection-runs">
-          {" "}
-          Upload run collection
-        </Button>
-      </div>
-
-      <Divider my={6} />
-
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
+    <Grid container spacing={3} justifyContent="center">
+      <Grid item md={7} xs={10}>
+        <Wrapper>
           <Public />
           {/*<Private />*/}
-        </Grid>
+          </Wrapper>
       </Grid>
-    </React.Fragment>
+    </Grid >
   );
 }
 

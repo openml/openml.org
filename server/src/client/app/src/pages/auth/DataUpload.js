@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {
-  Avatar,
   Button,
-  Card as MuiCard,
-  Divider as MuiDivider,
+  Box,
+  Paper,
+  Chip,
+  Card,
   FormControl as MuiFormControl,
   Grid,
   Input,
@@ -15,7 +16,6 @@ import {
 } from "@material-ui/core";
 
 import { spacing } from "@material-ui/system";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Redirect } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -24,24 +24,32 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { green } from "@material-ui/core/colors";
+import { useDropzone } from 'react-dropzone'
 
-const Card = styled(MuiCard)(spacing);
+const DropCard = styled(Card)`
+  padding: ${props => props.theme.spacing(3)}px;
+  margin-top:20px;
+  margin-bottom:20px;
+  background-color: ${green[50]};
+`;
 
-const Divider = styled(MuiDivider)(spacing);
+const Paragraph = styled(Typography)({
+  paddingBottom: "1vw"
+});
+
+const Wrapper = styled(Paper)`
+  padding: ${props => props.theme.spacing(6)}px;
+  margin-top:20px;
+  margin-bottom:20px;
+
+  ${props => props.theme.breakpoints.up("md")} {
+    padding: ${props => props.theme.spacing(10)}px;
+  }
+`;
 
 const FormControl = styled(MuiFormControl)(spacing);
-
-const FAIcon = styled(FontAwesomeIcon)(spacing);
-
-const CenteredContent = styled.div`
-  text-align: center;
-`;
-
-const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${props => props.theme.spacing(2)}px;
-`;
 
 function Public() {
   const [error, setError] = useState(false);
@@ -51,8 +59,19 @@ function Public() {
   const [uploaddata, setUploadData] = useState(false);
   const [editpath, setEditPath] = useState(false);
   const [editsuccess, setEditSuccess] = useState(false);
-  const [licence, setLicence] = useState("");
+  const [licence, setLicence] = useState(false);
 
+  const onDrop = useCallback(acceptedFiles => {
+    console.log(acceptedFiles);
+  }, []);
+  
+  const maxSize = 1000000000;
+  const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+    onDrop,
+    minSize: 0,
+    maxSize: maxSize,
+  });
+  
   const handleChange = event => {
     setLicence(event.target.value);
   };
@@ -154,10 +173,9 @@ function Public() {
     );
   } else {
     return (
-      <Card mb={6}>
         <form onSubmit={datatoflask}>
-          <Typography variant="h6" gutterBottom>
-            Dataset info
+          <Typography variant="h1" gutterBottom>
+            Dataset Upload
           </Typography>
           {error && (
             <Typography
@@ -170,15 +188,34 @@ function Public() {
             </Typography>
           )}
           <Grid container spacing={6}>
-            <Grid item md={8}>
+          <Grid item xs={12}>
+            <DropCard variant="outlined">
+              <div {...getRootProps()}>
+                <input {...getInputProps()} id="dataset" />
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                <FontAwesomeIcon icon="cloud-upload-alt" size="2x" color={green[800]}/>
+                </Box>
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                <Paragraph>Drag 'n' drop some files here, or click to select files.</Paragraph>
+                </Box>                
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                <Paragraph>Currently we only support text based formats like csv and json</Paragraph>
+                </Box>
+              </div>
+            </DropCard>
+              {acceptedFiles.length > 0 && acceptedFiles.map(acceptedFile => (
+                <Chip variant="outlined" label={acceptedFile.name} color="primary" />
+              ))}
+            </Grid>
+            <Grid item xs={12}>
               <FormControl fullWidth mb={3}>
-                <InputLabel htmlFor="datasetname">Dataset name</InputLabel>
+                <InputLabel htmlFor="datasetname">Dataset name *</InputLabel>
                 <Input id="datasetname" />
               </FormControl>
 
               <FormControl fullWidth mb={3}>
                 <TextField
-                  label="Description"
+                  label="Description *"
                   id="description"
                   rows={3}
                   rowsMax={4}
@@ -263,22 +300,6 @@ function Public() {
                 <Input id="citation" placeholder="citation" />
               </FormControl>
             </Grid>
-            <Grid item md={4}>
-              <CenteredContent>
-                <BigAvatar alt="User Image" id="dp" />
-                <input style={{ display: "none" }} id="dataset" type="file" />
-                <label htmlFor="dataset">
-                  <Button variant="contained" color="primary" component="span">
-                    <FAIcon icon="cloud-upload-alt" mr={2} /> Upload
-                  </Button>
-
-                  <Typography variant="caption" display="block" gutterBottom>
-                    Currently we only support text based formats like csv and
-                    json
-                  </Typography>
-                </label>
-              </CenteredContent>
-            </Grid>
           </Grid>
           <Button
             variant="contained"
@@ -317,27 +338,20 @@ function Public() {
             Edit dataset (In progress)
           </Button>
         </form>
-      </Card>
     );
   }
 }
 
 function Settings() {
   return (
-    <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Dataset Upload
-      </Typography>
-
-      <Divider my={6} />
-
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
+    <Grid container spacing={3} justifyContent="center">
+      <Grid item md={7} xs={10}>
+        <Wrapper>
           <Public />
           {/*<Private />*/}
-        </Grid>
+        </Wrapper>
       </Grid>
-    </React.Fragment>
+    </Grid >
   );
 }
 
