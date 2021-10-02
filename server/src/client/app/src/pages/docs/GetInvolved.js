@@ -499,7 +499,7 @@ export default class GetInvolved extends React.Component {
                 transparent on how your contributions are used to support OpenML. Please click the button below. Thank you so much!
               </Paragraph>
               <Paragraph style={{paddingBottom:0}}>
-                <a href="https://opencollective.com/openml/donate" target="_blank" rel="noreferrer">
+                <a href="https://opencollective.com/openml" target="_blank" rel="noreferrer">
                 <img src="https://opencollective.com/openml/donate/button@2x.png?color=blue" width="265" alt="OpenCollective button"/>
                 </a>
               </Paragraph>
@@ -642,7 +642,7 @@ export default class GetInvolved extends React.Component {
                 donate directly to the Foundation.
               </Paragraph>
               <Paragraph style={{paddingBottom:10}}>
-                <a href="https://opencollective.com/openml/donate" target="_blank" rel="noreferrer">
+                <a href="https://opencollective.com/openml" target="_blank" rel="noreferrer">
                 <img src="https://opencollective.com/openml/donate/button@2x.png?color=blue" width="265" alt="OpenCollective button"/>
                 </a>
               </Paragraph>
