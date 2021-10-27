@@ -20,9 +20,8 @@ import {
 
 import { spacing } from "@material-ui/system";
 import { HashLink } from "react-router-hash-link";
-
-import useBoop from 'use-boop';
-import { animated } from 'react-spring';
+import { animated } from '@react-spring/web';
+import useBoop from "../../components/Boop.js";
 
 const OpenMLDove = (props) => {
   const [style, trigger] = useBoop({ rotation: -45, scale:3, x:50, y:-50, timing: 300 });
