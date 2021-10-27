@@ -75,8 +75,8 @@ function Public() {
         setFname(response.data.first_name);
         setLname(response.data.last_name);
         setId(response.data.id);
-        if (this.id !== false) {
-          fetch("https://openml.org/es/user/user/" + this.id.toString())
+        if (id !== false) {
+          fetch("https://openml.org/es/user/user/" + id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);
@@ -89,7 +89,7 @@ function Public() {
       .catch(function(error) {
         console.log(error);
       });
-  }, []);
+  }, [id]);
 
   return (
     <Card mb={6}>

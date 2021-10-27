@@ -80,7 +80,15 @@ function DataEdit() {
     useEffect(() => {
         async function fetchData() {
             // You can await here
-            const response = await axios(process.env.REACT_APP_SERVER_URL + "data-edit", this.yourConfig);
+            const yourConfig = {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                },
+                params: {
+                    url: window.location.href,
+                },
+            };
+            const response = await axios(process.env.REACT_APP_SERVER_URL + "data-edit", yourConfig);
 
             //setUserId(response.data.user_id);
             setName(response.data.name);
