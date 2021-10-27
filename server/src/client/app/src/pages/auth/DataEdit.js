@@ -54,7 +54,7 @@ function DataEdit() {
     const [error, setError] = useState(false);
     const [errormessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [user_id, setUserId] = useState("");
+    //const [user_id, setUserId] = useState("");
     const [owner, setOwner] = useState(false);
     const [original_data_url, setODUrl] = useState("");
     const [paper_url, setPaperUrl] = useState("");
@@ -80,9 +80,9 @@ function DataEdit() {
     useEffect(() => {
         async function fetchData() {
             // You can await here
-            const response = await axios(process.env.REACT_APP_SERVER_URL + "data-edit", yourConfig);
+            const response = await axios(process.env.REACT_APP_SERVER_URL + "data-edit", this.yourConfig);
 
-            setUserId(response.data.user_id);
+            //setUserId(response.data.user_id);
             setName(response.data.name);
             setDescription(response.data.description);
             setCreator(response.data.creator);

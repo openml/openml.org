@@ -58,13 +58,13 @@ function Public() {
   const [task, setTask] = useState(0);
   const [id, setId] = useState(false);
 
-  const yourConfig = {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("token")
-    }
-  };
-
   useEffect(() => {
+    const yourConfig = {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("token")
+        }
+    };
+
     axios
       .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
       .then(function(response) {
@@ -75,8 +75,8 @@ function Public() {
         setFname(response.data.first_name);
         setLname(response.data.last_name);
         setId(response.data.id);
-        if (id !== false) {
-          fetch("https://openml.org/es/user/user/" + id.toString())
+        if (this.id !== false) {
+          fetch("https://openml.org/es/user/user/" + this.id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);

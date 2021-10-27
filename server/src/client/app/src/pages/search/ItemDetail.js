@@ -14,8 +14,8 @@ import { Chip } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, TableRow, TableCell, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import useBoop from 'use-boop';
-import { animated } from 'react-spring';
+import { animated } from '@react-spring/web';
+import useBoop from "../../components/Boop.js";
 
 const TagChip = styled(Chip)`
   margin-bottom: 5px;
@@ -293,7 +293,7 @@ export class EntryDetails extends React.Component {
           </Grid>   
           <Grid item xs={3} style={{marginTop:50}}>
            <PaperPlane color={this.props.color}/>
-          </Grid>   
+          </Grid>
         </Grid> 
       );
     } else {
