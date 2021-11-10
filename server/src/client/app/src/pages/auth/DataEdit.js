@@ -210,7 +210,7 @@ function DataEdit() {
                                         />
                                     </FormControl>) : (
                                         <Card variant="outlined">
-                                            <ReactMarkdown source={description} />
+                                            <ReactMarkdown children={description} />
                                         </Card>)}
                                 <div style={{ float: "right" }}>
                                     <Tooltip title="Styling with Markdown is supported" placement="left">
