@@ -112,11 +112,6 @@ export function search(
         minimum_should_match: 1
       }
     },
-    sort: {
-      [sort]: {
-        order: order
-      }
-    },
     aggs: {
       type: {
         terms: { field: "_type" }
@@ -124,6 +119,13 @@ export function search(
     },
     _source: fields.filter(l => !!l)
   };
+  if (sort !== "match"){
+    params["sort"] = {
+      [sort]: {
+        order: order
+      }
+    }
+  }
   // uncomment for debugging the search
   //console.log("Search: " + JSON.stringify(params));
   //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,

@@ -11,6 +11,8 @@ import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
 import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
+import { concat, constant } from "lodash";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
 
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -86,9 +88,9 @@ export default class SearchPanel extends React.Component {
         //study type changed, reset active tab
         this.context.activeTab = 0
       }
-
+    
     // If no sort is defined, set a sensible default
-    if (this.context.sort === null || this.context.type !== qstring.type) {
+    if (this.context.sort === null || this.context.sort === undefined || this.context.type !== qstring.type) {
       if (["data", "flow", "task"].includes(qstring.type)) {
         qstring.sort = "runs";
       } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === "task") {
@@ -126,6 +128,7 @@ export default class SearchPanel extends React.Component {
     currentUrlParams.delete("status");
     currentUrlParams.delete("source_data.data_id");
     currentUrlParams.delete("run_task.task_id");
+    currentUrlParams.delete("run_flow.flow_id");
     currentUrlParams.delete("study_type");
     currentUrlParams.delete("sort");
     currentUrlParams.set("type", type);
@@ -155,6 +158,7 @@ export default class SearchPanel extends React.Component {
       "data_id",
       "name",
       "version",
+      "format",
       "description",
       "qualities.NumberOfInstances",
       "qualities.NumberOfFeatures",
@@ -276,7 +280,7 @@ export default class SearchPanel extends React.Component {
 
   // important: don't update while waiting for queries
   shouldComponentUpdate(nextProps, nextState) {
-    return this.context.updateType !== "query" || this.context.results.length > 0;
+    return this.context.updateType !== "query" || this.context.results.length >= 0;
   }
 
   componentDidMount() {
@@ -478,7 +482,7 @@ export default class SearchPanel extends React.Component {
       this.context.startCount
     )
       .then(data => {
-          let res = this.processSearchResults(data, querytype)
+          let res = this.processSearchResults(data, querytype);
           if (this.context.startCount === 0){
             this.context.setResults(res.counts, res.results);
           } else { //add to infinite list
@@ -600,12 +604,15 @@ export default class SearchPanel extends React.Component {
     let qstring = {
       id: value,
       type: this.context.subType,
-      sort: "runs"
+      sort: (this.context.query !== undefined ? "match" : "runs")
     }
     if (this.context.type === "data"){
       qstring["source_data.data_id"] = this.context.id;
     } else if (this.context.type === "task"){
       qstring["run_task.task_id"] = this.context.id;
+      qstring["sort"] = "date";
+    } else if (this.context.type === "flow"){
+      qstring["run_flow.flow_id"] = this.context.id;
       qstring["sort"] = "date";
     } else if (this.context.type === "study" || this.context.type === "benchmark"){
       qstring["collections.id"] = this.context.id;
@@ -619,6 +626,8 @@ export default class SearchPanel extends React.Component {
       this.goToSubType(this.context.subType, value, "source_data.data_id", this.context.id);
     } else if (this.context.type === "task"){
       this.goToSubType(this.context.subType, value, "run_task.task_id", this.context.id);
+    } else if (this.context.type === "flow"){
+      this.goToSubType(this.context.subType, value, "run_flow.flow_id", this.context.id);
     } else if (this.context.type === "study" || this.context.type === "benchmark"){
       this.goToSubType(this.context.subType, value, "collections.id", this.context.id);
     }
@@ -639,6 +648,11 @@ export default class SearchPanel extends React.Component {
         this.context.updatetype !== "subquery"){
       let filters = []
       filters["run_task.task_id"] = { value: this.context.id, type: "=" };
+      return filters;
+    } else if (this.context.type === "flow" && this.context.activeTab === 2 && 
+        this.context.updatetype !== "subquery"){
+      let filters = []
+      filters["run_flow.flow_id"] = { value: this.context.id, type: "=" };
       return filters;
     } else if ((this.context.type === "study" || this.context.type === "benchmark") && 
       this.context.updatetype !== "subquery"){
@@ -662,7 +676,7 @@ export default class SearchPanel extends React.Component {
     }    
     // Only repeat search if current sub-search is empty
     if (this.context.startSubCount === 0 || toggling){
-      if (this.context.type === "task"){
+      if (this.context.type === "task" || this.context.type === "flow"){
         type = "run";
       } else if (activeTab === 3 && (this.context.type === "study" || this.context.type === "benchmark") && 
                 this.context.filters.study_type.value === "run"){
@@ -757,9 +771,18 @@ export default class SearchPanel extends React.Component {
             value: "qualities.NumberOfClasses",
             options: [
               { name: "All", type: "gte", value: "-1", value2: "" },
-              { name: "Numeric", type: "lte", value: "1", value2: "" },
-              { name: "Binary", type: "=", value: "2", value2: "" },
+              { name: "Regression", type: "lte", value: "1", value2: "" },
+              { name: "Binary classification", type: "=", value: "2", value2: "" },
               { name: "Multi-class", type: "gte", value: "2", value2: "" }
+            ]
+          },
+          Format: {
+            name: "Format",
+            value: "format",
+            options: [
+              { name: "Dense", type: "=", value: "ARFF" },
+              { name: "Sparse", type: "=", value: "Sparse_ARFF" },
+              { name: "Any", type: "=", value: "any" }
             ]
           },
           ...(this.context.userID && {
@@ -805,7 +828,7 @@ export default class SearchPanel extends React.Component {
     switch (this.context.type) {
       case "data":
         return [
-          //{"name": "best match", "value": "match "},
+          { name: "Relevance", "value": "match"},
           { name: "Runs", value: "runs" },
           { name: "Likes", value: "nr_of_likes" },
           { name: "Downloads", value: "nr_of_downloads" },

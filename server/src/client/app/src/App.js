@@ -205,10 +205,13 @@ class App extends React.Component {
       if (value === "") {
         value = undefined;
       }
-      this.setState(
-        { query: value, updateType: "query", startCount: 0, results: [] },
-        this.log("Query set")
-      );
+      let state_update = { query: value, updateType: "query", startCount: 0, results: [] };
+      if (value !== undefined) {
+        state_update["sort"] = "match";
+      } else {
+        state_update["sort"] = undefined;
+      }
+      this.setState(state_update, this.log("Query set"));
     },
     setFields: value => {
       this.setState({ fields: value }, this.log("Fields changed"));
@@ -233,7 +236,6 @@ class App extends React.Component {
           updateType: "results",
           startCount: results.length
         },
-        this.log("Search results changed. Total: "+results.length)
       );
     },
     setSubResults: (counts, results) => {
@@ -297,7 +299,8 @@ class App extends React.Component {
         } else {
           let type = "=";
           let value2 = undefined;
-          if (!key.startsWith("tags") && !key.startsWith("status") && value.split("_").length === 2) {
+          // TODO: we need to add a special case for every filter that can have '_' in its values, think of a better way
+          if (!key.startsWith("tags") && !key.startsWith("status") && !key.startsWith("format") && value.split("_").length === 2) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
@@ -310,6 +313,7 @@ class App extends React.Component {
           }
           if (key in this.state.filters) {
             // Update filter
+
             if (
               this.state.filters[key].type !== type ||
               this.state.filters[key].value !== value

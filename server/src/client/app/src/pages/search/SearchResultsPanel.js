@@ -317,7 +317,7 @@ export class SearchResultsPanel extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     // Only render if there are new results or when the display size changes
-    if (nextProps.context.results.length >= 1 && nextProps.context.updateType !== undefined){
+    if (nextProps.context.results.length >= 0 && nextProps.context.updateType !== undefined){
       return true;
     } else if (this.props.context.displaySplit !== nextProps.context.displaySplit){
       return true;
@@ -410,16 +410,45 @@ export class SearchResultsPanel extends React.Component {
     }
     // List header
     const header = (type, qtype, study_type) => {
-      if (qtype === "task"){
+      if (qtype === "task" || (type === "task" && qtype === "task")){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
                   {this.capitalize(qtype)}s
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
-                  Tasks define specific problems to be solved using this {type}. 
+                  Tasks define specific problems to be solved using {type === "task" ? (<span>a given dataset</span>) : (<span>this {type}</span>)}. 
                   They specify train and test sets, which target feature(s) to predict for 
                   supervised problems, and possibly which evaluation measure to optimize. 
-                  They make the problem reproducible and machine-readable.
+                  They make the problem reproducible and machine-readable.{"\u00A0"}
+                  <SimpleLink href="https://docs.openml.org/#tasks" style={{color:this.props.context.getColor("task")}}>Learn more. </SimpleLink>
+                </Typography>
+              </Box>
+      } else if (qtype === "data"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}sets
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Datasets provide training data for machine learning models. OpenML datasets are uniformly formatted and come
+                  with rich meta-data to allow automated processing. 
+                  You can <ColoredIcon color={this.props.context.getColor("data")} icon={"sort-amount-down"} fixedWidth/>
+                  {"\u00A0"}sort or {"\u00A0"}
+                  <ColoredIcon color={this.props.context.getColor("data")} icon={"filter"} fixedWidth/>
+                  {"\u00A0"}filter them by a range of different properties.{"\u00A0"}
+                  <SimpleLink href="https://docs.openml.org/#data" style={{color:this.props.context.getColor("data")}}>Learn more. </SimpleLink>
+                </Typography>
+              </Box>
+      } else if (qtype === "flow"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}s
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Flows represent machine learning pipelines or neural architectures, or (untrained) machine learning models
+                  in general. Flows contain all the information necessary to build a model, including its exact structure 
+                  and any software dependencies. Given a flow, supported machine learning libraries can reproduce the model 
+                  exactly.{"\u00A0"}
+                  <SimpleLink href="https://docs.openml.org/#flows" style={{color:this.props.context.getColor("flow")}}>Learn more. </SimpleLink>
                 </Typography>
               </Box>
       } else if (qtype === "run"){
@@ -428,9 +457,11 @@ export class SearchResultsPanel extends React.Component {
                   {this.capitalize(qtype)}s
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
-                  Runs are evaluations of machine learning pipelines or models on this {type}. 
+                  Runs are evaluations of machine learning models (flows) trained on {type === "run" ? (<span>a given task</span>) : (<span>this {type}</span>)}. 
                   They are shared directly from machine learning libraries in high detail to
-                  ensure reproducibility.
+                  ensure reproducibility. They contain the exact hyperparameters used, all detailed results, and potentially
+                  the trained models.{"\u00A0"}
+                  <SimpleLink href="https://docs.openml.org/#runs" style={{color:this.props.context.getColor("run")}}>Learn more. </SimpleLink>
                 </Typography>
               </Box>
       } else if (type === "benchmark" && study_type === "task"){
@@ -544,7 +575,8 @@ export class SearchResultsPanel extends React.Component {
                 }}
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
-                  {(this.props.listType === "drilldown" || this.props.context.type === "benchmark") && ( // show header for drilldowns and benchmarks
+                  {(this.props.listType === "drilldown" || this.props.context.type === "benchmark" || this.props.context.type === "task"
+                    || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run") && ( // show header for drilldowns and benchmarks
                     <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} 
                     xl={(this.props.context.displaySplit ? 12 : 9)}>
                       {header(this.props.context.type,qtype,this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null)}

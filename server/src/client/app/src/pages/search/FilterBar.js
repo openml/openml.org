@@ -177,8 +177,38 @@ export class FilterBar extends React.Component {
   filterLabel = key => {
     if (this.context.filters[key]["value"] === "active"){
       return "verified";
+    } else if (this.context.filters[key]["value"] === "ARFF"){
+      return "dense";
+    } else if (this.context.filters[key]["value"] === "Sparse_ARFF"){
+      return "sparse";
+    } else if (key.includes("NumberOfClasses")) {
+      if (this.context.filters[key]["value"] == 1) {
+        return "regression";
+      } else if (this.context.filters[key]["type"] == "gte" && this.context.filters[key]["value"] == 2) {
+        return "multi-class";
+      } else {
+        return "binary class";
+      }
+    } else if (key.includes("NumberOf")) {
+        let keyname = key.split("s.")[1].replace("NumberOf","").toLowerCase();
+        if (this.context.filters[key]["type"] == "lte"){
+          return "<10 "+keyname;
+        } else {
+          return ">" + this.context.filters[key]["value"] + " " + keyname;
+        }
+    } else if (key.includes("tasktype")) {
+      console.log(this.context.filters[key]);
+      if (this.context.filters[key]["value"] === "1"){
+        return "classification";
+      } else if (this.context.filters[key]["value"] === "2"){
+        return "regression";
+      } else if (this.context.filters[key]["value"] === "4"){
+        return "stream classification";
+      } else if (this.context.filters[key]["value"] === "5"){
+        return "clustering";
+      }
     } else if (key.includes("s.")) {
-      return key.split("s.")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
+      return key.split("s.")[1].replace("_"," ") + "s " + this.context.filters[key]["value"];
     } else if (key.includes(".")) {
       return key.split(".")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
     } else {
