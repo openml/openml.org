@@ -33,7 +33,6 @@ function SignIn() {
   const [errorlog, setError] = useState(false);
   const [confirmflag, setConfirm] = useState(false);
   const [errormsg, setErrorMsg] = useState(false);
-  const [notexist, setNotExist] = useState(false);
   const [wrongpass, setWrongPass] = useState(false);
   const context = useContext(MainContext);
 
@@ -48,8 +47,6 @@ function SignIn() {
         console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
-        } else if (response.data.msg === "User does not exist") {
-          setNotExist(true);
         } else if (response.data.msg === "wrong password") {
           setWrongPass(true);
         } else {
@@ -108,15 +105,6 @@ function SignIn() {
             >
               User not confirmed
               <a href="/auth/confirmation-token">(resend activation token)</a>
-            </Typography>
-          )}
-          {notexist && (
-            <Typography component="h3" align="center" style={{ color: "red" }}>
-              <FontAwesomeIcon
-                icon="exclamation-triangle"
-                style={{ marginRight: 5 }}
-              />
-              User does not exist
             </Typography>
           )}
           <form onSubmit={sendtoflask}>
