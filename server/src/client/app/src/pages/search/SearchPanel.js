@@ -11,8 +11,6 @@ import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
 import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
-import { concat, constant } from "lodash";
-import { createNoSubstitutionTemplateLiteral } from "typescript";
 
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -123,6 +121,21 @@ export default class SearchPanel extends React.Component {
     }
   };
 
+  updateQueryAndUnselect = (param, value) => {
+    if (param !== undefined) {
+      let currentUrlParams = new URLSearchParams(this.props.location.search);
+      currentUrlParams.delete("id");
+      if (value === null || value === "" || value === undefined) {
+        currentUrlParams.delete(param);
+      } else {
+        currentUrlParams.set(param, value);
+      }
+      this.props.history.push(
+        this.props.location.pathname + "?" + currentUrlParams.toString()
+      );
+    }
+  };
+
   goToSubType = (type, id, filter, filter_id) => {
     let currentUrlParams = new URLSearchParams(this.props.location.search);
     currentUrlParams.delete("status");
@@ -141,9 +154,9 @@ export default class SearchPanel extends React.Component {
 
   clearFilters = (key) => {
     if (key === "status") {
-      this.updateQuery("status", "any");
+      this.updateQueryAndUnselect("status", "any");
     } else {
-      this.updateQuery(key, undefined);
+      this.updateQueryAndUnselect(key, undefined);
     }
   };
 
@@ -565,20 +578,18 @@ export default class SearchPanel extends React.Component {
   // Filters in format:
   // [{name: qualities.xxx, type: >, value:1000}]
   filterChange = filters => {
-    console.log("Filter change", filters);
     filters.forEach(filter => {
       if (filter.value2 === undefined) {
-        this.updateQuery(filter.name, filter.value);
+        this.updateQueryAndUnselect(filter.name, filter.value);
       } else if (filter.value2 === "") {
-        this.updateQuery(filter.name, filter.type + "_" + filter.value);
+        this.updateQueryAndUnselect(filter.name, filter.type + "_" + filter.value);
       } else {
-        this.updateQuery(
+        this.updateQueryAndUnselect(
           filter.name,
           filter.type + "_" + filter.value + "_" + filter.value2
         );
       }
     });
-    //this.reload();
   };
 
   tagChange = tag => {

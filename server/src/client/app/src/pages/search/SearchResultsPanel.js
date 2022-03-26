@@ -576,7 +576,8 @@ export class SearchResultsPanel extends React.Component {
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
                   {(this.props.listType === "drilldown" || this.props.context.type === "benchmark" || this.props.context.type === "task"
-                    || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run") && ( // show header for drilldowns and benchmarks
+                    || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run") && 
+                    (!this.props.context.displaySplit) && ( // show header for drilldowns and benchmarks
                     <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} 
                     xl={(this.props.context.displaySplit ? 12 : 9)}>
                       {header(this.props.context.type,qtype,this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null)}

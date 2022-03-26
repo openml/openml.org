@@ -182,16 +182,16 @@ export class FilterBar extends React.Component {
     } else if (this.context.filters[key]["value"] === "Sparse_ARFF"){
       return "sparse";
     } else if (key.includes("NumberOfClasses")) {
-      if (this.context.filters[key]["value"] == 1) {
+      if (this.context.filters[key]["value"] === "1") {
         return "regression";
-      } else if (this.context.filters[key]["type"] == "gte" && this.context.filters[key]["value"] == 2) {
+      } else if (this.context.filters[key]["type"] === "gte" && this.context.filters[key]["value"] === "2") {
         return "multi-class";
       } else {
         return "binary class";
       }
     } else if (key.includes("NumberOf")) {
         let keyname = key.split("s.")[1].replace("NumberOf","").toLowerCase();
-        if (this.context.filters[key]["type"] == "lte"){
+        if (this.context.filters[key]["type"] === "lte"){
           return "<10 "+keyname;
         } else {
           return ">" + this.context.filters[key]["value"] + " " + keyname;
@@ -310,7 +310,7 @@ export class FilterBar extends React.Component {
                   >
                     <FontAwesomeIcon
                       icon={this.context.displaySplit ? (this.context.id ? "expand-alt" : "poll") :
-                        (this.context.id ? "chevron-left" : (this.context.displayStats ? "align-justify" : "poll"))}
+                        (this.context.id ? "list" : (this.context.displayStats ? "list" : "poll"))}
                     />
                   </FilterButton>
                 }

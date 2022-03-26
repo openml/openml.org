@@ -313,7 +313,6 @@ class App extends React.Component {
           }
           if (key in this.state.filters) {
             // Update filter
-
             if (
               this.state.filters[key].type !== type ||
               this.state.filters[key].value !== value

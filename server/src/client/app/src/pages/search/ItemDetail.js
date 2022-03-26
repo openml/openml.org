@@ -243,6 +243,7 @@ export class EntryDetails extends React.Component {
   updateTag = (value) => {
     let currentUrlParams = new URLSearchParams(this.props.location.search);
     currentUrlParams.set("tags.tag", value);
+    currentUrlParams.delete("id"); // selecting a tags should show match list
     this.props.history.push(
       this.props.location.pathname + "?" + currentUrlParams.toString()
     );
