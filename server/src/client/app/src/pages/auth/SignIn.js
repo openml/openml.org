@@ -49,7 +49,7 @@ function SignIn() {
           setConfirm(true);
         } else if (response.data.msg === "wrong password") {
           setWrongPass(true);
-        } else {
+        } else if (response.data.msg !== "User does not exist"){
           localStorage.setItem("token", response.data.access_token);
           context.checkLogIn();
           setLogger(true);
