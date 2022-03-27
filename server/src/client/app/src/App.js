@@ -270,7 +270,8 @@ class App extends React.Component {
         id: undefined,
         counts: "id" in qp ? this.state.counts : 0,
         displaySearch: true,
-        filters: this.state.type === qp.type ? this.state.filters : []
+        filters: this.state.type === qp.type ? this.state.filters : [],
+        query: this.state.type === qp.type ? this.state.query : undefined
       };
       if (this.state.type !== qp.type){
         document.getElementById("searchbar").value = "";
