@@ -50,7 +50,7 @@ def login():
 
     if user is None:
         print("user does not exist")
-        return jsonify({"msg": "User does not exist"}), 200
+        return jsonify({"msg": "Wrong username or password"}), 200
 
     elif not user.check_password(jobj["password"]):
         print("Wrong password")
