@@ -584,7 +584,7 @@ export class SearchResultsPanel extends React.Component {
                     </Grid>
                   )}
                   <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
-                    {component && 
+                    {component &&
                       <InfiniteScroll
                         dataLength={dataLength}
                         next={this.props.reload}

@@ -272,6 +272,10 @@ class App extends React.Component {
         displaySearch: true,
         filters: this.state.type === qp.type ? this.state.filters : []
       };
+      if (this.state.type !== qp.type){
+        document.getElementById("searchbar").value = "";
+      }
+      
       // check for removed keys
       Object.keys(this.state.filters).forEach(key => {
         if (!(key in qp)) {

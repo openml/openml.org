@@ -62,6 +62,7 @@ export default class SearchPanel extends React.Component {
   // * re-render panels with data
 
   static contextType = MainContext;
+  reloading = false;
 
   state = {
     previousWidth: 0
@@ -476,6 +477,25 @@ export default class SearchPanel extends React.Component {
     return { counts: data.counts, results: data.results };
   };
 
+  // ID field
+  id_field = (qtype) => {
+    if (qtype === "task_type"){
+      return "tt_id"
+    } else if (qtype === "measure") {
+      let mtype = this.props.context.filters["measure_type"].value;
+      if (mtype === "procedure"){
+        return "proc_id";
+      } else if (mtype === "measure"){
+        return "eval_id";
+      } else {
+        return mtype + "_id"
+      }
+    }
+    else {
+      return qtype + "_id"
+    }
+  }
+
   // call search engine to load more results
   reload() {
     // distinguishing benchmarks and studies in frontend
@@ -496,9 +516,10 @@ export default class SearchPanel extends React.Component {
     )
       .then(data => {
           let res = this.processSearchResults(data, querytype);
+          let obj_id = this.id_field(querytype) + "_id";
           if (this.context.startCount === 0){
             this.context.setResults(res.counts, res.results);
-          } else { //add to infinite list
+          } else if (this.context.results[0][obj_id] !== res.results[0][obj_id]) { //add to infinite list
             this.context.setResults(res.counts, this.context.results.concat(res.results));
           }
         }
@@ -519,47 +540,47 @@ export default class SearchPanel extends React.Component {
           console.error(ex);
         }
       });
-  }
+}
 
-
-  // call search engine for sub-listing (e.g. tasks for a given dataset)
-  loadSubQuery() {
-    search(
-      undefined, // query
-      undefined, // tag
-      this.context.subType,
-      this.fields[this.context.subType],
-      (this.context.subType === "task" ? "runs" : "date"),
-      (this.context.subType === "task" ? "desc" : "asc"),
-      this.toFilterQuery(this.drillDownFilter()),
-      this.context.startSubCount
+// call search engine for sub-listing (e.g. tasks for a given dataset)
+loadSubQuery() {
+  console.log("sq")
+  search(
+    undefined, // query
+    undefined, // tag
+    this.context.subType,
+    this.fields[this.context.subType],
+    (this.context.subType === "task" ? "runs" : "date"),
+    (this.context.subType === "task" ? "desc" : "asc"),
+    this.toFilterQuery(this.drillDownFilter()),
+    this.context.startSubCount
+  )
+    .then(data => {
+        let res = this.processSearchResults(data, this.context.subType)
+        if (this.context.startSubCount === 0){
+          this.context.setSubResults(res.counts, res.results);
+        } else {
+          this.context.setSubResults(res.counts, this.context.subResults.concat(res.results));
+        }
+      }
     )
-      .then(data => {
-          let res = this.processSearchResults(data, this.context.subType)
-          if (this.context.startSubCount === 0){
-            this.context.setSubResults(res.counts, res.results);
-          } else {
-            this.context.setSubResults(res.counts, this.context.subResults.concat(res.results));
-          }
-        }
-      )
-      .catch(error => {
-        console.error(error);
-        try {
-          this.setState({
-            error:
-              "" +
-              error +
-              (error.hasOwnProperty("fileName")
-                ? " (" + error.fileName + ":" + error.lineNumber + ")"
-                : "")
-          });
-          this.context.setSubResults(0, []);
-        } catch (ex) {
-          console.error("There was an error displaying the above error");
-          console.error(ex);
-        }
-      });
+    .catch(error => {
+      console.error(error);
+      try {
+        this.setState({
+          error:
+            "" +
+            error +
+            (error.hasOwnProperty("fileName")
+              ? " (" + error.fileName + ":" + error.lineNumber + ")"
+              : "")
+        });
+        this.context.setSubResults(0, []);
+      } catch (ex) {
+        console.error("There was an error displaying the above error");
+        console.error(ex);
+      }
+    });
   }
 
   // Translate sort options to URL query parameters

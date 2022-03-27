@@ -478,6 +478,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     />
                   </SearchIconWrapper>
                   <Input
+                    id="searchbar"
                     placeholder={"Search " + context.getSearchTopic()}
                     defaultValue={context.query ? context.query : null}
                     bg={context.searchActive ? "" : bg}
