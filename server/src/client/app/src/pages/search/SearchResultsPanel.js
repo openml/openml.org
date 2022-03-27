@@ -15,6 +15,7 @@ import {
   grey,
   purple
 } from "@material-ui/core/colors";
+import { flexbox } from "@material-ui/system";
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -408,8 +409,8 @@ export class SearchResultsPanel extends React.Component {
         return qtype + "_id"
       }
     }
-    // List header
-    const header = (type, qtype, study_type) => {
+    // List header. TODO: clean up code
+    const header = (type, qtype, study_type, measure_type) => {
       if (qtype === "task" || (type === "task" && qtype === "task")){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
@@ -444,7 +445,7 @@ export class SearchResultsPanel extends React.Component {
                   {this.capitalize(qtype)}s
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
-                  Flows represent machine learning pipelines or neural architectures, or (untrained) machine learning models
+                  Flows represent machine learning pipelines or neural architectures, or (untrained) machine learning models, such as 
                   in general. Flows contain all the information necessary to build a model, including its exact structure 
                   and any software dependencies. Given a flow, supported machine learning libraries can reproduce the model 
                   exactly.{"\u00A0"}
@@ -458,10 +459,38 @@ export class SearchResultsPanel extends React.Component {
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Runs are evaluations of machine learning models (flows) trained on {type === "run" ? (<span>a given task</span>) : (<span>this {type}</span>)}. 
-                  They are shared directly from machine learning libraries in high detail to
-                  ensure reproducibility. They contain the exact hyperparameters used, all detailed results, and potentially
+                  They can be created and shared automatically from supported machine learning libraries. They contain the exact hyperparameters used, all detailed results, and potentially
                   the trained models.{"\u00A0"}
                   <SimpleLink href="https://docs.openml.org/#runs" style={{color:this.props.context.getColor("run")}}>Learn more. </SimpleLink>
+                </Typography>
+              </Box>
+      } else if (qtype === "task_type"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  {this.capitalize(qtype)}s
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Task types define a machine-readable schema for specific machine learning tasks (e.g. classification). 
+                  They define the required inputs and outputs, and how to describe them. Using this general schema, new tasks 
+                  can be created on specific datasets, and all ensuing runs can be evaluated uniformly.
+                </Typography>
+              </Box>
+      } else if (qtype === "study" && study_type === "task"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Task collections
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  You can group together tasks into collections to easily refer to them and share them with others.
+                </Typography>
+              </Box>
+      } else if (qtype === "study" && study_type === "run"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Run collections
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  You can group together runs into collections to easily refer to them and share them with others.
                 </Typography>
               </Box>
       } else if (type === "benchmark" && study_type === "task"){
@@ -488,7 +517,34 @@ export class SearchResultsPanel extends React.Component {
                   <SimpleLink href="https://docs.openml.org/benchmark" style={{color:this.props.context.getColor("benchmark")}}>benchmarking suite</SimpleLink>.
                   The results can be viewed online (see their Analysis tab) or easily downloaded via our APIs and analyzed further. You can also
                   <StyledLink to="/auth/upload-collection-tasks" color={this.props.context.getColor("benchmark")}>create your own benchmark studies</StyledLink>.
-
+                </Typography>
+              </Box>
+      } else if (qtype === "measure" && measure_type === "quality"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Data qualities
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Data qualities are measureable properties of datasets, such as size, shape, statistical properties, benchmarks, and the presence of missing values.
+                </Typography>
+              </Box>
+      } else if (qtype === "measure" && measure_type === "measure"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px"}}>
+                  Evaluation measures
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Evaluation measures define different ways to score the outputs of machine learning models (e.g. predictions).
+                </Typography>
+               </Box>
+      } else if (qtype === "measure" && measure_type === "procedure"){
+        return <Box m={2} pt={3}>
+                <Typography variant="h3" style={{ marginBottom: "15px" }}>
+                  Evaluation procedures
+                </Typography>
+                <Typography style={{ marginBottom: "15px" }}>
+                  Evaluation procedures define how models should be evaluated, typically by 
+                  defining specific kinds of train- and test splits.
                 </Typography>
               </Box>
       } else {
@@ -575,12 +631,14 @@ export class SearchResultsPanel extends React.Component {
                 }}
               >
                 <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
-                  {(this.props.listType === "drilldown" || this.props.context.type === "benchmark" || this.props.context.type === "task"
-                    || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run") && 
-                    (!this.props.context.displaySplit) && ( // show header for drilldowns and benchmarks
-                    <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} 
+                  {!this.props.context.displaySplit && (this.props.listType === "drilldown" || this.props.context.type === "benchmark" || this.props.context.type === "task"
+                    || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run" || this.props.context.type === "study" 
+                    || this.props.context.type === "measure" || this.props.context.type === "task_type") && (
+                    // show header for drilldowns and benchmarks
+                    <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} style={{width:"100%"}}
                     xl={(this.props.context.displaySplit ? 12 : 9)}>
-                      {header(this.props.context.type,qtype,this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null)}
+                      {header(this.props.context.type,qtype,(this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null),
+                        (this.props.context.filters.measure_type ? this.props.context.filters.measure_type.value : null))}
                     </Grid>
                   )}
                   <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>

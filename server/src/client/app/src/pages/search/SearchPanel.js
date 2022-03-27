@@ -482,13 +482,17 @@ export default class SearchPanel extends React.Component {
     if (qtype === "task_type"){
       return "tt_id"
     } else if (qtype === "measure") {
-      let mtype = this.props.context.filters["measure_type"].value;
-      if (mtype === "procedure"){
-        return "proc_id";
-      } else if (mtype === "measure"){
-        return "eval_id";
+      if (this.context.filters.includes("measure_type")) {
+        let mtype = this.props.context.filters["measure_type"].value;
+        if (mtype === "procedure"){
+          return "proc_id";
+        } else if (mtype === "measure"){
+          return "eval_id";
+        } else {
+          return mtype + "_id"
+        }
       } else {
-        return mtype + "_id"
+        return "data_quality_id";
       }
     }
     else {
@@ -516,7 +520,7 @@ export default class SearchPanel extends React.Component {
     )
       .then(data => {
           let res = this.processSearchResults(data, querytype);
-          let obj_id = this.id_field(querytype) + "_id";
+          let obj_id = this.id_field(querytype);
           if (this.context.startCount === 0){
             this.context.setResults(res.counts, res.results);
           } else if (this.context.results[0][obj_id] !== res.results[0][obj_id]) { //add to infinite list
