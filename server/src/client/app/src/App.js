@@ -20,6 +20,7 @@ import {
 
 import maTheme from "./theme";
 import Routes from "./routes/Routes";
+import { convertCompilerOptionsFromJson } from "typescript";
 
 export const MainContext = React.createContext();
 
@@ -260,7 +261,6 @@ class App extends React.Component {
       this.setState(update);
     },
     setSearch: (qp, fields) => { // parses search from url query parameters 
-      //console.log(qp);
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
       let idChanged = false;
@@ -271,7 +271,8 @@ class App extends React.Component {
         counts: "id" in qp ? this.state.counts : 0,
         displaySearch: true,
         filters: this.state.type === qp.type ? this.state.filters : [],
-        query: this.state.type === qp.type ? this.state.query : undefined
+        // reset query if type changes
+        query: (this.state.type === qp.type || this.state.type === undefined) ? this.state.query : undefined
       };
       if (this.state.type !== qp.type){
         document.getElementById("searchbar").value = "";

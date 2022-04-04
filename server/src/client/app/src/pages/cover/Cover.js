@@ -670,7 +670,7 @@ class Cover extends React.Component {
                   <CoverInput
                     placeholder="Search OpenML"
                     onKeyPress={event => {
-                      if (event.charCode === 13) {
+                      if (event.key === 'Enter') {
                         event.preventDefault();
                         context.setQuery(event.target.value);
                       }
