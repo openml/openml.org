@@ -117,7 +117,7 @@ const Reference = ({
   const [expanded, setExpanded] = React.useState(false);
 
   const bibtex = `
-    @article{OpenML${year}
+    @article{OpenML${year},
       author = {${author}},
       title = {${title}},
       journal = {${journal}},
@@ -297,7 +297,7 @@ function Terms() {
         <Grid item container spacing={4} xs={12}>
           <Reference
             header="OpenML as a whole"
-            author="Joaquin Vanschoren, Jan N. van Rijn, Bernd Bischl, Luis Torgo"
+            author="Joaquin Vanschoren and Jan N. van Rijn and Bernd Bischl and Luis Torgo"
             title="OpenML: networked science in machine learning"
             journal="SIGKDD Explorations"
             volume="15"
@@ -311,7 +311,7 @@ function Terms() {
           />
           <Reference
             header="OpenML Python package"
-            author="Matthias Feurer, Jan N. van Rijn, Arlind Kadra, Pieter Gijsbers, Neeratyoy Mallik, Sahithya Ravi, Andreas Mueller, Joaquin Vanschoren, Frank Hutter"
+            author="Matthias Feurer and Jan N. van Rijn and Arlind Kadra and Pieter Gijsbers and Neeratyoy Mallik and Sahithya Ravi and Andreas Mueller and Joaquin Vanschoren and Frank Hutter"
             title="OpenML-Python: an extensible Python API for OpenML"
             journal="arXiv"
             volume="1911.02490"
@@ -325,7 +325,7 @@ function Terms() {
           />
           <Reference
             header="OpenML R package"
-            author="Giuseppe Casalicchio, Jakob Bossek, Michel Lang, Dominik Kirchhoff, Pascal Kerschke, Benjamin Hofner, Heidi Seibold, Joaquin Vanschoren, Bernd Bischl"
+            author="Giuseppe Casalicchio and Jakob Bossek and Michel Lang and Dominik Kirchhoff and Pascal Kerschke and Benjamin Hofner and Heidi Seibold and Joaquin Vanschoren and Bernd Bischl"
             title="OpenML: An R package to connect to the machine learning platform OpenML"
             journal="Computational Statistics"
             volume="32"
