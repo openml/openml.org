@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://openml.org/api/v1/json",
+            "url": "https://www.openml.org/api/v1/json",
             "description": "The current OpenML API"
         },
         {
