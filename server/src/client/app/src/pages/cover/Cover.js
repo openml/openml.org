@@ -128,7 +128,7 @@ const MoreLink = styled(Link)`
   }
 `;
 
-const QuickLink = styled(Link)`
+const QuickLink = styled(MuiLink)`
   text-decoration: none;
   color: ${blue[700]};
   margin-right: 10px;
@@ -685,6 +685,7 @@ class Cover extends React.Component {
                     onChange={event => {
                       context.setType(event.target.value);
                     }}
+                    style={{ fontSize: "1.2em", paddingBottom:2 }}
                   >
                     <MenuItem value={"data"}>Datasets</MenuItem>
                     <MenuItem value={"task"}>Tasks</MenuItem>
@@ -851,7 +852,7 @@ class Cover extends React.Component {
                     value={rExample}
                   />
                 </Grid>
-                <MoreLink to="/api" style={{ fontSize: "1.1em" }}>
+                <MoreLink to="/apis" style={{ fontSize: "1.1em" }}>
                   Learn more about the OpenML APIs{" "}
                   <ListIcon icon="arrow-right" style={{ marginLeft: 5 }} />
                 </MoreLink>
@@ -999,7 +1000,7 @@ class Cover extends React.Component {
                     </ListItemText>
                   </ListItem>
                   <MoreLinkExternal
-                    href="https://openml.github.io/blog/"
+                    href="http://blog.openml.org/"
                     target="_blank"
                     style={{ fontSize: "1.1em" }}
                     rel="noreferrer"
@@ -1141,7 +1142,7 @@ class Cover extends React.Component {
                         Several AutoML tools use OpenML to speed up the search
                         for the best models, including
                         <QuickLink
-                          to="https://arxiv.org/abs/2007.04074"
+                          href="https://arxiv.org/abs/2007.04074"
                           target="_blank"
                           style={{ marginLeft: 10 }}
                           rel="noreferrer"
@@ -1149,21 +1150,21 @@ class Cover extends React.Component {
                           autosklearn
                         </QuickLink>
                         <QuickLink
-                          to="https://arxiv.org/abs/1712.02902"
+                          href="https://arxiv.org/abs/1712.02902"
                           target="_blank"
                           rel="noreferrer"
                         >
                           SageMaker AutoML
                         </QuickLink>
                         <QuickLink
-                          to="https://papers.nips.cc/paper/7595-probabilistic-matrix-factorization-for-automated-machine-learning.pdf"
+                          href="https://papers.nips.cc/paper/7595-probabilistic-matrix-factorization-for-automated-machine-learning.pdf"
                           target="_blank"
                           rel="noreferrer"
                         >
                           Azure AutoML
                         </QuickLink>
                         <QuickLink
-                          to="https://github.com/PGijsbers/gama"
+                          href="https://github.com/PGijsbers/gama"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -1192,21 +1193,21 @@ class Cover extends React.Component {
                         Learn from millions of experiments how to tune
                         algorithms:
                         <QuickLink
-                          to="https://arxiv.org/abs/1710.04725"
+                          href="https://arxiv.org/abs/1710.04725"
                           target="_blank"
                           rel="noreferrer"
                         >
                           parameter importance
                         </QuickLink>
                         <QuickLink
-                          to="https://arxiv.org/abs/1811.09409"
+                          href="https://arxiv.org/abs/1811.09409"
                           target="_blank"
                           rel="noreferrer"
                         >
                           default learning
                         </QuickLink>
                         <QuickLink
-                          to="http://metalearning.ml/2018/papers/metalearn2018_paper70.pdf"
+                          href="http://metalearning.ml/2018/papers/metalearn2018_paper70.pdf"
                           target="_blank"
                           rel="noreferrer"
                         >
