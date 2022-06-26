@@ -15,7 +15,6 @@ import {
   grey,
   purple
 } from "@material-ui/core/colors";
-import { flexbox } from "@material-ui/system";
 
 const StyledLink = styled(Link)`
   text-decoration: none;

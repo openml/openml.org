@@ -20,7 +20,6 @@ import {
 
 import maTheme from "./theme";
 import Routes from "./routes/Routes";
-import { convertCompilerOptionsFromJson } from "typescript";
 
 export const MainContext = React.createContext();
 
