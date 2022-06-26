@@ -338,7 +338,7 @@ df = DataFrame(table)`
   }, 
   "Java" : {
     "Installation" : 
-`Download the jar file, or install via Maven.`,
+`// Download the jar file, or install via Maven. See the full docs.`,
 
     "Query and download data" : 
 `// Create a client. Your API key can be found in your account.
