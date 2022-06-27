@@ -1,7 +1,7 @@
 import React from "react";
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/core/styles";
 import { StylesProvider } from "@material-ui/styles";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider as SCThemeProvider } from "styled-components";
 import axios from "axios";
 import * as path from "path";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -484,15 +484,15 @@ class App extends React.Component {
 
   render() {
     return (
-      <StylesProvider injectFirst>
-        <MainContext.Provider value={this.state}>
-          <MuiThemeProvider theme={maTheme[this.state.currentTheme]}>
-            <ThemeProvider theme={maTheme[this.state.currentTheme]}>
+      <ThemeProvider theme={maTheme[this.state.currentTheme]}>
+        <StylesProvider injectFirst>
+          <MainContext.Provider value={this.state}>
+            <SCThemeProvider theme={maTheme[this.state.currentTheme]}>
               <Routes />
-            </ThemeProvider>
-          </MuiThemeProvider>
-        </MainContext.Provider>
-      </StylesProvider>
+            </SCThemeProvider>
+          </MainContext.Provider>
+        </StylesProvider>
+      </ThemeProvider>
     );
   }
 
