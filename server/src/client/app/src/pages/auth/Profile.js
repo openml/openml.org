@@ -12,9 +12,9 @@ import {
   InputLabel,
   TextField,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Redirect } from "react-router-dom";
 
@@ -33,7 +33,7 @@ const CenteredContent = styled.div`
 const BigAvatar = styled(Avatar)`
   width: 120px;
   height: 120px;
-  margin: 0 auto ${props => props.theme.spacing(2)}px;
+  margin: 0 auto ${props => props.theme.spacing(2)};
 `;
 
 function Public() {
@@ -140,7 +140,7 @@ function Public() {
                 id="biography"
                 multiline={true}
                 rows={3}
-                rowsMax={4}
+                maxRows={4}
                 defaultValue={bio}
               />
             </FormControl>
@@ -150,7 +150,7 @@ function Public() {
                 id="firstname"
                 multiline={true}
                 rows={3}
-                rowsMax={4}
+                maxRows={4}
                 defaultValue={fname}
               />
               {/*<InputLabel htmlFor="firstname">First name</InputLabel>*/}

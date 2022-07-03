@@ -11,7 +11,7 @@ import {
   CardContent,
   Typography,
   Grid
-} from "@material-ui/core";
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export class MeasureItem extends React.Component {
@@ -73,7 +73,7 @@ export class MeasureItem extends React.Component {
                                   PreTag="div"
                                   {...props}
                                 />
-                              )
+                              );
                             }
                           }}
                           />

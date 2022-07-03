@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { search } from "../search/api";
-import { green, red, blue, grey, purple } from "@material-ui/core/colors";
+import { green, red, blue, grey, purple } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -22,9 +22,9 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography as MuiTypography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 
 import { NavHashLink } from "react-router-hash-link";
 const TopLink = styled(NavHashLink)({

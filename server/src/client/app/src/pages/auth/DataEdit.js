@@ -16,12 +16,12 @@ import {
     Tabs,
     Card,
     Link
-} from "@material-ui/core";
-import { Alert } from '@material-ui/lab';
-import { spacing } from "@material-ui/system";
+} from "@mui/material";
+import { Alert } from '@mui/material';
+import { spacing } from "@mui/system";
 import { Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green } from "@material-ui/core/colors";
+import { green } from "@mui/material/colors";
 import ReactMarkdown from "react-markdown";
 
 const FloatIcon = styled(FontAwesomeIcon)({
@@ -32,12 +32,12 @@ const FloatIcon = styled(FontAwesomeIcon)({
 const FormControl = styled(MuiFormControl)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
   margin-top:20px;
   margin-bottom:20px;
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 
@@ -225,7 +225,7 @@ function DataEdit() {
                                         multiline={true} />
                                 </FormControl>
                                 <FormControl fullWidth mb={3}>
-                                    <TextField label="Creator" id="creator" rowsMax={4} defaultValue={creator}
+                                    <TextField label="Creator" id="creator" maxRows={4} defaultValue={creator}
                                         multiline={true} />
                                 </FormControl>
                                 <FormControl fullWidth mb={3}>
@@ -255,7 +255,7 @@ function DataEdit() {
                                         defaultValue={paper_url} multiline={true} />
                                 </FormControl>
                                 {owner && (
-                                    <Box p={1} border="3px solid red" borderRadius={5} padding={5} marginTop={10}
+                                    <Box p={1} border="3px solid red" borderRadius="5px" padding={5} marginTop={10}
                                         marginBottom={10}>
                                         <b>Danger Zone (can only be edited by author)</b>
                                         <FormControl fullWidth mb={3}>

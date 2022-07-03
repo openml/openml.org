@@ -5,7 +5,7 @@ import {
   Avatar,
   Tooltip,
   Chip
-} from "@material-ui/core";
+} from "@mui/material";
 export class MetaTag extends React.Component {
   render() {
     let icon;

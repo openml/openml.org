@@ -10,21 +10,21 @@ import {
     InputLabel,
     TextField,
     Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import {spacing} from "@material-ui/system";
+import {spacing} from "@mui/system";
 import {Redirect} from "react-router-dom";
 
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
   margin-top:20px;
   margin-bottom:20px;
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 
@@ -77,72 +77,72 @@ function Public() {
     }
 
     return (
-            <form onSubmit={datatoflask}>
-                <Typography variant="h1" gutterBottom>
-                    Create Task
-                </Typography>
-                {
-                    error &&
-                    (
-                        <Typography component="h3" variant="body1" align="center" color="red">
-                            {errormessage}
-                        </Typography>
-                    )
-                }
-                <Grid container spacing={6}>
-                    <Grid item md={8}>
-                        <FormControl fullWidth mb={3}>
-                            <InputLabel htmlFor="datasetid">dataset id</InputLabel>
-                            <Input id="datasetid"/>
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            {/*<InputLabel htmlFor="tasktype">task type</InputLabel>*/}
-                            <InputLabel id="tasktype">Task Type</InputLabel>
-                            <Select
-                                labelId="tasktype"
-                                id="tasktype"
-                                value={task}
-                                onChange={handleChange}
-                            >
-                                {/*TODO change values and axios request*/}
-                                <MenuItem value={'regression'}>RegressionTask</MenuItem>
-                                <MenuItem value={'classification'}>ClassificationTask</MenuItem>
-                                <MenuItem value={'clustering'}>ClusteringTask</MenuItem>
-                                <MenuItem value={'learningcurve'}>LearningCurveTask</MenuItem>
-                                <MenuItem value={'supervised'}>SupervisedTask</MenuItem>
+        <form onSubmit={datatoflask}>
+            <Typography variant="h1" gutterBottom>
+                Create Task
+            </Typography>
+            {
+                error &&
+                (
+                    <Typography component="h3" variant="body1" align="center" color="red">
+                        {errormessage}
+                    </Typography>
+                )
+            }
+            <Grid container spacing={6}>
+                <Grid item md={8}>
+                    <FormControl fullWidth mb={3}>
+                        <InputLabel htmlFor="datasetid">dataset id</InputLabel>
+                        <Input id="datasetid"/>
+                    </FormControl>
+                    <FormControl fullWidth mb={3}>
+                        {/*<InputLabel htmlFor="tasktype">task type</InputLabel>*/}
+                        <InputLabel id="tasktype">Task Type</InputLabel>
+                        <Select
+                            labelId="tasktype"
+                            id="tasktype"
+                            value={task}
+                            onChange={handleChange}
+                        >
+                            {/*TODO change values and axios request*/}
+                            <MenuItem value={'regression'}>RegressionTask</MenuItem>
+                            <MenuItem value={'classification'}>ClassificationTask</MenuItem>
+                            <MenuItem value={'clustering'}>ClusteringTask</MenuItem>
+                            <MenuItem value={'learningcurve'}>LearningCurveTask</MenuItem>
+                            <MenuItem value={'supervised'}>SupervisedTask</MenuItem>
 
 
-                            </Select>
-                        </FormControl>
+                        </Select>
+                    </FormControl>
 
-                        <FormControl fullWidth mb={3}>
-                            <TextField
-                                label="target name"
-                                id="targetname"
-                                rows={3}
-                                rowsMax={4}
-                            />
-                        </FormControl>
-                        <FormControl fullWidth mb={3}>
-                            <TextField
-                                label="Evaluation Measure"
-                                id="evaluation_measure"
-                                rows={3}
-                                rowsMax={4}
-                            />
-                        </FormControl>
+                    <FormControl fullWidth mb={3}>
+                        <TextField
+                            label="target name"
+                            id="targetname"
+                            rows={3}
+                            maxRows={4}
+                        />
+                    </FormControl>
+                    <FormControl fullWidth mb={3}>
+                        <TextField
+                            label="Evaluation Measure"
+                            id="evaluation_measure"
+                            rows={3}
+                            maxRows={4}
+                        />
+                    </FormControl>
 
-                    </Grid>
                 </Grid>
+            </Grid>
 
-                <Button variant="contained" color="primary" type="Submit">
-                    Upload Task
-                </Button>
+            <Button variant="contained" color="primary" type="Submit">
+                Upload Task
+            </Button>
 
-                {success && (
-                    <Redirect to="/"/>
-                )}
-            </form>
+            {success && (
+                <Redirect to="/"/>
+            )}
+        </form>
     );
 }
 

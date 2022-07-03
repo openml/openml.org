@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -7,16 +9,12 @@ import Header from "../components/Header";
 
 import { MainContext } from "../App.js";
 import { Redirect } from "react-router-dom";
+import { spacing } from "@mui/system";
 
-import { spacing } from "@material-ui/system";
 import {
-  Hidden,
   CssBaseline,
-  Paper as MuiPaper,
-  withWidth
-} from "@material-ui/core";
-
-import { isWidthUp } from "@material-ui/core/withWidth";
+  Paper as MuiPaper
+} from "@mui/material";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -71,88 +69,93 @@ const Drawer = styled.div`
   }
 `;
 
-class Main extends React.Component {
-  state = {
-    mobileOpen: false,
-    miniDrawer: false,
-    activeSearch: false,
-    mode: "wide"
+function Main(props) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSearch, setActiveSearch] = useState(false);
+  const [mode, setMode] = useState("wide");
+
+  const hidden = useMediaQuery(theme => theme.breakpoints.up('lg'));
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
-  handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-  };
+  useEffect(() => {
+    const listenToScroll = () => {
+      const position = document.documentElement.clientHeight - window.pageYOffset;
+      if (!activeSearch && position < 260) {
+        setActiveSearch(true);
+      } else if (activeSearch && position > 260) {
+        setActiveSearch(false);
+      }
+    };
+  
+    const updateDimensions = () => {
+      if (mode !== "wide" && window.innerWidth > 960) {
+        setMode("wide");
+      } else if (mode !== "small" && window.innerWidth < 960) {
+        setMode("small");
+      }
+    };
+    window.addEventListener('scroll', listenToScroll);
+    window.addEventListener('resize', updateDimensions);
 
-  listenToScroll = () => {
-    const position = document.documentElement.clientHeight - window.pageYOffset;
-    if (!this.state.activeSearch && position < 260) {
-      this.setState(state => ({ activeSearch: true }));
-    } else if (this.state.activeSearch && position > 260) {
-      this.setState(state => ({ activeSearch: false }));
-    }
-  };
+    return () => {
+      window.removeEventListener('scroll', listenToScroll);
+      window.removeEventListener('resize', updateDimensions);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  updateDimensions = () => {
-    if (this.state.mode !== "wide" && window.innerWidth > 960) {
-      this.setState({ mode: "wide" });
-    } else if (this.state.mode !== "small" && window.innerWidth < 960) {
-      this.setState({ mode: "small" });
-    }
-  };
+  const { children, routes, background } = props;
 
-  componentDidMount() {
-    window.addEventListener("scroll", this.listenToScroll);
-    window.addEventListener("resize", this.updateDimensions);
-  }
+  const theme = useTheme();
+  const largeScreen = useMediaQuery(theme.breakpoints.up("lg"))
 
-  render() {
-    const { children, routes, width, background } = this.props;
-    return (
-      <MainContext.Consumer>
-        {context => (
-          <Root bg={background} width={window.innerWidth}>
-            {context.query !== undefined && context.type === undefined && (
-              <Redirect to="/search?type=data" />
-            )}
-            {context.query !== undefined && context.type !== undefined && (
-              <Redirect to={"/search?type=" + context.type} />
-            )}
-            <CssBaseline />
-            <GlobalStyle />
-            <Drawer drawerWidth={context.drawerWidth} open={false}>
-              <Hidden lgUp implementation="js">
-                <Sidebar
-                  routes={routes}
-                  PaperProps={{ style: { width: context.drawerWidth } }}
-                  variant="temporary"
-                  open={this.state.mobileOpen}
-                  onClose={this.handleDrawerToggle}
-                />
-              </Hidden>
-              <Hidden mdDown implementation="css">
-                <Sidebar
-                  routes={routes}
-                  PaperProps={{ style: { width: context.drawerWidth } }}
-                />
-              </Hidden>
-            </Drawer>
-            <AppContent>
-              <Header
-                onDrawerToggle={this.handleDrawerToggle}
-                bg={this.state.activeSearch ? "none" : background}
+  return (
+    <MainContext.Consumer>
+      {context => (
+        <Root bg={background} width={window.innerWidth}>
+          {context.query !== undefined && context.type === undefined && (
+            <Redirect to="/search?type=data" />
+          )}
+          {context.query !== undefined && context.type !== undefined && (
+            <Redirect to={"/search?type=" + context.type} />
+          )}
+          <CssBaseline />
+          <GlobalStyle />
+          <Drawer drawerWidth={context.drawerWidth} open={false}>
+            {hidden ? null : 
+              <Sidebar
                 routes={routes}
-                loggedIn={context.loggedIn}
+                PaperProps={{ style: { width: context.drawerWidth } }}
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
               />
-              <MainContent p={isWidthUp("lg", width) ? 10 : 8} bg={background}>
-                {children}
-              </MainContent>
-              {/*<Footer />*/}
-            </AppContent>
-          </Root>
-        )}
-      </MainContext.Consumer>
-    );
-  }
+            }
+            <Sidebar
+              routes={routes}
+              PaperProps={{ style: { width: context.drawerWidth } }}
+              sx={{ display: { lg: 'block', xs: 'none' } }}
+            />
+          </Drawer>
+          <AppContent>
+            <Header
+              onDrawerToggle={handleDrawerToggle}
+              bg={activeSearch ? "none" : background}
+              routes={routes}
+              loggedIn={context.loggedIn}
+            />
+            <MainContent p={{largeScreen} ? 10 : 8} bg={background}>
+              {children}
+            </MainContent>
+            {/*<Footer />*/}
+          </AppContent>
+        </Root>
+      )}
+    </MainContext.Consumer>
+  );
 }
 
-export default withWidth()(Main);
+export default Main;

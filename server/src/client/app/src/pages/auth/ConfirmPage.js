@@ -6,15 +6,15 @@ import axios from "axios";
 
 import {
   Paper,
-} from "@material-ui/core";
+} from "@mui/material";
 
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
   width: 100%;
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 

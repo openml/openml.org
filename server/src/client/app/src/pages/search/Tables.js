@@ -13,9 +13,9 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 
 const Paper = styled(MuiPaper)(spacing);
 

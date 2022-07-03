@@ -6,7 +6,7 @@ import "swagger-ui-themes/themes/3.x/theme-material.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green } from "@material-ui/core/colors";
+import { green } from "@mui/material/colors";
 import {
   Tab, 
   Tabs, 
@@ -22,7 +22,7 @@ import {
   List,
   ListItem,
   ListItemText as MuiListItemText
-} from "@material-ui/core";
+} from "@mui/material";
 
 const StyledSwaggerUI = styled.div`
   [id^="model-"][id*="_"] {
@@ -200,7 +200,7 @@ const CardContent = styled(MuiCardContent)`
   margin-top: 10px;
 
   &:last-child {
-    padding-bottom: ${props => props.theme.spacing(8)}px;
+    padding-bottom: ${props => props.theme.spacing(8)};
   }
 `;
 const ListItemText = styled(MuiListItemText)`
@@ -400,20 +400,18 @@ function OpenMLSwaggerUI() {
       <Box mb={10} display="flex" justifyContent="right">
         { colab &&
         <Tooltip title="Run in Colab">
-            <IconButton 
-              color="primary"
-              onClick={() => window.open(colab, "_blank")}
-              >
+            <IconButton color="primary" onClick={() => window.open(colab, "_blank")} size="large">
             <FixedIcon icon={"play"}/> 
             </IconButton>
         </Tooltip>}
         <Tooltip title="Copy to clipboard">
-            <IconButton 
-              color="primary" 
+            <IconButton
+              color="primary"
               onClick={() => {
                 navigator.clipboard.writeText(value);
                 setOpen(true);
-                }}>
+                }}
+              size="large">
             <FixedIcon icon={"copy"}/> 
             </IconButton>
         </Tooltip>
@@ -439,7 +437,7 @@ function OpenMLSwaggerUI() {
   const make_other = () => {
     return (
       Object.entries(other_links).map(([title, link]) => { return (
-        <ListItem button component="a" href={link} target="_blank">
+        <ListItem button component="a" href={link} target="_blank" key = {title}>
           <ListItemText primary={title} style={{fontWeight:900}}/>
         </ListItem>
         )
@@ -448,7 +446,7 @@ function OpenMLSwaggerUI() {
     )
   }
   Object.entries(other_links).map(([title, link]) => { return (
-    <ListItem button component="a" href={link} target="_blank">
+    <ListItem button component="a" href={link} target="_blank" key = {title}>
       <ListItemText primary={title} />
     </ListItem>
     )})
@@ -477,7 +475,8 @@ function OpenMLSwaggerUI() {
         spacing={6}   
         direction="row"
         justifyContent="center"
-        alignItems="center">
+        alignItems="center"
+        style={{margin:0, width:"100%"}}>
       { api === "REST" ? (
       <StyledSwaggerUI value="REST">
         <SwaggerUI url="openml-api.json"/>

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress, Link as MuiLink } from "@material-ui/core";
+import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress, Link as MuiLink } from "@mui/material";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TimeAgo from "react-timeago";
@@ -14,7 +14,7 @@ import {
   green,
   grey,
   purple
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -127,7 +127,6 @@ const ResultCard = styled(Card)`
   padding-top: 15px;
   padding-bottom: 20px;
   cursor: pointer;
-  max-width: 1600px;
   box-shadow: none;
   ${props => props.fullwidth && `width: 100%;`}
   &:hover {background-color: #f1f3f4;}
@@ -629,18 +628,22 @@ export class SearchResultsPanel extends React.Component {
                   height: "calc(100vh - "+(this.props.listType === "drilldown" ? "176" : "115")+"px)"
                 }}
               >
-                <Grid container direction="column" justifyContent="center" alignItems="center" style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
+              <Grid container direction="row" justifyContent="center" alignItems="center">
+                <Grid item xs={12} md={(this.props.context.displaySplit ? 12 : 10)} 
+                    xl={(this.props.context.displaySplit ? 12 : 9)}>
+                <Grid container direction="column" 
+                  style={{paddingTop: (this.props.context.displaySplit ? 0 : 20)}}>
                   {!this.props.context.displaySplit && (this.props.listType === "drilldown" || this.props.context.type === "benchmark" || this.props.context.type === "task"
                     || this.props.context.type === "data" || this.props.context.type === "flow" || this.props.context.type === "run" || this.props.context.type === "study" 
                     || this.props.context.type === "measure" || this.props.context.type === "task_type") && (
-                    // show header for drilldowns and benchmarks
-                    <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} style={{width:"100%"}}
-                    xl={(this.props.context.displaySplit ? 12 : 9)}>
+
+                    // show header to explain what we're showing
+                    <Grid item>
                       {header(this.props.context.type,qtype,(this.props.context.filters.study_type ? this.props.context.filters.study_type.value : null),
                         (this.props.context.filters.measure_type ? this.props.context.filters.measure_type.value : null))}
                     </Grid>
                   )}
-                  <Grid item xs={12} sm={(this.props.context.displaySplit ? 12 : 10)} xl={(this.props.context.displaySplit ? 12 : 9)}>
+                  <Grid item style={{maxWidth:"100%"}}>
                     {component &&
                       <InfiniteScroll
                         dataLength={dataLength}
@@ -651,11 +654,13 @@ export class SearchResultsPanel extends React.Component {
                         loader={<Box pb={5} pt={5} display="flex" justifyContent="center" alignItems="center"><CircularProgress disableShrink/></Box>}
                         scrollableTarget={scrollID}
                         style={{overflow:"inherit"}}
-                      ><Paper>{component}</Paper>
+                      ><Paper style={{height:"100%"}}>{component}</Paper>
                       </InfiniteScroll>
                     }
                     {component === null && this.props.listType === "drilldown" && <CircularProgress />}
                   </Grid>
+                </Grid>
+                </Grid>
                 </Grid>
               </Scrollbar>
           </SearchListPanel>

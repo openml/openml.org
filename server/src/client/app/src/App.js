@@ -1,6 +1,6 @@
 import React from "react";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { StylesProvider } from "@material-ui/styles";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
+import { StylesProvider } from "@mui/styles";
 import { ThemeProvider as SCThemeProvider } from "styled-components";
 import axios from "axios";
 import * as path from "path";
@@ -16,7 +16,7 @@ import {
   grey,
   purple,
   pink
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 import maTheme from "./theme";
 import Routes from "./routes/Routes";
@@ -484,15 +484,17 @@ class App extends React.Component {
 
   render() {
     return (
-      <ThemeProvider theme={maTheme[this.state.currentTheme]}>
-        <StylesProvider injectFirst>
-          <MainContext.Provider value={this.state}>
-            <SCThemeProvider theme={maTheme[this.state.currentTheme]}>
-              <Routes />
-            </SCThemeProvider>
-          </MainContext.Provider>
-        </StylesProvider>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={maTheme[this.state.currentTheme]}>
+          <StylesProvider injectFirst>
+            <MainContext.Provider value={this.state}>
+              <SCThemeProvider theme={maTheme[this.state.currentTheme]}>
+                <Routes />
+              </SCThemeProvider>
+            </MainContext.Provider>
+          </StylesProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     );
   }
 

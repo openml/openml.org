@@ -7,11 +7,11 @@ import {
   List,
   ListItemText,
   ListItem as MuiListItem
-} from "@material-ui/core";
+} from "@mui/material";
 
 const Wrapper = styled.div`
-  padding: ${props => props.theme.spacing(1) / 4}px
-    ${props => props.theme.spacing(4)}px;
+  padding: ${props => props.theme.spacing(1) / 4}
+    ${props => props.theme.spacing(4)};
   background: ${props => props.theme.palette.common.white};
   position: relative;
 `;
@@ -19,8 +19,8 @@ const Wrapper = styled.div`
 const ListItem = styled(MuiListItem)`
   display: inline-block;
   width: auto;
-  padding-left: ${props => props.theme.spacing(2)}px;
-  padding-right: ${props => props.theme.spacing(2)}px;
+  padding-left: ${props => props.theme.spacing(2)};
+  padding-right: ${props => props.theme.spacing(2)};
 
   &,
   &:hover,
@@ -33,7 +33,7 @@ function Footer() {
   return (
     <Wrapper>
       <Grid container spacing={0}>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Grid container item xs={12} md={6}>
             <List>
               <ListItem component="a" href="#">

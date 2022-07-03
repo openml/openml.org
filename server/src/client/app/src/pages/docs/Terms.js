@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import styled from "styled-components";
-import { green, orange, red, grey } from "@material-ui/core/colors";
+import { green, orange, red, grey } from "@mui/material/colors";
 
 import {
   Card as MuiCard,
@@ -20,9 +20,9 @@ import {
   ListItemIcon,
   ListItemText,
   Typography as MuiTypography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { HashLink } from "react-router-hash-link";
 
@@ -159,7 +159,7 @@ const Reference = ({
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton>
+          <IconButton size="large">
             <Link href={arxiv} target="_blank">
               <FontAwesomeIcon icon="file-pdf" fixedWidth />
             </Link>
@@ -168,7 +168,7 @@ const Reference = ({
             onClick={handleExpandClick}
             aria-expanded={expanded}
             style={{ marginLeft: "auto" }}
-          >
+            size="large">
             <FontAwesomeIcon icon="graduation-cap" fixedWidth />
           </IconButton>
         </CardActions>

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green, red, blue, amber, purple } from "@material-ui/core/colors";
+import { green, red, blue, amber, purple } from "@mui/material/colors";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ import {
   CardMedia,
   CardActionArea,
   CardActions
-} from "@material-ui/core";
+} from "@mui/material";
 import { MainContext } from "../../App.js";
 import { ContactChipFull } from "../docs/GetInvolved.js";
 
@@ -48,7 +48,7 @@ const CardContent = styled(MuiCardContent)`
   margin-top: 10px;
 
   &:last-child {
-    padding-bottom: ${props => props.theme.spacing(8)}px;
+    padding-bottom: ${props => props.theme.spacing(8)};
   }
 `;
 
@@ -709,7 +709,7 @@ class Cover extends React.Component {
               container
               spacing={10}
               style={{
-                paddingLeft: 20,
+                paddingLeft: 40,
                 paddingRight: 20
               }}
             >

@@ -10,10 +10,10 @@ import { FlowItem } from "./Flow.js";
 import { RunItem } from "./Run.js";
 import { StudyItem } from "./Study.js";
 import { UserItem } from "./User.js";
-import { Chip } from "@material-ui/core";
+import { Chip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, TableRow, TableCell, Grid } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Tooltip, TableRow, TableCell, Grid } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { animated } from '@react-spring/web';
 import useBoop from "../../components/Boop.js";
 

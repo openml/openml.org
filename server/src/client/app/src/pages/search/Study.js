@@ -9,7 +9,7 @@ import {
   CardContent,
   Typography,
   Grid
-} from "@material-ui/core";
+} from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

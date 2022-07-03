@@ -3,7 +3,7 @@ import { EvaluationDetail } from "./ItemDetail.js";
 import { FlowDetail } from "./ItemDetail.js";
 import { MetaTag } from "./MetaItems.js";
 
-import { Card, CardContent, Typography, Grid } from "@material-ui/core";
+import { Card, CardContent, Typography, Grid } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollapsibleDataTable } from "./sizeLimiter";
 
