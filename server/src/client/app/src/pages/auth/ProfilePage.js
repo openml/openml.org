@@ -94,7 +94,7 @@ function Public() {
   }, [id]);
 
   return (
-    <Card mb={6}>
+    <Card mb={6} style={{ paddingBottom: 8 }}>
       <Grid container spacing={6}>
         <Grid item md={8}>
           <CardContent>
@@ -142,7 +142,7 @@ function Public() {
           </CenteredContent>
         </Grid>
       </Grid>
-      <Button variant="contained" color="primary" href="/auth/edit-profile">
+      <Button variant="contained" color="primary" href="/auth/edit-profile" style={{ marginLeft: 8 }}>
         Edit Profile
       </Button>
       &nbsp;&nbsp;&nbsp;
@@ -156,18 +156,22 @@ function Public() {
 function Settings() {
   return (
     <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
+      <div style={{
+        padding: 24
+      }}>
+        <Typography variant="h3" gutterBottom display="inline">
+          Profile
+        </Typography>
 
-      <Divider my={6} />
+        <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Public />
-          {/*<Private />*/}
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Public />
+            {/*<Private />*/}
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </React.Fragment>
   );
 }

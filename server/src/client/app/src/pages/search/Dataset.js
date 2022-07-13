@@ -34,7 +34,7 @@ const Action = styled.div`
   justify-content: center;
 `;
 
-const OLD_SERVER_BASE_URL = process.env.REACT_APP_OLD_SERVER_URL || "https://www.openml.org/";
+const SERVER_URL = process.env.REACT_APP_OLD_SERVER_URL || "https://www.openml.org/";
 
 export class DatasetItem extends React.Component {
   constructor() {
@@ -58,7 +58,7 @@ export class DatasetItem extends React.Component {
               {context => (
                 <React.Fragment>
                   <Tooltip title="Download XML description" placement="bottom-start">
-                    <ActionButton color="primary" href={`${OLD_SERVER_BASE_URL}api/v1/data/` + this.props.object.data_id}>
+                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/data/` + this.props.object.data_id}>
                       <Action>
                         <FontAwesomeIcon icon="file-alt" />
                         <Typography>xml</Typography>
@@ -66,7 +66,7 @@ export class DatasetItem extends React.Component {
                     </ActionButton>
                   </Tooltip>
                   <Tooltip title="Download JSON description" placement="bottom-start">
-                    <ActionButton color="primary" href={`${OLD_SERVER_BASE_URL}api/v1/json/data/` + this.props.object.data_id}>
+                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/json/data/` + this.props.object.data_id}>
                       <Action>
                         <FontAwesomeIcon icon="file-alt" />
                         <Typography>json</Typography>
