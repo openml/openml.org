@@ -46,6 +46,8 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
   color: red[400]
 });
 
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_ES_URL || "https://www.openml.org/es/";
+
 function Public() {
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
@@ -60,14 +62,14 @@ function Public() {
 
   useEffect(() => {
     const yourConfig = {
-        headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
-        }
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
     };
 
     axios
       .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
         setImage(response.data.image);
         setEmail(response.data.email);
@@ -76,7 +78,7 @@ function Public() {
         setLname(response.data.last_name);
         setId(response.data.id);
         if (id !== false) {
-          fetch("https://openml.org/es/user/user/" + id.toString())
+          fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);
@@ -86,7 +88,7 @@ function Public() {
             });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }, [id]);

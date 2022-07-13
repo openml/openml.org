@@ -79,8 +79,8 @@ const Brand = styled(ListItem)`
     props.searchcolor && props.currenttheme === 1
       ? props.searchcolor
       : props.searchcolor
-      ? props.theme.sidebar.background
-      : props.theme.sidebar.header.background};
+        ? props.theme.sidebar.background
+        : props.theme.sidebar.header.background};
   padding-left: ${props => props.theme.spacing(3)};
   font-size: 13pt;
   height: 56px;
@@ -290,12 +290,16 @@ class Sidebar extends React.Component {
   axiosCancelToken = axios.CancelToken.source();
 
   countUpdate = async () => {
-    const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+    const ELASTICSEARCH_SERVER = process.env.REACT_APP_ES_URL || "https://www.openml.org/es/";
 
     const data = {
       size: 0,
-      query: { bool: { should: [ { term: { status: "active" } },
-                                 { bool: { must_not: { exists: { field: "status" } } } } ] } },
+      query: {
+        bool: {
+          should: [{ term: { status: "active" } },
+          { bool: { must_not: { exists: { field: "status" } } } }]
+        }
+      },
       aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
     };
 
@@ -318,11 +322,11 @@ class Sidebar extends React.Component {
       .catch(error => {
         console.log(error);
       });
-    
+
     // second query for benchmark counts
     const bench_data = {
       size: 0,
-      query: { bool : { filter : { bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] } }}}
+      query: { bool: { filter: { bool: { should: [{ "wildcard": { "name": "*benchmark*" } }, { "wildcard": { "name": "*suite*" } }] } } } }
     };
     axios
       .post(ELASTICSEARCH_SERVER + "study/study/_search", bench_data, headers)
@@ -428,7 +432,7 @@ class Sidebar extends React.Component {
                               currentcolor={context.getColor()}
                               badge={
                                 context.type === undefined &&
-                                this.state.counts[category.entity_type]
+                                  this.state.counts[category.entity_type]
                                   ? this.state.counts[category.entity_type]
                                   : 0
                               }
@@ -467,24 +471,24 @@ class Sidebar extends React.Component {
                                   component={NavLink}
                                   searchExpand={
                                     category.entity_type === context.type &&
-                                    context.searchCollapsed
+                                      context.searchCollapsed
                                       ? () => context.collapseSearch(false)
                                       : undefined
                                   }
                                   badge={
                                     category.entity_type === context.type
                                       ? (context.filters.measure_type &&
-                                          route.subtype.split("_")[1] ===
-                                            context.filters.measure_type
-                                              .value) ||
+                                        route.subtype.split("_")[1] ===
+                                        context.filters.measure_type
+                                          .value) ||
                                         (context.filters.study_type &&
                                           route.subtype ===
-                                            context.filters.study_type.value) // Only show subtype counts if a subtype is selected
+                                          context.filters.study_type.value) // Only show subtype counts if a subtype is selected
                                         ? context.counts
                                         : 0
-                                      : this.state.counts[category.entity_type] 
-                                      ? this.state.counts[category.entity_type]
-                                      : 0
+                                      : this.state.counts[category.entity_type]
+                                        ? this.state.counts[category.entity_type]
+                                        : 0
                                   }
                                 />
                               ))}
@@ -513,20 +517,20 @@ class Sidebar extends React.Component {
                                     : this.state.counts[category.entity_type]
                                   : context.type === undefined &&
                                     this.state.counts[category.entity_type]
-                                  ? this.state.counts[category.entity_type]
-                                  : 0
+                                    ? this.state.counts[category.entity_type]
+                                    : 0
                               }
                               activecategory={
                                 (location.pathname !== "/search" &&
                                   location.pathname === category.path) ||
-                                (category.entity_type === context.type &&
-                                  context.type !== undefined)
+                                  (category.entity_type === context.type &&
+                                    context.type !== undefined)
                                   ? "true"
                                   : "false"
                               }
                               searchExpand={
                                 category.entity_type === context.type &&
-                                context.searchCollapsed
+                                  context.searchCollapsed
                                   ? () => context.collapseSearch(false)
                                   : undefined
                               }
@@ -557,7 +561,7 @@ class Sidebar extends React.Component {
                           }
                           searchExpand={
                             category.entity_type === context.type &&
-                            context.searchCollapsed
+                              context.searchCollapsed
                               ? context.collapseSearch
                               : undefined
                           }
@@ -579,7 +583,7 @@ class Sidebar extends React.Component {
                         <Tooltip title="Expand menu" placement="top-start">
                           <Button
                             color="secondary"
-                            onClick={() => context.miniDrawerToggle()} 
+                            onClick={() => context.miniDrawerToggle()}
                             theme={context.currentTheme}>
                             <FontAwesomeIcon
                               icon="chevron-right"
@@ -589,7 +593,7 @@ class Sidebar extends React.Component {
                         </Tooltip>
                       ) : (
                         <Tooltip title="Minify menu" placement="top-start">
-                          <Button 
+                          <Button
                             onClick={() => context.miniDrawerToggle()}
                             color="secondary"
                             theme={context.currentTheme}>
@@ -613,9 +617,9 @@ class Sidebar extends React.Component {
                           title="Switch to Light theme"
                           placement="top-start"
                         >
-                          <Button 
+                          <Button
                             color="secondary"
-                            onClick={() => context.setTheme(1)} 
+                            onClick={() => context.setTheme(1)}
                             theme={context.currentTheme}>
                             <FontAwesomeIcon
                               icon="moon"

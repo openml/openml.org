@@ -30,7 +30,7 @@ Flask-Compress==1.4.0
 Flask-Cors==3.0.9
 Flask-Dance==3.0.0
 Flask-DebugToolbar==0.10.1
-Flask-JWT-Extended==3.24.1
+Flask-JWT-Extended==3.35.0
 Flask-Login==0.4.1
 Flask-Mail==0.9.1
 Flask-Migrate==2.5.2

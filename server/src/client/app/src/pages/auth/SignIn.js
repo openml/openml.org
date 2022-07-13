@@ -38,6 +38,8 @@ function SignIn() {
   const context = useContext(MainContext);
 
   function sendtoflask(event) {
+    console.log("Start signin")
+    console.log("Event", event)
     event.preventDefault();
     axios
       .post(process.env.REACT_APP_SERVER_URL + "login", {
@@ -143,7 +145,6 @@ function SignIn() {
               variant="contained"
               color="primary"
               mb={2}
-              to="/"
               style={{ marginTop: 20 }}
             >
               Sign in
