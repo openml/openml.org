@@ -1,0 +1,7 @@
+# URL that tells React where to find the Flask app.
+# When running on a remote server, change it to the server URL
+REACT_APP_SERVER_URL=http://localhost:5000/
+# URL used to connect to the PHP website for downloading data
+REACT_APP_OLD_SERVER_URL=http://localhost/
+# Elastic Search URL
+REACT_APP_ES_URL=http://localhost:9200/
