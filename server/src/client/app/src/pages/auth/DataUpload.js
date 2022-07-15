@@ -64,14 +64,14 @@ function Public() {
   const onDrop = useCallback(acceptedFiles => {
     console.log(acceptedFiles);
   }, []);
-  
+
   const maxSize = 1000000000;
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     onDrop,
     minSize: 0,
     maxSize: maxSize,
   });
-  
+
   const handleChange = event => {
     setLicence(event.target.value);
   };
@@ -96,7 +96,6 @@ function Public() {
 
   function datatoflask(event) {
     event.preventDefault();
-
     setError(false);
     const obj = {
       dataset_name: event.target.datasetname.value,
@@ -104,7 +103,7 @@ function Public() {
       creator: event.target.creator.value,
       contributor: event.target.contributor.value,
       collection_date: event.target.collection_date.value,
-      licence: event.target.licence.value,
+      licence: licence,
       language: event.target.language.value,
       // attribute: event.target.attribute.value,
       ignore_attribute: event.target.ignore_attribute.value,
@@ -129,7 +128,7 @@ function Public() {
           data,
           yourConfig
         )
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.msg === "dataset uploaded") {
             setSuccess(true);
           }
@@ -148,7 +147,7 @@ function Public() {
           data,
           yourConfig
         )
-        .then(function(response) {
+        .then(function (response) {
           setEditPath(response.data.msg);
           console.log(response.data.msg);
           setEditSuccess(true);
@@ -188,21 +187,21 @@ function Public() {
           </Typography>
         )}
         <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <DropCard variant="outlined">
-            <div {...getRootProps()}>
-              <input {...getInputProps()} id="dataset" />
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <FontAwesomeIcon icon="cloud-upload-alt" size="2x" color={green[800]}/>
-              </Box>
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Drag 'n' drop some files here, or click to select files.</Paragraph>
-              </Box>                
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Currently we only support text based formats like csv and json</Paragraph>
-              </Box>
-            </div>
-          </DropCard>
+          <Grid item xs={12}>
+            <DropCard variant="outlined">
+              <div {...getRootProps()}>
+                <input {...getInputProps()} id="dataset" />
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                  <FontAwesomeIcon icon="cloud-upload-alt" size="2x" color={green[800]} />
+                </Box>
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                  <Paragraph>Drag 'n' drop some files here, or click to select files.</Paragraph>
+                </Box>
+                <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
+                  <Paragraph>Currently we only support text based formats like csv and json</Paragraph>
+                </Box>
+              </div>
+            </DropCard>
             {acceptedFiles.length > 0 && acceptedFiles.map(acceptedFile => (
               <Chip variant="outlined" label={acceptedFile.name} color="primary" />
             ))}

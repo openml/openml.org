@@ -24,7 +24,8 @@ def data_edit():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
+    openml.config.server = os.getenv('PYTHON_SERVER')
+    testing = os.environ.get("TESTING", "False") == "True"
     if testing:
         openml.config.start_using_configuration_for_example()
     url = request.args.get("url")
@@ -155,10 +156,15 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
+    openml.config.server = os.getenv('PYTHON_SERVER')
+    testing = os.environ.get("TESTING", "False") == "True"
+    print(testing)
     if testing:
+        print("Set testing server")
         openml.config.start_using_configuration_for_example()
     # openml.config.start_using_configuration_for_example()
+    # else:
+    #     openml.config.stop_using_configuration_for_example()
 
     print(request)
     data_file = request.files["dataset"]
@@ -244,7 +250,8 @@ def data_tag():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
+    openml.config.server = os.getenv('PYTHON_SERVER')
+    testing = os.environ.get("TESTING", "False") == "True"
     if testing:
         openml.config.start_using_configuration_for_example()
     url = request.args.get("url")
