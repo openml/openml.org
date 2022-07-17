@@ -9,7 +9,7 @@ import {
   Toolbar,
   Typography,
   CssBaseline
-} from "@material-ui/core";
+} from "@mui/material";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -93,7 +93,7 @@ function Page({ children }) {
                   onClick={() => {
                     history.goBack();
                   }}
-                >
+                  size="large">
                   <FontAwesomeIcon icon="chevron-left" />
                   <Typography
                     variant="h6"

@@ -2,7 +2,7 @@ import React from "react";
 import { SearchResultsPanel } from "./SearchResultsPanel.js";
 import { EntryDetails } from "./ItemDetail.js";
 import { FilterBar } from "./FilterBar.js";
-import { Grid, Tabs, Tab } from "@material-ui/core";
+import { Grid, Tabs, Tab } from "@mui/material";
 import styled from "styled-components";
 //import Scrollbar from "react-scrollbars-custom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -10,7 +10,7 @@ import queryString from "query-string";
 import { DetailTable } from "./Tables.js";
 import { search, getProperty } from "./api";
 import { MainContext } from "../../App.js";
-import { blue, red, green, yellow, purple } from "@material-ui/core/colors";
+import { blue, red, green, yellow, purple } from "@mui/material/colors";
 
 const Scrollbar = styled(PerfectScrollbar)`
   overflow-x: hidden;
@@ -999,7 +999,8 @@ loadSubQuery() {
           sm={!this.context.displaySplit ? 12 : 4}
           xl={!this.context.displaySplit ? 12 : 3}
           style={{
-            display: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "block" : "none"
+            visibility: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "visible" : "hidden",
+            height: (this.context.displaySplit || (!this.context.displayStats && (this.context.id === null || this.context.id === undefined))) ? "100%" : 0
           }}
         >
           {this.getEntityList()}
@@ -1010,7 +1011,9 @@ loadSubQuery() {
           sm={!this.context.displaySplit ? 12 : 8}
           xl={!this.context.displaySplit ? 12 : 9}
           style={{
-            display: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "block" : "none"
+            visibility: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "visible" : "hidden",
+            height: (this.context.displaySplit || this.context.id || this.context.displayStats) ? "100%" : 0
+
           }}
         >
           <SearchTabs

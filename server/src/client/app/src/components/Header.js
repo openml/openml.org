@@ -19,8 +19,8 @@ import {
   CardHeader,
   ListItemIcon,
   Avatar
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 
 import {
   blue,
@@ -29,7 +29,7 @@ import {
   red,
   green,
   purple
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MainContext } from "../App.js";
@@ -116,10 +116,10 @@ const Input = styled(InputBase)`
   > input {
     color: ${props =>
     props.bg === "Gradient" ? "white" : props.theme.header.search.color};
-    padding-top: ${props => props.theme.spacing(2.5)}px;
-    padding-right: ${props => props.theme.spacing(2.5)}px;
-    padding-bottom: ${props => props.theme.spacing(2.5)}px;
-    padding-left: ${props => props.theme.spacing(8)}px;
+    padding-top: ${props => props.theme.spacing(2.5)};
+    padding-right: ${props => props.theme.spacing(2.5)};
+    padding-bottom: ${props => props.theme.spacing(2.5)};
+    padding-left: ${props => props.theme.spacing(8)};
     width: 80%;
   }
 
@@ -175,7 +175,6 @@ const StyledMenu = withStyles({
 })(props => (
   <Menu
     elevation={0}
-    getContentAnchorEl={null}
     anchorOrigin={{
       vertical: "bottom",
       horizontal: "center"
@@ -264,7 +263,7 @@ class UserMenu extends Component {
                     aria-haspopup="true"
                     onClick={this.toggleNewMenu}
                     color="inherit"
-                  >
+                    size="large">
                     <WhiteIcon
                       bg={this.props.bg}
                       icon="plus"
@@ -279,7 +278,7 @@ class UserMenu extends Component {
                     aria-haspopup="true"
                     onClick={this.toggleMenu}
                     color="inherit"
-                  >
+                    size="large">
                     <SlimCardHeader
                       avatar={
                         <Avatar
@@ -435,7 +434,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
             <Grid container alignItems="center">
               <Hidden lgUp>
                 <Grid item>
-                  <IconButton aria-label="Open drawer" onClick={onDrawerToggle}>
+                  <IconButton aria-label="Open drawer" onClick={onDrawerToggle} size="large">
                     <WhiteIcon
                       icon="bars"
                       bg={context.searchActive ? "" : bg}
@@ -496,7 +495,6 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                 <Box display={{ xs: "inline-block", md: "none" }}>
                   <SearchButton
                     bg={context.searchActive ? "" : bg}
-                    theme={context.currentTheme}
                     onClick={context.toggleSearch}
                   >
                     {context.searchActive ? (

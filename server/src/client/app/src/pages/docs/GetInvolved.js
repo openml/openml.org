@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { yellow, green, red, blue, orange, grey, purple } from "@material-ui/core/colors";
+import { yellow, green, red, blue, orange, grey, purple } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Card as MuiCard,
@@ -16,9 +16,9 @@ import {
   ListItemText,
   Typography as MuiTypography,
   Zoom
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 import { HashLink } from "react-router-hash-link";
 import { animated } from '@react-spring/web';
 import useBoop from "../../components/Boop.js";

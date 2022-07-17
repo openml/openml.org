@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Icon from "@material-ui/core/Icon";
-import Tooltip from "@material-ui/core/Tooltip";
-import { grey } from "@material-ui/core/colors";
+import Icon from "@mui/material/Icon";
+import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
 
 import { NavLink as RouterNavLink, withRouter } from "react-router-dom";
@@ -15,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Box,
+  Button,
   Grid,
   Chip,
   Collapse,
@@ -24,7 +24,7 @@ import {
   Drawer as MuiDrawer,
   List as MuiList,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 import routes from "../routes/index";
 
@@ -63,8 +63,8 @@ const List = styled(MuiList)`
 `;
 
 const Items = styled.div`
-  padding-top: ${props => props.theme.spacing(2.5)}px;
-  padding-bottom: ${props => props.theme.spacing(2.5)}px;
+  padding-top: ${props => props.theme.spacing(2.5)};
+  padding-bottom: ${props => props.theme.spacing(2.5)};
 `;
 
 const Brand = styled(ListItem)`
@@ -81,7 +81,7 @@ const Brand = styled(ListItem)`
       : props.searchcolor
       ? props.theme.sidebar.background
       : props.theme.sidebar.header.background};
-  padding-left: ${props => props.theme.spacing(3)}px;
+  padding-left: ${props => props.theme.spacing(3)};
   font-size: 13pt;
   height: 56px;
 
@@ -94,16 +94,16 @@ const Brand = styled(ListItem)`
 const BrandIcon = styled(Icon)`
   font-size: 39pt;
   overflow: visible;
-  text-align: "center";
-  margin-top: -25px;
+  text-align: left;
+  margin-top: -30px;
   filter: drop-shadow(1px 1px 0px rgba(255, 255, 255, 0.1));
 `;
 
 const Category = styled(ListItem)`
-  padding-top: ${props => props.theme.spacing(2.4)}px;
-  padding-bottom: ${props => props.theme.spacing(2.4)}px;
-  padding-left: ${props => props.theme.spacing(4)}px;
-  padding-right: ${props => props.theme.spacing(1)}px;
+  padding-top: ${props => props.theme.spacing(2.4)};
+  padding-bottom: ${props => props.theme.spacing(2.4)};
+  padding-left: ${props => props.theme.spacing(4)};
+  padding-right: ${props => props.theme.spacing(1)};
   font-weight: ${props => props.theme.typography.fontWeightRegular};
   border-left: ${props => (props.activecategory === "true" ? "3px" : "0px")}
     solid ${props => props.currentcolor};
@@ -129,9 +129,9 @@ const CategoryText = styled(ListItemText)`
   margin: 0;
   span {
     color: ${props => props.theme.sidebar.color};
-    font-size: ${props => props.theme.typography.body1.fontSize}px;
+    font-size: ${props => props.theme.typography.body1.fontSize};
     font-weight: ${props => props.theme.typography.fontWeightRegular};
-    padding: 0 ${props => props.theme.spacing(4)}px;
+    padding: 0 ${props => props.theme.spacing(4)};
   }
 `;
 
@@ -152,8 +152,8 @@ const CountBadge = styled(Chip)`
 
 const SidebarSection = styled(Typography)`
   color: ${props => props.theme.sidebar.color};
-  padding: ${props => props.theme.spacing(0)}px
-    ${props => props.theme.spacing(4)}px ${props => props.theme.spacing(0)}px;
+  padding: ${props => props.theme.spacing(0)}
+    ${props => props.theme.spacing(4)} ${props => props.theme.spacing(0)};
   opacity: 0.9;
   display: block;
   margin-bottom: 6px;
@@ -162,29 +162,13 @@ const SidebarSection = styled(Typography)`
 `;
 
 const SidebarFooter = styled.div`
-  padding: ${props => props.theme.spacing(4)}px
-    ${props => props.theme.spacing(4)}px;
+  padding: ${props => props.theme.spacing(4)};
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   color: ${props => props.theme.sidebar.color};
   background-color: ${props => props.theme.sidebar.background};
   width: 260px;
   overflow: hidden;
 `;
-
-const LightIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: grey[200],
-  marginLeft: 10
-});
-const DarkIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: grey[800],
-  marginLeft: 10
-});
-const SpacedIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  marginLeft: 10
-});
 
 function SidebarCategory({
   name,
@@ -279,14 +263,11 @@ class Sidebar extends React.Component {
       }));
     });
 
+    // Update stats every minute
     this.countUpdate();
-    //this.intervalID = setInterval(() => {
-    //  this.countUpdate();
-    //}, 20000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.intervalID);
+    this.intervalID = setInterval(() => {
+      this.countUpdate();
+    }, 60000);
   }
 
   // Abbreviate counts
@@ -306,6 +287,8 @@ class Sidebar extends React.Component {
   };
 
   // Fetch the document counts for all OpenML entity types
+  axiosCancelToken = axios.CancelToken.source();
+
   countUpdate = async () => {
     const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
 
@@ -318,7 +301,8 @@ class Sidebar extends React.Component {
 
     const headers = {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      cancelToken: this.axiosCancelToken.token
     };
 
     axios
@@ -351,6 +335,11 @@ class Sidebar extends React.Component {
         console.log(error);
       });
   };
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+    this.axiosCancelToken.cancel("Sidebar unmounted")
+  }
 
   render() {
     const { classes, staticContext, location, ...other } = this.props;
@@ -452,7 +441,6 @@ class Sidebar extends React.Component {
                                 !context.miniDrawer
                               }
                               timeout="auto"
-                              unmountOnExit
                             >
                               {category.children.map((route, index) => (
                                 <SidebarCategory
@@ -588,22 +576,26 @@ class Sidebar extends React.Component {
                   <Grid container spacing={6}>
                     <Grid item>
                       {context.miniDrawer ? (
-                        <Tooltip title="Expand" placement="top-start">
-                          <div style={{ display: "inline-block" }}>
-                            <SpacedIcon
+                        <Tooltip title="Expand menu" placement="top-start">
+                          <Button
+                            color="secondary"
+                            onClick={() => context.miniDrawerToggle()} 
+                            theme={context.currentTheme}>
+                            <FontAwesomeIcon
                               icon="chevron-right"
                               size="lg"
-                              onClick={() => context.miniDrawerToggle()}
                             />
-                          </div>
+                          </Button>
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Minify" placement="top-start">
-                          <div style={{ display: "inline-block" }}>
-                            <SpacedIcon
+                        <Tooltip title="Minify menu" placement="top-start">
+                          <Button 
+                            onClick={() => context.miniDrawerToggle()}
+                            color="secondary"
+                            theme={context.currentTheme}>
+                            <FontAwesomeIcon
                               icon="chevron-left"
                               size="lg"
-                              onClick={() => context.miniDrawerToggle()}
                             />
                             <Typography
                               display="inline"
@@ -611,7 +603,7 @@ class Sidebar extends React.Component {
                             >
                               Minify
                             </Typography>
-                          </div>
+                          </Button>
                         </Tooltip>
                       )}
                     </Grid>
@@ -621,11 +613,13 @@ class Sidebar extends React.Component {
                           title="Switch to Light theme"
                           placement="top-start"
                         >
-                          <div style={{ display: "inline-block" }}>
-                            <LightIcon
+                          <Button 
+                            color="secondary"
+                            onClick={() => context.setTheme(1)} 
+                            theme={context.currentTheme}>
+                            <FontAwesomeIcon
                               icon="moon"
                               size="lg"
-                              onClick={() => context.setTheme(1)}
                             />
                             <Typography
                               display="inline"
@@ -633,18 +627,20 @@ class Sidebar extends React.Component {
                             >
                               Dark
                             </Typography>
-                          </div>
+                          </Button>
                         </Tooltip>
                       ) : (
                         <Tooltip
                           title="Switch to Dark theme"
                           placement="top-start"
                         >
-                          <div style={{ display: "inline-block" }}>
-                            <DarkIcon
+                          <Button
+                            color="secondary"
+                            onClick={() => context.setTheme(0)}
+                            theme={context.currentTheme}>
+                            <FontAwesomeIcon
                               icon="sun"
                               size="lg"
-                              onClick={() => context.setTheme(0)}
                             />
                             <Typography
                               display="inline"
@@ -652,7 +648,7 @@ class Sidebar extends React.Component {
                             >
                               Light
                             </Typography>
-                          </div>
+                          </Button>
                         </Tooltip>
                       )}
                     </Grid>

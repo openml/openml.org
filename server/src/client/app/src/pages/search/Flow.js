@@ -6,7 +6,7 @@ import {
   DependencyDetail
 } from "./ItemDetail.js";
 import ReactMarkdown from "react-markdown";
-import { Card, CardContent, Typography, Grid } from "@material-ui/core";
+import { Card, CardContent, Typography, Grid } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MetaTag } from "./MetaItems";
 

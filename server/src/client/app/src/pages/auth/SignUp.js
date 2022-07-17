@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { red } from "@material-ui/core/colors";
+import { red } from "@mui/material/colors";
 import { Redirect } from "react-router-dom";
 import { useState } from "react";
 
@@ -12,17 +12,17 @@ import {
   Button as MuiButton,
   Paper,
   Typography
-} from "@material-ui/core";
-import { spacing } from "@material-ui/system";
+} from "@mui/material";
+import { spacing } from "@mui/system";
 import axios from "axios";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 

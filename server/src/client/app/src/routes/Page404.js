@@ -2,18 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { Button as MuiButton, Typography, Paper } from "@material-ui/core";
-import { spacing } from "@material-ui/system";
+import { Button as MuiButton, Typography, Paper } from "@mui/material";
+import { spacing } from "@mui/system";
 import { useHistory } from "react-router-dom";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
   text-align: center;
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 

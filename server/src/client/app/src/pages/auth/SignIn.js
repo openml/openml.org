@@ -12,18 +12,18 @@ import {
   Button as MuiButton,
   Paper,
   Typography
-} from "@material-ui/core";
-import { spacing } from "@material-ui/system";
+} from "@mui/material";
+import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MainContext } from "../../App.js";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${props => props.theme.spacing(6)};
 
   ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+    padding: ${props => props.theme.spacing(10)};
   }
 `;
 

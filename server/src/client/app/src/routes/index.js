@@ -13,7 +13,7 @@ import {
   grey,
   purple,
   pink
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 // Cover components
 const Cover = async(() => import("../pages/cover/Cover"));

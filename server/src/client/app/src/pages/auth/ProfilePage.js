@@ -10,11 +10,11 @@ import {
   Divider as MuiDivider,
   Grid,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { spacing } from "@material-ui/system";
+import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green, yellow, blue, red } from "@material-ui/core/colors";
+import { green, yellow, blue, red } from "@mui/material/colors";
 
 const Card = styled(MuiCard)(spacing);
 

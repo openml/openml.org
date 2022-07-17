@@ -5,12 +5,12 @@ import {
   CardContent,
   Typography,
   Grid
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   MetaTag
 } from "./MetaItems"
 
-import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+import { Table, TableBody, TableRow, TableCell } from "@mui/material";
 
 export class TaskItem extends React.Component {
   render() {

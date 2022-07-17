@@ -6,9 +6,9 @@ import {
   TableBody,
   TableRow,
   TableCell
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 export class SizeLimiter extends React.Component {
   constructor() {

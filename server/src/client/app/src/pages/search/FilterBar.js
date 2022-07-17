@@ -8,7 +8,7 @@ import {
   Chip as MuiChip,
   Tooltip,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { MainContext } from "../../App.js";
@@ -310,7 +310,7 @@ export class FilterBar extends React.Component {
                   >
                     <FontAwesomeIcon
                       icon={this.context.displaySplit ? (this.context.id ? "expand-alt" : "poll") :
-                        (this.context.id ? "list" : (this.context.displayStats ? "list" : "poll"))}
+                        (this.context.id ? "angle-left" : (this.context.displayStats ? "list" : "poll"))}
                     />
                   </FilterButton>
                 }

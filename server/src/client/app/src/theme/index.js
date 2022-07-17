@@ -1,5 +1,5 @@
-import { createTheme } from "@material-ui/core/styles";
-import { blue, green, grey, red } from "@material-ui/core/colors";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { blue, green, grey, red } from "@mui/material/colors";
 
 const breakpoints = {
   values: {
@@ -188,20 +188,17 @@ const darkVariant = {
 const variants = [darkVariant, lightVariant];
 
 const theme = variant => {
-  return createTheme(
-    {
-      spacing: 4,
-      breakpoints: breakpoints,
-      props: props,
-      typography: typography,
-      shadows: shadows,
-      body: variant.body,
-      header: variant.header,
-      palette: variant.palette,
-      sidebar: variant.sidebar
-    },
-    variant.name
-  );
+  return createTheme({
+    spacing: 4,
+    breakpoints: breakpoints,
+    props: props,
+    typography: typography,
+    shadows: shadows,
+    body: variant.body,
+    header: variant.header,
+    palette: variant.palette,
+    sidebar: variant.sidebar
+  }, variant.name);
 };
 
 const themes = variants.map(variant => theme(variant));

@@ -1,7 +1,7 @@
 import React from "react";
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
-import { StylesProvider } from "@material-ui/styles";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
+import { StylesProvider } from "@mui/styles";
+import { ThemeProvider as SCThemeProvider } from "styled-components";
 import axios from "axios";
 import * as path from "path";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -16,11 +16,10 @@ import {
   grey,
   purple,
   pink
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 import maTheme from "./theme";
 import Routes from "./routes/Routes";
-import { convertCompilerOptionsFromJson } from "typescript";
 
 export const MainContext = React.createContext();
 
@@ -485,15 +484,17 @@ class App extends React.Component {
 
   render() {
     return (
-      <StylesProvider injectFirst>
-        <MainContext.Provider value={this.state}>
-          <MuiThemeProvider theme={maTheme[this.state.currentTheme]}>
-            <ThemeProvider theme={maTheme[this.state.currentTheme]}>
-              <Routes />
-            </ThemeProvider>
-          </MuiThemeProvider>
-        </MainContext.Provider>
-      </StylesProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={maTheme[this.state.currentTheme]}>
+          <StylesProvider injectFirst>
+            <MainContext.Provider value={this.state}>
+              <SCThemeProvider theme={maTheme[this.state.currentTheme]}>
+                <Routes />
+              </SCThemeProvider>
+            </MainContext.Provider>
+          </StylesProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     );
   }
 
