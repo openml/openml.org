@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress, Link as MuiLink } from "@material-ui/core";
+import {Button,Card, Tooltip, Paper, CardHeader, Avatar, Grid, Typography, Box, CircularProgress, Link as MuiLink } from "@material-ui/core";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TimeAgo from "react-timeago";
@@ -133,6 +133,8 @@ const ResultCard = styled(Card)`
   ${props => props.fullwidth && `width: 100%;`}
   &:hover {background-color: #f1f3f4;}
 `
+
+
 const dataStatus = {
   active: {
     title: "verified",
@@ -428,7 +430,17 @@ export class SearchResultsPanel extends React.Component {
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
                   {this.capitalize(qtype)}sets
+                  <Link to={this.props.context.loggedIn ? "/auth/upload-dataset"  : "auth/sign-in"}>
+                    <Button 
+                      variant="contained" 
+                      color="primary"
+                      style={{float: "right"}}
+                    > 
+                    <ColoredIcon color="white" icon={"plus"} fixedWidth/> New Dataset
+                    </Button>
+                  </Link>
                 </Typography>
+                
                 <Typography style={{ marginBottom: "15px" }}>
                   Datasets provide training data for machine learning models. OpenML datasets are uniformly formatted and come
                   with rich meta-data to allow automated processing. 
