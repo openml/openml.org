@@ -1,9 +1,12 @@
 import time
+import os
 
+import openml
 from openml import evaluations
 
 from server.src.dashboard.dash_config import BASE_URL
 
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 def test_task_page_loading(dash_br):
     dash_br.server_url = f"{BASE_URL}task/2"

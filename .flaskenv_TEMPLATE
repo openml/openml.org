@@ -16,3 +16,4 @@ REDIRECT_URL=https://localhost:5000
 BACKEND_SERVER=http://website/api/v1/xml/
 SEND_EMAIL=False
 TESTING=True
+BACKEND_BASE_URL=http://website/

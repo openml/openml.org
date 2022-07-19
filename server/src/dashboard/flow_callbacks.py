@@ -1,8 +1,10 @@
 import re
+import os
 
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
+import openml
 from openml import evaluations, tasks
 
 from .dash_config import DASH_CACHING
@@ -10,6 +12,8 @@ from openml.tasks import TaskType
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
+SERVER_BASE_URL = os.getenv('BACKEND_BASE_URL', "https://www.openml.org/")
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 def register_flow_callbacks(app, cache):
     @app.callback(
@@ -84,11 +88,11 @@ def register_flow_callbacks(app, cache):
         tick_text = []
         # Set clickable labels
         for run_id in df["run_id"].values:
-            link = '<a href="https://www.openml.org/r/' + str(run_id) + '/"> '
+            link = '<a href="'+ SERVER_BASE_URL +'r/' + str(run_id) + '/"> '
             run_link.append(link)
 
         for data_id in df["data_id"].values:
-            link = '<a href="https://www.openml.org/d/' + str(data_id) + '/">'
+            link = '<a href="'+ SERVER_BASE_URL +'d/' + str(data_id) + '/">'
             tick_text.append(link)
         hover_text = []
         if parameter == "None":

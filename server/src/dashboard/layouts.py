@@ -4,9 +4,12 @@ from typing import List, Tuple
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
+import openml
 from openml import datasets, evaluations, runs, setups, study
 
 from .helpers import get_metadata, get_run_df, logger
+
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 # TODO: Move to assets (Copied from Joaquin's react font)
 font = [

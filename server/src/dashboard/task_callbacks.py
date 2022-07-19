@@ -1,4 +1,5 @@
 import re
+import os
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -8,11 +9,14 @@ import plotly.graph_objs as go
 
 from dash.dependencies import Input, Output
 
+import openml
 from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
 
 from .helpers import get_highest_rank
 from .dash_config import DASH_CACHING
+
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 font = [
     "Nunito Sans",
@@ -28,6 +32,7 @@ font = [
     "Segoe UI Symbol",
 ]
 
+SERVER_BASE_URL = os.getenv('BACKEND_BASE_URL', "https://www.openml.org/")
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
@@ -97,11 +102,11 @@ def register_task_callbacks(app, cache):
         truncated = []
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
-            link = '<a href="https://www.openml.org/r/' + str(run_id) + '/"> '
+            link = '<a href="'+ SERVER_BASE_URL +'r/' + str(run_id) + '/"> '
             run_link.append(link)
         # Plotly hack to link flow names
         for flow_id in df["flow_id"].values:
-            link = '<a href="https://www.openml.org/f/' + str(flow_id) + '/">'
+            link = '<a href="'+ SERVER_BASE_URL +'f/' + str(flow_id) + '/">'
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df["flow_name"].values:
@@ -153,11 +158,11 @@ def register_task_callbacks(app, cache):
         tick_text = []
         run_link = []
         for run_id in df["run_id"].values:
-            link = '<a href="https://www.openml.org/r/' + str(run_id) + '/"> '
+            link = '<a href="'+ SERVER_BASE_URL +'r/' + str(run_id) + '/"> '
             run_link.append(link)
 
         for flow_id in df["flow_id"].values:
-            link = '<a href="https://www.openml.org/f/' + str(flow_id) + '/">'
+            link = '<a href="'+ SERVER_BASE_URL +'f/' + str(flow_id) + '/">'
             tick_text.append(link)
 
         df["upload_time"] = pd.to_datetime(df["upload_time"])
