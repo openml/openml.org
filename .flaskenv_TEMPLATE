@@ -13,6 +13,6 @@ JWT_SECRET_KEY=abcd
 EMAIL_SERVER=localhost:5000
 SERVER_URL=https://localhost:5000
 REDIRECT_URL=https://localhost:5000
-PYTHON_SERVER=http://website/api/v1/xml/
+BACKEND_SERVER=http://website/api/v1/xml/
 SEND_EMAIL=False
 TESTING=True

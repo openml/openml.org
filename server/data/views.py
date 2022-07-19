@@ -24,7 +24,7 @@ def data_edit():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     openml.config.apikey = user.session_hash
-    openml.config.server = os.getenv('PYTHON_SERVER')
+    openml.config.server = os.getenv('BACKEND_SERVER')
     testing = os.environ.get("TESTING", "False") == "True"
     if testing:
         openml.config.start_using_configuration_for_example()
@@ -156,7 +156,7 @@ def data_upload():
     user = User.query.filter_by(email=current_user).first()
     user_api_key = user.session_hash
     openml.config.apikey = user.session_hash
-    openml.config.server = os.getenv('PYTHON_SERVER')
+    openml.config.server = os.getenv('BACKEND_SERVER')
     testing = os.environ.get("TESTING", "False") == "True"
     print(testing)
     if testing:
@@ -250,7 +250,7 @@ def data_tag():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
     openml.config.apikey = user.session_hash
-    openml.config.server = os.getenv('PYTHON_SERVER')
+    openml.config.server = os.getenv('BACKEND_SERVER')
     testing = os.environ.get("TESTING", "False") == "True"
     if testing:
         openml.config.start_using_configuration_for_example()
