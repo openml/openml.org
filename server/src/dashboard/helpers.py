@@ -99,6 +99,11 @@ def get_data_metadata(data_id):
     start = time.time()
     meta_features, data, _ = get_metadata(data_id)
 
+    # Test replacing the substring to when Docker is active
+    if (os.getenv('DASHBOARD_USE_DOCKER_CONTAINER_NAME', 'False') == "True"):
+        data.url = data.url.replace("localhost", os.getenv('DASHBOARD_PHP_CONTAINER_NAME', 'website'))
+        print(data)
+
     x, y, categorical, attribute_names = data.get_data()
 
     df = pd.DataFrame(x, columns=attribute_names)
