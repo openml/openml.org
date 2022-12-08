@@ -7,7 +7,7 @@ bcrypt==3.1.7
 binaryornot==0.4.4
 blinker==1.4
 category-encoders==2.0.0
-certifi==2019.11.28
+certifi==2022.12.7
 cffi
 chardet==3.0.4
 Click==7.0
