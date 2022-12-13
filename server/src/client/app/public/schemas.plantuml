@@ -1,0 +1,211 @@
+@startuml
+
+title OpenML API Schemas Diagram
+
+
+entity DataSet #SkyBlue ##[bold]RoyalBlue{
+    id: String
+    name: String
+    description: String
+    status: String
+    visibility: String
+    version: String
+    version_label: String
+    uploader: User
+    upload_date: String
+    url: String
+    original_data_url: String
+    licence: String
+    default_target_attribute: String
+    format: String
+    file_id: String
+    md5_checksum: String
+    quality: List<DataQuality>
+    tag: List<String>
+}
+
+entity DataFeature {
+    index: String
+    name: String
+    data_type: String
+    is_target: String
+    is_ignore: String
+    is_row_identifier: String
+}
+
+entity DataQuality {
+    name: String
+    value: String
+}
+
+entity EstimationProcedure {
+    name: String
+    folds: String
+    repeats: String
+    stratified_sampling: String
+    type: String
+    id: String
+}
+
+entity Evaluation {
+    run_id: String
+    function: String
+    array_data: String
+    value: String
+}
+
+entity Flow #SkyBlue ##[bold]RoyalBlue{
+    id: String
+    uploader: User
+    upload_date: String
+    name: String
+    version: String
+    version_label: String
+    dependencies: String
+    language: String
+    parameter: List<FlowParameter>
+    tag: List<String>
+}
+
+entity FlowParameter {
+    id: String
+    name: String
+    data_type: String
+    default_value: String
+}
+
+entity Run #SkyBlue ##[bold]RoyalBlue{
+    id: String
+    uploader: User
+    task_id: String 
+    flow_id: String
+    setup: Setup
+    setup_string: String
+    output_data: RunOutputData
+    tag: List<String>
+}
+
+entity OutputData {
+    evaluation: List<RunDataEvaluation>
+    file: List<OutputDataFile>
+}
+
+entity OutputDataFile {
+    name: String
+    file_id: String
+}
+
+entity RunTrace {
+    trace_iteration: List<TraceIteration>
+}
+
+entity TraceIteration {
+    setup_string: String
+    iteration: String
+    fold: String
+    repeat: String
+    selected: String
+    evaluation: String
+}
+
+entity Setup {
+    setup_id: String
+    parameters: List<ParameterSetting>
+}
+
+entity ParameterSetting {
+    name: String
+    value: String
+}
+
+entity Study #SkyBlue ##[bold]RoyalBlue{
+    id: String
+    name: String
+    alias: String
+    creator: User
+    creation_date: String
+    main_entity_type: String
+    runs: List<Run>
+    tasks: List<Task>
+    tag: List<String>
+}
+
+entity TaskType {
+    id: String
+    name: String
+    date: String
+    input: List<TaskTypeInput>
+    output: List<TaskTypeOutput>
+    contributor: List<String>
+}
+
+entity Task #SkyBlue ##[bold]RoyalBlue{
+    task_id: String
+    task_type: String
+    status: String
+    name: String
+    input: List<TaskInput>
+    output: List<TaskOutput>
+    tag: List<String>
+}
+
+entity EvaluationMeasure {
+    evaluation_measure: String
+}
+
+entity TaskInput {
+    name: String
+    source_data: DataSet
+    cost_matrix: List<List>
+    evaluation_measures: EvaluationMeasure
+    estimation_procedure: EstimationProcedure
+}
+
+entity TaskOutput {
+    name: String
+    predictions: TaskPredictions
+}
+
+entity TaskPredictions {
+    feature: List<TaskPredictionsFeature>
+    format: String
+}
+
+entity User {
+    id: String
+    first_name: String
+    last_name: String
+    api_key: String
+}
+
+
+DataSet -- "0..*" DataFeature : feature
+TaskOutput -- TaskPredictions : predictions
+OutputData -- RunTrace : run_trace
+Run -- Setup : setup
+RunTrace -- "0..*" TraceIteration : trace_iteration
+Study -- Run : runs
+Study -- Task : tasks
+Run -- Task  : task
+Study -- User : creator
+DataSet -- User  : uploader
+Task -- User  : creator
+Run -- User  : uploader
+Flow -- User  : uploader
+
+Run -- Flow: flow
+TaskInput -- DataSet : source_data
+TaskInput -- EvaluationMeasure : evaluation_measures
+TaskInput -- EstimationProcedure : estimation_procedure
+Setup -- "0..*" ParameterSetting : parameter_setting
+
+Task -- TaskType : type
+Run -- OutputData : output_data
+DataSet -- "0..*" DataQuality : quality
+OutputData -- "0..*" Evaluation : evaluation
+OutputData -- "0..*" OutputDataFile : file
+Flow -- "0..*" FlowParameter : parameter
+Task -- "0..*" TaskInput : input
+Task -- "0..*" TaskOutput : output
+
+@enduml
