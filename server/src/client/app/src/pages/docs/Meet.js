@@ -154,15 +154,15 @@ export default class GetInvolved extends React.Component {
             <CardActionArea>
               <CardMedia
                 style={{ height: 240 }}
-                image="https://korenbrothers.com/wp-content/uploads/2017/05/SCHLOSS-DAGSTUHL-Wadern-Philippe-Koren-PK_SW140-1.jpg"
+                image="https://cms-cdn.lmu.de/media/lmu-mediapool/die_lmu/lmu_2852_full_2_1_format_l.jpg"
                 title="Hackathon"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2022 Spring Hackathon - 20-25 March, Schloss Dagstuhl, Wadern, Germany
+                  2023 Spring Hackathon - 20-24 February, LMU, Munich, Germany
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Join us in Dagstuhl Castle, a wonderful location for advancing computer science research in the hills of Saarland, to work
+                  Join us at Ludwig-Maximilians-Universität München, in the heart of the capital of Bavaria, to work
                   on the next generation of OpenML.
                 </Typography>
               </CardContent>
@@ -171,16 +171,9 @@ export default class GetInvolved extends React.Component {
               <Button
                 size="small"
                 color="primary"
-                href="https://forms.gle/z48UqHt9FYUmz3w88"
+                href="https://docs.google.com/document/d/1uGMCCHzAcZjPtp1NUno_YGjUvGufVtu62vnGAQrA7vg/edit#heading=h.9g9eddlgkl7c"
               >
-                Register (free)
-              </Button>
-              <Button
-                size="small"
-                color="primary"
-                href="https://www.dagstuhl.de/en/about-dagstuhl/arrival/"
-              >
-                Getting there
+                Schedule and registration (free)
               </Button>
               <Button
                 size="small"
@@ -188,13 +181,6 @@ export default class GetInvolved extends React.Component {
                 href="https://github.com/openml/openml.org/blob/master/meetups.md"
               >
                 Prepare
-              </Button>
-              <Button
-                size="small"
-                color="primary"
-                href="https://docs.google.com/document/d/1-cjXSqjbce0Gq5zydkp-RNQQmxmcSW4WQ0fWTHUwU9E/edit#"
-              >
-                Schedule
               </Button>
             </CardActions>
           </Card>
