@@ -143,7 +143,6 @@ function SignIn() {
               variant="contained"
               color="primary"
               mb={2}
-              to="/"
               style={{ marginTop: 20 }}
             >
               Sign in
