@@ -154,7 +154,7 @@ export default class GetInvolved extends React.Component {
             <CardActionArea>
               <CardMedia
                 style={{ height: 240 }}
-                image="https://ut.ee/sites/default/files/styles/ut_content_main_big/public/2022-01/2021_06_19-ulila-kamari-emu-tartu-ulenurme-4-kesklinn-p-delta_2-p-nw_51510831518_o.jpg?h=4f5882e6&itok=mijoHZRC"
+                image="https://cs.ut.ee/sites/default/files/styles/facebook/public/2021-11/51511539475_87ce389662_o.jpg?itok=rj-JSmWt"
                 title="Hackathon"
               />
               <CardContent>
