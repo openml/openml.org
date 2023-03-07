@@ -154,15 +154,15 @@ export default class GetInvolved extends React.Component {
             <CardActionArea>
               <CardMedia
                 style={{ height: 240 }}
-                image="https://cms-cdn.lmu.de/media/lmu-mediapool/die_lmu/lmu_2852_full_2_1_format_l.jpg"
+                image="https://ut.ee/sites/default/files/styles/ut_content_main_big/public/2022-01/2021_06_19-ulila-kamari-emu-tartu-ulenurme-4-kesklinn-p-delta_2-p-nw_51510831518_o.jpg?h=4f5882e6&itok=mijoHZRC"
                 title="Hackathon"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2023 Spring Hackathon - 20-24 February, LMU, Munich, Germany
+                  2023 Summer Hackathon - 12-16 June, University of Tartu, Tartu, Estonia
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Join us at Ludwig-Maximilians-Universität München, in the heart of the capital of Bavaria, to work
+                  Join us at the University of Tartu, Estonia's oldest university, to work
                   on the next generation of OpenML.
                 </Typography>
               </CardContent>
@@ -171,7 +171,7 @@ export default class GetInvolved extends React.Component {
               <Button
                 size="small"
                 color="primary"
-                href="https://docs.google.com/document/d/1uGMCCHzAcZjPtp1NUno_YGjUvGufVtu62vnGAQrA7vg/edit#heading=h.9g9eddlgkl7c"
+                href="https://docs.google.com/document/d/1UQzZJoaTO-3Tk5SOvtGjA4MPezPEq2Tsg7rleVmBerg/edit?usp=sharing"
               >
                 Schedule and registration (free)
               </Button>
