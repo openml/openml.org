@@ -95,7 +95,7 @@ function SignIn() {
               {errormsg}
             </Typography>
           )}
-          {wrongpass && (
+          {(wrongpass || notexist) && (
             <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"
@@ -113,15 +113,6 @@ function SignIn() {
             >
               User not confirmed
               <a href="/auth/confirmation-token">(resend activation token)</a>
-            </Typography>
-          )}
-          {notexist && (
-            <Typography component="h3" align="center" style={{ color: "red" }}>
-              <FontAwesomeIcon
-                icon="exclamation-triangle"
-                style={{ marginRight: 5 }}
-              />
-              Wrong username or password
             </Typography>
           )}
           <form onChange={handleChange} onSubmit={handleSubmit}>
