@@ -30,14 +30,11 @@ def create_dash_app(flask_app):
     :param flask_app: flask_app passed is the flask server for the dash app
     :return:
     """
+    root_dir = os.getcwd()
+    os.makedirs(os.path.join(root_dir, ".cache"), exist_ok=True)
     if COMMON_CACHE:
-        root_dir = os.path.abspath(os.sep)
-        root_dir = os.getcwd()
-        if not os.path.exists(os.path.join(root_dir, "public")):
-            os.system(f"sudo mkdir {root_dir}/public")
-        os.system(f"sudo chmod 777 {root_dir}/public")
         openml.config.cache_directory = os.path.join(
-            root_dir, "public", "python-cache", ".openml", "cache"
+            root_dir, ".cache", "python-cache", ".openml", "cache"
         )
 
     app = dash.Dash(__name__, server=flask_app, url_base_pathname="/dashboard/")
@@ -46,7 +43,7 @@ def create_dash_app(flask_app):
         config={
             # try 'filesystem' if you don't want to setup redis
             "CACHE_TYPE": "filesystem",
-            "CACHE_DIR": "flask-cache-dir",
+            "CACHE_DIR": os.path.join(root_dir, ".cache", "flask-cache-dir"),
         },
     )
     app.config.suppress_callback_exceptions = True
@@ -67,8 +64,4 @@ def create_dash_app(flask_app):
     # Callbacks
     register_callbacks(app, cache)
 
-    # Create a temporary cache for data transfer between callbacks - pkl files
-    shutil.rmtree("cache", ignore_errors=True)
-    os.system("sudo mkdir cache")
-    os.system("sudo chmod 777 cache")
     return app
