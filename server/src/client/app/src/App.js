@@ -26,7 +26,12 @@ export const MainContext = React.createContext();
 //TODO: only import necessary icons
 library.add(fas, far, fab);
 
+if (!process.env.REACT_APP_SERVER_URL){
+  throw new Error("Environment variable REACT_APP_SERVER_URL is empty.")
+}
+
 class App extends React.Component {
+
   state = {
     // Theme context
     currentTheme: 0,
@@ -60,6 +65,7 @@ class App extends React.Component {
     userImage: undefined,
     userInitials: undefined,
     checkLogIn: () => {
+
       let token = localStorage.getItem("token");
       if (token != null) {
         const yourConfig = {
@@ -100,29 +106,17 @@ class App extends React.Component {
                   console.log("Could not fetch profile.");
                 });
             } else if (this.state.loggedIn) {
-              this.setState(
-                { loggedIn: false },
-                this.log("Login changed: Authentication failed")
-              );
+              this.state.logOut("Authentication check failed")
             }
           })
           .catch(error => {
             if (this.state.loggedIn) {
-              this.setState(
-                { loggedIn: false },
-                this.log("Login changed: Authentication check failed")
-              );
+              this.state.logOut("Authentication check failed")
             }
           });
       }
     },
-    logIn: () => {
-      this.setState(
-        { loggedIn: true },
-        this.log("Login changed: user logged in")
-      );
-    },
-    logOut: () => {
+    logOut: (reason) => {
       this.setState(
         {
           loggedIn: false,
@@ -130,7 +124,7 @@ class App extends React.Component {
           userInitials: undefined,
           userID: undefined
         },
-        this.log("Login changed: user logged out")
+        this.log("Login changed: " + reason)
       );
     },
     setUserImage: value => {
