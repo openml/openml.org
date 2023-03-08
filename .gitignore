@@ -6,7 +6,7 @@
 .pnp.js
 
 # testing
-/coverage
+**/coverage
 
 # production
 **/build/
@@ -32,6 +32,7 @@ yarn-error.log*
 src/__pycache__/
 
 .idea/
+.vscode/
 
 *.pyc
 
@@ -56,3 +57,5 @@ temp_data/
 users.sql
 node_modules
 node_modules.nosync
+
+venv

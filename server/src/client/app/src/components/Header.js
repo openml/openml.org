@@ -380,7 +380,7 @@ class UserMenu extends Component {
                     )
                     .then(response => {
                       console.log(response.data);
-                      context.logOut();
+                      context.logOut("user logged out");
                       context.setSearchActive(false);
                     })
                     .catch(error => {

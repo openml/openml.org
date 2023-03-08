@@ -36,9 +36,7 @@ function SignUp() {
   const [error, setError] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
   function sendflask(event) {
-    event.preventDefault();
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
+    event.preventDefault(); 
     if (event.target.password.value.length < 6) {
       setError(true);
       setErrorMessage("Password too weak");
