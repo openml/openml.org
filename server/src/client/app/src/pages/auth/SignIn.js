@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 import {
   Checkbox,
@@ -35,17 +35,22 @@ function SignIn() {
   const [errormsg, setErrorMsg] = useState(false);
   const [notexist, setNotExist] = useState(false);
   const [wrongpass, setWrongPass] = useState(false);
+  const [formData, setFormData] = useState({email: '', password: ''})
   const context = useContext(MainContext);
 
-  function sendtoflask(event) {
+  function handleChange(event) {
+    const { name, value } = event.target
+    setFormData({...formData, [name]: value})
+  }
+
+  function handleSubmit(event) {
     event.preventDefault();
     axios
       .post(process.env.REACT_APP_SERVER_URL + "login", {
-        email: event.target.email.value,
-        password: event.target.password.value
+        email: formData.email,
+        password: formData.password
       })
       .then(response => {
-        console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
         } else if (response.data.msg === "Wrong username or password") {
@@ -119,7 +124,7 @@ function SignIn() {
               Wrong username or password
             </Typography>
           )}
-          <form onSubmit={sendtoflask}>
+          <form onChange={handleChange} onSubmit={handleSubmit}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
               <Input id="email" name="email" autoComplete="email" autoFocus />

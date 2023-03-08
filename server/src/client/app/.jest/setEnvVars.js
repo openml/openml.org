@@ -1,0 +1,1 @@
+process.env.REACT_APP_SERVER_URL = "https://www.openml.org/";
