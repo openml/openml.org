@@ -168,12 +168,19 @@ export default class GetInvolved extends React.Component {
               </CardContent>
             </CardActionArea>
             <CardActions>
+            <Button
+                size="small"
+                color="primary"
+                href="https://forms.gle/kiBGgCfuUoAWgVgW6"
+              >
+                Registration (free)
+              </Button>
               <Button
                 size="small"
                 color="primary"
                 href="https://docs.google.com/document/d/1UQzZJoaTO-3Tk5SOvtGjA4MPezPEq2Tsg7rleVmBerg/edit?usp=sharing"
               >
-                Schedule and registration (free)
+                Schedule and more
               </Button>
               <Button
                 size="small"
