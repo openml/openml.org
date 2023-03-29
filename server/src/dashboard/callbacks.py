@@ -1,6 +1,6 @@
 import re
 
-import dash_html_components as html
+from dash import html
 from dash.dependencies import Input, Output
 
 from .data_callbacks import register_data_callbacks

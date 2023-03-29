@@ -2,8 +2,8 @@ import os
 import shutil
 import openml
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 from flask_caching import Cache
 from .dash_config import COMMON_CACHE
 from .callbacks import register_callbacks
