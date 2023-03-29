@@ -21,7 +21,7 @@ def register_extensions(app):
 
     # Database initialisation
     db_session = scoped_session(
-        sessionmaker(autocommit=True, autoflush=False, bind=engine)
+        sessionmaker(autoflush=False, bind=engine)
     )
     Base.query = db_session.query_property()
     db.init_app(app)

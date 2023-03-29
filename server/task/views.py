@@ -13,7 +13,7 @@ CORS(task_blueprint)
 
 
 @task_blueprint.route("/upload-task", methods=["POST"])
-@jwt_required
+@jwt_required()
 def upload_task():
     """
     Function to upload task

@@ -14,7 +14,7 @@ CORS(collection_bp)
 
 
 @collection_bp.route("/upload-collection-runs", methods=["POST"])
-@jwt_required
+@jwt_required()
 def upload_collection_runs():
     """
     Function to upload the collection_runs
@@ -48,7 +48,7 @@ def upload_collection_runs():
 
 
 @collection_bp.route("/upload-collection-tasks", methods=["POST"])
-@jwt_required
+@jwt_required()
 def upload_collection_task():
     """
     Function to upload the collection_tasks

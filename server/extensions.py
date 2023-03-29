@@ -21,7 +21,6 @@ load_dotenv(".flaskenv")
 try:
     engine = create_engine(
         os.environ.get("DATABASE_URI"),
-        convert_unicode=True,
         echo=False,
         pool_size=20,
         max_overflow=0,
@@ -33,7 +32,6 @@ except TypeError:
     engine = create_engine(
         "sqlite:///" + os.path.join(basedir, "openml.db"),
         echo=False,
-        convert_unicode=True,
     )
     Config.SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "openml.db")
     Base = declarative_base()

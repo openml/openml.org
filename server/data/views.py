@@ -19,7 +19,7 @@ CORS(data_blueprint)
 
 
 @data_blueprint.route("/data-edit", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def data_edit():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
@@ -146,7 +146,7 @@ def data_edit():
 
 
 @data_blueprint.route("/data-upload", methods=["POST"])
-@jwt_required
+@jwt_required()
 def data_upload():
     """
     Function to upload dataset
@@ -237,7 +237,7 @@ def data_upload():
 
 
 @data_blueprint.route("/data-tag", methods=["POST"])
-@jwt_required
+@jwt_required()
 def data_tag():
     j_obj = request.get_json()
     tag = j_obj['tag']

@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
-    get_raw_jwt,
+    get_jwt,
     jwt_required,
 )
 from pathlib import Path
@@ -80,7 +80,7 @@ def login():
 
 
 @user_blueprint.route("/profile", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def profile():
     """
     Function to edit and retrieve user profile information
@@ -125,14 +125,14 @@ def profile():
 
 
 @user_blueprint.route("/verifytoken", methods=["GET"])
-@jwt_required
+@jwt_required()
 def verifytoken():
     return "token-valid"
 
 
 # TODO Change Address before production
 @user_blueprint.route("/image", methods=["POST"])
-@jwt_required
+@jwt_required()
 def image():
     """Function to receive and set user image"""
     current_user = get_jwt_identity()
@@ -174,16 +174,16 @@ def images(path):
 
 
 @user_blueprint.route("/logout", methods=["POST"])
-@jwt_required
+@jwt_required()
 def logout():
     """Function to logout user"""
-    jti = get_raw_jwt()["jti"]
+    jti = get_jwt()["jti"]
     blacklist.add(jti)
     return jsonify({"msg": "Successfully logged out"}), 200
 
 
 @user_blueprint.route("/api-key", methods=["POST", "GET"])
-@jwt_required
+@jwt_required()
 def apikey():
     """Change and retrieve API-Key"""
     current_user = get_jwt_identity()
@@ -199,7 +199,7 @@ def apikey():
 
 
 @user_blueprint.route("/delete", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def delete_user():
     """Delete current user: Frontend and functionality not decided yet"""
     # current_user = get_jwt_identity()
