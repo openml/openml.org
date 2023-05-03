@@ -18,7 +18,7 @@ Subject: Welcome to OpenML!
 Hi,
 
 Thank you for signing up to OpenML.
-To verify your email address, please click %s"
+To verify your email address, please click %s
     
 If that doesn't work, try copy-pasting it in your browser.
 If you run into any issues, please contact us at openmachinelearning@gmail.com
