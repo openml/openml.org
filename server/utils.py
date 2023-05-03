@@ -11,10 +11,21 @@ def confirmation_email(user_email, token):
     receiver = user_email
     header = "From: %s\n" % sender
     header += "To: %s\n" % user_email
-    header += "Subject: %s\n\n" % "none"
-    message = header + "Hi to confirm your account go to "
-    message = message + "https://" + str(os.environ.get("EMAIL_SERVER"))
-    message = message + f"/auth/confirm-page/?token={token}"
+    link =  "https://" + str(os.environ.get("EMAIL_SERVER")) + f"/auth/confirm-page/?token={token}"
+    message = """\
+Subject: Welcome to OpenML!
+
+Hi,
+
+Thank you for signing up to OpenML.
+To verify your email address, please click %s"
+    
+If that doesn't work, try copy-pasting it in your browser.
+If you run into any issues, please contact us at openmachinelearning@gmail.com
+
+Have a great day, 
+The OpenML team
+""" % link
 
     server = smtplib.SMTP(os.environ.get("SMTP_SERVER"), os.environ.get("SMTP_PORT"))
     if len(os.environ.get("SMTP_LOGIN")) > 0:
