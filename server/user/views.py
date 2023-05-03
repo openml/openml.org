@@ -47,7 +47,7 @@ def login():
 
     jobj = request.get_json()
     user = User.query.filter_by(email=jobj["email"]).first()
-
+    print(jobj)
     if user is None:
         print("user does not exist")
         return jsonify({"msg": "Wrong username or password"}), 200
