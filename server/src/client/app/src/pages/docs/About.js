@@ -86,7 +86,7 @@ const BigBadge = styled(Badge)`
 `;
 
 const tc_ids = [1, 2, 27, 86, 348, 970];
-const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744];
+const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744, 35875, 35755, 34097, 34198];
 const active_ids = [10700, 5348, 2902, 8309, 3744];
 const contributor_ids = [1478, 5341];
 
