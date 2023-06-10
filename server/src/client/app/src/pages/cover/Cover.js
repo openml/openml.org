@@ -731,7 +731,7 @@ class Cover extends React.Component {
                     AI-ready data
                   </Typography>
                   <Paragraph>
-                    All datasets are uniformy formatted, have rich, consistent
+                    All datasets are uniformly formatted, have rich, consistent
                     metadata, and can be loaded directly into your favourite
                     environments.
                   </Paragraph>
