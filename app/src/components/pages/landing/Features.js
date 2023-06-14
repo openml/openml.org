@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Grid } from "@mui/material";
+import { Grid, useMediaQuery } from "@mui/material";
 import InfoCard from "../../Card";
 
 import { faCogs, faDatabase, faFlask } from "@fortawesome/free-solid-svg-icons";
@@ -11,12 +11,14 @@ const ai_ready_data = {
   title: "AI-ready data",
   icon: faDatabase,
   iconColor: green[500],
+  arrow: "right",
   text: `All datasets are uniformy formatted, have rich, consistent metadata, and can be loaded directly into your favourite environments.`,
 };
 const integrations = {
   title: "ML library integrations",
   icon: faCogs,
   iconColor: blue[500],
+  arrow: "right",
   text: `Pipelines and models can be shared directly from your favourite machine learning libraries. No manual steps required.`,
 };
 const ml_results = {
@@ -30,7 +32,7 @@ function Features() {
   return (
     <Grid container spacing={6}>
       {[ai_ready_data, integrations, ml_results].map((card) => (
-        <Grid item display="flex" xs={12} md={6} lg={4} key={card.title}>
+        <Grid item display="flex" xs={12} md={4} key={card.title}>
           <InfoCard info={card} />
         </Grid>
       ))}

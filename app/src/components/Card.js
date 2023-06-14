@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { spacing } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NextLink from "next/link";
 
@@ -17,9 +18,33 @@ import {
   ListItemIcon,
   ListItemText,
   Typography as MuiTypography,
+  useMediaQuery,
 } from "@mui/material";
 
-const Card = styled(MuiCard)(spacing);
+const Card = styled(MuiCard)`
+  ${spacing};
+  position: relative;
+  &:after {
+    content: " ";
+    position: absolute;
+    right: ${(props) => (props.arrow == "right" ? "-15px" : "50%")};
+    top: ${(props) => (props.arrow == "right" ? "40%" : "inherit")};
+    border-top: 15px solid
+      ${(props) =>
+        props.arrow == "right"
+          ? "transparent"
+          : props.theme.palette.background.paper};
+    border-right: ${(props) =>
+      props.arrow == "right" ? "none" : "15px solid transparent"};
+    border-left: 15px solid
+      ${(props) =>
+        props.arrow == "right"
+          ? props.theme.palette.background.paper
+          : "transparent"};
+    border-bottom: ${(props) =>
+      props.arrow == "right" ? "15px solid transparent" : "none"};
+  }
+`;
 
 const CardContent = styled(MuiCardContent)``;
 const CardActions = styled(MuiCardActions)`
@@ -65,8 +90,15 @@ const ButtonImage = styled.img`
 `;
 
 const InfoCard = ({ info }) => {
+  const theme = useTheme();
   return (
-    <Card style={{ width: "100%" }}>
+    <Card
+      arrow={useMediaQuery(theme.breakpoints.up("md")) ? info.arrow : "bottom"}
+      style={{
+        width: "100%",
+        overflow: info.arrow ? "visible" : "hidden",
+      }}
+    >
       {info.media && <CardMedia image={info.media} />}
       <CardContent>
         <Typography
