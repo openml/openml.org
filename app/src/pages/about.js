@@ -37,7 +37,7 @@ import {
   faBlog,
   faChevronDown,
   faRocket,
-  faChild,
+  faChildReaching,
   faPhoneAlt,
   faEnvelope,
   faHands,
@@ -266,58 +266,8 @@ const governance = {
   ],
 };
 
-const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
-
-function search(type, fields, filter) {
-  let params = {
-    from: 0,
-    size: 50,
-    query: {
-      bool: {
-        filter: [].concat(filter),
-      },
-    },
-    _source: fields.filter((l) => !!l),
-  };
-  return fetch(
-    ELASTICSEARCH_SERVER + type + "/" + type + "/_search?type=" + type,
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify(params),
-    }
-  )
-    .then((request) => request.json())
-    .then((data) => {
-      return data["hits"]["hits"].map((x) => {
-        let source = x["_source"];
-        let res = {};
-        fields.forEach((field) => {
-          res[field] = source[field];
-        });
-        return res;
-      });
-    });
-}
-
 function About() {
   let people = [];
-
-  search("user", ["user_id", "first_name", "last_name", "bio", "image"], {
-    terms: { user_id: core_ids.concat(active_ids).concat(contributor_ids) },
-  })
-    .then((data) => {
-      people = data.sort(orderList);
-      console.log(people);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
   console.log(people);
 
   return (
@@ -351,24 +301,9 @@ function About() {
         </Grid>
         <Grid item xs={12}>
           <Header
-            id="mission"
-            title="Mission"
-            icon={faRocket}
-            color={purple[500]}
-          />
-          <InfoCard info={mission} />
-        </Grid>
-        <Grid item xs={12}>
-          <InfoCard info={community} />
-        </Grid>
-        <Grid item xs={12}>
-          <InfoCard info={governance} />
-        </Grid>
-        <Grid item xs={12}>
-          <Header
-            id="mission"
+            id="team"
             title="Meet the team"
-            icon={faChild}
+            icon={faChildReaching}
             color={purple[400]}
           />
           <Card>
@@ -441,15 +376,27 @@ function About() {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          <HeroTitle variant="h3" align="center" id="contact">
-            <ListIcon
-              icon={faPhoneAlt}
-              size="lg"
-              style={{ color: green[400], marginTop: 70 }}
-            />
-            <br />
-            Contact us
-          </HeroTitle>
+          <Header
+            id="mission"
+            title="Mission"
+            icon={faRocket}
+            color={purple[500]}
+          />
+          <InfoCard info={mission} />
+        </Grid>
+        <Grid item xs={12}>
+          <InfoCard info={community} />
+        </Grid>
+        <Grid item xs={12}>
+          <InfoCard info={governance} />
+        </Grid>
+        <Grid item xs={12}>
+          <Header
+            id="contact"
+            title="Contact us"
+            icon={faPhoneAlt}
+            color={green[500]}
+          />
           <Card>
             <CardContent>
               <List component="nav">
@@ -513,15 +460,12 @@ function About() {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          <HeroTitle variant="h3" align="center" id="foundation">
-            <ListIcon
-              icon={faHandsHelping}
-              size="lg"
-              style={{ color: blue[400], marginTop: 70 }}
-            />
-            <br />
-            The Open Machine Learning Foundation
-          </HeroTitle>
+          <Header
+            id="foundation"
+            title="The Open Machine Learning Foundation"
+            icon={faHandsHelping}
+            color={blue[500]}
+          />
           <Card>
             <CardContent>
               <Paragraph>

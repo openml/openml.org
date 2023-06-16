@@ -59,9 +59,6 @@ const Dashboard = ({ children }) => {
   const theme = useTheme();
   const router = useRouter();
 
-  const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
-  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
-
   // Get the entity color from the router path
   // e.g. /datasets -> green
   // Can't be in the theme since it requires the router
@@ -95,7 +92,7 @@ const Dashboard = ({ children }) => {
       </Drawer>
       <AppContent>
         <Navbar onDrawerToggle={handleDrawerToggle} ecolor={ecolor} />
-        <MainContent p={isLgUp ? 12 : isSmUp ? 5 : 0}>{children}</MainContent>
+        <MainContent>{children}</MainContent>
         {/*<Footer />*/}
       </AppContent>
     </Root>

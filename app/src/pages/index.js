@@ -5,7 +5,7 @@ import DashboardLayout from "../layouts/Dashboard";
 import Demos from "../components/pages/landing/Demos";
 import Testimonial from "../components/pages/landing/Testimonial";
 import Integrations from "../components/pages/landing/Integrations";
-import Features from "../components/pages/landing/Features";
+import Lifecycle from "../components/pages/landing/Lifecycle";
 import FAQ from "../components/pages/landing/FAQ";
 import JoinUs from "../components/pages/landing/JoinUs";
 
@@ -27,7 +27,7 @@ function Presentation() {
         <Introduction />
       </Grid>
       <Grid item>
-        <Features />
+        <Lifecycle />
         <Integrations />
         <FAQ />
         <JoinUs />

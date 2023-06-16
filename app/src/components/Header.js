@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const HeroTitle = styled(Typography)`
   text-align: center;
   line-height: 150%;
-  padding-top: 1em;
+  padding-top: 2em;
   padding-bottom: 1em;
   scroll-margin-top: 2.5em;
 `;
@@ -25,7 +25,11 @@ const Header = ({ id, title, icon, color }) => {
     <HeroTitle variant="h3" align="center" id={id}>
       <HeroSubTitle>
         <Link href={`#${id}`}>
-          <FontAwesomeIcon icon={icon} size="lg" style={{ color: color }} />
+          <FontAwesomeIcon
+            icon={icon}
+            size="2x"
+            style={{ color: color, paddingBottom: 10 }}
+          />
         </Link>
         <br />
         {title}

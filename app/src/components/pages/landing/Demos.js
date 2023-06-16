@@ -54,33 +54,6 @@ const TypographyOverline = styled(Typography)`
   font-weight: ${(props) => props.theme.typography.fontWeightMedium};
 `;
 
-const Variant = ({ theme, title, img, isNew = false }) => {
-  const router = useRouter();
-  const { setTheme } = useTheme();
-
-  const toggleDemo = (theme) => {
-    setTheme(theme);
-    router.push("/dashboard/analytics");
-  };
-
-  return (
-    <Grid item xs={12} sm={6} md={4} lg={4}>
-      <DemoContent px={2}>
-        <DemoLink onClick={() => toggleDemo(theme)}>
-          <DemoImage
-            alt={`${title} - React Admin Template`}
-            src={`/static/img/screenshots/${img}.jpg`}
-          />
-        </DemoLink>
-        <Box mb={3} />
-        <Typography variant="h6">
-          {title} {isNew && <DemoChip label="New" />}
-        </Typography>
-      </DemoContent>
-    </Grid>
-  );
-};
-
 function Demos() {
   return (
     <Wrapper pt={16} pb={20} id="demos">

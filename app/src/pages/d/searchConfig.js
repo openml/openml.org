@@ -55,6 +55,7 @@ const searchConfig = {
     disjunctiveFacets: ["status", "licence", "qualities.NumberOfInstances"],
     facets: {
       "status.keyword": { type: "value" },
+      "name.keyword": { type: "value" },
       "licence.keyword": { type: "value" },
       "qualities.NumberOfInstances": {
         type: "range",
@@ -66,6 +67,10 @@ const searchConfig = {
           { from: 1000000, name: "Millions" },
         ],
       },
+    },
+    group: {
+      //This doesn't work yet. TODO: figure out how to group.
+      field: { name: { raw: {} } },
     },
   },
 };

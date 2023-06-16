@@ -56,35 +56,27 @@ function FAQ() {
   return (
     <Wrapper pt={20} pb={16}>
       <Container>
-        <TypographyOverline variant="body2" gutterBottom>
-          Mira Pro
-        </TypographyOverline>
         <Typography variant="h2" component="h3" gutterBottom>
           Frequently asked questions
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          The questions below have been selected from those most commonly asked
-          by our customers.
+          Let's put FAQs here
         </Typography>
         <Spacer mb={8} />
 
         <Grid container alignItems="center" justifyContent="center">
           <Grid item xs={12} xl={8}>
-            <Accordion defaultExpanded={true}>
+            <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="faq1-content"
                 id="faq1-header"
               >
-                <Typography variant="subtitle1">
-                  Does this product support Next.js / Create React App?
-                </Typography>
+                <Typography variant="subtitle1">Question 1</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Yes, Mira is available for both Next.js and Create React App
-                  (React Scripts). Both versions are included in the package and
-                  instantly available for download after the purchase.
+                  Answer 1
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -94,22 +86,11 @@ function FAQ() {
                 aria-controls="faq2-content"
                 id="faq2-header"
               >
-                <Typography variant="subtitle1">
-                  Can I use this template for my client?
-                </Typography>
+                <Typography variant="subtitle1">Question 2</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Yes, the marketplace license allows you to use this theme in
-                  any end products. For more information on licenses,{" "}
-                  <Link
-                    href="https://material-ui.com/store/license/"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    click here
-                  </Link>
-                  .
+                  Answer 2
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -119,69 +100,11 @@ function FAQ() {
                 aria-controls="faq3-content"
                 id="faq3-header"
               >
-                <Typography variant="subtitle1">
-                  Does this product support TypeScript?
-                </Typography>
+                <Typography variant="subtitle1">Question 3</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography variant="subtitle1" color="textSecondary">
-                  Yes, the TypeScript version is included in the Standard Plus
-                  and Extended License. The default (JavaScript) version is
-                  available on all licenses.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq4-content"
-                id="faq4-header"
-              >
-                <Typography variant="subtitle1">
-                  Does this product work with npm / yarn?
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Yes, Mira has been thoroughly tested with npm and yarn (LTS
-                  versions).
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq5-content"
-                id="faq5-header"
-              >
-                <Typography variant="subtitle1">
-                  Are design assets (Figma, Sketch) included?
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Yes, design assets (Figma and Sketch) are included in the
-                  Standard Plus and Extended License.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq6-content"
-                id="faq6-header"
-              >
-                <Typography variant="subtitle1">
-                  How can I request support?
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  You can use our dedicated support email (
-                  <Link href="mailto:support@bootlab.io">
-                    support@bootlab.io
-                  </Link>
-                  ) to send your issues or feedback. We are here to help.
+                  Answer 3
                 </Typography>
               </AccordionDetails>
             </Accordion>

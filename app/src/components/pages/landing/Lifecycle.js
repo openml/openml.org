@@ -1,10 +1,17 @@
 import React from "react";
+import styled from "@emotion/styled";
 
-import { Grid, useMediaQuery } from "@mui/material";
+import { spacing } from "@mui/system";
+import { Grid, Container, Typography } from "@mui/material";
 import InfoCard from "../../Card";
 
 import { faCogs, faDatabase, faFlask } from "@fortawesome/free-solid-svg-icons";
 import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";
+
+const Wrapper = styled.div`
+  ${spacing};
+  text-align: center;
+`;
 
 // Maybe add chips as well to other parts of the landing page or docs
 const ai_ready_data = {
@@ -28,16 +35,31 @@ const ml_results = {
   text: `Learn from millions of reproducible machine learning experiments on thousands of datasets to make informed decisions.`,
 };
 
-function Features() {
+function Lifecycle() {
   return (
-    <Grid container spacing={6}>
-      {[ai_ready_data, integrations, ml_results].map((card) => (
-        <Grid item display="flex" xs={12} md={4} key={card.title}>
-          <InfoCard info={card} />
+    <Wrapper py={20}>
+      <Container>
+        <Typography variant="h2" component="h3" gutterBottom>
+          Frictionless machine learning
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          color="textSecondary"
+          gutterBottom
+          style={{ paddingBottom: 20 }}
+        >
+          OpenML helps you simplify the entire machine learning lifecycle.
+        </Typography>
+        <Grid container spacing={6}>
+          {[ai_ready_data, integrations, ml_results].map((card) => (
+            <Grid item display="flex" xs={12} md={4} key={card.title}>
+              <InfoCard info={card} />
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
+      </Container>
+    </Wrapper>
   );
 }
 
-export default Features;
+export default Lifecycle;

@@ -12,9 +12,10 @@ import {
   InputLabel,
   Tab,
   Chip,
+  Tabs,
 } from "@mui/material";
 
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { TabContext, TabPanel } from "@mui/lab";
 
 import ResultCard from "./ResultCard";
 import styled from "@emotion/styled";
@@ -30,11 +31,39 @@ import {
 } from "@elastic/react-search-ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faTable } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faList,
+  faTable,
+} from "@fortawesome/free-solid-svg-icons";
+import Wrapper from "../Wrapper";
 
 const SearchResults = styled(Results)`
   margin: 0px;
   padding: 0px;
+`;
+
+const FilterTabs = styled(Tabs)`
+  min-height: 0px;
+`;
+const FilterTabPanel = styled(TabPanel)`
+  min-height: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+`;
+
+const FilterTab = styled(Tab)`
+  min-height: 0px;
+  border: 1px solid ${(props) => props.theme.palette.primary.main};
+  margin-right: 15px;
+  border-radius: 50px;
+  color: ${(props) => props.theme.palette.primary.main};
+  background-color: ${(props) => props.theme.palette.background.default};
+
+  &.Mui-selected {
+    background-color: ${(props) => props.theme.palette.primary.main};
+    color: ${(props) => props.theme.palette.primary.contrastText};
+  }
 `;
 
 let alignment = "left";
@@ -136,14 +165,13 @@ const PagingView = ({ current, resultsPerPage, totalPages, onChange }) => (
 );
 
 const FilterChip = styled(Chip)`
-  margin-left: 10px;
+  margin-right: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+  border-radius: 50px;
 `;
-const FilterPanel = styled.div`
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-`;
+
+const FilterPanel = styled.div``;
 
 const Filter = ({ label, options, values, onRemove, onSelect }) => {
   return (
@@ -167,101 +195,109 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
   ({ config, sort_options, search_facets, title, type }) => {
-    const [filter, setFilter] = React.useState("Status");
+    const [filter, setFilter] = React.useState("None");
     const handleFilterChange = (event, newFilter) => {
       setFilter(newFilter + "");
     };
     return (
-      <SearchProvider config={config}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} m={2}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography variant="h3">{title}</Typography>
-              <Button variant="contained" color="primary">
-                New {type}
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <TabContext value={filter}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList value={filter} onChange={handleFilterChange}>
-                  {search_facets.map((facet, index) => (
-                    <Tab
-                      value={facet.label}
-                      label={facet.label}
-                      key={facet.label}
-                    />
-                  ))}
-                </TabList>
-              </Box>
-              {search_facets.map((facet, index) => (
-                <TabPanel value={facet.label} key={index}>
-                  <Facet
-                    key={index}
-                    field={facet.field}
-                    label={facet.label}
-                    filterType="any"
-                    view={Filter}
-                    value={filter}
-                    index={index}
-                  />
-                </TabPanel>
-              ))}
-            </TabContext>
-          </Grid>
-          <Grid item xs={12} m={2}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <PagingInfo view={PagingInfoView} />
+      <Wrapper fullWidth>
+        <SearchProvider config={config}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} m={2}>
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "space-between",
                 }}
               >
-                <Sorting
-                  label="Sort by"
-                  sortOptions={sort_options}
-                  view={SortView}
-                />
-                <ViewToggle />
+                <Typography variant="h3">{title}</Typography>
+                <Button variant="contained" color="primary">
+                  New {type}
+                </Button>
               </Box>
-            </Box>
+            </Grid>
+            <Grid item xs={12} m={2}>
+              <TabContext value={filter}>
+                <Box>
+                  <FilterTabs
+                    value={filter}
+                    onChange={handleFilterChange}
+                    indicatorColor="none"
+                  >
+                    {search_facets.map((facet, index) => (
+                      <FilterTab
+                        value={facet.label}
+                        label={facet.label}
+                        key={facet.label}
+                        iconPosition="start"
+                        icon={<FontAwesomeIcon icon={faChevronDown} />}
+                      />
+                    ))}
+                  </FilterTabs>
+                </Box>
+                {search_facets.map((facet, index) => (
+                  <FilterTabPanel value={facet.label} key={index}>
+                    <Facet
+                      key={index}
+                      field={facet.field}
+                      label={facet.label}
+                      filterType="any"
+                      view={Filter}
+                      value={filter}
+                      index={index}
+                    />
+                  </FilterTabPanel>
+                ))}
+              </TabContext>
+            </Grid>
+            <Grid item xs={12} m={2}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <PagingInfo view={PagingInfoView} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Sorting
+                    label="Sort by"
+                    sortOptions={sort_options}
+                    view={SortView}
+                  />
+                  <ViewToggle />
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <SearchResults
+                resultView={ResultCard}
+                titleField="name"
+                urlField="data_id"
+                shouldTrackClickThrough
+              />{" "}
+            </Grid>
+            <Grid item xs={12} m={2}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <ResultsPerPage
+                  view={ResultsPerPageView}
+                  options={[10, 20, 50, 100]}
+                />
+                <Paging view={PagingView} />
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <SearchResults
-              resultView={ResultCard}
-              titleField="name"
-              urlField="data_id"
-              shouldTrackClickThrough
-            />{" "}
-          </Grid>
-          <Grid item xs={12} m={2}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <ResultsPerPage
-                view={ResultsPerPageView}
-                options={[10, 20, 50, 100]}
-              />
-              <Paging view={PagingView} />
-            </Box>
-          </Grid>
-        </Grid>
-      </SearchProvider>
+        </SearchProvider>
+      </Wrapper>
     );
   }
 );

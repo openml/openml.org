@@ -37,6 +37,9 @@ import {
   faLightbulb,
   faBoltLightning,
   faEnvelope,
+  faBolt,
+  faChild,
+  faChildReaching,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -95,7 +98,7 @@ const HeroSubTitle = styled(Typography)`
 
 const Hero = () => {
   return (
-    <HeroTitle variant="h3" align="center" py={6}>
+    <HeroTitle variant="h3" align="center" py={12}>
       <OpenMLDove color={red[500]} />
       <OpenMLDove color={yellow[800]} />
       <OpenMLDove color={green[500]} />
@@ -105,11 +108,11 @@ const Hero = () => {
         <br />
         The ones who want to set machine learning free.
         <br />
-        They're not fond of hype, and have no respect for irreproducible claims.
+        They're not fond of hype or irreproducible claims.
         <br />
-        They believe that openness will push the human race forward.
+        They believe that only openness will push us forward.
         <br />
-        And by building and sharing the best data and models,
+        And by sharing the best data and models,
         <br />
         we will make the world better, together.
       </HeroSubTitle>
@@ -177,8 +180,8 @@ const help_science = {
 };
 
 const help_donate = {
-  title: "Do you want to help?",
-  icon: faSeedling,
+  title: "Are you one of us?",
+  icon: faChildReaching,
   iconColor: green[800],
   text: `OpenML depends on all of us. You can help keep OpenML free
              and support our community by making a donation (no pressure). 
@@ -186,7 +189,7 @@ const help_donate = {
              yourself! Or maybe you have another great idea? Please don't hesitate to reach out!`,
   chips: [
     {
-      link: "contribute#sponsor",
+      link: "contribute#support",
       icon: faBoltLightning,
       text: "Make a donation",
     },
@@ -220,7 +223,7 @@ const help_exec = {
 };
 
 const code = {
-  title: "Do you know how to code?",
+  title: "Good at coding?",
   icon: faCode,
   iconColor: blue[400],
   text: `Perfect! Please see the issue trackers of the different OpenML
@@ -288,7 +291,7 @@ const website = {
 };
 
 const docs = {
-  title: "Are you good at explaining things?",
+  title: "Good at explaining things?",
   icon: faBookReader,
   iconColor: red[800],
   text: `OpenML should be easy to understand for everyone. Please help us
@@ -469,15 +472,20 @@ function Contribute() {
           <FontAwesomeIcon icon={faDonate} size="lg" />
         </ContactButton>
       </Zoom>
-      <Grid container spacing={4}>
+      <Grid container spacing={10}>
         <Grid item xs={12}>
           <Hero />
         </Grid>
         <Grid item xs={12}>
-          <InfoCard info={contribute_intro} />
+          <Header
+            id="intro"
+            title="Anyone can change the world"
+            icon={faSeedling}
+            color={green[400]}
+          />
         </Grid>
-        {[help_dev, help_science, help_donate, help_exec].map((card) => (
-          <Grid item display="flex" xs={12} md={6} lg={3} key={card.title}>
+        {[help_dev, help_science, help_exec, help_donate].map((card) => (
+          <Grid item display="flex" xs={12} md={6} xl={3} key={card.title}>
             <InfoCard info={card} />
           </Grid>
         ))}

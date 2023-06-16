@@ -105,6 +105,7 @@ const InfoCard = ({ info }) => {
           sx={{ pb: 4, pt: 3 }}
           variant="h5"
           align={info.icon ? "left" : "center"}
+          style={{ display: "flex" }}
         >
           {info.icon && (
             <TitleIcon icon={info.icon} size="lg" color={info.iconColor} />

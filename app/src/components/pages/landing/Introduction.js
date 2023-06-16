@@ -156,13 +156,27 @@ function IntroGraph() {
           y="150"
           rx="16"
           ry="20"
-          width="160"
+          width="140"
           height="32"
           fill={blue[400]}
         />
         <text x="70" y="170" fill="white">
-          I shared a new data set
+          I shared new data :)
         </text>
+        <rect fill={blue[400]} x="50" y="156" width="0" height="16">
+          <animate
+            attributeName="x"
+            values="65 ; 192 ; 192 ; 192 ; 192 ; 192"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="width"
+            values="128; 0; 0; 0; 0; 0"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+        </rect>
         <rect
           x="150"
           y="190"
@@ -175,6 +189,20 @@ function IntroGraph() {
         <text x="160" y="210" fill="white">
           I found a better model!
         </text>
+        <rect fill={blue[400]} x="150" y="194" width="0" height="16">
+          <animate
+            attributeName="x"
+            values="160 ; 160 ; 300 ; 300 ; 300 ; 300"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="width"
+            values="140; 140; 0; 0 ; 0; 0"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+        </rect>
         <text x="165" y="62" fill="#ab47bc" fontWeight="bold">
           OpenML
         </text>
