@@ -18,7 +18,7 @@ const Wrapper = ({ children, fullWidth }) => {
   return (
     <WrapBox
       px={isLgUp ? 12 : isSmUp ? 10 : fullWidth ? 0 : 5}
-      py={isLgUp ? 12 : isSmUp ? 10 : 5}
+      py={fullWidth ? 0 : isLgUp ? 12 : isSmUp ? 10 : 5}
     >
       {children}
     </WrapBox>

@@ -29,10 +29,10 @@ const integrations = {
   text: `Pipelines and models can be shared directly from your favourite machine learning libraries. No manual steps required.`,
 };
 const ml_results = {
-  title: "A treasure trove of ML results",
+  title: "A treasure of ML results",
   icon: faFlask,
   iconColor: red[500],
-  text: `Learn from millions of reproducible machine learning experiments on thousands of datasets to make informed decisions.`,
+  text: `Learn from millions of reproducible machine learning benchmarks from thousands of models trained on thousands of datasets.`,
 };
 
 function Lifecycle() {
@@ -40,7 +40,7 @@ function Lifecycle() {
     <Wrapper py={20}>
       <Container>
         <Typography variant="h2" component="h3" gutterBottom>
-          Frictionless machine learning
+          OpenML simplifies the entire machine learning lifecycle
         </Typography>
         <Typography
           variant="subtitle1"
@@ -48,7 +48,7 @@ function Lifecycle() {
           gutterBottom
           style={{ paddingBottom: 20 }}
         >
-          OpenML helps you simplify the entire machine learning lifecycle.
+          and organizes everything into one collective memory
         </Typography>
         <Grid container spacing={6}>
           {[ai_ready_data, integrations, ml_results].map((card) => (

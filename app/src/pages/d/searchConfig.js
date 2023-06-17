@@ -73,6 +73,8 @@ const searchConfig = {
       field: { name: { raw: {} } },
     },
   },
+  //This doesn't work yet.
+  initialState: { searchTerm: "", sort: { field: "date" } },
 };
 
 export default searchConfig;

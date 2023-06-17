@@ -1,13 +1,12 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
+import { useTheme } from "@mui/material/styles";
 
 import {
-  Avatar as MuiAvatar,
   Badge,
   Box,
-  Button,
-  IconButton,
+  IconButton as MuiIconButton,
   List,
   ListItem,
   ListItemAvatar,
@@ -16,7 +15,20 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { MessageSquare } from "react-feather";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCirclePlus,
+  faCircleUser,
+  faMagicWandSparkles,
+} from "@fortawesome/free-solid-svg-icons";
+
+const IconButton = styled(MuiIconButton)`
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+`;
 
 const Popover = styled(MuiPopover)`
   .MuiPaper-root {
@@ -33,21 +45,17 @@ const Indicator = styled(Badge)`
   }
 `;
 
-const Avatar = styled(MuiAvatar)`
-  background: ${(props) => props.theme.palette.primary.main};
-`;
-
 const MessageHeader = styled(Box)`
   text-align: center;
   border-bottom: 1px solid ${(props) => props.theme.palette.divider};
 `;
 
-function Message({ title, description, image }) {
+function Message({ title, description, icon, color }) {
   return (
     <Link href="/">
       <ListItem divider>
         <ListItemAvatar>
-          <Avatar src={image} alt="Avatar" />
+          <FontAwesomeIcon icon={icon} size="2x" color={color} />
         </ListItemAvatar>
         <ListItemText
           primary={title}
@@ -62,9 +70,10 @@ function Message({ title, description, image }) {
   );
 }
 
-function NavbarMessagesDropdown() {
+function NavbarCreationDropdown() {
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);
+  const theme = useTheme();
 
   const handleOpen = () => {
     setOpen(true);
@@ -76,11 +85,9 @@ function NavbarMessagesDropdown() {
 
   return (
     <React.Fragment>
-      <Tooltip title="Messages">
+      <Tooltip title="Create">
         <IconButton color="inherit" ref={ref} onClick={handleOpen} size="large">
-          <Indicator badgeContent={3}>
-            <MessageSquare />
-          </Indicator>
+          <FontAwesomeIcon icon={faMagicWandSparkles} />
         </IconButton>
       </Tooltip>
       <Popover
@@ -94,36 +101,34 @@ function NavbarMessagesDropdown() {
       >
         <MessageHeader p={2}>
           <Typography variant="subtitle1" color="textPrimary">
-            3 New Messages
+            Create and share
           </Typography>
         </MessageHeader>
         <React.Fragment>
           <List disablePadding>
             <Message
-              title="Lucy Lavender"
-              description="Nam pretium turpis et arcu. Duis arcu tortor."
-              image="/static/img/avatars/avatar-1.jpg"
+              title="New dataset"
+              description="Share a new dataset."
+              icon={theme.palette.icon.data}
+              color={theme.palette.entity.data}
             />
             <Message
-              title="Remy Sharp"
-              description="Curabitur ligula sapien euismod vitae."
-              image="/static/img/avatars/avatar-2.jpg"
+              title="New task"
+              description="Set a new challenge for the community."
+              icon={theme.palette.icon.task}
+              color={theme.palette.entity.task}
             />
             <Message
-              title="Cassandra Mixon"
-              description="Pellentesque auctor neque nec urna."
-              image="/static/img/avatars/avatar-3.jpg"
+              title="New collection"
+              description="Organize your resources."
+              icon={theme.palette.icon.collections}
+              color={theme.palette.entity.collections}
             />
           </List>
-          <Box p={1} display="flex" justifyContent="center">
-            <Button component={Link} href="/" size="small">
-              Show all messages
-            </Button>
-          </Box>
         </React.Fragment>
       </Popover>
     </React.Fragment>
   );
 }
 
-export default NavbarMessagesDropdown;
+export default NavbarCreationDropdown;

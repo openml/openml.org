@@ -13,6 +13,7 @@ import {
   Tab,
   Chip,
   Tabs,
+  Card,
 } from "@mui/material";
 
 import { TabContext, TabPanel } from "@mui/lab";
@@ -43,6 +44,14 @@ const SearchResults = styled(Results)`
   padding: 0px;
 `;
 
+const FilterBox = styled(Card)`
+  min-width: 100%;
+  padding: 10px;
+  border-radius: 0px;
+  border-left: none;
+  border-right: none;
+  background-color: ${(props) => props.theme.palette.background.default};
+`;
 const FilterTabs = styled(Tabs)`
   min-height: 0px;
 `;
@@ -54,10 +63,10 @@ const FilterTabPanel = styled(TabPanel)`
 
 const FilterTab = styled(Tab)`
   min-height: 0px;
-  border: 1px solid ${(props) => props.theme.palette.primary.main};
+  border: 1px solid ${(props) => props.theme.palette.text.secondary};
   margin-right: 15px;
   border-radius: 50px;
-  color: ${(props) => props.theme.palette.primary.main};
+  color: ${(props) => props.theme.palette.text.primary};
   background-color: ${(props) => props.theme.palette.background.default};
 
   &.Mui-selected {
@@ -164,6 +173,15 @@ const PagingView = ({ current, resultsPerPage, totalPages, onChange }) => (
   />
 );
 
+// Allows overriding the filter option text
+const facet_aliases = {
+  Status: {
+    active: "verified",
+    in_preparation: "in preparation",
+    deactivated: "deprecated",
+  },
+};
+
 const FilterChip = styled(Chip)`
   margin-right: 10px;
   margin-top: 10px;
@@ -178,7 +196,14 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
     <FilterPanel>
       {options.map((option) => (
         <FilterChip
-          label={option.value + "  (" + option.count + ")"}
+          label={
+            (label in facet_aliases && option.value in facet_aliases[label]
+              ? facet_aliases[label][option.value]
+              : option.value) +
+            "  (" +
+            option.count +
+            ")"
+          }
           key={option.value}
           clickable
           onClick={() =>
@@ -194,62 +219,53 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
 
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
-  ({ config, sort_options, search_facets, title, type }) => {
-    const [filter, setFilter] = React.useState("None");
+  ({ config, sort_options, search_facets, facet_aliases, title, type }) => {
+    const [filter, setFilter] = React.useState(false);
     const handleFilterChange = (event, newFilter) => {
-      setFilter(newFilter + "");
+      console.log("newFilter", newFilter);
+      if (newFilter === filter) {
+        setFilter(false);
+      } else {
+        setFilter(newFilter + "");
+      }
     };
     return (
-      <Wrapper fullWidth>
-        <SearchProvider config={config}>
+      <SearchProvider config={config}>
+        <TabContext value={filter}>
+          <FilterBox xs={12} variant="outlined">
+            <FilterTabs
+              value={filter}
+              onChange={handleFilterChange}
+              indicatorColor="none"
+            >
+              {search_facets.map((facet, index) => (
+                <FilterTab
+                  value={facet.label}
+                  label={facet.label}
+                  key={facet.label}
+                  iconPosition="start"
+                  icon={<FontAwesomeIcon icon={faChevronDown} />}
+                />
+              ))}
+            </FilterTabs>
+            {search_facets.map((facet, index) => (
+              <FilterTabPanel value={facet.label} key={index}>
+                <Facet
+                  key={index}
+                  field={facet.field}
+                  label={facet.label}
+                  filterType="any"
+                  view={Filter}
+                  value={filter}
+                  index={index}
+                />
+              </FilterTabPanel>
+            ))}
+          </FilterBox>
+        </TabContext>
+
+        <Wrapper fullWidth>
           <Grid container spacing={3}>
-            <Grid item xs={12} m={2}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="h3">{title}</Typography>
-                <Button variant="contained" color="primary">
-                  New {type}
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item xs={12} m={2}>
-              <TabContext value={filter}>
-                <Box>
-                  <FilterTabs
-                    value={filter}
-                    onChange={handleFilterChange}
-                    indicatorColor="none"
-                  >
-                    {search_facets.map((facet, index) => (
-                      <FilterTab
-                        value={facet.label}
-                        label={facet.label}
-                        key={facet.label}
-                        iconPosition="start"
-                        icon={<FontAwesomeIcon icon={faChevronDown} />}
-                      />
-                    ))}
-                  </FilterTabs>
-                </Box>
-                {search_facets.map((facet, index) => (
-                  <FilterTabPanel value={facet.label} key={index}>
-                    <Facet
-                      key={index}
-                      field={facet.field}
-                      label={facet.label}
-                      filterType="any"
-                      view={Filter}
-                      value={filter}
-                      index={index}
-                    />
-                  </FilterTabPanel>
-                ))}
-              </TabContext>
-            </Grid>
             <Grid item xs={12} m={2}>
               <Box
                 sx={{
@@ -296,8 +312,8 @@ const SearchContainer = memo(
               </Box>
             </Grid>
           </Grid>
-        </SearchProvider>
-      </Wrapper>
+        </Wrapper>
+      </SearchProvider>
     );
   }
 );

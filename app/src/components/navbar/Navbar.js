@@ -22,7 +22,7 @@ import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
 import { Menu as MenuIcon } from "@mui/icons-material";
 
 import NavbarNotificationsDropdown from "./NavbarNotificationsDropdown";
-import NavbarMessagesDropdown from "./NavbarMessagesDropdown";
+import NavbarCreationDropdown from "./NavbarCreationDropdown";
 import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
 
@@ -63,7 +63,7 @@ const SearchWrapper = styled(Box)`
 
   ${(props) => props.theme.breakpoints.down("sm")} {
     margin: 0 auto;
-    width: 50%;
+    display: flex;
   }
 
   svg {
@@ -85,7 +85,8 @@ const Input = styled(InputBase)`
     padding-right: ${(props) => props.theme.spacing(2.5)};
     padding-bottom: ${(props) => props.theme.spacing(2.5)};
     padding-left: ${(props) => props.theme.spacing(2.5)};
-    width: 260px;
+    min-width: 260px;
+    max-width: 100%;
   }
 
   & > input::placeholder {
@@ -95,6 +96,19 @@ const Input = styled(InputBase)`
   ${(props) => props.theme.breakpoints.down("sm")} {
     & > input::placeholder {
       width: 47px;
+    }
+    & > input {
+      min-width: 200px;
+    }
+  }
+  ${(props) => props.theme.breakpoints.up("md")} {
+    & > input {
+      min-width: 400px;
+    }
+  }
+  ${(props) => props.theme.breakpoints.up("lg")} {
+    & > input {
+      min-width: 600px;
     }
   }
 `;
@@ -186,14 +200,19 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
             <Grid item>
               <BrandIcon />
               <Brand ecolor={ecolor}>
-                <Box ml={1}>OpenML</Box>
+                <Box ml={1} mr={3}>
+                  OpenML
+                </Box>
               </Brand>
             </Grid>
             <Grid item xs sx={{ display: { xs: "block", sm: "none" } }} />
             <Grid item>
               <SearchWrapper
                 ecolor={ecolor}
-                sx={{ display: "flex", alignItems: "flex-end" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                }}
               >
                 <FontAwesomeIcon icon={faSearch} />
                 <SearchBar config={searchConfig} />
@@ -202,10 +221,10 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
             <Grid item xs />
             <Grid item>
               {/*
-              <NavbarMessagesDropdown />
               <NavbarNotificationsDropdown />
               <NavbarLanguagesDropdown />
               */}
+              <NavbarCreationDropdown />
               <NavbarUserDropdown />
             </Grid>
           </Grid>
