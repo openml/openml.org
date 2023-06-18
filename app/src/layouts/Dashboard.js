@@ -27,8 +27,7 @@ const Drawer = styled.div`
   }
 `;
 
-const AppContent = styled.div`
-  flex: 1;
+const AppContent = styled(Box)`
   display: flex;
   flex-direction: column;
   max-width: 100%;
@@ -90,7 +89,12 @@ const Dashboard = ({ children }) => {
           />
         </Box>
       </Drawer>
-      <AppContent>
+      <AppContent
+        sx={{
+          flexGrow: 1,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
         <Navbar onDrawerToggle={handleDrawerToggle} ecolor={ecolor} />
         <MainContent>{children}</MainContent>
         {/*<Footer />*/}

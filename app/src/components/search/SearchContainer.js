@@ -75,7 +75,7 @@ const FilterTab = styled(Tab)`
   }
 `;
 
-let alignment = "left";
+let alignment = "list";
 const handleAlignment = (event, newAlignment) => {
   alignment = newAlignment;
 };
@@ -142,10 +142,10 @@ const ViewToggle = () => (
       ml: 2,
     }}
   >
-    <ToggleButton value="left">
+    <ToggleButton value="list">
       <FontAwesomeIcon icon={faList} />
     </ToggleButton>
-    <ToggleButton value="right">
+    <ToggleButton value="table">
       <FontAwesomeIcon icon={faTable} />
     </ToggleButton>
   </ToggleButtonGroup>

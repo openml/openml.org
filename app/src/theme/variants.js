@@ -128,7 +128,7 @@ const defaultVariant = {
       color: grey[200],
       background: "#233044",
       brand: {
-        color: customBlue[500],
+        color: "rgba(0, 0, 0, 0.5)",
       },
     },
     footer: {
@@ -163,6 +163,13 @@ const darkVariant = merge(defaultVariant, {
     },
     entity: openmlColors,
     icon: openmlIcons,
+  },
+  sidebar: {
+    header: {
+      brand: {
+        color: "rgba(255, 255, 255, 0.5)",
+      },
+    },
   },
   header: {
     color: grey[300],
@@ -244,7 +251,7 @@ const indigoVariant = merge(defaultVariant, {
       color: "#FFF",
       background: indigo[800],
       brand: {
-        color: "#FFFFFF",
+        color: "rgba(0, 0, 0, 0.5)",
       },
     },
     footer: {
