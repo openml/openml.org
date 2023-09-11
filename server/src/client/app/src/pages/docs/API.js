@@ -8,8 +8,8 @@ import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { green } from "@mui/material/colors";
 import {
-  Tab, 
-  Tabs, 
+  Tab,
+  Tabs,
   Typography,
   IconButton,
   Tooltip,
@@ -228,10 +228,10 @@ const other_links = {
 
 const codeExamples = {
   "Python" : {
-    "Installation" : 
+    "Installation" :
 `pip install openml`,
 
-    "Query and download data" : 
+    "Query and download data" :
 `import openml
 
 # List all datasets and their properties
@@ -246,7 +246,7 @@ dataset = openml.datasets.get_dataset('Fashion-MNIST')
 # Get the data itself as a dataframe (or otherwise)
 X, y, _, _ = dataset.get_data(dataset_format="dataframe")`,
 
-    "Download tasks, run models locally, publish results (with scikit-learn)" : 
+    "Download tasks, run models locally, publish results (with scikit-learn)" :
 `from sklearn import ensemble
 from openml import tasks, runs
 
@@ -262,7 +262,7 @@ run = runs.run_model_on_task(clf, task)
 # Share the results on OpenML. Your API key can be found in your account.
 # openml.config.apikey = 'YOUR_KEY'
 run.publish()`,
-  
+
     "OpenML Benchmarks" :
 `# List all tasks in a benchmark
 benchmark = openml.study.get_suite('OpenML-CC18')
@@ -270,16 +270,62 @@ tasks.list_tasks(output_format="dataframe", task_id=benchmark.tasks)
 
 # Return benchmark results
 openml.evaluations.list_evaluations(
-    function="area_under_roc_curve", 
-    tasks=benchmark.tasks, 
+    function="area_under_roc_curve",
+    tasks=benchmark.tasks,
     output_format="dataframe"
 )`
-  }, 
+  },
   "R" : {
-    "Installation" : 
+    mlr3 = {
+    "Installation" :
+`install.packages("mlr3oml")`,
+    "Query and download data" :
+`library(mlr3oml)
+library(mlr3)
+
+# Search for specific datasets
+odatasets = list_oml_data(
+  number_features = c(10, 20),
+  number_instances = c(45000, 50000),
+  number_classes = 2
+)
+
+# Get dataset
+odata = odt(id = 1590)
+odata$data
+
+# Convert to an mlr3::Task
+tsk_adult = as_task(odata, target = "class")
+`,
+    "Run an mlr3 model locally" :
+`# create an mlr3 Learner and Resampling and run a resample experiment
+
+rr = resample(
+  task = tsk_adult,
+  learner = lrn("classif.rpart"),
+  resampling = rsmp("cv", folds = 10)
+)`,
+    "OpenML Benchmarks" :
+` # Access a Benchmark Suite
+ocollection = ocl(353)
+
+# The IDs
+ocollection$task_ids
+id = ocollection$task_ids[1L]
+
+# Create mlr3 Task and Resampling from the OpenML Task
+task = tsk("oml", task_id = id)
+resampling = tsk("oml", task_id = id)
+`,
+
+    "Learn more" :
+`Package: https://github.com/mlr-org/mlr3oml
+mlr3 book: https://mlr3book.mlr-org.com/ `},
+    mlr = {
+    "Installation" :
 `install.packages("OpenML")`,
 
-    "Query and download data" : 
+    "Query and download data" :
 `library(OpenML)
 
 # List all datasets and their properties
@@ -291,7 +337,7 @@ dataset = getOMLDataSet(data.id = 61L)
 # Get the data itself as a dataframe (or otherwise)
 data = dataset$data`,
 
-"Download tasks, run models locally, publish results (with mlr)" : 
+"Download tasks, run models locally, publish results (with mlr)" :
 `library(mlr)
 library(OpenML)
 
@@ -307,7 +353,7 @@ run = runTaskMlr(task, lrn)
 # Share the results on OpenML. Your API key can be found in your account.
 # setOMLConfig(apikey = "YOUR_KEY")
 uploadOMLRun(run)`,
-  
+
 "OpenML Benchmarks" :
 `# List all tasks in a benchmark
 bench_tasks = getOMLStudy('OpenML-CC18')$tasks$task.id
@@ -316,13 +362,15 @@ bench_tasks = getOMLStudy('OpenML-CC18')$tasks$task.id
 for(id in bench_tasks) {
   listOMLRunEvaluations(task.id = id, evaluation.measure='area_under_roc_curve', limit=1000)
 }`
-  }, 
+
+    }
+  },
   "Julia" : {
-    "Installation" : 
+    "Installation" :
 `using Pkg
 Pkg.add("OpenML")`,
 
-    "Query and download data" : 
+    "Query and download data" :
 `using OpenML
 using DataFrames
 
@@ -335,12 +383,12 @@ OpenML.describe_dataset(40996)
 # Get the data itself as a dataframe (or otherwise)
 table = OpenML.load(40996)
 df = DataFrame(table)`
-  }, 
+  },
   "Java" : {
-    "Installation" : 
+    "Installation" :
 `// Download the jar file, or install via Maven. See the full docs.`,
 
-    "Query and download data" : 
+    "Query and download data" :
 `// Create a client. Your API key can be found in your account.
 OpenmlConnector openml = new OpenmlConnector("api_key");
 
@@ -352,15 +400,15 @@ DataSetDescription data = openml.dataGet(40996);
 String file_url = data.getUrl();
 `,
 
-"Download tasks, run models locally, publish results (with WEKA)" : 
+"Download tasks, run models locally, publish results (with WEKA)" :
 `// Build any model you like
-Classifier model = new RandomForest(); 
+Classifier model = new RandomForest();
 
 // Download any OpenML task
 Task t = openml.taskGet(3954);
 
 // Load the data as WEKA Instances (optional)
-Instances d = InstancesHelper.getDatasetFromTask(openml, t); 
+Instances d = InstancesHelper.getDatasetFromTask(openml, t);
 
 // Run and evaluate your model on the task, and upload to OpenML
 Pair<Integer, Run> result = RunOpenmlJob.executeTask(openml, new WekaConfig(), 3954, model);`,
@@ -401,7 +449,7 @@ function OpenMLSwaggerUI() {
         { colab &&
         <Tooltip title="Run in Colab">
             <IconButton color="primary" onClick={() => window.open(colab, "_blank")} size="large">
-            <FixedIcon icon={"play"}/> 
+            <FixedIcon icon={"play"}/>
             </IconButton>
         </Tooltip>}
         <Tooltip title="Copy to clipboard">
@@ -412,7 +460,7 @@ function OpenMLSwaggerUI() {
                 setOpen(true);
                 }}
               size="large">
-            <FixedIcon icon={"copy"}/> 
+            <FixedIcon icon={"copy"}/>
             </IconButton>
         </Tooltip>
       </Box>
@@ -470,9 +518,9 @@ function OpenMLSwaggerUI() {
         <ApiTab value="REST" label="REST" />
       </ApiTabs>
       </Box>
-      <Grid 
-        container 
-        spacing={6}   
+      <Grid
+        container
+        spacing={6}
         direction="row"
         justifyContent="center"
         alignItems="center"
@@ -496,7 +544,7 @@ function OpenMLSwaggerUI() {
           {code(api)}
         </CardContent>
         <Box pb={5} display="flex" justifyContent="center" alignItems="center">
-          You are learning fast, young apprentice! 
+          You are learning fast, young apprentice!
           {"\u00A0\u00A0"}<FixedIcon icon={"thumbs-up"} size="2x" fixedWidth color={green[500]}/>{"\u00A0\u00A0"}
           Still, there is so much more to see...
         </Box>
