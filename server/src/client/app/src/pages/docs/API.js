@@ -276,10 +276,10 @@ openml.evaluations.list_evaluations(
 )`
   },
   "R" : {
-    "Info" : "The old OpenML package is superseded by the mlr3oml package. The documentation of the OpenML package can be found here: http://openml.github.io/openml-r/.",
-
     "Installation" :
-`install.packages("mlr3oml")`,
+`# Note: The old OpenML package is superseded by the mlr3oml package. 
+# The documentation of the OpenML package can be found here: http://openml.github.io/openml-r/.
+install.packages("mlr3oml")`,
     "Query and download data" :
 `library(mlr3oml)
 library(mlr3)
