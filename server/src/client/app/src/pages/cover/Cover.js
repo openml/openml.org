@@ -847,7 +847,7 @@ class Cover extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <CodeCard
-                    title="In R (with mlr3"
+                    title="In R (with mlr3)"
                     language="r"
                     value={rExample}
                   />
