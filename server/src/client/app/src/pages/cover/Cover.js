@@ -630,13 +630,17 @@ const pythonExample = `
       `;
 
 const rExample = `
-        library(mlr)
-        library(OpenML)
+        library(mlr3oml)
+        library(mlr3)
 
-        lrn = makeLearner("classif.randomForest")
-        task = getOMLTask(3954)
-        run = runTaskMlr(task, lrn)
-        uploadOMLRun(run)
+        task = tsk("oml", task_id = 31)
+        resampling = rsmp("oml", task_id = 31)
+
+        resample(
+          task,
+          lrn("classif.rpart"),
+          resampling
+        )
       `;
 
 class Cover extends React.Component {
