@@ -209,7 +209,7 @@ const ListItemText = styled(MuiListItemText)`
 
 const docs = {
   "Python" : "https://openml.github.io/openml-python",
-  "R" : "http://openml.github.io/openml-r",
+  "R" : "https://github.com/mlr-org/mlr3oml",
   "Julia": "https://juliaai.github.io/OpenML.jl/stable/",
   "Java" : "https://docs.openml.org/Java-guide"
 }
@@ -276,7 +276,8 @@ openml.evaluations.list_evaluations(
 )`
   },
   "R" : {
-    mlr3 = {
+    "Info" : "The old OpenML package is superseded by the mlr3oml package. The documentation of the OpenML package can be found here: http://openml.github.io/openml-r/.",
+
     "Installation" :
 `install.packages("mlr3oml")`,
     "Query and download data" :
@@ -292,6 +293,7 @@ odatasets = list_oml_data(
 
 # Get dataset
 odata = odt(id = 1590)
+# Access the actual data
 odata$data
 
 # Convert to an mlr3::Task
@@ -316,54 +318,7 @@ id = ocollection$task_ids[1L]
 # Create mlr3 Task and Resampling from the OpenML Task
 task = tsk("oml", task_id = id)
 resampling = tsk("oml", task_id = id)
-`,
-
-    "Learn more" :
-`Package: https://github.com/mlr-org/mlr3oml
-mlr3 book: https://mlr3book.mlr-org.com/ `},
-    mlr = {
-    "Installation" :
-`install.packages("OpenML")`,
-
-    "Query and download data" :
-`library(OpenML)
-
-# List all datasets and their properties
-datasets = listOMLDataSets()
-
-# Get dataset by ID
-dataset = getOMLDataSet(data.id = 61L)
-
-# Get the data itself as a dataframe (or otherwise)
-data = dataset$data`,
-
-"Download tasks, run models locally, publish results (with mlr)" :
-`library(mlr)
-library(OpenML)
-
-# Build any model you like
-lrn = makeLearner("classif.randomForest")
-
-# Download any OpenML task
-task = getOMLTask(3954)
-
-# Run and evaluate your model on the task
-run = runTaskMlr(task, lrn)
-
-# Share the results on OpenML. Your API key can be found in your account.
-# setOMLConfig(apikey = "YOUR_KEY")
-uploadOMLRun(run)`,
-
-"OpenML Benchmarks" :
-`# List all tasks in a benchmark
-bench_tasks = getOMLStudy('OpenML-CC18')$tasks$task.id
-
-# Return benchmark results
-for(id in bench_tasks) {
-  listOMLRunEvaluations(task.id = id, evaluation.measure='area_under_roc_curve', limit=1000)
-}`
-
-    }
+`
   },
   "Julia" : {
     "Installation" :

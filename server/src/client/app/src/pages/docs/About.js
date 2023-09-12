@@ -247,7 +247,7 @@ export default class About extends React.Component {
             </ContactButton>
           </Zoom>
           <Zoom in={true} style={{ transitionDelay: '1000ms'}}>
-            <ContactButton color="primary" size="medium" 
+            <ContactButton color="primary" size="medium"
                  style={{ backgroundColor: purple[500], right: 76}}
                  href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ">
               <FontAwesomeIcon icon={["fab", "slack"]} size="lg"/>
@@ -275,20 +275,20 @@ export default class About extends React.Component {
                   We believe that machine learning research should be open,
                   well-organized and easily accessible to anyone.
                 </b>{" "}
-                There is amazing machine learning research going on every day in 
-                labs all over the world. What if we could easily share the latest 
+                There is amazing machine learning research going on every day in
+                labs all over the world. What if we could easily share the latest
                 great results (datasets, code, experiments) from all of our labs
-                and organize them online, so that everyone can easily discover and 
-                access them, use them in myriad unexpected ways, and solve problems 
+                and organize them online, so that everyone can easily discover and
+                access them, use them in myriad unexpected ways, and solve problems
                 together on a global scale?
               </Paragraph>
               <Paragraph>
-                We strive to make as many datasets as possible easily discoverable, well 
-                documented, and frictionlessly accessible. When new models are trained and 
-                evaluated, we also make these results easily discoverable, clearly 
-                documented and reproducible, so that we can trust them, learn from them, 
-                and build on the combined results of the planet. And of course, we use 
-                machine learning on top of all this data to make new discoveries and 
+                We strive to make as many datasets as possible easily discoverable, well
+                documented, and frictionlessly accessible. When new models are trained and
+                evaluated, we also make these results easily discoverable, clearly
+                documented and reproducible, so that we can trust them, learn from them,
+                and build on the combined results of the planet. And of course, we use
+                machine learning on top of all this data to make new discoveries and
                 automate our work.
               </Paragraph>
               <Typography
@@ -301,14 +301,14 @@ export default class About extends React.Component {
               </Typography>
               <Paragraph>
                 <b>
-                  We want to build the tools that we ourselves like to 
+                  We want to build the tools that we ourselves like to
                   use, that empower us as researchers, and make our lives easier.
                 </b>{" "}
                 Built around open interfaces, OpenML can be used to <b>automatically</b> share
-                (and import) datasets, algorithms, and experiments results straight from the 
-                tools that we already know and love. Through our APIs, OpenML can be easily 
-                integrated into new workflows and processes, to import new data and 
-                export new results. We also believe in great standards for collecting and 
+                (and import) datasets, algorithms, and experiments results straight from the
+                tools that we already know and love. Through our APIs, OpenML can be easily
+                integrated into new workflows and processes, to import new data and
+                export new results. We also believe in great standards for collecting and
                 sharing data and for collecting and analysing experimental results.
               </Paragraph>
 
@@ -472,7 +472,7 @@ export default class About extends React.Component {
                   text="Python API"
                 />
                 <ContactChip
-                  link="https://github.com/openml/openml-r/issues"
+                  link="https://github.com/mlr-org/mlr3oml/issues"
                   icon={["fab", "r-project"]}
                   text="R API"
                 />
@@ -517,7 +517,7 @@ export default class About extends React.Component {
                 style={{ marginBottom: 20 }}
               >
                 <ListIcon icon="hands" size="lg" style={{ color: blue[400] }} />
-                <br /> <b>Our mission</b> <br /> is to make machine learning simple, 
+                <br /> <b>Our mission</b> <br /> is to make machine learning simple,
                 accessible, collaborative and open
               </Typography>
               <Paragraph>
