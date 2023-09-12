@@ -277,7 +277,7 @@ openml.evaluations.list_evaluations(
   },
   "R" : {
     "Installation" :
-`# Note: The old OpenML package is superseded by the mlr3oml package. 
+`# Note: The old OpenML package is superseded by the mlr3oml package.
 # The documentation of the OpenML package can be found here: http://openml.github.io/openml-r/.
 install.packages("mlr3oml")`,
     "Query and download data" :
@@ -317,7 +317,7 @@ id = ocollection$task_ids[1L]
 
 # Create mlr3 Task and Resampling from the OpenML Task
 task = tsk("oml", task_id = id)
-resampling = tsk("oml", task_id = id)
+resampling = rsmp("oml", task_id = id)
 `
   },
   "Julia" : {
