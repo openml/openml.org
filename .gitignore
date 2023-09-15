@@ -18,6 +18,9 @@
 .env.test.local
 .env.production.local
 .env
+.reactenv
+.reactenv_aws
+.flaskenv
 
 npm-debug.log*
 yarn-debug.log*
@@ -55,4 +58,4 @@ temp_data/
 
 users.sql
 node_modules
-node_modules.nosync
+node_modules.nosync 

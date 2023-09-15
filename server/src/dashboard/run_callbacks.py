@@ -1,5 +1,6 @@
 import io
 import re
+import os
 
 # import arff
 import urllib.request
@@ -19,6 +20,7 @@ from .dash_config import DASH_CACHING
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
+SERVER_BASE_URL = os.getenv('BACKEND_BASE_URL', "https://www.openml.org/")
 
 def register_run_callbacks(app, cache):
     @app.callback(
@@ -94,7 +96,7 @@ def register_run_callbacks(app, cache):
             return "Only classification supported", "Only classification supported"
         pred_id = df[df["evaluations"] == "predictions"]["results"].values[0]
         url = (
-            "https://www.openml.org/data/download/{}".format(pred_id)
+            SERVER_BASE_URL + "data/download/{}".format(pred_id)
             + "/predictions.arff"
         )
         ftp_stream = urllib.request.urlopen(url)

@@ -53,7 +53,7 @@ function Public() {
   };
   axios
     .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-    .then(function(response) {
+    .then(function (response) {
       console.log(response);
 
       setImage(response.data.image);
@@ -62,7 +62,7 @@ function Public() {
       setFname(response.data.first_name);
       setLname(response.data.last_name);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 
@@ -89,13 +89,13 @@ function Public() {
           },
           yourConfig
         )
-        .then(function(response) {
+        .then(function (response) {
           console.log(response.data);
           if (response.data.msg === "User information changed") {
             setSuccess(true);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.data);
         });
       let images = event.target.image.files;
@@ -120,7 +120,7 @@ function Public() {
   }
 
   return (
-    <Card mb={6}>
+    <Card mb={6} style={{ padding: 8 }}>
       <form onSubmit={profiletoflask}>
         <Typography variant="h6" gutterBottom>
           Public info
@@ -212,18 +212,22 @@ function Public() {
 function Settings() {
   return (
     <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
+      <div style={{
+        padding: 24
+      }}>
+        <Typography variant="h3" gutterBottom display="inline">
+          Profile
+        </Typography>
 
-      <Divider my={6} />
+        <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Public />
-          {/*<Private />*/}
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Public />
+            {/*<Private />*/}
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </React.Fragment>
   );
 }

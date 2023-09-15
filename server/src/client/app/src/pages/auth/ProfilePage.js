@@ -46,6 +46,8 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
   color: red[400]
 });
 
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_ES_URL || "https://www.openml.org/es/";
+
 function Public() {
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
@@ -60,14 +62,14 @@ function Public() {
 
   useEffect(() => {
     const yourConfig = {
-        headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
-        }
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
     };
 
     axios
       .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
         setImage(response.data.image);
         setEmail(response.data.email);
@@ -76,7 +78,7 @@ function Public() {
         setLname(response.data.last_name);
         setId(response.data.id);
         if (id !== false) {
-          fetch("https://openml.org/es/user/user/" + id.toString())
+          fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);
@@ -86,13 +88,13 @@ function Public() {
             });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }, [id]);
 
   return (
-    <Card mb={6}>
+    <Card mb={6} style={{ paddingBottom: 8 }}>
       <Grid container spacing={6}>
         <Grid item md={8}>
           <CardContent>
@@ -140,7 +142,7 @@ function Public() {
           </CenteredContent>
         </Grid>
       </Grid>
-      <Button variant="contained" color="primary" href="/auth/edit-profile">
+      <Button variant="contained" color="primary" href="/auth/edit-profile" style={{ marginLeft: 8 }}>
         Edit Profile
       </Button>
       &nbsp;&nbsp;&nbsp;
@@ -154,18 +156,22 @@ function Public() {
 function Settings() {
   return (
     <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
+      <div style={{
+        padding: 24
+      }}>
+        <Typography variant="h3" gutterBottom display="inline">
+          Profile
+        </Typography>
 
-      <Divider my={6} />
+        <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Public />
-          {/*<Private />*/}
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Public />
+            {/*<Private />*/}
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </React.Fragment>
   );
 }

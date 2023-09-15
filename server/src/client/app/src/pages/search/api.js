@@ -58,7 +58,7 @@ export function getProperty(obj, param) {
   }
 }
 
-const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_ES_URL || "https://www.openml.org/es/";
 
 // general search
 export function search(
@@ -119,7 +119,7 @@ export function search(
     },
     _source: fields.filter(l => !!l)
   };
-  if (sort !== "match"){
+  if (sort !== "match") {
     params["sort"] = {
       [sort]: {
         order: order
@@ -160,7 +160,7 @@ export function search(
 
 //get specific item
 export function getItem(type, itemId) {
-  return fetch(ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId, {
+  return fetch(ELASTICSEARCH_SERVER + type + "/" + type + "/" + itemId, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -173,8 +173,8 @@ export function getItem(type, itemId) {
       if (data["found"] !== true) {
         throw Error(
           'No task with id "' +
-            itemId +
-            '" found. It may have been removed or renamed'
+          itemId +
+          '" found. It may have been removed or renamed'
         );
       }
       return Promise.resolve(data["_source"]);
@@ -183,7 +183,7 @@ export function getItem(type, itemId) {
 
 // Not used?
 export function getList(itemId) {
-  return fetch(ELASTICSEARCH_SERVER + "/data/data/list/tag/" + itemId, {
+  return fetch(ELASTICSEARCH_SERVER + "data/data/list/tag/" + itemId, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -196,8 +196,8 @@ export function getList(itemId) {
       if (data["found"] !== true) {
         throw Error(
           'No task with id "' +
-            itemId +
-            '" found. It may have been removed or renamed'
+          itemId +
+          '" found. It may have been removed or renamed'
         );
       }
       return Promise.resolve(data["_source"]);

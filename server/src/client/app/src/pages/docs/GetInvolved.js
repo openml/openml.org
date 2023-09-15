@@ -214,6 +214,12 @@ export default class GetInvolved extends React.Component {
                   color={blue[500]}
                   text="Share new interesting datasets, models, and experiments."
                 />
+                <ContactLink
+                  icon="hand-holding"
+                  // link="contribute#research"
+                  color={purple[500]}
+                  text="Use OpenML in your research"
+                />
               </List>
             </CardContent> 
           </Card>
@@ -254,7 +260,7 @@ export default class GetInvolved extends React.Component {
                     We want to empower people to change the world for the better.
                     You can help by contributing useful datasets and machine learning
                     pipelines, or by <Link href="contribute#help">extending OpenML to make it more useful in
-                    science and discovery</Link>.
+                    science and discovery</Link>, or by using OpenML in your research projects.
                   </Paragraph>
                 </CardContent>
               </Card>

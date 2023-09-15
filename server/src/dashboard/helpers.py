@@ -1,3 +1,4 @@
+import os
 import logging
 import time
 from contextlib import contextmanager
@@ -5,12 +6,14 @@ from contextlib import contextmanager
 import numpy as np
 import pandas as pd
 import scipy.stats
+import openml
 from openml import datasets, runs
 from sklearn.model_selection import train_test_split
 
 logger = logging.getLogger("dashboard")
 logger.setLevel(logging.DEBUG)
 
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 def get_run_df(run_id: int):
     run = runs.get_run(int(run_id), ignore_cache=True)
@@ -95,6 +98,11 @@ def get_data_metadata(data_id):
 
     start = time.time()
     meta_features, data, _ = get_metadata(data_id)
+
+    # Replacing the substring to when Docker is active
+    if (os.getenv('DASHBOARD_USE_DOCKER_CONTAINER_NAME', 'False') == "True"):
+        data.url = data.url.replace("localhost", os.getenv('DASHBOARD_PHP_CONTAINER_NAME', 'website'))
+        print(data)
 
     x, y, categorical, attribute_names = data.get_data()
 

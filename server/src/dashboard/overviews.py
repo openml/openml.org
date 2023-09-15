@@ -1,14 +1,17 @@
+import os
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
+import openml
 from openml import datasets, flows, runs, tasks
 from openml.extensions.sklearn import SklearnExtension
 
 from .dash_config import DASH_CACHING
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 font = [
     "Nunito Sans",

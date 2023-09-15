@@ -1,11 +1,14 @@
 import time
+import os
 
 import numpy as np
 import pandas as pd
+import openml
 from openml import runs
 
 from server.src.dashboard.dash_config import BASE_URL
 
+openml.config.server = os.getenv('BACKEND_SERVER')
 
 def uncommon_string(s1, s2):
     st1 = set(s1)
