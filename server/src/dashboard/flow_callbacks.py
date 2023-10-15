@@ -84,11 +84,11 @@ def register_flow_callbacks(app, cache):
         tick_text = []
         # Set clickable labels
         for run_id in df["run_id"].values:
-            link = '<a href="https://www.openml.org/r/' + str(run_id) + '/"> '
+            link = '<a href="https://k8s.openml.org/r/' + str(run_id) + '/"> '
             run_link.append(link)
 
         for data_id in df["data_id"].values:
-            link = '<a href="https://www.openml.org/d/' + str(data_id) + '/">'
+            link = '<a href="https://k8s.openml.org/d/' + str(data_id) + '/">'
             tick_text.append(link)
         hover_text = []
         if parameter == "None":

@@ -94,7 +94,7 @@ def register_run_callbacks(app, cache):
             return "Only classification supported", "Only classification supported"
         pred_id = df[df["evaluations"] == "predictions"]["results"].values[0]
         url = (
-            "https://www.openml.org/data/download/{}".format(pred_id)
+            "https://k8s.openml.org/data/download/{}".format(pred_id)
             + "/predictions.arff"
         )
         ftp_stream = urllib.request.urlopen(url)

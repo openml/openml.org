@@ -1,6 +1,6 @@
 FLASK_APP=autoapp.py
-ELASTICSEARCH_SERVER=https://www.openml.org/es
-OPENML_SERVER=https://www.openml.org
+ELASTICSEARCH_SERVER=https://k8s.openml.org/es
+OPENML_SERVER=https://k8s.openml.org
 FLASK_ENV=development
 SMTP_SERVER=smtp.mailtrap.io
 SMTP_PORT=2525

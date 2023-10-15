@@ -290,7 +290,7 @@ class Sidebar extends React.Component {
   axiosCancelToken = axios.CancelToken.source();
 
   countUpdate = async () => {
-    const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+    const ELASTICSEARCH_SERVER = "https://k8ses.openml.org/";
 
     const data = {
       size: 0,

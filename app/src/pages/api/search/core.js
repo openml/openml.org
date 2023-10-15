@@ -1,7 +1,7 @@
 import ElasticsearchAPIConnector from "@elastic/search-ui-elasticsearch-connector";
 
 const connector = new ElasticsearchAPIConnector({
-  host: "https://www.openml.org/es/",
+  host: "https://k8ses.openml.org/",
   index: "user",
   apiKey: "",
 });

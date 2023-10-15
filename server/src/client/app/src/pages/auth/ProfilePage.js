@@ -76,7 +76,7 @@ function Public() {
         setLname(response.data.last_name);
         setId(response.data.id);
         if (id !== false) {
-          fetch("https://openml.org/es/user/user/" + id.toString())
+          fetch("https://k8ses.openml.org/user/" + id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);

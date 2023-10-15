@@ -58,7 +58,7 @@ export function getProperty(obj, param) {
   }
 }
 
-const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+const ELASTICSEARCH_SERVER = "https://k8ses.openml.org/";
 
 // general search
 export function search(
