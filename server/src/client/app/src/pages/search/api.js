@@ -114,7 +114,7 @@ export function search(
     },
     aggs: {
       type: {
-        terms: { field: "_type" }
+        terms: { field: "_index" }
       }
     },
     _source: fields.filter(l => !!l)
@@ -126,11 +126,8 @@ export function search(
       }
     }
   }
-  // uncomment for debugging the search
-  //console.log("Search: " + JSON.stringify(params));
-  //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
   return fetch(
-    ELASTICSEARCH_SERVER + type + "/" + type + "/_search?type=" + type,
+    ELASTICSEARCH_SERVER + type + "/_search",
     {
       headers: {
         Accept: "application/json",
@@ -145,7 +142,7 @@ export function search(
     .then(request => request.json())
     .then(data => {
       return {
-        counts: data["hits"]["total"],
+        counts: data["hits"]["total"]["value"],
         results: data["hits"]["hits"].map(x => {
           let source = x["_source"];
           let res = {};

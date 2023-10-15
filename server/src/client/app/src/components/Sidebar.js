@@ -296,7 +296,7 @@ class Sidebar extends React.Component {
       size: 0,
       query: { bool: { should: [ { term: { status: "active" } },
                                  { bool: { must_not: { exists: { field: "status" } } } } ] } },
-      aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
+      aggs: { count_by_type: { terms: { field: "_index", size: 100 } } }
     };
 
     const headers = {
@@ -325,10 +325,10 @@ class Sidebar extends React.Component {
       query: { bool : { filter : { bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] } }}}
     };
     axios
-      .post(ELASTICSEARCH_SERVER + "study/study/_search", bench_data, headers)
+      .post(ELASTICSEARCH_SERVER + "study/_search", bench_data, headers)
       .then(response => {
         let counts = this.state.counts;
-        counts["benchmark"] = response.data.hits.total;
+        counts["benchmark"] = response.data.hits.total.value;
         this.setState({ counts: counts });
       })
       .catch(error => {
