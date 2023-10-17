@@ -30,7 +30,6 @@ import {
   Divider as MuiDivider,
   Grid as MuiGrid,
   LinearProgress as MuiLinearProgress,
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -93,6 +92,11 @@ const StatsIcon = styled.div`
     height: 32px;
     color: ${(props) => props.theme.palette.secondary.main};
   }
+`;
+
+const Link = styled(NextLink)`
+  text-decoration: none;
+  color: ${(props) => props.theme.palette.secondary.main};
 `;
 
 const ProductsChip = styled(Chip)`
@@ -513,12 +517,12 @@ function Profile() {
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <NextLink href="/" passHref>
-          <Link>Dashboard</Link>
-        </NextLink>
-        <NextLink href="/" passHref>
-          <Link>Pages</Link>
-        </NextLink>
+        <Link href="/" passHref>
+          Dashboard
+        </Link>
+        <Link href="/" passHref>
+          Pages
+        </Link>
         <Typography>Profile</Typography>
       </Breadcrumbs>
 

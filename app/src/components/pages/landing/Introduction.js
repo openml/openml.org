@@ -25,14 +25,29 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const Title = styled(Typography)`
+const Hero = styled(Typography)`
   line-height: 1.2;
-  font-size: 1.75rem;
+  font-size: 2.75rem;
   font-weight: 700;
   text-align: center;
 
   ${(props) => props.theme.breakpoints.up("sm")} {
-    font-size: 2.7rem;
+    font-size: 3.7rem;
+  }
+
+  background: linear-gradient(to right, #fc466b, #3f5efb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+
+const Title = styled(Typography)`
+  line-height: 1.2;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+
+  ${(props) => props.theme.breakpoints.up("sm")} {
+    font-size: 1.2rem;
   }
 
   background: linear-gradient(to right, #fc466b, #3f5efb);
@@ -45,7 +60,7 @@ const SubTitle = styled.div`
   padding-top: 15px;
   padding-bottom: 35px;
   font-size: 1.2em;
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
 `;
 
@@ -227,7 +242,7 @@ function IntroGraph() {
         icon={faBrain}
         l="167"
         t="0"
-        sizept="35"
+        sizept="36"
         suppressHydrationWarning={true}
       />
       <FixedIcon
@@ -262,11 +277,11 @@ function Introduction() {
           spacing={10}
         >
           <Grid item>
+            <Hero>OpenML</Hero>
             <Title>Machine learning, better, together</Title>
             <SubTitle>
-              OpenML is an open science platform for easily sharing machine
-              learning data, models, and benchmarks to make machine learning
-              more transparent, reproducible, and collaborative.
+              An open platform for machine-readable datasets, automated
+              training, and reproducible benchmarks.
             </SubTitle>
           </Grid>
           <Grid item>

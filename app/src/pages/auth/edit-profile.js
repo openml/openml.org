@@ -14,7 +14,6 @@ import {
   Divider as MuiDivider,
   FormControl as MuiFormControl,
   Grid,
-  Link,
   TextField as MuiTextField,
   Typography,
 } from "@mui/material";
@@ -43,6 +42,11 @@ const BigAvatar = styled(Avatar)`
   width: 120px;
   height: 120px;
   margin: 0 auto ${(props) => props.theme.spacing(2)};
+`;
+
+const Link = styled(NextLink)`
+  text-decoration: none;
+  color: ${(props) => props.theme.palette.secondary.main};
 `;
 
 function Public() {
@@ -216,12 +220,12 @@ function EditProfile() {
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <NextLink href="/" passHref>
-          <Link>Dashboard</Link>
-        </NextLink>
-        <NextLink href="/" passHref>
-          <Link>Pages</Link>
-        </NextLink>
+        <Link href="/" passHref>
+          Dashboard
+        </Link>
+        <Link href="/" passHref>
+          Pages
+        </Link>
         <Typography>Edit Profile</Typography>
       </Breadcrumbs>
 

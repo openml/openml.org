@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Box, Drawer as MuiDrawer, ListItemButton } from "@mui/material";
 
-import Logo from "@/public/static/img/logo.svg";
+import Logo from "@/public/static/svg/logo.svg";
 
 import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";

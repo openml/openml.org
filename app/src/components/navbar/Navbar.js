@@ -26,7 +26,7 @@ import NavbarCreationDropdown from "./NavbarCreationDropdown";
 import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
 
-import Logo from "@/public/static/img/logo.svg";
+import Logo from "@/public/static/svg/logo.svg";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) =>

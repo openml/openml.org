@@ -50,83 +50,92 @@ function Integrations() {
         </Typography>
 
         <Box my={7}>
-          <Tooltip title="MUI v5">
+          <Tooltip title="Python API">
             <Brand>
               <BrandIcon
-                alt="MUI"
-                src="/static/img/brands/material-ui.svg"
+                alt="Python API"
+                src="/static/svg/python.svg"
                 style={{ height: "34px", margin: "3px 0" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="Next.js v13">
+          <Tooltip title="Julia API">
             <Brand>
               <BrandIcon
-                alt="Next.js"
-                src="/static/img/brands/nextjs.svg"
+                alt="Julia API"
+                src="/static/svg/julia.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="React v18">
+          <Tooltip title="R API">
             <Brand>
               <BrandIcon
-                alt="React"
-                src="/static/img/brands/react.svg"
+                alt="R API"
+                src="/static/svg/r-lang.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="Redux">
+          <Tooltip title="Java API">
             <Brand>
               <BrandIcon
-                alt="Redux"
-                src="/static/img/brands/redux.svg"
+                alt="Java API"
+                src="/static/svg/java.svg"
                 style={{ height: "36px", margin: "2px 0" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="Firebase Authentication">
+          <Tooltip title="C# API">
             <Brand>
               <BrandIcon
-                alt="Firebase Authentication"
-                src="/static/img/brands/firebase.svg"
+                alt="C# API"
+                src="/static/svg/c-sharp.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="Amazon Cognito">
+          <Tooltip title="Scikit-Learn">
             <Brand>
               <BrandIcon
-                alt="Amazon Cognito"
-                src="/static/img/brands/cognito.svg"
+                alt="Scikit-Learn"
+                src="/static/svg/sklearn.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="Auth0">
+          <Tooltip title="PyTorch">
             <Brand>
               <BrandIcon
-                alt="Auth0"
-                src="/static/img/brands/auth0.svg"
+                alt="PyTorch"
+                src="/static/svg/pytorch.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="JSON Web Token">
+          <Tooltip title="TensorFlow">
             <Brand>
               <BrandIcon
                 alt="JWT"
-                src="/static/img/brands/jwt.svg"
+                src="/static/svg/tensorflow.svg"
                 style={{ height: "40px" }}
               />
             </Brand>
           </Tooltip>
-          <Tooltip title="ESLint">
+          <Tooltip title="Jupyter">
             <Brand>
               <BrandIcon
-                alt="eslint "
-                src="/static/img/brands/eslint.svg"
+                alt="Jupyter"
+                src="/static/svg/jupyter.svg"
+                style={{ height: "40px" }}
+              />
+            </Brand>
+          </Tooltip>
+          <Tooltip title="Pandas">
+            <Brand>
+              <BrandIcon
+                alt="Pandas"
+                src="/static/svg/pandas.svg"
                 style={{ height: "40px" }}
               />
             </Brand>

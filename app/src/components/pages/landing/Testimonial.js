@@ -42,21 +42,21 @@ function Testimonial() {
         <Grid container alignItems="center" justifyContent="center">
           <Grid item xs={12} md={8}>
             <Typography variant="h2" component="h3" gutterBottom>
-              &quot;Mira Pro is one of the best advanced React dashboard
-              templates for developers.&quot;
+              &quot;OpenML is the easiest way to get access to thousands of
+              machine learning datasets&quot;
             </Typography>
             <AvatarWrapper>
               <a
-                href="https://twitter.com/olivtassinari"
+                href="https://twitter.com/joavanschoren"
                 target="_blank"
                 rel="nofollow noreferrer noopener"
               >
-                <Avatar src="/static/img/avatars/olivier.jpg" mr={3} />
+                <Avatar src="/static/img/avatars/avatar-1.jpg" mr={3} />
               </a>
               <Typography color="textSecondary" variant="body2">
-                Olivier Tassinari,
+                Joaquin Vanschoren,
                 <br />
-                Co-Founder MUI
+                Co-Founder OpenML
               </Typography>
             </AvatarWrapper>
           </Grid>
