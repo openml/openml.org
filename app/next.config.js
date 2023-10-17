@@ -2,12 +2,7 @@ const path = require("path");
 
 module.exports = {
   transpilePackages: [
-    "@fullcalendar/core",
     "@babel/preset-react",
-    "@fullcalendar/common",
-    "@fullcalendar/daygrid",
-    "@fullcalendar/interaction",
-    "@fullcalendar/react",
     "@mui/system",
     "@mui/material",
     "@mui/icons-material",

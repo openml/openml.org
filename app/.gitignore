@@ -17,6 +17,7 @@
 
 # misc
 .DS_Store
+.vscode
 
 # debug
 npm-debug.log*
@@ -28,9 +29,6 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-
-# vercel
-.vercel
 
 # package lock file
 package-lock.json
