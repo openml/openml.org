@@ -8,7 +8,7 @@ import AuthLayout from "../../layouts/Auth";
 
 import SignInComponent from "../../components/auth/SignIn";
 
-import Logo from "../../vendor/logo.svg";
+import Logo from "@/public/static/img/logo.svg";
 
 const Brand = styled(Logo)`
   fill: ${(props) => props.theme.palette.primary.main};

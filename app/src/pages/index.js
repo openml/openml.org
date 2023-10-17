@@ -1,13 +1,13 @@
 import React from "react";
 
 import DashboardLayout from "../layouts/Dashboard";
+import { Helmet } from "react-helmet-async";
 
-import Demos from "../components/pages/landing/Demos";
-import Testimonial from "../components/pages/landing/Testimonial";
 import Integrations from "../components/pages/landing/Integrations";
 import Lifecycle from "../components/pages/landing/Lifecycle";
 import FAQ from "../components/pages/landing/FAQ";
 import JoinUs from "../components/pages/landing/JoinUs";
+import Wrapper from "../components/Wrapper";
 
 import { Grid } from "@mui/material";
 
@@ -22,17 +22,19 @@ const Introduction = dynamic(
 
 function Presentation() {
   return (
-    <Grid container spacing={10}>
-      <Grid item>
-        <Introduction />
+    <Wrapper>
+      <Helmet title="Join OpenML!" />
+      <Grid container spacing={10}>
+        <Grid item>
+          <Introduction />
+        </Grid>
+        <Grid item>
+          <Lifecycle />
+          <Integrations />
+          <FAQ />
+        </Grid>
       </Grid>
-      <Grid item>
-        <Lifecycle />
-        <Integrations />
-        <FAQ />
-        <JoinUs />
-      </Grid>
-    </Grid>
+    </Wrapper>
   );
 }
 
