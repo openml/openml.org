@@ -9,6 +9,8 @@ import {
   IconButton as MuiIconButton,
 } from "@mui/material";
 
+import { useRouter } from "next/router";
+
 const IconButton = styled(MuiIconButton)`
   svg {
     width: 22px;
@@ -45,6 +47,18 @@ function NavbarLanguagesDropdown() {
   const { i18n } = useTranslation();
   const selectedLanguage = languageOptions[i18n.language];
 
+  const router = useRouter();
+
+  function changeLang(locale) {
+    router.push(
+      {
+        query: router.query,
+      },
+      router.asPath,
+      { locale }
+    );
+  }
+
   const [anchorMenu, setAnchorMenu] = React.useState(null);
   const toggleMenu = (event) => {
     setAnchorMenu(event.currentTarget);
@@ -55,8 +69,7 @@ function NavbarLanguagesDropdown() {
   };
 
   const handleLanguageChange = (language) => {
-    console.log(language);
-    i18n.changeLanguage(language);
+    changeLang(language);
     closeMenu();
   };
 

@@ -13,9 +13,7 @@ import { Grid } from "@mui/material";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-export async function getStaticProps(context) {
-  // extract the locale identifier from the URL
-  const { locale } = context;
+export async function getStaticProps({ locale }) {
   return {
     props: {
       // pass the translation props to the page component
