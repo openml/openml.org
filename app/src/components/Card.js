@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "next-i18next";
 import styled from "@emotion/styled";
 import { spacing } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
@@ -91,6 +92,8 @@ const ButtonImage = styled.img`
 
 const InfoCard = ({ info }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
+
   return (
     <Card
       arrow={useMediaQuery(theme.breakpoints.up("md")) ? info.arrow : "bottom"}
@@ -110,9 +113,9 @@ const InfoCard = ({ info }) => {
           {info.icon && (
             <TitleIcon icon={info.icon} size="lg" color={info.iconColor} />
           )}
-          {info.title}
+          {t(`${info.id}.title`)}
         </Typography>
-        <Typography>{info.text}</Typography>
+        <Typography>{t(`${info.id}.text`)}</Typography>
       </CardContent>
       <CardActions>
         <List component="nav">

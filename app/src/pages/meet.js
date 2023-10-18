@@ -19,6 +19,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { purple, blue, red } from "@mui/material/colors";
 
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+export async function getStaticProps(context) {
+  // extract the locale identifier from the URL
+  const { locale } = context;
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+}
+
 const Typography = styled(MuiTypography)(spacing);
 
 const Title = styled(Typography)`

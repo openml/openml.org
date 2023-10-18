@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import styled from "@emotion/styled";
 import { useTheme } from "@mui/material/styles";
 
@@ -17,11 +17,7 @@ import {
 } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCirclePlus,
-  faCircleUser,
-  faMagicWandSparkles,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 
 const IconButton = styled(MuiIconButton)`
   svg {
@@ -38,16 +34,13 @@ const Popover = styled(MuiPopover)`
   }
 `;
 
-const Indicator = styled(Badge)`
-  .MuiBadge-badge {
-    background: ${(props) => props.theme.header.indicator.background};
-    color: ${(props) => props.theme.palette.common.white};
-  }
-`;
-
 const MessageHeader = styled(Box)`
   text-align: center;
   border-bottom: 1px solid ${(props) => props.theme.palette.divider};
+`;
+
+const Link = styled(NextLink)`
+  text-decoration: none;
 `;
 
 function Message({ title, description, icon, color }) {

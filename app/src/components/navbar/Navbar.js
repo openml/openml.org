@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import styled from "@emotion/styled";
 import { darken } from "polished";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import searchConfig from "../../pages/d/searchConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -220,10 +220,8 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
             </Grid>
             <Grid item xs />
             <Grid item>
-              {/*
               <NavbarNotificationsDropdown />
               <NavbarLanguagesDropdown />
-              */}
               <NavbarCreationDropdown />
               <NavbarUserDropdown />
             </Grid>

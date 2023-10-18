@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 import DashboardLayout from "../layouts/Dashboard";
 import { Helmet } from "react-helmet-async";
@@ -10,7 +11,20 @@ import Wrapper from "../components/Wrapper";
 
 import { Grid } from "@mui/material";
 
-// Avoids a (dev-only) hydration warning
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+export async function getStaticProps(context) {
+  // extract the locale identifier from the URL
+  const { locale } = context;
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+}
+
+// Avoids a (dev-only) hydration warning for the svg diagram
 import dynamic from "next/dynamic";
 const Introduction = dynamic(
   () => import("../components/pages/landing/Introduction"),
@@ -18,6 +32,19 @@ const Introduction = dynamic(
 );
 
 function Presentation() {
+  // When developing, reload i18n resources on page reload
+  const { i18n } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n
+      .reloadResources()
+      .then(() => () => {
+        console.log("i18n translations reloaded");
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+
   return (
     <Wrapper>
       <Helmet title="Join OpenML!" />

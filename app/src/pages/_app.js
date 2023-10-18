@@ -6,6 +6,7 @@ import { CacheProvider } from "@emotion/react";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { appWithTranslation } from "next-i18next";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -18,7 +19,6 @@ import "../mocks";
 
 import "../vendor/perfect-scrollbar.css";
 
-import "../i18n";
 import createTheme from "../theme";
 
 import { ThemeProvider } from "../contexts/ThemeContext";
@@ -39,7 +39,7 @@ function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
   return (
     <CacheProvider value={emotionCache}>
       <HelmetProvider>
-        <Helmet titleTemplate="%s | OpenML" defaultTitle="OpenML - Next" />
+        <Helmet titleTemplate="OpenML | %s" defaultTitle="OpenML - Next" />
         <Provider store={store}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <MuiThemeProvider theme={createTheme(theme)}>
@@ -66,4 +66,4 @@ const withThemeProvider = (Component) => {
   return AppWithThemeProvider;
 };
 
-export default withThemeProvider(App);
+export default appWithTranslation(withThemeProvider(App));

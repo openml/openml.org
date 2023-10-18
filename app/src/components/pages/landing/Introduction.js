@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "next-i18next";
 import styled from "@emotion/styled";
 import { green, red, blue, deepPurple } from "@mui/material/colors";
 import Link from "next/link";
@@ -119,6 +120,7 @@ const GradientIcon = styled(FontAwesomeIcon)`
 `;
 
 function IntroGraph() {
+  const { t } = useTranslation();
   return (
     <div
       style={{
@@ -176,7 +178,7 @@ function IntroGraph() {
           fill={blue[400]}
         />
         <text x="70" y="170" fill="white">
-          I shared new data :)
+          {t("landing.animation.data")}
         </text>
         <rect fill={blue[400]} x="50" y="156" width="0" height="16">
           <animate
@@ -202,7 +204,7 @@ function IntroGraph() {
           fill={blue[400]}
         />
         <text x="160" y="210" fill="white">
-          I found a better model!
+          {t("landing.animation.model")}
         </text>
         <rect fill={blue[400]} x="150" y="194" width="0" height="16">
           <animate
@@ -219,7 +221,7 @@ function IntroGraph() {
           />
         </rect>
         <text x="165" y="62" fill="#ab47bc" fontWeight="bold">
-          OpenML
+          {t("landing.openml")}
         </text>
       </svg>
 
@@ -266,6 +268,7 @@ function IntroGraph() {
 }
 
 function Introduction() {
+  const { t } = useTranslation();
   return (
     <Wrapper>
       <Container>
@@ -277,12 +280,9 @@ function Introduction() {
           spacing={10}
         >
           <Grid item>
-            <Hero>OpenML</Hero>
-            <Title>Machine learning, better, together</Title>
-            <SubTitle>
-              An open platform for machine-readable datasets, automated
-              training, and reproducible benchmarks.
-            </SubTitle>
+            <Hero>{t("landing.openml")}</Hero>
+            <Title>{t("landing.title")}</Title>
+            <SubTitle>{t("landing.subtitle")}</SubTitle>
           </Grid>
           <Grid item>
             <IntroGraph />
@@ -293,9 +293,9 @@ function Introduction() {
               href="/auth/sign-up"
               variant="outlined"
             >
-              Sign Up
+              {t("landing.signup")}
             </GradientButton>
-            <SubText>OpenML is open and free.</SubText>
+            <SubText>{t("landing.open")}</SubText>
           </Grid>
         </Grid>
       </Container>

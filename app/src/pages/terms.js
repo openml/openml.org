@@ -23,6 +23,19 @@ import { AvatarGroup as MuiAvatarGroup } from "@mui/material";
 import { spacing } from "@mui/system";
 import Wrapper from "../components/Wrapper";
 
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+export async function getStaticProps(context) {
+  // extract the locale identifier from the URL
+  const { locale } = context;
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+}
+
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
 
 const Card = styled(MuiCard)(spacing);

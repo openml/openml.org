@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 
 import { spacing } from "@mui/system";
 import { Grid, Container, Typography } from "@mui/material";
@@ -15,32 +16,31 @@ const Wrapper = styled.div`
 
 // Maybe add chips as well to other parts of the landing page or docs
 const ai_ready_data = {
-  title: "AI-ready data",
+  id: "landing.ai_ready_data",
   icon: faDatabase,
   iconColor: green[500],
   arrow: "right",
-  text: `All datasets are uniformy formatted, have rich, consistent metadata, and can be loaded directly into your favourite environments.`,
 };
 const integrations = {
-  title: "ML library integrations",
+  id: "landing.integrations",
   icon: faCogs,
   iconColor: blue[500],
   arrow: "right",
-  text: `Pipelines and models can be shared directly from your favourite machine learning libraries. No manual steps required.`,
 };
 const ml_results = {
-  title: "A treasure of ML results",
+  id: "landing.ml_results",
   icon: faFlask,
   iconColor: red[500],
-  text: `Learn from millions of reproducible machine learning benchmarks from thousands of models trained on thousands of datasets.`,
 };
 
 function Lifecycle() {
+  const { t } = useTranslation();
+
   return (
     <Wrapper py={20}>
       <Container>
         <Typography variant="h2" component="h3" gutterBottom>
-          OpenML simplifies the entire machine learning lifecycle
+          {t("landing.lifecycle-header")}
         </Typography>
         <Typography
           variant="subtitle1"
@@ -48,11 +48,11 @@ function Lifecycle() {
           gutterBottom
           style={{ paddingBottom: 20 }}
         >
-          and organizes everything into one collective memory
+          {t("landing.lifecycle-sub_header")}
         </Typography>
         <Grid container spacing={6}>
           {[ai_ready_data, integrations, ml_results].map((card) => (
-            <Grid item display="flex" xs={12} md={4} key={card.title}>
+            <Grid item display="flex" xs={12} md={4} key={card.id}>
               <InfoCard info={card} />
             </Grid>
           ))}

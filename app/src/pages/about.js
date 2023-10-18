@@ -54,6 +54,19 @@ import {
 
 import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";
 
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+export async function getStaticProps(context) {
+  // extract the locale identifier from the URL
+  const { locale } = context;
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+}
+
 const Card = styled(MuiCard)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);

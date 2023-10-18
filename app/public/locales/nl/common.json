@@ -1,0 +1,31 @@
+{
+    "Search": "Zoeken…",
+    "SearchShort": "Zoeken",
+    "Welcome back": "Welkom terug",
+    "We've missed you": "We hebben je gemist",
+    "landing": {
+        "openml": "OpenML",
+        "title": "Machine learning, better, together",
+        "subtitle": "An open platform with machine-readable datasets, automated training, and reproducible benchmarks.",
+        "signup": "Sign up",
+        "open": "OpenML is open and free",
+        "animation": {
+            "data": "I shared new data :)",
+            "model": "I found a better model!"
+        },
+        "lifecycle-header": "OpenML simplifies the entire machine learning lifecycle",
+        "lifecycle-sub_header": "and organizes everything into one collective memory",
+        "ai_ready_data": {
+            "title": "AI-ready data",
+            "text": "All datasets are uniformy formatted, have rich, consistent metadata, and can be loaded directly into your favourite environments."
+        },
+        "integrations": {
+            "title": "ML library integrations",
+            "text": "Pipelines and models can be shared directly from your favourite machine learning libraries. No manual steps required."
+        },
+        "ml_results": {
+            "title": "A treasure of ML results",
+            "text": "Learn from millions of reproducible machine learning benchmarks from thousands of models trained on thousands of datasets."
+        }
+    }
+}

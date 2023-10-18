@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 import {
   Tooltip,
@@ -43,10 +43,9 @@ const languageOptions = {
 
 function NavbarLanguagesDropdown() {
   const { i18n } = useTranslation();
-  const [anchorMenu, setAnchorMenu] = React.useState(null);
-
   const selectedLanguage = languageOptions[i18n.language];
 
+  const [anchorMenu, setAnchorMenu] = React.useState(null);
   const toggleMenu = (event) => {
     setAnchorMenu(event.currentTarget);
   };
@@ -56,23 +55,26 @@ function NavbarLanguagesDropdown() {
   };
 
   const handleLanguageChange = (language) => {
+    console.log(language);
     i18n.changeLanguage(language);
     closeMenu();
   };
 
   return (
     <React.Fragment>
-      <Tooltip title="Languages">
-        <IconButton
-          aria-owns={Boolean(anchorMenu) ? "menu-appbar" : undefined}
-          aria-haspopup="true"
-          onClick={toggleMenu}
-          color="inherit"
-          size="large"
-        >
-          <Flag src={selectedLanguage.icon} alt={selectedLanguage.name} />
-        </IconButton>
-      </Tooltip>
+      {selectedLanguage && (
+        <Tooltip title="Languages">
+          <IconButton
+            aria-owns={Boolean(anchorMenu) ? "menu-appbar" : undefined}
+            aria-haspopup="true"
+            onClick={toggleMenu}
+            color="inherit"
+            size="large"
+          >
+            <Flag src={selectedLanguage.icon} alt={selectedLanguage.name} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Menu
         id="menu-appbar"
         anchorEl={anchorMenu}
