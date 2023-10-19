@@ -40,7 +40,7 @@ function Lifecycle() {
     <Wrapper py={20}>
       <Container>
         <Typography variant="h2" component="h3" gutterBottom>
-          {t("landing.lifecycle-header")}
+          {t("landing.lifecycle.header")}
         </Typography>
         <Typography
           variant="subtitle1"
@@ -48,7 +48,7 @@ function Lifecycle() {
           gutterBottom
           style={{ paddingBottom: 20 }}
         >
-          {t("landing.lifecycle-sub_header")}
+          {t("landing.lifecycle.sub_header")}
         </Typography>
         <Grid container spacing={6}>
           {[ai_ready_data, integrations, ml_results].map((card) => (

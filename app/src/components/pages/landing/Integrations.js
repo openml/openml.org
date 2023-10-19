@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "next-i18next";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
@@ -35,18 +36,19 @@ const ArrowForward = styled(ArrowForwardIcon)`
 `;
 
 function Integrations() {
+  const { t } = useTranslation();
+
   return (
     <Wrapper py={20}>
       <Container>
         <TypographyOverline variant="body2" gutterBottom>
-          Integrations
+          {t("landing.integration.overline")}
         </TypographyOverline>
         <Typography variant="h2" component="h3" gutterBottom>
-          Frictionless machine learning
+          {t("landing.integration.heading")}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          Easily import and export datasets, pipelines, and experiments from
-          your favourite machine learning environments and libraries.
+          {t("landing.integration.subtitle")}
         </Typography>
 
         <Box my={7}>
@@ -150,7 +152,7 @@ function Integrations() {
             color="secondary"
             size="large"
           >
-            Open Documentation
+            {t("landing.integration.button")}
             <ArrowForward />
           </Button>
         </Box>

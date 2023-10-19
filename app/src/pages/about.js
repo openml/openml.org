@@ -55,10 +55,9 @@ import {
 import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";
 
 // Server-side translation
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-export async function getStaticProps(context) {
-  // extract the locale identifier from the URL
-  const { locale } = context;
+export async function getStaticProps({ locale }) {
   return {
     props: {
       // pass the translation props to the page component
@@ -280,6 +279,12 @@ const governance = {
 };
 
 function About() {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   let people = [];
   console.log(people);
 

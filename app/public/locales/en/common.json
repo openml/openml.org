@@ -4,6 +4,7 @@
     "Welcome back": "Welcome back",
     "We've missed you": "We've missed you",
     "landing": {
+        "helmet": "Welcome",
         "openml": "OpenML",
         "title": "Machine learning, better, together",
         "subtitle": "An open platform with machine-readable datasets, automated training, and reproducible benchmarks.",
@@ -13,8 +14,10 @@
             "data": "I shared new data :)",
             "model": "I found a better model!"
         },
-        "lifecycle-header": "OpenML simplifies the entire machine learning lifecycle",
-        "lifecycle-sub_header": "and organizes everything into one collective memory",
+        "lifecycle": {
+            "header": "OpenML simplifies the entire machine learning lifecycle",
+            "sub_header": "and organizes everything into one collective memory"
+        },
         "ai_ready_data": {
             "title": "AI-ready data",
             "text": "All datasets are uniformy formatted, have rich, consistent metadata, and can be loaded directly into your favourite environments."
@@ -26,6 +29,162 @@
         "ml_results": {
             "title": "A treasure of ML results",
             "text": "Learn from millions of reproducible machine learning benchmarks from thousands of models trained on thousands of datasets."
+        },
+        "integration": {
+            "overline": "Integrations",
+            "heading": "Frictionless machine learning",
+            "subtitle": "Easily import and export datasets, pipelines, and experiments from your favourite machine learning environments and libraries.",
+            "button": "API Documentation"
+        },
+        "faq": {
+            "heading": "Frequently asked questions",
+            "description": "Let's put FAQs here",
+            "1": {
+                "question": "Question 1",
+                "answer": "Answer 1"
+            },
+            "2": {
+                "question": "Question 2",
+                "answer": "Answer 2"
+            },
+            "3": {
+                "question": "Question 3",
+                "answer": "Answer 3"
+            }
+        }
+    },
+    "contribute": {
+        "helmet": "Contribute",
+        "hero": {
+            "line1": "Here's to the crazy ones.",
+            "line2": "The ones who want to set machine learning free.",
+            "line3": "They're not fond of hype, or irreproducible claims.",
+            "line4": "They believe that only openness will push us forward.",
+            "line5": "And by sharing the best data and models,",
+            "line6": "we will make the world better, together."
+        },
+        "header": {
+            "intro": "Anyone can change the world",
+            "contribute": "Contribute to OpenML",
+            "donation": "Make a donation",
+            "sponsor": "Become an official Sponsor"
+        },
+        "contribute_intro": {
+            "title": "Contributing",
+            "text": "The people who contribute to OpenML do so for the love of\nmachine learning and because they want to help build a more\ninclusive and frictionless ecosystem of data, tools and clear\nresults. You can contribute in different ways:",
+            "items": [
+                "Help us improve the OpenML platform and interfaces.",
+                "Make a donation to support our community and keep OpenML free.",
+                "Share new interesting datasets, models, and experiments."
+            ]
+        },
+        "help_dev": {
+            "title": "Are you a developer?",
+            "text": "We want to make OpenML ridiculously easy to use and empowering.\nContribute your skill and expertise to make OpenML better for yourself and others, either online (on GitHub) or during one of our coding sprints.",
+            "chips": [
+                "Get started"
+            ]
+        },
+        "help_science": {
+            "title": "Are you a scientist?",
+            "text": "We want to empower people to change the world for the\nbetter. You can help by creating or sharing useful datasets and machine learning pipelines, or by extending OpenML to\nmake it more useful in science and discovery.",
+            "chips": [
+                "Get started"
+            ]
+        },
+        "help_donate": {
+            "title": "Are you one of us?",
+            "text": "OpenML depends on all of us. You can help keep OpenML free\nand support our community by making a donation (no pressure).\nYou can also join us at an OpenML event, or organize one\nyourself! Or maybe you have another great idea? Please don't hesitate to reach out!",
+            "chips": [
+                "Make a donation",
+                "Get in touch"
+            ]
+        },
+        "help_exec": {
+            "title": "Are you an executive?",
+            "text": "OpenML helps your team to discover machine learning assets\nand automate processes, so that they can focus on what\nmatters. You can encourage your developers to help out, host a coding sprint, become an official sponsor, or partner with us. Legendary.",
+            "chips": [
+                "Make a donation",
+                "Get in touch"
+            ]
+        },
+        "code": {
+            "title": "Good at coding?",
+            "text": "Perfect! Please see the issue trackers of the different OpenML\ncomponents that you can contribute to.",
+            "chips": [
+                "Developer docs",
+                "Website",
+                "REST API",
+                "Python API",
+                "R API",
+                "Java API"
+            ]
+        },
+        "website": {
+            "title": "Good at web design / UX?",
+            "text": "Please help us improve the website to make it nicer and more\nintuitive for everyone.",
+            "chips": [
+                "Website docs",
+                "Website code and issues"
+            ]
+        },
+        "docs": {
+            "title": "Good at explaining things?",
+            "text": "OpenML should be easy to understand for everyone. Please help us\nimprove the documentation whenever something is not 100% clear.",
+            "chips": [
+                "OpenML docs",
+                "How to update the docs"
+            ]
+        },
+        "datasets": {
+            "title": "Do you care about good datasets?",
+            "text": "High quality datasets are crucial for machine learning. Please\nadd new interesting datasets or help check the quality of the\nexisting ones.",
+            "chips": [
+                "Dataset issue tracker"
+            ]
+        },
+        "ambassador": {
+            "title": "Help us build a stronger community",
+            "text": "Become an OpenML ambassador! Help us make OpenML better known in\nyour community, write about OpenML and how you use it, or give\nus shout-out.",
+            "chips": [
+                "OpenML blog",
+                "OpenML on Twitter"
+            ]
+        },
+        "donate": {
+            "title": "You are awesome!",
+            "text": "By making a donation, small or large, you help\nus run coding sprints and outreach activities, keep our   community happy and engaged, and ensure that we have the basic\ninfrastructure to keep the platform free for everyone. Also, if\nOpenML sometimes sucks, we promise to do better!\nYou can sponsor us via OpenCollective or GitHub. All donors are celebrated in our hall of fame, and we are fully transparent on how your contributions are used.",
+            "widgets": [
+                "OpenCollective",
+                "GitHub Sponsors"
+            ]
+        },
+        "sponsor_why": {
+            "title": "Why?",
+            "text": "Simply put, without our generous sponsors, OpenML would not be\nable to make all its resources and services available for free to the entire world. By donating to OpenML you\nfurther the project's mission to democratize machine learning\nresearch. Your donations will be used to run engaging community\nevents (which require venues, food, and swag), support our\ncommunity manager and developer, and run our infrastructure\n(including servers and storage)."
+        },
+        "sponsor_what": {
+            "title": "What do we offer?",
+            "text": "We are open to many forms of sponsorship. While we have a few sponsorship levels on our Open Collective page, we would also\n  love to hear from you and learn how we could better align with\n  your goals. Below are examples of possible benefits, but we are\n  open to new ideas to collaborate with you.",
+            "items": [
+                "Your logo on our website and in our presentations, shown more prominently for larger sponsors.",
+                "We will send you OpenML T-shirts, stickers,... Or, you can send us materials to hand out at our events.",
+                "We will mention your support in talks and videos. We'll work with you to get the right message across.",
+                "Come give a talk at one of our coding sprints or events, or simply come to work together with us.",
+                "Let us know what you would like to see developed on OpenML, and we'll realize it together.",
+                "Become a partner. If you support a full time developer (anywhere), or let your own developers contribute, you can help shape the future of OpenML."
+            ],
+            "chips": [
+                "Get in touch"
+            ]
+        },
+        "sponsor_how": {
+            "title": "How?",
+            "text": "You can sponsor us through Open Collective or GitHub. Click the buttons below to get started. All sponsors and the amount of sponsoring are acknowledged in our hall of fame, and we'll be fully transparent\n  on how your sponsorship makes OpenML better every day. This\n  collective is fiscally hosted by our not-for-profit Open Machine Learning Foundation. If preferred, you can also donate directly to the Foundation.",
+            "widgets": [
+                "OpenCollective",
+                "GitHub Sponsors"
+            ]
         }
     }
 }

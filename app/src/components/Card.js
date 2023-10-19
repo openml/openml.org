@@ -25,6 +25,7 @@ import {
 const Card = styled(MuiCard)`
   ${spacing};
   position: relative;
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.05);
   &:after {
     content: " ";
     position: absolute;
@@ -119,27 +120,35 @@ const InfoCard = ({ info }) => {
       </CardContent>
       <CardActions>
         <List component="nav">
-          {info.items?.map((item) => (
+          {info.items?.map((item, i) => (
             <CardItem
-              key={item.text}
+              key={t(`${info.id}.items.${i}`)}
               link={item.link}
               icon={item.icon}
               color={item.color}
-              text={item.text}
+              text={t(`${info.id}.items.${i}`)}
               target={item.target}
             />
           ))}
-          {info.widgets?.map((widget) => (
-            <NextLink key={widget.alt} href={widget.link} passHref>
-              <ButtonImage src={widget.button} width="265" alt={widget.alt} />
+          {info.widgets?.map((widget, i) => (
+            <NextLink
+              key={t(`${info.id}.widgets.${i}`)}
+              href={widget.link}
+              passHref
+            >
+              <ButtonImage
+                src={widget.button}
+                width="265"
+                alt={t(`${info.id}.widgets.${i}`)}
+              />
             </NextLink>
           ))}
-          {info.chips?.map((chip) => (
+          {info.chips?.map((chip, i) => (
             <Chip
-              key={chip.link + chip.text}
+              key={chip.link + t(`${info.id}.chips.${i}`)}
               link={chip.link}
               icon={chip.icon}
-              text={chip.text}
+              text={t(`${info.id}.chips.${i}`)}
               target={chip.target}
             />
           ))}

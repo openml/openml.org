@@ -31,21 +31,14 @@ const Introduction = dynamic(
 
 function Presentation() {
   // When developing, reload i18n resources on page reload
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   if (process.env.NODE_ENV === "development") {
-    i18n
-      .reloadResources()
-      .then(() => () => {
-        console.log("i18n translations reloaded");
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    i18n.reloadResources();
   }
 
   return (
     <Wrapper>
-      <Helmet title="Join OpenML!" />
+      <Helmet title={t("landing.helmet")} />
       <Grid container spacing={10}>
         <Grid item>
           <Introduction />

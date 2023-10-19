@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { spacing } from "@mui/system";
+import { useTranslation } from "next-i18next";
 
 const Spacer = styled.div(spacing);
 
@@ -53,61 +54,39 @@ const AccordionDetails = styled(MuiAccordionDetails)`
 `;
 
 function FAQ() {
+  const { t } = useTranslation();
+
   return (
     <Wrapper pt={20} pb={16}>
       <Container>
         <Typography variant="h2" component="h3" gutterBottom>
-          Frequently asked questions
+          {t("landing.faq.heading")}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          Let's put FAQs here
+          {t("landing.faq.description")}
         </Typography>
         <Spacer mb={8} />
 
         <Grid container alignItems="center" justifyContent="center">
           <Grid item xs={12} xl={8}>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq1-content"
-                id="faq1-header"
-              >
-                <Typography variant="subtitle1">Question 1</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Answer 1
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq2-content"
-                id="faq2-header"
-              >
-                <Typography variant="subtitle1">Question 2</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Answer 2
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="faq3-content"
-                id="faq3-header"
-              >
-                <Typography variant="subtitle1">Question 3</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Answer 3
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+            {[1, 2, 3].map((faq) => (
+              <Accordion key={faq}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`faq${faq}-content`}
+                  id={`faq${faq}-header`}
+                >
+                  <Typography variant="subtitle1">
+                    {t(`landing.faq.${faq}.question`)}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    {t(`landing.faq.${faq}.answer`)}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            ))}
           </Grid>
         </Grid>
       </Container>
