@@ -15,14 +15,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Grid,
-  Chip,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
   Avatar,
   Badge,
-  List,
   Fab,
   Zoom,
   Typography as MuiTypography,
@@ -43,9 +37,6 @@ import {
   faEnvelope,
   faHands,
   faComments,
-  faAtom,
-  faHandsHoldingCircle,
-  faHandshakeAngle,
   faDove,
   faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
@@ -59,16 +50,7 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-import {
-  purple,
-  blue,
-  red,
-  yellow,
-  green,
-  orange,
-  pink,
-  grey,
-} from "@mui/material/colors";
+import { purple, blue, red, green, pink, grey } from "@mui/material/colors";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -104,8 +86,6 @@ const HeroTitle = styled(Typography)({
 const Paragraph = styled(Typography)({
   paddingBottom: "2vw",
 });
-
-const MainPaper = styled(Paper)``;
 
 const ListIcon = styled(FontAwesomeIcon)({
   marginLeft: 10,
@@ -170,38 +150,6 @@ const Person = ({ id, name, bio, image }) => {
   );
 };
 
-const ContactLink = ({ link, icon, color, text }) => {
-  return (
-    <ListItemLink button href={link}>
-      <ListItemIcon>
-        <ListIcon icon={icon} size="lg" style={{ color: color }} />
-      </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
-    </ListItemLink>
-  );
-};
-
-const ContactChip = ({ link, icon, text }) => {
-  return (
-    <Chip
-      icon={
-        <ListIcon
-          icon={icon}
-          size="lg"
-          style={{ marginLeft: 10, marginRight: 0 }}
-        />
-      }
-      component="a"
-      href={link}
-      label={text}
-      clickable
-      color="primary"
-      variant="outlined"
-      style={{ marginRight: 10, marginBottom: 10 }}
-    />
-  );
-};
-
 function orderList(a, b) {
   if (core_ids.includes(a.user_id) && !core_ids.includes(b.user_id)) return -1;
   else if (core_ids.includes(b.user_id) && !core_ids.includes(a.user_id))
@@ -224,10 +172,6 @@ function orderList(a, b) {
 const TitleIcon = styled(FontAwesomeIcon)`
   padding-right: 15px;
 `;
-
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
 
 const Title = styled(Typography)`
   padding-top: 1em;
@@ -489,17 +433,7 @@ function About() {
           />
           <Card>
             <CardContent>
-              <Paragraph>
-                The <b>Open Machine Learning Foundation</b> is a not-for-profit
-                organization supporting, but not controlling, the OpenML
-                project. We are open to collaborate and engage with
-                universities, companies, or anyone sharing the same goals and
-                willing to support the project. This can involve sponsorship,
-                the co-development of new features, or other forms of
-                partnership, insofar they align with the Foundation's mission
-                and do not affect the independence of the OpenML open source
-                project itself.
-              </Paragraph>
+              <Paragraph>{t("about.foundation.description")}</Paragraph>
               <Typography
                 variant="h6"
                 align="center"
@@ -510,25 +444,9 @@ function About() {
                   size="lg"
                   style={{ color: blue[400] }}
                 />
-                <br /> <b>Our mission</b> <br /> is to make machine learning
-                simple, accessible, collaborative and open
+                <br /> {t("about.foundation.mission")}
               </Typography>
-              <Paragraph>
-                ... to enhance and streamline machine learning research,
-                education and skillful practice. The foundation aims to achieve
-                this mission by, among others, supporting the OpenML.org
-                platform to offer a worldwide community the means to openly
-                share and build upon each other’s work, enhancing collaboration,
-                education, scholarship, openness of data and code, automation of
-                processes, and reproducibility of results. We do this in close
-                collaboration with the OpenML community and in accordance with
-                the guiding principles of the OpenML platform, such as the code
-                of honor and the citation policy. More generally, we aim to
-                provide the infrastructure, data, code, and scientific
-                foundations necessary to accelerate research for the general
-                benefit of society and to create positive outcomes for future
-                generations.
-              </Paragraph>
+              <Paragraph>{t("about.foundation.mission2")}</Paragraph>
             </CardContent>
           </Card>
           <Accordion>
@@ -538,19 +456,11 @@ function About() {
               id="panel1a-header"
             >
               <Typography>
-                <b>Foundation Board</b>
+                <b>{t("about.foundation.board_title")}</b>
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                We want to make sure that the money that the foundation receives
-                is invested for the interest of the community. For this purpose,
-                we have a board that supervises the activity of the foundation.
-                Core contributors to the OpenML project can serve on this board,
-                to make decisions on behalf of the community. The current board
-                members are Joaquin Vanschoren, Jan van Rijn, Matthias Feurer,
-                Bernd Bischl, Heidi Seibold, and Giuseppe Casalicchio.
-              </Typography>
+              <Typography>{t("about.foundation.board")}</Typography>
             </AccordionDetails>
           </Accordion>
         </Grid>
