@@ -181,7 +181,7 @@ const help_science = {
 const help_donate = {
   id: "contribute.help_donate",
   icon: faChildReaching,
-  iconColor: green[800],
+  iconColor: green[500],
   chips: [
     {
       link: "#support",
@@ -340,27 +340,27 @@ const sponsor_what = {
   items: [
     {
       icon: faMedal,
-      color: purple[700],
+      color: purple[500],
     },
     {
       icon: faTShirt,
-      color: purple[700],
+      color: purple[500],
     },
     {
       icon: faComments,
-      color: purple[700],
+      color: purple[500],
     },
     {
       icon: faGlassCheers,
-      color: purple[700],
+      color: purple[500],
     },
     {
       icon: faLightbulb,
-      color: purple[700],
+      color: purple[500],
     },
     {
       icon: faHandsHelping,
-      color: purple[700],
+      color: purple[500],
     },
   ],
   chips: [

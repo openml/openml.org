@@ -30,6 +30,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHandHoldingHeart,
+  faBugSlash,
   faUsers,
   faHandsHelping,
   faCloud,
@@ -41,6 +42,12 @@ import {
   faPhoneAlt,
   faEnvelope,
   faHands,
+  faComments,
+  faAtom,
+  faHandsHoldingCircle,
+  faHandshakeAngle,
+  faDove,
+  faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -52,11 +59,21 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";
+import {
+  purple,
+  blue,
+  red,
+  yellow,
+  green,
+  orange,
+  pink,
+  grey,
+} from "@mui/material/colors";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Link from "next/link";
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -204,6 +221,10 @@ function orderList(a, b) {
   } else return 1;
 }
 
+const TitleIcon = styled(FontAwesomeIcon)`
+  padding-right: 15px;
+`;
+
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
@@ -213,67 +234,142 @@ const Title = styled(Typography)`
 `;
 
 const mission = {
-  title:
-    "Machine learning research should be open, well-organized and accessible to anyone.",
-  text: `There is amazing machine learning research going on every day in
-            labs all over the world. What if we could easily share the latest
-            great results (datasets, code, experiments) from all of our labs and
-            organize them online, so that everyone can easily discover and
-            access them, use them in myriad unexpected ways, and solve problems
-            together on a global scale? \n\n
-            We strive to make as many datasets as possible easily discoverable,
-            well documented, and frictionlessly accessible. When new models are
-            trained and evaluated, we also make these results easily
-            discoverable, clearly documented and reproducible, so that we can
-            trust them, learn from them, and build on the combined results of
-            the planet. And of course, we use machine learning on top of all
-            this data to make new discoveries and automate our work.
-            `,
+  id: "about.mission",
+  icon: faDove,
+  iconColor: blue[400],
 };
 
 const community = {
-  title: "From the ML community for the ML community.",
-  text: `
-  We want to build the tools that we ourselves like to use, that
-  empower us as researchers, and make our lives easier. 
-Built around open interfaces, OpenML can be used to
-<b>automatically</b> share (and import) datasets, algorithms, and
-experiments results straight from the tools that we already know and
-love. Through our APIs, OpenML can be easily integrated into new
-workflows and processes, to import new data and export new results.
-We also believe in great standards for collecting and sharing data
-and for collecting and analysing experimental results.
-            `,
+  id: "about.community",
+  icon: faUserAstronaut,
+  iconColor: grey[100],
 };
 
 const governance = {
-  title: "From the ML community for the ML community.",
-  text: `
-  OpenML is being built by an awesome open source community. All code
-  of the OpenML project carries the BSD-3 Clause licence. Anyone with
-  an interest in the project can join the community, contribute to the
-  project design, and participate in the decision making process, as
-  well as meetings (e.g. hackathons) and online discussions. Dedicated
-  contributors can be nominated to become core members, trusted to
-  develop and maintain OpenML with care. Core members, in turn, can be
-  nominated for the steering committee, and keep the project running
-  smoothly with the help of the Open Machine Learning Foundation.
-            `,
+  id: "about.governance",
+  icon: faUsers,
+  iconColor: pink[300],
   chips: [
     {
-      text: "Contribution guide",
       link: "https://docs.openml.org/Contributing/",
       icon: faHandHoldingHeart,
     },
     {
-      text: "Governance model",
       link: "https://docs.openml.org/Governance/",
       icon: faUsers,
     },
     {
-      text: "Open Machine Learning Foundation",
       link: "/about#foundation",
       icon: faHandHoldingHeart,
+    },
+  ],
+};
+
+const contributors = {
+  id: "about.contributors",
+  icon: faHandHoldingHeart,
+  iconColor: red[400],
+  chips: [
+    {
+      link: "https://github.com/openml/openml.org#contributors-",
+      icon: faReact,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/OpenML#contributors-",
+      icon: faCloud,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-python#contributors-",
+      icon: faPython,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-r#contributors-",
+      icon: faRProject,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-java#contributors-",
+      icon: faJava,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-data#contributors-",
+      icon: faDatabase,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/blog#contributors-",
+      icon: faBlog,
+      target: "_blank",
+    },
+  ],
+};
+
+const contact_issues = {
+  id: "about.contact_issues",
+  icon: faBugSlash,
+  iconColor: red[400],
+  chips: [
+    {
+      link: "https://github.com/openml/openml.org#contributors-",
+      icon: faReact,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml.org/issues",
+      icon: faReact,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/OpenML/issues",
+      icon: faCloud,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-python/issues",
+      icon: faPython,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-r/issues",
+      icon: faRProject,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-java/issues",
+      icon: faJava,
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-data/issues",
+      icon: faDatabase,
+      target: "_blank",
+    },
+  ],
+};
+
+const contact = {
+  id: "about.contact",
+  icon: faComments,
+  iconColor: blue[400],
+  items: [
+    {
+      link: "mailto:openmlhq@googlegroups.com",
+      icon: faEnvelope,
+      color: green[400],
+    },
+    {
+      link: "https://twitter.com/intent/tweet?screen_name=open_ml&text=%23openml.org",
+      icon: faTwitter,
+      color: blue[400],
+    },
+    {
+      link: "https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ",
+      icon: faSlack,
+      color: purple[400],
     },
   ],
 };
@@ -290,7 +386,7 @@ function About() {
 
   return (
     <Wrapper>
-      <Helmet title="About OpenML" />
+      <Helmet title={t("about.helmet")} />
       <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
         <ContactButton
           color="primary"
@@ -314,18 +410,23 @@ function About() {
       <Grid container spacing={10}>
         <Grid item xs={12}>
           <Title variant="h2" align="center">
-            About OpenML
+            {t("about.title")}
           </Title>
         </Grid>
         <Grid item xs={12}>
           <Header
             id="team"
-            title="Meet the team"
+            title={t("about.header.team")}
             icon={faChildReaching}
             color={purple[400]}
           />
           <Card>
             <CardContent>
+              <Typography sx={{ pb: 4, pt: 3 }} variant="h5">
+                <TitleIcon icon={faUsers} size="lg" color={blue[200]} />
+                {t("about.core")}
+              </Typography>
+              <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
               <Grid container spacing={6}>
                 {people.map(
                   ({ user_id, first_name, last_name, bio, image }) => (
@@ -342,63 +443,34 @@ function About() {
                   key="0"
                   id="0"
                   name="You?"
-                  bio={<a href="contribute">Join us, get involved!</a>}
+                  bio={<Link href="contribute">{t("about.team.join_us")}</Link>}
                   image=""
                 />
               </Grid>
-              <Typography variant="body1" gutterBottom my={4}>
-                <b>
-                  We are infinitely grateful to the many contributors who helped
-                  in small or big ways.
-                </b>{" "}
-                Check out the contributors for each sub-project:
-              </Typography>
-              <List component="nav">
-                <ContactChip
-                  link="https://github.com/openml/openml.org#contributors-"
-                  icon={faReact}
-                  text="OpenML website"
-                />
-                <ContactChip
-                  link="https://github.com/openml/OpenML#contributors-"
-                  icon={faCloud}
-                  text="OpenML REST API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-python#contributors-"
-                  icon={faPython}
-                  text="Python API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-r#contributors-"
-                  icon={faRProject}
-                  text="R API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-java#contributors-"
-                  icon={faJava}
-                  text="Java API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-data#contributors-"
-                  icon={faDatabase}
-                  text="Datasets"
-                />
-                <ContactChip
-                  link="https://github.com/openml/blog#contributors-"
-                  icon={faBlog}
-                  text="Blog"
-                />
-              </List>
             </CardContent>
           </Card>
+        </Grid>
+        <Grid item display="flex" xs={12} key={contact.id}>
+          <InfoCard info={contributors} />
+        </Grid>
+        <Grid item xs={12}>
+          <Header
+            id="contact"
+            title={t("about.header.contact")}
+            icon={faPhoneAlt}
+            color={green[500]}
+          />
+          <InfoCard info={contact} />
+        </Grid>
+        <Grid item display="flex" xs={12} key={contact_issues.id}>
+          <InfoCard info={contact_issues} />
         </Grid>
         <Grid item xs={12}>
           <Header
             id="mission"
-            title="Mission"
+            title={t("about.header.mission")}
             icon={faRocket}
-            color={purple[500]}
+            color={grey[200]}
           />
           <InfoCard info={mission} />
         </Grid>
@@ -410,77 +482,8 @@ function About() {
         </Grid>
         <Grid item xs={12}>
           <Header
-            id="contact"
-            title="Contact us"
-            icon={faPhoneAlt}
-            color={green[500]}
-          />
-          <Card>
-            <CardContent>
-              <List component="nav">
-                <ContactLink
-                  link="mailto:openmlhq@googlegroups.com"
-                  icon={faEnvelope}
-                  color={green[400]}
-                  text="For general questions about the OpenML initiative, email us at openmlhq@googlegroups.com"
-                />
-                <ContactLink
-                  link="https://twitter.com/intent/tweet?screen_name=open_ml&text=%23openml.org"
-                  icon={faTwitter}
-                  color={blue[400]}
-                  text="Using Twitter? Follow, DM, or tweet to @open_ml"
-                />
-                <ContactLink
-                  link="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ"
-                  icon={faSlack}
-                  color={red[400]}
-                  text="Want to be involved in current discussions? Join us on Slack."
-                />
-              </List>
-              <Typography variant="body1" gutterBottom my={4}>
-                <b>Did you run into an issue?</b> Want to request a feature or
-                do a pull request? Please check the corresponding issue tracker
-                on GitHub for solutions or reporting new issues.
-              </Typography>
-              <List component="nav">
-                <ContactChip
-                  link="https://github.com/openml/openml.org/issues"
-                  icon={faReact}
-                  text="OpenML website"
-                />
-                <ContactChip
-                  link="https://github.com/openml/OpenML/issues"
-                  icon={faCloud}
-                  text="OpenML REST API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-python/issues"
-                  icon={faPython}
-                  text="Python API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-r/issues"
-                  icon={faRProject}
-                  text="R API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-java/issues"
-                  icon={faJava}
-                  text="Java API"
-                />
-                <ContactChip
-                  link="https://github.com/openml/openml-data/issues"
-                  icon={faDatabase}
-                  text="Datasets"
-                />
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12}>
-          <Header
             id="foundation"
-            title="The Open Machine Learning Foundation"
+            title={t("about.header.foundation")}
             icon={faHandsHelping}
             color={blue[500]}
           />

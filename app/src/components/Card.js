@@ -152,7 +152,7 @@ const InfoCard = ({ info }) => {
               target={chip.target}
             />
           ))}
-          {info.buttons?.map((button) => (
+          {info.buttons?.map((button, i) => (
             <Button
               key={button.href}
               size="small"
@@ -160,7 +160,7 @@ const InfoCard = ({ info }) => {
               href={button.href}
               style={{ marginRight: 16 }}
             >
-              {button.text}
+              {t(`${info.id}.buttons.${i}`)}
             </Button>
           ))}
         </List>

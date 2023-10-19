@@ -186,5 +186,111 @@
                 "GitHub Sponsors"
             ]
         }
+    },
+    "about": {
+        "helmet": "About",
+        "title": "About OpenML",
+        "core": "Authors",
+        "core_text": "The following people are currently core contributors to OpenML’s development and maintenance. They are elected by other core contributors based on merit and dedication.",
+        "join_us": "Join us, get involved!",
+        "header": {
+            "team": "Meet the team",
+            "contact": "Contact us",
+            "mission": "Mission",
+            "foundation": "The Open Machine Learning Foundation"
+        },
+        "contributors": {
+            "title": "Contributors",
+            "text": "We are infinitely grateful to the many contributors who helped in small or big ways. Check out the contributors for each sub-project:",
+            "chips": [
+                "OpenML website",
+                "OpenML REST API",
+                "Python API",
+                "R API",
+                "Java API",
+                "Datasets",
+                "Blog"
+            ]
+        },
+        "mission": {
+            "title": "Machine learning research should be open, well-organized and accessible to anyone.",
+            "text": "There is amazing machine learning research going on every day in labs all over the world. What if we could easily share the latest great results (datasets, code, experiments) from all of our labs and organize them online, so that everyone can easily discover and access them, use them in myriad unexpected ways, and solve problems together on a global scale? We strive to make as many datasets as possible easily discoverable, well documented, and frictionlessly accessible. When new models are trained and evaluated, we also make these results easily discoverable, clearly documented and reproducible, so that we can trust them, learn from them, and build on the combined results of the planet. And of course, we use machine learning on top of all this data to make new discoveries and automate our work."
+        },
+        "community": {
+            "title": "From the ML community for the ML community.",
+            "text": "We build the tools that we love to use, that empower us as researchers, and make our lives easier. Built around open interfaces, OpenML can be used to automatically share (and import) datasets, algorithms, and\nexperiments results straight from the tools that we already know and love. Through our APIs, OpenML can be easily integrated into new workflows and processes, to import new data and export new results. We also believe in great standards for collecting and sharing data and for collecting and analysing experimental results."
+        },
+        "governance": {
+            "title": "Open Source and Open Governance.",
+            "text": "OpenML is being built by an awesome open source community. All code of the OpenML project carries the BSD-3 Clause licence. Anyone with an interest in the project can join the community, contribute to the project design, and participate in the decision making process, as well as meetings (e.g. hackathons) and online discussions. Dedicated contributors can be nominated to become core members, trusted to develop and maintain OpenML with care. Core members, in turn, can be nominated for the steering committee, and keep the project running smoothly with the help of the Open Machine Learning Foundation.",
+            "chips": [
+                "Contribution guide",
+                "Governance model",
+                "Open Machine Learning Foundation"
+            ]
+        },
+        "contact": {
+            "title": "We'd love to hear from you.",
+            "text": "There are many ways to get in touch with us. We are always happy to hear from you, whether you have a question, a suggestion, or just want to say hi.",
+            "items": [
+                "For general questions about the OpenML initiative, email us at openmlhq@googlegroups.com",
+                "Using Twitter? Follow, DM, or tweet to @open_ml",
+                "Want to be involved in current discussions? Join us on Slack."
+            ]
+        },
+        "contact_issues": {
+            "title": "Issues and feature requests",
+            "text": "Did you run into an issue? Want to request a feature or do a pull request? Please check the corresponding issue tracker on GitHub for solutions or reporting new issues.",
+            "chips": [
+                "OpenML website",
+                "OpenML REST API",
+                "Python API",
+                "R API",
+                "Java API",
+                "Datasets"
+            ]
+        },
+        "foundation": {
+            "description": "The Open Machine Learning Foundation is a not-for-profit organization supporting, but not controlling, the OpenML project. We are open to collaborate and engage with universities, companies, or anyone sharing the same goals and willing to support the project. This can involve sponsorship, the co-development of new features, or other forms of partnership, insofar they align with the Foundation's mission and do not affect the independence of the OpenML open source project itself.",
+            "mission": "... to enhance and streamline machine learning research, education and skillful practice. The foundation aims to achieve this mission by, among others, supporting the OpenML.org platform to offer a worldwide community the means to openly share and build upon each other’s work, enhancing collaboration, education, scholarship, openness of data and code, automation of processes, and reproducibility of results. We do this in close collaboration with the OpenML community and in accordance with the guiding principles of the OpenML platform, such as the code of honor and the citation policy. More generally, we aim to provide the infrastructure, data, code, and scientific foundations necessary to accelerate research for the general benefit of society and to create positive outcomes for future generations.",
+            "board": "We want to make sure that the money that the foundation receives is invested for the interest of the community. For this purpose, we have a board that supervises the activity of the foundation. Core contributors to the OpenML project can serve on this board, to make decisions on behalf of the community. The current board members are Joaquin Vanschoren, Jan van Rijn, Matthias Feurer, Bernd Bischl, Heidi Seibold, and Giuseppe Casalicchio."
+        }
+    },
+    "meetup": {
+        "helmet": "Meet up",
+        "title": "Let's meet up!",
+        "header": {
+            "meetup": "Join one of our hackathons",
+            "upcoming": "Upcoming events",
+            "sponsor": "Sponsor an event"
+        },
+        "hackathons": {
+            "title": "Changing the world requires focussed, deep work",
+            "text": "In hackathon-style events, we break away from routine and work for entire weeks on new ideas that push the scientific community forward. From building cool extensions of OpenML itself to solving machine learning problems in entirely new ways, we believe in open science and democritizing machine learning for everyone. Just bring your laptop, we take care of drinks, snacks, focussed time, and great company",
+            "chips": [
+                "See pictures from previous events",
+                "Upcoming events",
+                "Sponsor an event"
+            ]
+        },
+        "nextEvent": {
+            "title": "2022 Spring Hackathon - 20-25 March, Schloss Dagstuhl, Wadern, Germany",
+            "text": "Join us in Dagstuhl Castle, a wonderful location for advancing computer science research in the hills of Saarland, to work on the next generation of OpenML.",
+            "buttons": [
+                "Register (free)",
+                "Getting there",
+                "Prepare",
+                "Schedule"
+            ]
+        },
+        "sponsorEvent": {
+            "title": "Sponsoring can turn a great hackathon into an awesome one!",
+            "text": "We are always very happy with sponsorship to make the next hackathon even better. Sponsoring an event can be done through the OpenML Foundation and will be used directly for the benefit of the participants: to provide snacks, social activities, free stuff (e.g. t-shirts),... We'd be happy to acknowledge your support on the OpenML website, and invite you to give a presentation at the event.",
+            "chips": [
+                "Contact us",
+                "OpenML Foundation",
+                "Other ways to sponsor"
+            ]
+        }
     }
 }
