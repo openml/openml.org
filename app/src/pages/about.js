@@ -7,6 +7,7 @@ import DashboardLayout from "../layouts/Dashboard";
 import Header from "../components/Header";
 import InfoCard from "../components/Card";
 import Wrapper from "../components/Wrapper";
+import Connector from "../utils/SearchAPIConnector";
 
 import {
   Card as MuiCard,
@@ -35,16 +36,17 @@ import {
   faChildReaching,
   faPhoneAlt,
   faEnvelope,
-  faHands,
   faComments,
   faDove,
   faUserAstronaut,
+  faFlagCheckered,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
   faJava,
   faPython,
   faReact,
+  faRebel,
   faRProject,
   faSlack,
   faTwitter,
@@ -65,9 +67,21 @@ export async function getStaticProps({ locale }) {
   };
 }
 
+import { SearchProvider, Results } from "@elastic/react-search-ui";
+
 const Card = styled(MuiCard)(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
+
+const FixedTypography = styled(Typography)`
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  max-height: 53px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limits the number of lines to 3 */
+  -webkit-box-orient: vertical;
+`;
 
 const ContactButton = styled(Fab)({
   margin: 0,
@@ -77,26 +91,11 @@ const ContactButton = styled(Fab)({
   position: "fixed",
 });
 
-const HeroTitle = styled(Typography)({
-  textAlign: "center",
-  lineHeight: "150%",
-  padding: "2vw 5vw",
-});
-
-const Paragraph = styled(Typography)({
-  paddingBottom: "2vw",
-});
-
-const ListIcon = styled(FontAwesomeIcon)({
-  marginLeft: 10,
-  marginRight: 10,
-  fontWeight: 800,
-});
-
 const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${(props) => props.theme.spacing(2)}px;
+  width: 92px;
+  height: 92px;
+  text-align: center;
+  margin: 0 auto ${(props) => props.theme.spacing(5)}px;
   background-image: linear-gradient(
     to bottom right,
     DeepSkyBlue,
@@ -109,42 +108,48 @@ const BigBadge = styled(Badge)`
   position: absolute;
 `;
 
-const tc_ids = [1, 2, 27, 86, 348, 970];
-const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744];
-const active_ids = [10700, 5348, 2902, 8309, 3744];
-const contributor_ids = [1478, 5341];
+// Needed to override the default list styling of the search results
+const ResultsWrapper = styled.div`
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    list-style-type: none;
+  }
 
-const Person = ({ id, name, bio, image }) => {
+  ul li {
+    flex: 1 0 calc(25% - 20px);
+    margin: 10px;
+  }
+`;
+
+const Person = ({ result }) => {
+  const name = result.first_name.raw + " " + result.last_name.raw;
+  const id = result.user_id.raw;
   return (
-    <Grid item style={{ display: "flex" }} xs={12} sm={3} md={3} lg={2}>
-      <Grid container>
-        <Grid item style={{ width: "100%" }}>
-          <BigAvatar alt="..." src={image} align="center">
-            {name.match(/\b(\w)/g).join("")}
-          </BigAvatar>
-          {core_ids.includes(id) && !tc_ids.includes(id) && (
-            <BigBadge badgeContent="core" color="primary" align="center" />
-          )}
-          {core_ids.includes(id) && tc_ids.includes(id) && (
-            <BigBadge badgeContent="SC, core" color="primary" align="center" />
-          )}
-          <Typography variant="h6" display="block" align="center" gutterBottom>
-            {name}
-          </Typography>
-          <Typography
-            variant="caption"
-            display="block"
-            align="center"
-            gutterBottom
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxHeight: 115,
-            }}
-          >
-            {bio}
-          </Typography>
-        </Grid>
+    <Grid item xs={12} sm={4} md={3} xl={2}>
+      <Grid container direction="column" alignItems="center" sx={{ pb: 5 }}>
+        <BigAvatar alt="..." src={result.image.raw} align="center">
+          {name.match(/\b(\w)/g).join("")}
+        </BigAvatar>
+        {core_ids.includes(id) && !tc_ids.includes(id) && (
+          <BigBadge badgeContent="core" color="primary" align="center" />
+        )}
+        {core_ids.includes(id) && tc_ids.includes(id) && (
+          <BigBadge badgeContent="SC, core" color="primary" align="center" />
+        )}
+        <Typography
+          variant="h6"
+          display="block"
+          align="center"
+          sx={{ pt: 3 }}
+          gutterBottom
+        >
+          {name}
+        </Typography>
+        <FixedTypography variant="caption" align="center" gutterBottom>
+          {result.bio.raw}
+        </FixedTypography>
       </Grid>
     </Grid>
   );
@@ -176,38 +181,6 @@ const TitleIcon = styled(FontAwesomeIcon)`
 const Title = styled(Typography)`
   padding-top: 1em;
 `;
-
-const mission = {
-  id: "about.mission",
-  icon: faDove,
-  iconColor: blue[400],
-};
-
-const community = {
-  id: "about.community",
-  icon: faUserAstronaut,
-  iconColor: grey[100],
-};
-
-const governance = {
-  id: "about.governance",
-  icon: faUsers,
-  iconColor: pink[300],
-  chips: [
-    {
-      link: "https://docs.openml.org/Contributing/",
-      icon: faHandHoldingHeart,
-    },
-    {
-      link: "https://docs.openml.org/Governance/",
-      icon: faUsers,
-    },
-    {
-      link: "/about#foundation",
-      icon: faHandHoldingHeart,
-    },
-  ],
-};
 
 const contributors = {
   id: "about.contributors",
@@ -248,6 +221,29 @@ const contributors = {
       link: "https://github.com/openml/blog#contributors-",
       icon: faBlog,
       target: "_blank",
+    },
+  ],
+};
+
+const contact = {
+  id: "about.contact",
+  icon: faComments,
+  iconColor: blue[400],
+  items: [
+    {
+      link: "mailto:openmlhq@googlegroups.com",
+      icon: faEnvelope,
+      color: green[400],
+    },
+    {
+      link: "https://twitter.com/intent/tweet?screen_name=open_ml&text=%23openml.org",
+      icon: faTwitter,
+      color: blue[400],
+    },
+    {
+      link: "https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ",
+      icon: faSlack,
+      color: purple[400],
     },
   ],
 };
@@ -295,27 +291,71 @@ const contact_issues = {
   ],
 };
 
-const contact = {
-  id: "about.contact",
-  icon: faComments,
+const mission = {
+  id: "about.mission",
+  icon: faDove,
   iconColor: blue[400],
-  items: [
+};
+
+const community = {
+  id: "about.community",
+  icon: faUserAstronaut,
+  iconColor: grey[100],
+};
+
+const governance = {
+  id: "about.governance",
+  icon: faUsers,
+  iconColor: purple[300],
+  chips: [
     {
-      link: "mailto:openmlhq@googlegroups.com",
-      icon: faEnvelope,
-      color: green[400],
+      link: "https://docs.openml.org/Contributing/",
+      icon: faHandHoldingHeart,
     },
     {
-      link: "https://twitter.com/intent/tweet?screen_name=open_ml&text=%23openml.org",
-      icon: faTwitter,
-      color: blue[400],
+      link: "https://docs.openml.org/Governance/",
+      icon: faUsers,
     },
     {
-      link: "https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ",
-      icon: faSlack,
-      color: purple[400],
+      link: "/about#foundation",
+      icon: faHandHoldingHeart,
     },
   ],
+};
+
+const foundation = {
+  id: "about.foundation",
+  icon: faRebel,
+  iconColor: blue[400],
+};
+
+const foundation_mission = {
+  id: "about.foundation_mission",
+  icon: faFlagCheckered,
+  iconColor: grey[100],
+};
+
+const tc_ids = [1, 2, 27, 86, 348, 970];
+const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744];
+const active_ids = [10700, 5348, 2902, 8309, 3744];
+const contributor_ids = [1478, 5341];
+const apiConnector = new Connector("user");
+
+const coreConfig = {
+  apiConnector: apiConnector,
+  alwaysSearchOnInitialLoad: true,
+  searchQuery: {
+    terms: {
+      user_id: core_ids,
+    },
+    result_fields: {
+      user_id: { raw: {} },
+      first_name: { raw: {} },
+      last_name: { raw: {} },
+      bio: { raw: {} },
+      image: { raw: {} },
+    },
+  },
 };
 
 function About() {
@@ -324,9 +364,6 @@ function About() {
   if (process.env.NODE_ENV === "development") {
     i18n.reloadResources();
   }
-
-  let people = [];
-  console.log(people);
 
   return (
     <Wrapper>
@@ -371,25 +408,17 @@ function About() {
                 {t("about.core")}
               </Typography>
               <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
-              <Grid container spacing={6}>
-                {people.map(
-                  ({ user_id, first_name, last_name, bio, image }) => (
-                    <Person
-                      key={user_id}
-                      id={user_id}
-                      name={first_name + " " + last_name}
-                      bio={bio}
-                      image={image}
-                    />
-                  )
-                )}
-                <Person
-                  key="0"
-                  id="0"
-                  name="You?"
-                  bio={<Link href="contribute">{t("about.team.join_us")}</Link>}
-                  image=""
-                />
+              <Grid container>
+                <SearchProvider config={coreConfig}>
+                  <ResultsWrapper>
+                    <Results
+                      resultView={Person}
+                      titleField="name"
+                      urlField="user_id"
+                      shouldTrackClickThrough
+                    />{" "}
+                  </ResultsWrapper>
+                </SearchProvider>
               </Grid>
             </CardContent>
           </Card>
@@ -414,7 +443,7 @@ function About() {
             id="mission"
             title={t("about.header.mission")}
             icon={faRocket}
-            color={grey[200]}
+            color={red[400]}
           />
           <InfoCard info={mission} />
         </Grid>
@@ -431,24 +460,10 @@ function About() {
             icon={faHandsHelping}
             color={blue[500]}
           />
-          <Card>
-            <CardContent>
-              <Paragraph>{t("about.foundation.description")}</Paragraph>
-              <Typography
-                variant="h6"
-                align="center"
-                style={{ marginBottom: 20 }}
-              >
-                <ListIcon
-                  icon={faHands}
-                  size="lg"
-                  style={{ color: blue[400] }}
-                />
-                <br /> {t("about.foundation.mission")}
-              </Typography>
-              <Paragraph>{t("about.foundation.mission2")}</Paragraph>
-            </CardContent>
-          </Card>
+          <InfoCard info={foundation} />
+        </Grid>
+        <Grid item xs={12}>
+          <InfoCard info={foundation_mission} />
           <Accordion>
             <AccordionSummary
               expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
@@ -456,11 +471,11 @@ function About() {
               id="panel1a-header"
             >
               <Typography>
-                <b>{t("about.foundation.board_title")}</b>
+                <b>{t("about.foundation_board.title")}</b>
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>{t("about.foundation.board")}</Typography>
+              <Typography>{t("about.foundation_board.text")}</Typography>
             </AccordionDetails>
           </Accordion>
         </Grid>

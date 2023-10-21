@@ -18,12 +18,12 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-function TaskList() {
+function UserList() {
   return (
     <React.Fragment>
-      <Helmet title="OpenML Tasks" />
+      <Helmet title="OpenML Users" />
       <Typography variant="h3" gutterBottom>
-        Tasks
+        Users
       </Typography>
 
       <TableView />
@@ -31,8 +31,8 @@ function TaskList() {
   );
 }
 
-TaskList.getLayout = function getLayout(page) {
+UserList.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-export default TaskList;
+export default UserList;

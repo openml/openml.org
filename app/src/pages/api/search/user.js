@@ -2,13 +2,16 @@ import ElasticsearchAPIConnector from "@elastic/search-ui-elasticsearch-connecto
 
 const connector = new ElasticsearchAPIConnector({
   host: "https://es.openml.org/",
-  index: "data,flow,task,run,user",
+  index: "user",
   apiKey: "",
 });
 
 export default async function handler(req, res) {
   const { requestState, queryConfig } = req.body;
-  const response = await connector.onAutocomplete(requestState, queryConfig);
-  console.log(response);
+  //console.log("Received queryConfig:", queryConfig);
+
+  const response = await connector.onSearch(requestState, queryConfig);
+  //console.log("Elasticsearch response:", response);
+
   res.json(response);
 }

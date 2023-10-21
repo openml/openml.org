@@ -7,10 +7,9 @@ import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 
 // Server-side translation
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-export async function getStaticProps(context) {
-  // extract the locale identifier from the URL
-  const { locale } = context;
+export async function getStaticProps({ locale }) {
   return {
     props: {
       // pass the translation props to the page component

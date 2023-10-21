@@ -27,6 +27,7 @@ import {
   faScaleBalanced,
   faUser,
   faLayerGroup,
+  faCircleUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 const customBlue = {
@@ -74,6 +75,7 @@ const openmlIcons = {
   task: faFlag,
   flow: faCog,
   run: faFlask,
+  user: faCircleUser,
   collections: faLayerGroup,
   benchmarks: faChartColumn,
   tasktypes: faFlag,

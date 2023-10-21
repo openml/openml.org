@@ -8,6 +8,8 @@ import { Card, Tooltip, CardHeader, Avatar } from "@mui/material";
 import TimeAgo from "react-timeago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { blue, orange, red, green, grey, purple } from "@mui/material/colors";
+import * as colors from "@mui/material/colors";
+
 import {
   faCheck,
   faCloudDownloadAlt,
@@ -172,6 +174,18 @@ const data_stats2 = [
   { param: "NumberOfMissingValues", unit: "missing" },
 ];
 
+const colorNames = Object.keys(colors).filter(
+  (color) => typeof colors[color] === "object"
+);
+const shadeKeys = ["300", "500"];
+function getRandomColor() {
+  const randomColorName =
+    colorNames[Math.floor(Math.random() * colorNames.length)];
+  const randomShade = shadeKeys[Math.floor(Math.random() * 2)];
+
+  return colors[randomColorName][randomShade];
+}
+
 const abbreviateNumber = (value) => {
   let newValue = value;
   if (value > 1000) {
@@ -202,6 +216,7 @@ const ResultCard = ({ result }) => {
   const selected = false;
   const fullwidth = undefined;
 
+  //console.log("result", result);
   return (
     <SearchResultCard
       onClick={() => router.push(result.id.raw)}
@@ -213,17 +228,18 @@ const ResultCard = ({ result }) => {
         <SlimCardHeader
           avatar={
             <Avatar
-              src={image}
+              src={result.image.raw}
               style={{
                 height: 50,
                 width: 50,
-                backgroundColor: this.randomColor(),
+                backgroundColor: getRandomColor(),
               }}
             >
-              {initials}
+              {result.first_name.raw[0] + result.last_name.raw[0]}
             </Avatar>
           }
-          title={result.name}
+          title={result.first_name.raw + " " + result.last_name.raw}
+          subheader={result.bio.raw}
         />
       )}
       {type !== "user" && (
@@ -233,7 +249,7 @@ const ResultCard = ({ result }) => {
           {result.name.raw}
         </Title>
       )}
-      {result.description.raw && (
+      {type !== "user" && result.description.raw && (
         <SubTitle>{getTeaser(result.description.raw.toString())}</SubTitle>
       )}
       {stats !== undefined && (
@@ -270,10 +286,13 @@ const ResultCard = ({ result }) => {
         </Stats>
       </Tooltip>
       {stats2 !== undefined && type === "run" && scores}
-      <ColorStats color={grey[400]}>
-        <ColoredIcon icon={faHistory} fixedWidth />
-        <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
-      </ColorStats>
+
+      {type !== "user" && (
+        <ColorStats color={grey[400]}>
+          <ColoredIcon icon={faHistory} fixedWidth />
+          <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
+        </ColorStats>
+      )}
       <SubStats color={grey[400]}>
         {dataStatus[result.status] !== undefined && (
           <Tooltip

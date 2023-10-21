@@ -21,6 +21,8 @@ class SearchAPIConnector {
         queryConfig,
       }),
     });
+    console.log("Received queryConfig:", queryConfig);
+    console.log("Response:", response);
     return response.json();
   }
 

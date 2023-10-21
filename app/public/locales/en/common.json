@@ -191,7 +191,7 @@
         "helmet": "About",
         "title": "About OpenML",
         "core": "Authors",
-        "core_text": "The following people are currently core contributors to OpenML’s development and maintenance. They are elected by other core contributors based on merit and dedication.",
+        "core_text": "The following people are currently core contributors to OpenML’s development and maintenance. They are elected by other core contributors based on merit and dedication, and have write access to one or more OpenML repositories.",
         "join_us": "Join us, get involved!",
         "header": {
             "team": "Meet the team",
@@ -251,11 +251,16 @@
             ]
         },
         "foundation": {
-            "description": "The Open Machine Learning Foundation is a not-for-profit organization supporting, but not controlling, the OpenML project. We are open to collaborate and engage with universities, companies, or anyone sharing the same goals and willing to support the project. This can involve sponsorship, the co-development of new features, or other forms of partnership, insofar they align with the Foundation's mission and do not affect the independence of the OpenML open source project itself.",
-            "mission": "Our mission is to make machine learning simple, accessible, collaborative and open",
-            "mission2": "to enhance and streamline machine learning research, education and skillful practice. The foundation aims to achieve this mission by, among others, supporting the OpenML.org platform to offer a worldwide community the means to openly share and build upon each other’s work, enhancing collaboration, education, scholarship, openness of data and code, automation of processes, and reproducibility of results. We do this in close collaboration with the OpenML community and in accordance with the guiding principles of the OpenML platform, such as the code of honor and the citation policy. More generally, we aim to provide the infrastructure, data, code, and scientific foundations necessary to accelerate research for the general benefit of society and to create positive outcomes for future generations.",
-            "board_title": "Foundation Board",
-            "board": "We want to make sure that the money that the foundation receives is invested for the interest of the community. For this purpose, we have a board that supervises the activity of the foundation. Core contributors to the OpenML project can serve on this board, to make decisions on behalf of the community. The current board members are Joaquin Vanschoren, Jan van Rijn, Matthias Feurer, Bernd Bischl, Heidi Seibold, and Giuseppe Casalicchio."
+            "title": "A not-for-profit foundation to support OpenML",
+            "text": "The Open Machine Learning Foundation supports the OpenML project. We are open to collaborate and engage with universities, companies, or anyone sharing the same goals and willing to support the project. This can involve sponsorship, the co-development of new features, or other forms of partnership, insofar they align with the Foundation's mission and do not affect the independence of the OpenML open source project itself."
+        },
+        "foundation_mission": {
+            "title": "Our mission is to make machine learning simple, accessible, collaborative and open",
+            "text": "... to enhance and streamline machine learning research, education and skillful practice. The foundation aims to achieve this mission by, among others, supporting the OpenML.org platform to offer a worldwide community the means to openly share and build upon each other’s work, enhancing collaboration, education, scholarship, openness of data and code, automation of processes, and reproducibility of results. We do this in close collaboration with the OpenML community and in accordance with the guiding principles of the OpenML platform, such as the code of honor and the citation policy. More generally, we aim to provide the infrastructure, data, code, and scientific foundations necessary to accelerate research for the general benefit of society and to create positive outcomes for future generations."
+        },
+        "foundation_board": {
+            "title": "Foundation Board",
+            "text": "We want to make sure that the money that the foundation receives is invested for the interest of the community. For this purpose, we have a board that supervises the activity of the foundation. Core contributors to the OpenML project can serve on this board, to make decisions on behalf of the community. The current board members are Joaquin Vanschoren, Jan van Rijn, Matthias Feurer, Bernd Bischl, Heidi Seibold, and Giuseppe Casalicchio."
         }
     },
     "meetup": {
