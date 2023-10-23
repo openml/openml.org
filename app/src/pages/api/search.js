@@ -14,11 +14,11 @@ export default async function handler(req, res) {
   }
 
   //This runs server-side, so the output appears in the terminal
-  console.log("OnAutoComplete", indexName, requestState, queryConfig);
-  const response = await connectorsCache[indexName].onAutocomplete(
+  console.log("OnSearch", indexName, requestState, queryConfig);
+  const response = await connectorsCache[indexName].onSearch(
     requestState,
     queryConfig
   );
-  console.log(response);
+  //console.log(response);
   res.json(response);
 }

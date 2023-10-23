@@ -7,7 +7,7 @@ import DashboardLayout from "../layouts/Dashboard";
 import Header from "../components/Header";
 import InfoCard from "../components/Card";
 import Wrapper from "../components/Wrapper";
-import Connector from "../utils/SearchAPIConnector";
+import Connector from "../services/SearchAPIConnector";
 
 import {
   Card as MuiCard,
@@ -67,7 +67,8 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-import { SearchProvider, Results } from "@elastic/react-search-ui";
+import { SearchProvider, Results, withSearch } from "@elastic/react-search-ui";
+import CoreFilter from "../components/search/CoreFilter";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -345,8 +346,16 @@ const coreConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
   searchQuery: {
-    terms: {
-      user_id: core_ids,
+    query: {
+      bool: {
+        filter: [
+          {
+            terms: {
+              user_id: ["1", "1"],
+            },
+          },
+        ],
+      },
     },
     result_fields: {
       user_id: { raw: {} },
@@ -410,6 +419,7 @@ function About() {
               <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
               <Grid container>
                 <SearchProvider config={coreConfig}>
+                  {/*<CoreFilter />*/}
                   <ResultsWrapper>
                     <Results
                       resultView={Person}

@@ -1,4 +1,4 @@
-import Connector from "../../utils/SearchAPIConnector";
+import Connector from "../../services/SearchAPIConnector";
 const apiConnector = new Connector("data");
 
 const searchConfig = {
@@ -74,7 +74,7 @@ const searchConfig = {
     },
   },
   //This doesn't work yet.
-  initialState: { searchTerm: "", sort: { field: "date" } },
+  //initialState: { searchTerm: "", sort: { field: "date" } },
 };
 
 export default searchConfig;

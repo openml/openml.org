@@ -161,7 +161,7 @@ const SearchBar = memo(({ config }) => {
         }}
         autocompleteSuggestions={true}
         onSubmit={(searchTerm) => {
-          window.location.href = `d/search?q=${searchTerm}`;
+          window.location.href = `search?q=${searchTerm}`;
         }}
         inputView={({ getAutocomplete, getInputProps, getButtonProps }) => (
           <>

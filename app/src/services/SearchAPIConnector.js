@@ -1,6 +1,8 @@
 class SearchAPIConnector {
-  constructor(type) {
-    this.type = type;
+  // Use index data by default
+  constructor(indexName = "data") {
+    this.indexName = indexName;
+    console.log("created connector for", indexName);
   }
 
   onResultClick() {
@@ -11,32 +13,36 @@ class SearchAPIConnector {
   }
 
   async onSearch(requestState, queryConfig) {
-    const response = await fetch("/api/search/" + this.type, {
+    const request = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        indexName: this.indexName,
         requestState,
         queryConfig,
       }),
-    });
-    console.log("Received queryConfig:", queryConfig);
-    console.log("Response:", response);
+    };
+    console.log("onSearch", this.indexName, request);
+    const response = await fetch("/api/search", request);
     return response.json();
   }
 
   async onAutocomplete(requestState, queryConfig) {
-    const response = await fetch("api/autocomplete", {
+    const request = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        indexName: this.indexName,
         requestState,
         queryConfig,
       }),
-    });
+    };
+    console.log(request.body);
+    const response = await fetch("api/autocomplete", request);
     return response.json();
   }
 }

@@ -36,6 +36,7 @@ import {
   faChevronDown,
   faList,
   faTable,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../Wrapper";
 
@@ -73,6 +74,12 @@ const FilterTab = styled(Tab)`
     background-color: ${(props) => props.theme.palette.primary.main};
     color: ${(props) => props.theme.palette.primary.contrastText};
   }
+`;
+
+// To hide tabs initially
+const HiddenTab = styled(Tab)`
+  min-height: 0px;
+  visibility: hidden;
 `;
 
 let alignment = "list";
@@ -220,7 +227,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
   ({ config, sort_options, search_facets, facet_aliases, title, type }) => {
-    const [filter, setFilter] = React.useState(false);
+    const [filter, setFilter] = React.useState("hide");
     const handleFilterChange = (event, newFilter) => {
       console.log("newFilter", newFilter);
       if (newFilter === filter) {
@@ -229,6 +236,7 @@ const SearchContainer = memo(
         setFilter(newFilter + "");
       }
     };
+    console.log("Filter:", filter);
     return (
       <SearchProvider config={config}>
         <TabContext value={filter}>
@@ -247,6 +255,7 @@ const SearchContainer = memo(
                   icon={<FontAwesomeIcon icon={faChevronDown} />}
                 />
               ))}
+              <HiddenTab value="hide" label="Hide" key="hide" />
             </FilterTabs>
             {search_facets.map((facet, index) => (
               <FilterTabPanel value={facet.label} key={index}>
