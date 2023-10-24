@@ -4,7 +4,7 @@ import { withSearch } from "@elastic/react-search-ui";
 const CoreFilter = ({ addFilter, setFilter, removeFilter, setSearchTerm }) => {
   useEffect(() => {
     // An example list of user IDs
-    const userIds = ["1", "2"];
+    const userIds = [1, 2];
     // Clear previous filters for user_id field
     removeFilter("id");
     removeFilter("ids");
@@ -13,7 +13,7 @@ const CoreFilter = ({ addFilter, setFilter, removeFilter, setSearchTerm }) => {
     removeFilter("user_id.keyword");
     // Apply the filter using the `terms` filter type
     //addFilter("user_id", userIds, "any");
-    setFilter("user_id", userIds, "any");
+    addFilter("user_id", userIds, "any");
   }, [addFilter, setFilter, removeFilter, setSearchTerm]);
 
   return <div></div>;

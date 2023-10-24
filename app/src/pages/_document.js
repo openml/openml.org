@@ -11,13 +11,13 @@ export default class MyDocument extends Document {
           <meta charSet="utf-8" />
           <meta
             name="description"
-            content="A professional package that comes with plenty of UI components, forms, tables, charts, dashboards, pages and svg icons. Each one is fully customizable, responsive and easy to use."
+            content="Website of OpenML, an open science plaform for machine learning supporting machine readable datasets, automated experimentation, clean and open APIs, and a treasure trove of experimental results."
           />
           <meta
             name="keywords"
-            content="mira,mui,material app,react,material,kit,dashboard,application,admin,template"
+            content="OpenML, machine learning, open science, datasets, experiments, results, open source, open data"
           />
-          <meta name="author" content="Bootlab" />
+          <meta name="author" content="Joaquin Vanschoren" />
 
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"

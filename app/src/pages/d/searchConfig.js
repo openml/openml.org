@@ -6,9 +6,6 @@ const searchConfig = {
   alwaysSearchOnInitialLoad: true,
   searchQuery: {
     search_fields: {
-      name: {
-        weight: 3,
-      },
       description: {},
     },
     result_fields: {
@@ -71,6 +68,20 @@ const searchConfig = {
     group: {
       //This doesn't work yet. TODO: figure out how to group.
       field: { name: { raw: {} } },
+    },
+  },
+  autocompleteQuery: {
+    results: {
+      resultsPerPage: 5,
+      result_fields: {
+        // specify the fields you want from the index to display the results
+        name: { snippet: { size: 100, fallback: true } },
+        url: { raw: {} },
+      },
+      search_fields: {
+        // specify the fields you want to search on
+        name: {},
+      },
     },
   },
   //This doesn't work yet.
