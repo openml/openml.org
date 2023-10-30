@@ -346,23 +346,13 @@ const coreConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
   searchQuery: {
-    query: {
-      bool: {
-        filter: [
-          {
-            terms: {
-              user_id: ["1", "1"],
-            },
-          },
-        ],
-      },
-    },
     result_fields: {
       user_id: { raw: {} },
       first_name: { raw: {} },
       last_name: { raw: {} },
       bio: { raw: {} },
       image: { raw: {} },
+      date: { raw: {} },
     },
   },
 };
@@ -419,7 +409,7 @@ function About() {
               <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
               <Grid container>
                 <SearchProvider config={coreConfig}>
-                  {/*<CoreFilter />*/}
+                  <CoreFilter />
                   <ResultsWrapper>
                     <Results
                       resultView={Person}

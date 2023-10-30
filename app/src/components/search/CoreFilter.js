@@ -25,5 +25,5 @@ export default withSearch(
     setFilter,
     removeFilter,
     setSearchTerm,
-  })
+  }),
 )(CoreFilter);
