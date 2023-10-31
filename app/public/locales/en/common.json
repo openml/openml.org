@@ -191,7 +191,7 @@
         "helmet": "About",
         "title": "About OpenML",
         "core": "Authors",
-        "core_text": "The following people are currently core contributors to OpenML’s development and maintenance. They are elected by other core contributors based on merit and dedication, and have write access to one or more OpenML repositories.",
+        "core_text": "The following people are currently core contributors to OpenML’s development and maintenance. They are elected by other core contributors based on merit and dedication, and have write access to one or more OpenML repositories. In alphabetical order:",
         "join_us": "Join us, get involved!",
         "header": {
             "team": "Meet the team",

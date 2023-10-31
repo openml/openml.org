@@ -1,29 +1,21 @@
 import React, { useEffect } from "react";
 import { withSearch } from "@elastic/react-search-ui";
 
-const CoreFilter = ({ addFilter, setFilter, removeFilter, setSearchTerm }) => {
+const CoreFilter = ({ addFilter, removeFilter, setSort }) => {
   useEffect(() => {
     // An example list of user IDs
-    const userIds = [1, 2];
+    const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744];
     // Clear previous filters for user_id field
-    removeFilter("id");
-    removeFilter("ids");
-    removeFilter("_id");
-    removeFilter("user_id");
     removeFilter("user_id.keyword");
-    // Apply the filter using the `terms` filter type
-    //addFilter("user_id", userIds, "any");
-    addFilter("user_id", userIds, "any");
-  }, [addFilter, setFilter, removeFilter, setSearchTerm]);
+    addFilter("user_id.keyword", core_ids, "any");
+    setSort("user_id.last_name");
+  });
 
   return <div></div>;
 };
 
-export default withSearch(
-  ({ addFilter, setFilter, removeFilter, setSearchTerm }) => ({
-    addFilter,
-    setFilter,
-    removeFilter,
-    setSearchTerm,
-  }),
-)(CoreFilter);
+export default withSearch(({ addFilter, removeFilter, setSort }) => ({
+  addFilter,
+  removeFilter,
+  setSort,
+}))(CoreFilter);

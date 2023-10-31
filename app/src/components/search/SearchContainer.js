@@ -324,7 +324,7 @@ const SearchContainer = memo(
         </Wrapper>
       </SearchProvider>
     );
-  }
+  },
 );
 
 SearchContainer.displayName = "SearchContainer";

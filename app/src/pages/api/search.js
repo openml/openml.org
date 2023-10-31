@@ -19,6 +19,6 @@ export default async function handler(req, res) {
     requestState,
     queryConfig,
   );
-  console.log(response);
+  //console.log(response);
   res.json(response);
 }

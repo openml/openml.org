@@ -67,8 +67,16 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-import { SearchProvider, Results, withSearch } from "@elastic/react-search-ui";
+import {
+  SearchProvider,
+  Results,
+  withSearch,
+  Facet,
+  SearchBox,
+  Sorting,
+} from "@elastic/react-search-ui";
 import CoreFilter from "../components/search/CoreFilter";
+import { Layout } from "react-feather";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -354,6 +362,16 @@ const coreConfig = {
       image: { raw: {} },
       date: { raw: {} },
     },
+    disjunctiveFacets: [
+      "user_id.keyword",
+      "last_name.keyword",
+      "first_name.keyword",
+    ],
+    facets: {
+      "user_id.keyword": { type: "value", size: 30, sort: "count" },
+      "last_name.keyword": { type: "value", size: 30, sort: "count" },
+      "first_name.keyword": { type: "value", size: 30, sort: "count" },
+    },
   },
 };
 
@@ -408,7 +426,10 @@ function About() {
               </Typography>
               <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
               <Grid container>
-                <SearchProvider config={coreConfig}>
+                <SearchProvider
+                  config={coreConfig}
+                  onSearch={(state) => console.log(state)}
+                >
                   <CoreFilter />
                   <ResultsWrapper>
                     <Results
