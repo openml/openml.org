@@ -8,7 +8,7 @@ const CoreFilter = ({ addFilter, removeFilter, setSort }) => {
     // Clear previous filters for user_id field
     removeFilter("user_id.keyword");
     addFilter("user_id.keyword", core_ids, "any");
-    setSort("user_id.last_name");
+    setSort([{ field: "last_name.keyword", direction: "asc" }]); // Has to be an array or it won't work
   });
 
   return <div></div>;

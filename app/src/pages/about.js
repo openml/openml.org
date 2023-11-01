@@ -362,15 +362,10 @@ const coreConfig = {
       image: { raw: {} },
       date: { raw: {} },
     },
-    disjunctiveFacets: [
-      "user_id.keyword",
-      "last_name.keyword",
-      "first_name.keyword",
-    ],
+    // Both are needed to filter on user_id
+    disjunctiveFacets: ["user_id.keyword"],
     facets: {
       "user_id.keyword": { type: "value", size: 30, sort: "count" },
-      "last_name.keyword": { type: "value", size: 30, sort: "count" },
-      "first_name.keyword": { type: "value", size: 30, sort: "count" },
     },
   },
 };
@@ -381,7 +376,9 @@ function About() {
   if (process.env.NODE_ENV === "development") {
     i18n.reloadResources();
   }
-
+  // We're rendering the list of core members using Search UI.
+  // This requires a SearchProvider, but we don't want to show search options.
+  // The CoreFilter component applies the needed search options on loading.
   return (
     <Wrapper>
       <Helmet title={t("about.helmet")} />
@@ -426,10 +423,7 @@ function About() {
               </Typography>
               <Typography sx={{ pb: 5 }}>{t("about.core_text")}</Typography>
               <Grid container>
-                <SearchProvider
-                  config={coreConfig}
-                  onSearch={(state) => console.log(state)}
-                >
+                <SearchProvider config={coreConfig}>
                   <CoreFilter />
                   <ResultsWrapper>
                     <Results

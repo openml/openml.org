@@ -24,7 +24,7 @@ class SearchAPIConnector {
         queryConfig,
       }),
     };
-    console.log(request.body);
+    //console.log(request.body);
     const response = await fetch("/api/search", request);
     return response.json();
   }
@@ -41,7 +41,7 @@ class SearchAPIConnector {
         queryConfig,
       }),
     };
-    console.log(request.body);
+    //console.log(request.body);
     const response = await fetch("/api/autocomplete", request);
     return response.json();
   }
