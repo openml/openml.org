@@ -57,7 +57,6 @@ import { purple, blue, red, green, pink, grey } from "@mui/material/colors";
 // Server-side translation
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Link from "next/link";
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -67,16 +66,8 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-import {
-  SearchProvider,
-  Results,
-  withSearch,
-  Facet,
-  SearchBox,
-  Sorting,
-} from "@elastic/react-search-ui";
+import { SearchProvider, Results } from "@elastic/react-search-ui";
 import CoreFilter from "../components/search/CoreFilter";
-import { Layout } from "react-feather";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -111,11 +102,6 @@ const BigAvatar = styled(Avatar)`
     MediumVioletRed
   );
 `;
-const BigBadge = styled(Badge)`
-  width: 130px;
-  margin-top: -15px;
-  position: absolute;
-`;
 
 // Needed to override the default list styling of the search results
 const ResultsWrapper = styled.div`
@@ -141,12 +127,6 @@ const Person = ({ result }) => {
         <BigAvatar alt="..." src={result.image.raw} align="center">
           {name.match(/\b(\w)/g).join("")}
         </BigAvatar>
-        {core_ids.includes(id) && !tc_ids.includes(id) && (
-          <BigBadge badgeContent="core" color="primary" align="center" />
-        )}
-        {core_ids.includes(id) && tc_ids.includes(id) && (
-          <BigBadge badgeContent="SC, core" color="primary" align="center" />
-        )}
         <Typography
           variant="h6"
           display="block"
@@ -163,25 +143,6 @@ const Person = ({ result }) => {
     </Grid>
   );
 };
-
-function orderList(a, b) {
-  if (core_ids.includes(a.user_id) && !core_ids.includes(b.user_id)) return -1;
-  else if (core_ids.includes(b.user_id) && !core_ids.includes(a.user_id))
-    return 1;
-  else if (
-    active_ids.includes(a.user_id) &&
-    contributor_ids.includes(b.user_id)
-  )
-    return -1;
-  else if (
-    active_ids.includes(b.user_id) &&
-    contributor_ids.includes(a.user_id)
-  )
-    return 1;
-  else if (a.user_id < b.user_id && b.user_id !== 2) {
-    return -1;
-  } else return 1;
-}
 
 const TitleIcon = styled(FontAwesomeIcon)`
   padding-right: 15px;
@@ -309,7 +270,7 @@ const mission = {
 const community = {
   id: "about.community",
   icon: faUserAstronaut,
-  iconColor: grey[100],
+  iconColor: grey[400],
 };
 
 const governance = {
@@ -341,15 +302,10 @@ const foundation = {
 const foundation_mission = {
   id: "about.foundation_mission",
   icon: faFlagCheckered,
-  iconColor: grey[100],
+  iconColor: grey[400],
 };
 
-const tc_ids = [1, 2, 27, 86, 348, 970];
-const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744];
-const active_ids = [10700, 5348, 2902, 8309, 3744];
-const contributor_ids = [1478, 5341];
 const apiConnector = new Connector("user");
-
 const coreConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
