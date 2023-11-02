@@ -299,5 +299,21 @@
                 "Other ways to sponsor"
             ]
         }
+    },
+    "terms": {
+        "helmet": "Terms & Citation",
+        "title": "Terms & Citation",
+        "header": {
+            "licence": "Licenses"
+        },
+        "contact": {
+            "title": "Open Machine Learning, Open licenses.",
+            "text": "We believe that machine learning should be as open and accessible as possible. The OpenML team and contributers have invested countless hours of time and resources to make this dream come true, so please give credit where credit is due.",
+            "items": [
+                "You are free to use OpenML and all empirical data and metadata under the **CC-BY license**. To cite us, please use the citations below.",
+                "The code of the OpenML platform and libraries is **BSD licensed**.",
+                "Individual datasets and algorithms may come with their own citation requests. Please honor such requests. OpenML will show them when they are known."
+            ]
+        }
     }
 }

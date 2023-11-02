@@ -224,11 +224,6 @@ const contact_issues = {
   iconColor: red[400],
   chips: [
     {
-      link: "https://github.com/openml/openml.org#contributors-",
-      icon: faReact,
-      target: "_blank",
-    },
-    {
       link: "https://github.com/openml/openml.org/issues",
       icon: faReact,
       target: "_blank",

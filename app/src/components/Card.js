@@ -1,4 +1,5 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 import { useTranslation } from "next-i18next";
 import styled from "@emotion/styled";
 import { spacing } from "@mui/system";
@@ -68,7 +69,9 @@ const CardItem = ({ link, icon, color, text }) => {
       <ListItemIcon>
         <ListIcon icon={icon} size="2x" style={{ color: color }} />
       </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
+      <ListItemText>
+        <ReactMarkdown>{text}</ReactMarkdown>
+      </ListItemText>
     </ListItemButton>
   );
 };
@@ -116,7 +119,7 @@ const InfoCard = ({ info }) => {
           )}
           {t(`${info.id}.title`)}
         </Typography>
-        <Typography>{t(`${info.id}.text`)}</Typography>
+        <ReactMarkdown>{t(`${info.id}.text`)}</ReactMarkdown>
       </CardContent>
       <CardActions>
         <List component="nav">
