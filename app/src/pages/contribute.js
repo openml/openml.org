@@ -133,27 +133,6 @@ const Hero = () => {
   );
 };
 
-const contribute_intro = {
-  id: "contribute.contribute_intro",
-  items: [
-    {
-      icon: faHandHoldingHeart,
-      link: "contribute#help",
-      color: red[500],
-    },
-    {
-      icon: faHandHoldingDollar,
-      link: "contribute#sponsor",
-      color: green[500],
-    },
-    {
-      icon: faHandHoldingMedical,
-      link: "contribute#help",
-      color: blue[500],
-    },
-  ],
-};
-
 const help_dev = {
   id: "contribute.help_dev",
   icon: faUsersCog,
@@ -422,7 +401,7 @@ function Contribute() {
           />
         </Grid>
         {[help_dev, help_science, help_exec, help_donate].map((card) => (
-          <Grid item display="flex" xs={12} md={6} xl={3} key={card.id}>
+          <Grid item display="flex" xs={12} sm={6} key={card.id}>
             <InfoCard info={card} />
           </Grid>
         ))}
@@ -435,7 +414,7 @@ function Contribute() {
           />
         </Grid>
         {[code, website, docs, datasets, ambassador].map((card) => (
-          <Grid item display="flex" xs={12} md={6} lg={4} key={card.id}>
+          <Grid item display="flex" xs={12} sm={6} lg={4} key={card.id}>
             <InfoCard info={card} />
           </Grid>
         ))}

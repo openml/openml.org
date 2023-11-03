@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const HeroTitle = styled(Typography)`
+const HeroBox = styled(Typography)`
   text-align: center;
   line-height: 150%;
   padding-top: 2em;
@@ -13,17 +13,24 @@ const HeroTitle = styled(Typography)`
   scroll-margin-top: 2.5em;
 `;
 
-const HeroSubTitle = styled(Typography)`
+const HeroTitle = styled(Typography)`
   text-align: center;
   line-height: 150%;
   font-size: 1.1rem;
   padding-top: 0.5vw;
 `;
 
-const Header = ({ id, title, icon, color }) => {
+const HeroSubTitle = styled(Typography)`
+  text-align: center;
+  line-height: 150%;
+  font-size: 0.9rem;
+  padding-top: 0.5vw;
+`;
+
+const Header = ({ id, title, subtitle, icon, color }) => {
   return (
-    <HeroTitle variant="h3" align="center" id={id}>
-      <HeroSubTitle>
+    <HeroBox variant="h3" align="center" id={id}>
+      <HeroTitle>
         <Link href={`#${id}`}>
           <FontAwesomeIcon
             icon={icon}
@@ -33,8 +40,9 @@ const Header = ({ id, title, icon, color }) => {
         </Link>
         <br />
         {title}
-      </HeroSubTitle>
-    </HeroTitle>
+      </HeroTitle>
+      <HeroSubTitle>{subtitle}</HeroSubTitle>
+    </HeroBox>
   );
 };
 

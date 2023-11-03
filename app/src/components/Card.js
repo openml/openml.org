@@ -94,6 +94,10 @@ const ButtonImage = styled.img`
   }
 `;
 
+const copyText = (text) => {
+  navigator.clipboard.writeText(text);
+};
+
 const InfoCard = ({ info }) => {
   const theme = useTheme();
   const { t } = useTranslation();

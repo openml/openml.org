@@ -69,15 +69,6 @@
             "donation": "Make a donation",
             "sponsor": "Become an official Sponsor"
         },
-        "contribute_intro": {
-            "title": "Contributing",
-            "text": "The people who contribute to OpenML do so for the love of\nmachine learning and because they want to help build a more\ninclusive and frictionless ecosystem of data, tools and clear\nresults. You can contribute in different ways:",
-            "items": [
-                "Help us improve the OpenML platform and interfaces.",
-                "Make a donation to support our community and keep OpenML free.",
-                "Share new interesting datasets, models, and experiments."
-            ]
-        },
         "help_dev": {
             "title": "Are you a developer?",
             "text": "We want to make OpenML ridiculously easy to use and empowering.\nContribute your skill and expertise to make OpenML better for yourself and others, either online (on GitHub) or during one of our coding sprints.",
@@ -93,7 +84,7 @@
             ]
         },
         "help_donate": {
-            "title": "Are you one of us?",
+            "title": "All help is welcome",
             "text": "OpenML depends on all of us. You can help keep OpenML free\nand support our community by making a donation (no pressure).\nYou can also join us at an OpenML event, or organize one\nyourself! Or maybe you have another great idea? Please don't hesitate to reach out!",
             "chips": [
                 "Make a donation",
@@ -304,15 +295,45 @@
         "helmet": "Terms & Citation",
         "title": "Terms & Citation",
         "header": {
-            "licence": "Licenses"
+            "licence": "Licenses",
+            "citation": "Citing OpenML",
+            "citation_sub": "If you have used OpenML in a scientific publication, we would appreciate citations to the most relevant papers below."
         },
-        "contact": {
+        "licences": {
             "title": "Open Machine Learning, Open licenses.",
-            "text": "We believe that machine learning should be as open and accessible as possible. The OpenML team and contributers have invested countless hours of time and resources to make this dream come true, so please give credit where credit is due.",
+            "text": "We believe that machine learning should be as open and accessible as possible. The OpenML team and contributers have invested countless hours of time and resources to make this dream come true, so please give credit where credit is due. We have chosen the following licenses to make sure that OpenML can be used by everyone, and that everyone can benefit from it. Click each item for more details.",
             "items": [
-                "You are free to use OpenML and all empirical data and metadata under the **CC-BY license**. To cite us, please use the citations below.",
-                "The code of the OpenML platform and libraries is **BSD licensed**.",
-                "Individual datasets and algorithms may come with their own citation requests. Please honor such requests. OpenML will show them when they are known."
+                "You are free to use OpenML and all data under the **CC-BY license**. This means that you can use and reuse it freely if you also give appropriate credit. To cite us, please use the appropriate citations below.",
+                "Individual datasets, models, and benchmarks may come with their own licences and citation requests. OpenML will show them when they are known.",
+                "OpenML is entirely open source, including the platform code itself and all libraries. All code is **BSD licensed**, one of the most permissive licences available."
+            ]
+        },
+        "cite_openml": {
+            "title": "OpenML Platform",
+            "text": "Joaquin Vanschoren, Jan N. van Rijn, Bernd Bischl, Luis Torgo. **OpenML: networked science in machine learning.** _SIGKDD Explorations 15(2), pp 49-60, 2013_",
+            "chips": [
+                "Paper"
+            ]
+        },
+        "cite_python": {
+            "title": "OpenML Python API",
+            "text": "Matthias Feurer, Jan N. van Rijn, Arlind Kadra, Pieter Gijsbers, Neeratyoy Mallik, Sahithya Ravi, Andreas Mueller, Joaquin Vanschoren, Frank Hutter. **OpenML-Python: an extensible Python API for OpenML.** _JMLR 22(1), Art. 100, pp 4573-4577, 2021_",
+            "chips": [
+                "Paper"
+            ]
+        },
+        "cite_r": {
+            "title": "OpenML R API",
+            "text": "Giuseppe Casalicchio, Jakob Bossek, Michel Lang, Dominik Kirchhoff, Pascal Kerschke, Benjamin Hofner, Heidi Seibold, Joaquin Vanschoren, Bernd Bischl. **OpenML: An R package to connect to the machine learning platform OpenML.** _Computational Statistics 32(3), pp 1-15, 2017_",
+            "chips": [
+                "Paper"
+            ]
+        },
+        "cite_benchmark": {
+            "title": "OpenML Benchmarking suites",
+            "text": "Bernd Bischl, Giuseppe Casalicchio, Matthias Feurer, Pieter Gijsbers, Frank Hutter, Michel Lang, Rafael Gomes Mantovani, Jan N. van Rijn, Joaquin Vanschoren. **OpenML Benchmarking Suites.** _Advances in Neural Information Processing Systems (NeurIPS 2021), 2021_",
+            "chips": [
+                "Paper"
             ]
         }
     }
