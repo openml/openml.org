@@ -50,6 +50,7 @@ import {
   faRProject,
   faSlack,
   faTwitter,
+  faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
 import { purple, blue, red, green, pink, grey } from "@mui/material/colors";
@@ -339,8 +340,9 @@ function About() {
           size="medium"
           style={{ right: 16 }}
           href="https://twitter.com/intent/tweet?screen_name=open_ml"
+          target="_blank"
         >
-          <FontAwesomeIcon icon={faTwitter} size="lg" />
+          <FontAwesomeIcon icon={faXTwitter} size="lg" />
         </ContactButton>
       </Zoom>
       <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
@@ -349,6 +351,7 @@ function About() {
           size="medium"
           style={{ backgroundColor: purple[500], right: 76 }}
           href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ"
+          target="_blank"
         >
           <FontAwesomeIcon icon={faSlack} size="lg" />
         </ContactButton>

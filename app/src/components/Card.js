@@ -27,6 +27,8 @@ const Card = styled(MuiCard)`
   ${spacing};
   position: relative;
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
   &:after {
     content: " ";
     position: absolute;
@@ -49,7 +51,9 @@ const Card = styled(MuiCard)`
   }
 `;
 
-const CardContent = styled(MuiCardContent)``;
+const CardContent = styled(MuiCardContent)`
+  margin-bottom: auto;
+`;
 const CardActions = styled(MuiCardActions)`
   padding-left: 15px;
 `;
@@ -93,10 +97,6 @@ const ButtonImage = styled.img`
     transform: scale(1.0325);
   }
 `;
-
-const copyText = (text) => {
-  navigator.clipboard.writeText(text);
-};
 
 const InfoCard = ({ info }) => {
   const theme = useTheme();
@@ -157,6 +157,8 @@ const InfoCard = ({ info }) => {
               icon={chip.icon}
               text={t(`${info.id}.chips.${i}`)}
               target={chip.target}
+              copytext={chip.text}
+              copymessage={t(chip.message)}
             />
           ))}
           {info.buttons?.map((button, i) => (

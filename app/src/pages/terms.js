@@ -12,15 +12,11 @@ import Wrapper from "../components/Wrapper";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {
-  faBoltLightning,
   faBookOpen,
   faChartColumn,
-  faComments,
   faCopy,
   faHeart,
   faLayerGroup,
-  faPhoneAlt,
-  faR,
   faScaleBalanced,
   faUniversalAccess,
 } from "@fortawesome/free-solid-svg-icons";
@@ -31,7 +27,7 @@ import {
   faPython,
   faRProject,
 } from "@fortawesome/free-brands-svg-icons";
-import { blue, green, orange, purple, red } from "@mui/material/colors";
+import { blue, green, orange, purple, red, yellow } from "@mui/material/colors";
 import Header from "../components/Header";
 import InfoCard from "../components/Card";
 export async function getStaticProps({ locale }) {
@@ -74,7 +70,8 @@ const contact = {
   ],
 };
 
-const bibtex_openml = `@article{OpenML2013,
+const bibtex = {
+  openml: `@article{OpenML2013,
   author = {Joaquin Vanschoren and Jan N. van Rijn and Bernd Bischl and Luis Torgo},
   title = {OpenML: networked science in machine learning},
   journal = {SIGKDD Explorations},
@@ -85,24 +82,61 @@ const bibtex_openml = `@article{OpenML2013,
   url = {http://doi.acm.org/10.1145/2641190.264119},
   doi = {10.1145/2641190.2641198},
   publisher = {ACM}
-}`;
+  }`,
+  python: `@article{OpenMLPython2021,
+    author = {Matthias Feurer and Jan N. van Rijn and Arlind Kadra and Pieter Gijsbers and Neeratyoy Mallik and Sahithya Ravi and Andreas Mueller and Joaquin Vanschoren and Frank Hutter},
+    title = {OpenML-Python: an extensible Python API for OpenML},
+    journal = {arXiv},
+    volume = {1911.02490},
+    number = {},
+    year = {2020},
+    pages = {},
+    url = {https://arxiv.org/pdf/1911.02490.pdf},
+    doi = {},
+    publisher = {}
+  }`,
+  r: `
+  @article{OpenMLR2017,
+    author = {Giuseppe Casalicchio and Jakob Bossek and Michel Lang and Dominik Kirchhoff and Pascal Kerschke and Benjamin Hofner and Heidi Seibold and Joaquin Vanschoren and Bernd Bischl},
+    title = {OpenML: An R package to connect to the machine learning platform OpenML},
+    journal = {Computational Statistics},
+    volume = {32},
+    number = {3},
+    year = {2017},
+    pages = {1-15},
+    url = {http://doi.acm.org/10.1007/s00180-017-0742-2},
+    doi = {10.1007/s00180-017-0742-2},
+    publisher = {Springer Nature}
+  }`,
+  benchmark: `
+  @article{OpenMLSuites2021,
+    author = {Bernd Bischl and Giuseppe Casalicchio and Matthias Feurer and Pieter Gijsbers and Frank Hutter and Michel Lang and Rafael Gomes Mantovani and Jan N. van Rijn and Joaquin Vanschoren},
+    title = {OpenML: A benchmarking layer on top of OpenML to quickly create, download, and share systematic benchmarks},
+    journal = {NeurIPS},
+    volume = {},
+    number = {},
+    year = {2021},
+    pages = {},
+    url = {https://openreview.net/forum?id=OCrD8ycKjG},
+    doi = {},
+    publisher = {}
+  }`,
+};
 
 const cite_openml = {
   id: "terms.cite_openml",
   icon: faLayerGroup,
-  iconColor: blue[500],
+  iconColor: green[500],
   chips: [
     {
       link: "https://www.kdd.org/exploration_files/15-2-2013-12.pdf#page=51",
       icon: faBookOpen,
       target: "_blank",
     },
-  ],
-  bibtex: [
     {
-      bibtex: { bibtex_openml },
+      text: bibtex.openml,
+      message: "terms.bibtex_copied",
       icon: faCopy,
-      target: "_blank",
     },
   ],
 };
@@ -110,12 +144,17 @@ const cite_openml = {
 const cite_python = {
   id: "terms.cite_python",
   icon: faPython,
-  iconColor: blue[500],
+  iconColor: yellow[600],
   chips: [
     {
       link: "https://jmlr2020.csail.mit.edu/papers/volume22/19-920/19-920.pdf",
       icon: faBookOpen,
       target: "_blank",
+    },
+    {
+      text: bibtex.python,
+      message: "terms.bibtex_copied",
+      icon: faCopy,
     },
   ],
 };
@@ -130,18 +169,28 @@ const cite_r = {
       icon: faBookOpen,
       target: "_blank",
     },
+    {
+      text: bibtex.r,
+      message: "terms.bibtex_copied",
+      icon: faCopy,
+    },
   ],
 };
 
 const cite_benchmark = {
   id: "terms.cite_benchmark",
   icon: faChartColumn,
-  iconColor: blue[400],
+  iconColor: purple[400],
   chips: [
     {
       link: "https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html",
       icon: faBookOpen,
       target: "_blank",
+    },
+    {
+      text: bibtex.benchmark,
+      message: "terms.bibtex_copied",
+      icon: faCopy,
     },
   ],
 };

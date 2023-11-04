@@ -103,7 +103,7 @@
             "title": "Good at coding?",
             "text": "Perfect! Please see the issue trackers of the different OpenML\ncomponents that you can contribute to.",
             "chips": [
-                "Developer docs",
+                "Docs",
                 "Website",
                 "REST API",
                 "Python API",
@@ -294,6 +294,7 @@
     "terms": {
         "helmet": "Terms & Citation",
         "title": "Terms & Citation",
+        "bibtex_copied": "BibTex was copied to clipboard",
         "header": {
             "licence": "Licenses",
             "citation": "Citing OpenML",
@@ -312,28 +313,32 @@
             "title": "OpenML Platform",
             "text": "Joaquin Vanschoren, Jan N. van Rijn, Bernd Bischl, Luis Torgo. **OpenML: networked science in machine learning.** _SIGKDD Explorations 15(2), pp 49-60, 2013_",
             "chips": [
-                "Paper"
+                "Paper",
+                "BibTex"
             ]
         },
         "cite_python": {
             "title": "OpenML Python API",
             "text": "Matthias Feurer, Jan N. van Rijn, Arlind Kadra, Pieter Gijsbers, Neeratyoy Mallik, Sahithya Ravi, Andreas Mueller, Joaquin Vanschoren, Frank Hutter. **OpenML-Python: an extensible Python API for OpenML.** _JMLR 22(1), Art. 100, pp 4573-4577, 2021_",
             "chips": [
-                "Paper"
+                "Paper",
+                "BibTex"
             ]
         },
         "cite_r": {
             "title": "OpenML R API",
             "text": "Giuseppe Casalicchio, Jakob Bossek, Michel Lang, Dominik Kirchhoff, Pascal Kerschke, Benjamin Hofner, Heidi Seibold, Joaquin Vanschoren, Bernd Bischl. **OpenML: An R package to connect to the machine learning platform OpenML.** _Computational Statistics 32(3), pp 1-15, 2017_",
             "chips": [
-                "Paper"
+                "Paper",
+                "BibTex"
             ]
         },
         "cite_benchmark": {
             "title": "OpenML Benchmarking suites",
             "text": "Bernd Bischl, Giuseppe Casalicchio, Matthias Feurer, Pieter Gijsbers, Frank Hutter, Michel Lang, Rafael Gomes Mantovani, Jan N. van Rijn, Joaquin Vanschoren. **OpenML Benchmarking Suites.** _Advances in Neural Information Processing Systems (NeurIPS 2021), 2021_",
             "chips": [
-                "Paper"
+                "Paper",
+                "BibTex"
             ]
         }
     }

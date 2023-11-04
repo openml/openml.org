@@ -9,6 +9,8 @@ import {
   grey,
   indigo,
   red,
+  lightBlue,
+  deepPurple,
 } from "@mui/material/colors";
 import { THEMES } from "../constants";
 import {
@@ -52,18 +54,18 @@ const openmlColors = {
   task: yellow[800],
   flow: customBlue[800],
   run: red[400],
-  collections: purple[400],
-  benchmarks: pink[400],
+  collections: pink[400],
+  benchmarks: purple[400],
   tasktypes: orange[400],
-  measures: grey[500],
+  measures: lightBlue[500],
   docs: green[400],
   blog: yellow[700],
   apis: customBlue[800],
   contribute: red[400],
-  meet: purple[400],
-  about: pink[400],
-  terms: grey[500],
-  auth: grey[500],
+  meet: pink[400],
+  about: purple[400],
+  terms: lightBlue[500],
+  auth: deepPurple[500],
 };
 
 const openmlIcons = {
