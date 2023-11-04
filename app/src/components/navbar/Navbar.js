@@ -16,6 +16,7 @@ import {
   Toolbar,
   InputBase,
   Tooltip,
+  useMediaQuery,
 } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
@@ -28,6 +29,7 @@ import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
 
 import Logo from "@/public/static/svg/logo.svg";
+import { useTheme } from "@mui/system";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) =>
@@ -191,7 +193,7 @@ const SearchContainer = ({ ecolor }) => {
 
 const SearchMiniBar = ({ ecolor }) => {
   return (
-    <Toolbar sx={{ display: { xs: "block", md: "none" } }}>
+    <Toolbar>
       <SearchContainer ecolor={ecolor} />
     </Toolbar>
   );
@@ -201,6 +203,8 @@ SearchBar.displayName = "Search";
 
 const Navbar = ({ onDrawerToggle, ecolor }) => {
   const [showSearchBar, setShowSearchBar] = useState(false);
+  const theme = useTheme();
+  const smallerThanMid = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <React.Fragment>
@@ -238,16 +242,16 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
                   />
                 </Grid>
                 <Grid item>
+                  <NavbarLanguagesDropdown />
                   <NavbarCreationDropdown />
                   <NavbarNotificationsDropdown />
-                  <NavbarLanguagesDropdown />
                   <NavbarUserDropdown />
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Toolbar>
-        {showSearchBar && <SearchMiniBar ecolor={ecolor} />}
+        {showSearchBar && smallerThanMid && <SearchMiniBar ecolor={ecolor} />}
       </AppBar>
     </React.Fragment>
   );
