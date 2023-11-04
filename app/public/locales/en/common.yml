@@ -1,0 +1,487 @@
+Search: "Search datasets, models, benchmarks,…"
+SearchShort: "Search"
+landing:
+    helmet: "Welcome"
+    openml: "OpenML"
+    title: "Machine learning, better, together"
+    subtitle: "An open platform with machine-readable datasets, automated training, and reproducible benchmarks."
+    signup: "Sign up"
+    open: "OpenML is open and free"
+    animation:
+        data: "I shared new data :)"
+        model: "I found a better model!"
+    lifecycle:
+        header: "OpenML simplifies the entire machine learning lifecycle"
+        sub_header: "and organizes everything into one collective memory"
+    ai_ready_data:
+        title: "AI-ready data"
+        text: >
+            All datasets are uniformy formatted, have rich, consistent metadata, and can be 
+            loaded directly into your favourite environments.
+    integrations:
+        title: "ML library integrations"
+        text: >
+            Pipelines and models can be shared directly from your favourite machine learning 
+            libraries. No manual steps required.
+    ml_results:
+        title: "A treasure of ML results"
+        text: >
+            Learn from millions of reproducible machine learning benchmarks from thousands of 
+            models trained on thousands of datasets.
+    integration:
+        overline: "Integrations"
+        heading: "Frictionless machine learning"
+        subtitle: "Easily import and export datasets, pipelines, and experiments from your favourite machine learning environments and libraries."
+        button: "API Documentation"
+    faq:
+        heading: "Frequently asked questions"
+        description: "Let's put FAQs here"
+        "1":
+            question: "Question 1"
+            answer: "Answer 1"
+        "2":
+            question: "Question 2"
+            answer: "Answer 2"
+        "3":
+            question: "Question 3"
+            answer: "Answer 3"
+contribute:
+    helmet: "Contribute"
+    hero:
+        line1: "Here's to the crazy ones."
+        line2: "The ones who want to set machine learning free."
+        line3: "They're not fond of hype, or irreproducible claims."
+        line4: "They believe that only openness will push us forward."
+        line5: "And by sharing the best data and models,"
+        line6: "we will make the world better, together."
+    header:
+        intro: "Anyone can change the world"
+        contribute: "Contribute to OpenML"
+        donation: "Make a donation"
+        sponsor: "Become an official Sponsor"
+    help_dev:
+        title: "Are you a developer?"
+        text: >
+            We want to make OpenML ridiculously easy to use and empowering.
+            Contribute your skill and expertise to make OpenML better for yourself and 
+            others, either online (on GitHub) or during one of our coding sprints.
+        chips:
+            - "Get started"
+    help_science:
+        title: "Are you a scientist?"
+        text: >
+            We want to empower people to change the world for the better. You can help by 
+            creating or sharing useful datasets and machine learning pipelines, or by 
+            extending OpenML to make it more useful in science and discovery.
+        chips:
+            - "Get started"
+    help_donate:
+        title: "All help is welcome"
+        text: >
+            OpenML depends on all of us. You can help keep OpenML free
+            and support our community by making a donation (no pressure).
+            You can also join us at an OpenML event, or organize one
+            yourself! Or maybe you have another great idea? Please don't 
+            hesitate to reach out!
+        chips:
+            - "Make a donation"
+            - "Get in touch"
+    help_exec:
+        title: "Are you an executive?"
+        text: >
+            OpenML helps your team to discover machine learning assets
+            and automate processes, so that they can focus on what
+            matters. You can encourage your developers to help out, host 
+            a coding sprint, become an official sponsor, or partner with us. 
+            Legendary.
+        chips:
+            - "Make a donation"
+            - "Get in touch"
+    code:
+        title: "Good at coding?"
+        text: >
+            Perfect! Please see the issue trackers of the different OpenML
+            components that you can contribute to.
+        chips:
+            - "Docs"
+            - "Website"
+            - "REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+    website:
+        title: "Good at web design / UX?"
+        text: >
+            Please help us improve the website to make it nicer and more
+            intuitive for everyone.
+        chips:
+            - "Website docs"
+            - "Website code and issues"
+    docs:
+        title: "Good at explaining things?"
+        text: >
+            OpenML should be easy to understand for everyone. Please help us
+            improve the documentation whenever something is not 100% clear.
+        chips:
+            - "OpenML docs"
+            - "How to update the docs"
+    datasets:
+        title: "Do you care about good datasets?"
+        text: >
+            High quality datasets are crucial for machine learning. Please
+            add new interesting datasets or help check the quality of the
+            existing ones.
+        chips:
+            - "Dataset issue tracker"
+    ambassador:
+        title: "Help us build a stronger community"
+        text: >
+            Become an OpenML ambassador! Help us make OpenML better known in
+            your community, write about OpenML and how you use it, or give
+            us shout-out.
+        chips:
+            - "OpenML blog"
+            - "OpenML on Twitter"
+    donate:
+        title: "You are awesome!"
+        text: >
+            By making a donation, small or large, you help us run coding sprints and 
+            outreach activities, keep our community happy and engaged, and ensure that 
+            we have the basic infrastructure to keep the platform free for everyone. 
+            Also, if OpenML sometimes sucks, we promise to do better! You can sponsor 
+            us via OpenCollective or GitHub. All donors are celebrated in our hall of 
+            fame, and we are fully transparent on how your contributions are used.
+        widgets:
+            - "OpenCollective"
+            - "GitHub Sponsors"
+    sponsor_why:
+        title: "Why?"
+        text: >
+            Simply put, without our generous sponsors, OpenML would not be able to make all 
+            its resources and services available for free to the entire world. By donating to 
+            OpenML you further the project's mission to democratize machine learning research. 
+            Your donations will be used to run engaging community events (which require venues, 
+            food, and swag), support our community manager and developer, and run our 
+            infrastructure (including servers and storage).
+    sponsor_what:
+        title: "What do we offer?"
+        text: >
+            We are open to many forms of sponsorship. While we have a few sponsorship levels 
+            on our Open Collective page, we would also love to hear from you and learn how we 
+            could better align with your goals. Below are examples of possible benefits, but we 
+            are open to new ideas to collaborate with you.
+        items:
+            - "Your logo on our website and in our presentations, shown more prominently for larger sponsors."
+            - "We will send you OpenML T-shirts, stickers,... Or, you can send us materials to hand out at our events."
+            - "We will mention your support in talks and videos. We'll work with you to get the right message across."
+            - "Come give a talk at one of our coding sprints or events, or simply come to work together with us."
+            - "Let us know what you would like to see developed on OpenML, and we'll realize it together."
+            - "Become a partner. If you support a full time developer (anywhere), or let your own developers contribute, you can help shape the future of OpenML."
+        chips:
+            - "Get in touch"
+    sponsor_how:
+        title: "How?"
+        text: >
+            You can sponsor us through Open Collective or GitHub. Click the buttons below to get started. 
+            All sponsors and the amount of sponsoring are acknowledged in our hall of fame, and we'll be 
+            fully transparent on how your sponsorship makes OpenML better every day. This collective is 
+            fiscally hosted by our not-for-profit Open Machine Learning Foundation. If preferred, you
+             can also donate directly to the Foundation.
+        widgets:
+            - "OpenCollective"
+            - "GitHub Sponsors"
+about:
+    helmet: "About"
+    title: "About OpenML"
+    core: "Authors"
+    core_text: >
+        The following people are currently core contributors to OpenML’s development and maintenance.
+        They are elected by other core contributors based on merit and dedication, and have write access to one or more OpenML repositories.
+        In alphabetical order:
+    join_us: "Join us, get involved!"
+    header:
+        team: "Meet the team"
+        contact: "Contact us"
+        mission: "Mission"
+        foundation: "The Open Machine Learning Foundation"
+    contributors:
+        title: "Contributors"
+        text: >
+            We are infinitely grateful to the many contributors who helped in small or big ways. Below are
+            some of the people who have contributed to OpenML on GitHub. You can also check out 
+            the contributors for different sub-projects:
+        chips:
+            - "OpenML website"
+            - "OpenML REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+            - "Datasets"
+            - "Blog"
+    mission:
+        title: "Machine learning research should be open, well-organized and accessible to anyone."
+        text: >
+            There is amazing machine learning research going on every day in labs all over the world.
+            What if we could easily share the latest great results (datasets, code, experiments) from all of our labs and organize them online,
+            so that everyone can easily discover and access them, use them in myriad unexpected ways, and solve problems together on a global scale?
+            We strive to make as many datasets as possible easily discoverable, well documented, and frictionlessly accessible.
+            When new models are trained and evaluated, we also make these results easily discoverable, clearly documented and reproducible,
+            so that we can trust them, learn from them, and build on the combined results of the planet.
+            And of course, we use machine learning on top of all this data to make new discoveries and automate our work.
+    community:
+        title: "From the ML community for the ML community."
+        text: >
+            We build the tools that we love to use, that empower us as researchers, and make our lives easier.
+            Built around open interfaces, OpenML can be used to automatically share (and import) datasets, algorithms, and
+            experiments results straight from the tools that we already know and love.
+            Through our APIs, OpenML can be easily integrated into new workflows and processes, to import new data and export new results.
+            We also believe in great standards for collecting and sharing data and for collecting and analysing experimental results.
+    governance:
+        title: "Open Source and Open Governance."
+        text: >
+            OpenML is being built by an awesome open source community.
+            All code of the OpenML project carries the BSD-3 Clause licence.
+            Anyone with an interest in the project can join the community, contribute to the project design, and participate in the decision making process,
+            as well as meetings (e.g. hackathons) and online discussions.
+            Dedicated contributors can be nominated to become core members, trusted to develop and maintain OpenML with care.
+            Core members, in turn, can be nominated for the steering committee, and keep the project running smoothly with the help of the Open Machine Learning Foundation.
+        chips:
+            - "Contribution guide"
+            - "Governance model"
+            - "Open Machine Learning Foundation"
+    contact:
+        title: "We'd love to hear from you."
+        text: >
+            There are many ways to get in touch with us.
+            We are always happy to hear from you, whether you have a question, a suggestion, or just want to say hi.
+        items:
+            - "For general questions about the OpenML initiative, email us at openmlhq@googlegroups.com"
+            - "Using Twitter? Follow, DM, or tweet to @open_ml"
+            - "Want to be involved in current discussions? Join us on Slack."
+    contact_issues:
+        title: "Issues and feature requests"
+        text: >
+            Did you run into an issue? Want to request a feature or do a pull request?
+            Please check the corresponding issue tracker on GitHub for solutions or reporting new issues.
+        chips:
+            - "OpenML website"
+            - "OpenML REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+            - "Datasets"
+    foundation:
+        title: "A not-for-profit foundation to support OpenML"
+        text: >
+            The Open Machine Learning Foundation supports the OpenML project.
+            We are open to collaborate and engage with universities, companies, or anyone sharing the same goals and willing to support the project.
+            This can involve sponsorship, the co-development of new features, or other forms of partnership, insofar they align with the Foundation's mission and do not affect the independence of the OpenML open source project itself.
+    foundation_mission:
+        title: "Our mission is to make machine learning simple, accessible, collaborative and open"
+        text: >
+            ... to enhance and streamline machine learning research, education and skillful practice.
+            The foundation aims to achieve this mission by, among others, supporting the OpenML.org platform to offer a worldwide community the means to openly share and build upon each other’s work,
+            enhancing collaboration, education, scholarship, openness of data and code, automation of processes, and reproducibility of results.
+            We do this in close collaboration with the OpenML community and in accordance with the guiding principles of the OpenML platform, such as the code of honor and the citation policy.
+            More generally, we aim to provide the infrastructure, data, code, and scientific foundations necessary to accelerate research for the general benefit of society and to create positive outcomes for future generations.
+    foundation_board:
+        title: "Foundation Board"
+        text: >
+            We want to make sure that the money that the foundation receives is invested for the interest of the community.
+            For this purpose, we have a board that supervises the activity of the foundation.
+            Core contributors to the OpenML project can serve on this board, to make decisions on behalf of the community.
+            The current board members are Joaquin Vanschoren, Jan van Rijn, Matthias Feurer, Bernd Bischl, Heidi Seibold, and Giuseppe Casalicchio.
+meetup:
+    helmet: "Meet up"
+    title: "Let's meet up!"
+    header:
+        meetup: "Join one of our hackathons"
+        upcoming: "Upcoming events"
+        sponsor: "Sponsor an event"
+    hackathons:
+        title: "Changing the world requires focussed, deep work"
+        text: >
+            In hackathon-style events, we break away from routine and work for entire weeks on new ideas that push the
+            scientific community forward. From building cool extensions of OpenML itself to solving machine learning
+            problems in entirely new ways, we believe in open science and democritizing machine learning for everyone.
+            Just bring your laptop, we take care of drinks, snacks, focussed time, and great company
+        chips:
+            - "See pictures from previous events"
+            - "Upcoming events"
+            - "Sponsor an event"
+    nextEvent:
+        title: "2022 Spring Hackathon - 20-25 March, Schloss Dagstuhl, Wadern, Germany"
+        text: >
+            Join us in Dagstuhl Castle, a wonderful location for advancing computer science research in the hills of Saarland,
+            to work on the next generation of OpenML.
+        buttons:
+            - "Register (free)"
+            - "Getting there"
+            - "Prepare"
+            - "Schedule"
+    sponsorEvent:
+        title: "Sponsoring can turn a great hackathon into an awesome one!"
+        text: >
+            We are always very happy with sponsorship to make the next hackathon even better. Sponsoring an event can be
+            done through the OpenML Foundation and will be used directly for the benefit of the participants: to provide snacks,
+            social activities, free stuff (e.g. t-shirts),... We'd be happy to acknowledge your support on the OpenML website,
+            and invite you to give a presentation at the event.
+        chips:
+            - "Contact us"
+            - "OpenML Foundation"
+            - "Other ways to sponsor"
+terms:
+    helmet: "Terms & Citation"
+    title: "Terms & Citation"
+    bibtex_copied: "BibTex was copied to clipboard"
+    header:
+        licence: "Licenses"
+        citation: "Citing OpenML"
+        citation_sub: >
+            If you have used OpenML in a scientific publication, we would appreciate citations to the most relevant papers below.
+        termsofuse: "Honor Code, Terms, and Privacy Policy"
+    licences:
+        title: "Open Machine Learning, Open licenses."
+        text: >
+            We believe that machine learning should be as open and accessible as possible. We have chosen the following licenses
+            to make sure that OpenML can be used by everyone, and that everyone can benefit from it. The OpenML team and thousands
+            of contributers have invested countless hours of time and resources to make this dream come true, so please give credit
+            where credit is due. Click each item for more details.
+        items:
+            - >
+              You are free to use OpenML and all data under the **CC-BY license**. This means that you can use and reuse it freely if
+              you also give appropriate credit. To cite us, please use the appropriate citations below.
+            - >
+              Individual datasets, models, and benchmarks may come with their own licences and citation requests. OpenML will show them
+              when they are known.
+            - >
+              OpenML is entirely open source, including the platform code itself and all libraries. All code is **BSD licensed**, one
+              of the most permissive licences available.
+    cite_openml:
+        title: "OpenML Platform"
+        text: >
+            Joaquin Vanschoren, Jan N. van Rijn, Bernd Bischl, Luis Torgo. **OpenML: networked science in machine learning.**
+            _SIGKDD Explorations 15(2), pp 49-60, 2013_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_python:
+        title: "OpenML Python API"
+        text: >
+            Matthias Feurer, Jan N. van Rijn, Arlind Kadra, Pieter Gijsbers, Neeratyoy Mallik, Sahithya Ravi, Andreas Mueller, Joaquin Vanschoren,
+            Frank Hutter. **OpenML-Python: an extensible Python API for OpenML.** _JMLR 22(1), Art. 100, pp 4573-4577, 2021_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_r:
+        title: "OpenML R API"
+        text: >
+            Giuseppe Casalicchio, Jakob Bossek, Michel Lang, Dominik Kirchhoff, Pascal Kerschke, Benjamin Hofner, Heidi Seibold, Joaquin Vanschoren,
+            Bernd Bischl. **OpenML: An R package to connect to the machine learning platform OpenML.** _Computational Statistics 32(3), pp 1-15, 2017_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_benchmark:
+        title: "OpenML Benchmarking suites"
+        text: >
+            Bernd Bischl, Giuseppe Casalicchio, Matthias Feurer, Pieter Gijsbers, Frank Hutter, Michel Lang, Rafael Gomes Mantovani, Jan N. van Rijn,
+            Joaquin Vanschoren. **OpenML Benchmarking Suites.** _Advances in Neural Information Processing Systems (NeurIPS 2021), 2021_
+        chips:
+            - "Paper"
+            - "BibTex"
+    honorcode:
+        title: "Honor code"
+        text: |
+            By joining OpenML, you join a special worldwide community of data scientists building on each other's results and connecting
+            their minds as efficiently as possible. This community depends on your motivation to share data, tools and ideas, and to do so
+            with honesty. In return, you will gain trust, visibility and reputation, igniting online collaborations and studies that otherwise
+            may not have happened.
+
+            By using any part of OpenML, you agree to:  
+            * **Give credit where credit is due.** Cite the authors whose work you are building on, or build collaborations where appropriate.
+            * **Give back to the community** by sharing your own data as openly and as soon as possible, or by helping the community in other ways.
+            In doing so, you gain visibility and impact (citations).
+            * **Share data according to your best efforts.** Everybody make mistakes, but we trust you to correct them as soon as possible.
+            Remove or flag data that cannot be trusted.
+            * **Be polite and constructive** in all discussions. Criticism of methods is welcomed, but personal criticisms should be avoided.
+            * **Do not steal** the work of people who openly share it. OpenML makes it easy to find all shared data (and when it was shared),
+            thus everybody will know if you do this.
+    termsofuse:
+        title: "Terms of use"
+        text: |
+            You can use OpenML for free, but you must follow the rules below. If you do not, we may suspend or terminate your account.
+            * You agree that you are responsible for your own use of OpenML.org and all content submitted by you, in accordance with the 
+            Honor Code and all applicable local, state, national and international laws.
+            * By submitting or distributing content from OpenML.org, you affirm that you have the necessary rights, licenses, consents 
+            and/or permissions to reproduce and publish this content. You cannot upload sensitive or confidential data. You, and not the 
+            developers of OpenML.org, are solely responsible for your submissions.
+            * By submitting content to OpenML.org, you grant OpenML.org the right to host, transfer, display and use this content, in 
+            accordance with your sharing settings and any licences granted by you. You also grant to each user a non-exclusive license 
+            to access and use this content for their own research purposes, in accordance with any licences granted by you.
+            * You may maintain one user account and not let anyone else use your username and/or password. You may not impersonate other 
+            persons.
+            * You will not intend to damage, disable, or impair any OpenML server or interfere with any other party's use and enjoyment 
+            of the service. You may not attempt to gain unauthorized access to the Site, other accounts, computer systems or networks 
+            connected to any OpenML server. You may not obtain or attempt to obtain any materials or information not intentionally made 
+            available through OpenML.
+            * Strictly prohibited are content that defames, harasses or threatens others, that infringes another's intellectual property, 
+            as well as indecent or unlawful content, advertising, or intentionally inaccurate information posted with the intent of 
+            misleading others. It is also prohibited to post code containing viruses, malware, spyware or any other similar software 
+            that may damage the operation of another's computer or property.
+    privacy:
+        title: "Privacy policy"
+        text: | 
+            At OpenML, accessible from openml.org, one of our main priorities is the privacy of our visitors. This Privacy Policy 
+            contains types of information that is collected and recorded by the OpenML website and how we use it. It applies only 
+            to our online activities and is valid for visitors to our website with regards to the information that they shared and/or 
+            collect in OpenML. If you have additional questions or require more information about our Privacy Policy, do not hesitate 
+            to contact us.
+
+            ### General Data Protection Regulation (GDPR)
+            We are a Data Controller of your information. OpenML's legal basis for collecting and using the personal information 
+            described in this Privacy Policy depends on the Personal Information we collect and the specific context in which we 
+            collect the information:
+
+            * OpenML needs to perform a contract with you
+            * You have given OpenML permission to do so
+            * Processing your personal information is in OpenML legitimate interests
+            * OpenML needs to comply with the law
+            
+            OpenML will retain your personal information only for as long as is necessary for the purposes set out in this 
+            Privacy Policy. We will retain and use your information to the extent necessary to comply with our legal obligations, 
+            resolve disputes, and enforce our policies.
+
+            If you are a resident of the European Economic Area (EEA), you have certain data protection rights. If you wish to 
+            be informed what Personal Information we hold about you and if you want it to be removed from our systems, 
+            please contact us. In certain circumstances, you have the following data protection rights:
+
+            * The right to access, update or to delete the information we have on you.
+            * The right of rectification.
+            * The right to object.
+            * The right of restriction.
+            * The right to data portability.
+            * The right to withdraw consent.
+            
+            ### Log Files
+            OpenML follows a standard procedure of using log files, with the sole purpose of improving the user experience. 
+            These files log visitors when they visit websites. All hosting services do this as a part of hosting services' analytics. 
+            The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), 
+            date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is 
+            personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' 
+            usage of the website, and gathering demographic information.
+
+            ### Cookies
+            Like any other website, OpenML uses 'cookies'. These cookies are used to store information including visitors' preferences, 
+            and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience 
+            by customizing our web page content based on visitors' browser type and/or other information. You can choose to disable cookies 
+            through your individual browser options (see your browsers' respective websites).
+
+            OpenML does not share this information with any third party, and does not run any advertising services.
+
+            ### Children's information
+            OpenML does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that 
+            your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will 
+            do our best efforts to promptly remove such information from our records.
+
+            ### Consent
+            By using our website, you hereby consent to our Privacy Policy and agree to its terms.

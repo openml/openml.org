@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import styled from "@emotion/styled";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
@@ -15,6 +15,7 @@ import {
   IconButton as MuiIconButton,
   Toolbar,
   InputBase,
+  Tooltip,
 } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
@@ -53,17 +54,8 @@ const SearchWrapper = styled(Box)`
     background-color: ${(props) =>
       darken(
         0.05,
-        props.ecolor ? props.ecolor : props.theme.header.background
+        props.ecolor ? props.ecolor : props.theme.header.background,
       )};
-  }
-
-  ${(props) => props.theme.breakpoints.down("md")} {
-    margin-left: ${(props) => props.theme.spacing(8)};
-  }
-
-  ${(props) => props.theme.breakpoints.down("sm")} {
-    margin: 0 auto;
-    display: flex;
   }
 
   svg {
@@ -93,14 +85,6 @@ const Input = styled(InputBase)`
     opacity: 0.8;
   }
 
-  ${(props) => props.theme.breakpoints.down("sm")} {
-    & > input::placeholder {
-      width: 47px;
-    }
-    & > input {
-      min-width: 200px;
-    }
-  }
   ${(props) => props.theme.breakpoints.up("md")} {
     & > input {
       min-width: 400px;
@@ -142,6 +126,18 @@ const Brand = styled(ListItemButton)`
   }
 `;
 
+function NavbarSearch({ toggleSearch }) {
+  return (
+    <React.Fragment>
+      <Tooltip title="Search">
+        <IconButton color="inherit" onClick={toggleSearch} size="large">
+          <FontAwesomeIcon icon={faSearch} />
+        </IconButton>
+      </Tooltip>
+    </React.Fragment>
+  );
+}
+
 const SearchBar = memo(({ config }) => {
   const { t } = useTranslation();
 
@@ -178,9 +174,34 @@ const SearchBar = memo(({ config }) => {
   );
 });
 
+const SearchContainer = ({ ecolor }) => {
+  return (
+    <SearchWrapper
+      ecolor={ecolor}
+      sx={{
+        display: "flex",
+        alignItems: "flex-end",
+      }}
+    >
+      <FontAwesomeIcon icon={faSearch} />
+      <SearchBar config={searchConfig} />
+    </SearchWrapper>
+  );
+};
+
+const SearchMiniBar = ({ ecolor }) => {
+  return (
+    <Toolbar sx={{ display: { xs: "block", md: "none" } }}>
+      <SearchContainer ecolor={ecolor} />
+    </Toolbar>
+  );
+};
+
 SearchBar.displayName = "Search";
 
 const Navbar = ({ onDrawerToggle, ecolor }) => {
+  const [showSearchBar, setShowSearchBar] = useState(false);
+
   return (
     <React.Fragment>
       <AppBar position="sticky" elevation={0} ecolor={ecolor}>
@@ -196,7 +217,6 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
                 <MenuIcon />
               </IconButton>
             </Grid>
-
             <Grid item>
               <BrandIcon />
               <Brand ecolor={ecolor}>
@@ -206,27 +226,28 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
               </Brand>
             </Grid>
             <Grid item xs sx={{ display: { xs: "block", sm: "none" } }} />
-            <Grid item>
-              <SearchWrapper
-                ecolor={ecolor}
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                }}
-              >
-                <FontAwesomeIcon icon={faSearch} />
-                <SearchBar config={searchConfig} />
-              </SearchWrapper>
+            <Grid item sx={{ display: { xs: "none", md: "block" } }}>
+              <SearchContainer ecolor={ecolor} />
             </Grid>
             <Grid item xs />
             <Grid item>
-              <NavbarNotificationsDropdown />
-              <NavbarLanguagesDropdown />
-              <NavbarCreationDropdown />
-              <NavbarUserDropdown />
+              <Grid container>
+                <Grid item xs sx={{ display: { xs: "block", md: "none" } }}>
+                  <NavbarSearch
+                    toggleSearch={() => setShowSearchBar((prev) => !prev)}
+                  />
+                </Grid>
+                <Grid item>
+                  <NavbarCreationDropdown />
+                  <NavbarNotificationsDropdown />
+                  <NavbarLanguagesDropdown />
+                  <NavbarUserDropdown />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Toolbar>
+        {showSearchBar && <SearchMiniBar ecolor={ecolor} />}
       </AppBar>
     </React.Fragment>
   );

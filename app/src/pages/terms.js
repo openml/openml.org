@@ -12,9 +12,13 @@ import Wrapper from "../components/Wrapper";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {
+  faAward,
   faBookOpen,
   faChartColumn,
   faCopy,
+  faEyeSlash,
+  faFileContract,
+  faGavel,
   faHeart,
   faLayerGroup,
   faScaleBalanced,
@@ -27,7 +31,15 @@ import {
   faPython,
   faRProject,
 } from "@fortawesome/free-brands-svg-icons";
-import { blue, green, orange, purple, red, yellow } from "@mui/material/colors";
+import {
+  blue,
+  deepPurple,
+  green,
+  orange,
+  purple,
+  red,
+  yellow,
+} from "@mui/material/colors";
 import Header from "../components/Header";
 import InfoCard from "../components/Card";
 export async function getStaticProps({ locale }) {
@@ -144,7 +156,7 @@ const cite_openml = {
 const cite_python = {
   id: "terms.cite_python",
   icon: faPython,
-  iconColor: yellow[600],
+  iconColor: yellow[800],
   chips: [
     {
       link: "https://jmlr2020.csail.mit.edu/papers/volume22/19-920/19-920.pdf",
@@ -195,6 +207,24 @@ const cite_benchmark = {
   ],
 };
 
+const honor_code = {
+  id: "terms.honorcode",
+  icon: faAward,
+  iconColor: green[500],
+};
+
+const terms = {
+  id: "terms.termsofuse",
+  icon: faGavel,
+  iconColor: green[500],
+};
+
+const privacy_policy = {
+  id: "terms.privacy",
+  icon: faEyeSlash,
+  iconColor: green[500],
+};
+
 function Terms() {
   // When developing, reload i18n resources on page reload
   const { i18n, t } = useTranslation();
@@ -222,7 +252,7 @@ function Terms() {
         </Grid>
         <Grid item xs={12}>
           <Header
-            id="intro"
+            id="citation"
             title={t("terms.header.citation")}
             subtitle={t("terms.header.citation_sub")}
             icon={faHeart}
@@ -231,6 +261,19 @@ function Terms() {
         </Grid>
         {[cite_openml, cite_python, cite_r, cite_benchmark].map((card) => (
           <Grid item display="flex" xs={12} sm={6} key={card.id}>
+            <InfoCard info={card} />
+          </Grid>
+        ))}
+        <Grid item xs={12}>
+          <Header
+            id="termsofuse"
+            title={t("terms.header.termsofuse")}
+            icon={faFileContract}
+            color={deepPurple[400]}
+          />
+        </Grid>
+        {[honor_code, terms, privacy_policy].map((card) => (
+          <Grid item display="flex" xs={12} key={card.id}>
             <InfoCard info={card} />
           </Grid>
         ))}

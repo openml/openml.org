@@ -26,7 +26,7 @@ export async function getStaticProps({ locale }) {
 import dynamic from "next/dynamic";
 const Introduction = dynamic(
   () => import("../components/pages/landing/Introduction"),
-  { ssr: false }
+  { ssr: false },
 );
 
 function Presentation() {

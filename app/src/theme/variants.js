@@ -57,15 +57,15 @@ const openmlColors = {
   collections: pink[400],
   benchmarks: purple[400],
   tasktypes: orange[400],
-  measures: lightBlue[500],
+  measures: deepPurple[400],
   docs: green[400],
-  blog: yellow[700],
+  blog: yellow[800],
   apis: customBlue[800],
   contribute: red[400],
   meet: pink[400],
   about: purple[400],
-  terms: lightBlue[500],
-  auth: deepPurple[500],
+  terms: deepPurple[400],
+  auth: lightBlue[500],
 };
 
 const openmlIcons = {

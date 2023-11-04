@@ -15,10 +15,10 @@ import {
   CardContent as MuiCardContent,
   CardActions as MuiCardActions,
   CardMedia as MuiCardMedia,
-  List,
+  List as MuiList,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
+  ListItemText as MuiListItemText,
   Typography as MuiTypography,
   useMediaQuery,
 } from "@mui/material";
@@ -56,10 +56,20 @@ const CardContent = styled(MuiCardContent)`
 `;
 const CardActions = styled(MuiCardActions)`
   padding-left: 15px;
+  padding-top: 0px;
 `;
-
 const CardMedia = styled(MuiCardMedia)`
   height: 220px;
+`;
+const List = styled(MuiList)`
+  padding-top: 0px;
+`;
+const ListItemText = styled(MuiListItemText)`
+  margin: 0px;
+`;
+const Markdown = styled(ReactMarkdown)`
+  margin-block-start: -0.5em;
+  margin-block-end: -0.5em;
 `;
 
 const ListIcon = styled(FontAwesomeIcon)`
@@ -74,7 +84,7 @@ const CardItem = ({ link, icon, color, text }) => {
         <ListIcon icon={icon} size="2x" style={{ color: color }} />
       </ListItemIcon>
       <ListItemText>
-        <ReactMarkdown>{text}</ReactMarkdown>
+        <Markdown>{text}</Markdown>
       </ListItemText>
     </ListItemButton>
   );
@@ -123,7 +133,7 @@ const InfoCard = ({ info }) => {
           )}
           {t(`${info.id}.title`)}
         </Typography>
-        <ReactMarkdown>{t(`${info.id}.text`)}</ReactMarkdown>
+        <Markdown>{t(`${info.id}.text`)}</Markdown>
       </CardContent>
       <CardActions>
         <List component="nav">

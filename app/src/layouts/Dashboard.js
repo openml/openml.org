@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import { Box, CssBaseline, Paper as MuiPaper, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { spacing } from "@mui/system";
 
 import GlobalStyle from "../components/GlobalStyle";

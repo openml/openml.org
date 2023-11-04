@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Helmet } from "react-helmet-async";
 import { spacing } from "@mui/system";
@@ -17,7 +17,6 @@ import {
   AccordionDetails,
   Grid,
   Avatar,
-  Badge,
   Fab,
   Zoom,
   Typography as MuiTypography,
@@ -121,7 +120,7 @@ const ResultsWrapper = styled.div`
 
 const Person = ({ result }) => {
   const name = result.first_name.raw + " " + result.last_name.raw;
-  const id = result.user_id.raw;
+  const id = result.user_id.raw; //TODO: go to user profile on click
   return (
     <Grid item xs={12} sm={4} md={3} xl={2}>
       <Grid container direction="column" alignItems="center" sx={{ pb: 5 }}>
@@ -145,6 +144,44 @@ const Person = ({ result }) => {
   );
 };
 
+const AvatarContainer = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  cursor: pointer;
+  & > * {
+    margin: 4px;
+  }
+  &:hover {
+    filter: brightness(85%);
+  }
+`;
+
+const AvatarLabel = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const MiniPerson = ({ result }) => {
+  const name = result.login;
+
+  if (name.includes("[bot]")) return <div></div>;
+
+  return (
+    <Grid item xs={6} sm={4} md={3} lg={2}>
+      <AvatarContainer onClick={() => window.open(result.html_url, "_blank")}>
+        <AvatarLabel>
+          <Avatar
+            style={{ marginRight: "14px" }}
+            alt={name}
+            src={result.avatar_url}
+          />
+          <Typography variant="body2">{name}</Typography>
+        </AvatarLabel>
+      </AvatarContainer>
+    </Grid>
+  );
+};
+
 const TitleIcon = styled(FontAwesomeIcon)`
   padding-right: 15px;
 `;
@@ -159,37 +196,37 @@ const contributors = {
   iconColor: red[400],
   chips: [
     {
-      link: "https://github.com/openml/openml.org#contributors-",
+      link: "https://github.com/openml/openml.org/graphs/contributors",
       icon: faReact,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/OpenML#contributors-",
+      link: "https://github.com/openml/OpenML/graphs/contributors",
       icon: faCloud,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/openml-python#contributors-",
+      link: "https://github.com/openml/openml-python/graphs/contributors",
       icon: faPython,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/openml-r#contributors-",
+      link: "https://github.com/openml/openml-r/graphs/contributors",
       icon: faRProject,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/openml-java#contributors-",
+      link: "https://github.com/openml/openml-java/graphs/contributors",
       icon: faJava,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/openml-data#contributors-",
+      link: "https://github.com/openml/openml-data/graphs/contributors",
       icon: faDatabase,
       target: "_blank",
     },
     {
-      link: "https://github.com/openml/blog#contributors-",
+      link: "https://github.com/openml/blog/graphs/contributors",
       icon: faBlog,
       target: "_blank",
     },
@@ -322,6 +359,80 @@ const coreConfig = {
   },
 };
 
+function Contributors() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const repos = [
+        "OpenML",
+        "openml.org",
+        "openml-python",
+        "openml-r",
+        "openml-java",
+        "openml-data",
+        "blog",
+        "docs",
+        "openml-tensorflow",
+        "openml-pytorch",
+        "benchmark-suites",
+        "automlbenchmark",
+        "server-api",
+      ];
+
+      try {
+        // Use Promise.all to wait for all fetch requests to complete
+        const responses = await Promise.all(
+          repos.map((repo) =>
+            fetch(`https://api.github.com/repos/openml/${repo}/contributors`),
+          ),
+        );
+
+        // Convert the responses to JSON
+        const jsonData = await Promise.all(responses.map((res) => res.json()));
+
+        // Merge the results, sum contributions and filter out unique logins
+        const contributorsMap = new Map();
+
+        jsonData.forEach((repoContributors) => {
+          repoContributors.forEach((contributor) => {
+            if (contributorsMap.has(contributor.login)) {
+              // If the contributor already exists, add to their contributions
+              contributorsMap.get(contributor.login).contributions +=
+                contributor.contributions;
+            } else {
+              // If the contributor does not exist, add them to the Map
+              contributorsMap.set(contributor.login, {
+                ...contributor,
+                contributions: contributor.contributions,
+              });
+            }
+          });
+        });
+
+        // Convert the Map values to an array and sort by contributions
+        const sortedData = Array.from(contributorsMap.values()).sort(
+          (a, b) => b.contributions - a.contributions,
+        );
+
+        setData(sortedData);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []); // No dependencies, this effect runs once on mount
+
+  return (
+    <Grid container spacing={0}>
+      {data.map((person) => (
+        <MiniPerson result={person} key={person.login} />
+      ))}
+    </Grid>
+  );
+}
+
 function About() {
   // When developing, reload i18n resources on page reload
   const { i18n, t } = useTranslation();
@@ -393,7 +504,12 @@ function About() {
           </Card>
         </Grid>
         <Grid item display="flex" xs={12} key={contact.id}>
-          <InfoCard info={contributors} />
+          <Card>
+            <InfoCard info={contributors} />
+            <CardContent>
+              <Contributors />
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12}>
           <Header
