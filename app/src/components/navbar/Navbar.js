@@ -17,6 +17,7 @@ import {
   InputBase,
   Tooltip,
   useMediaQuery,
+  Divider,
 } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
@@ -241,9 +242,15 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
                     toggleSearch={() => setShowSearchBar((prev) => !prev)}
                   />
                 </Grid>
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  variant="middle"
+                  sx={{ display: { xs: "block", md: "none" }, m: 2 }}
+                />
                 <Grid item>
                   <NavbarLanguagesDropdown />
-                  <NavbarCreationDropdown />
+                  {!smallerThanMid && <NavbarCreationDropdown />}
                   <NavbarNotificationsDropdown />
                   <NavbarUserDropdown />
                 </Grid>
