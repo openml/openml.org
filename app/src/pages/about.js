@@ -83,13 +83,13 @@ const FixedTypography = styled(Typography)`
   -webkit-box-orient: vertical;
 `;
 
-const ContactButton = styled(Fab)({
-  margin: 0,
-  top: 85,
-  bottom: "auto",
-  left: "auto",
-  position: "fixed",
-});
+const ContactButton = styled(Fab)`
+  margin: 0;
+  top: 85px;
+  bottom: auto;
+  left: auto;
+  position: fixed;
+`;
 
 const BigAvatar = styled(Avatar)`
   width: 92px;

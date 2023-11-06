@@ -91,7 +91,7 @@ const Typography = styled(MuiTypography)(spacing);
 
 const ContactButton = styled(Fab)`
   margin: 0;
-  top: 85;
+  top: 85px;
   bottom: auto;
   left: auto;
   position: fixed;

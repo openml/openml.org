@@ -191,7 +191,7 @@ contribute:
             - "OpenCollective"
             - "GitHub Sponsors"
 about:
-    helmet: "About"
+    helmet: "About us"
     title: "About OpenML"
     core: "Authors"
     core_text: >
@@ -485,3 +485,5 @@ terms:
 
             ### Consent
             By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+apis:
+    helmet: "APIs"

@@ -80,8 +80,7 @@ const Input = styled(InputBase)`
     padding-right: ${(props) => props.theme.spacing(2.5)};
     padding-bottom: ${(props) => props.theme.spacing(2.5)};
     padding-left: ${(props) => props.theme.spacing(2.5)};
-    min-width: 260px;
-    max-width: 100%;
+    min-width: 100vw;
   }
 
   & > input::placeholder {
@@ -90,12 +89,12 @@ const Input = styled(InputBase)`
 
   ${(props) => props.theme.breakpoints.up("md")} {
     & > input {
-      min-width: 400px;
+      min-width: 440px;
     }
   }
   ${(props) => props.theme.breakpoints.up("lg")} {
     & > input {
-      min-width: 600px;
+      min-width: 740px;
     }
   }
 `;
