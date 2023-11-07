@@ -1,8 +1,8 @@
 // Installation
-export const InstallationExample = `// Download the jar file, or install via Maven. See the full docs.`;
+export const installation = `// Download the jar file, or install via Maven. See the full docs.`;
 
 // Query and download data
-export const DataExample = `// Create a client. Your API key can be found in your account.
+export const data = `// Create a client. Your API key can be found in your account.
 OpenmlConnector openml = new OpenmlConnector("api_key");
 
 // List all datasets and their properties
@@ -13,7 +13,7 @@ DataSetDescription data = openml.dataGet(40996);
 String file_url = data.getUrl();`;
 
 // Run and publish models
-export const RunExample = `// Build any model you like
+export const run = `// Build any model you like
 Classifier model = new RandomForest();
 
 // Download any OpenML task
@@ -26,7 +26,7 @@ Instances d = InstancesHelper.getDatasetFromTask(openml, t);
 Pair<Integer, Run> result = RunOpenmlJob.executeTask(openml, new WekaConfig(), 3954, model);`;
 
 // Using Benchmarks
-export const BenchmarkExample = `// List all tasks in a benchmark
+export const benchmark = `// List all tasks in a benchmark
 Study benchmark = openml.studyGet("OpenML-CC18", "tasks");
 Task[] tasks = benchmark.getTasks()
 

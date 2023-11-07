@@ -17,17 +17,17 @@ import {
   Card,
   Grid,
   CardContent as MuiCardContent,
-  List,
-  ListItem,
-  ListItemText as MuiListItemText,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { green } from "@mui/material/colors";
+import { blue, green, purple } from "@mui/material/colors";
 import {
+  faCode,
   faCopy,
+  faFileCode,
   faLocationArrow,
   faPaperPlane,
   faPlay,
+  faTerminal,
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -71,12 +71,15 @@ import * as PythonExamples from "../components/pages/apis/pythonCodeExamples";
 import * as RExamples from "../components/pages/apis/rCodeExamples";
 import * as JuliaExamples from "../components/pages/apis/juliaCodeExamples";
 import * as JavaExamples from "../components/pages/apis/javaCodeExamples";
+import InfoCard from "../components/Card";
+import { faRust } from "@fortawesome/free-brands-svg-icons";
 
 const Typography = styled(MuiTypography)(spacing);
 const FixedIcon = styled(FontAwesomeIcon)`
   font-size: ${(props) => (props.sizept ? props.sizept : 15)}pt;
   left: ${(props) => props.l}px;
   top: ${(props) => props.t}px;
+  margin-left: ${(props) => props.ml}px;
   margin-right: ${(props) => props.mr}px;
   color: ${(props) => props.color};
 `;
@@ -102,56 +105,129 @@ const CardContent = styled(MuiCardContent)`
     padding-bottom: ${(props) => props.theme.spacing(8)};
   }
 `;
-const ListItemText = styled(MuiListItemText)`
-  font-weight: "bold" !important;
-`;
 
 const docs = {
-  Python: "https://openml.github.io/openml-python",
-  R: "https://github.com/mlr-org/mlr3oml",
-  Julia: "https://juliaai.github.io/OpenML.jl/stable/",
-  Java: "https://docs.openml.org/Java-guide",
+  python: "https://openml.github.io/openml-python",
+  r: "https://github.com/mlr-org/mlr3oml",
+  julia: "https://juliaai.github.io/OpenML.jl/stable/",
+  java: "https://docs.openml.org/Java-guide",
 };
 
 const colab_links = {
-  Python:
+  python:
     "https://colab.research.google.com/drive/1z5FvwxCz4AMQ67Vzd-AsSd8g5uRxnYDf?usp=sharing",
-  R: "https://colab.research.google.com/drive/1d3etWoVg9DVGnDdlQIerB9E4tyY29gqZ?usp=sharing",
-  Julia:
+  r: "https://colab.research.google.com/drive/1d3etWoVg9DVGnDdlQIerB9E4tyY29gqZ?usp=sharing",
+  julia:
     "https://colab.research.google.com/drive/1IKO-U27WbV9H4kMiWWp0yxKtKpNiDZAd?usp=sharing",
 };
 
-const other_links = {
-  RUST: "https://github.com/mbillingr/openml-rust",
-  ".NET": "https://github.com/openml/openml-dotnet",
-  "Command line": "https://github.com/nok/openml-cli",
+const others = {
+  id: "apis.others_card",
+  icon: faCode,
+  iconColor: blue[400],
+  items: [
+    {
+      link: "https://github.com/mbillingr/openml-rust",
+      icon: faRust,
+      color: green[400],
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/openml/openml-dotnet",
+      icon: faFileCode,
+      color: purple[400],
+      target: "_blank",
+    },
+    {
+      link: "https://github.com/nok/openml-cli",
+      icon: faTerminal,
+      color: blue[400],
+      target: "_blank",
+    },
+  ],
 };
 
-const codeExamples = {
-  Python: {
-    Installation: PythonExamples.InstallationExample,
-    "Query and download data": PythonExamples.DataExample,
-    "Download tasks, run models locally, publish results (with scikit-learn)":
-      PythonExamples.RunExample,
-    "OpenML Benchmarks": PythonExamples.BenchmarkExample,
-  },
-  R: {
-    Installation: RExamples.InstallationExample,
-    "Query and download data": RExamples.DataExample,
-    "Run an mlr3 model locally": RExamples.RunExample,
-    "OpenML Benchmarks": RExamples.BenchmarkExample,
-  },
-  Julia: {
-    Installation: JuliaExamples.InstallationExample,
-    "Query and download data": JuliaExamples.DataExample,
-  },
-  Java: {
-    Installation: JavaExamples.InstallationExample,
-    "Query and download data": JavaExamples.DataExample,
-    "Download tasks, run models locally, publish results (with WEKA)":
-      JavaExamples.RunExample,
-    "OpenML Benchmarks": JavaExamples.BenchmarkExample,
-  },
+const examples = {
+  python: PythonExamples,
+  r: RExamples,
+  julia: JuliaExamples,
+  java: JavaExamples,
+};
+
+const sections = {
+  python: ["installation", "data", "run", "benchmark"],
+  r: ["installation", "data", "run", "benchmark"],
+  julia: ["installation", "data"],
+  java: ["installation", "data", "run", "benchmark"],
+};
+
+const CodeCard = (props) => {
+  const { t } = useTranslation();
+  const { language, section, colab, codeTheme, snackBarOpen } = props;
+  return (
+    <div>
+      <Typography variant="h6" gutterBottom>
+        {t(`apis.code_examples.${language}.${section}`)}
+      </Typography>
+      <Card style={{ marginTop: 0, opacity: 0.9 }}>
+        <CardContent>
+          <SyntaxHighlighter
+            language={language}
+            style={codeTheme}
+            customStyle={{ marginBottom: 0, paddingTop: -40 }}
+          >
+            {examples[language][section]}
+          </SyntaxHighlighter>
+        </CardContent>
+      </Card>
+      <Box mb={10} display="flex" justifyContent="right">
+        {colab && (
+          <Tooltip title={t("apis.tooltip.colab")}>
+            <IconButton
+              color="primary"
+              onClick={() => window.open(colab, "_blank")}
+              size="large"
+            >
+              <FixedIcon icon={faPlay} mr="3" ml="3" />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip title={t("apis.tooltip.copy")}>
+          <IconButton
+            color="primary"
+            onClick={() => {
+              navigator.clipboard.writeText(examples[language][section]);
+              snackBarOpen(true);
+            }}
+            size="large"
+          >
+            <FixedIcon icon={faCopy} mr="3" ml="3" />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    </div>
+  );
+};
+
+const CenteredBox = ({ children, ...props }) => {
+  return (
+    <Box display="flex" justifyContent="center" alignItems="center" {...props}>
+      {children}
+    </Box>
+  );
+};
+const DocButton = ({ children, href, ...props }) => {
+  return (
+    <Fab
+      variant="extended"
+      color="secondary"
+      target="_blank"
+      href={href}
+      {...props}
+    >
+      {children}
+    </Fab>
+  );
 };
 
 function APIs() {
@@ -161,103 +237,43 @@ function APIs() {
     i18n.reloadResources();
   }
 
-  const [api, setApi] = useState("Python");
-  const [open, setOpen] = React.useState(false);
+  const [api, setApi] = useState("python");
+  const [open, setOpen] = React.useState(false); // Snackbar
   const theme = useTheme();
   const codeTheme = theme.name === "DARK" ? dark : light;
 
-  const CodeCard = (props) => {
-    const { language, value, title, colab } = props;
-    return (
-      <div>
-        <Typography variant="h6" gutterBottom>
-          {title}
-        </Typography>
-        <Card style={{ marginTop: 0, opacity: 0.9 }}>
-          <CardContent>
-            <SyntaxHighlighter
-              language={language}
-              style={codeTheme}
-              customStyle={{ marginBottom: 0, paddingTop: -40 }}
-            >
-              {value}
-            </SyntaxHighlighter>
-          </CardContent>
-        </Card>
-        <Box mb={10} display="flex" justifyContent="right">
-          {colab && (
-            <Tooltip title="Run in Colab">
-              <IconButton
-                color="primary"
-                onClick={() => window.open(colab, "_blank")}
-                size="large"
-              >
-                <FixedIcon icon={faPlay} />
-              </IconButton>
-            </Tooltip>
-          )}
-          <Tooltip title="Copy to clipboard">
-            <IconButton
-              color="primary"
-              onClick={() => {
-                navigator.clipboard.writeText(value);
-                setOpen(true);
-              }}
-              size="large"
-            >
-              <FixedIcon icon={faCopy} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </div>
-    );
-  };
-  const code = (language) => {
-    return Object.entries(codeExamples[language]).map(([title, example]) => {
+  const buildCodeExamples = (language) => {
+    return sections[language].map((section) => {
       return (
         <CodeCard
-          key={title}
-          title={title}
-          language={language.toLowerCase()}
-          value={example}
+          key={section}
+          language={language}
+          section={section}
+          codeTheme={codeTheme}
           colab={colab_links[language]}
+          snackBarOpen={setOpen}
         />
       );
     });
   };
-  const make_other = () => {
-    return Object.entries(other_links).map(([title, link]) => {
-      return (
-        <ListItem button component="a" href={link} target="_blank" key={title}>
-          <ListItemText primary={title} style={{ fontWeight: 900 }} />
-        </ListItem>
-      );
-    });
-  };
-  Object.entries(other_links).map(([title, link]) => {
-    return (
-      <ListItem button component="a" href={link} target="_blank" key={title}>
-        <ListItemText primary={title} />
-      </ListItem>
-    );
-  });
+
   return (
     <React.Fragment>
       <Helmet title={t("apis.helmet")} />
       <ApiTabs
         value={api}
-        onChange={(event) => setApi(event.target.textContent)}
+        onChange={(event, newValue) => setApi(newValue)}
         variant="scrollable"
         scrollButtons="auto"
         textColor="secondary"
         indicatorColor="secondary"
       >
-        <ApiTab value="Python" label="Python" />
-        <ApiTab value="R" label="R" />
-        <ApiTab value="Julia" label="Julia" />
-        <ApiTab value="Java" label="Java" />
-        <ApiTab value="Others" label="Others" />
-        <ApiTab value="REST" label="REST" />
+        <ApiTab value="python" label={t("apis.tabs.python")} />
+        <ApiTab value="r" label={t("apis.tabs.r")} />
+        <ApiTab value="julia" label={t("apis.tabs.julia")} />
+        <ApiTab value="java" label={t("apis.tabs.java")} />
+        <ApiTab value="others" label={t("apis.tabs.others")} />
+        <ApiTab value="rest" label={t("apis.tabs.rest")} />
       </ApiTabs>
       <Grid
         container
@@ -267,87 +283,40 @@ function APIs() {
         alignItems="center"
         style={{ margin: 0, width: "100%" }}
       >
-        {api === "REST" ? (
+        {api === "rest" ? (
           <StyledSwaggerUI value="REST" theme={theme}>
             <SwaggerUI url="openml-api.json" />
           </StyledSwaggerUI>
-        ) : api !== "Others" ? (
+        ) : api !== "others" ? (
           <Grid item sm={10} xs={12}>
             <HeroTitle variant="h2" align="center" id="licences">
-              {api} API
+              {t(`apis.tabs.${api}`)} {t("apis.api")}
             </HeroTitle>
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <Fab
-                variant="extended"
-                color="secondary"
-                target="_blank"
-                href={docs[api]}
-              >
-                <FixedIcon
-                  icon={faPaperPlane}
-                  l="40"
-                  t="40"
-                  mr="10"
-                  sizept="15"
-                />
-                Full Documentation
-              </Fab>
-            </Box>
-            <CardContent>{code(api)}</CardContent>
-            <Box
-              pb={5}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              You are learning fast, young apprentice!
-              {"\u00A0\u00A0"}
-              <FixedIcon
-                icon={faThumbsUp}
-                size="2x"
-                fixedWidth
-                color={green[500]}
-              />
-              {"\u00A0\u00A0"}
-              Still, there is so much more to see...
-            </Box>
-            <Box
-              pb={15}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Fab
-                size="small"
-                variant="extended"
-                color="secondary"
-                target="_blank"
-                href={docs[api]}
-              >
-                <FixedIcon
-                  icon={faLocationArrow}
-                  l="60"
-                  t="40"
-                  mr="10"
-                  sizept="15"
-                />
-                See the complete guide
-              </Fab>
-            </Box>
+            <CenteredBox>
+              <DocButton href={docs[api]}>
+                <FixedIcon icon={faPaperPlane} mr="10" />
+                {t("apis.docs_link")}
+              </DocButton>
+            </CenteredBox>
+            {buildCodeExamples(api)}
+            <CenteredBox pb={5}>
+              {t("apis.outro_1")}
+              <FixedIcon icon={faThumbsUp} mr="10" ml="10" color={green[500]} />
+              {t("apis.outro_2")}
+            </CenteredBox>
+            <CenteredBox pb={15}>
+              <DocButton href={docs[api]}>
+                <FixedIcon icon={faLocationArrow} mr="10" />
+                {t("apis.guide_link")}
+              </DocButton>
+            </CenteredBox>
           </Grid>
         ) : (
           <Grid item sm={10} xs={12}>
             <HeroTitle variant="h2" align="center" id="licences">
-              Other APIs
+              {t("apis.others_header")}
             </HeroTitle>
-            <Card style={{ marginTop: 0, opacity: 0.9 }}>
-              <CardContent>
-                These are all APIs developed and maintained independently by
-                others. As such, we can't offer any guarantees, but hope they
-                might be useful to you.
-                <List component="nav">{make_other()}</List>
-              </CardContent>
-            </Card>
+            <InfoCard info={others} />
           </Grid>
         )}
       </Grid>
@@ -355,7 +324,7 @@ function APIs() {
         open={open}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         autoHideDuration={2000}
-        message="Example code copied!"
+        message={t("apis.copied")}
         onClose={() => setOpen(false)}
       />
     </React.Fragment>

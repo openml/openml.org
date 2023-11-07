@@ -1,10 +1,10 @@
 // Installation
-export const InstallationExample = `# Note: The old OpenML package is superseded by the mlr3oml package.
+export const installation = `# Note: The old OpenML package is superseded by the mlr3oml package.
 # The documentation of the OpenML package can be found here: http://openml.github.io/openml-r/.
 install.packages("mlr3oml")`;
 
 // Query and download data
-export const DataExample = `library(mlr3oml)
+export const data = `library(mlr3oml)
 library(mlr3)
 
 # Search for specific datasets
@@ -23,7 +23,7 @@ odata$data
 tsk_adult = as_task(odata, target = "class")`;
 
 // Run and publish models
-export const RunExample = `# create an mlr3 Learner and Resampling and run a resample experiment
+export const run = `# create an mlr3 Learner and Resampling and run a resample experiment
 
 rr = resample(
   task = tsk_adult,
@@ -32,7 +32,7 @@ rr = resample(
 )`;
 
 // Using Benchmarks
-export const BenchmarkExample = `# Access a Benchmark Suite
+export const benchmark = `# Access a Benchmark Suite
 ocollection = ocl(353)
 
 # The IDs

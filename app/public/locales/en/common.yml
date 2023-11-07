@@ -487,3 +487,48 @@ terms:
             By using our website, you hereby consent to our Privacy Policy and agree to its terms.
 apis:
     helmet: "APIs"
+    api: "API"
+    outro_1: "You are learning fast, young apprentice!"
+    outro_2: "Still, there is so much more to see..."
+    docs_link: "Full Documentation"
+    guide_link: "See the complete guide"
+    copied: "Copied to clipboard."
+    others_header: "Other APIs"
+    tabs:
+        python: "Python"
+        r: "R"
+        java: "Java"
+        julia: "Julia"
+        others: "Others"
+        rest: "REST"
+    code_examples:
+        python: 
+            installation: "Installation"
+            data: "Query and download data"
+            run: "Download tasks, run models locally, publish results (with scikit-learn)"
+            benchmark: "OpenML Benchmarks"
+        r:
+            installation: "Installation"
+            data: "Query and download data"
+            run: "Run an mlr3 model locally"
+            benchmark: "OpenML Benchmarks"
+        julia:
+            installation: "Installation"
+            data: "Query and download data"
+        java:
+            installation: "Installation"
+            data: "Query and download data"
+            run: "Download tasks, run models locally, publish results (with WEKA)"
+            benchmark: "OpenML Benchmarks"
+    others_card:
+        title: "Third-party bindings"
+        text: >
+            These are all APIs developed and maintained independently by amazing community members. 
+            We can't offer any guarantees, but hope they might be useful to you.
+        items:
+            - "RUST"
+            - ".NET"
+            - "Command line"
+    tooltip:
+        colab: "Run in Google Colab"
+        copy: "Copy to clipboard"

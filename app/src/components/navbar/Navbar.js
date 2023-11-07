@@ -191,11 +191,16 @@ const SearchContainer = ({ ecolor }) => {
   );
 };
 
+const SubToolbar = styled(Toolbar)`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+`;
+
 const SearchMiniBar = ({ ecolor }) => {
   return (
-    <Toolbar>
+    <SubToolbar>
       <SearchContainer ecolor={ecolor} />
-    </Toolbar>
+    </SubToolbar>
   );
 };
 

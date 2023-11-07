@@ -1,8 +1,8 @@
 // Installation
-export const InstallationExample = `pip install openml`;
+export const installation = `pip install openml`;
 
 // Query and download data
-export const DataExample = `import openml
+export const data = `import openml
 
 # List all datasets and their properties
 openml.datasets.list_datasets(output_format="dataframe")
@@ -17,7 +17,7 @@ dataset = openml.datasets.get_dataset('Fashion-MNIST')
 X, y, _, _ = dataset.get_data(dataset_format="dataframe")`;
 
 // Run and publish models
-export const RunExample = `from sklearn import ensemble
+export const run = `from sklearn import ensemble
 from openml import tasks, runs
 
 # Build any model you like
@@ -34,7 +34,7 @@ run = runs.run_model_on_task(clf, task)
 run.publish()`;
 
 // Using Benchmarks
-export const BenchmarkExample = `# List all tasks in a benchmark
+export const benchmark = `# List all tasks in a benchmark
 benchmark = openml.study.get_suite('OpenML-CC18')
 tasks.list_tasks(output_format="dataframe", task_id=benchmark.tasks)
 

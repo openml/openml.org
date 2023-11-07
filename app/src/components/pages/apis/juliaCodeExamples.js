@@ -1,9 +1,9 @@
 // Installation
-export const InstallationExample = `using Pkg
+export const installation = `using Pkg
 Pkg.add("OpenML")`;
 
 // Query and download data
-export const DataExample = `using OpenML
+export const data = `using OpenML
 using DataFrames
 
 # List all datasets and their properties
