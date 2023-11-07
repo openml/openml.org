@@ -73,6 +73,7 @@ import * as JuliaExamples from "../components/pages/apis/juliaCodeExamples";
 import * as JavaExamples from "../components/pages/apis/javaCodeExamples";
 import InfoCard from "../components/Card";
 import { faRust } from "@fortawesome/free-brands-svg-icons";
+import Wrapper from "../components/Wrapper";
 
 const Typography = styled(MuiTypography)(spacing);
 const FixedIcon = styled(FontAwesomeIcon)`
@@ -275,24 +276,17 @@ function APIs() {
         <ApiTab value="others" label={t("apis.tabs.others")} />
         <ApiTab value="rest" label={t("apis.tabs.rest")} />
       </ApiTabs>
-      <Grid
-        container
-        spacing={6}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        style={{ margin: 0, width: "100%" }}
-      >
+      <Wrapper>
         {api === "rest" ? (
           <StyledSwaggerUI value="REST" theme={theme}>
             <SwaggerUI url="openml-api.json" />
           </StyledSwaggerUI>
         ) : api !== "others" ? (
-          <Grid item sm={10} xs={12}>
+          <Grid>
             <HeroTitle variant="h2" align="center" id="licences">
               {t(`apis.tabs.${api}`)} {t("apis.api")}
             </HeroTitle>
-            <CenteredBox>
+            <CenteredBox pb={15}>
               <DocButton href={docs[api]}>
                 <FixedIcon icon={faPaperPlane} mr="10" />
                 {t("apis.docs_link")}
@@ -312,14 +306,14 @@ function APIs() {
             </CenteredBox>
           </Grid>
         ) : (
-          <Grid item sm={10} xs={12}>
+          <Grid>
             <HeroTitle variant="h2" align="center" id="licences">
               {t("apis.others_header")}
             </HeroTitle>
             <InfoCard info={others} />
           </Grid>
         )}
-      </Grid>
+      </Wrapper>
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
