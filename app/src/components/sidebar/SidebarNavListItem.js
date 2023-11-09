@@ -9,6 +9,7 @@ import { Chip, Collapse, ListItemButton, ListItemText } from "@mui/material";
 import { ExpandLess, ExpandMore, OpenInNew } from "@mui/icons-material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "next-i18next";
 
 const Item = styled(ListItemButton)`
   padding-top: ${(props) =>
@@ -45,7 +46,7 @@ const Title = styled(ListItemText)`
     color: ${(props) =>
       rgba(
         props.theme.sidebar.color,
-        props.depth && props.depth > 0 ? 0.7 : 1
+        props.depth && props.depth > 0 ? 0.7 : 1,
       )};
     font-size: ${(props) => props.theme.typography.body1.fontSize}px;
     padding: 0 ${(props) => props.theme.spacing(4)};
@@ -90,6 +91,12 @@ const SidebarIcon = styled(FontAwesomeIcon)`
 `;
 
 const SidebarNavListItem = (props) => {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   const {
     title,
     href,
@@ -119,7 +126,7 @@ const SidebarNavListItem = (props) => {
         <Item depth={depth} onClick={handleToggle}>
           {icon && <SidebarIcon color={color} icon={icon} />}
           <Title depth={depth}>
-            {title}
+            {t(title)}
             {badge && <Badge label={badge} depth={depth} />}
           </Title>
           {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -144,7 +151,7 @@ const SidebarNavListItem = (props) => {
       >
         {icon && depth == 0 && <SidebarIcon color={color} icon={icon} />}
         <Title depth={depth}>
-          {title}
+          {t(title)}
           {isExternal && <OpenInNewIcon />}
           {badge && <Badge label={badge} depth={depth} />}
         </Title>

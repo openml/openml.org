@@ -1,73 +1,73 @@
 const openmlSection = [
   {
     href: "/d/search?size=n_20_n&sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc",
-    title: "Datasets",
+    title: "sidebar.datasets",
     badge: "100",
   },
   {
     href: "/t",
-    title: "Tasks",
+    title: "sidebar.tasks",
     badge: "100",
   },
   {
     href: "/f",
-    title: "Flows",
+    title: "sidebar.flows",
     badge: "100",
   },
   {
     href: "/r",
-    title: "Runs",
+    title: "sidebar.runs",
     badge: "100",
   },
   {
     href: "/collections",
-    title: "Collections",
+    title: "sidebar.collections",
     children: [
       {
         href: "/collections/tasks",
-        title: "Tasks",
+        title: "sidebar.tasks",
         badge: "100",
       },
       {
         href: "/collections/runs",
-        title: "Runs",
+        title: "sidebar.runs",
         badge: "100",
       },
     ],
   },
   {
     href: "/benchmarks",
-    title: "Benchmarks",
+    title: "sidebar.benchmarks",
     children: [
       {
         href: "/benchmarks/tasks",
-        title: "Task Suites",
+        title: "sidebar.task_suites",
         badge: "100",
       },
       {
         href: "/benchmarks/runs",
-        title: "Run Studies",
+        title: "sidebar.run_studies",
         badge: "100",
       },
     ],
   },
   {
     href: "/measures",
-    title: "Measures",
+    title: "sidebar.measures",
     children: [
       {
         href: "/measures/data",
-        title: "Data qualities",
+        title: "sidebar.data_qualities",
         badge: "100",
       },
       {
         href: "/measures/evaluation",
-        title: "Model Evaluations",
+        title: "sidebar.model_evaluations",
         badge: "100",
       },
       {
         href: "/measures/procedures",
-        title: "Test procedures",
+        title: "sidebar.test_procedures",
         badge: "100",
       },
     ],
@@ -77,27 +77,27 @@ const openmlSection = [
 const extraSection = [
   {
     href: "/auth",
-    title: "Auth",
+    title: "sidebar.auth",
     children: [
       {
         href: "/auth/sign-in",
-        title: "Sign In",
+        title: "sidebar.sign_in",
       },
       {
         href: "/auth/sign-up",
-        title: "Sign Up",
+        title: "sidebar.sign_up",
       },
       {
         href: "/auth/reset-password",
-        title: "Reset Password",
+        title: "sidebar.reset_password",
       },
       {
         href: "/auth/404",
-        title: "404 Page",
+        title: "sidebar.page_not_found", // Assuming "404 Page" is "Page Not Found"
       },
       {
         href: "/auth/500",
-        title: "500 Page",
+        title: "sidebar.server_error", // Assuming "500 Page" is "Server Error"
       },
     ],
   },
@@ -106,45 +106,45 @@ const extraSection = [
 const learnSection = [
   {
     href: "https://docs.openml.org/",
-    title: "Docs",
+    title: "sidebar.docs",
   },
   {
     href: "https://blog.openml.org/",
-    title: "Blog",
+    title: "sidebar.blog",
   },
   {
     href: "/apis",
-    title: "APIs",
+    title: "sidebar.apis",
   },
   {
     href: "/contribute",
-    title: "Contribute",
+    title: "sidebar.contribute",
   },
   {
     href: "/meet",
-    title: "Meet up",
+    title: "sidebar.meet_up",
   },
   {
     href: "/about",
-    title: "About us",
+    title: "sidebar.about_us",
   },
   {
     href: "/terms",
-    title: "Terms & Citation",
+    title: "sidebar.terms_citation",
   },
 ];
 
 const navItems = [
   {
-    title: "Explore",
+    title: "sidebar.explore",
     pages: openmlSection,
   },
   {
-    title: "Learn",
+    title: "sidebar.learn",
     pages: learnSection,
   },
   {
-    title: "Extra",
+    title: "sidebar.extra",
     pages: extraSection,
   },
 ];

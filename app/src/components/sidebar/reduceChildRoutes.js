@@ -20,7 +20,7 @@ const reduceChildRoutes = (props) => {
         href={page.href}
       >
         <SidebarNavList depth={depth + 1} pages={page.children} />
-      </SidebarNavListItem>
+      </SidebarNavListItem>,
     );
   } else {
     items.push(
@@ -31,7 +31,7 @@ const reduceChildRoutes = (props) => {
         key={page.title}
         badge={page.badge}
         title={page.title}
-      />
+      />,
     );
   }
 
