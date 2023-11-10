@@ -18,6 +18,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "next-i18next";
 
 const IconButton = styled(MuiIconButton)`
   svg {
@@ -76,9 +77,15 @@ function NavbarCreationDropdown() {
     setOpen(false);
   };
 
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
     <React.Fragment>
-      <Tooltip title="Create">
+      <Tooltip title={t("tooltips.create")}>
         <IconButton color="inherit" ref={ref} onClick={handleOpen} size="large">
           <FontAwesomeIcon icon={faMagicWandSparkles} />
         </IconButton>
@@ -94,26 +101,26 @@ function NavbarCreationDropdown() {
       >
         <MessageHeader p={2}>
           <Typography variant="subtitle1" color="textPrimary">
-            Create and share
+            {t("create.title")}
           </Typography>
         </MessageHeader>
         <React.Fragment>
           <List disablePadding>
             <Message
-              title="New dataset"
-              description="Share a new dataset."
+              title={t("create.new_data")}
+              description={t("create.new_data_text")}
               icon={theme.palette.icon.data}
               color={theme.palette.entity.data}
             />
             <Message
-              title="New task"
-              description="Set a new challenge for the community."
+              title={t("create.new_task")}
+              description={t("create.new_task_text")}
               icon={theme.palette.icon.task}
               color={theme.palette.entity.task}
             />
             <Message
-              title="New collection"
-              description="Organize your resources."
+              title={t("create.new_collection")}
+              description={t("create.new_collection_text")}
               icon={theme.palette.icon.collections}
               color={theme.palette.entity.collections}
             />

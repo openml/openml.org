@@ -13,6 +13,7 @@ import useAuth from "../../hooks/useAuth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "next-i18next";
 
 const IconButton = styled(MuiIconButton)`
   svg {
@@ -43,9 +44,15 @@ function NavbarUserDropdown() {
     router.push("/auth/sign-in");
   };
 
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
     <React.Fragment>
-      <Tooltip title="Account">
+      <Tooltip title={t("tooltips.account")}>
         <IconButton
           aria-owns={Boolean(anchorMenu) ? "menu-appbar" : undefined}
           aria-haspopup="true"
@@ -62,8 +69,8 @@ function NavbarUserDropdown() {
         open={Boolean(anchorMenu)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={openProfile}>Profile</MenuItem>
-        <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+        <MenuItem onClick={openProfile}>{t("account.profile")}</MenuItem>
+        <MenuItem onClick={handleSignOut}>{t("account.sign_out")}</MenuItem>
       </Menu>
     </React.Fragment>
   );

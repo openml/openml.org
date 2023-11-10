@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import styled from "@emotion/styled";
 
 import {
@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Bell, Server } from "react-feather";
+import { useTranslation } from "next-i18next";
 
 const Popover = styled(MuiPopover)`
   .MuiPaper-root {
@@ -41,6 +42,10 @@ const Avatar = styled(MuiAvatar)`
 const NotificationHeader = styled(Box)`
   text-align: center;
   border-bottom: 1px solid ${(props) => props.theme.palette.divider};
+`;
+
+const Link = styled(NextLink)`
+  text-decoration: none;
 `;
 
 function Notification({ title, description, Icon }) {
@@ -79,6 +84,12 @@ function NavbarNotificationsDropdown() {
     setOpen(false);
   };
 
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
     <React.Fragment>
       <Tooltip title="Notifications">
@@ -99,7 +110,7 @@ function NavbarNotificationsDropdown() {
       >
         <NotificationHeader p={2}>
           <Typography variant="subtitle1" color="textPrimary">
-            1 New Notification
+            {t("notifications.new_notifications")}
           </Typography>
         </NotificationHeader>
         <React.Fragment>
@@ -112,7 +123,7 @@ function NavbarNotificationsDropdown() {
           </List>
           <Box p={1} display="flex" justifyContent="center">
             <Button component={Link} href="/" size="small">
-              Show all notifications
+              {t("notifications.show_all")}
             </Button>
           </Box>
         </React.Fragment>

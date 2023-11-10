@@ -39,6 +39,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../Wrapper";
+import { i18n } from "next-i18next";
 
 const SearchResults = styled(Results)`
   margin: 0px;
@@ -95,7 +96,7 @@ const SortView = ({ label, options, value, onChange }) => {
     <Box>
       <FormControl fullWidth>
         <InputLabel variant="standard" htmlFor="uncontrolled-native">
-          Sort by
+          {i18n.t("search.sort_by")}
         </InputLabel>
         <NativeSelect
           value={value}
@@ -120,7 +121,7 @@ const ResultsPerPageView = ({ options, value, onChange }) => (
   <Box minWidth={80}>
     <FormControl fullWidth>
       <InputLabel variant="standard" htmlFor="uncontrolled-native">
-        Results per page
+        {i18n.t("search.results_per_page")}
       </InputLabel>
       <NativeSelect
         value={value}
@@ -166,7 +167,8 @@ const PagingInfoView = ({ start, end, totalResults }) => (
     }}
   >
     <Typography justifyContent="center" display="inline-block">
-      Showing <b>{start}</b> - <b>{end}</b> out of <b>{totalResults}</b> results
+      {i18n.t("search.showing")} <b>{start}</b> - <b>{end}</b>{" "}
+      {i18n.t("search.out_of")} <b>{totalResults}</b> {i18n.t("search.results")}
     </Typography>
   </Box>
 );
@@ -249,7 +251,7 @@ const SearchContainer = memo(
               {search_facets.map((facet, index) => (
                 <FilterTab
                   value={facet.label}
-                  label={facet.label}
+                  label={i18n.t(facet.label)}
                   key={facet.label}
                   iconPosition="start"
                   icon={<FontAwesomeIcon icon={faChevronDown} />}

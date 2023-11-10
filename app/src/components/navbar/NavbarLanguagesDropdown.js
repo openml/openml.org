@@ -27,24 +27,28 @@ const Flag = styled.img`
 const languageOptions = {
   en: {
     icon: "/static/img/flags/us.png",
-    name: "English",
+    name: "languages.english",
   },
   fr: {
     icon: "/static/img/flags/fr.png",
-    name: "French",
+    name: "languages.french",
   },
   de: {
     icon: "/static/img/flags/de.png",
-    name: "German",
+    name: "languages.german",
   },
   nl: {
     icon: "/static/img/flags/nl.png",
-    name: "Dutch",
+    name: "languages.dutch",
   },
 };
 
 function NavbarLanguagesDropdown() {
-  const { i18n } = useTranslation();
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
   const selectedLanguage = languageOptions[i18n.language];
 
   const router = useRouter();
@@ -55,7 +59,7 @@ function NavbarLanguagesDropdown() {
         query: router.query,
       },
       router.asPath,
-      { locale }
+      { locale },
     );
   }
 
@@ -76,7 +80,7 @@ function NavbarLanguagesDropdown() {
   return (
     <React.Fragment>
       {selectedLanguage && (
-        <Tooltip title="Languages">
+        <Tooltip title={t("tooltips.languages")}>
           <IconButton
             aria-owns={Boolean(anchorMenu) ? "menu-appbar" : undefined}
             aria-haspopup="true"
@@ -99,7 +103,7 @@ function NavbarLanguagesDropdown() {
             key={language}
             onClick={() => handleLanguageChange(language)}
           >
-            {languageOptions[language].name}
+            {t(languageOptions[language].name)}
           </MenuItem>
         ))}
       </Menu>

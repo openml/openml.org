@@ -7,6 +7,7 @@ import { Box, Drawer, Grid, ListItemButton, Typography } from "@mui/material";
 
 import { THEMES } from "../constants";
 import useTheme from "../hooks/useTheme";
+import { useTranslation } from "next-i18next";
 
 const DemoButton = styled.div`
   cursor: pointer;
@@ -94,16 +95,22 @@ function Demo({ title, themeVariant }) {
 }
 
 function Demos() {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
     <Wrapper>
-      <Heading>Select a theme</Heading>
+      <Heading>{t("settings.select_theme")}</Heading>
 
       <Box px={4} my={3}>
         <Grid container spacing={3}>
-          <Demo title="Dark" themeVariant={THEMES.DARK} />
-          <Demo title="Light" themeVariant={THEMES.LIGHT} />
-          <Demo title="Default" themeVariant={THEMES.DEFAULT} />
-          <Demo title="Indigo" themeVariant={THEMES.INDIGO} />
+          <Demo title={t("settings.dark")} themeVariant={THEMES.DARK} />
+          <Demo title={t("settings.light")} themeVariant={THEMES.LIGHT} />
+          <Demo title={t("settings.default")} themeVariant={THEMES.DEFAULT} />
+          <Demo title={t("settings.indigo")} themeVariant={THEMES.INDIGO} />
         </Grid>
       </Box>
     </Wrapper>

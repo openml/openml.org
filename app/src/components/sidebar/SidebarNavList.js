@@ -11,7 +11,7 @@ const SidebarNavList = (props) => {
   const childRoutes = pages.reduce(
     (items, page) =>
       reduceChildRoutes({ items, page, currentRoute: pathname, depth }),
-    []
+    [],
   );
 
   return <React.Fragment>{childRoutes}</React.Fragment>;

@@ -596,3 +596,23 @@ apis:
     tooltip:
         colab: "Run in Google Colab"
         copy: "Copy to clipboard"
+search:
+    sort_by: "Sort by"
+    showing: "Showing"
+    out_of: "out of"
+    results: "results"
+    results_per_page: "Results per page"
+    relevance: "Relevance"
+    most_runs: "Runs"
+    most_likes: "Likes"
+    most_downloads: "Downloads"
+    most_recent: "Recent"
+    most_instances: "Dataset size"
+    most_features: "Number of Features"
+    most_numeric_features: "Numeric features"
+    most_missing_values: "Missing values"
+    most_classes: "Most classes"
+    status: "Status"
+    licence: "Licence"
+    size: "Size"
+

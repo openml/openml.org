@@ -2,18 +2,7 @@ import React from "react";
 import { useTheme } from "@mui/material/styles";
 
 import styled from "@emotion/styled";
-import {
-  Card,
-  Tooltip,
-  CardHeader,
-  Badge,
-  Link as MuiLink,
-  Chip as MuiChip,
-  Box,
-  TabPanel,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Link as MuiLink, Chip as MuiChip } from "@mui/material";
 
 import TimeAgo from "react-timeago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -6,6 +6,7 @@ import SearchContainer from "../../components/search/SearchContainer";
 import searchConfig from "./searchConfig";
 
 // Server-side translation
+import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export async function getStaticProps(context) {
   // extract the locale identifier from the URL
@@ -17,62 +18,61 @@ export async function getStaticProps(context) {
     },
   };
 }
-
 const sort_options = [
   {
-    name: "Relevance",
+    name: "relevance",
     value: [],
   },
   {
-    name: "Most runs",
+    name: "most_runs",
     value: [{ field: "runs", direction: "desc" }],
   },
   {
-    name: "Most likes",
+    name: "most_likes",
     value: [{ field: "nr_of_likes", direction: "desc" }],
   },
   {
-    name: "Most downloads",
+    name: "most_downloads",
     value: [{ field: "nr_of_downloads", direction: "desc" }],
   },
   {
-    name: "Most recent",
+    name: "most_recent",
     value: [{ field: "date", direction: "desc" }],
   },
   {
-    name: "Most instances",
+    name: "most_instances",
     value: [{ field: "qualities.NumberOfInstances", direction: "desc" }],
   },
   {
-    name: "Most features",
+    name: "most_features",
     value: [{ field: "qualities.NumberOfFeatures", direction: "desc" }],
   },
   {
-    name: "Most numeric features",
+    name: "most_numeric_features",
     value: [{ field: "qualities.NumberOfNumericFeatures", direction: "desc" }],
   },
   {
-    name: "Most missing value",
+    name: "most_missing_values",
     value: [{ field: "qualities.NumberOfMissing values", direction: "desc" }],
   },
   {
-    name: "Most classes",
+    name: "most_classes",
     value: [{ field: "qualities.NumberOfClasses", direction: "desc" }],
   },
 ];
 
 const search_facets = [
   {
-    label: "Status",
+    label: "status",
     field: "status.keyword",
   },
   {
-    label: "Licence",
+    label: "licence",
     field: "licence.keyword",
     show: "10",
   },
   {
-    label: "Size",
+    label: "size",
     field: "qualities.NumberOfInstances",
   },
 ];
