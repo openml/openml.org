@@ -263,6 +263,7 @@ about:
         They are elected by other core contributors based on merit and dedication, and have write access to one or more OpenML repositories.
         In alphabetical order:
     join_us: "Join us, get involved!"
+    join_core: "Becoming a core contributor"
     header:
         team: "Meet the team"
         contact: "Contact us"
@@ -341,9 +342,8 @@ about:
             We are open to collaborate and engage with universities, companies, or anyone sharing the same goals and willing to support the project.
             This can involve sponsorship, the co-development of new features, or other forms of partnership, insofar they align with the Foundation's mission and do not affect the independence of the OpenML open source project itself.
     foundation_mission:
-        title: "Our mission is to make machine learning simple, accessible, collaborative and open"
+        title: "Our mission is to make machine learning simple, accessible, collaborative and open, to enhance and streamline machine learning research, education and skillful practice"
         text: >
-            ... to enhance and streamline machine learning research, education and skillful practice.
             The foundation aims to achieve this mission by, among others, supporting the OpenML.org platform to offer a worldwide community the means to openly share and build upon each other’s work,
             enhancing collaboration, education, scholarship, openness of data and code, automation of processes, and reproducibility of results.
             We do this in close collaboration with the OpenML community and in accordance with the guiding principles of the OpenML platform, such as the code of honor and the citation policy.
