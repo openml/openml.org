@@ -175,7 +175,7 @@ const data_stats2 = [
 ];
 
 const colorNames = Object.keys(colors).filter(
-  (color) => typeof colors[color] === "object"
+  (color) => typeof colors[color] === "object",
 );
 const shadeKeys = ["300", "500"];
 function getRandomColor() {

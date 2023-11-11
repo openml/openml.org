@@ -208,7 +208,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           label={
             (label in facet_aliases && option.value in facet_aliases[label]
               ? facet_aliases[label][option.value]
-              : option.value) +
+              : i18n.t(`filters.${option.value}`)) +
             "  (" +
             option.count +
             ")"
@@ -238,6 +238,13 @@ const SearchContainer = memo(
         setFilter(newFilter + "");
       }
     };
+
+    //Translate here because we're using the default Sorting conponent
+    const translated_sort_options = sort_options.map((option) => ({
+      ...option,
+      name: i18n.t(option.name),
+    }));
+
     console.log("Filter:", filter);
     return (
       <SearchProvider config={config}>
@@ -293,7 +300,7 @@ const SearchContainer = memo(
                 >
                   <Sorting
                     label="Sort by"
-                    sortOptions={sort_options}
+                    sortOptions={translated_sort_options}
                     view={SortView}
                   />
                   <ViewToggle />
