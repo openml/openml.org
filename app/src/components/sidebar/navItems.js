@@ -1,6 +1,6 @@
 const openmlSection = [
   {
-    href: "/d/search?size=n_20_n&sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc",
+    href: "/d/search",
     title: "sidebar.datasets",
     badge: "100",
   },

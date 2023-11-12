@@ -1,9 +1,18 @@
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import { Box } from "@mui/material";
 
 const MAX_CELL_LENGTH = 75;
-const BASE_PADDING = 10;
+const BASE_PADDING = 1;
 
+const DataGrid = styled(MuiDataGrid)`
+  & .MuiDataGrid-columnHeaders {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+`;
+
+// Calculate a good table column width based on the content
 const useAutoWidthColumns = (rows, columnOrder) => {
   const [columnWidths, setColumnWidths] = useState({});
   const context = document.createElement("canvas").getContext("2d");
@@ -34,9 +43,47 @@ const useAutoWidthColumns = (rows, columnOrder) => {
   return columnWidths;
 };
 
-const stripQuotes = (value) => {
-  // This will remove all instances of double quotes from the string
-  return value.replace(/["]+/g, "");
+// Map the way ElasticSearch returns the data to the way the DataGrid expects it
+const valueGetter = (fieldName) => (params) => {
+  let value = params.row[fieldName]?.raw ?? params.row[fieldName];
+  if (typeof value === "string") {
+    // Remove quotes from string values
+    return value.replace(/^"(.*)"$/, "$1");
+  } else if (Array.isArray(value)) {
+    // Process the array and remove quotes from each string element
+    return value
+      .map((item) => {
+        if (item.tag && typeof item.tag === "string") {
+          // Remove quotes from string
+          return item.tag.replace(/^"(.*)"$/, "$1");
+        } else if (typeof item === "string") {
+          // Remove quotes from string
+          return item.replace(/^"(.*)"$/, "$1");
+        }
+        // Stringify non-string items
+        return JSON.stringify(item);
+      })
+      .join(", ");
+  } else if (value && typeof value === "object") {
+    // Stringify object values
+    return JSON.stringify(value);
+  }
+  // Return the value if it's not a string or an object
+  return value;
+};
+
+// Controls how each cell is rendered
+const renderCell = (params) => {
+  const value = params.value; // This should be a string after valueGetter's processing
+  const displayValue =
+    typeof value === "string" && value.length > MAX_CELL_LENGTH
+      ? `${value.substring(0, MAX_CELL_LENGTH)}…`
+      : value;
+  return (
+    <div title={typeof value === "string" ? value : "Complex Object"}>
+      {displayValue}
+    </div>
+  );
 };
 
 const ResultsTable = ({ results, columnOrder }) => {
@@ -53,20 +100,8 @@ const ResultsTable = ({ results, columnOrder }) => {
       field: fieldName,
       headerName: fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
       width: columnWidths[fieldName] || 150, // Use the calculated width or a default value
-      valueGetter: (params) => {
-        const rawValue = params.row[fieldName]?.raw ?? params.row[fieldName];
-        // Convert to string and strip quotes if it's a string
-        return typeof rawValue === "string" ? stripQuotes(rawValue) : rawValue;
-      },
-      renderCell: (params) => {
-        // Assume params.value is already a string here
-        const value = params.value ? stripQuotes(params.value.toString()) : "";
-        const truncatedValue =
-          value.length > MAX_CELL_LENGTH
-            ? `${value.substring(0, MAX_CELL_LENGTH)}…`
-            : value;
-        return <div title={value}>{truncatedValue}</div>;
-      },
+      valueGetter: valueGetter(fieldName),
+      renderCell: renderCell,
     };
   });
 
@@ -88,15 +123,25 @@ const ResultsTable = ({ results, columnOrder }) => {
     };
   });
 
+  // Do something with the selected rows
+  // Could be used to e.g. tag a number of datasets or add them to a collection
+  const onRowsSelectionHandler = (ids) => {
+    const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
+    console.log(selectedRowsData);
+  };
+
   return (
-    <DataGrid
-      rows={rows}
-      columns={columns}
-      pageSize={rows.length} // Set to the total number of rows
-      rowsPerPageOptions={[]}
-      hideFooter
-      // checkboxSelection
-    />
+    <Box sx={{ height: "calc(100vh - 192px)", width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={rows.length} // Set to the total number of rows
+        rowsPerPageOptions={[]}
+        hideFooter
+        //checkboxSelection // Disabled for now because we don't do anything useful with it yet
+        onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
+      />
+    </Box>
   );
 };
 

@@ -5,6 +5,7 @@ const searchConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
   searchQuery: {
+    resultsPerPage: 100,
     search_fields: {
       description: {},
     },
@@ -72,7 +73,7 @@ const searchConfig = {
   },
   autocompleteQuery: {
     results: {
-      resultsPerPage: 5,
+      resultsPerPage: 100,
       result_fields: {
         // specify the fields you want from the index to display the results
         name: { snippet: { size: 100, fallback: true } },
@@ -84,8 +85,6 @@ const searchConfig = {
       },
     },
   },
-  //This doesn't work yet.
-  //initialState: { searchTerm: "", sort: { field: "date" } },
 };
 
 export default searchConfig;

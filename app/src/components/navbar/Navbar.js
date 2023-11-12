@@ -2,7 +2,7 @@ import React, { memo, useState } from "react";
 import styled from "@emotion/styled";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
-import searchConfig from "../../pages/d/searchConfig";
+import dataSearchConfig from "../../pages/d/searchConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -177,6 +177,8 @@ const SearchBar = memo(({ config }) => {
 });
 
 const SearchContainer = ({ ecolor }) => {
+  const searchConfig = dataSearchConfig;
+
   return (
     <SearchWrapper
       ecolor={ecolor}

@@ -27,7 +27,6 @@ const Card = styled(MuiCard)`
   ${spacing};
   position: relative;
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.05);
-  display: flex;
   flex-direction: column;
   &:after {
     content: " ";
