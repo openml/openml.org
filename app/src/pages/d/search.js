@@ -77,6 +77,20 @@ const search_facets = [
   },
 ];
 
+const columnOrder = [
+  "data_id",
+  "name",
+  "version",
+  "status",
+  "description",
+  "creator",
+  "date",
+  "format",
+  "licence",
+  "url",
+  "tags",
+];
+
 function DataSearchContainer() {
   // useNextRouting is a custom hook that will integrate with Next Router with Search UI config
   // config is search-ui configuration.
@@ -87,6 +101,7 @@ function DataSearchContainer() {
       config={combinedConfig}
       sort_options={sort_options}
       search_facets={search_facets}
+      columnOrder={columnOrder}
       title="Datasets"
       type="Dataset"
     />

@@ -4,7 +4,6 @@ import {
   Pagination,
   Box,
   Typography,
-  Button,
   ToggleButtonGroup,
   ToggleButton,
   NativeSelect,
@@ -29,6 +28,7 @@ import {
   Paging,
   PagingInfo,
   Sorting,
+  WithSearch,
 } from "@elastic/react-search-ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,10 +36,10 @@ import {
   faChevronDown,
   faList,
   faTable,
-  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../Wrapper";
 import { i18n } from "next-i18next";
+import ResultsTable from "./ResultTable";
 
 const SearchResults = styled(Results)`
   margin: 0px;
@@ -82,11 +82,6 @@ const HiddenTab = styled(Tab)`
   min-height: 0px;
   visibility: hidden;
 `;
-
-let alignment = "list";
-const handleAlignment = (event, newAlignment) => {
-  alignment = newAlignment;
-};
 
 const SortView = ({ label, options, value, onChange }) => {
   if (value === "|||") {
@@ -141,11 +136,11 @@ const ResultsPerPageView = ({ options, value, onChange }) => (
   </Box>
 );
 
-const ViewToggle = () => (
+const ViewToggle = ({ onChange, view }) => (
   <ToggleButtonGroup
-    value={alignment}
+    value={view}
     exclusive
-    onChange={handleAlignment}
+    onChange={onChange}
     sx={{
       ml: 2,
     }}
@@ -228,7 +223,15 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
 
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
-  ({ config, sort_options, search_facets, facet_aliases, title, type }) => {
+  ({
+    config,
+    sort_options,
+    search_facets,
+    columnOrder,
+    facet_aliases,
+    title,
+    type,
+  }) => {
     const [filter, setFilter] = React.useState("hide");
     const handleFilterChange = (event, newFilter) => {
       console.log("newFilter", newFilter);
@@ -236,6 +239,13 @@ const SearchContainer = memo(
         setFilter(false);
       } else {
         setFilter(newFilter + "");
+      }
+    };
+
+    const [view, setView] = React.useState("list");
+    const handleViewChange = (event, newView) => {
+      if (newView !== null) {
+        setView(newView);
       }
     };
 
@@ -303,17 +313,26 @@ const SearchContainer = memo(
                     sortOptions={translated_sort_options}
                     view={SortView}
                   />
-                  <ViewToggle />
+                  <ViewToggle onChange={handleViewChange} view={view} />
                 </Box>
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <SearchResults
-                resultView={ResultCard}
-                titleField="name"
-                urlField="data_id"
-                shouldTrackClickThrough
-              />{" "}
+              {view === "list" && (
+                <SearchResults
+                  resultView={ResultCard}
+                  titleField="name"
+                  urlField="data_id"
+                  shouldTrackClickThrough
+                />
+              )}
+              {view === "table" && (
+                <WithSearch mapContextToProps={({ results }) => ({ results })}>
+                  {({ results }) => (
+                    <ResultsTable results={results} columnOrder={columnOrder} />
+                  )}
+                </WithSearch>
+              )}
             </Grid>
             <Grid item xs={12} m={2}>
               <Box
@@ -324,7 +343,7 @@ const SearchContainer = memo(
               >
                 <ResultsPerPage
                   view={ResultsPerPageView}
-                  options={[10, 20, 50, 100]}
+                  options={[10, 20, 50, 100, 1000]}
                 />
                 <Paging view={PagingView} />
               </Box>

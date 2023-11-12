@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
@@ -7,7 +6,6 @@ import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 
 // Server-side translation
-import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export async function getStaticProps({ locale }) {
   return {
@@ -19,7 +17,6 @@ export async function getStaticProps({ locale }) {
 }
 
 function Dataset() {
-  const router = useRouter();
   return (
     <React.Fragment>
       <Helmet title="OpenML Datasets" />
