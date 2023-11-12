@@ -47,6 +47,27 @@ const MainContent = styled(Paper)`
   }
 `;
 
+const sections = {
+  d: "Data",
+  t: "Tasks",
+  f: "Flows",
+  r: "Runs",
+  data: "Data",
+  task: "Tasks",
+  flow: "Flows",
+  run: "Runs",
+  collections: "Collections",
+  benchmarks: "Benchmarks",
+  tasktypes: "Task Types",
+  measures: "Measures",
+  apis: "APIs",
+  contribute: "Contribute",
+  meet: "Meet",
+  about: "About",
+  terms: "Terms",
+  auth: "Profile",
+};
+
 const Dashboard = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -60,10 +81,10 @@ const Dashboard = ({ children }) => {
   // Get the entity color from the router path
   // e.g. /datasets -> green
   // Can't be in the theme since it requires the router
+  const path = router.pathname.split(/[./]+/)[1];
   const ecolor =
-    theme.name === "LIGHT"
-      ? theme.palette.entity[router.pathname.split(/[./]+/)[1]]
-      : undefined;
+    theme.name === "LIGHT" ? theme.palette.entity[path] : undefined;
+  const section = sections[path];
 
   return (
     <Root>
@@ -94,7 +115,11 @@ const Dashboard = ({ children }) => {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        <Navbar onDrawerToggle={handleDrawerToggle} ecolor={ecolor} />
+        <Navbar
+          onDrawerToggle={handleDrawerToggle}
+          ecolor={ecolor}
+          section={section}
+        />
         <MainContent>{children}</MainContent>
         {/*<Footer />*/}
       </AppContent>

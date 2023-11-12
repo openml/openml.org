@@ -2,6 +2,7 @@ import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
+import { useRouter } from "next/router";
 
 const MAX_CELL_LENGTH = 75;
 const BASE_PADDING = 1;
@@ -9,6 +10,12 @@ const BASE_PADDING = 1;
 const DataGrid = styled(MuiDataGrid)`
   & .MuiDataGrid-columnHeaders {
     background-color: rgba(255, 255, 255, 0.16);
+  }
+  .MuiDataGrid-row {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
   }
 `;
 
@@ -87,6 +94,7 @@ const renderCell = (params) => {
 };
 
 const ResultsTable = ({ results, columnOrder }) => {
+  const router = useRouter();
   const columnWidths = useAutoWidthColumns(results, columnOrder);
 
   // Check if there are results
@@ -130,6 +138,14 @@ const ResultsTable = ({ results, columnOrder }) => {
     console.log(selectedRowsData);
   };
 
+  // Go to detail page on click
+  const handleRowClick = (params) => {
+    // Assuming 'id' is the field you want to use for navigation
+    const basePath = router.pathname.split("/")[1];
+    const id = params.row.id;
+    router.push(`/${basePath}/${id}`);
+  };
+
   return (
     <Box sx={{ height: "calc(100vh - 192px)", width: "100%" }}>
       <DataGrid
@@ -140,6 +156,7 @@ const ResultsTable = ({ results, columnOrder }) => {
         hideFooter
         //checkboxSelection // Disabled for now because we don't do anything useful with it yet
         onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
+        onRowClick={handleRowClick}
       />
     </Box>
   );

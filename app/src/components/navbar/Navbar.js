@@ -208,7 +208,7 @@ const SearchMiniBar = ({ ecolor }) => {
 
 SearchBar.displayName = "Search";
 
-const Navbar = ({ onDrawerToggle, ecolor }) => {
+const Navbar = ({ onDrawerToggle, ecolor, section }) => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const theme = useTheme();
   const smallerThanMid = useMediaQuery(theme.breakpoints.down("md"));
@@ -231,10 +231,13 @@ const Navbar = ({ onDrawerToggle, ecolor }) => {
             <Grid item>
               <BrandIcon />
               <Brand ecolor={ecolor}>
-                <Box ml={1} mr={3}>
+                <Box ml={1} mr={2}>
                   OpenML
                 </Box>
               </Brand>
+            </Grid>
+            <Grid item>
+              <Brand ecolor={ecolor}>|&nbsp;&nbsp;{section}</Brand>
             </Grid>
             <Grid item xs sx={{ display: { xs: "block", sm: "none" } }} />
             <Grid item sx={{ display: { xs: "none", md: "block" } }}>
