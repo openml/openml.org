@@ -168,7 +168,7 @@ const PagingInfoView = ({ start, end, totalResults }) => (
   </Box>
 );
 
-const PagingView = ({ current, resultsPerPage, totalPages, onChange }) => (
+const PagingView = ({ current, totalPages, onChange }) => (
   <Pagination
     count={totalPages}
     color="primary"

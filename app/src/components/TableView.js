@@ -10,7 +10,7 @@ function TableView() {
     rowLength: 100000,
     editable: true,
   });
-
+  console.log(data);
   return (
     <Box sx={{ height: "100vh", width: "100%" }}>
       <DataGrid
