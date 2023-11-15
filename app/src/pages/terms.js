@@ -35,7 +35,6 @@ import {
   blue,
   deepPurple,
   green,
-  orange,
   purple,
   red,
   yellow,

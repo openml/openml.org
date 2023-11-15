@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import { useTheme } from "@mui/material/styles";
 
 import {
-  Badge,
   Box,
   IconButton as MuiIconButton,
   List,

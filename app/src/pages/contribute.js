@@ -16,7 +16,6 @@ import {
   faDove,
   faHandsHelping,
   faHandHoldingDollar,
-  faHandHoldingMedical,
   faUsersCog,
   faUserAstronaut,
   faSeedling,
@@ -37,8 +36,6 @@ import {
   faLightbulb,
   faBoltLightning,
   faEnvelope,
-  faBolt,
-  faChild,
   faChildReaching,
 } from "@fortawesome/free-solid-svg-icons";
 

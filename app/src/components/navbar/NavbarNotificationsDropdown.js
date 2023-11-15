@@ -17,8 +17,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Bell, Server } from "react-feather";
 import { useTranslation } from "next-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faRocket } from "@fortawesome/free-solid-svg-icons";
 
 const Popover = styled(MuiPopover)`
   .MuiPaper-root {
@@ -48,14 +49,14 @@ const Link = styled(NextLink)`
   text-decoration: none;
 `;
 
-function Notification({ title, description, Icon }) {
+function Notification({ title, description, icon }) {
   return (
     <Link href="/">
       <ListItem divider>
         <ListItemAvatar>
           <Avatar>
             <SvgIcon fontSize="small">
-              <Icon />
+              <FontAwesomeIcon icon={icon} />
             </SvgIcon>
           </Avatar>
         </ListItemAvatar>
@@ -95,7 +96,7 @@ function NavbarNotificationsDropdown() {
       <Tooltip title="Notifications">
         <IconButton color="inherit" ref={ref} onClick={handleOpen} size="large">
           <Indicator badgeContent={1}>
-            <Bell />
+            <FontAwesomeIcon icon={faBell} />
           </Indicator>
         </IconButton>
       </Tooltip>
@@ -118,7 +119,7 @@ function NavbarNotificationsDropdown() {
             <Notification
               title="A new OpenML is coming!"
               description="Stay tuned for more updates."
-              Icon={Server}
+              icon={faRocket}
             />
           </List>
           <Box p={1} display="flex" justifyContent="center">
