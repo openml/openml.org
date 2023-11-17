@@ -8,18 +8,6 @@ import { Bar } from "react-chartjs-2";
 import DashboardLayout from "../../layouts/Dashboard";
 
 import {
-  Briefcase,
-  DollarSign,
-  ExternalLink,
-  Facebook,
-  Home,
-  Instagram,
-  MapPin,
-  ShoppingBag,
-  Twitter,
-} from "react-feather";
-
-import {
   Avatar as MuiAvatar,
   Box,
   Breadcrumbs as MuiBreadcrumbs,
@@ -38,6 +26,34 @@ import {
   Typography as MuiTypography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
+
+import {
+  faBriefcase,
+  faDollarSign,
+  faExternalLink,
+  faHome,
+  faMapPin,
+  faShoppingBag,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faFacebook,
+  faXTwitter,
+  faInstagram,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+
+// Server-side translation
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      // pass the translation props to the page component
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+}
 
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
 
@@ -181,7 +197,7 @@ function About() {
         <Grid container direction="row" alignItems="center" mb={2}>
           <Grid item>
             <AboutIcon>
-              <Home />
+              <FontAwesomeIcon icon={faHome} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -192,7 +208,7 @@ function About() {
         <Grid container direction="row" alignItems="center" mb={2}>
           <Grid item>
             <AboutIcon>
-              <Briefcase />
+              <FontAwesomeIcon icon={faBriefcase} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -202,7 +218,7 @@ function About() {
         <Grid container direction="row" alignItems="center">
           <Grid item>
             <AboutIcon>
-              <MapPin />
+              <FontAwesomeIcon icon={faMapPin} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -227,7 +243,7 @@ function Elsewhere() {
         <Grid container direction="row" alignItems="center" mb={2}>
           <Grid item>
             <AboutIcon>
-              <ExternalLink />
+              <FontAwesomeIcon icon={faExternalLink} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -237,7 +253,7 @@ function Elsewhere() {
         <Grid container direction="row" alignItems="center" mb={2}>
           <Grid item>
             <AboutIcon>
-              <Twitter />
+              <FontAwesomeIcon icon={faTwitter} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -247,7 +263,7 @@ function Elsewhere() {
         <Grid container direction="row" alignItems="center" mb={2}>
           <Grid item>
             <AboutIcon>
-              <Facebook />
+              <FontAwesomeIcon icon={faFacebook} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -257,7 +273,7 @@ function Elsewhere() {
         <Grid container direction="row" alignItems="center">
           <Grid item>
             <AboutIcon>
-              <Instagram />
+              <FontAwesomeIcon icon={faInstagram} />
             </AboutIcon>
           </Grid>
           <Grid item>
@@ -282,7 +298,7 @@ function Earnings() {
           </Typography>
 
           <StatsIcon>
-            <DollarSign />
+            <FontAwesomeIcon icon={faDollarSign} />
           </StatsIcon>
           <LinearProgress
             variant="determinate"
@@ -309,7 +325,7 @@ function Orders() {
           </Typography>
 
           <StatsIcon>
-            <ShoppingBag />
+            <FontAwesomeIcon icon={faShoppingBag} />
           </StatsIcon>
           <LinearProgress
             variant="determinate"
@@ -336,7 +352,7 @@ function Revenue() {
           </Typography>
 
           <StatsIcon>
-            <DollarSign />
+            <FontAwesomeIcon icon={faDollarSign} />
           </StatsIcon>
           <LinearProgress
             variant="determinate"
