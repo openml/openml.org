@@ -3,6 +3,16 @@ import { useNextRouting } from "../../utils/useNextRouting";
 
 import DashboardLayout from "../../layouts/Dashboard";
 import SearchContainer from "../../components/search/SearchContainer";
+import { renderCell, valueGetter } from "../../components/search/ResultTable";
+
+import Chip from "@mui/material/Chip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faTriangleExclamation,
+  faRotate,
+} from "@fortawesome/free-solid-svg-icons";
+
 import searchConfig from "./searchConfig";
 
 // Server-side translation
@@ -17,6 +27,46 @@ export async function getStaticProps(context) {
     },
   };
 }
+
+const getStatusChipProps = (status) => {
+  switch (status) {
+    case "active":
+      return {
+        label: "Verified",
+        icon: <FontAwesomeIcon icon={faCheck} />,
+        color: "success",
+      };
+    case "deactivated":
+      return {
+        label: "Deprecated",
+        icon: <FontAwesomeIcon icon={faTriangleExclamation} />,
+        color: "error",
+      };
+    case "in_preparation":
+      return {
+        label: "In Preparation",
+        icon: <FontAwesomeIcon icon={faRotate} />,
+        color: "warning",
+      };
+    default:
+      return {
+        label: "Unknown",
+      };
+  }
+};
+
+const renderStatus = (params) => {
+  const { label, icon, color, variant } = getStatusChipProps(params.value);
+  return (
+    <Chip
+      icon={icon}
+      label={label}
+      color={color}
+      size="small"
+      variant="outlined"
+    />
+  );
+};
 
 const sort_options = [
   {
@@ -91,17 +141,88 @@ const columnOrder = [
   "tags",
 ];
 
+// Controls how columns are rendered and manipulated in the table view
+const columns = [
+  {
+    field: "data_id",
+    headerName: "Data_id",
+    valueGetter: valueGetter("data_id"),
+    renderCell: renderCell,
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    valueGetter: valueGetter("name"),
+    renderCell: renderCell,
+  },
+  {
+    field: "version",
+    headerName: "Version",
+    valueGetter: valueGetter("version"),
+    renderCell: renderCell,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    valueGetter: valueGetter("status"),
+    renderCell: renderStatus,
+    type: "singleSelect",
+    valueOptions: ["active", "deactivated", "in_preparation"],
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    valueGetter: valueGetter("description"),
+    renderCell: renderCell,
+  },
+  {
+    field: "creator",
+    headerName: "Creator",
+    valueGetter: valueGetter("creator"),
+    renderCell: renderCell,
+  },
+  {
+    field: "date",
+    headerName: "Date",
+    valueGetter: valueGetter("date"),
+    renderCell: renderCell,
+  },
+  {
+    field: "format",
+    headerName: "Format",
+    valueGetter: valueGetter("format"),
+    renderCell: renderCell,
+  },
+  {
+    field: "licence",
+    headerName: "Licence",
+    valueGetter: valueGetter("licence"),
+    renderCell: renderCell,
+  },
+  {
+    field: "url",
+    headerName: "Url",
+    valueGetter: valueGetter("url"),
+    renderCell: renderCell,
+  },
+  {
+    field: "tags",
+    headerName: "Tags",
+    valueGetter: valueGetter("tags"),
+    renderCell: renderCell,
+  },
+];
+
 function DataSearchContainer() {
-  // useNextRouting is a custom hook that will integrate with Next Router with Search UI config
-  // config is search-ui configuration.
-  // baseUrl is the path to the search page
   const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
+  console.log("columns", JSON.stringify(columns));
+
   return (
     <SearchContainer
       config={combinedConfig}
       sort_options={sort_options}
       search_facets={search_facets}
-      columnOrder={columnOrder}
+      columns={columns}
       title="Datasets"
       type="Dataset"
     />

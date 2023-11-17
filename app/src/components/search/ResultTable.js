@@ -1,11 +1,9 @@
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
 
 const MAX_CELL_LENGTH = 75;
-const BASE_PADDING = 1;
 
 const DataGrid = styled(MuiDataGrid)`
   & .MuiDataGrid-columnHeaders {
@@ -19,39 +17,8 @@ const DataGrid = styled(MuiDataGrid)`
   }
 `;
 
-// Calculate a good table column width based on the content
-const useAutoWidthColumns = (rows, columnOrder) => {
-  const [columnWidths, setColumnWidths] = useState({});
-  const context = document.createElement("canvas").getContext("2d");
-  context.font = "13px Roboto"; // Should match the DataGrid font
-
-  useEffect(() => {
-    const newColumnWidths = {};
-
-    columnOrder.forEach((fieldName) => {
-      let maxWidth = BASE_PADDING; // Start with base padding
-      rows.forEach((row) => {
-        let value = row[fieldName]?.raw ?? row[fieldName];
-        value = value && value.toString();
-        if (value && value.length > MAX_CELL_LENGTH) {
-          value = value.substring(0, MAX_CELL_LENGTH) + "…"; // Truncate the value
-        }
-        const textWidth = context.measureText(value || "").width;
-        maxWidth = Math.max(maxWidth, textWidth + BASE_PADDING); // Add padding to the text width
-      });
-
-      // Set a minimum width for the column to avoid too narrow columns for short content
-      newColumnWidths[fieldName] = Math.max(maxWidth, 100); // Minimum column width, adjust as necessary
-    });
-
-    setColumnWidths(newColumnWidths);
-  }, [rows, columnOrder]);
-
-  return columnWidths;
-};
-
 // Map the way ElasticSearch returns the data to the way the DataGrid expects it
-const valueGetter = (fieldName) => (params) => {
+export const valueGetter = (fieldName) => (params) => {
   let value = params.row[fieldName]?.raw ?? params.row[fieldName];
   if (typeof value === "string") {
     // Remove quotes from string values
@@ -93,25 +60,25 @@ const renderCell = (params) => {
   );
 };
 
-const ResultsTable = ({ results, columnOrder }) => {
+// Builds a default column definition
+export const buildDefaultColumns = (columnOrder) => {
+  return columnOrder.map((fieldName) => {
+    return {
+      field: fieldName,
+      headerName: fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
+      valueGetter: valueGetter(fieldName),
+      renderCell: renderCell,
+    };
+  });
+};
+
+const ResultsTable = ({ results, columns }) => {
   const router = useRouter();
-  const columnWidths = useAutoWidthColumns(results, columnOrder);
 
   // Check if there are results
   if (results.length === 0) {
     return <div>No results found</div>;
   }
-
-  // Define the columns based on the keys from the results
-  const columns = columnOrder.map((fieldName) => {
-    return {
-      field: fieldName,
-      headerName: fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
-      width: columnWidths[fieldName] || 150, // Use the calculated width or a default value
-      valueGetter: valueGetter(fieldName),
-      renderCell: renderCell,
-    };
-  });
 
   // Define the rows for the grid
   const rows = results.map((result, index) => {

@@ -227,7 +227,7 @@ const SearchContainer = memo(
     config,
     sort_options,
     search_facets,
-    columnOrder,
+    columns,
     facet_aliases,
     title,
     type,
@@ -329,7 +329,7 @@ const SearchContainer = memo(
               {view === "table" && (
                 <WithSearch mapContextToProps={({ results }) => ({ results })}>
                   {({ results }) => (
-                    <ResultsTable results={results} columnOrder={columnOrder} />
+                    <ResultsTable results={results} columns={columns} />
                   )}
                 </WithSearch>
               )}
