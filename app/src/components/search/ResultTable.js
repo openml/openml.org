@@ -7,7 +7,7 @@ const MAX_CELL_LENGTH = 75;
 
 const DataGrid = styled(MuiDataGrid)`
   & .MuiDataGrid-columnHeaders {
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(0, 0, 0, 0.1);
   }
   .MuiDataGrid-row {
     cursor: pointer;

@@ -343,7 +343,7 @@ const SearchContainer = memo(
               >
                 <ResultsPerPage
                   view={ResultsPerPageView}
-                  options={[10, 20, 50, 100, 1000]}
+                  options={[10, 20, 50, 100]} // Limiting to 100 because table view only allows 100
                 />
                 <Paging view={PagingView} />
               </Box>

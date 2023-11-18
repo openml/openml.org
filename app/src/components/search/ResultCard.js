@@ -21,6 +21,7 @@ import {
   faTimes,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
+import Teaser from "./Teaser";
 
 const SearchResultCard = styled(Card)`
   border-radius: 0px;
@@ -78,14 +79,6 @@ const Title = styled.div`
   font-size: 16px;
   font-weight: 600;
 `;
-const SubTitle = styled.div`
-  margin-bottom: 10px;
-  font-size: 12px;
-  line-height: 1.5em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 36px;
-`;
 
 const getStats = (stats, result) => {
   if (stats === undefined) {
@@ -132,23 +125,6 @@ const dataStatus = {
     icon: faWrench,
     color: orange[500],
   },
-};
-
-const getTeaser = (description) => {
-  if (description === undefined || description === null) {
-    return undefined;
-  }
-  let lines = description.split("\n").map((i) => i.trim());
-  for (let i = 0; i < lines.length; i++) {
-    if (
-      !lines[i].startsWith("*") &&
-      !lines[i].startsWith("#") &&
-      lines[i].length > 0
-    ) {
-      return lines[i];
-    }
-  }
-  return lines[0];
 };
 
 const data_stats = [
@@ -250,7 +226,7 @@ const ResultCard = ({ result }) => {
         </Title>
       )}
       {type !== "user" && result.description.raw && (
-        <SubTitle>{getTeaser(result.description.raw.toString())}</SubTitle>
+        <Teaser description={result.description.raw.toString()} limit={3} />
       )}
       {stats !== undefined && (
         <React.Fragment>

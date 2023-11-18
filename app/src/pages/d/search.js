@@ -14,9 +14,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import searchConfig from "./searchConfig";
+import TimeAgo from "react-timeago";
+import {
+  faCreativeCommonsBy,
+  faCreativeCommonsPd,
+  faCreativeCommonsZero,
+} from "@fortawesome/free-brands-svg-icons";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Teaser from "../../components/search/Teaser";
 export async function getStaticProps(context) {
   // extract the locale identifier from the URL
   const { locale } = context;
@@ -28,8 +35,9 @@ export async function getStaticProps(context) {
   };
 }
 
-const getStatusChipProps = (status) => {
-  switch (status) {
+const getChipProps = (value) => {
+  switch (value) {
+    // Dataset status
     case "active":
       return {
         label: "Verified",
@@ -44,19 +52,53 @@ const getStatusChipProps = (status) => {
       };
     case "in_preparation":
       return {
-        label: "In Preparation",
+        label: "In preparation",
         icon: <FontAwesomeIcon icon={faRotate} />,
         color: "warning",
       };
+    // Dataset licence
+    case "public":
+    case "Public":
+      return {
+        label: "Public",
+        icon: <FontAwesomeIcon icon={faCreativeCommonsPd} />,
+        color: "success",
+      };
+    case "CC0":
+    case "CCZero":
+    case "CC0: Public Domain":
+    case "Public Domain (CC0)":
+      return {
+        label: "CC0",
+        icon: <FontAwesomeIcon icon={faCreativeCommonsZero} />,
+        color: "success",
+      };
+    case "CC BY 4.0":
+    case "CC BY-NC-ND":
+    case "CC BY-NC 4.0":
+    case "CC BY-SA":
+    case "CC BY":
+    case "Creative Commons Attribution":
+      return {
+        label: value,
+        icon: <FontAwesomeIcon icon={faCreativeCommonsBy} />,
+        color: "primary",
+      };
+    case "Open Database License (ODbL)":
+      return {
+        label: "ODbL",
+        icon: <FontAwesomeIcon icon={faCreativeCommonsPd} />,
+        color: "success",
+      };
     default:
       return {
-        label: "Unknown",
+        label: value,
       };
   }
 };
 
-const renderStatus = (params) => {
-  const { label, icon, color, variant } = getStatusChipProps(params.value);
+const renderChips = (params) => {
+  const { label, icon, color, customColor } = getChipProps(params.value);
   return (
     <Chip
       icon={icon}
@@ -65,6 +107,18 @@ const renderStatus = (params) => {
       size="small"
       variant="outlined"
     />
+  );
+};
+
+const renderDate = (params) => {
+  return <TimeAgo date={new Date(params.value)} minPeriod={60} />;
+};
+
+const renderDescription = (params) => {
+  return (
+    <div title={params.value}>
+      <Teaser description={params.value} lines={3} />
+    </div>
   );
 };
 
@@ -127,20 +181,6 @@ const search_facets = [
   },
 ];
 
-const columnOrder = [
-  "data_id",
-  "name",
-  "version",
-  "status",
-  "description",
-  "creator",
-  "date",
-  "format",
-  "licence",
-  "url",
-  "tags",
-];
-
 // Controls how columns are rendered and manipulated in the table view
 const columns = [
   {
@@ -148,55 +188,55 @@ const columns = [
     headerName: "Data_id",
     valueGetter: valueGetter("data_id"),
     renderCell: renderCell,
+    width: 70,
   },
   {
     field: "name",
     headerName: "Name",
     valueGetter: valueGetter("name"),
     renderCell: renderCell,
+    width: 230,
   },
   {
     field: "version",
     headerName: "Version",
     valueGetter: valueGetter("version"),
     renderCell: renderCell,
+    width: 60,
   },
   {
     field: "status",
     headerName: "Status",
     valueGetter: valueGetter("status"),
-    renderCell: renderStatus,
+    renderCell: renderChips,
     type: "singleSelect",
     valueOptions: ["active", "deactivated", "in_preparation"],
+    width: 136,
   },
   {
     field: "description",
     headerName: "Description",
     valueGetter: valueGetter("description"),
-    renderCell: renderCell,
-  },
-  {
-    field: "creator",
-    headerName: "Creator",
-    valueGetter: valueGetter("creator"),
-    renderCell: renderCell,
+    renderCell: renderDescription,
+    width: 360,
   },
   {
     field: "date",
     headerName: "Date",
     valueGetter: valueGetter("date"),
-    renderCell: renderCell,
-  },
-  {
-    field: "format",
-    headerName: "Format",
-    valueGetter: valueGetter("format"),
-    renderCell: renderCell,
+    renderCell: renderDate,
   },
   {
     field: "licence",
     headerName: "Licence",
     valueGetter: valueGetter("licence"),
+    renderCell: renderChips,
+    width: 110,
+  },
+  {
+    field: "creator",
+    headerName: "Creator",
+    valueGetter: valueGetter("creator"),
     renderCell: renderCell,
   },
   {
