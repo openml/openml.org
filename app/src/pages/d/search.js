@@ -3,7 +3,11 @@ import { useNextRouting } from "../../utils/useNextRouting";
 
 import DashboardLayout from "../../layouts/Dashboard";
 import SearchContainer from "../../components/search/SearchContainer";
-import { renderCell, valueGetter } from "../../components/search/ResultTable";
+import {
+  renderCell,
+  valueGetter,
+  copyCell,
+} from "../../components/search/ResultTable";
 
 import Chip from "@mui/material/Chip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +15,7 @@ import {
   faCheck,
   faTriangleExclamation,
   faRotate,
+  faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 
 import searchConfig from "./searchConfig";
@@ -98,15 +103,63 @@ const getChipProps = (value) => {
 };
 
 const renderChips = (params) => {
-  const { label, icon, color, customColor } = getChipProps(params.value);
+  const { label, icon, color } = getChipProps(params.value);
   return (
+    <div title={label}>
+      <Chip
+        icon={icon}
+        label={label}
+        color={color}
+        size="small"
+        variant="outlined"
+      />
+    </div>
+  );
+};
+
+const renderTags = (params) => {
+  const { value } = params;
+
+  // Return nothing if the label is empty
+  if (!value) {
+    return null;
+  }
+
+  // Split the label by commas to create an array of tags
+  const labels = value
+    .split(",")
+    .map((label) => label.trim())
+    .filter((label) => label);
+
+  // Determine if there are more than 3 labels
+  const hasMore = labels.length > 3;
+
+  // Slice the array to the first 3 labels if there are more than 3
+  const visibleLabels = hasMore ? labels.slice(0, 3) : labels;
+
+  // Map each tag to a Chip component and add a margin for spacing
+  const chips = visibleLabels.map((label, index) => (
     <Chip
-      icon={icon}
+      key={index}
       label={label}
-      color={color}
       size="small"
       variant="outlined"
+      sx={{ marginRight: "4px" }} // Add small space around the chip
     />
+  ));
+
+  return (
+    <div title={value} style={{ display: "flex", flexWrap: "wrap" }}>
+      {chips}
+      {hasMore && (
+        <Chip
+          icon={<FontAwesomeIcon icon={faEllipsis} />}
+          size="small"
+          variant="outlined"
+          sx={{ paddingLeft: "8px" }} // Match the margin of other chips
+        />
+      )}
+    </div>
   );
 };
 
@@ -238,24 +291,27 @@ const columns = [
     headerName: "Creator",
     valueGetter: valueGetter("creator"),
     renderCell: renderCell,
+    width: 150,
   },
   {
     field: "url",
     headerName: "Url",
     valueGetter: valueGetter("url"),
-    renderCell: renderCell,
+    renderCell: copyCell,
+    copyMessage: true,
+    width: 50,
   },
   {
     field: "tags",
     headerName: "Tags",
     valueGetter: valueGetter("tags"),
-    renderCell: renderCell,
+    renderCell: renderTags,
+    width: 400,
   },
 ];
 
 function DataSearchContainer() {
   const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
-  console.log("columns", JSON.stringify(columns));
 
   return (
     <SearchContainer

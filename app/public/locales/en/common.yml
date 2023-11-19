@@ -599,6 +599,7 @@ apis:
 search:
     type:
         datasets: "Datasets"
+    copied: "Copied to clipboard."
     sort_by: "Sort by"
     showing: "Showing"
     out_of: "out of"

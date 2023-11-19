@@ -1,7 +1,11 @@
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import { Box, IconButton, Snackbar } from "@mui/material";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "next-i18next";
 
 const MAX_CELL_LENGTH = 75;
 
@@ -39,6 +43,9 @@ export const valueGetter = (fieldName) => (params) => {
       })
       .join(", ");
   } else if (value && typeof value === "object") {
+    if (Object.keys(value).length === 0) {
+      return "";
+    }
     // Stringify object values
     return JSON.stringify(value);
   }
@@ -48,18 +55,19 @@ export const valueGetter = (fieldName) => (params) => {
 
 // Controls how each cell is rendered
 const renderCell = (params) => {
-  const value = params.value; // This should be a string after valueGetter's processing
+  let value = params.value; // This should be a string after valueGetter's processing
+
   const displayValue =
     typeof value === "string" && value.length > MAX_CELL_LENGTH
       ? `${value.substring(0, MAX_CELL_LENGTH)}…`
       : value;
+
   return (
     <div title={typeof value === "string" ? value : "Complex Object"}>
       {displayValue}
     </div>
   );
 };
-
 // Builds a default column definition
 export const buildDefaultColumns = (columnOrder) => {
   return columnOrder.map((fieldName) => {
@@ -72,13 +80,52 @@ export const buildDefaultColumns = (columnOrder) => {
   });
 };
 
+// To display a snackbar when the user copies a cell value
+// we need to make this a higher-order component. The
+// `setOpen` function is used to open the snackbar, which
+// is defined in the parent component.
+export const copyCell = (setOpen) => {
+  const CopyCellComponent = (params) => {
+    return (
+      <IconButton
+        color="primary"
+        onClick={(event) => {
+          navigator.clipboard.writeText(params.value);
+          setOpen(true);
+          event.stopPropagation();
+        }}
+        size="small"
+      >
+        <FontAwesomeIcon icon={faCopy} />
+      </IconButton>
+    );
+  };
+
+  CopyCellComponent.displayName = "CopyCell";
+  return CopyCellComponent;
+};
+
 const ResultsTable = ({ results, columns }) => {
   const router = useRouter();
+  const [open, setOpen] = React.useState(false); // Snackbar
+  const { t } = useTranslation();
 
   // Check if there are results
   if (results.length === 0) {
     return <div>No results found</div>;
   }
+
+  // Links the setOpen callback to the copyCell function to open
+  // the snackbar when the user copies a cell value.
+  const linkedColumns = columns.map((col) => {
+    if (col.copyMessage) {
+      return {
+        ...col,
+        renderCell: (params) => copyCell(setOpen)(params), // Wrap the call to copyCell with setOpen
+      };
+    }
+    return col;
+  });
 
   // Define the rows for the grid
   const rows = results.map((result, index) => {
@@ -102,12 +149,12 @@ const ResultsTable = ({ results, columns }) => {
   // Could be used to e.g. tag a number of datasets or add them to a collection
   const onRowsSelectionHandler = (ids) => {
     const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
-    console.log(selectedRowsData);
   };
 
   // Go to detail page on click
   const handleRowClick = (params) => {
     // Assuming 'id' is the field you want to use for navigation
+    console.log(params);
     const basePath = router.pathname.split("/")[1];
     const id = params.row.id;
     router.push(`/${basePath}/${id}`);
@@ -117,13 +164,20 @@ const ResultsTable = ({ results, columns }) => {
     <Box sx={{ height: "calc(100vh - 192px)", width: "100%" }}>
       <DataGrid
         rows={rows}
-        columns={columns}
+        columns={linkedColumns}
         pageSize={rows.length} // Set to the total number of rows
         rowsPerPageOptions={[]}
         hideFooter
         //checkboxSelection // Disabled for now because we don't do anything useful with it yet
         onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
         onRowClick={handleRowClick}
+      />
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        autoHideDuration={2000}
+        message={t("search.copied")}
+        onClose={() => setOpen(false)}
       />
     </Box>
   );
