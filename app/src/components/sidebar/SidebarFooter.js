@@ -5,6 +5,7 @@ import { rgba, darken } from "polished";
 import { Grid, ListItemButton, ListItemText } from "@mui/material";
 import { Settings as SettingsIcon } from "@mui/icons-material";
 import Settings from "../settings";
+import { useTranslation } from "next-i18next";
 
 const Footer = styled.div`
   background-color: ${(props) =>
@@ -47,6 +48,12 @@ function SidebarFooter() {
     isOpen: false,
   });
 
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   const toggleDrawer = (open) => () => {
     setState({ ...state, isOpen: open });
   };
@@ -57,7 +64,7 @@ function SidebarFooter() {
       <Grid container spacing={2}>
         <Item onClick={toggleDrawer(true)}>
           <SettingsIcon />
-          <Title>Settings</Title>
+          <Title>{t("sidebar.settings")}</Title>
         </Item>
       </Grid>
     </Footer>

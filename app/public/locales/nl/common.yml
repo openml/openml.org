@@ -1,2 +1,628 @@
-Search: "Zoeken…"
+Search: "Doorzoek datasets, modellen, benchmarks,…"
 SearchShort: "Zoeken"
+sidebar:
+    explore: "Verkennen"
+    datasets: "Datasets"
+    tasks: "Taken"
+    flows: "Flows"
+    runs: "Runs"
+    evaluations: "Evaluaties"
+    collections: "Collecties"
+    benchmarks: "Benchmarks"
+    task_suites: "Taakpakketten"
+    run_studies: "Run studies"
+    measures: "Maten"
+    data_qualities: "Datakwaliteiten"
+    model_evaluations: "Model evaluaties"
+    test_procedures: "Testprocedures"
+    sign_in: "Inloggen"
+    sign_up: "Aanmelden"
+    reset_password: "Wachtwoord resetten"
+    page_not_found: "Pagina niet gevonden"
+    server_error: "Serverfout"
+    learn: "Leren"
+    docs: "Documentatie"
+    blog: "Blog"
+    apis: "API's"
+    contribute: "Bijdragen"
+    meet_up: "Meet up"
+    about_us: "Over ons"
+    terms_citation: "Voorwaarden & Citatie"
+    settings: "Instellingen"
+    auth: "Authenticatie"
+    extra: "Extra"
+settings:
+    select_theme:  "Selecteer een thema"
+    dark: "Donker"
+    light: "Licht"
+    default: "Standaard"
+    indigo: "Indigo"
+tooltips:
+    languages: "Talen"
+    create: "Creëren"
+    notifications: "Notificaties"
+    account: "Account"
+account:
+    profile: "Profiel"
+    sign_in: "Inloggen"
+    sign_out: "Uitloggen"
+notifications:
+    new_notification: "Nieuwe notificatie"
+    new_notifications: "Nieuwe notificaties"
+    no_notifications: "Geen notificaties"
+    show_all: "Toon alle notificaties"
+languages:
+    english: "Engels"
+    french: "Frans"
+    german: "Duits"
+    dutch: "Nederlands"
+create:
+    title: "Creëer en deel"
+    new_data: "Nieuwe dataset"
+    new_data_text: "Deel een nieuwe dataset."
+    new_task: "Nieuwe taak"
+    new_task_text: "Stel een nieuwe uitdaging voor de gemeenschap."
+    new_collection: "Nieuwe collectie"
+    new_collection_text: "Organiseer je middelen."
+landing:
+    helmet: "Welkom"
+    openml: "OpenML"
+    title: "Samen beter leren met machine learning"
+    subtitle: "Een open platform met machine-leesbare datasets, geautomatiseerde training en reproduceerbare benchmarks."
+    signup: "Aanmelden"
+    open: "OpenML is open en gratis"
+    animation:
+        data: "Ik heb nieuwe data :)"
+        model: "Ik heb een beter model!"
+    lifecycle:
+        header: "OpenML vereenvoudigt de gehele levenscyclus van machine learning"
+        sub_header: "en organiseert alles in één collectief geheugen"
+    ai_ready_data:
+        title: "AI-gereed data"
+        text: >
+            Alle datasets zijn uniform geformatteerd, hebben rijke, consistente metadata en kunnen
+            direct worden geladen in je favoriete omgevingen.
+    integrations:
+        title: "ML-bibliotheekintegraties"
+        text: >
+            Pipelines en modellen kunnen direct worden gedeeld vanuit je favoriete machine learning
+            bibliotheken. Geen handmatige stappen vereist.
+    ml_results:
+        title: "Een schat aan ML-resultaten"
+        text: >
+            Leer van miljoenen reproduceerbare machine learning benchmarks van duizenden
+            modellen getraind op duizenden datasets.
+    integration:
+        overline: "Integraties"
+        heading: "Moeiteloos machine learning"
+        subtitle: "Importeer en exporteer gemakkelijk datasets, pipelines en experimenten vanuit je favoriete machine learning omgevingen en bibliotheken."
+        button: "API-documentatie"
+    faq:
+        heading: "Veelgestelde vragen"
+        description: "Laten we hier FAQs plaatsen"
+        "1":
+            question: "Vraag 1"
+            answer: "Antwoord 1"
+        "2":
+            question: "Vraag 2"
+            answer: "Antwoord 2"
+        "3":
+            question: "Vraag 3"
+            answer: "Antwoord 3"
+contribute:
+    helmet: "Bijdragen"
+    hero:
+        line1: "Hier zijn ze, de dwazen."
+        line2: "Degenen die machine learning vrij willen maken."
+        line3: "Ze zijn niet dol op hype, of niet-reproduceerbare beweringen."
+        line4: "Ze geloven dat alleen openheid ons vooruit zal brengen."
+        line5: "En door de beste data en modellen te delen,"
+        line6: "zullen we samen de wereld verbeteren."
+    header:
+        intro: "Iedereen kan de wereld veranderen"
+        contribute: "Bijdragen aan OpenML"
+        donation: "Doe een donatie"
+        sponsor: "Word een officiële Sponsor"
+    help_dev:
+        title: "Ben je een ontwikkelaar?"
+        text: >
+            We willen dat OpenML belachelijk eenvoudig te gebruiken is en mensen macht geeft.
+            Draag je vaardigheden en expertise bij om OpenML beter te maken voor jezelf en 
+            anderen, online (op GitHub) of tijdens een van onze codeersprints.
+        chips:
+            - "Beginnen"
+    help_science:
+        title: "Ben je een wetenschapper?"
+        text: >
+            We willen mensen in staat stellen de wereld te veranderen ten goede. Je kunt helpen door 
+            nuttige datasets en machine learning pipelines te maken of te delen, of door 
+            OpenML uit te breiden om het nuttiger te maken in wetenschap en onderzoek.
+        chips:
+            - "Beginnen"
+    help_donate:
+        title: "Alle hulp is welkom"
+        text: >
+            OpenML is afhankelijk van ons allemaal. Je kunt helpen OpenML gratis te houden
+            en onze gemeenschap te ondersteunen door een donatie te doen (geen druk).
+            Je kunt ook bij ons aansluiten bij een OpenML-evenement, of er zelf een
+            organiseren! Of misschien heb je een ander geweldig idee? Aarzel niet om
+            contact op te nemen!
+        chips:
+            - "Doe een donatie"
+            - "Neem contact op"
+    help_exec:
+        title: "Ben je een leidinggevende?"
+        text: >
+            OpenML helpt je team om machine learning-assets te ontdekken
+            en processen te automatiseren, zodat ze zich kunnen concentreren op wat
+            belangrijk is. Je kunt je ontwikkelaars aanmoedigen om te helpen, een 
+            codeersprint hosten, een officiële sponsor worden, of met ons samenwerken. 
+            Legendarisch.
+        chips:
+            - "Doe een donatie"
+            - "Neem contact op"
+    code:
+        title: "Goed in coderen?"
+        text: >
+            Perfect! Bekijk de issue trackers van de verschillende OpenML
+            componenten waaraan je kunt bijdragen.
+        chips:
+            - "Documentatie"
+            - "Website"
+            - "REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+    website:
+        title: "Goed in webdesign / UX?"
+        text: >
+            Help ons alstublieft om de website te verbeteren zodat het mooier en meer
+            intuïtief is voor iedereen.
+        chips:
+            - "Website documentatie"
+            - "Website code en issues"
+    docs:
+        title: "Goed in uitleggen?"
+        text: >
+            OpenML moet voor iedereen makkelijk te begrijpen zijn. Help ons alstublieft
+            de documentatie te verbeteren als iets niet 100% duidelijk is.
+        chips:
+            - "OpenML documentatie"
+            - "Hoe de documentatie bij te werken"
+    datasets:
+        title: "Geef je om goede datasets?"
+        text: >
+            Hoogwaardige datasets zijn cruciaal voor machine learning. Voeg nieuwe interessante 
+            datasets toe of help de kwaliteit van de
+            bestaande te controleren.
+        chips:
+            - "Dataset issue tracker"
+    ambassador:
+        title: "Help ons een sterkere gemeenschap op te bouwen"
+        text: >
+            Word een OpenML-ambassadeur! Help ons OpenML beter bekend te maken in
+            jouw gemeenschap, schrijf over OpenML en hoe je het gebruikt, of geef
+            ons een schreeuw uit.
+        chips:
+            - "OpenML blog"
+            - "OpenML op Twitter"
+    donate:
+        title: "Je bent geweldig!"
+        text: >
+            Door een donatie te doen, groot of klein, help je ons coderingsprints en 
+            outreach-activiteiten te organiseren, onze gemeenschap blij en betrokken te houden, en ervoor te zorgen dat 
+            we de basisinfrastructuur hebben om het platform gratis te houden voor iedereen. 
+            Ook, als OpenML soms tekortschiet, beloven we beter te doen! Je kunt ons sponsoren 
+            via OpenCollective of GitHub. Alle donateurs worden gevierd in onze hall of 
+            fame, en we zijn volledig transparant over hoe jouw bijdragen worden gebruikt.
+        widgets:
+            - "OpenCollective"
+            - "GitHub Sponsors"
+    sponsor_why:
+        title: "Waarom?"
+        text: >
+            Eenvoudig gezegd, zonder onze gulle sponsors zou OpenML niet in staat zijn om al 
+            zijn middelen en diensten gratis ter beschikking te stellen aan de hele wereld. Door te doneren aan 
+            OpenML bevorder je de missie van het project om machine learning onderzoek te democratiseren. 
+            Jouw donaties worden gebruikt om boeiende community-evenementen te organiseren (die locaties, 
+            eten en swag vereisen), onze communitymanager en ontwikkelaar te ondersteunen, en onze 
+            infrastructuur te draaien (inclusief servers en opslag).
+    sponsor_what:
+        title: "Wat bieden we aan?"
+        text: >
+            We staan open voor vele vormen van sponsoring. Hoewel we een paar sponsorniveaus 
+            hebben op onze Open Collective-pagina, horen we ook graag van jou om te leren hoe we 
+            beter kunnen aansluiten bij jouw doelen. Hieronder staan voorbeelden van mogelijke voordelen, maar we 
+            staan open voor nieuwe ideeën om met jou samen te werken.
+        items:
+            - "Jouw logo op onze website en in onze presentaties, prominenter getoond voor grotere sponsors."
+            - "We sturen je OpenML T-shirts, stickers,... Of je kunt ons materiaal sturen om uit te delen op onze evenementen."
+            - "We zullen jouw ondersteuning vermelden in gesprekken en video's. We werken met je samen om de juiste boodschap over te brengen."
+            - "Kom een praatje geven bij een van onze codeersprints of evenementen, of kom gewoon samen met ons werken."
+            - "Laat ons weten wat je graag ontwikkeld zou zien op OpenML, en we zullen het samen realiseren."
+            - "Word een partner. Als je een fulltime ontwikkelaar ondersteunt (overal), of je laat je eigen ontwikkelaars bijdragen, kun je helpen de toekomst van OpenML vorm te geven."
+        chips:
+            - "Neem contact op"
+    sponsor_how:
+        title: "Hoe?"
+        text: >
+            Je kunt ons sponsoren via Open Collective of GitHub. Klik op de onderstaande knoppen om te beginnen. 
+            Alle sponsors en de hoogte van de sponsoring worden erkend in onze hall of fame, en we zullen volledig 
+            transparant zijn over hoe jouw sponsoring OpenML elke dag beter maakt. Dit collectief wordt 
+            fiscaal gehost door onze non-profit Open Machine Learning Foundation. Indien gewenst, kun je
+            ook direct doneren aan de Foundation.
+        widgets:
+            - "OpenCollective"
+            - "GitHub Sponsors"
+about:
+    helmet: "Over ons"
+    title: "Over OpenML"
+    core: "Auteurs"
+    core_text: >
+        De volgende personen zijn momenteel kernbijdragers aan de ontwikkeling en het onderhoud van OpenML.
+        Zij worden gekozen door andere kernbijdragers op basis van verdienste en toewijding, en hebben schrijftoegang tot een of meer OpenML-repositories.
+        Op alfabetische volgorde:
+    join_us: "Doe mee, raak betrokken!"
+    join_core: "Kernbijdrager worden"
+    header:
+        team: "Ontmoet het team"
+        contact: "Neem contact met ons op"
+        mission: "Missie"
+        foundation: "The Open Machine Learning Foundation"
+    contributors:
+        title: "Bijdragers"
+        text: >
+            We zijn oneindig dankbaar voor de vele bijdragers die op kleine of grote manieren hebben geholpen. Hieronder zijn
+            enkele van de mensen die hebben bijgedragen aan OpenML op GitHub. Je kunt ook de bijdragers van verschillende subprojecten bekijken:
+        chips:
+            - "OpenML website"
+            - "OpenML REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+            - "Datasets"
+            - "Blog"
+    mission:
+        title: "Onderzoek naar machine learning moet open, goed georganiseerd en toegankelijk zijn voor iedereen."
+        text: >
+            Er vindt elke dag verbazingwekkend onderzoek naar machine learning plaats in laboratoria over de hele wereld.
+            Wat als we de laatste geweldige resultaten (datasets, code, experimenten) uit al onze laboratoria gemakkelijk konden delen en online organiseren,
+            zodat iedereen ze gemakkelijk kan ontdekken en toegang krijgen, ze op talloze onverwachte manieren kunnen gebruiken en samen problemen oplossen op wereldschaal?
+            We streven ernaar om zoveel mogelijk datasets gemakkelijk vindbaar, goed gedocumenteerd en moeiteloos toegankelijk te maken.
+            Wanneer nieuwe modellen worden getraind en geëvalueerd, maken we deze resultaten ook gemakkelijk vindbaar, duidelijk gedocumenteerd en reproduceerbaar,
+            zodat we ze kunnen vertrouwen, ervan kunnen leren en kunnen voortbouwen op de gecombineerde resultaten van de planeet.
+            En natuurlijk gebruiken we machine learning bovenop al deze gegevens om nieuwe ontdekkingen te doen en ons werk te automatiseren.
+    community:
+        title: "Van de ML-gemeenschap voor de ML-gemeenschap."
+        text: >
+            We bouwen de tools waar we graag gebruik van maken, die ons als onderzoekers versterken en ons leven gemakkelijker maken.
+            Gebouwd rond open interfaces, kan OpenML gebruikt worden om automatisch datasets, algoritmen en
+            experimentresultaten rechtstreeks uit de tools die we al kennen en liefhebben te delen (en te importeren).
+            Via onze API's kan OpenML eenvoudig worden geïntegreerd in nieuwe workflows en processen, om nieuwe gegevens te importeren en nieuwe resultaten te exporteren.
+            We geloven ook in geweldige normen voor het verzamelen en delen van gegevens en voor het verzamelen en analyseren van experimentele resultaten.
+    governance:
+        title: "Open Source en Open Governance."
+        text: >
+            OpenML wordt gebouwd door een geweldige open source gemeenschap.
+            Alle code van het OpenML-project draagt de BSD-3-Clause licentie.
+            Iedereen met interesse in het project kan zich aansluiten bij de gemeenschap, bijdragen aan het projectontwerp en deelnemen aan het besluitvormingsproces,
+            evenals aan bijeenkomsten (bijv. hackathons) en online discussies.
+            Toegewijde bijdragers kunnen genomineerd worden om kernleden te worden, vertrouwd om OpenML met zorg te ontwikkelen en te onderhouden.
+            Kernleden kunnen op hun beurt genomineerd worden voor het stuurcomité, en helpen het project soepel te laten verlopen met de hulp van de Open Machine Learning Foundation.
+        chips:
+            - "Bijdragegids"
+            - "Governancemodel"
+            - "Open Machine Learning Foundation"
+    contact:
+        title: "We horen graag van u."
+        text: >
+            Er zijn vele manieren om met ons in contact te komen.
+            We horen altijd graag van u, of u nu een vraag, een suggestie heeft, of gewoon hallo wilt zeggen.
+        items:
+            - "Voor algemene vragen over het OpenML-initiatief, e-mail ons op openmlhq@googlegroups.com"
+            - "Gebruikt u Twitter? Volg, DM of tweet naar @open_ml"
+            - "Wilt u betrokken zijn bij lopende discussies? Doe met ons mee op Slack."
+    contact_issues:
+        title: "Problemen en functieverzoeken"
+        text: >
+            Bent u een probleem tegengekomen? Wilt u een functie aanvragen of een pull request doen?
+            Controleer de overeenkomstige issue tracker op GitHub voor oplossingen of om nieuwe problemen te melden.
+        chips:
+            - "OpenML website"
+            - "OpenML REST API"
+            - "Python API"
+            - "R API"
+            - "Java API"
+            - "Datasets"
+    foundation:
+        title: "Een non-profit stichting ter ondersteuning van OpenML"
+        text: >
+            De Open Machine Learning Foundation ondersteunt het OpenML-project.
+            We staan open voor samenwerking en betrokkenheid met universiteiten, bedrijven of iedereen die dezelfde doelen deelt en bereid is het project te ondersteunen.
+            Dit kan sponsoring inhouden, de gezamenlijke ontwikkeling van nieuwe functies of andere vormen van partnerschap, voor zover deze in lijn zijn met de missie van de stichting en de onafhankelijkheid van het OpenML open source project zelf niet beïnvloeden.
+    foundation_mission:
+        title: "Onze missie is om machine learning eenvoudig, toegankelijk, collaboratief en open te maken, om machine learning onderzoek, onderwijs en kundige praktijk te verbeteren en te stroomlijnen"
+        text: >
+            De stichting streeft ernaar deze missie te bereiken door onder andere de OpenML.org platform te ondersteunen om een wereldwijde gemeenschap de middelen te bieden om openlijk te delen en voort te bouwen op elkaars werk,
+            samenwerking, onderwijs, beurzen, openheid van gegevens en code, automatisering van processen en reproduceerbaarheid van resultaten te verbeteren.
+            We doen dit in nauwe samenwerking met de OpenML-gemeenschap en in overeenstemming met de leidende principes van het OpenML-platform, zoals de erecode en het citatiebeleid.
+            Meer in het algemeen streven we ernaar om de infrastructuur, gegevens, code en wetenschappelijke basis te bieden die nodig zijn om onderzoek te versnellen voor het algemene voordeel van de samenleving en om positieve resultaten te creëren voor toekomstige generaties.
+    foundation_board:
+        title: "Stichtingsbestuur"
+        text: >
+            We willen er zeker van zijn dat het geld dat de stichting ontvangt, wordt geïnvesteerd in het belang van de gemeenschap.
+            Daartoe hebben we een bestuur dat de activiteiten van de stichting controleert.
+            Kernbijdragers aan het OpenML-project kunnen in dit bestuur dienen, om beslissingen te nemen namens de gemeenschap.
+            De huidige bestuursleden zijn Joaquin Vanschoren, Jan van Rijn, Matthias Feurer, Bernd Bischl, Heidi Seibold en Giuseppe Casalicchio.
+meetup:
+    helmet: "Ontmoeten"
+    title: "Laten we afspreken!"
+    header:
+        meetup: "Doe mee aan een van onze hackathons"
+        upcoming: "Aankomende evenementen"
+        sponsor: "Sponsor een evenement"
+    hackathons:
+        title: "De wereld veranderen vereist gefocust, diepgaand werk"
+        text: >
+            In hackathon-stijl evenementen, stappen we af van de routine en werken we hele weken aan nieuwe ideeën die de
+            wetenschappelijke gemeenschap vooruit helpen. Van het bouwen van coole uitbreidingen van OpenML zelf tot het oplossen van machine learning
+            problemen op geheel nieuwe manieren, we geloven in open wetenschap en het democratiseren van machine learning voor iedereen.
+            Breng gewoon je laptop mee, wij zorgen voor drankjes, snacks, gefocuste tijd en geweldig gezelschap
+        chips:
+            - "Bekijk foto's van eerdere evenementen"
+            - "Aankomende evenementen"
+            - "Sponsor een evenement"
+    nextEvent:
+        title: "2022 Voorjaar Hackathon - 20-25 maart, Schloss Dagstuhl, Wadern, Duitsland"
+        text: >
+            Doe met ons mee in Kasteel Dagstuhl, een prachtige locatie voor het bevorderen van computerwetenschappelijk onderzoek in de heuvels van Saarland,
+            om te werken aan de volgende generatie van OpenML.
+        buttons:
+            - "Registreren (gratis)"
+            - "Routebeschrijving"
+            - "Voorbereiden"
+            - "Schema"
+    sponsorEvent:
+        title: "Sponsoring kan een geweldige hackathon veranderen in een fantastische!"
+        text: >
+            We zijn altijd heel blij met sponsoring om de volgende hackathon nog beter te maken. Een evenement sponsoren kan
+            via de OpenML Foundation en zal direct ten goede komen aan de deelnemers: om snacks te voorzien,
+            sociale activiteiten, gratis spullen (bijv. t-shirts),... We zouden graag uw steun erkennen op de OpenML-website,
+            en nodigen u uit om een presentatie te geven tijdens het evenement.
+        chips:
+            - "Neem contact met ons op"
+            - "OpenML Foundation"
+            - "Andere manieren om te sponsoren"
+terms:
+    helmet: "Voorwaarden & Citatie"
+    title: "Voorwaarden & Citatie"
+    bibtex_copied: "BibTex is naar het klembord gekopieerd"
+    header:
+        licence: "Licenties"
+        citation: "OpenML citeren"
+        citation_sub: >
+            Als u OpenML in een wetenschappelijke publicatie hebt gebruikt, zouden we het op prijs stellen als u de meest relevante papers hieronder citeert.
+        termsofuse: "Eercode, Voorwaarden en Privacybeleid"
+    licences:
+        title: "Open Machine Learning, Open licenties."
+        text: >
+            We geloven dat machine learning zo open en toegankelijk mogelijk moet zijn. We hebben de volgende licenties gekozen
+            om ervoor te zorgen dat OpenML door iedereen gebruikt kan worden en dat iedereen ervan kan profiteren. Het OpenML-team en duizenden
+            bijdragers hebben talloze uren tijd en middelen geïnvesteerd om deze droom werkelijkheid te maken, dus geef krediet
+            waar krediet verschuldigd is. Klik op elk item voor meer details.
+        items:
+            - >
+              U bent vrij om OpenML en alle gegevens onder de **CC-BY licentie** te gebruiken. Dit betekent dat u het vrij kunt gebruiken en hergebruiken als
+              u ook de juiste erkenning geeft. Om ons te citeren, gebruik dan de juiste citaties hieronder.
+            - >
+              Individuele datasets, modellen en benchmarks kunnen hun eigen licenties en citatieverzoeken hebben. OpenML zal ze tonen
+              wanneer ze bekend zijn.
+            - >
+              OpenML is volledig open source, inclusief de platformcode zelf en alle bibliotheken. Alle code is **BSD gelicentieerd**, een
+              van de meest permissieve licenties beschikbaar.
+    cite_openml:
+        title: "OpenML Platform"
+        text: >
+            Joaquin Vanschoren, Jan N. van Rijn, Bernd Bischl, Luis Torgo. **OpenML: netwerkgebaseerde wetenschap in machine learning.**
+            _SIGKDD Explorations 15(2), pp 49-60, 2013_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_python:
+        title: "OpenML Python API"
+        text: >
+            Matthias Feurer, Jan N. van Rijn, Arlind Kadra, Pieter Gijsbers, Neeratyoy Mallik, Sahithya Ravi, Andreas Mueller, Joaquin Vanschoren,
+            Frank Hutter. **OpenML-Python: een uitbreidbare Python API voor OpenML.** _JMLR 22(1), Art. 100, pp 4573-4577, 2021_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_r:
+        title: "OpenML R API"
+        text: >
+            Giuseppe Casalicchio, Jakob Bossek, Michel Lang, Dominik Kirchhoff, Pascal Kerschke, Benjamin Hofner, Heidi Seibold, Joaquin Vanschoren,
+            Bernd Bischl. **OpenML: Een R-pakket om te verbinden met het machine learning platform OpenML.** _Computational Statistics 32(3), pp 1-15, 2017_
+        chips:
+            - "Paper"
+            - "BibTex"
+    cite_benchmark:
+        title: "OpenML Benchmarking suites"
+        text: >
+            Bernd Bischl, Giuseppe Casalicchio, Matthias Feurer, Pieter Gijsbers, Frank Hutter, Michel Lang, Rafael Gomes Mantovani, Jan N. van Rijn,
+            Joaquin Vanschoren. **OpenML Benchmarking Suites.** _Advances in Neural Information Processing Systems (NeurIPS 2021), 2021_
+        chips:
+            - "Paper"
+            - "BibTex"
+    honorcode:
+        title: "Eercode"
+        text: |
+            Door u aan te sluiten bij OpenML, wordt u deel van een speciale wereldwijde gemeenschap van datawetenschappers die op elkaars resultaten voortbouwen en
+            hun gedachten zo efficiënt mogelijk verbinden. Deze gemeenschap is afhankelijk van uw motivatie om gegevens, hulpmiddelen en ideeën te delen, en dit eerlijk te doen.
+            Als tegenprestatie zult u vertrouwen, zichtbaarheid en reputatie winnen, wat online samenwerkingen en studies ontketent die anders misschien niet zouden zijn gebeurd.
+
+            Door enig deel van OpenML te gebruiken, gaat u akkoord met:  
+            * **Geef krediet waar krediet verschuldigd is.** Citeer de auteurs op wiens werk u voortbouwt, of bouw samenwerkingen waar dat gepast is.
+            * **Geef terug aan de gemeenschap** door uw eigen gegevens zo open en zo snel mogelijk te delen, of door de gemeenschap op andere manieren te helpen.
+            Door dit te doen, wint u zichtbaarheid en impact (citaten).
+            * **Deel gegevens naar uw beste kunnen.** Iedereen maakt fouten, maar we vertrouwen erop dat u deze zo snel mogelijk corrigeert.
+            Verwijder of markeer gegevens die niet betrouwbaar kunnen zijn.
+            * **Wees beleefd en constructief** in alle discussies. Kritiek op methoden is welkom, maar persoonlijke kritiek moet worden vermeden.
+            * **Steel niet** het werk van mensen die het openlijk delen. OpenML maakt het gemakkelijk om alle gedeelde gegevens te vinden (en wanneer ze zijn gedeeld),
+            dus iedereen zal weten als u dit doet.
+    termsofuse:
+        title: "Gebruiksvoorwaarden"
+        text: |
+            U kunt OpenML gratis gebruiken, maar u moet de regels hieronder volgen. Als u dat niet doet, kunnen we uw account opschorten of beëindigen.
+            * U gaat ermee akkoord dat u verantwoordelijk bent voor uw eigen gebruik van OpenML.org en alle inhoud die door u is ingediend, in overeenstemming met de 
+            Eercode en alle toepasselijke lokale, staats-, nationale en internationale wetten.
+            * Door inhoud van OpenML.org in te dienen of te verspreiden, bevestigt u dat u de nodige rechten, licenties, toestemmingen 
+            en/of machtigingen heeft om deze inhoud te reproduceren en te publiceren. U kunt geen gevoelige of vertrouwelijke gegevens uploaden. U, en niet de 
+            ontwikkelaars van OpenML.org, bent als enige verantwoordelijk voor uw inzendingen.
+            * Door inhoud naar OpenML.org te sturen, geeft u OpenML.org het recht om deze inhoud te hosten, over te dragen, weer te geven en te gebruiken, in 
+            overeenstemming met uw deelinstellingen en eventuele licenties die door u zijn verleend. U verleent ook aan elke gebruiker een niet-exclusieve licentie 
+            om deze inhoud te benaderen en te gebruiken voor hun eigen onderzoeksdoeleinden, in overeenstemming met eventuele licenties die door u zijn verleend.
+            * U mag één gebruikersaccount aanhouden en niemand anders toestaan uw gebruikersnaam en/of wachtwoord te gebruiken. U mag andere 
+            personen niet imiteren.
+            * U zult niet van plan zijn schade aan te richten, uit te schakelen of te belemmeren aan een OpenML-server of interfereren met het gebruik en genot 
+            van de service door een andere partij. U mag geen poging doen om ongeautoriseerde toegang te krijgen tot de Site, andere accounts, computersystemen of netwerken 
+            die zijn verbonden met een OpenML-server. U mag geen materialen of informatie verkrijgen of proberen te verkrijgen die niet opzettelijk beschikbaar worden gesteld via OpenML.
+            * Strikt verboden zijn inhoud die anderen lastert, lastigvalt of bedreigt, die inbreuk maakt op iemands intellectueel eigendom, 
+            evenals onfatsoenlijke of onwettige inhoud, reclame, of opzettelijk onnauwkeurige informatie geplaatst met de bedoeling om 
+            anderen te misleiden. Het is ook verboden om code te posten die virussen, malware, spyware of enige andere soortgelijke software 
+            bevat die de werking van de computer van een ander kunnen beschadigen.
+    privacy:
+        title: "Privacybeleid"
+        text: |
+            Bij OpenML, toegankelijk vanaf openml.org, is de privacy van onze bezoekers een van onze hoofdprioriteiten. Dit Privacybeleid 
+            bevat soorten informatie die wordt verzameld en geregistreerd door de OpenML-website en hoe wij deze gebruiken. Het is alleen van toepassing 
+            op onze online activiteiten en is geldig voor bezoekers van onze website met betrekking tot de informatie die zij hebben gedeeld en/of 
+            verzameld in OpenML. Als u aanvullende vragen heeft of meer informatie wilt over ons Privacybeleid, aarzel dan niet om contact met ons op te nemen.
+
+            ### Algemene Verordening Gegevensbescherming (AVG)
+            Wij zijn de Gegevensbeheerder van uw informatie. De juridische basis van OpenML voor het verzamelen en gebruiken van de persoonlijke informatie 
+            beschreven in dit Privacybeleid hangt af van de Persoonlijke Informatie die we verzamelen en de specifieke context waarin we de informatie verzamelen:
+
+            * OpenML moet een contract met u uitvoeren
+            * U heeft OpenML toestemming gegeven om dit te doen
+            * Het verwerken van uw persoonlijke informatie is in het legitieme belang van OpenML
+            * OpenML moet voldoen aan de wet
+            
+            OpenML bewaart uw persoonlijke informatie alleen zolang als nodig is voor de doeleinden die in dit 
+            Privacybeleid zijn uiteengezet. Wij zullen uw informatie bewaren en gebruiken voor zover nodig om te voldoen aan onze wettelijke verplichtingen, 
+            geschillen op te lossen en ons beleid af te dwingen.
+
+            Als u inwoner bent van de Europese Economische Ruimte (EER), heeft u bepaalde gegevensbeschermingsrechten. Als u wilt 
+            worden geïnformeerd welke Persoonlijke Informatie wij over u hebben en als u wilt dat deze uit onze systemen wordt verwijderd, 
+            neem dan contact met ons op. In bepaalde omstandigheden heeft u de volgende gegevensbeschermingsrechten:
+
+            * Het recht om toegang te krijgen tot, bijwerken of het verwijderen van de informatie die we over u hebben.
+            * Het recht op rectificatie.
+            * Het recht om bezwaar te maken.
+            * Het recht op beperking.
+            * Het recht op gegevensoverdraagbaarheid.
+            * Het recht om toestemming in te trekken.
+            
+            ### Logbestanden
+            OpenML volgt een standaardprocedure van het gebruik van logbestanden, met als enig doel de gebruikerservaring te verbeteren. 
+            Deze bestanden loggen bezoekers wanneer zij websites bezoeken. Alle hostingdiensten doen dit als onderdeel van de analytics van hostingdiensten. 
+            De door logbestanden verzamelde informatie omvat internetprotocol (IP) adressen, browsertype, Internet Service Provider (ISP), 
+            datum- en tijdstempel, verwijzende/exit-pagina's en mogelijk het aantal kliks. Deze zijn niet gekoppeld aan informatie die 
+            persoonlijk identificeerbaar is. Het doel van de informatie is voor het analyseren van trends, het beheren van de site, het volgen van gebruikers' 
+            gebruik van de website, en het verzamelen van demografische informatie.
+
+            ### Cookies
+            Zoals elke andere website, gebruikt OpenML 'cookies'. Deze cookies worden gebruikt om informatie op te slaan, inclusief de voorkeuren van bezoekers, 
+            en de pagina's op de website die de bezoeker heeft bezocht of bezocht. De informatie wordt gebruikt om de ervaring van de gebruikers te optimaliseren 
+            door onze webpagina-inhoud aan te passen op basis van het type browser van de bezoekers en/of andere informatie. U kunt ervoor kiezen om cookies uit te schakelen 
+            via uw individuele browseropties (zie de respectievelijke websites van uw browsers).
+
+            OpenML deelt deze informatie niet met derden en voert geen advertentiediensten uit.
+
+            ### Informatie van kinderen
+            OpenML verzamelt niet bewust Persoonlijk Identificeerbare Informatie van kinderen onder de 13 jaar. Als u denkt dat 
+            uw kind dit soort informatie op onze website heeft verstrekt, moedigen we u aan om onmiddellijk contact met ons op te nemen en wij zullen 
+            ons beste doen om dergelijke informatie zo snel mogelijk uit onze administratie te verwijderen.
+
+            ### Toestemming
+            Door onze website te gebruiken, stemt u hierbij in met ons Privacybeleid en gaat u akkoord met de voorwaarden.
+apis:
+    helmet: "API's"
+    api: "API"
+    outro_1: "Je leert snel, jonge leerling!"
+    outro_2: "Er is nog zoveel meer te ontdekken..."
+    docs_link: "Volledige Documentatie"
+    guide_link: "Zie de complete gids"
+    copied: "Gekopieerd naar klembord."
+    others_header: "Andere API's"
+    tabs:
+        python: "Python"
+        r: "R"
+        java: "Java"
+        julia: "Julia"
+        others: "Andere"
+        rest: "REST"
+    code_examples:
+        python: 
+            installation: "Installatie"
+            data: "Gegevens opvragen en downloaden"
+            run: "Taken downloaden, modellen lokaal uitvoeren, resultaten publiceren (met scikit-learn)"
+            benchmark: "OpenML Benchmarks"
+        r:
+            installation: "Installatie"
+            data: "Gegevens opvragen en downloaden"
+            run: "Voer een mlr3 model lokaal uit"
+            benchmark: "OpenML Benchmarks"
+        julia:
+            installation: "Installatie"
+            data: "Gegevens opvragen en downloaden"
+        java:
+            installation: "Installatie"
+            data: "Gegevens opvragen en downloaden"
+            run: "Taken downloaden, modellen lokaal uitvoeren, resultaten publiceren (met WEKA)"
+            benchmark: "OpenML Benchmarks"
+    others_card:
+        title: "Koppelingen van derden"
+        text: >
+            Dit zijn alle API's ontwikkeld en onderhouden onafhankelijk door geweldige leden van de gemeenschap. 
+            We kunnen geen garanties bieden, maar hopen dat ze nuttig voor je zijn.
+        items:
+            - "RUST"
+            - ".NET"
+            - "Opdrachtregel"
+    tooltip:
+        colab: "Uitvoeren in Google Colab"
+        copy: "Kopieer naar klembord"
+search:
+    type:
+        datasets: "Datasets"
+    copied: "Gekopieerd naar klembord."
+    sort_by: "Sorteer op"
+    showing: "Weergeven"
+    out_of: "van"
+    results: "resultaten"
+    results_per_page: "Resultaten per pagina"
+    relevance: "Relevantie"
+    most_runs: "Uitvoeringen"
+    most_likes: "Likes"
+    most_downloads: "Downloads"
+    most_recent: "Recent"
+    most_instances: "Datasetgrootte"
+    most_features: "Aantal kenmerken"
+    most_numeric_features: "Numerieke kenmerken"
+    most_missing_values: "Ontbrekende waarden"
+    most_classes: "Meeste klassen"
+filters:
+    status: "Status"
+    licence: "Licentie"
+    size: "Grootte"
+    deactivated: "Gedeactiveerd"
+    active: "Geverifieerd"
+    in_preparation: "In voorbereiding"
+    100s: "100en"
+    1000s: "1000en"
+    10000s: "10000en"
+    100000s: "100000en"
+    Millions: "Miljoenen"    
+    Public: "Public Domain Mark"
+    public: "Public Domain Mark"
+    public domain: "Public Domain Mark"
+    CC0: "CC0"

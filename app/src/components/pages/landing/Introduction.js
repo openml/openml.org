@@ -173,7 +173,7 @@ function IntroGraph() {
           y="150"
           rx="16"
           ry="20"
-          width="140"
+          width="145"
           height="32"
           fill={blue[400]}
         />
@@ -183,7 +183,7 @@ function IntroGraph() {
         <rect fill={blue[400]} x="50" y="156" width="0" height="16">
           <animate
             attributeName="x"
-            values="65 ; 192 ; 192 ; 192 ; 192 ; 192"
+            values="70 ; 200 ; 200 ; 200 ; 200 ; 200"
             dur="6s"
             repeatCount="indefinite"
           />
@@ -195,27 +195,27 @@ function IntroGraph() {
           />
         </rect>
         <rect
-          x="150"
+          x="140"
           y="190"
           rx="16"
           ry="20"
-          width="160"
+          width="165"
           height="32"
           fill={blue[400]}
         />
-        <text x="160" y="210" fill="white">
+        <text x="150" y="210" fill="white">
           {t("landing.animation.model")}
         </text>
         <rect fill={blue[400]} x="150" y="194" width="0" height="16">
           <animate
             attributeName="x"
-            values="160 ; 160 ; 300 ; 300 ; 300 ; 300"
+            values="150; 150 ; 300 ; 300 ; 300 ; 300"
             dur="6s"
             repeatCount="indefinite"
           />
           <animate
             attributeName="width"
-            values="140; 140; 0; 0 ; 0; 0"
+            values="150; 150; 0; 0 ; 0; 0"
             dur="6s"
             repeatCount="indefinite"
           />
