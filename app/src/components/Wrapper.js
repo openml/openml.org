@@ -7,7 +7,7 @@ const WrapBox = styled(Box)`
   display: flex;
   justify-content: center;
   align: center;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: auto;
 `;
 
