@@ -5,17 +5,17 @@ const openmlSection = [
     badge: "100",
   },
   {
-    href: "/t",
+    href: "/t/search",
     title: "sidebar.tasks",
     badge: "100",
   },
   {
-    href: "/f",
+    href: "/f/search",
     title: "sidebar.flows",
     badge: "100",
   },
   {
-    href: "/r",
+    href: "/r/search",
     title: "sidebar.runs",
     badge: "100",
   },
@@ -24,12 +24,12 @@ const openmlSection = [
     title: "sidebar.collections",
     children: [
       {
-        href: "/collections/tasks",
+        href: "/collections/tasks/search",
         title: "sidebar.tasks",
         badge: "100",
       },
       {
-        href: "/collections/runs",
+        href: "/collections/runs/search",
         title: "sidebar.runs",
         badge: "100",
       },
@@ -40,12 +40,12 @@ const openmlSection = [
     title: "sidebar.benchmarks",
     children: [
       {
-        href: "/benchmarks/tasks",
+        href: "/benchmarks/tasks/search",
         title: "sidebar.task_suites",
         badge: "100",
       },
       {
-        href: "/benchmarks/runs",
+        href: "/benchmarks/runs/search",
         title: "sidebar.run_studies",
         badge: "100",
       },
@@ -56,17 +56,17 @@ const openmlSection = [
     title: "sidebar.measures",
     children: [
       {
-        href: "/measures/data",
+        href: "/measures/data/search",
         title: "sidebar.data_qualities",
         badge: "100",
       },
       {
-        href: "/measures/evaluation",
+        href: "/measures/evaluation/search",
         title: "sidebar.model_evaluations",
         badge: "100",
       },
       {
-        href: "/measures/procedures",
+        href: "/measures/procedures/search",
         title: "sidebar.test_procedures",
         badge: "100",
       },

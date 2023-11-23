@@ -1,10 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-
 import { Typography } from "@mui/material";
-
 import DashboardLayout from "../../layouts/Dashboard";
-import TableView from "../../components/TableView";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -25,8 +22,6 @@ function FlowList() {
       <Typography variant="h3" gutterBottom>
         Flows
       </Typography>
-
-      <TableView />
     </React.Fragment>
   );
 }

@@ -1,10 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-
 import { Typography } from "@mui/material";
-
 import DashboardLayout from "../../layouts/Dashboard";
-import TableView from "../../components/TableView";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -23,10 +20,8 @@ function TaskList() {
     <React.Fragment>
       <Helmet title="OpenML Tasks" />
       <Typography variant="h3" gutterBottom>
-        Tasks
+        Task overview
       </Typography>
-
-      <TableView />
     </React.Fragment>
   );
 }

@@ -1,10 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-
 import { Typography } from "@mui/material";
-
 import DashboardLayout from "../../layouts/Dashboard";
-import TableView from "../../components/TableView";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -18,21 +15,19 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-function DatasetList() {
+function TaskCollectionList() {
   return (
     <React.Fragment>
-      <Helmet title="OpenML Datasets" />
+      <Helmet title="OpenML Collections" />
       <Typography variant="h3" gutterBottom>
         Task collections
       </Typography>
-
-      <TableView />
     </React.Fragment>
   );
 }
 
-DatasetList.getLayout = function getLayout(page) {
+TaskCollectionList.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-export default DatasetList;
+export default TaskCollectionList;

@@ -218,14 +218,14 @@ const ResultCard = ({ result }) => {
           subheader={result.bio.raw}
         />
       )}
-      {type !== "user" && (
+      {type !== "user" && type !== "task" && (
         <Title>
           <ColoredIcon color={color} icon={icon} fixedWidth />
           {"\u00A0\u00A0"}
           {result.name.raw}
         </Title>
       )}
-      {type !== "user" && result.description.raw && (
+      {type !== "user" && type !== "task" && result.description.raw && (
         <Teaser description={result.description.raw.toString()} limit={3} />
       )}
       {stats !== undefined && (

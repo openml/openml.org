@@ -7,6 +7,10 @@ import {
   renderCell,
   valueGetter,
   copyCell,
+  renderDescription,
+  renderDate,
+  renderTags,
+  renderChips,
 } from "../../components/search/ResultTable";
 
 import Chip from "@mui/material/Chip";
@@ -15,11 +19,9 @@ import {
   faCheck,
   faTriangleExclamation,
   faRotate,
-  faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 
 import searchConfig from "./searchConfig";
-import TimeAgo from "react-timeago";
 import {
   faCreativeCommonsBy,
   faCreativeCommonsPd,
@@ -28,7 +30,6 @@ import {
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Teaser from "../../components/search/Teaser";
 export async function getStaticProps(context) {
   // extract the locale identifier from the URL
   const { locale } = context;
@@ -40,6 +41,7 @@ export async function getStaticProps(context) {
   };
 }
 
+// Defines chips in table view
 const getChipProps = (value) => {
   switch (value) {
     // Dataset status
@@ -100,79 +102,6 @@ const getChipProps = (value) => {
         label: value,
       };
   }
-};
-
-const renderChips = (params) => {
-  const { label, icon, color } = getChipProps(params.value);
-  return (
-    <div title={label}>
-      <Chip
-        icon={icon}
-        label={label}
-        color={color}
-        size="small"
-        variant="outlined"
-      />
-    </div>
-  );
-};
-
-const renderTags = (params) => {
-  const { value } = params;
-
-  // Return nothing if the label is empty
-  if (!value) {
-    return null;
-  }
-
-  // Split the label by commas to create an array of tags
-  const labels = value
-    .split(",")
-    .map((label) => label.trim())
-    .filter((label) => label);
-
-  // Determine if there are more than 3 labels
-  const hasMore = labels.length > 3;
-
-  // Slice the array to the first 3 labels if there are more than 3
-  const visibleLabels = hasMore ? labels.slice(0, 3) : labels;
-
-  // Map each tag to a Chip component and add a margin for spacing
-  const chips = visibleLabels.map((label, index) => (
-    <Chip
-      key={index}
-      label={label}
-      size="small"
-      variant="outlined"
-      sx={{ marginRight: "4px" }} // Add small space around the chip
-    />
-  ));
-
-  return (
-    <div title={value} style={{ display: "flex", flexWrap: "wrap" }}>
-      {chips}
-      {hasMore && (
-        <Chip
-          icon={<FontAwesomeIcon icon={faEllipsis} />}
-          size="small"
-          variant="outlined"
-          sx={{ paddingLeft: "8px" }} // Match the margin of other chips
-        />
-      )}
-    </div>
-  );
-};
-
-const renderDate = (params) => {
-  return <TimeAgo date={new Date(params.value)} minPeriod={60} />;
-};
-
-const renderDescription = (params) => {
-  return (
-    <div title={params.value}>
-      <Teaser description={params.value} lines={3} />
-    </div>
-  );
 };
 
 const sort_options = [
@@ -261,7 +190,7 @@ const columns = [
     field: "status",
     headerName: "Status",
     valueGetter: valueGetter("status"),
-    renderCell: renderChips,
+    renderCell: renderChips(getChipProps),
     type: "singleSelect",
     valueOptions: ["active", "deactivated", "in_preparation"],
     width: 136,
@@ -283,7 +212,7 @@ const columns = [
     field: "licence",
     headerName: "Licence",
     valueGetter: valueGetter("licence"),
-    renderCell: renderChips,
+    renderCell: renderChips(getChipProps),
     width: 110,
   },
   {

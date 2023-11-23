@@ -4,8 +4,12 @@ import { Box, IconButton, Snackbar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "next-i18next";
+
+import Teaser from "../../components/search/Teaser";
+import TimeAgo from "react-timeago";
+import Chip from "@mui/material/Chip";
 
 const MAX_CELL_LENGTH = 75;
 
@@ -103,6 +107,88 @@ export const copyCell = (setOpen) => {
 
   CopyCellComponent.displayName = "CopyCell";
   return CopyCellComponent;
+};
+
+// Renders chips in table view
+// Higher-order component to pass the `getChipProps` function
+export const renderChips = (getChipProps) => {
+  const RenderChips = (params) => {
+    const { label, icon, color } = getChipProps(params.value);
+    return (
+      <div title={label}>
+        <Chip
+          icon={icon}
+          label={label}
+          color={color}
+          size="small"
+          variant="outlined"
+        />
+      </div>
+    );
+  };
+
+  // Assign a display name for DevTools
+  RenderChips.displayName = `RenderChips`;
+
+  return RenderChips;
+};
+
+export const renderTags = (params) => {
+  const { value } = params;
+
+  // Return nothing if the label is empty
+  if (!value) {
+    return null;
+  }
+
+  // Split the label by commas to create an array of tags
+  const labels = value
+    .split(",")
+    .map((label) => label.trim())
+    .filter((label) => label);
+
+  // Determine if there are more than 3 labels
+  const hasMore = labels.length > 3;
+
+  // Slice the array to the first 3 labels if there are more than 3
+  const visibleLabels = hasMore ? labels.slice(0, 3) : labels;
+
+  // Map each tag to a Chip component and add a margin for spacing
+  const chips = visibleLabels.map((label, index) => (
+    <Chip
+      key={index}
+      label={label}
+      size="small"
+      variant="outlined"
+      sx={{ marginRight: "4px" }} // Add small space around the chip
+    />
+  ));
+
+  return (
+    <div title={value} style={{ display: "flex", flexWrap: "wrap" }}>
+      {chips}
+      {hasMore && (
+        <Chip
+          icon={<FontAwesomeIcon icon={faEllipsis} />}
+          size="small"
+          variant="outlined"
+          sx={{ paddingLeft: "8px" }} // Match the margin of other chips
+        />
+      )}
+    </div>
+  );
+};
+
+export const renderDate = (params) => {
+  return <TimeAgo date={new Date(params.value)} minPeriod={60} />;
+};
+
+export const renderDescription = (params) => {
+  return (
+    <div title={params.value}>
+      <Teaser description={params.value} lines={3} />
+    </div>
+  );
 };
 
 const ResultsTable = ({ results, columns }) => {
