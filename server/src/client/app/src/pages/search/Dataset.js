@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { CollapsibleDataTable } from "./sizeLimiter.js";
 import { FeatureDetail, QualityDetail } from "./ItemDetail.js";
 import { MainContext } from "../../App.js";
+import { Icon } from '@iconify/react';
 
 import ReactMarkdown from "react-markdown";
 import {
@@ -54,11 +55,19 @@ export class DatasetItem extends React.Component {
           <Grid item xs={12}>
             <MainContext.Consumer>
               {context => (
-                <React.Fragment>
+                <React.Fragment>                  
+                  <Tooltip title="Download Croissant description" placement="bottom-start">
+                    <ActionButton color="primary" href={"https://openml1.win.tue.nl/dataset" + this.props.object.data_id + "/croissant.json"}>
+                      <Action>
+                        <Icon icon="fluent-emoji-high-contrast:croissant" />
+                        <Typography>Croissant</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
                   <Tooltip title="Download XML description" placement="bottom-start">
                     <ActionButton color="primary" href={"https://www.openml.org/api/v1/data/" + this.props.object.data_id}>
                       <Action>
-                        <FontAwesomeIcon icon="file-alt" />
+                        <FontAwesomeIcon icon="file-code" />
                         <Typography>xml</Typography>
                       </Action>
                     </ActionButton>
@@ -71,19 +80,19 @@ export class DatasetItem extends React.Component {
                       </Action>
                     </ActionButton>
                   </Tooltip>
-                  <Tooltip title="Edit dataset (requires login)" placement="bottom-start">
-                    <ActionButton color={context.loggedIn ? "primary" : "default"} href={context.loggedIn ? "auth/data-edit?id=" + this.props.object.data_id : "auth/sign-in"}>
-                      <Action>
-                        <FontAwesomeIcon icon="edit" />
-                        <Typography>edit</Typography>
-                      </Action>
-                    </ActionButton>
-                  </Tooltip>
                   <Tooltip title="Download dataset" placement="bottom-start">
                     <ActionButton color="primary" href={this.props.object.url}>
                       <Action>
                         <FontAwesomeIcon icon="cloud-download-alt" />
                         <Typography>download</Typography>
+                      </Action>
+                    </ActionButton>
+                  </Tooltip>
+                  <Tooltip title="Edit dataset (requires login)" placement="bottom-start">
+                    <ActionButton color={context.loggedIn ? "primary" : "default"} href={context.loggedIn ? "auth/data-edit?id=" + this.props.object.data_id : "auth/sign-in"}>
+                      <Action>
+                        <FontAwesomeIcon icon="edit" />
+                        <Typography>edit</Typography>
                       </Action>
                     </ActionButton>
                   </Tooltip>
