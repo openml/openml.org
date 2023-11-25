@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CollapsibleDataTable } from "./sizeLimiter.js";
 import { FeatureDetail, QualityDetail } from "./ItemDetail.js";
 import { MainContext } from "../../App.js";
 import { Icon } from '@iconify/react';
+import { Helmet } from 'react-helmet';
 
 import ReactMarkdown from "react-markdown";
 import {
@@ -35,6 +36,45 @@ const Action = styled.div`
   justify-content: center;
 `;
 
+const CroissantComponent = ({ url }) => {
+  const [jsonData, setJsonData] = useState({});
+
+  useEffect(() => {
+    const fetchJsonData = async () => {
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setJsonData(data);
+        } else {
+          // Handle HTTP errors
+          setJsonData({
+            error: true,
+            status: response.status,
+            message: `HTTP error: ${response.status}`,
+          });
+        }
+      } catch (error) {
+        // Handle fetch errors
+        setJsonData({
+          error: true,
+          message: error.message || 'Error fetching JSON.',
+        });
+      }
+    };
+
+    fetchJsonData();
+  }, [url]);
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(jsonData)}
+      </script>
+    </Helmet>
+  );
+};
+
 export class DatasetItem extends React.Component {
   constructor() {
     super();
@@ -51,6 +91,7 @@ export class DatasetItem extends React.Component {
     let qualityTableColumns = ["", "Quality Name", "Value"];
     return (
       <React.Fragment>
+        <CroissantComponent url={"https://openml1.win.tue.nl/dataset" + this.props.object.data_id + "/croissant.json"} />
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <MainContext.Consumer>
