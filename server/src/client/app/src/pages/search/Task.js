@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Card,
@@ -10,7 +11,15 @@ import {
   MetaTag
 } from "./MetaItems"
 
-import { Table, TableBody, TableRow, TableCell } from "@mui/material";
+import { Table, TableBody, TableRow, TableCell, Link as MuiLink} from "@mui/material";
+import { green } from "@mui/material/colors";
+
+const SimpleLink = styled(MuiLink)`
+  text-decoration: none;
+  padding-right: 1px;
+  font-weight: 800;
+  color: ${green[500]};
+`;
 
 export class TaskItem extends React.Component {
   render() {
@@ -36,7 +45,7 @@ export class TaskItem extends React.Component {
               <Grid item md={12}>
                 <MetaTag type={"task"} value={this.props.object.task_id} />
                 <MetaTag type={"task-type"} value={this.props.object.tasktype.name} />
-                <MetaTag type={"dataset"} value={this.props.object.source_data.name} />
+                <SimpleLink href={"search?type=data&id="+this.props.object.source_data.data_id}><MetaTag type={"dataset"} value={this.props.object.source_data.name} /></SimpleLink>
                 created <FontAwesomeIcon icon="clock" />{" "}{this.props.object.date}<br />
                 <MetaTag type={"likes"} value={this.props.object.nr_of_likes} />
                 <MetaTag type={"issues"} value={this.props.object.nr_of_issues} />
