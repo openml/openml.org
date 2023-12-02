@@ -165,7 +165,7 @@ export class DatasetItem extends React.Component {
                   avatar={
                     <Avatar><FontAwesomeIcon icon="clock" /></Avatar>
                   }
-                  href={"search?type=data&sort=version&order=asc&exact_name=" + this.props.object.name}
+                  href={"search?type=data&sort=version&status=any&order=asc&exact_name=" + this.props.object.name}
                   component="a"
                   clickable
                 /></Grid>
