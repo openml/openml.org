@@ -72,25 +72,26 @@ export default class SearchPanel extends React.Component {
   getQueryParams = () => {
     let qstring = queryString.parse(this.props.location.search);
 
-      // Sensible defaults
-      if (qstring.type === "data" && qstring.status === undefined) {
-        qstring.status = "active";
-        this.updateQuery("status", "active");
-      } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
-        qstring.measure_type = "data_quality";
-        this.updateQuery("measure_type", "data_quality");
-      } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === undefined) {
-        qstring.study_type = "task";
-        this.updateQuery("study_type", "task");
-      } else if ((qstring.type === "study" || qstring.type === "benchmark") && 
-          this.context.filters.study_type !== undefined && qstring.study_type !== this.context.filters.study_type.value) {
-        //study type changed, reset active tab
-        this.context.activeTab = 0
-      }
-    
+    // Sensible defaults
+    if (qstring.type === "data" && qstring.status === undefined) {
+      qstring.status = "active";
+      this.updateQuery("status", "active");
+    } else if (qstring.type === "measure" && qstring.measure_type === undefined) {
+      qstring.measure_type = "data_quality";
+      this.updateQuery("measure_type", "data_quality");
+    } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === undefined) {
+      qstring.study_type = "task";
+      this.updateQuery("study_type", "task");
+    } else if ((qstring.type === "study" || qstring.type === "benchmark") && 
+        this.context.filters.study_type !== undefined && qstring.study_type !== this.context.filters.study_type.value) {
+      //study type changed, reset active tab
+      this.context.activeTab = 0
+    }
+    console.log(qstring.sort);
     // If no sort is defined, set a sensible default
-    if (this.context.sort === null || this.context.sort === undefined || this.context.type !== qstring.type) {
+    if (qstring.sort === undefined && (this.context.sort === null || this.context.sort === undefined || this.context.type !== qstring.type)) {
       if (["data", "flow", "task"].includes(qstring.type)) {
+        console.log("I'm overwriting sort");
         qstring.sort = "runs";
       } else if ((qstring.type === "study" || qstring.type === "benchmark") && qstring.study_type === "task") {
         qstring.sort = "tasks_included";

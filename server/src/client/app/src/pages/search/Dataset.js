@@ -148,15 +148,31 @@ export class DatasetItem extends React.Component {
                 </Typography>
               </Grid>
               <Grid item md={12}>
-                <MetaTag type={"id"} value={"ID: " + this.props.object.data_id} />
-                <MetaTag type={"status"} value={this.props.object.status === 'active' ? 'verified' : this.props.object.status}
-                  color={this.props.object.status === 'active' ? 'green' : (this.props.object.status === 'deactivated' ? 'red' : 'orange')} />
-                <MetaTag type={"format"} value={this.props.object.format} />
-                <MetaTag type={"licence"} value={this.props.object.licence} />
-                <FontAwesomeIcon icon="clock" />{" "}
-                {this.props.object.date.split(" ")[0]}
-                <br />
+                <Grid container display="flex" spacing={2}>
+                <Grid item><MetaTag type={"id"} value={"ID: " + this.props.object.data_id} /></Grid>
+                <Grid item><MetaTag type={"status"} value={this.props.object.status === 'active' ? 'verified' : this.props.object.status}
+                  color={this.props.object.status === 'active' ? 'green' : (this.props.object.status === 'deactivated' ? 'red' : 'orange')}/></Grid>
+                <Grid item><MetaTag type={"format"} value={this.props.object.format} /></Grid>
+                <Grid item><MetaTag type={"licence"} value={this.props.object.licence} /></Grid>
+                <Grid item><FontAwesomeIcon icon="clock" />{" "}
+                {this.props.object.date.split(" ")[0]}</Grid>
+                <Grid item><MetaTag type={"version"} value={'v.' + this.props.object.version} /></Grid>
+                <Grid item style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 <UserChip
+                  size="small"
+                  color="primary"
+                  label="Version history"
+                  avatar={
+                    <Avatar><FontAwesomeIcon icon="clock" /></Avatar>
+                  }
+                  href={"search?type=data&sort=version&order=asc&exact_name=" + this.props.object.name}
+                  component="a"
+                  clickable
+                /></Grid>
+                </Grid>
+
+                <Grid container display="flex" spacing={2}>
+                <Grid item><UserChip
                   size="small"
                   variant="outlined"
                   color="primary"
@@ -167,16 +183,17 @@ export class DatasetItem extends React.Component {
                   href={"search?type=user&id=" + this.props.object.uploader_id}
                   component="a"
                   clickable
-                />{" "}
-                <MetaTag type={"likes"} value={this.props.object.nr_of_likes + " likes"} />
-                <MetaTag
+                /></Grid>
+                <Grid item><MetaTag type={"likes"} value={this.props.object.nr_of_likes + " likes"} /></Grid>
+                <Grid item><MetaTag
                   type={"issues"}
                   value={this.props.object.nr_of_issues + " issues"}
-                />
-                <MetaTag
+                /></Grid>
+                <Grid item><MetaTag
                   type={"downloads"}
                   value={this.props.object.nr_of_downloads}
-                />
+                /></Grid>
+                </Grid>
               </Grid>
             </Grid>
 

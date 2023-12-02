@@ -15,6 +15,9 @@ export class MetaTag extends React.Component {
       case "format":
         icon = "table";
         break;
+      case "version":
+        icon = "code-branch";
+        break;
       case "licence":
         icon = "closed-captioning";
         break;
