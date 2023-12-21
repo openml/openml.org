@@ -51,6 +51,7 @@ dev_data/ff\@ff.com/
 temp_data/
 
 .flaskenv
+.pytest_cache
 
 users.sql
 node_modules
