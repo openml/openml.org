@@ -7,10 +7,9 @@ from openml.datasets.functions import DATASETS_CACHE_DIR_NAME
 # get all datasets before running app, so that datasets are loaded faster
 from openml.utils import _create_cache_directory_for_id
 
-root_dir = os.path.abspath(os.sep)
-openml.config.cache_directory = os.path.join(
-    root_dir, "public", "python-cache", ".openml", "cache"
-)
+from server.src.dashboard.caching import CACHE_DIR_ROOT
+
+openml.config.cache_directory = CACHE_DIR_ROOT
 df = datasets.list_datasets(output_format="dataframe")
 
 for idx, row in df.iterrows():

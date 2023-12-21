@@ -15,6 +15,7 @@ from scipy.io import arff
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.preprocessing import label_binarize
 
+from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
@@ -40,10 +41,10 @@ def register_run_callbacks(app, cache):
         :return: subplots containing violin plot or histogram for selected_row_indices
         """
         run_id = int(re.search(r"run/(\d+)", pathname).group(1))
-        try:
-            df = pd.read_pickle("cache/run" + str(run_id) + ".pkl")
-        except OSError:
+        filename_cache = CACHE_DIR_DASHBOARD / f"run{run_id}.pkl"
+        if not filename_cache.exists():
             return []
+        df = pd.read_pickle(filename_cache)
         rows = pd.DataFrame(rows)
 
         if len(selected_row_indices) != 0 and not rows.empty:
@@ -85,10 +86,11 @@ def register_run_callbacks(app, cache):
     @cache.memoize(timeout=TIMEOUT)
     def pr_chart(pathname, rows):
         run_id = int(re.search(r"run/(\d+)", pathname).group(1))
-        try:
-            df = pd.read_pickle("cache/run" + str(run_id) + ".pkl")
-        except OSError:
+        filename_cache = CACHE_DIR_DASHBOARD / f"run{run_id}.pkl"
+        if not filename_cache.exists():
             return [], []
+        df = pd.read_pickle(filename_cache)
+
         task_type = df[df["evaluations"] == "task_type"]["results"].values[0]
         if "Classification" not in task_type:
             return "Only classification supported", "Only classification supported"
