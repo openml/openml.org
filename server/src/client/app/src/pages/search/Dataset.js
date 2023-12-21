@@ -82,23 +82,28 @@ export class DatasetItem extends React.Component {
     this.featureSizeLimit = this.defaultFeatureListSizeLimit;
   }
   render() {
-    let featureTableColumns = [
+    const featureTableColumns = [
       "",
       "Feature Name",
       "Type",
       "Distinct/Missing Values"
     ];
-    let qualityTableColumns = ["", "Quality Name", "Value"];
+    const qualityTableColumns = ["", "Quality Name", "Value"];
+    const did = this.props.object.data_id;
+    const did_padded = did.toString().padStart(4, "0");
+    const bucket_url = "https://openml1.win.tue.nl/datasets/";
+    const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
+    const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
     return (
       <React.Fragment>
-        <CroissantComponent url={"https://openml1.win.tue.nl/dataset" + this.props.object.data_id + "/croissant.json"} />
+        <CroissantComponent url={croissant_url} />
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <MainContext.Consumer>
               {context => (
                 <React.Fragment>                  
                   <Tooltip title="Download Croissant description" placement="bottom-start">
-                    <ActionButton color="primary" href={"https://openml1.win.tue.nl/dataset" + this.props.object.data_id + "/croissant.json"}>
+                    <ActionButton color="primary" href={croissant_url}>
                       <Action>
                         <Icon icon="fluent-emoji-high-contrast:croissant" />
                         <Typography>Croissant</Typography>
