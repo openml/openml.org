@@ -11,6 +11,7 @@ from dash.dependencies import Input, Output
 from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
 
+from .caching import CACHE_DIR_DASHBOARD
 from .helpers import get_highest_rank
 from .dash_config import DASH_CACHING
 
@@ -72,10 +73,8 @@ def register_task_callbacks(app, cache):
         # pickle file which caches previous evaluations
         # df_old may contain 0-1000 evaluations (we cache this)
         # current request may be to include 1000-2000 evaluations (We fetch this)
-        try:
-            df_old = pd.read_pickle("cache/task" + str(task_id) + ".pkl")
-        except OSError:
-            df_old = pd.DataFrame()
+        filename_cache = CACHE_DIR_DASHBOARD / f"task{task_id}.pkl"
+        df_old = pd.read_pickle(filename_cache) if filename_cache.exists() else pd.DataFrame()
 
         df_new = evaluations.list_evaluations(
             function=metric,
@@ -91,7 +90,7 @@ def register_task_callbacks(app, cache):
         else:
             df = df_old.append(df_new)
 
-        df.to_pickle("cache/task" + str(task_id) + ".pkl")
+        df.to_pickle(filename_cache)
         run_link = []
         tick_text = []
         truncated = []

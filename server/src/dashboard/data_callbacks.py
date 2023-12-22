@@ -13,6 +13,7 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
+from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
 from .helpers import clean_dataset, get_data_metadata, logger, bin_numeric
 
@@ -169,10 +170,10 @@ def register_data_callbacks(app, cache):
 
         # If pickle file is present
         data_id = int(re.search(r"data/(\d+)", url).group(1))
-        try:
-            df = pd.read_pickle("cache/df" + str(data_id) + ".pkl")
-        except OSError:
+        filename_cache = CACHE_DIR_DASHBOARD / f"df{data_id}.pkl"
+        if not filename_cache.exists():
             return []
+        df = pd.read_pickle(filename_cache)
 
         # Get selected rows from table
         meta_data = pd.DataFrame(rows)
@@ -218,10 +219,10 @@ def register_data_callbacks(app, cache):
 
         # Get dataset if pickle exists
         data_id = int(re.search(r"data/(\d+)", url).group(1))
-        try:
-            df = pd.read_pickle("cache/df" + str(data_id) + ".pkl")
-        except OSError:
+        filename_cache = CACHE_DIR_DASHBOARD / f"df{data_id}.pkl"
+        if not filename_cache.exists():
             return [], "No file"
+        df = pd.read_pickle(filename_cache)
 
         # Get table of metadata
         meta_data = pd.DataFrame(rows)
@@ -262,7 +263,7 @@ def register_data_callbacks(app, cache):
         )
         figure = go.Figure(data=[trace], layout=layout)
 
-        fi.to_pickle("cache/fi" + str(data_id) + ".pkl")
+        fi.to_pickle(CACHE_DIR_DASHBOARD / f"fi{data_id}.pkl")
 
         return html.Div(dcc.Graph(figure=figure), className="twelve columns"), "done"
 
@@ -275,8 +276,8 @@ def register_data_callbacks(app, cache):
     def feature_interactions(radio, url, feat_importance, rows):
         data_id = int(re.search(r"data/(\d+)", url).group(1))
         if feat_importance == "done":
-            df = pd.read_pickle("cache/df" + str(data_id) + ".pkl")
-            fi = pd.read_pickle("cache/fi" + str(data_id) + ".pkl")
+            df = pd.read_pickle(CACHE_DIR_DASHBOARD / f"df{data_id}.pkl")
+            fi = pd.read_pickle(CACHE_DIR_DASHBOARD / f"fi{data_id}.pkl")
         else:
             return []
 
@@ -430,10 +431,11 @@ def register_data_callbacks(app, cache):
         """
         data_id = int(re.search(r"data/(\d+)", url).group(1))
         logger.debug("loading data for scatter plot")
-        try:
-            df = pd.read_pickle("cache/df" + str(data_id) + ".pkl")
-        except OSError:
+
+        filename_cache = CACHE_DIR_DASHBOARD / f"df{data_id}.pkl"
+        if not filename_cache.exists():
             return []
+        df = pd.read_pickle(filename_cache)
         fig = {
             "data": [
                 go.Scatter(

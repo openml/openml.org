@@ -1,12 +1,15 @@
-import os
 import shutil
-import openml
+from pathlib import Path
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import openml
 from flask_caching import Cache
-from .dash_config import COMMON_CACHE
+
+from .caching import CACHE_DIR_ROOT, CACHE_DIR_FLASK, CACHE_DIR_DASHBOARD
 from .callbacks import register_callbacks
+from .dash_config import COMMON_CACHE
 
 # TODO: Move to assets (Copied from Joaquin's react font)
 font = [
@@ -30,15 +33,9 @@ def create_dash_app(flask_app):
     :param flask_app: flask_app passed is the flask server for the dash app
     :return:
     """
+
     if COMMON_CACHE:
-        root_dir = os.path.abspath(os.sep)
-        root_dir = os.getcwd()
-        if not os.path.exists(os.path.join(root_dir, "public")):
-            os.system(f"sudo mkdir {root_dir}/public")
-        os.system(f"sudo chmod 777 {root_dir}/public")
-        openml.config.cache_directory = os.path.join(
-            root_dir, "public", "python-cache", ".openml", "cache"
-        )
+        openml.config.cache_directory = CACHE_DIR_ROOT
 
     app = dash.Dash(__name__, server=flask_app, url_base_pathname="/dashboard/")
     cache = Cache(
@@ -46,7 +43,7 @@ def create_dash_app(flask_app):
         config={
             # try 'filesystem' if you don't want to setup redis
             "CACHE_TYPE": "filesystem",
-            "CACHE_DIR": "flask-cache-dir",
+            "CACHE_DIR": CACHE_DIR_FLASK,
         },
     )
     app.config.suppress_callback_exceptions = True
@@ -64,11 +61,7 @@ def create_dash_app(flask_app):
     )
     app.layout = html.Div([url, global_loading_icon, page_content])
 
-    # Callbacks
     register_callbacks(app, cache)
-
-    # Create a temporary cache for data transfer between callbacks - pkl files
-    shutil.rmtree("cache", ignore_errors=True)
-    os.system("sudo mkdir cache")
-    os.system("sudo chmod 777 cache")
+    shutil.rmtree(CACHE_DIR_DASHBOARD)
+    CACHE_DIR_DASHBOARD.mkdir()
     return app
