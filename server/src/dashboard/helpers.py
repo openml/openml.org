@@ -8,6 +8,8 @@ import scipy.stats
 from openml import datasets, runs
 from sklearn.model_selection import train_test_split
 
+from server.src.dashboard.caching import CACHE_DIR_DASHBOARD
+
 logger = logging.getLogger("dashboard")
 logger.setLevel(logging.DEBUG)
 
@@ -36,7 +38,7 @@ def get_run_df(run_id: int):
     df2["values"] = ""
     df = df.append(df2)
     df = df.append(df3)
-    df.to_pickle("cache/run" + str(run_id) + ".pkl")
+    df.to_pickle(CACHE_DIR_DASHBOARD / f"run{run_id}.pkl")
     return run, df
 
 
@@ -99,9 +101,7 @@ def get_data_metadata(data_id):
     x, y, categorical, attribute_names = data.get_data()
 
     df = pd.DataFrame(x, columns=attribute_names)
-    if x.shape[0] < 50000:
-        df.to_pickle("cache/df" + str(data_id) + ".pkl")
-    else:
+    if x.shape[0] >= 50000:
         # create a subsample of data for large datasets
         try:
             target_feat = meta_features[meta_features["Target"] == "true"][
@@ -135,9 +135,7 @@ def get_data_metadata(data_id):
             x = X_test
             x[target_feat] = y_test
             df = pd.DataFrame(x, columns=attribute_names)
-            df.to_pickle("cache/df" + str(data_id) + ".pkl")
-        else:
-            df.to_pickle("cache/df" + str(data_id) + ".pkl")
+    df.to_pickle(CACHE_DIR_DASHBOARD / f"df{data_id}.pkl")
 
     meta_features = meta_features[
         meta_features["Attribute"].isin(pd.Series(df.columns))

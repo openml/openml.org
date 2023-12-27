@@ -6,6 +6,7 @@ import dash_html_components as html
 import dash_table as dt
 from openml import datasets, evaluations, runs, setups, study
 
+from .caching import CACHE_DIR_DASHBOARD
 from .helpers import get_metadata, get_run_df, logger
 
 # TODO: Move to assets (Copied from Joaquin's react font)
@@ -223,10 +224,7 @@ def get_layout_from_task(task_id):
 
     """
 
-    try:
-        os.remove("cache/task" + str(task_id) + ".pkl")
-    except OSError:
-        pass
+    (CACHE_DIR_DASHBOARD / f"task{task_id}.pkl").unlink(missing_ok=True)
 
     # Define components in task layout
     loading_spinner = dcc.Loading(html.Div(id="dummy"), type="dot")
