@@ -8,14 +8,7 @@ import dataSearchConfig from "../../pages/d/searchConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  Box,
-  FormControl,
-  InputBase,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Box, InputBase, MenuItem, Select } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
 
@@ -60,6 +53,11 @@ const IndexSelect = styled(Select)`
   svg {
     color: ${(props) => props.theme.header.search.color};
   }
+`;
+
+const IndexMenuItem = styled(MenuItem)`
+  padding-top: ${(props) => props.theme.spacing(3.5)};
+  padding-bottom: ${(props) => props.theme.spacing(3.5)};
 `;
 
 const Input = styled(InputBase)`
@@ -113,11 +111,19 @@ const SearchBar = memo(() => {
         value={selectedIndex}
         onChange={handleIndexChange}
         label="Index"
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              boxShadow: 2,
+              border: "1px solid #d3d4d5",
+            },
+          },
+        }}
       >
         {indices.map((item) => (
-          <MenuItem key={item.key} value={item.key}>
+          <IndexMenuItem key={item.key} value={item.key}>
             {item.value}
-          </MenuItem>
+          </IndexMenuItem>
         ))}
       </IndexSelect>
       <SearchBox
