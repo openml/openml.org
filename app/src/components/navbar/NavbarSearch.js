@@ -1,4 +1,5 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
+
 import styled from "@emotion/styled";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
@@ -7,7 +8,14 @@ import dataSearchConfig from "../../pages/d/searchConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { Box, InputBase } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputBase,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
 
@@ -26,13 +34,30 @@ const SearchWrapper = styled(Box)`
         props.ecolor ? props.ecolor : props.theme.header.background,
       )};
   }
+`;
 
+const SearchIcon = styled.div`
   svg {
     width: 19px;
     height: 19px;
     padding-top: ${(props) => props.theme.spacing(2.5)};
-    padding-bottom: ${(props) => props.theme.spacing(2.5)};
+    padding-bottom: ${(props) => props.theme.spacing(1.5)};
     padding-left: ${(props) => props.theme.spacing(2.5)};
+  }
+`;
+
+const IndexSelect = styled(Select)`
+  color: ${(props) => props.theme.header.search.color};
+  border: none;
+  height: 40px;
+  box-sizing: border-box;
+
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+
+  svg {
+    color: ${(props) => props.theme.header.search.color};
   }
 `;
 
@@ -65,11 +90,42 @@ const Input = styled(InputBase)`
   }
 `;
 
-const SearchBar = memo(({ config }) => {
+const SearchBar = memo(() => {
   const { t } = useTranslation();
+
+  const [selectedIndex, setSelectedIndex] = useState("data");
+  const indices = [
+    { key: "data", value: "Datasets" },
+    { key: "task", value: "Tasks" },
+    { key: "flow", value: "Flows" },
+    { key: "run", value: "Runs" },
+    { key: "study", value: "Collections" },
+    { key: "measure", value: "Measures" },
+  ];
+
+  const handleIndexChange = (event) => {
+    setSelectedIndex(event.target.value);
+  };
+
+  const config = dataSearchConfig;
 
   return (
     <SearchProvider config={config}>
+      <FormControl fullWidth>
+        <IndexSelect
+          labelId="index-select-label"
+          id="index-select"
+          value={selectedIndex}
+          onChange={handleIndexChange}
+          label="Index"
+        >
+          {indices.map((item) => (
+            <MenuItem key={item.key} value={item.key}>
+              {item.value}
+            </MenuItem>
+          ))}
+        </IndexSelect>
+      </FormControl>
       <SearchBox
         searchAsYouType={true}
         debounceLength={300}
@@ -90,7 +146,7 @@ const SearchBar = memo(({ config }) => {
           <>
             <Input
               {...getInputProps({
-                placeholder: t("Search"),
+                placeholder: t("search." + selectedIndex),
               })}
             />
             {getAutocomplete()}
@@ -102,8 +158,6 @@ const SearchBar = memo(({ config }) => {
 });
 
 const SearchContainer = ({ ecolor }) => {
-  const searchConfig = dataSearchConfig;
-
   return (
     <SearchWrapper
       ecolor={ecolor}
@@ -112,8 +166,10 @@ const SearchContainer = ({ ecolor }) => {
         alignItems: "flex-end",
       }}
     >
-      <FontAwesomeIcon icon={faSearch} />
-      <SearchBar config={searchConfig} />
+      <SearchIcon>
+        <FontAwesomeIcon icon={faSearch} />
+      </SearchIcon>
+      <SearchBar />
     </SearchWrapper>
   );
 };

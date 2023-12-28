@@ -1,5 +1,3 @@
-Search: "Search datasets, models, benchmarks,…"
-SearchShort: "Search"
 sidebar:
     explore: "Explore"
     datasets: "Datasets"
@@ -596,7 +594,14 @@ apis:
     tooltip:
         colab: "Run in Google Colab"
         copy: "Copy to clipboard"
+SearchShort: "Search"
 search:
+    data: "Search datasets"
+    task: "Search tasks"
+    flow: "Search flows"
+    run: "Search runs"
+    study: "Search collections and benchmarks"
+    measure: "Search measures"
     type:
         datasets: "Datasets"
     copied: "Copied to clipboard."
