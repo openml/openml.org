@@ -48,6 +48,7 @@ const SearchIcon = styled.div`
 
 const IndexSelect = styled(Select)`
   color: ${(props) => props.theme.header.search.color};
+  padding-left: ${(props) => props.theme.spacing(1.5)};
   border: none;
   height: 40px;
   box-sizing: border-box;
@@ -80,12 +81,7 @@ const Input = styled(InputBase)`
 
   ${(props) => props.theme.breakpoints.up("md")} {
     & > input {
-      min-width: 440px;
-    }
-  }
-  ${(props) => props.theme.breakpoints.up("lg")} {
-    & > input {
-      min-width: 740px;
+      min-width: calc(100vw - 650px);
     }
   }
 `;
@@ -111,21 +107,19 @@ const SearchBar = memo(() => {
 
   return (
     <SearchProvider config={config}>
-      <FormControl fullWidth>
-        <IndexSelect
-          labelId="index-select-label"
-          id="index-select"
-          value={selectedIndex}
-          onChange={handleIndexChange}
-          label="Index"
-        >
-          {indices.map((item) => (
-            <MenuItem key={item.key} value={item.key}>
-              {item.value}
-            </MenuItem>
-          ))}
-        </IndexSelect>
-      </FormControl>
+      <IndexSelect
+        labelId="index-select-label"
+        id="index-select"
+        value={selectedIndex}
+        onChange={handleIndexChange}
+        label="Index"
+      >
+        {indices.map((item) => (
+          <MenuItem key={item.key} value={item.key}>
+            {item.value}
+          </MenuItem>
+        ))}
+      </IndexSelect>
       <SearchBox
         searchAsYouType={true}
         debounceLength={300}

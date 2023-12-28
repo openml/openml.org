@@ -62,7 +62,7 @@ const Brand = styled(ListItemButton)`
   padding-right: ${(props) => props.theme.spacing(0)};
   cursor: pointer;
   flex-grow: 0;
-  display: block; // Hide for now.
+  display: block;
 
   ${(props) => props.theme.breakpoints.up("md")} {
     display: none;
@@ -123,7 +123,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
               </Brand>
             </Grid>
             <Grid item>
-              <Brand ecolor={ecolor}>|&nbsp;&nbsp;{section}</Brand>
+              {section && <Brand ecolor={ecolor}>|&nbsp;&nbsp;{section}</Brand>}
             </Grid>
             <Grid item xs sx={{ display: { xs: "block", sm: "none" } }} />
             <Grid item sx={{ display: { xs: "none", md: "block" } }}>
