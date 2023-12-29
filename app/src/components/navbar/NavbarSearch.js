@@ -1,9 +1,15 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 
 import styled from "@emotion/styled";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
 import dataSearchConfig from "../../pages/d/searchConfig";
+import taskSearchConfig from "../../pages/t/searchConfig";
+import flowSearchConfig from "../../pages/d/searchConfig"; // TODO: update when flow config is created
+import runSearchConfig from "../../pages/d/searchConfig"; // TODO: update when run config is created
+import collectionSearchConfig from "../../pages/d/searchConfig"; // TODO: update when collection config is created
+import benchmarkSearchConfig from "../../pages/d/searchConfig"; // TODO: update when benchmark config is created
+import measureSearchConfig from "../../pages/d/searchConfig"; // TODO: update when measure config is created
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -87,24 +93,50 @@ const Input = styled(InputBase)`
 const SearchBar = memo(() => {
   const { t } = useTranslation();
 
-  const [selectedIndex, setSelectedIndex] = useState("data");
+  // List of configs for each index
+  const indexConfigs = {
+    data: dataSearchConfig,
+    task: taskSearchConfig,
+    flow: flowSearchConfig,
+    run: runSearchConfig,
+    collection: collectionSearchConfig,
+    benchmark: benchmarkSearchConfig,
+    measure: measureSearchConfig,
+  };
+  // Mapping of indices for the select dropdown
   const indices = [
     { key: "data", value: "Datasets" },
     { key: "task", value: "Tasks" },
     { key: "flow", value: "Flows" },
     { key: "run", value: "Runs" },
-    { key: "study", value: "Collections" },
+    { key: "collection", value: "Collections" },
+    { key: "benchmark", value: "Benchmark" },
     { key: "measure", value: "Measures" },
   ];
 
+  const [selectedIndex, setSelectedIndex] = useState("data");
+  const [currentConfig, setCurrentConfig] = useState(dataSearchConfig);
+
   const handleIndexChange = (event) => {
-    setSelectedIndex(event.target.value);
+    const newIndex = event.target.value;
+    setSelectedIndex(newIndex);
+    setCurrentConfig(indexConfigs[newIndex]);
   };
 
-  const config = dataSearchConfig;
+  // Set the index based on the current path
+  useEffect(() => {
+    const pathSegments = window.location.pathname.split("/");
+    // The index is always the second segment in the URL
+    const indexFromUrl = pathSegments[1];
+    // Check if the index is valid before updating the state
+    if (["d", "t", "f", "r", "b", "c", "m"].includes(indexFromUrl)) {
+      const index = indices.find((item) => item.key.charAt(0) === indexFromUrl);
+      setSelectedIndex(index.key);
+    }
+  }, []);
 
   return (
-    <SearchProvider config={config}>
+    <SearchProvider config={currentConfig}>
       <IndexSelect
         labelId="index-select-label"
         id="index-select"
@@ -140,7 +172,7 @@ const SearchBar = memo(() => {
         }}
         autocompleteSuggestions={true}
         onSubmit={(searchTerm) => {
-          window.location.href = `search?q=${searchTerm}`;
+          window.location.href = `/${selectedIndex[0]}/search?q=${searchTerm}`;
         }}
         inputView={({ getAutocomplete, getInputProps, getButtonProps }) => (
           <>
