@@ -13,6 +13,8 @@ const searchConfig = {
       creator: { raw: {} },
       task_id: { raw: {} },
       date: { raw: {} },
+      tasktype: { raw: {} },
+      source_data: { raw: {} },
     },
     disjunctiveFacets: [],
     facets: {},

@@ -3,26 +3,17 @@ import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 
 import styled from "@emotion/styled";
-import { Card, Tooltip, CardHeader, Avatar, Box } from "@mui/material";
+import { Card, Tooltip } from "@mui/material";
 
 import TimeAgo from "react-timeago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { blue, orange, red, green, grey, purple } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import * as colors from "@mui/material/colors";
 
-import {
-  faBars,
-  faCheck,
-  faCloudDownloadAlt,
-  faFlask,
-  faHashtag,
-  faHeart,
-  faHistory,
-  faNotdef,
-  faTags,
-  faTimes,
-  faWrench,
-} from "@fortawesome/free-solid-svg-icons";
+import { Title as DataTitle, stats as dataStats } from "../../pages/d/dataCard";
+import { Title as TaskTitle, stats as taskStats } from "../../pages/t/taskCard";
+
+import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
 import Teaser from "./Teaser";
 
 const SearchResultCard = styled(Card)`
@@ -38,11 +29,6 @@ const SearchResultCard = styled(Card)`
     background: rgba(0, 0, 0, 0.08);
   }
 `;
-
-const SlimCardHeader = styled(CardHeader)({
-  paddingTop: 0,
-});
-
 const Stats = styled.div`
   padding-right: 8px;
   display: inline-block;
@@ -67,14 +53,7 @@ const ColoredIcon = styled(FontAwesomeIcon)`
   color: ${(props) => props.color};
   align-self: center;
 `;
-const VersionStats = styled.div`
-  font-size: 12px;
-  font-weight: 400;
-  padding-left: 8px;
-  padding-right: 2px;
-  color: ${grey[400]};
-`;
-const Title = styled.div`
+const TitleWrapper = styled.div`
   padding-bottom: 5px;
   font-size: 16px;
   font-weight: 600;
@@ -102,79 +81,6 @@ const getStats = (stats, result) => {
   }
 };
 
-const dataStatus = {
-  active: {
-    title: "verified",
-    icon: faCheck,
-    color: green[500],
-  },
-  deactivated: {
-    title: "deactivated",
-    icon: faTimes,
-    color: red[500],
-  },
-  in_preparation: {
-    title: "unverified",
-    icon: faWrench,
-    color: orange[500],
-  },
-};
-
-// TODO: move to data config?
-const data_stats = [
-  { param: "runs.raw", unit: "runs", color: red[500], icon: faFlask },
-  {
-    param: "nr_of_likes.raw",
-    unit: "likes",
-    color: purple[500],
-    icon: faHeart,
-  },
-  {
-    param: "nr_of_downloads.raw",
-    unit: "downloads",
-    color: blue[500],
-    icon: faCloudDownloadAlt,
-  },
-  {
-    param: "qualities.raw.NumberOfInstances",
-    unit: "instances (rows)",
-    color: grey[500],
-    icon: faBars,
-  },
-  {
-    param: "qualities.raw.NumberOfFeatures",
-    unit: "features (columns)",
-    color: grey[500],
-    icon: faBars,
-    rotation: 90,
-  },
-  {
-    param: "qualities.raw.NumberOfClasses",
-    unit: "classes",
-    color: grey[500],
-    icon: faTags,
-  },
-  {
-    param: "qualities.raw.NumberOfMissingValues",
-    unit: "missing values",
-    color: grey[500],
-    icon: faNotdef,
-  },
-];
-
-// Old code to get random colors.
-const colorNames = Object.keys(colors).filter(
-  (color) => typeof colors[color] === "object",
-);
-const shadeKeys = ["300", "500"];
-function getRandomColor() {
-  const randomColorName =
-    colorNames[Math.floor(Math.random() * colorNames.length)];
-  const randomShade = shadeKeys[Math.floor(Math.random() * 2)];
-
-  return colors[randomColorName][randomShade];
-}
-
 const abbreviateNumber = (value) => {
   let newValue = value;
   if (value > 1000) {
@@ -190,6 +96,18 @@ const abbreviateNumber = (value) => {
   return newValue;
 };
 
+const titles = {
+  data: DataTitle,
+  task: TaskTitle,
+  // Add other mappings as needed
+};
+
+const statistics = {
+  data: dataStats,
+  task: taskStats,
+  // Add other mappings as needed
+};
+
 const ResultCard = ({ result }) => {
   const theme = useTheme();
   const router = useRouter();
@@ -197,8 +115,9 @@ const ResultCard = ({ result }) => {
   const type = result._meta.rawHit._type;
   const color = theme.palette.entity[type];
   const icon = theme.palette.icon[type];
-  const stats = getStats(data_stats, result);
-  const name = result.name ? result.name.raw : `${type} ${result.id.raw}`;
+
+  const Title = titles[type];
+  const stats = getStats(statistics[type], result);
 
   // TODO: get from state
   const selected = false;
@@ -212,27 +131,10 @@ const ResultCard = ({ result }) => {
       fullwidth={fullwidth}
       variant="outlined"
     >
-      <Title>
+      <TitleWrapper>
         <ColoredIcon color={color} icon={icon} fixedWidth />
-        <Box sx={{ pl: 2 }}>{name}</Box>
-        {type === "data" && (
-          <React.Fragment>
-            <VersionStats>v.{result.version.raw}</VersionStats>
-            <Tooltip
-              title={dataStatus[result.status.raw]["title"]}
-              placement="top-start"
-            >
-              <Stats>
-                <ColoredIcon
-                  color={dataStatus[result.status.raw]["color"]}
-                  icon={dataStatus[result.status.raw].icon}
-                  fixedWidth
-                />
-              </Stats>
-            </Tooltip>
-          </React.Fragment>
-        )}
-      </Title>
+        <Title result={result} />
+      </TitleWrapper>
       {type !== "task" && result.description.raw && (
         <Teaser description={result.description.raw.toString()} limit={3} />
       )}
@@ -268,5 +170,18 @@ const ResultCard = ({ result }) => {
     </SearchResultCard>
   );
 };
+
+// Old code to get random colors. TODO: remove
+const colorNames = Object.keys(colors).filter(
+  (color) => typeof colors[color] === "object",
+);
+const shadeKeys = ["300", "500"];
+function getRandomColor() {
+  const randomColorName =
+    colorNames[Math.floor(Math.random() * colorNames.length)];
+  const randomShade = shadeKeys[Math.floor(Math.random() * 2)];
+
+  return colors[randomColorName][randomShade];
+}
 
 export default ResultCard;
