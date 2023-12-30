@@ -54,16 +54,6 @@ const ColorStats = styled.div`
   font-size: 12px;
   color: ${(props) => props.color};
 `;
-const Metric = styled.div`
-  color: ${red[500]}
-  padding-left: 5px;
-  display: inline-block;
-`;
-const SubStats = styled.div`
-  width: 100%;
-  font-size: 12px;
-  color: ${(props) => props.color};
-`;
 const ID = styled.div`
   font-size: 12px;
   font-weight: 400;
@@ -92,17 +82,13 @@ const Title = styled.div`
   align-items: baseline;
 `;
 
-// Helper function to get nested properties like 'qualities.raw.NumberOfClasses'
+// Helper functions to get nested properties like 'qualities.raw.NumberOfClasses'
 const getNestedProperty = (obj, path) => {
   return path.split(".").reduce((currentObject, key) => {
     return currentObject?.[key];
   }, obj);
 };
-
 const getStats = (stats, result) => {
-  console.log("result", result);
-  console.log("result", stats[5].param);
-  console.log("result", result[stats[5].param]);
   if (stats === undefined) {
     return undefined;
   } else {
@@ -176,6 +162,7 @@ const data_stats = [
   },
 ];
 
+// Old code to get random colors.
 const colorNames = Object.keys(colors).filter(
   (color) => typeof colors[color] === "object",
 );
@@ -211,6 +198,7 @@ const ResultCard = ({ result }) => {
   const color = theme.palette.entity[type];
   const icon = theme.palette.icon[type];
   const stats = getStats(data_stats, result);
+  const name = result.name ? result.name.raw : `${type} ${result.id.raw}`;
 
   // TODO: get from state
   const selected = false;
@@ -224,32 +212,12 @@ const ResultCard = ({ result }) => {
       fullwidth={fullwidth}
       variant="outlined"
     >
-      {type === "user" && (
-        <SlimCardHeader
-          avatar={
-            <Avatar
-              src={result.image.raw}
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: getRandomColor(),
-              }}
-            >
-              {result.first_name.raw[0] + result.last_name.raw[0]}
-            </Avatar>
-          }
-          title={result.first_name.raw + " " + result.last_name.raw}
-          subheader={result.bio.raw}
-        />
-      )}
-      {type !== "user" && type !== "task" && (
-        <Title>
-          <ColoredIcon color={color} icon={icon} fixedWidth />
-          <Box sx={{ pl: 2 }}>{result.name.raw}</Box>
-          {result.version !== undefined && (
+      <Title>
+        <ColoredIcon color={color} icon={icon} fixedWidth />
+        <Box sx={{ pl: 2 }}>{name}</Box>
+        {type === "data" && (
+          <React.Fragment>
             <VersionStats>v.{result.version.raw}</VersionStats>
-          )}
-          {dataStatus[result.status.raw] !== undefined && (
             <Tooltip
               title={dataStatus[result.status.raw]["title"]}
               placement="top-start"
@@ -262,10 +230,10 @@ const ResultCard = ({ result }) => {
                 />
               </Stats>
             </Tooltip>
-          )}
-        </Title>
-      )}
-      {type !== "user" && type !== "task" && result.description.raw && (
+          </React.Fragment>
+        )}
+      </Title>
+      {type !== "task" && result.description.raw && (
         <Teaser description={result.description.raw.toString()} limit={3} />
       )}
       {stats !== undefined && (
@@ -285,12 +253,10 @@ const ResultCard = ({ result }) => {
           ))}
         </React.Fragment>
       )}
-      {type !== "user" && (
-        <ColorStats color={grey[400]}>
-          <ColoredIcon icon={faHistory} fixedWidth />
-          <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
-        </ColorStats>
-      )}
+      <ColorStats color={grey[400]}>
+        <ColoredIcon icon={faHistory} fixedWidth />
+        <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
+      </ColorStats>
       <ID color={grey[400]}>
         <Tooltip title={type + " ID"} placement="top-start">
           <RightStats>
