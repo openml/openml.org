@@ -14,6 +14,7 @@ import {
   faTimes,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
+import Teaser from "../../components/search/Teaser";
 
 const ColoredIcon = styled(FontAwesomeIcon)`
   color: ${(props) => props.color};
@@ -108,3 +109,7 @@ export const stats = [
     icon: faNotdef,
   },
 ];
+
+export const Description = ({ result }) => {
+  return <Teaser description={result.description.raw.toString()} limit={3} />;
+};

@@ -12,6 +12,14 @@ const Markdown = styled(ReactMarkdown)`
   white-space: normal; // Override the default 'nowrap'
   word-break: break-word; // To prevent overflow
   max-height: none;
+
+  code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: "Roboto Mono", monospace;
+  }
 `;
 
 const Teaser = ({ description, limit }) => {

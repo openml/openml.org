@@ -203,7 +203,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           label={
             (label in facet_aliases && option.value in facet_aliases[label]
               ? facet_aliases[label][option.value]
-              : i18n.t(`filters.${option.value}`)) +
+              : i18n.t(`filters.${option.value.replace(/ /g, "_")}`)) +
             "  (" +
             option.count +
             ")"

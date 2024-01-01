@@ -631,9 +631,16 @@ filters:
     1000s: "1000s"
     10000s: "10000s"
     100000s: "100000s"
-    Millions: "Millions"    
+    Millions: "Millions"
     Public: "Public Domain Mark"
     public: "Public Domain Mark"
     public domain: "Public Domain Mark"
     CC0: "CC0"
+    tasktype: "Task type"
+    Clustering: "Clustering"
+    Supervised_Regression: "Supervised Regression"
+    Supervised_Classification: "Supervised Classification"
+    Learning_curve: "Learning curve"
+    Subgroup_Discovery: "Subgroup Discovery"
+    
 

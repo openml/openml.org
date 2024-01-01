@@ -26,6 +26,18 @@ const sort_options = [
     value: [],
   },
   {
+    name: "search.most_runs",
+    value: [{ field: "runs", direction: "desc" }],
+  },
+  {
+    name: "search.most_likes",
+    value: [{ field: "nr_of_likes", direction: "desc" }],
+  },
+  {
+    name: "search.most_downloads",
+    value: [{ field: "nr_of_downloads", direction: "desc" }],
+  },
+  {
     name: "search.most_recent",
     value: [{ field: "date", direction: "desc" }],
   },
@@ -33,8 +45,8 @@ const sort_options = [
 
 const search_facets = [
   {
-    label: "filters.status",
-    field: "status.keyword",
+    label: "filters.tasktype",
+    field: "tasktype.name.keyword",
   },
 ];
 

@@ -10,11 +10,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { grey } from "@mui/material/colors";
 import * as colors from "@mui/material/colors";
 
-import { Title as DataTitle, stats as dataStats } from "../../pages/d/dataCard";
-import { Title as TaskTitle, stats as taskStats } from "../../pages/t/taskCard";
+import {
+  Title as DataTitle,
+  Description as DataDescription,
+  stats as dataStats,
+} from "../../pages/d/dataCard";
+import {
+  Title as TaskTitle,
+  Description as TaskDescription,
+  stats as taskStats,
+} from "../../pages/t/taskCard";
 
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
-import Teaser from "./Teaser";
 
 const SearchResultCard = styled(Card)`
   border-radius: 0px;
@@ -102,6 +109,12 @@ const titles = {
   // Add other mappings as needed
 };
 
+const descriptions = {
+  data: DataDescription,
+  task: TaskDescription,
+  // Add other mappings as needed
+};
+
 const statistics = {
   data: dataStats,
   task: taskStats,
@@ -116,7 +129,9 @@ const ResultCard = ({ result }) => {
   const color = theme.palette.entity[type];
   const icon = theme.palette.icon[type];
 
+  // Select the result card contents depending on the entity type
   const Title = titles[type];
+  const Description = descriptions[type];
   const stats = getStats(statistics[type], result);
 
   // TODO: get from state
@@ -135,9 +150,7 @@ const ResultCard = ({ result }) => {
         <ColoredIcon color={color} icon={icon} fixedWidth />
         <Title result={result} />
       </TitleWrapper>
-      {type !== "task" && result.description.raw && (
-        <Teaser description={result.description.raw.toString()} limit={3} />
-      )}
+      <Description result={result} />
       {stats !== undefined && (
         <React.Fragment>
           {stats.map((stat, index) => (

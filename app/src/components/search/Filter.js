@@ -1,14 +1,9 @@
 import React from "react";
-import { useTheme } from "@mui/material/styles";
 
 import styled from "@emotion/styled";
-import { Link as MuiLink, Chip as MuiChip } from "@mui/material";
+import { Chip as MuiChip } from "@mui/material";
 
-import TimeAgo from "react-timeago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { blue, orange, red, green, grey, purple } from "@mui/material/colors";
-import { SubscriptionsOutlined } from "@mui/icons-material";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const FilterChip = styled(MuiChip)`
   margin-left: 10px;
@@ -18,10 +13,6 @@ const FilterChip = styled(MuiChip)`
 const FilterPanel = styled.div`
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-`;
-const FilterIcon = styled(FontAwesomeIcon)`
-  cursor: "pointer";
-  padding-left: 5px;
 `;
 
 const Filter = ({ label, options, values, onRemove, onSelect }) => {

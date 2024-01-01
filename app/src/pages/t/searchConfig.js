@@ -15,9 +15,15 @@ const searchConfig = {
       date: { raw: {} },
       tasktype: { raw: {} },
       source_data: { raw: {} },
+      target_feature: { raw: {} },
+      target_values: { raw: {} },
+      estimation_procedure: { raw: {} },
+      evaluation_measures: { raw: {} },
     },
-    disjunctiveFacets: [],
-    facets: {},
+    disjunctiveFacets: ["tasktype"],
+    facets: {
+      "tasktype.name.keyword": { type: "value" },
+    },
     group: {
       //This doesn't work yet. TODO: figure out how to group.
       field: { name: { raw: {} } },

@@ -6,9 +6,9 @@ import {
   faFlask,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
+import Teaser from "../../components/search/Teaser";
 
 export const Title = ({ result }) => {
-  console.log(result);
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
@@ -33,3 +33,20 @@ export const stats = [
     icon: faCloudDownloadAlt,
   },
 ];
+
+export const Description = ({ result }) => {
+  let description = "";
+  if (result.target_feature) {
+    description += `Predict feature \`${result.target_feature.raw}\`. `;
+  }
+  if (result.target_values) {
+    description += `Possible values are \`${result.target_values.raw}\`. `;
+  }
+  if (result.estimation_procedure) {
+    description += `Evaluate models using \`${result.estimation_procedure.raw.name}\`. `;
+  }
+  if (result.evaluation_measures) {
+    description += `The evaluation measure is \`${result.evaluation_measures.raw}\`. `;
+  }
+  return <Teaser description={description} limit={3} />;
+};

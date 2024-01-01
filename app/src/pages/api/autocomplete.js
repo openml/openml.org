@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   console.log("OnAutoComplete", indexName, requestState, queryConfig);
   const response = await connectorsCache[indexName].onAutocomplete(
     requestState,
-    queryConfig
+    queryConfig,
   );
   console.log(response);
   res.json(response);
