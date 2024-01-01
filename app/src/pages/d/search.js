@@ -161,6 +161,18 @@ const search_facets = [
     label: "filters.size",
     field: "qualities.NumberOfInstances",
   },
+  {
+    label: "filters.features",
+    field: "qualities.NumberOfFeatures",
+  },
+  {
+    label: "filters.target",
+    field: "qualities.NumberOfClasses",
+  },
+  {
+    label: "filters.format",
+    field: "format",
+  },
 ];
 
 // Controls how columns are rendered and manipulated in the table view

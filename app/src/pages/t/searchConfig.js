@@ -19,6 +19,9 @@ const searchConfig = {
       target_values: { raw: {} },
       estimation_procedure: { raw: {} },
       evaluation_measures: { raw: {} },
+      nr_of_likes: { raw: {} },
+      nr_of_downloads: { raw: {} },
+      runs: { raw: {} },
     },
     disjunctiveFacets: ["tasktype"],
     facets: {

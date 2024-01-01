@@ -3,8 +3,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Chip as MuiChip } from "@mui/material";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 const FilterChip = styled(MuiChip)`
   margin-left: 10px;
   margin-top: 10px;

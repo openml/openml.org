@@ -203,7 +203,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           label={
             (label in facet_aliases && option.value in facet_aliases[label]
               ? facet_aliases[label][option.value]
-              : i18n.t(`filters.${option.value.replace(/ /g, "_")}`)) +
+              : i18n.t(`filters.${option.value}`)) +
             "  (" +
             option.count +
             ")"
@@ -234,9 +234,9 @@ const SearchContainer = memo(
   }) => {
     const [filter, setFilter] = React.useState("hide");
     const handleFilterChange = (event, newFilter) => {
-      console.log("newFilter", newFilter);
+      console.log(filter, newFilter);
       if (newFilter === filter) {
-        setFilter(false);
+        setFilter("hide");
       } else {
         setFilter(newFilter + "");
       }
@@ -255,7 +255,6 @@ const SearchContainer = memo(
       name: i18n.t(option.name),
     }));
 
-    console.log("Filter:", filter);
     return (
       <SearchProvider config={config}>
         <TabContext value={filter}>

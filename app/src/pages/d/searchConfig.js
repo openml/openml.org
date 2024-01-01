@@ -50,7 +50,14 @@ const searchConfig = {
       visibility: { raw: {} },
       suggest: { raw: {} },
     },
-    disjunctiveFacets: ["status", "licence", "qualities.NumberOfInstances"],
+    disjunctiveFacets: [
+      "status",
+      "licence",
+      "qualities.NumberOfInstances",
+      "qualities.NumberOfFeatures",
+      "qualities.NumberOfClasses",
+      "format",
+    ],
     facets: {
       "status.keyword": { type: "value" },
       "name.keyword": { type: "value" },
@@ -65,6 +72,25 @@ const searchConfig = {
           { from: 1000000, name: "Millions" },
         ],
       },
+      "qualities.NumberOfFeatures": {
+        type: "range",
+        ranges: [
+          { from: 0, to: 10, name: "Less than 10" },
+          { from: 10, to: 100, name: "10s" },
+          { from: 100, to: 1000, name: "100s" },
+          { from: 1000, to: 10000, name: "1000s" },
+          { from: 10000, name: "10000s" },
+        ],
+      },
+      "qualities.NumberOfClasses": {
+        type: "range",
+        ranges: [
+          { from: 0, to: 2, name: "Regression" },
+          { from: 2, to: 2, name: "Binary Classification" },
+          { from: 2, name: "Multi-Class" },
+        ],
+      },
+      format: { type: "value" },
     },
     group: {
       //This doesn't work yet. TODO: figure out how to group.

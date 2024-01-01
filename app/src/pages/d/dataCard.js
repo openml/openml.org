@@ -111,5 +111,14 @@ export const stats = [
 ];
 
 export const Description = ({ result }) => {
-  return <Teaser description={result.description.raw.toString()} limit={3} />;
+  return (
+    <Teaser
+      description={
+        result.description.raw
+          ? result.description.raw.toString()
+          : "Description missing"
+      }
+      limit={3}
+    />
+  );
 };
