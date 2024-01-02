@@ -7,7 +7,16 @@ const searchConfig = {
   searchQuery: {
     resultsPerPage: 100,
     search_fields: {
-      description: {},
+      name: { weight: 3 },
+      exact_name: { weight: 3 },
+      description: { weight: 3 },
+      "tags.tag": { weight: 3 },
+      uploader: { weight: 2 },
+      format: { weight: 1 },
+      licence: { weight: 1 },
+      status: { weight: 1 },
+      error_message: { weight: 1 },
+      default_class_attribute: { weight: 1 },
     },
     result_fields: {
       contributor: { raw: {} },

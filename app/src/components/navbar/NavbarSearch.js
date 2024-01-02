@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import styled from "@emotion/styled";
 import { darken } from "polished";
@@ -92,6 +93,7 @@ const Input = styled(InputBase)`
 
 const SearchBar = memo(() => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   // List of configs for each index
   const indexConfigs = {
@@ -125,15 +127,16 @@ const SearchBar = memo(() => {
 
   // Set the index based on the current path
   useEffect(() => {
-    const pathSegments = window.location.pathname.split("/");
-    // The index is always the second segment in the URL
+    const pathSegments = router.pathname.split("/");
     const indexFromUrl = pathSegments[1];
-    // Check if the index is valid before updating the state
+
     if (["d", "t", "f", "r", "b", "c", "m"].includes(indexFromUrl)) {
       const index = indices.find((item) => item.key.charAt(0) === indexFromUrl);
-      setSelectedIndex(index.key);
+      if (index) {
+        setSelectedIndex(index.key);
+      }
     }
-  }, []);
+  }, [router.pathname]); // Depend on router.pathname to re-run the effect when the route changes
 
   return (
     <SearchProvider config={currentConfig}>

@@ -7,7 +7,12 @@ const searchConfig = {
   searchQuery: {
     resultsPerPage: 100,
     search_fields: {
-      description: {},
+      "source_data.name": { weight: 3 },
+      "tags.tag": { weight: 3 },
+      "tasktype.name": { weight: 2 },
+      "estimation_procedure.name": { weight: 2 },
+      evaluation_measures: { weight: 2 },
+      target_feature: { weight: 1 },
     },
     result_fields: {
       creator: { raw: {} },
