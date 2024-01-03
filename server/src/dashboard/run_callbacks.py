@@ -1,15 +1,12 @@
 import io
 import re
-
-# import arff
 import urllib.request
 
-import dash_core_components as dcc
-import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly
 import plotly.graph_objs as go
+from dash import dcc, html
 from dash.dependencies import Input, Output
 from scipy.io import arff
 from sklearn.metrics import precision_recall_curve, roc_curve
@@ -17,6 +14,7 @@ from sklearn.preprocessing import label_binarize
 
 from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
+from ...setup import SERVER_BASE_URL
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
@@ -95,10 +93,7 @@ def register_run_callbacks(app, cache):
         if "Classification" not in task_type:
             return "Only classification supported", "Only classification supported"
         pred_id = df[df["evaluations"] == "predictions"]["results"].values[0]
-        url = (
-            "https://www.openml.org/data/download/{}".format(pred_id)
-            + "/predictions.arff"
-        )
+        url = f"{SERVER_BASE_URL}/data/download/{pred_id}/predictions.arff"
         ftp_stream = urllib.request.urlopen(url)
         data, meta = arff.loadarff(io.StringIO(ftp_stream.read().decode("utf-8")))
         df = pd.DataFrame(data)

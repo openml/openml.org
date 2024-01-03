@@ -2,6 +2,10 @@ import smtplib
 import ssl
 import os
 
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+
+from server.user.models import User
+
 context = ssl.create_default_context()
 
 
@@ -68,3 +72,9 @@ def send_feedback(email, feedback):
     server.sendmail(sender, receiver, message)
     print("Email sent")
     server.quit()
+
+
+def current_user() -> User | None:
+    if verify_jwt_in_request():
+        jwt_identity = get_jwt_identity()
+        return User.query.filter_by(email=jwt_identity).first()

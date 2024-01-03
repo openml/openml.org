@@ -1,15 +1,18 @@
-from flask import Blueprint, jsonify, request
-from flask_cors import CORS
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from server.user.models import User
-from werkzeug.utils import secure_filename
-from pathlib import Path
+import json
 import os
+from pathlib import Path
+from urllib.parse import parse_qs, urlparse
+
+import arff
 import openml
 import pandas as pd
-import json
-import arff
-from urllib.parse import parse_qs, urlparse
+from flask import Blueprint, jsonify, request
+from flask_cors import CORS
+from flask_jwt_extended import jwt_required
+from werkzeug.utils import secure_filename
+
+from server.setup import setup_openml_config
+from server.utils import current_user
 
 data_blueprint = Blueprint(
     "data", __name__, static_folder="server/src/client/app/build"
@@ -18,15 +21,16 @@ data_blueprint = Blueprint(
 CORS(data_blueprint)
 
 
+@data_blueprint.before_request
+def setup():
+    setup_openml_config()
+
+
 @data_blueprint.route("/data-edit", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def data_edit():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
-    if testing:
-        openml.config.start_using_configuration_for_example()
+    user = current_user()
+
     url = request.args.get("url")
     parsed = urlparse(url)
     dataset_id = parse_qs(parsed.query)["id"]
@@ -84,7 +88,7 @@ def data_edit():
         )
     elif request.method == "POST":
         j_obj = request.get_json()
-        # dataset = openml.datasets.get_dataset(int(dataset_id))
+
         owner = j_obj["owner"]
         description = j_obj["description"]
         creator = j_obj["creator"]
@@ -146,19 +150,14 @@ def data_edit():
 
 
 @data_blueprint.route("/data-upload", methods=["POST"])
-@jwt_required
+@jwt_required()
 def data_upload():
     """
     Function to upload dataset
     """
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
+
+    user = current_user()
     user_api_key = user.session_hash
-    openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
-    if testing:
-        openml.config.start_using_configuration_for_example()
-    # openml.config.start_using_configuration_for_example()
 
     print(request)
     data_file = request.files["dataset"]
@@ -194,7 +193,6 @@ def data_upload():
         with open(path, "r") as arff_file:
             arff_dict = arff.load(arff_file)
         attribute_names, dtypes = zip(*arff_dict["attributes"])
-        data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
         data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
         for attribute_name, dtype in arff_dict["attributes"]:
             # 'real' and 'numeric' are probably interpreted correctly.
@@ -237,16 +235,10 @@ def data_upload():
 
 
 @data_blueprint.route("/data-tag", methods=["POST"])
-@jwt_required
+@jwt_required()
 def data_tag():
     j_obj = request.get_json()
     tag = j_obj['tag']
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    openml.config.apikey = user.session_hash
-    testing = os.environ.get("TESTING")
-    if testing:
-        openml.config.start_using_configuration_for_example()
     url = request.args.get("url")
     parsed = urlparse(url)
     dataset_id = parse_qs(parsed.query)["id"]
@@ -254,4 +246,4 @@ def data_tag():
 
     dataset = openml.datasets.get_dataset(dataset_id)
     dataset.push_tag(tag)
-    pass
+

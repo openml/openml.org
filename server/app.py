@@ -4,9 +4,6 @@ from server import public, user, data, collection, task
 from .extensions import Base, argon2, bcrypt, db, engine, jwt
 from .src.dashboard.dashapp import create_dash_app
 
-# from flask_cors import CORS
-# from flask_dance.contrib.github import make_github_blueprint, github
-
 
 def register_extensions(app):
     """Registering extensions for flask app
@@ -19,10 +16,8 @@ def register_extensions(app):
     jwt.init_app(app)
     bcrypt.init_app(app)
 
-    # Database initialisation
-    db_session = scoped_session(
-        sessionmaker(autocommit=True, autoflush=False, bind=engine)
-    )
+    # Initialization, see Flask Security
+    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
     Base.query = db_session.query_property()
     db.init_app(app)
     with app.app_context():

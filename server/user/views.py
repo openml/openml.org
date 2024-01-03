@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import os
+from distutils.util import strtobool
 from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
@@ -8,7 +9,7 @@ from flask_cors import CORS
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
-    get_raw_jwt,
+    get_jwt,
     jwt_required,
 )
 from pathlib import Path
@@ -23,16 +24,17 @@ user_blueprint = Blueprint(
     "user", __name__, static_folder="server/src/client/app/build"
 )
 
+
 CORS(user_blueprint)
 
-blacklist = set()
+blocklist = set()
 
 
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    """Checking if token is in blacklist token"""
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blocklist(jwt_header, decrypted_token):
+    """Checking if token is in blocklist token"""
     jti = decrypted_token["jti"]
-    return jti in blacklist
+    return jti in blocklist
 
 
 @user_blueprint.route("/login", methods=["POST"])
@@ -68,7 +70,7 @@ def login():
             db.session.add(user_)
             db.session.commit()
         access_token = create_access_token(identity=user.email)
-        testing = os.environ.get("TESTING")
+        testing = strtobool(os.environ.get("TESTING", "True"))
         print(testing)
         if testing:
             print("executed")
@@ -80,7 +82,7 @@ def login():
 
 
 @user_blueprint.route("/profile", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def profile():
     """
     Function to edit and retrieve user profile information
@@ -124,15 +126,15 @@ def profile():
         return jsonify({"msg": "profile OK"}), 200
 
 
+@jwt_required()
 @user_blueprint.route("/verifytoken", methods=["GET"])
-@jwt_required
 def verifytoken():
     return "token-valid"
 
 
 # TODO Change Address before production
 @user_blueprint.route("/image", methods=["POST"])
-@jwt_required
+@jwt_required()
 def image():
     """Function to receive and set user image"""
     current_user = get_jwt_identity()
@@ -165,7 +167,7 @@ def images(path):
 
 
 # @user_blueprint.route('/send-image', methods=['GET'])
-# @jwt_required
+# @jwt_required()
 # def send_image():
 #     current_user = get_jwt_identity()
 #     user = User.query.filter_by(email=current_user).first()
@@ -174,16 +176,16 @@ def images(path):
 
 
 @user_blueprint.route("/logout", methods=["POST"])
-@jwt_required
+@jwt_required()
 def logout():
     """Function to logout user"""
-    jti = get_raw_jwt()["jti"]
-    blacklist.add(jti)
+    jti = get_jwt()["jti"]
+    blocklist.add(jti)
     return jsonify({"msg": "Successfully logged out"}), 200
 
 
 @user_blueprint.route("/api-key", methods=["POST", "GET"])
-@jwt_required
+@jwt_required()
 def apikey():
     """Change and retrieve API-Key"""
     current_user = get_jwt_identity()
@@ -199,7 +201,7 @@ def apikey():
 
 
 @user_blueprint.route("/delete", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def delete_user():
     """Delete current user: Frontend and functionality not decided yet"""
     # current_user = get_jwt_identity()

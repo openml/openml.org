@@ -36,8 +36,7 @@ def get_run_df(run_id: int):
         {"task_type": run.task_type}.items(), columns=["evaluations", "results"]
     )
     df2["values"] = ""
-    df = df.append(df2)
-    df = df.append(df3)
+    df = pd.concat([df2, df3], ignore_index=True)
     df.to_pickle(CACHE_DIR_DASHBOARD / f"run{run_id}.pkl")
     return run, df
 

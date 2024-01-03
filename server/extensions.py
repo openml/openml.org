@@ -1,4 +1,7 @@
+import logging
 import os
+from distutils.util import strtobool
+
 from dotenv import load_dotenv
 
 # import sqlalchemy
@@ -17,11 +20,12 @@ extension.py
 Declares extension for Flask App, connects with already existing database
 """
 # specifying engine according to existing db
-load_dotenv(".flaskenv")
-try:
+load_dotenv(".env")
+
+
+if not strtobool(os.environ.get("TESTING", "True")):
     engine = create_engine(
         os.environ.get("DATABASE_URI"),
-        convert_unicode=True,
         echo=False,
         pool_size=20,
         max_overflow=0,
@@ -29,11 +33,11 @@ try:
     )
     Base = declarative_base()
     Base.metadata.reflect(engine)
-except TypeError:
+else:
+    logging.warning("Testing mode, using local sqlite db.")
     engine = create_engine(
         "sqlite:///" + os.path.join(basedir, "openml.db"),
         echo=False,
-        convert_unicode=True,
     )
     Config.SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "openml.db")
     Base = declarative_base()
