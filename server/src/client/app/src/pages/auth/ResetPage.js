@@ -27,7 +27,7 @@ function ResetPage() {
   console.log(window.location.href);
   const [redirect, setRedirect] = useState(false);
   axios
-    .post(process.env.REACT_APP_SERVER_URL + "forgot-token", {
+    .post(process.env.REACT_APP_URL_SITE_BACKEND + "forgot-token", {
       url: window.location.href
     })
     .then(function(response) {
@@ -40,7 +40,7 @@ function ResetPage() {
     event.preventDefault();
     console.log("executed");
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "resetpassword", {
+      .post(process.env.REACT_APP_URL_SITE_BACKEND + "resetpassword", {
         url: window.location.href,
         password: event.target.password.value
       })

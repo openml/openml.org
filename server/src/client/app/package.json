@@ -77,5 +77,8 @@
   "optionalDependencies": {
     "fsevents": "^2.3.2",
     "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }

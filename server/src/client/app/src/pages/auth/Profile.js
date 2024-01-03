@@ -52,7 +52,7 @@ function Public() {
     }
   };
   axios
-    .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+    .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
     .then(function(response) {
       console.log(response);
 
@@ -80,7 +80,7 @@ function Public() {
       setError(false);
       axios
         .post(
-          process.env.REACT_APP_SERVER_URL + "profile",
+          process.env.REACT_APP_URL_SITE_BACKEND + "profile",
           {
             bio: event.target.biography.value,
             first_name: event.target.firstname.value,
@@ -108,7 +108,7 @@ function Public() {
         // setImage(images[0])
         axios
           .post(
-            process.env.REACT_APP_SERVER_URL + "image",
+            process.env.REACT_APP_URL_SITE_BACKEND + "image",
             formData,
             yourConfig
           )

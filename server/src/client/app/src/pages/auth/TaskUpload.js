@@ -53,7 +53,7 @@ function Public() {
         event.preventDefault();
 
         axios
-            .post(process.env.REACT_APP_SERVER_URL + "upload-task", {
+            .post(process.env.REACT_APP_URL_SITE_BACKEND + "upload-task", {
                 dataset_id: event.target.datasetid.value,
                 task_type: event.target.tasktype.value,
                 target_name: event.target.targetname.value,

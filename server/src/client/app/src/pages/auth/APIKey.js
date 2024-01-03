@@ -31,7 +31,7 @@ const yourConfig = {
 
 function APIKey() {
     const [apikey, setApikey] = useState(false);
-    axios.get(process.env.REACT_APP_SERVER_URL + "api-key", yourConfig)
+    axios.get(process.env.REACT_APP_URL_SITE_BACKEND + "api-key", yourConfig)
         .then(function (response) {
             console.log(response);
             setApikey(response.data.apikey);
@@ -43,7 +43,7 @@ function APIKey() {
     function apiFlask(event) {
         event.preventDefault();
         axios
-            .post(process.env.REACT_APP_SERVER_URL + "api-key", {
+            .post(process.env.REACT_APP_URL_SITE_BACKEND + "api-key", {
                 resetapikey:true
             }, yourConfig)
             .then(function (response) {

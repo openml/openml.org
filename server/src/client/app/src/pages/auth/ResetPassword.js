@@ -31,7 +31,7 @@ function ResetPassword() {
         event.preventDefault();
         console.log("executed");
         axios
-            .post(process.env.REACT_APP_SERVER_URL + "forgotpassword", {
+            .post(process.env.REACT_APP_URL_SITE_BACKEND + "forgotpassword", {
                 email: event.target.email.value
             })
             .then(function (response) {

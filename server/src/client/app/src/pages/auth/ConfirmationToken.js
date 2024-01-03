@@ -28,7 +28,7 @@ function ConfirmationToken() {
     function sendflask(event){
      event.preventDefault();
     console.log('executed');
-    axios.post(process.env.REACT_APP_SERVER_URL+"send-confirmation-token",{
+    axios.post(process.env.REACT_APP_URL_SITE_BACKEND+"send-confirmation-token",{
         email: event.target.email.value
     }).then(function(response) {
         console.log(response.data);
