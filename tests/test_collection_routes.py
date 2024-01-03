@@ -2,7 +2,7 @@ import os
 
 
 def test_upload_collection_runs(test_client, init_database):
-    response = test_client.post(
+    test_client.post(
         "/login", json={"email": "ff@ff.com", "password": "ff"}, follow_redirects=True
     )
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))

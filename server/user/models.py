@@ -10,35 +10,6 @@ class User(Base):
     __table__ = Base.metadata.tables["users"]
     __table_args__ = {"autoload": True}
 
-    # Attribute names to help out with functions
-    # id = Column(Integer, primary_key=True, unique=True)
-    # ip_address = Column(String(64))
-    # username = Column(String(64), index=True, unique=True)
-    # email = Column(String(120), index=True, unique=True)
-    # password = Column(String(240))
-    # activation_selector = Column(String(120))#Unique
-    # activation_code = Column(String(120))
-    # forgotten_password_selector = Column(String(120))#Unique
-    # forgotten_password_code = Column(String(120))
-    # forgotten_password_time = Column(String(120))
-    # remember_selector = Column(String(120))#Unique
-    # remember_code = Column(String(120))
-    # created_on = Column(String(120))
-    # last_login = Column(String(120))
-    # active = Column(String(120))
-    # first_name = Column(String(120))
-    # last_name = Column(String(120))
-    # company = Column(String(120))
-    # phone = Column(String(120))
-    # country = Column(String(120))
-    # image = Column(String(120))
-    # bio = Column(String(240))
-    # core = Column(String(240))
-    # external_source = Column(String(120))
-    # external_id = Column(String(120))
-    # session_hash = Column(String(120))# session hash is API key
-    # password_hash = Column(String(120))
-
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
