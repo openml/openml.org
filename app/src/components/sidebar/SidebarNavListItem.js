@@ -97,6 +97,10 @@ const SidebarNavListItem = (props) => {
     i18n.reloadResources();
   }
 
+  // Extract the query string from the URL
+  const router = useRouter();
+  const currentQuery = router.asPath.split("?")[1];
+
   const {
     title,
     href,
@@ -138,7 +142,7 @@ const SidebarNavListItem = (props) => {
 
   return (
     <Link
-      href={href}
+      href={`${href}${currentQuery ? `?${currentQuery}` : ""}`}
       passHref
       target={isExternal ? "_blank" : undefined}
       rel="noopener noreferrer"

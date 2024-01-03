@@ -14,7 +14,7 @@ const CoreFilter = ({ addFilter, removeFilter, setSort }) => {
     setSort([{ field: "last_name.keyword", direction: "asc" }]); // Has to be an array or it won't work
   });
 
-  return <div></div>;
+  return null;
 };
 
 export default withSearch(({ addFilter, removeFilter, setSort }) => ({

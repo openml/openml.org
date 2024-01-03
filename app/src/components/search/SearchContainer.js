@@ -40,6 +40,7 @@ import {
 import Wrapper from "../Wrapper";
 import { i18n } from "next-i18next";
 import ResultsTable from "./ResultTable";
+import TagFilter from "./TagFilter";
 
 const SearchResults = styled(Results)`
   margin: 0px;
@@ -257,6 +258,7 @@ const SearchContainer = memo(
 
     return (
       <SearchProvider config={config}>
+        {false && <TagFilter />}
         <TabContext value={filter}>
           <FilterBox xs={12} variant="outlined">
             <FilterTabs

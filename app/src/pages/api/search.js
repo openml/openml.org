@@ -2,23 +2,29 @@ import ElasticsearchAPIConnector from "@elastic/search-ui-elasticsearch-connecto
 
 const connectorsCache = {};
 
+// Set to true if you want to use the dev proxy
+// This requires starting server-proxy app with `node server.js`
+const use_dev_proxy = false;
+
 export default async function handler(req, res) {
   const { requestState, queryConfig, indexName } = req.body;
 
   if (!connectorsCache[indexName]) {
     connectorsCache[indexName] = new ElasticsearchAPIConnector({
-      host: "https://es.openml.org/",
+      host: use_dev_proxy
+        ? "http://localhost:3001/proxy"
+        : "https://es.openml.org/",
       index: indexName,
       apiKey: "",
     });
   }
 
   //This runs server-side, so the output appears in the terminal
-  console.log("OnSearch", indexName, requestState, queryConfig);
+  //console.log("OnSearch", indexName, requestState, queryConfig);
   const response = await connectorsCache[indexName].onSearch(
     requestState,
     queryConfig,
   );
-  console.log(response);
+  //console.log(response);
   res.json(response);
 }

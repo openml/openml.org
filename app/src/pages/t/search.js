@@ -48,6 +48,14 @@ const search_facets = [
     label: "filters.tasktype",
     field: "tasktype.name.keyword",
   },
+  {
+    label: "filters.estimation_procedure",
+    field: "estimation_procedure.name.keyword",
+  },
+  {
+    label: "filters.evaluation_measures",
+    field: "evaluation_measures.keyword",
+  },
 ];
 
 // Controls how columns are rendered and manipulated in the table view

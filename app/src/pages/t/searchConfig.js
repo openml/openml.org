@@ -28,9 +28,15 @@ const searchConfig = {
       nr_of_downloads: { raw: {} },
       runs: { raw: {} },
     },
-    disjunctiveFacets: ["tasktype"],
+    disjunctiveFacets: [
+      "tasktype",
+      "estimation_procedure",
+      "evaluation_measures",
+    ],
     facets: {
       "tasktype.name.keyword": { type: "value" },
+      "estimation_procedure.name.keyword": { type: "value" },
+      "evaluation_measures.keyword": { type: "value" },
     },
     group: {
       //This doesn't work yet. TODO: figure out how to group.
