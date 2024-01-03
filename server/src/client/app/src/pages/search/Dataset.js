@@ -122,7 +122,7 @@ export class DatasetItem extends React.Component {
                     </ActionButton>
                   </Tooltip>
                   <Tooltip title="Download JSON description" placement="bottom-start">
-                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/data/` + this.props.object.data_id}>
+                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/json/data/` + this.props.object.data_id}>
                       <Action>
                         <FontAwesomeIcon icon="file-alt" />
                         <Typography>json</Typography>
