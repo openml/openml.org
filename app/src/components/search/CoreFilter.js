@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { withSearch } from "@elastic/react-search-ui";
 
 const CoreFilter = ({ addFilter, removeFilter, setSort }) => {

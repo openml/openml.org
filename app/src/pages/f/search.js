@@ -6,7 +6,6 @@ import SearchContainer from "../../components/search/SearchContainer";
 import {
   renderCell,
   valueGetter,
-  copyCell,
   renderDescription,
   renderDate,
   renderTags,
@@ -14,13 +13,8 @@ import {
 } from "../../components/search/ResultTable";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faTriangleExclamation,
-  faRotate,
-} from "@fortawesome/free-solid-svg-icons";
 
-import searchConfig from "./searchConfig";
+import searchConfig from "../f/searchConfig";
 import {
   faCreativeCommonsBy,
   faCreativeCommonsPd,
@@ -43,25 +37,6 @@ export async function getStaticProps(context) {
 // Defines chips in table view
 const getChipProps = (value) => {
   switch (value) {
-    // Dataset status
-    case "active":
-      return {
-        label: "Verified",
-        icon: <FontAwesomeIcon icon={faCheck} />,
-        color: "success",
-      };
-    case "deactivated":
-      return {
-        label: "Deprecated",
-        icon: <FontAwesomeIcon icon={faTriangleExclamation} />,
-        color: "error",
-      };
-    case "in_preparation":
-      return {
-        label: "In preparation",
-        icon: <FontAwesomeIcon icon={faRotate} />,
-        color: "warning",
-      };
     // Dataset licence
     case "public":
     case "Public":
@@ -124,61 +99,20 @@ const sort_options = [
     name: "search.most_recent",
     value: [{ field: "date", direction: "desc" }],
   },
-  {
-    name: "search.most_instances",
-    value: [{ field: "qualities.NumberOfInstances", direction: "desc" }],
-  },
-  {
-    name: "search.most_features",
-    value: [{ field: "qualities.NumberOfFeatures", direction: "desc" }],
-  },
-  {
-    name: "search.most_numeric_features",
-    value: [{ field: "qualities.NumberOfNumericFeatures", direction: "desc" }],
-  },
-  {
-    name: "search.most_missing_values",
-    value: [{ field: "qualities.NumberOfMissing values", direction: "desc" }],
-  },
-  {
-    name: "search.most_classes",
-    value: [{ field: "qualities.NumberOfClasses", direction: "desc" }],
-  },
 ];
 
 const search_facets = [
   {
-    label: "filters.status",
-    field: "status.keyword",
-  },
-  {
-    label: "filters.licence",
-    field: "licence.keyword",
-    show: "10",
-  },
-  {
-    label: "filters.size",
-    field: "qualities.NumberOfInstances",
-  },
-  {
-    label: "filters.features",
-    field: "qualities.NumberOfFeatures",
-  },
-  {
-    label: "filters.target",
-    field: "qualities.NumberOfClasses",
-  },
-  {
-    label: "filters.format",
-    field: "format",
+    label: "filters.dependencies",
+    field: "dependencies.keyword",
   },
 ];
 
 // Controls how columns are rendered and manipulated in the table view
 const columns = [
   {
-    field: "data_id",
-    headerName: "Data_id",
+    field: "flow_id",
+    headerName: "Flow_id",
     valueGetter: valueGetter("data_id"),
     renderCell: renderCell,
     width: 70,
@@ -196,15 +130,6 @@ const columns = [
     valueGetter: valueGetter("version"),
     renderCell: renderCell,
     width: 60,
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    valueGetter: valueGetter("status"),
-    renderCell: renderChips(getChipProps),
-    type: "singleSelect",
-    valueOptions: ["active", "deactivated", "in_preparation"],
-    width: 136,
   },
   {
     field: "description",
@@ -232,14 +157,6 @@ const columns = [
     valueGetter: valueGetter("creator"),
     renderCell: renderCell,
     width: 150,
-  },
-  {
-    field: "url",
-    headerName: "Url",
-    valueGetter: valueGetter("url"),
-    renderCell: copyCell,
-    copyMessage: true,
-    width: 50,
   },
   {
     field: "tags",

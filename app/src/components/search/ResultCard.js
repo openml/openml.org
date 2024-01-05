@@ -20,6 +20,11 @@ import {
   Description as TaskDescription,
   stats as taskStats,
 } from "../../pages/t/taskCard";
+import {
+  Title as FlowTitle,
+  Description as FlowDescription,
+  stats as flowStats,
+} from "../../pages/f/flowCard";
 
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
 
@@ -106,18 +111,21 @@ const abbreviateNumber = (value) => {
 const titles = {
   data: DataTitle,
   task: TaskTitle,
+  flow: FlowTitle,
   // Add other mappings as needed
 };
 
 const descriptions = {
   data: DataDescription,
   task: TaskDescription,
+  flow: FlowDescription,
   // Add other mappings as needed
 };
 
 const statistics = {
   data: dataStats,
   task: taskStats,
+  flow: flowStats,
   // Add other mappings as needed
 };
 

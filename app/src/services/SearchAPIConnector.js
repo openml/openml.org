@@ -26,6 +26,7 @@ class SearchAPIConnector {
     };
     //console.log(request.body);
     const response = await fetch("/api/search", request);
+    //console.log(response);
     return response.json();
   }
 

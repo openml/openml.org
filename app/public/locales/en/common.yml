@@ -676,7 +676,12 @@ filters:
     root_relative_squared_error: "Root relative squared error"
     c_index: "C-index"
     f_measure: "F-measure"
-
+    dependencies: "Libraries"
+    sklearn: "sklearn {{version}}"
+    torch: "Torch {{version}}"
+    Weka: "Weka {{version}}"
+    mlr: "MLR {{version}}"
+    Moa: "Moa {{version}}"
 
 
 

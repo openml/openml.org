@@ -10,7 +10,6 @@ import {
   FormControl,
   InputLabel,
   Tab,
-  Chip,
   Tabs,
   Card,
 } from "@mui/material";
@@ -40,6 +39,7 @@ import {
 import Wrapper from "../Wrapper";
 import { i18n } from "next-i18next";
 import ResultsTable from "./ResultTable";
+import Filter from "./Filter";
 import TagFilter from "./TagFilter";
 
 const SearchResults = styled(Results)`
@@ -178,61 +178,9 @@ const PagingView = ({ current, totalPages, onChange }) => (
   />
 );
 
-// Allows overriding the filter option text
-const facet_aliases = {
-  Status: {
-    active: "verified",
-    in_preparation: "in preparation",
-    deactivated: "deprecated",
-  },
-};
-
-const FilterChip = styled(Chip)`
-  margin-right: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 50px;
-`;
-
-const FilterPanel = styled.div``;
-
-const Filter = ({ label, options, values, onRemove, onSelect }) => {
-  return (
-    <FilterPanel>
-      {options.map((option) => (
-        <FilterChip
-          label={
-            (label in facet_aliases && option.value in facet_aliases[label]
-              ? facet_aliases[label][option.value]
-              : i18n.t(`filters.${option.value}`)) +
-            "  (" +
-            option.count +
-            ")"
-          }
-          key={option.value}
-          clickable
-          onClick={() =>
-            option.selected ? onRemove(option.value) : onSelect(option.value)
-          }
-          color={option.selected ? "primary" : "default"}
-          variant={option.selected ? "default" : "outlined"}
-        />
-      ))}
-    </FilterPanel>
-  );
-};
-
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
-  ({
-    config,
-    sort_options,
-    search_facets,
-    columns,
-    facet_aliases,
-    title,
-    type,
-  }) => {
+  ({ config, sort_options, search_facets, columns }) => {
     const [filter, setFilter] = React.useState("hide");
     const handleFilterChange = (event, newFilter) => {
       console.log(filter, newFilter);
@@ -287,6 +235,7 @@ const SearchContainer = memo(
                   view={Filter}
                   value={filter}
                   index={index}
+                  show={25}
                 />
               </FilterTabPanel>
             ))}

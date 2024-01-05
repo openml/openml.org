@@ -78,8 +78,6 @@ function TaskSearchContainer() {
       sort_options={sort_options}
       search_facets={search_facets}
       columns={columns}
-      title="Tasks"
-      type="Task"
     />
   );
 }

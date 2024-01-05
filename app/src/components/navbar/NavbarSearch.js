@@ -18,6 +18,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Box, InputBase, MenuItem, Select } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
+import { useTheme } from "@mui/system";
 
 const SearchWrapper = styled(Box)`
   border-radius: 2px;
@@ -150,7 +151,8 @@ const SearchBar = memo(() => {
           PaperProps: {
             sx: {
               boxShadow: 2,
-              border: "1px solid #d3d4d5",
+              border: `1px solid rgba(0, 0, 0, 0.12);
+              `,
             },
           },
         }}

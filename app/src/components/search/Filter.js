@@ -1,24 +1,63 @@
+import { Chip } from "@mui/material";
+import styled from "@emotion/styled";
+import { i18n } from "next-i18next";
 import React from "react";
 
-import styled from "@emotion/styled";
-import { Chip as MuiChip } from "@mui/material";
-
-const FilterChip = styled(MuiChip)`
-  margin-left: 10px;
+const FilterChip = styled(Chip)`
+  margin-right: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+  border-radius: 50px;
 `;
-const FilterPanel = styled.div`
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-`;
+
+// Handles special cases in the filter options
+const processOption = (option) => {
+  // Homogenize notation for library reporting and versioning
+  const libraries = [
+    "sklearn",
+    "torch",
+    "Weka",
+    "tensorflow",
+    "keras",
+    "mlr",
+    "Moa",
+  ];
+  if (libraries.some((library) => option.includes(library))) {
+    const segments = option.split(/,|\n/);
+    let lib = segments.find((segment) =>
+      libraries.some((library) => segment.includes(library)),
+    );
+    if (lib.startsWith(" ")) {
+      lib = lib.replace(" ", "");
+    }
+    if (
+      lib.startsWith("Weka_") ||
+      lib.startsWith("R_") ||
+      lib.startsWith("Moa_") ||
+      lib.startsWith("mlr_")
+    ) {
+      lib = lib.replace("_", "==");
+    }
+    // If the option has versioning, return it separately
+    const values = lib.split("==");
+    if (values.length > 1) {
+      return [`filters.${values[0]}`, { version: values[1] }];
+    } else {
+      return [`filters.${lib}`];
+    }
+  } else {
+    return [`filters.${option}`];
+  }
+};
 
 const Filter = ({ label, options, values, onRemove, onSelect }) => {
   return (
-    <FilterPanel>
+    <React.Fragment>
       {options.map((option) => (
         <FilterChip
-          label={option.value + "  (" + option.count + ")"}
+          label={
+            i18n.t(...processOption(option.value)) + "  (" + option.count + ")"
+          }
           key={option.value}
           clickable
           onClick={() =>
@@ -28,7 +67,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           variant={option.selected ? "default" : "outlined"}
         />
       ))}
-    </FilterPanel>
+    </React.Fragment>
   );
 };
 
