@@ -46,7 +46,9 @@ const processOption = (option) => {
       return [`filters.${lib}`];
     }
   } else {
-    return [`filters.${option}`];
+    // If comma or newline separated, return the first
+    const segments = option.split(/,|\n/);
+    return [`filters.${segments[0]}`];
   }
 };
 

@@ -154,7 +154,6 @@ const search_facets = [
   {
     label: "filters.licence",
     field: "licence.keyword",
-    show: "10",
   },
   {
     label: "filters.size",

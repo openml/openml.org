@@ -70,7 +70,7 @@ const searchConfig = {
     facets: {
       "status.keyword": { type: "value" },
       "name.keyword": { type: "value" },
-      "licence.keyword": { type: "value", size: 10 },
+      "licence.keyword": { type: "value" },
       "qualities.NumberOfInstances": {
         type: "range",
         ranges: [
