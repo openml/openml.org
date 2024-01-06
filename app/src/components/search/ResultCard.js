@@ -25,6 +25,11 @@ import {
   Description as FlowDescription,
   stats as flowStats,
 } from "../../pages/f/flowCard";
+import {
+  Title as RunTitle,
+  Description as RunDescription,
+  stats as runStats,
+} from "../../pages/r/runCard";
 
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
 
@@ -112,6 +117,7 @@ const titles = {
   data: DataTitle,
   task: TaskTitle,
   flow: FlowTitle,
+  run: RunTitle,
   // Add other mappings as needed
 };
 
@@ -119,6 +125,7 @@ const descriptions = {
   data: DataDescription,
   task: TaskDescription,
   flow: FlowDescription,
+  run: RunDescription,
   // Add other mappings as needed
 };
 
@@ -126,6 +133,7 @@ const statistics = {
   data: dataStats,
   task: taskStats,
   flow: flowStats,
+  run: runStats,
   // Add other mappings as needed
 };
 

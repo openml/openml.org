@@ -15,11 +15,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import searchConfig from "../f/searchConfig";
-import {
-  faCreativeCommonsBy,
-  faCreativeCommonsPd,
-  faCreativeCommonsZero,
-} from "@fortawesome/free-brands-svg-icons";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -49,53 +44,31 @@ const sort_options = [
     name: "search.relevance",
     value: [],
   },
-  {
-    name: "search.most_runs",
-    value: [{ field: "runs", direction: "desc" }],
-  },
-  {
-    name: "search.most_likes",
-    value: [{ field: "nr_of_likes", direction: "desc" }],
-  },
-  {
-    name: "search.most_downloads",
-    value: [{ field: "nr_of_downloads", direction: "desc" }],
-  },
-  {
-    name: "search.most_recent",
-    value: [{ field: "date", direction: "desc" }],
-  },
 ];
 
 const search_facets = [
   {
-    label: "filters.dependencies",
-    field: "dependencies.keyword",
+    label: "filters.dataset",
+    field: "run_task.source_data.name.keyword",
+  },
+  {
+    label: "filters.tasktype",
+    field: "run_task.tasktype.name.keyword",
+  },
+  {
+    label: "filters.flow",
+    field: "run_flow.name",
   },
 ];
 
 // Controls how columns are rendered and manipulated in the table view
 const columns = [
   {
-    field: "flow_id",
-    headerName: "Flow_id",
-    valueGetter: valueGetter("data_id"),
+    field: "row_id",
+    headerName: "Row_id",
+    valueGetter: valueGetter("row_id"),
     renderCell: renderCell,
     width: 70,
-  },
-  {
-    field: "name",
-    headerName: "Name",
-    valueGetter: valueGetter("name"),
-    renderCell: renderCell,
-    width: 230,
-  },
-  {
-    field: "version",
-    headerName: "Version",
-    valueGetter: valueGetter("version"),
-    renderCell: renderCell,
-    width: 60,
   },
   {
     field: "description",
@@ -111,20 +84,6 @@ const columns = [
     renderCell: renderDate,
   },
   {
-    field: "licence",
-    headerName: "Licence",
-    valueGetter: valueGetter("licence"),
-    renderCell: renderChips(getChipProps),
-    width: 110,
-  },
-  {
-    field: "creator",
-    headerName: "Creator",
-    valueGetter: valueGetter("creator"),
-    renderCell: renderCell,
-    width: 150,
-  },
-  {
     field: "tags",
     headerName: "Tags",
     valueGetter: valueGetter("tags"),
@@ -133,7 +92,7 @@ const columns = [
   },
 ];
 
-function FlowSearchContainer() {
+function RunSearchContainer() {
   const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
 
   return (
@@ -146,10 +105,10 @@ function FlowSearchContainer() {
   );
 }
 
-FlowSearchContainer.getLayout = function getLayout(page) {
+RunSearchContainer.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-FlowSearchContainer.displayName = "FlowSearchContainer";
+RunSearchContainer.displayName = "RunSearchContainer";
 
-export default FlowSearchContainer;
+export default RunSearchContainer;
