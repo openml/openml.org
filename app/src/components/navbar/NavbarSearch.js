@@ -6,8 +6,8 @@ import { darken } from "polished";
 import { useTranslation } from "next-i18next";
 import dataSearchConfig from "../../pages/d/searchConfig";
 import taskSearchConfig from "../../pages/t/searchConfig";
-import flowSearchConfig from "../../pages/d/searchConfig"; // TODO: update when flow config is created
-import runSearchConfig from "../../pages/d/searchConfig"; // TODO: update when run config is created
+import flowSearchConfig from "../../pages/f/searchConfig";
+import runSearchConfig from "../../pages/r/searchConfig";
 import collectionSearchConfig from "../../pages/d/searchConfig"; // TODO: update when collection config is created
 import benchmarkSearchConfig from "../../pages/d/searchConfig"; // TODO: update when benchmark config is created
 import measureSearchConfig from "../../pages/d/searchConfig"; // TODO: update when measure config is created

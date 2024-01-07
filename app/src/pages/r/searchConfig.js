@@ -18,6 +18,7 @@ const searchConfig = {
       run_task: { raw: {} },
       run_flow: { raw: {} },
       evaluations: { raw: {} },
+      date: { raw: {} },
     },
     disjunctiveFacets: [
       "run_task.source_data.name",

@@ -12,7 +12,7 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {result.run_flow.raw.name} on {result.run_task.source_data.raw.name} by{" "}
+        {result.run_flow.raw.name} on {result.run_task.raw.source_data.name} by{" "}
         {result.uploader.raw}
       </Box>
     </React.Fragment>
@@ -40,11 +40,11 @@ export const Description = ({ result }) => {
   if (result.run_flow) {
     description += `Evaluates \`${result.run_flow.raw.name}\` `;
   }
-  if (result.run_task.source_data) {
-    description += `on dataset \`${result.run_task.source_data.raw.name}\`. `;
+  if (result.run_task) {
+    description += `on dataset \`${result.run_task.raw.source_data.name}\`. `;
   }
   if (result.uploader) {
-    description += `Ran by \`${result.uploader.raw}\`. `;
+    description += `Ran by ${result.uploader.raw}. `;
   }
   return <Teaser description={description} limit={3} />;
 };

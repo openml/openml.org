@@ -14,7 +14,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import searchConfig from "../f/searchConfig";
+import searchConfig from "./searchConfig";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -40,6 +40,10 @@ const getChipProps = (value) => {
 };
 
 const sort_options = [
+  {
+    name: "search.most_recent",
+    value: [{ field: "date", direction: "desc" }],
+  },
   {
     name: "search.relevance",
     value: [],

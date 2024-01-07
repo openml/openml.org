@@ -14,7 +14,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import searchConfig from "../f/searchConfig";
+import searchConfig from "./searchConfig";
 import {
   faCreativeCommonsBy,
   faCreativeCommonsPd,
