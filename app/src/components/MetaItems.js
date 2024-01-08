@@ -1,5 +1,24 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faClosedCaptioning,
+  faCloud,
+  faCodeBranch,
+  faCogs,
+  faDatabase,
+  faExclamationTriangle,
+  faEye,
+  faFlag,
+  faHeart,
+  faIdBadge,
+  faStar,
+  faTable,
+  faThumbsDown,
+  faTimes,
+  faTrophy,
+  faWrench,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { Avatar, Tooltip, Chip } from "@mui/material";
 export class MetaTag extends React.Component {
@@ -9,72 +28,72 @@ export class MetaTag extends React.Component {
     let suffix = "";
     switch (this.props.type) {
       case "format":
-        icon = "table";
+        icon = faTable;
         break;
       case "version":
-        icon = "code-branch";
+        icon = faCodeBranch;
         break;
       case "licence":
-        icon = "closed-captioning";
+        icon = faClosedCaptioning;
         break;
       case "visibility":
-        icon = "eye";
+        icon = faEye;
         break;
       case "task-type":
-        icon = "flag";
+        icon = faFlag;
         break;
       case "dataset":
-        icon = "database";
+        icon = faDatabase;
         break;
       case "likes":
-        icon = "heart";
+        icon = faHeart;
         break;
       case "downloads":
-        icon = "cloud";
+        icon = faCloud;
         suffix = " downloads";
         break;
       case "issues":
-        icon = "exclamation-triangle";
+        icon = faExclamationTriangle;
         break;
       case "downvotes":
-        icon = "thumbs-down";
+        icon = faThumbsDown;
         break;
       case "runs":
-        icon = "star";
+        icon = faStar;
         suffix = " runs";
         break;
       case "task":
-        icon = "trophy";
+        icon = faTrophy;
         prefix = "Task ";
         break;
       case "tasks":
-        icon = "trophy";
+        icon = faTrophy;
         suffix = " tasks";
         break;
       case "data":
-        icon = "database";
+        icon = faDatabase;
         suffix = " datasets";
         break;
       case "flows":
-        icon = "cogs";
+        icon = faCogs;
         suffix = " flows";
         break;
       case "status":
         icon =
           this.props.value === "verified"
-            ? "check-circle"
+            ? faCheckCircle
             : this.props.value === "deactivated"
-            ? "times"
-            : "wrench";
+            ? faTimes
+            : faWrench;
         break;
       case "id":
-        icon = "id-badge";
+        icon = faIdBadge;
         break;
       case "uploaded":
         let uploadedDate =
           this.props.date !== undefined ? (
             <span>
-              <FontAwesomeIcon icon={"clock"} /> {this.props.date}{" "}
+              <FontAwesomeIcon icon={faClock} /> {this.props.date}{" "}
             </span>
           ) : (
             ""
@@ -103,14 +122,14 @@ export class MetaTag extends React.Component {
                 display: "inline-block",
               }}
             >
-              <FontAwesomeIcon icon={"cloud-upload-alt"} /> uploaded{" "}
+              <FontAwesomeIcon icon={faCloudUploadAlt} /> uploaded{" "}
               {uploadedDate}
               {uploadedBy}
             </span>
           </Tooltip>
         );
       default:
-        icon = "question";
+        icon = faQuestion;
         break;
     }
 
