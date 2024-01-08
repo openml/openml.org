@@ -152,6 +152,7 @@ export class EvaluationDetail extends React.Component {
     if (this.props.item.array_data != null) {
       var ID = 0;
       let rows = [];
+      if(this.props.target_values){
       this.props.target_values.forEach((item, i) => {
         let val = this.props.item.array_data[i];
         rows.push(
@@ -162,7 +163,7 @@ export class EvaluationDetail extends React.Component {
             <td key={ID++}>{val}</td>
           </tr>
         );
-      });
+      });}
       classWiseEval = (
         <table width={"100%"}>
           <tbody>{rows}</tbody>
@@ -274,7 +275,7 @@ export class EntryDetails extends React.Component {
         var tags = undefined;
         if (this.state.obj.tags) {
           tags = this.state.obj.tags.map(t => (
-            t.tag.startsWith("study") ? "" :
+            t.tag.toString().startsWith("study") ? "" :
               <TagChip key={"tag_" + t.tag} label={"  " + t.tag + "  "} size="small" onClick={() => this.updateTag(t.tag)}/>
           ));
         }

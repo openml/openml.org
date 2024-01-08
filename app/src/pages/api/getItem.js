@@ -30,7 +30,11 @@ export function errorCheck(response) {
 }
 
 export function getItem(type, itemId) {
-  return fetch(ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId, {
+  console.log(
+    "Fetching",
+    ELASTICSEARCH_SERVER + type + "/" + type + "/" + itemId,
+  );
+  return fetch(ELASTICSEARCH_SERVER + type + "/" + type + "/" + itemId, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

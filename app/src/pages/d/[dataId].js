@@ -29,13 +29,13 @@ function Dataset() {
   const router = useRouter();
   const dataId = router.query.dataId;
   const item = getItem("data", dataId);
-  console.log(item);
 
   return (
     <React.Fragment>
       <Helmet title="OpenML Datasets" />
       <Typography variant="h3" gutterBottom>
         Dataset {dataId}
+        {item}
       </Typography>
     </React.Fragment>
   );
