@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { Typography } from "@mui/material";
 
 import DashboardLayout from "../../layouts/Dashboard";
+import { getItem } from "../api/getItem";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -27,6 +28,9 @@ export async function getStaticProps({ params, locale }) {
 function Dataset() {
   const router = useRouter();
   const dataId = router.query.dataId;
+  const item = getItem("data", dataId);
+  console.log(item);
+
   return (
     <React.Fragment>
       <Helmet title="OpenML Datasets" />
