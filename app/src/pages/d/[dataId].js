@@ -6,16 +6,11 @@ import { Typography } from "@mui/material";
 
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
-// import { promises as fs } from 'fs';
-import styled from "styled-components";
-import {
-  Grid,
-  IconButton,
-  Tooltip
-} from "@mui/material";
-import { Icon } from '@iconify/react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import styled from "@emotion/styled";
+import { Grid, IconButton, Tooltip } from "@mui/material";
+import { Icon } from "@iconify/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -60,7 +55,7 @@ const CroissantComponent = ({ url }) => {
         // Handle fetch errors
         setJsonData({
           error: true,
-          message: error.message || 'Error fetching JSON.',
+          message: error.message || "Error fetching JSON.",
         });
       }
     };
@@ -69,9 +64,7 @@ const CroissantComponent = ({ url }) => {
   }, [url]);
   return (
     <Helmet>
-      <script type="application/ld+json">
-        {JSON.stringify(jsonData)}
-      </script>
+      <script type="application/ld+json">{JSON.stringify(jsonData)}</script>
     </Helmet>
   );
 };
@@ -79,7 +72,7 @@ const CroissantComponent = ({ url }) => {
 export async function getStaticProps({ params, locale }) {
   // Fetch necessary data for the dataset page using params.dataId
   const data = await getItem("data", params.dataId);
-  console.log("this is response")
+  console.log("this is response");
   // console.log(data)
   // const data = await response.json();
   // const data = response
@@ -117,14 +110,23 @@ export async function getStaticProps({ params, locale }) {
 function Dataset({ data }) {
   const router = useRouter();
   const dataId = router.query.dataId;
-  console.log(data["data_id"])
+  console.log(data["data_id"]);
 
   const qualityTableColumns = ["", "Quality Name", "Value"];
   const did = data.data_id;
   const did_padded = did.toString().padStart(4, "0");
   const bucket_url = "https://openml1.win.tue.nl/datasets/";
-  const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
-  const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
+  const bucket_bracket = Math.floor(did / 10000)
+    .toString()
+    .padStart(4, "0");
+  const croissant_url =
+    bucket_url +
+    bucket_bracket +
+    "/" +
+    did_padded +
+    "/dataset_" +
+    did +
+    "_croissant.json";
 
   return (
     <React.Fragment>
@@ -178,7 +180,6 @@ function Dataset({ data }) {
       <Helmet title="OpenML Datasets" />
       <Typography variant="h3" gutterBottom>
         Dataset {dataId}
-        {item}
       </Typography>
     </React.Fragment>
   );
