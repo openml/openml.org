@@ -178,6 +178,7 @@ function Dataset({ data }) {
       <Helmet title="OpenML Datasets" />
       <Typography variant="h3" gutterBottom>
         Dataset {dataId}
+        {item}
       </Typography>
     </React.Fragment>
   );
