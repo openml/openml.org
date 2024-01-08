@@ -12,6 +12,7 @@ import {
   Tab,
   Tabs,
   Card,
+  LinearProgress,
 } from "@mui/material";
 
 import { TabContext, TabPanel } from "@mui/lab";
@@ -206,6 +207,9 @@ const SearchContainer = memo(
 
     return (
       <SearchProvider config={config}>
+        <WithSearch mapContextToProps={({ isLoading }) => ({ isLoading })}>
+          {({ isLoading }) => (isLoading ? <LinearProgress /> : null)}
+        </WithSearch>
         {false && <TagFilter />}
         <TabContext value={filter}>
           <FilterBox xs={12} variant="outlined">
