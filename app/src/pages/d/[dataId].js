@@ -6,22 +6,42 @@ import { Typography } from "@mui/material";
 
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
+import Wrapper from "../../components/Wrapper";
 
 import styled from "@emotion/styled";
-import { Avatar, Card, CardContent, Chip, Grid, IconButton, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import { Icon } from "@iconify/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { faClock, faCloudDownloadAlt, faCode, faDatabase, faFileAlt, faTags } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faCloudDownloadAlt,
+  faCode,
+  faDatabase,
+  faFileAlt,
+  faTags,
+} from "@fortawesome/free-solid-svg-icons";
 
-import { MetaTag } from "../../components/MetaItems"
+import { MetaTag } from "../../components/MetaItems";
 import ReactMarkdown from "react-markdown";
 
-
 import { CollapsibleDataTable } from "../api/sizeLimiter";
-import { FeatureDetail, QualityDetail, updateTag, TagChip } from "../api/itemDetail";
+import {
+  FeatureDetail,
+  QualityDetail,
+  updateTag,
+  TagChip,
+} from "../api/itemDetail";
 export async function getStaticPaths() {
   // No paths are pre-rendered
   return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
@@ -42,8 +62,6 @@ const Action = styled.div`
 const UserChip = styled(Chip)`
   margin-bottom: 5px;
 `;
-
-
 
 const CroissantComponent = ({ url }) => {
   const [jsonData, setJsonData] = useState({});
@@ -115,7 +133,7 @@ function Dataset({ data }) {
     "",
     "Feature Name",
     "Type",
-    "Distinct/Missing Values"
+    "Distinct/Missing Values",
   ];
   const qualityTableColumns = ["", "Quality Name", "Value"];
   const did = data.data_id;
@@ -134,13 +152,17 @@ function Dataset({ data }) {
     "_croissant.json";
 
   return (
-    <React.Fragment>
+    <Wrapper>
       {/* Download buttons */}
       <CroissantComponent url={croissant_url} />
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <React.Fragment>
-            <Tooltip title="Download Croissant description" placement="bottom-start" suppressHydrationWarning>
+            <Tooltip
+              title="Download Croissant description"
+              placement="bottom-start"
+              suppressHydrationWarning
+            >
               <ActionButton color="primary" href={croissant_url}>
                 <Action>
                   <Icon icon="fluent-emoji-high-contrast:croissant" />
@@ -149,7 +171,10 @@ function Dataset({ data }) {
               </ActionButton>
             </Tooltip>
             <Tooltip title="Download XML description" placement="bottom-start">
-              <ActionButton color="primary" href={"https://www.openml.org/api/v1/data/" + data.data_id}>
+              <ActionButton
+                color="primary"
+                href={"https://www.openml.org/api/v1/data/" + data.data_id}
+              >
                 <Action>
                   <FontAwesomeIcon icon={faCode} />
                   <Typography>xml</Typography>
@@ -157,7 +182,10 @@ function Dataset({ data }) {
               </ActionButton>
             </Tooltip>
             <Tooltip title="Download JSON description" placement="bottom-start">
-              <ActionButton color="primary" href={"https://www.openml.org/api/v1/json/data/" + data.data_id}>
+              <ActionButton
+                color="primary"
+                href={"https://www.openml.org/api/v1/json/data/" + data.data_id}
+              >
                 <Action>
                   <FontAwesomeIcon icon={faFileAlt} />
                   <Typography>json</Typography>
@@ -181,7 +209,7 @@ function Dataset({ data }) {
               </ActionButton>
             </Tooltip> */}
           </React.Fragment>
-            {/* Metadata */}
+          {/* Metadata */}
           <Grid container>
             <Grid item md={12}>
               <Typography variant="h1" style={{ marginBottom: "15px" }}>
@@ -191,138 +219,174 @@ function Dataset({ data }) {
             </Grid>
             <Grid item md={12}>
               <Grid container display="flex" spacing={2}>
-                <Grid item><MetaTag type={"id"} value={"ID: " + data.data_id} /></Grid>
-                <Grid item><MetaTag type={"status"} value={data.status === 'active' ? 'verified' : data.status}
-                  color={data.status === 'active' ? 'green' : (data.status === 'deactivated' ? 'red' : 'orange')} /></Grid>
-                <Grid item><MetaTag type={"format"} value={data.format} /></Grid>
-                <Grid item><MetaTag type={"licence"} value={data.licence} /></Grid>
-                <Grid item><FontAwesomeIcon icon={faClock} />{" "}
-                  {data.date.split(" ")[0]}</Grid>
-                <Grid item><MetaTag type={"version"} value={'v.' + data.version} /></Grid>
-                <Grid item style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                <Grid item>
+                  <MetaTag type={"id"} value={"ID: " + data.data_id} />
+                </Grid>
+                <Grid item>
+                  <MetaTag
+                    type={"status"}
+                    value={data.status === "active" ? "verified" : data.status}
+                    color={
+                      data.status === "active"
+                        ? "green"
+                        : data.status === "deactivated"
+                        ? "red"
+                        : "orange"
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <MetaTag type={"format"} value={data.format} />
+                </Grid>
+                <Grid item>
+                  <MetaTag type={"licence"} value={data.licence} />
+                </Grid>
+                <Grid item>
+                  <FontAwesomeIcon icon={faClock} /> {data.date.split(" ")[0]}
+                </Grid>
+                <Grid item>
+                  <MetaTag type={"version"} value={"v." + data.version} />
+                </Grid>
+                <Grid
+                  item
+                  style={{
+                    flexGrow: 1,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
                   <UserChip
                     size="small"
                     color="primary"
                     label="Version history"
                     avatar={
-                      <Avatar><FontAwesomeIcon icon={faClock} /></Avatar>
+                      <Avatar>
+                        <FontAwesomeIcon icon={faClock} />
+                      </Avatar>
                     }
-                    href={"search?type=data&sort=version&status=any&order=asc&exact_name=" + data.name}
+                    href={
+                      "search?type=data&sort=version&status=any&order=asc&exact_name=" +
+                      data.name
+                    }
                     component="a"
                     clickable
-                  /></Grid>
+                  />
+                </Grid>
               </Grid>
 
               <Grid container display="flex" spacing={2}>
-                <Grid item><UserChip
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  avatar={
-                    <Avatar>{data.uploader ? data.uploader.charAt(0) : "X"}</Avatar>
-                  }
-                  label={data.uploader}
-                  href={"search?type=user&id=" + data.uploader_id}
-                  component="a"
-                  clickable
-                /></Grid>
-                <Grid item><MetaTag type={"likes"} value={data.nr_of_likes + " likes"} /></Grid>
-                <Grid item><MetaTag
-                  type={"issues"}
-                  value={data.nr_of_issues + " issues"}
-                /></Grid>
-                <Grid item><MetaTag
-                  type={"downloads"}
-                  value={data.nr_of_downloads}
-                /></Grid>
+                <Grid item>
+                  <UserChip
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    avatar={
+                      <Avatar>
+                        {data.uploader ? data.uploader.charAt(0) : "X"}
+                      </Avatar>
+                    }
+                    label={data.uploader}
+                    href={"search?type=user&id=" + data.uploader_id}
+                    component="a"
+                    clickable
+                  />
+                </Grid>
+                <Grid item>
+                  <MetaTag type={"likes"} value={data.nr_of_likes + " likes"} />
+                </Grid>
+                <Grid item>
+                  <MetaTag
+                    type={"issues"}
+                    value={data.nr_of_issues + " issues"}
+                  />
+                </Grid>
+                <Grid item>
+                  <MetaTag type={"downloads"} value={data.nr_of_downloads} />
+                </Grid>
               </Grid>
-
             </Grid>
-
-
           </Grid>
-            
-            {/* Tags */}
+
+          {/* Tags */}
           <Grid container>
-              <Grid item md={12}>
-                <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag.toString().startsWith("study") ? "" :
-                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />
-
-                
-          )}
-
-
-              </Grid>
+            <Grid item md={12}>
+              <FontAwesomeIcon icon={faTags} />{" "}
+              {data.tags.map((element) =>
+                element.tag.toString().startsWith("study") ? (
+                  ""
+                ) : (
+                  <TagChip
+                    key={"tag_" + element.tag}
+                    label={"  " + element.tag + "  "}
+                    size="small"
+                    onClick={() => updateTag(element.tag)}
+                  />
+                ),
+              )}
             </Grid>
-
+          </Grid>
         </Grid>
         {/* Description */}
         <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h4" mb={6}>
-                  Description
-                </Typography>
-                <div className="contentSection">
-                  <ReactMarkdown children={data.description} />
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
+          <Card>
+            <CardContent>
+              <Typography variant="h4" mb={6}>
+                Description
+              </Typography>
+              <div className="contentSection">
+                <ReactMarkdown>{data.description}</ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
 
         {/* Features */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <CollapsibleDataTable
-                  title={data.features.length + " Features"}
-                  columns={featureTableColumns}
-                  data={data.features}
-                  rowrenderer={m => (
-                    <FeatureDetail
-                      key={"fd_" + m.name}
-                      item={m}
-                      type={m.type}
-                    ></FeatureDetail>
-                  )}
-                  maxLength={7}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-          
-          {/* Qualities */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <CollapsibleDataTable
-                  title={
-                    Object.keys(data.qualities).length +
-                    " Qualities"
-                  }
-                  data={Object.keys(data.qualities)}
-                  rowrenderer={m => (
-                    <QualityDetail
-                      key={"q_" + m}
-                      item={{ name: m, value: data.qualities[m] }}
-                    />
-                  )}
-                  columns={qualityTableColumns}
-                  maxLength={7}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <CollapsibleDataTable
+                title={data.features.length + " Features"}
+                columns={featureTableColumns}
+                data={data.features}
+                rowrenderer={(m) => (
+                  <FeatureDetail
+                    key={"fd_" + m.name}
+                    item={m}
+                    type={m.type}
+                  ></FeatureDetail>
+                )}
+                maxLength={7}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Qualities */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <CollapsibleDataTable
+                title={Object.keys(data.qualities).length + " Qualities"}
+                data={Object.keys(data.qualities)}
+                rowrenderer={(m) => (
+                  <QualityDetail
+                    key={"q_" + m}
+                    item={{ name: m, value: data.qualities[m] }}
+                  />
+                )}
+                columns={qualityTableColumns}
+                maxLength={7}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
-
-
-
 
       <Helmet title="OpenML Datasets" />
       <Typography variant="h3" gutterBottom>
         Dataset {dataId}
       </Typography>
-    </React.Fragment>
+    </Wrapper>
   );
 }
 
