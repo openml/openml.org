@@ -152,8 +152,9 @@ function Dataset({ data }) {
     "_croissant.json";
 
   return (
-    <Helmet title="OpenML Datasets" />
     <Wrapper>
+      <Helmet title="OpenML Datasets" />
+
       {/* Download buttons */}
       <CroissantComponent url={croissant_url} />
       <Grid container spacing={6}>
