@@ -21,6 +21,7 @@ const SidebarNavSection = (props) => {
     title,
     pages,
     className,
+    count,
     component: Component = "nav",
     ...rest
   } = props;
@@ -34,7 +35,7 @@ const SidebarNavSection = (props) => {
   return (
     <Component {...rest}>
       {title && <Title variant="subtitle2">{t(title)}</Title>}
-      <SidebarNavList pages={pages} depth={0} />
+      <SidebarNavList pages={pages} depth={0} count={count} />
     </Component>
   );
 };

@@ -2,22 +2,22 @@ const openmlSection = [
   {
     href: "/d/search",
     title: "sidebar.datasets",
-    badge: "100",
+    index: "data",
   },
   {
     href: "/t/search",
     title: "sidebar.tasks",
-    badge: "100",
+    index: "task",
   },
   {
     href: "/f/search",
     title: "sidebar.flows",
-    badge: "100",
+    index: "flow",
   },
   {
     href: "/r/search",
     title: "sidebar.runs",
-    badge: "100",
+    index: "run",
   },
   {
     href: "/collections",
@@ -26,12 +26,12 @@ const openmlSection = [
       {
         href: "/collections/tasks/search",
         title: "sidebar.tasks",
-        badge: "100",
+        index: "study",
       },
       {
         href: "/collections/runs/search",
         title: "sidebar.runs",
-        badge: "100",
+        index: "study",
       },
     ],
   },
@@ -42,12 +42,12 @@ const openmlSection = [
       {
         href: "/benchmarks/tasks/search",
         title: "sidebar.task_suites",
-        badge: "100",
+        index: "study",
       },
       {
         href: "/benchmarks/runs/search",
         title: "sidebar.run_studies",
-        badge: "100",
+        index: "study",
       },
     ],
   },
@@ -58,17 +58,17 @@ const openmlSection = [
       {
         href: "/measures/data/search",
         title: "sidebar.data_qualities",
-        badge: "100",
+        index: "measure",
       },
       {
         href: "/measures/evaluation/search",
         title: "sidebar.model_evaluations",
-        badge: "100",
+        index: "measure",
       },
       {
         href: "/measures/procedures/search",
         title: "sidebar.test_procedures",
-        badge: "100",
+        index: "measure",
       },
     ],
   },

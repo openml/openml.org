@@ -2,9 +2,10 @@ import React from "react";
 
 import SidebarNavListItem from "./SidebarNavListItem";
 import SidebarNavList from "./SidebarNavList";
+import { abbreviateNumber } from "../../utils/helpers";
 
 const reduceChildRoutes = (props) => {
-  const { items, page, depth, currentRoute } = props;
+  const { items, page, depth, currentRoute, count } = props;
 
   if (page.children) {
     const open = currentRoute.includes(page.href);
@@ -14,7 +15,7 @@ const reduceChildRoutes = (props) => {
         depth={depth}
         color={page.color}
         key={page.title}
-        badge={page.badge}
+        badge={count ? abbreviateNumber(count[page.index]) : ""}
         open={!!open}
         title={page.title}
         href={page.href}
@@ -29,7 +30,7 @@ const reduceChildRoutes = (props) => {
         href={page.href}
         color={page.color}
         key={page.title}
-        badge={page.badge}
+        badge={count ? abbreviateNumber(count[page.index]) : ""}
         title={page.title}
       />,
     );
