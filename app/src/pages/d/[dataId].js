@@ -152,6 +152,7 @@ function Dataset({ data }) {
     "_croissant.json";
 
   return (
+    <Helmet title="OpenML Datasets" />
     <Wrapper>
       {/* Download buttons */}
       <CroissantComponent url={croissant_url} />
@@ -381,11 +382,6 @@ function Dataset({ data }) {
           </Card>
         </Grid>
       </Grid>
-
-      <Helmet title="OpenML Datasets" />
-      <Typography variant="h3" gutterBottom>
-        Dataset {dataId}
-      </Typography>
     </Wrapper>
   );
 }
