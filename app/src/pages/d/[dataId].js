@@ -72,18 +72,6 @@ const CroissantComponent = ({ url }) => {
 export async function getStaticProps({ params, locale }) {
   // Fetch necessary data for the dataset page using params.dataId
   const data = await getItem("data", params.dataId);
-  console.log("this is response");
-  // console.log(data)
-  // const data = await response.json();
-  // const data = response
-
-  // const response = await fetch("https://es.openml.org/data/data/1");
-  // const data = await response.json();
-
-  // console.log(data);
-  // const file = await fs.readFile('C:/Users/nemeth/Downloads/data1.json');
-
-  // const data = JSON.parse(file);
 
   return {
     props: {

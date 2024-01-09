@@ -7,13 +7,14 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import Teaser from "../../components/search/Teaser";
+import { shortenName } from "../f/flowCard";
 
 export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {result.run_flow.raw.name} on {result.run_task.raw.source_data.name} by{" "}
-        {result.uploader.raw}
+        {shortenName(result.run_flow.raw.name)} on{" "}
+        {result.run_task.raw.source_data.name} by {result.uploader.raw}
       </Box>
     </React.Fragment>
   );
