@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import {
   Grid,
   Pagination,
@@ -18,6 +18,8 @@ import {
 import { TabContext, TabPanel } from "@mui/lab";
 
 import ResultCard from "./ResultCard";
+import Sort from "./Sort";
+
 import styled from "@emotion/styled";
 
 import {
@@ -27,7 +29,6 @@ import {
   ResultsPerPage,
   Paging,
   PagingInfo,
-  Sorting,
   WithSearch,
 } from "@elastic/react-search-ui";
 
@@ -84,35 +85,6 @@ const HiddenTab = styled(Tab)`
   min-height: 0px;
   visibility: hidden;
 `;
-
-const SortView = ({ label, options, value, onChange }) => {
-  if (value === "|||") {
-    value = "[]";
-  }
-  return (
-    <Box>
-      <FormControl fullWidth>
-        <InputLabel variant="standard" htmlFor="uncontrolled-native">
-          {i18n.t("search.sort_by")}
-        </InputLabel>
-        <NativeSelect
-          value={value}
-          onChange={(o) => onChange(o.nativeEvent.target.value)}
-          inputProps={{
-            name: "sort",
-            id: "uncontrolled-native",
-          }}
-        >
-          {options.map((option) => (
-            <option key={option.label} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </NativeSelect>
-      </FormControl>
-    </Box>
-  );
-};
 
 const ResultsPerPageView = ({ options, value, onChange }) => (
   <Box minWidth={80}>
@@ -182,9 +154,9 @@ const PagingView = ({ current, totalPages, onChange }) => (
 // This is the Search UI component. The config contains the search state and actions.
 const SearchContainer = memo(
   ({ config, sort_options, search_facets, columns }) => {
-    const [filter, setFilter] = React.useState("hide");
+    // For showing and hiding search filters
+    const [filter, setFilter] = useState("hide");
     const handleFilterChange = (event, newFilter) => {
-      console.log(filter, newFilter);
       if (newFilter === filter) {
         setFilter("hide");
       } else {
@@ -192,18 +164,13 @@ const SearchContainer = memo(
       }
     };
 
-    const [view, setView] = React.useState("list");
+    // For switch between list and table view
+    const [view, setView] = useState("list");
     const handleViewChange = (event, newView) => {
       if (newView !== null) {
         setView(newView);
       }
     };
-
-    //Translate here because we're using the default Sorting conponent
-    const translated_sort_options = sort_options.map((option) => ({
-      ...option,
-      name: i18n.t(option.name),
-    }));
 
     return (
       <SearchProvider config={config}>
@@ -262,11 +229,7 @@ const SearchContainer = memo(
                     justifyContent: "flex-end",
                   }}
                 >
-                  <Sorting
-                    label="Sort by"
-                    sortOptions={translated_sort_options}
-                    view={SortView}
-                  />
+                  <Sort sortOptions={sort_options} />
                   <ViewToggle onChange={handleViewChange} view={view} />
                 </Box>
               </Box>

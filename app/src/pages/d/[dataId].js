@@ -100,32 +100,31 @@ const CroissantComponent = ({ url }) => {
 };
 
 export async function getStaticProps({ params, locale }) {
-  // Fetch necessary data for the dataset page using params.dataId
-  const data = await getItem("data", params.dataId);
+  try {
+    // Fetch necessary data for the dataset page using params.dataId
+    const data = await getItem("data", params.dataId);
 
-  return {
-    props: {
-      data,
-      // pass the translation props to the page component
-      ...(await serverSideTranslations(locale)),
-    },
-  };
+    return {
+      props: {
+        data,
+        error: null, // No error occurred
+        ...(await serverSideTranslations(locale)),
+      },
+    };
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+
+    return {
+      props: {
+        data: null, // No data due to error
+        error: "Server is not responding.",
+        ...(await serverSideTranslations(locale)),
+      },
+    };
+  }
 }
 
-// export async function getStaticProps({params, locale}) {
-//   // console.log(process.cwd() + '/app/data.json')
-//   const file = await fs.readFile('C:/Users/nemeth/Downloads/data1.json');
-
-//   // const data = JSON.parse(file);
-//   // console.log(data);
-//   const res = await fetch('https://es.openml.org/data/data/1')
-//   const data = await res.json()
-//   // console.log(repo)
-//   return {props: {data : data, locale: await serverSideTranslations(locale)}}//, locale: await serverSideTranslations(locale)}}
-// // ...(await serverSideTranslations(locale))}
-// }
-
-function Dataset({ data }) {
+function Dataset({ data, error }) {
   const router = useRouter();
   const dataId = router.query.dataId;
   // console.log(data["data_id"]);
@@ -151,10 +150,13 @@ function Dataset({ data }) {
     did +
     "_croissant.json";
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <Wrapper>
       <Helmet title="OpenML Datasets" />
-
       {/* Download buttons */}
       <CroissantComponent url={croissant_url} />
       <Grid container spacing={6}>
