@@ -21,7 +21,7 @@ import ReactMarkdown from "react-markdown";
 
 
 import { CollapsibleDataTable } from "../api/sizeLimiter";
-import { FeatureDetail, QualityDetail } from "../api/itemDetail";
+import { FeatureDetail, QualityDetail, updateTag, TagChip } from "../api/itemDetail";
 export async function getStaticPaths() {
   // No paths are pre-rendered
   return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
@@ -42,6 +42,8 @@ const Action = styled.div`
 const UserChip = styled(Chip)`
   margin-bottom: 5px;
 `;
+
+
 
 const CroissantComponent = ({ url }) => {
   const [jsonData, setJsonData] = useState({});
@@ -243,7 +245,13 @@ function Dataset({ data }) {
             {/* Tags */}
           <Grid container>
               <Grid item md={12}>
-                <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag)}
+                <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag.toString().startsWith("study") ? "" :
+                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />
+
+                
+          )}
+
+
               </Grid>
             </Grid>
 

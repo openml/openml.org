@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTags, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { MetaTag } from "../../components/MetaItems";
 import { CollapsibleDataTable } from "../api/sizeLimiter";
-import { EvaluationDetail, FlowDetail } from "../api/itemDetail";
+import { EvaluationDetail, FlowDetail, TagChip } from "../api/itemDetail";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -91,7 +91,11 @@ function Run({ data }) {
           </Grid>
           <Grid container>
             <Grid item md={12}>
-              <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag)}
+              <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag.toString().startsWith("study") ? "" :
+                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />
+
+                
+          )}
             </Grid>
           </Grid>
         </Grid>

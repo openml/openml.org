@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MetaTag } from "../../components/MetaItems"
 import { Table, TableBody, TableRow, TableCell, Link as MuiLink} from "@mui/material";
 import { green } from "@mui/material/colors";
-
+import { updateTag, TagChip } from "../api/itemDetail";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -74,13 +74,17 @@ function Task({ data }) {
               <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
               <MetaTag type={"downloads"} value={data.nr_of_downloads} />
               <MetaTag type={"runs"} value={data.runs} />
-              {/* {" "}by{" "} <Grid item md={2} ><MetaDownvotes value={data.downvotes} /></Grid> */}
             </Grid>
           </Grid>
-          {data.tags[0] !== undefined && data.tags[0].length > 0 && (
+          {data.tags[0]?.tag !== undefined && data.tags[0].tag.length > 0 && (
             <Grid container>
-              <Grid item md={12}><FontAwesomeIcon icon={faTags} />{" "}{data.tags}</Grid>
-            </Grid>)}
+              <Grid item md={12}>
+                <FontAwesomeIcon icon={faTags} />
+                {data.tags.map(element => element.tag.toString().startsWith("study") ? "" : 
+                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />)}
+              </Grid>              
+            </Grid>
+            )} 
         </Grid>
 
         <Grid item xs={12}>

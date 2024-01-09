@@ -8,7 +8,7 @@ import DashboardLayout from "../../layouts/Dashboard";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getItem } from "../api/getItem";
 import { shortenName } from "./flowCard";
-import { ParameterDetail, DependencyDetail, LightTooltip } from "../api/itemDetail";
+import { ParameterDetail, DependencyDetail, LightTooltip, TagChip } from "../api/itemDetail";
 
 import { Card, CardContent, Grid } from "@mui/material";
 import { MetaTag } from "../../components/MetaItems"
@@ -93,7 +93,11 @@ function Flow({ data }) {
 
           <Grid container>
               <Grid item md={12}>
-                <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag)}
+                <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag.toString().startsWith("study") ? "" :
+                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />
+
+                
+          )}
               </Grid>
             </Grid>
           
