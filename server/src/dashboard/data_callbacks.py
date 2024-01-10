@@ -1,15 +1,10 @@
 import re
 
-import dash_core_components as dcc
-import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.express as px
-
-# from plotly.subplots import make_subplots
-
 import plotly.graph_objs as go
-
+from dash import dcc, html
 from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 

@@ -27,7 +27,7 @@ function Public() {
     function feedbacktoflask(event) {
         event.preventDefault();
         axios
-            .post(process.env.REACT_APP_SERVER_URL + "feedback", {
+            .post(process.env.REACT_APP_URL_SITE_BACKEND + "feedback", {
                 email: event.target.email.value,
                 feedback: event.target.feedback.value,
             })

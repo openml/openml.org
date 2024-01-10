@@ -51,7 +51,7 @@ function SignUp() {
       setErrorMessage("Please enter valid email");
     } else {
       axios
-        .post(process.env.REACT_APP_SERVER_URL + "signup", {
+        .post(process.env.REACT_APP_URL_SITE_BACKEND + "signup", {
           first_name: event.target.fname.value,
           last_name: event.target.lname.value,
           email: event.target.email.value,

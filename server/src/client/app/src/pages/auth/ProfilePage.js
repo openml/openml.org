@@ -46,6 +46,8 @@ const RedMenuIcon = styled(FontAwesomeIcon)({
   color: red[400]
 });
 
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+
 function Public() {
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
@@ -66,7 +68,7 @@ function Public() {
     };
 
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+      .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
       .then(function(response) {
         console.log(response);
         setImage(response.data.image);
@@ -76,7 +78,7 @@ function Public() {
         setLname(response.data.last_name);
         setId(response.data.id);
         if (id !== false) {
-          fetch("https://openml.org/es/user/user/" + id.toString())
+          fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString())
             .then(response => response.json())
             .then(data => {
               setDataset(data._source.datasets_uploaded);

@@ -42,7 +42,7 @@ function Public() {
 
     axios
       .post(
-        process.env.REACT_APP_SERVER_URL + "upload-collection-runs",
+        process.env.REACT_APP_URL_SITE_BACKEND + "upload-collection-runs",
         {
           description: event.target.description.value,
           collectionname: event.target.collectionname.value,

@@ -372,7 +372,7 @@ class UserMenu extends Component {
                   };
                   axios
                     .post(
-                      process.env.REACT_APP_SERVER_URL + "logout",
+                      process.env.REACT_APP_URL_SITE_BACKEND + "logout",
                       {
                         logout: "true"
                       },

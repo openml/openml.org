@@ -1,10 +1,8 @@
 import shutil
-from pathlib import Path
 
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import openml
+from dash import dcc, html
 from flask_caching import Cache
 
 from .caching import CACHE_DIR_ROOT, CACHE_DIR_FLASK, CACHE_DIR_DASHBOARD

@@ -1,19 +1,17 @@
 import re
 
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table as dt
 import pandas as pd
 import plotly.graph_objs as go
-
+from dash import dash_table as dt
+from dash import dcc, html
 from dash.dependencies import Input, Output
-
 from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
 
 from .caching import CACHE_DIR_DASHBOARD
-from .helpers import get_highest_rank
 from .dash_config import DASH_CACHING
+from .helpers import get_highest_rank
+from ...setup import SERVER_BASE_URL
 
 font = [
     "Nunito Sans",
@@ -65,7 +63,7 @@ def register_task_callbacks(app, cache):
         if pathname is not None and "/dashboard/task" in pathname:
             task_id = int(re.search(r"task/(\d+)", pathname).group(1))
         else:
-            return html.Div(), html.Div()
+            return html.Div(), html.Div(), html.Div()
 
         if n_clicks is None:
             n_clicks = 0
@@ -86,9 +84,9 @@ def register_task_callbacks(app, cache):
         )
 
         if df_new.empty and df_old.empty:
-            return html.Div(), html.Div()
-        else:
-            df = df_old.append(df_new)
+            return html.Div(), html.Div(), html.Div()
+
+        df = pd.concat([df_old, df_new], ignore_index=True)
 
         df.to_pickle(filename_cache)
         run_link = []
@@ -96,11 +94,11 @@ def register_task_callbacks(app, cache):
         truncated = []
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
-            link = '<a href="https://www.openml.org/r/' + str(run_id) + '/"> '
+            link = f'<a href="{SERVER_BASE_URL}/r/{run_id}/">'
             run_link.append(link)
         # Plotly hack to link flow names
         for flow_id in df["flow_id"].values:
-            link = '<a href="https://www.openml.org/f/' + str(flow_id) + '/">'
+            link = f'<a href="{SERVER_BASE_URL}/f/{flow_id}/">'
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df["flow_name"].values:
@@ -244,6 +242,7 @@ def register_task_callbacks(app, cache):
         )
         dummy_fig = html.Div(dcc.Graph(figure=fig), style={"display": "none"})
         eval_div = html.Div(dcc.Graph(figure=fig))
+
         return (
             dummy_fig,
             eval_div,

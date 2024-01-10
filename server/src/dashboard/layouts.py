@@ -1,9 +1,7 @@
-import os
 from typing import List, Tuple
 
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table as dt
+from dash import dash_table as dt
+from dash import dcc, html
 from openml import datasets, evaluations, runs, setups, study
 
 from .caching import CACHE_DIR_DASHBOARD
@@ -285,7 +283,6 @@ def get_layout_from_task(task_id):
         className="container",
         # style={'overflowY': 'hidden'}
     )
-
     return layout
 
 
@@ -382,7 +379,6 @@ def get_layout_from_flow(flow_id):
         ],
         className="container",
     )
-
     return layout
 
 

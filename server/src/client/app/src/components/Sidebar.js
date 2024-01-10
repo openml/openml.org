@@ -170,6 +170,10 @@ const SidebarFooter = styled.div`
   overflow: hidden;
 `;
 
+
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+const ELASTICSEARCH_VERSION_MAYOR = process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6
+
 function SidebarCategory({
   name,
   icon,
@@ -290,13 +294,19 @@ class Sidebar extends React.Component {
   axiosCancelToken = axios.CancelToken.source();
 
   countUpdate = async () => {
-    const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
 
     const data = {
       size: 0,
       query: { bool: { should: [ { term: { status: "active" } },
                                  { bool: { must_not: { exists: { field: "status" } } } } ] } },
-      aggs: { count_by_type: { terms: { field: "_type", size: 100 } } }
+      aggs: {
+        count_by_type: {
+            terms: {
+                field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type",
+                size: 100
+            }
+        }
+      }
     };
 
     const headers = {
@@ -320,15 +330,16 @@ class Sidebar extends React.Component {
       });
     
     // second query for benchmark counts
+    const study_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? "study/_search" : "study/study/_search"
     const bench_data = {
       size: 0,
       query: { bool : { filter : { bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] } }}}
     };
     axios
-      .post(ELASTICSEARCH_SERVER + "study/study/_search", bench_data, headers)
+      .post(ELASTICSEARCH_SERVER + study_url, bench_data, headers)
       .then(response => {
         let counts = this.state.counts;
-        counts["benchmark"] = response.data.hits.total;
+        counts["benchmark"] = ELASTICSEARCH_VERSION_MAYOR >= 8 ? response.data.hits.total.value : response.data.hits.total;
         this.setState({ counts: counts });
       })
       .catch(error => {

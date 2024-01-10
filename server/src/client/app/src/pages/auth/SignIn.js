@@ -40,7 +40,7 @@ function SignIn() {
   function sendtoflask(event) {
     event.preventDefault();
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "login", {
+      .post(process.env.REACT_APP_URL_SITE_BACKEND + "login", {
         email: event.target.email.value,
         password: event.target.password.value
       })

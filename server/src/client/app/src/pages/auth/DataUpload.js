@@ -125,7 +125,7 @@ function Public() {
       setError(false);
       axios
         .post(
-          process.env.REACT_APP_SERVER_URL + "data-upload",
+          process.env.REACT_APP_URL_SITE_BACKEND + "data-upload",
           data,
           yourConfig
         )
@@ -144,7 +144,7 @@ function Public() {
     if (editdata === true) {
       axios
         .post(
-          process.env.REACT_APP_SERVER_URL + "data-edit-upload",
+          process.env.REACT_APP_URL_SITE_BACKEND + "data-edit-upload",
           data,
           yourConfig
         )

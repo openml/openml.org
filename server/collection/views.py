@@ -1,10 +1,11 @@
+import uuid
+
+import openml
 from flask import Blueprint, jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from server.user.models import User
-import openml
-import uuid
-import os
+from flask_jwt_extended import jwt_required
+
+from server.setup import setup_openml_config
 
 collection_bp = Blueprint(
     "collection", __name__, static_folder="server/src/client/app/build"
@@ -13,21 +14,18 @@ collection_bp = Blueprint(
 CORS(collection_bp)
 
 
+@collection_bp.before_request
+def setup():
+    setup_openml_config()
+
+
 @collection_bp.route("/upload-collection-runs", methods=["POST"])
-@jwt_required
+@jwt_required()
 def upload_collection_runs():
     """
     Function to upload the collection_runs
     returns: JSON response
     """
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    user_api_key = user.session_hash
-    openml.config.apikey = user_api_key
-    # TODO change line below in production
-    testing = os.environ.get("TESTING")
-    if testing:
-        openml.config.start_using_configuration_for_example()
     data = request.get_json()
     collection_name = data["collectionname"]
     description = data["description"]
@@ -48,20 +46,12 @@ def upload_collection_runs():
 
 
 @collection_bp.route("/upload-collection-tasks", methods=["POST"])
-@jwt_required
+@jwt_required()
 def upload_collection_task():
     """
     Function to upload the collection_tasks
     returns: JSON response
     """
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(email=current_user).first()
-    user_api_key = user.session_hash
-    openml.config.apikey = user_api_key
-    # change line below in testing
-    testing = os.environ.get("TESTING")
-    if testing:
-        openml.config.start_using_configuration_for_example()
     data = request.get_json()
     collection_name = data["collectionname"]
     description = data["description"]

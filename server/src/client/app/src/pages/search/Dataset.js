@@ -36,6 +36,9 @@ const Action = styled.div`
   justify-content: center;
 `;
 
+const SERVER_URL = process.env.REACT_APP_URL_API || "https://www.openml.org/";
+const MINIO_URL = process.env.REACT_APP_URL_MINIO || "https://openml1.win.tue.nl/";
+
 const CroissantComponent = ({ url }) => {
   const [jsonData, setJsonData] = useState({});
 
@@ -91,7 +94,7 @@ export class DatasetItem extends React.Component {
     const qualityTableColumns = ["", "Quality Name", "Value"];
     const did = this.props.object.data_id;
     const did_padded = did.toString().padStart(4, "0");
-    const bucket_url = "https://openml1.win.tue.nl/datasets/";
+    const bucket_url = `${MINIO_URL}datasets/`;
     const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
     const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
     return (
@@ -111,7 +114,7 @@ export class DatasetItem extends React.Component {
                     </ActionButton>
                   </Tooltip>
                   <Tooltip title="Download XML description" placement="bottom-start">
-                    <ActionButton color="primary" href={"https://www.openml.org/api/v1/data/" + this.props.object.data_id}>
+                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/data/` + this.props.object.data_id}>
                       <Action>
                         <FontAwesomeIcon icon="file-code" />
                         <Typography>xml</Typography>
@@ -119,7 +122,7 @@ export class DatasetItem extends React.Component {
                     </ActionButton>
                   </Tooltip>
                   <Tooltip title="Download JSON description" placement="bottom-start">
-                    <ActionButton color="primary" href={"https://www.openml.org/api/v1/json/data/" + this.props.object.data_id}>
+                    <ActionButton color="primary" href={`${SERVER_URL}api/v1/json/data/` + this.props.object.data_id}>
                       <Action>
                         <FontAwesomeIcon icon="file-alt" />
                         <Typography>json</Typography>

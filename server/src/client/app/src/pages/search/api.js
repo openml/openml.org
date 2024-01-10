@@ -58,7 +58,8 @@ export function getProperty(obj, param) {
   }
 }
 
-const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+const ELASTICSEARCH_VERSION_MAYOR = process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6
 
 // general search
 export function search(
@@ -95,6 +96,7 @@ export function search(
       }
     };
   }
+
   let params = {
     from: from,
     size: size,
@@ -114,7 +116,7 @@ export function search(
     },
     aggs: {
       type: {
-        terms: { field: "_type" }
+        terms: { field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type" }
       }
     },
     _source: fields.filter(l => !!l)
@@ -128,9 +130,10 @@ export function search(
   }
   // uncomment for debugging the search
   //console.log("Search: " + JSON.stringify(params));
-  //return fetch(process.env.ELASTICSEARCH_SERVER + '/' + type + '/'+ type + '/_search?type=' + type,
+  //return fetch(process.env.REACT_APP_URL_ELASTICSEARCH + '/' + type + '/'+ type + '/_search?type=' + type,
+  const search_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? type + "/_search" : type + "/" + type + "/_search?type=" + type
   return fetch(
-    ELASTICSEARCH_SERVER + type + "/" + type + "/_search?type=" + type,
+    ELASTICSEARCH_SERVER + search_url,
     {
       headers: {
         Accept: "application/json",
@@ -145,7 +148,7 @@ export function search(
     .then(request => request.json())
     .then(data => {
       return {
-        counts: data["hits"]["total"],
+        counts: ELASTICSEARCH_VERSION_MAYOR >= 8 ? data["hits"]["total"]["value"] : data["hits"]["total"],
         results: data["hits"]["hits"].map(x => {
           let source = x["_source"];
           let res = {};
@@ -160,7 +163,8 @@ export function search(
 
 //get specific item
 export function getItem(type, itemId) {
-  return fetch(ELASTICSEARCH_SERVER + "/" + type + "/" + type + "/" + itemId, {
+  const search_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? type + "/_doc/" + itemId : type + "/" + type + "/" + itemId
+  return fetch(ELASTICSEARCH_SERVER + search_url, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -183,7 +187,7 @@ export function getItem(type, itemId) {
 
 // Not used?
 export function getList(itemId) {
-  return fetch(ELASTICSEARCH_SERVER + "/data/data/list/tag/" + itemId, {
+  return fetch(ELASTICSEARCH_SERVER + "data/data/list/tag/" + itemId, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"

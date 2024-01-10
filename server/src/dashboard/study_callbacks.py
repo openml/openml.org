@@ -1,11 +1,10 @@
 import re
 
-import dash_core_components as dcc
-import dash_html_components as html
 import numpy as np
 import openml
 import plotly.express as px
 import plotly.graph_objs as go
+from dash import dcc, html
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 

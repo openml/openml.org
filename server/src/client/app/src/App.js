@@ -68,7 +68,7 @@ class App extends React.Component {
           }
         };
         axios
-          .get(process.env.REACT_APP_SERVER_URL + "verifytoken", yourConfig)
+          .get(process.env.REACT_APP_URL_SITE_BACKEND + "verifytoken", yourConfig)
           .then(response => {
             if (
               response.statusText !== undefined &&
@@ -76,7 +76,7 @@ class App extends React.Component {
               !this.state.loggedIn
             ) {
               axios
-                .get(process.env.REACT_APP_SERVER_URL + "profile", yourConfig)
+                .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
                 .then(response => {
                   let img = undefined;
                   if (response.data.image.includes(path.sep)) {

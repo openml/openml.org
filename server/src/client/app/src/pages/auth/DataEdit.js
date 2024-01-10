@@ -88,7 +88,7 @@ function DataEdit() {
                     url: window.location.href,
                 },
             };
-            const response = await axios(process.env.REACT_APP_SERVER_URL + "data-edit", yourConfig);
+            const response = await axios(process.env.REACT_APP_URL_SITE_BACKEND + "data-edit", yourConfig);
 
             //setUserId(response.data.user_id);
             setName(response.data.name);
@@ -114,7 +114,7 @@ function DataEdit() {
         if (owner === true) {
             axios
                 .post(
-                    process.env.REACT_APP_SERVER_URL + "data-edit",
+                    process.env.REACT_APP_URL_SITE_BACKEND + "data-edit",
                     {
                         owner: "true",
                         description: event.target.description.value,
@@ -141,7 +141,7 @@ function DataEdit() {
         } else if (owner === false) {
             axios
                 .post(
-                    process.env.REACT_APP_SERVER_URL + "data-edit",
+                    process.env.REACT_APP_URL_SITE_BACKEND + "data-edit",
                     {
                         owner: "false",
                         description: event.target.description.value,
