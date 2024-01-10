@@ -240,7 +240,6 @@ const ResultsTable = ({ results, columns }) => {
   // Go to detail page on click
   const handleRowClick = (params) => {
     // Assuming 'id' is the field you want to use for navigation
-    console.log(params);
     const basePath = router.pathname.split("/")[1];
     const id = params.row.id;
     router.push(`/${basePath}/${id}`);

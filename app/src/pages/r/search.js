@@ -95,7 +95,6 @@ const columns = [
 
 function RunSearchContainer() {
   const combinedConfig = useNextRouting(runConfig, "<baseUrl>");
-
   return (
     <SearchContainer
       config={combinedConfig}

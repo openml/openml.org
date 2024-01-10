@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
 import { Sorting, withSearch } from "@elastic/react-search-ui";
 import {
   Box,
@@ -17,6 +18,9 @@ import {
 const SortView = ({ options, value, onChange }) => {
   if (value === "|||") {
     value = "[]";
+  } else {
+    // The Select component matches against the default setting
+    value = value.replace('"direction":"asc"', '"direction":"desc"');
   }
   return (
     <Box>
@@ -52,12 +56,13 @@ function Sort({ sortOptions, setSort, sortList }) {
         ? "desc"
         : "asc";
 
-    // Update the sort in the Search UI state
+    let newSortList = [];
     if (sortList.length > 0) {
-      sortList[0]["direction"] = newDirection;
+      newSortList = [{ field: sortList[0]["field"], direction: newDirection }];
     }
+
+    setSort(newSortList); // Update the Search UI state
     setSortDirection(newDirection); // Update the local state (for button)
-    setSort(sortList); // Update the Search UI state
   };
 
   //Translate sort options

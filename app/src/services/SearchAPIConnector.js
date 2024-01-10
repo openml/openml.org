@@ -2,7 +2,7 @@ class SearchAPIConnector {
   // Use index data by default
   constructor(indexName = "data") {
     this.indexName = indexName;
-    console.log("created connector for", indexName);
+    //console.log("created connector for", indexName);
   }
 
   onResultClick() {

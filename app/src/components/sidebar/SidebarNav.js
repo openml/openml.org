@@ -41,7 +41,6 @@ const SidebarNav = ({ items }) => {
           acc[item.index] = item.count;
           return acc;
         }, {});
-        console.log("Count fetched:", counts);
         setCount(counts);
       })
       .catch((error) => {

@@ -35,6 +35,9 @@ const searchConfig = {
       field: { name: { raw: {} } },
     },
   },
+  initialState: {
+    sortList: [{ field: "date", direction: "desc" }],
+  },
   autocompleteQuery: {
     results: {
       resultsPerPage: 100,

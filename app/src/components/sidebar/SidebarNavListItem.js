@@ -99,7 +99,10 @@ const SidebarNavListItem = (props) => {
 
   // Extract the query string from the URL
   const router = useRouter();
-  const currentQuery = router.asPath.split("?")[1];
+  let currentQuery = router.asPath.split("?")[1];
+  const params = new URLSearchParams(currentQuery);
+  const qValue = params.get("q");
+  currentQuery = qValue ? `q=${qValue}` : null;
 
   const {
     title,
@@ -139,7 +142,6 @@ const SidebarNavListItem = (props) => {
       </React.Fragment>
     );
   }
-
   return (
     <Link
       href={`${href}${currentQuery ? `?${currentQuery}` : ""}`}

@@ -72,6 +72,9 @@ const searchConfig = {
       field: { name: { raw: {} } },
     },
   },
+  initialState: {
+    sortList: [{ field: "runs", direction: "desc" }],
+  },
   autocompleteQuery: {
     results: {
       resultsPerPage: 100,
