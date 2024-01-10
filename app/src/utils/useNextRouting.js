@@ -1,29 +1,31 @@
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 export const useNextRouting = (config, basePathUrl) => {
   const router = useRouter();
   const { asPath } = router;
 
-  const getSearchParamsFromUrl = (url) => {
+  const getSearchParamsFromUrl = useCallback((url) => {
     return url.match(/\?(.+)/)?.[1] || "";
-  };
+  }, []);
 
-  const routingOptions = {
-    // read and write only the query string to search UI
-    // as we are leveraging existing stateToUrl and urlToState functions
-    // which are based on the query string
-    readUrl: () => {
-      return getSearchParamsFromUrl(asPath);
-    },
-    writeUrl: (url, { replaceUrl }) => {
+  const readUrl = useCallback(() => {
+    return getSearchParamsFromUrl(asPath);
+  }, [asPath, getSearchParamsFromUrl]);
+
+  const writeUrl = useCallback(
+    (url, { replaceUrl }) => {
       const method = router[replaceUrl ? "replace" : "push"];
       const params = Object.fromEntries(new URLSearchParams(url).entries());
       method({ query: { ...router.query, ...params } }, undefined, {
         shallow: true,
       });
     },
-    routeChangeHandler: (callback) => {
+    [router],
+  );
+
+  const routeChangeHandler = useCallback(
+    (callback) => {
       const handler = (fullUrl) => {
         if (fullUrl.includes(basePathUrl)) {
           callback(getSearchParamsFromUrl(fullUrl));
@@ -34,12 +36,21 @@ export const useNextRouting = (config, basePathUrl) => {
         router.events.off("routeChangeComplete", handler);
       };
     },
-  };
+    [basePathUrl, router, getSearchParamsFromUrl],
+  );
+
+  const routingOptions = useMemo(() => {
+    return {
+      readUrl,
+      writeUrl,
+      routeChangeHandler,
+    };
+  }, [readUrl, writeUrl, routeChangeHandler]);
 
   return useMemo(() => {
     return {
       ...config,
       routingOptions,
     };
-  }, [router.isReady]);
+  }, [config, routingOptions]);
 };

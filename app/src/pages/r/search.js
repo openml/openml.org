@@ -9,12 +9,9 @@ import {
   renderDescription,
   renderDate,
   renderTags,
-  renderChips,
 } from "../../components/search/ResultTable";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import searchConfig from "./searchConfig";
+import runConfig from "../../search_configs/runConfig";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -97,7 +94,7 @@ const columns = [
 ];
 
 function RunSearchContainer() {
-  const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
+  const combinedConfig = useNextRouting(runConfig, "<baseUrl>");
 
   return (
     <SearchContainer

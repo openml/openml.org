@@ -15,22 +15,22 @@ import {
   Title as DataTitle,
   Description as DataDescription,
   stats as dataStats,
-} from "../../pages/d/dataCard";
+} from "./dataCard";
 import {
   Title as TaskTitle,
   Description as TaskDescription,
   stats as taskStats,
-} from "../../pages/t/taskCard";
+} from "./taskCard";
 import {
   Title as FlowTitle,
   Description as FlowDescription,
   stats as flowStats,
-} from "../../pages/f/flowCard";
+} from "./flowCard";
 import {
   Title as RunTitle,
   Description as RunDescription,
   stats as runStats,
-} from "../../pages/r/runCard";
+} from "./runCard";
 
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
 

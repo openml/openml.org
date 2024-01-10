@@ -58,7 +58,7 @@ export const valueGetter = (fieldName) => (params) => {
 };
 
 // Controls how each cell is rendered
-const renderCell = (params) => {
+export const renderCell = (params) => {
   let value = params.value; // This should be a string after valueGetter's processing
 
   const displayValue =

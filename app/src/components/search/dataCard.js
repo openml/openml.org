@@ -14,7 +14,7 @@ import {
   faTimes,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
-import Teaser from "../../components/search/Teaser";
+import Teaser from "./Teaser";
 
 const ColoredIcon = styled(FontAwesomeIcon)`
   color: ${(props) => props.color};

@@ -7,7 +7,7 @@ import DashboardLayout from "../../layouts/Dashboard";
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getItem } from "../api/getItem";
-import { shortenName } from "./flowCard";
+import { shortenName } from "../../components/search/flowCard";
 import {
   ParameterDetail,
   DependencyDetail,

@@ -12,10 +12,9 @@ var gradientBG = keyframes`
   	100% { background-position: 0% 50%;	}
   `;
 
-const animation = (props) =>
-  css`
-    ${gradientBG} 15s ease 10;
-  `;
+const animation = (props) => css`
+  ${gradientBG} 15s ease 10;
+`;
 
 const Root = styled.div`
   display: flex;

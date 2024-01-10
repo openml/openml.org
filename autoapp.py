@@ -11,7 +11,7 @@ from server.config import Config
 app = Flask(
     __name__,
     static_url_path="",
-    static_folder="server/src/client/app/build",
+    static_folder="app/.next",
     instance_relative_config=True,
 )
 app.config.from_object(Config)

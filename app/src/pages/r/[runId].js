@@ -59,10 +59,7 @@ function Run({ data }) {
               </Typography>
             </Grid>
             <Grid item md={12}>
-              <MetaTag
-                type={"task"}
-                value={data.run_task.task_id}
-              />
+              <MetaTag type={"task"} value={data.run_task.task_id} />
               <MetaTag
                 type={"dataset"}
                 value={data.run_task.source_data.name}
@@ -75,27 +72,26 @@ function Run({ data }) {
               />
               <br />
               <MetaTag type={"likes"} value={data.nr_of_likes} />
-              <MetaTag
-                type={"issues"}
-                value={data.nr_of_issues}
-              />
-              <MetaTag
-                type={"downvotes"}
-                value={data.nr_of_downvotes}
-              />
-              <MetaTag
-                type={"downloads"}
-                value={data.nr_of_downloads}
-              />
+              <MetaTag type={"issues"} value={data.nr_of_issues} />
+              <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
+              <MetaTag type={"downloads"} value={data.nr_of_downloads} />
             </Grid>
           </Grid>
           <Grid container>
             <Grid item md={12}>
-              <FontAwesomeIcon icon={faTags} /> {data.tags.map(element => element.tag.toString().startsWith("study") ? "" :
-                <TagChip key={"tag_" + element.tag} label={"  " + element.tag + "  "} size="small" onClick={() => updateTag(element.tag)} />
-
-                
-          )}
+              <FontAwesomeIcon icon={faTags} />{" "}
+              {data.tags.map((element) =>
+                element.tag.toString().startsWith("study") ? (
+                  ""
+                ) : (
+                  <TagChip
+                    key={"tag_" + element.tag}
+                    label={"  " + element.tag + "  "}
+                    size="small"
+                    onClick={() => updateTag(element.tag)}
+                  />
+                ),
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -109,7 +105,7 @@ function Run({ data }) {
               </span>
               <CollapsibleDataTable
                 data={data.run_flow.parameters}
-                rowrenderer={m => (
+                rowrenderer={(m) => (
                   <FlowDetail key={parameterID++} item={m}></FlowDetail>
                 )}
                 maxLength={7}
@@ -128,7 +124,7 @@ function Run({ data }) {
                   ")"
                 }
                 data={evaluations}
-                rowrenderer={m => (
+                rowrenderer={(m) => (
                   <EvaluationDetail
                     key={evaluationID++}
                     item={m}

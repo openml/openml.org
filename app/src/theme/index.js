@@ -30,7 +30,7 @@ const createTheme = (name) => {
       header: themeConfig.header,
       footer: themeConfig.footer,
       sidebar: themeConfig.sidebar,
-    }
+    },
   );
 };
 

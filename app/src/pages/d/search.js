@@ -20,7 +20,7 @@ import {
   faRotate,
 } from "@fortawesome/free-solid-svg-icons";
 
-import searchConfig from "./searchConfig";
+import dataConfig from "../../search_configs/dataConfig";
 import {
   faCreativeCommonsBy,
   faCreativeCommonsPd,
@@ -250,7 +250,7 @@ const columns = [
 ];
 
 function DataSearchContainer() {
-  const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
+  const combinedConfig = useNextRouting(dataConfig, "<baseUrl>");
 
   return (
     <SearchContainer

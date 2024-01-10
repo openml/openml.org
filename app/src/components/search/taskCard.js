@@ -6,15 +6,13 @@ import {
   faFlask,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import Teaser from "../../components/search/Teaser";
-import { shortenName } from "../f/flowCard";
+import Teaser from "./Teaser";
 
 export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {shortenName(result.run_flow.raw.name)} on{" "}
-        {result.run_task.raw.source_data.name} by {result.uploader.raw}
+        {result.tasktype.raw.name} on {result.source_data.raw.name}
       </Box>
     </React.Fragment>
   );
@@ -38,14 +36,17 @@ export const stats = [
 
 export const Description = ({ result }) => {
   let description = "";
-  if (result.run_flow) {
-    description += `Evaluates \`${result.run_flow.raw.name}\` `;
+  if (result.target_feature) {
+    description += `Predict feature \`${result.target_feature.raw}\`. `;
   }
-  if (result.run_task) {
-    description += `on dataset \`${result.run_task.raw.source_data.name}\`. `;
+  if (result.target_values) {
+    description += `Possible values are \`${result.target_values.raw}\`. `;
   }
-  if (result.uploader) {
-    description += `Ran by ${result.uploader.raw}. `;
+  if (result.estimation_procedure) {
+    description += `Evaluate models using \`${result.estimation_procedure.raw.name}\`. `;
+  }
+  if (result.evaluation_measures) {
+    description += `The evaluation measure is \`${result.evaluation_measures.raw}\`. `;
   }
   return <Teaser description={description} limit={3} />;
 };

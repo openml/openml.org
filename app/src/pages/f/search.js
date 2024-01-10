@@ -12,14 +12,7 @@ import {
   renderChips,
 } from "../../components/search/ResultTable";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import searchConfig from "./searchConfig";
-import {
-  faCreativeCommonsBy,
-  faCreativeCommonsPd,
-  faCreativeCommonsZero,
-} from "@fortawesome/free-brands-svg-icons";
+import flowConfig from "../../search_configs/flowConfig";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -134,7 +127,7 @@ const columns = [
 ];
 
 function FlowSearchContainer() {
-  const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
+  const combinedConfig = useNextRouting(flowConfig, "<baseUrl>");
 
   return (
     <SearchContainer

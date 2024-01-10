@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { Typography } from "@mui/material";
 
 import DashboardLayout from "../../layouts/Dashboard";
-import TableView from "../../components/TableView";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -25,8 +24,6 @@ function DatasetList() {
       <Typography variant="h3" gutterBottom>
         Benchmark studies
       </Typography>
-
-      <TableView />
     </React.Fragment>
   );
 }

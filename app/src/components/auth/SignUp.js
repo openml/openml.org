@@ -44,7 +44,7 @@ function SignUp() {
           .required("Required"),
         confirmPassword: Yup.string().oneOf(
           [Yup.ref("password"), null],
-          "Passwords must match"
+          "Passwords must match",
         ),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -53,7 +53,7 @@ function SignUp() {
             values.email,
             values.password,
             values.firstName,
-            values.lastName
+            values.lastName,
           );
           router.push("/auth/sign-in");
         } catch (error) {

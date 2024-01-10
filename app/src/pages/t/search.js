@@ -5,7 +5,7 @@ import DashboardLayout from "../../layouts/Dashboard";
 import SearchContainer from "../../components/search/SearchContainer";
 import { renderCell, valueGetter } from "../../components/search/ResultTable";
 
-import searchConfig from "./searchConfig";
+import taskConfig from "../../search_configs/taskConfig";
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -70,7 +70,7 @@ const columns = [
 ];
 
 function TaskSearchContainer() {
-  const combinedConfig = useNextRouting(searchConfig, "<baseUrl>");
+  const combinedConfig = useNextRouting(taskConfig, "<baseUrl>");
 
   return (
     <SearchContainer

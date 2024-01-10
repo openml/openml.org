@@ -1,4 +1,4 @@
-import Connector from "../../services/SearchAPIConnector";
+import Connector from "../services/SearchAPIConnector";
 const apiConnector = new Connector("task");
 
 const searchConfig = {

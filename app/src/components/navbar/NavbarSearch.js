@@ -1,16 +1,16 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 
 import styled from "@emotion/styled";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
-import dataSearchConfig from "../../pages/d/searchConfig";
-import taskSearchConfig from "../../pages/t/searchConfig";
-import flowSearchConfig from "../../pages/f/searchConfig";
-import runSearchConfig from "../../pages/r/searchConfig";
-import collectionSearchConfig from "../../pages/d/searchConfig"; // TODO: update when collection config is created
-import benchmarkSearchConfig from "../../pages/d/searchConfig"; // TODO: update when benchmark config is created
-import measureSearchConfig from "../../pages/d/searchConfig"; // TODO: update when measure config is created
+import dataSearchConfig from "../../search_configs/dataConfig";
+import taskSearchConfig from "../../search_configs/taskConfig";
+import flowSearchConfig from "../../search_configs/flowConfig";
+import runSearchConfig from "../../search_configs/runConfig";
+import collectionSearchConfig from "../../search_configs/dataConfig"; // TODO: update when collection config is created
+import benchmarkSearchConfig from "../../search_configs/dataConfig"; // TODO: update when benchmark config is created
+import measureSearchConfig from "../../search_configs/dataConfig"; // TODO: update when measure config is created
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +18,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Box, InputBase, MenuItem, Select } from "@mui/material";
 
 import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
-import { useTheme } from "@mui/system";
 
 const SearchWrapper = styled(Box)`
   border-radius: 2px;
@@ -102,15 +101,18 @@ const SearchBar = memo(() => {
     measure: measureSearchConfig,
   };
   // Mapping of indices for the select dropdown
-  const indices = [
-    { key: "data", value: "Datasets" },
-    { key: "task", value: "Tasks" },
-    { key: "flow", value: "Flows" },
-    { key: "run", value: "Runs" },
-    { key: "collection", value: "Collections" },
-    { key: "benchmark", value: "Benchmark" },
-    { key: "measure", value: "Measures" },
-  ];
+  const indices = useMemo(
+    () => [
+      { key: "data", value: "Datasets" },
+      { key: "task", value: "Tasks" },
+      { key: "flow", value: "Flows" },
+      { key: "run", value: "Runs" },
+      { key: "collection", value: "Collections" },
+      { key: "benchmark", value: "Benchmark" },
+      { key: "measure", value: "Measures" },
+    ],
+    [],
+  );
 
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [currentConfig, setCurrentConfig] = useState(dataSearchConfig);
@@ -132,7 +134,7 @@ const SearchBar = memo(() => {
         setSelectedIndex(index.key);
       }
     }
-  }, [router.pathname]); // Depend on router.pathname to re-run the effect when the route changes
+  }, [router.pathname, indices]); // Depend on router.pathname to re-run the effect when the route changes
 
   return (
     <SearchProvider config={currentConfig}>
