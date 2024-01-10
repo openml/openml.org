@@ -28,13 +28,8 @@ const SearchWrapper = styled(Box)`
   width: 100%;
   color: ${(props) => props.theme.sidebar.header.brand.color};
 
-  &:hover {
-    background-color: ${(props) =>
-      darken(
-        0.05,
-        props.ecolor ? props.ecolor : props.theme.header.background,
-      )};
-  }
+  background-color: ${(props) =>
+    darken(0.05, props.ecolor ? props.ecolor : props.theme.header.background)};
 `;
 
 const SearchIcon = styled.div`

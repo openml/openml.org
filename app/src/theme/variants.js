@@ -30,6 +30,8 @@ import {
   faUser,
   faLayerGroup,
   faCircleUser,
+  faFire,
+  faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 
 const customBlue = {
@@ -59,12 +61,12 @@ const openmlColors = {
   tasktypes: orange[400],
   measures: deepPurple[400],
   docs: green[400],
-  blog: yellow[800],
-  apis: customBlue[800],
-  contribute: red[400],
-  meet: pink[400],
-  about: purple[400],
-  terms: deepPurple[400],
+  blog: blue[800],
+  apis: red[400],
+  contribute: purple[400],
+  meet: yellow[800],
+  about: green[400],
+  terms: blue[400],
   auth: lightBlue[500],
 };
 
@@ -84,7 +86,7 @@ const openmlIcons = {
   measures: faTachometerAlt,
   docs: faBookOpen,
   blog: faRss,
-  apis: faCode,
+  apis: faRocket,
   contribute: faHandHoldingHeart,
   meet: faCampground,
   about: faUsers,

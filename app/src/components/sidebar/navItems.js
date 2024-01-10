@@ -103,15 +103,22 @@ const extraSection = [
   },
 ];
 
-const learnSection = [
+const communitySection = [
   {
-    href: "https://docs.openml.org/",
-    title: "sidebar.docs",
+    href: "/about",
+    title: "sidebar.about_us",
+  },
+  {
+    href: "/meet",
+    title: "sidebar.meet_up",
   },
   {
     href: "https://blog.openml.org/",
     title: "sidebar.blog",
   },
+];
+
+const learnSection = [
   {
     href: "/apis",
     title: "sidebar.apis",
@@ -119,14 +126,6 @@ const learnSection = [
   {
     href: "/contribute",
     title: "sidebar.contribute",
-  },
-  {
-    href: "/meet",
-    title: "sidebar.meet_up",
-  },
-  {
-    href: "/about",
-    title: "sidebar.about_us",
   },
   {
     href: "/terms",
@@ -142,6 +141,10 @@ const navItems = [
   {
     title: "sidebar.learn",
     pages: learnSection,
+  },
+  {
+    title: "sidebar.community",
+    pages: communitySection,
   },
   {
     title: "sidebar.extra",
