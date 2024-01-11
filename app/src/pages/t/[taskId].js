@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { updateTag, TagChip } from "../api/itemDetail";
+import Wrapper from "../../components/Wrapper";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -64,6 +65,8 @@ function Task({ data }) {
     },
   ];
   return (
+    <Wrapper>
+      <Helmet title="OpenML Tasks" />
     <React.Fragment>
       <Grid container spacing={6}>
         <Grid item xs={12}>
@@ -137,6 +140,7 @@ function Task({ data }) {
         </Grid>
       </Grid>
     </React.Fragment>
+    </Wrapper>
   );
 }
 
