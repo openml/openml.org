@@ -34,3 +34,5 @@ For k8s:
 docker build -f docker/Dockerfile --tag openml/frontend:k8s .
 docker push openml/frontend:k8s
 ```
+
+Similarly, builds can be made for local development and test.

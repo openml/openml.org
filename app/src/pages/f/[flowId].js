@@ -22,6 +22,7 @@ import { CollapsibleDataTable, StringLimiter } from "../api/sizeLimiter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCogs, faTags } from "@fortawesome/free-solid-svg-icons";
+import Wrapper from "../../components/Wrapper";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -49,6 +50,9 @@ function Flow({ data }) {
   let parameterCols = ["Name", "Description", "Type", "Default Value"];
 
   return (
+    <Wrapper>
+      <Helmet title="OpenML Flows" />
+    
     <React.Fragment>
       <Grid container spacing={6}>
         <Grid item xs={12}>
@@ -169,6 +173,7 @@ function Flow({ data }) {
         {shortenName(data.name)}
       </Typography> */}
     </React.Fragment>
+    </Wrapper>
   );
 }
 

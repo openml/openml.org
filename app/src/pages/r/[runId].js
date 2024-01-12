@@ -12,6 +12,7 @@ import { faTags, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { MetaTag } from "../../components/MetaItems";
 import { CollapsibleDataTable } from "../api/sizeLimiter";
 import { EvaluationDetail, FlowDetail, TagChip } from "../api/itemDetail";
+import Wrapper from "../../components/Wrapper";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -48,6 +49,8 @@ function Run({ data }) {
   //ID counter for evaluations
   var evaluationID = 0;
   return (
+    <Wrapper>
+      <Helmet title="OpenML Runs" />
     <React.Fragment>
       <Grid container spacing={6}>
         <Grid item xs={12}>
@@ -140,6 +143,7 @@ function Run({ data }) {
         </Grid>
       </Grid>
     </React.Fragment>
+    </Wrapper>
   );
 }
 
