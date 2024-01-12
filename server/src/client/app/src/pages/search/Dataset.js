@@ -89,7 +89,8 @@ export class DatasetItem extends React.Component {
       "",
       "Feature Name",
       "Type",
-      "Distinct/Missing Values"
+      "Distinct/Missing Values",
+      "Ontology"
     ];
     const qualityTableColumns = ["", "Quality Name", "Value"];
     const did = this.props.object.data_id;
