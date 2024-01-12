@@ -84,17 +84,20 @@ export class FeatureDetail extends React.Component {
         </TableCell>
         <TableCell className={"itemDetail-small"}>
           {this.props.item.descriptions ? this.props.item.descriptions.map((obj, index) => {
-            const url = new URL(obj.value);
-            const lastSegment = url.pathname.split('/').pop();
+            if (obj.type === 'ontology') {
+              const url = new URL(obj.value);
+              const lastSegment = url.pathname.split('/').pop();
 
-            return (
-              <span key={index}>
-                <a href={obj.value} target="_blank" rel="noopener noreferrer">
-                  {lastSegment}
-                </a>
-                {index < this.props.item.descriptions.length - 1 ? ', ' : ''}
-              </span>
-            );
+              return (
+                <span key={index}>
+                  <a href={obj.value} target="_blank" rel="noopener noreferrer">
+                    {lastSegment}
+                  </a>
+                  {index < this.props.item.descriptions.length - 1 ? ', ' : ''}
+                </span>
+              );
+            }
+            return null;
           }) : ""}
         </TableCell>
       </TableRow>
