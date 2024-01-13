@@ -1,5 +1,4 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Helmet } from "react-helmet-async";
 
 import { Typography } from "@mui/material";
@@ -7,6 +6,7 @@ import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
 import Wrapper from "../../components/Wrapper";
+import CroissantButton from "../../components/pages/data/CroissantButton";
 
 import styled from "@emotion/styled";
 import {
@@ -63,42 +63,6 @@ const UserChip = styled(Chip)`
   margin-bottom: 5px;
 `;
 
-const CroissantComponent = ({ url }) => {
-  const [jsonData, setJsonData] = useState({});
-
-  useEffect(() => {
-    const fetchJsonData = async () => {
-      try {
-        const response = await fetch(url);
-        if (response.ok) {
-          const data = await response.json();
-          setJsonData(data);
-        } else {
-          // Handle HTTP errors
-          setJsonData({
-            error: true,
-            status: response.status,
-            message: `HTTP error: ${response.status}`,
-          });
-        }
-      } catch (error) {
-        // Handle fetch errors
-        setJsonData({
-          error: true,
-          message: error.message || "Error fetching JSON.",
-        });
-      }
-    };
-
-    fetchJsonData();
-  }, [url]);
-  return (
-    <Helmet>
-      <script type="application/ld+json">{JSON.stringify(jsonData)}</script>
-    </Helmet>
-  );
-};
-
 export async function getStaticProps({ params, locale }) {
   try {
     // Fetch necessary data for the dataset page using params.dataId
@@ -125,9 +89,6 @@ export async function getStaticProps({ params, locale }) {
 }
 
 function Dataset({ data, error }) {
-  const router = useRouter();
-  const dataId = router.query.dataId;
-  // console.log(data["data_id"]);
   const featureTableColumns = [
     "",
     "Feature Name",
@@ -158,7 +119,7 @@ function Dataset({ data, error }) {
     <Wrapper>
       <Helmet title="OpenML Datasets" />
       {/* Download buttons */}
-      <CroissantComponent url={croissant_url} />
+      <CroissantButton url={croissant_url} />
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <React.Fragment>
