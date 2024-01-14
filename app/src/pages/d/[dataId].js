@@ -7,6 +7,8 @@ import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
 import Wrapper from "../../components/Wrapper";
 import CroissantButton from "../../components/pages/data/CroissantButton";
+import FeatureTable from "../../components/pages/data/FeatureTable";
+import QualityTable from "../../components/pages/data/QualityTable";
 
 import styled from "@emotion/styled";
 import {
@@ -35,13 +37,7 @@ import {
 import { MetaTag } from "../../components/MetaItems";
 import ReactMarkdown from "react-markdown";
 
-import { CollapsibleDataTable } from "../api/sizeLimiter";
-import {
-  FeatureDetail,
-  QualityDetail,
-  updateTag,
-  TagChip,
-} from "../api/itemDetail";
+import { updateTag, TagChip } from "../api/itemDetail";
 export async function getStaticPaths() {
   // No paths are pre-rendered
   return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
@@ -63,6 +59,8 @@ const UserChip = styled(Chip)`
   margin-bottom: 5px;
 `;
 
+// Loads the information about the dataset from ElasticSearch
+// Also loads the translations for the page
 export async function getStaticProps({ params, locale }) {
   try {
     // Fetch necessary data for the dataset page using params.dataId
@@ -89,13 +87,6 @@ export async function getStaticProps({ params, locale }) {
 }
 
 function Dataset({ data, error }) {
-  const featureTableColumns = [
-    "",
-    "Feature Name",
-    "Type",
-    "Distinct/Missing Values",
-  ];
-  const qualityTableColumns = ["", "Quality Name", "Value"];
   const did = data.data_id;
   const did_padded = did.toString().padStart(4, "0");
   const bucket_url = "https://openml1.win.tue.nl/datasets/";
@@ -305,45 +296,12 @@ function Dataset({ data, error }) {
           </Card>
         </Grid>
 
-        {/* Features */}
+        {/* Feature and Quality tables */}
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <CollapsibleDataTable
-                title={data.features.length + " Features"}
-                columns={featureTableColumns}
-                data={data.features}
-                rowrenderer={(m) => (
-                  <FeatureDetail
-                    key={"fd_" + m.name}
-                    item={m}
-                    type={m.type}
-                  ></FeatureDetail>
-                )}
-                maxLength={7}
-              />
-            </CardContent>
-          </Card>
+          <FeatureTable data={data.features} />
         </Grid>
-
-        {/* Qualities */}
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <CollapsibleDataTable
-                title={Object.keys(data.qualities).length + " Qualities"}
-                data={Object.keys(data.qualities)}
-                rowrenderer={(m) => (
-                  <QualityDetail
-                    key={"q_" + m}
-                    item={{ name: m, value: data.qualities[m] }}
-                  />
-                )}
-                columns={qualityTableColumns}
-                maxLength={7}
-              />
-            </CardContent>
-          </Card>
+          <QualityTable data={data.qualities} />
         </Grid>
       </Grid>
     </Wrapper>

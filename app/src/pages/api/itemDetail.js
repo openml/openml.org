@@ -77,6 +77,24 @@ export class FeatureDetail extends React.Component {
   }
 }
 
+export class QualityDetail extends React.Component {
+  render() {
+    return (
+      <TableRow>
+        <TableCell className={"itemHead"}>
+          <FontAwesomeIcon icon={faChartBar} />
+        </TableCell>
+        <TableCell className={"itemName"}>
+          {fixUpperCase(this.props.item.name)}
+        </TableCell>
+        <TableCell className={"itemDetail-small"}>
+          {this.props.item.value}
+        </TableCell>
+      </TableRow>
+    );
+  }
+}
+
 // export const LightTooltip = withStyles(theme => ({
 //     tooltip: {
 //       backgroundColor: theme.palette.common.white,
@@ -127,23 +145,6 @@ export class FlowDetail extends React.Component {
           </span>
         </TableCell>
         <TableCell>{this.props.item.value}</TableCell>
-      </TableRow>
-    );
-  }
-}
-export class QualityDetail extends React.Component {
-  render() {
-    return (
-      <TableRow>
-        <TableCell className={"itemHead"}>
-          <FontAwesomeIcon icon={faChartBar} />
-        </TableCell>
-        <TableCell className={"itemName"}>
-          {fixUpperCase(this.props.item.name)}
-        </TableCell>
-        <TableCell className={"itemDetail-small"}>
-          {this.props.item.value}
-        </TableCell>
       </TableRow>
     );
   }
