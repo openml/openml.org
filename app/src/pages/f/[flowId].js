@@ -8,12 +8,7 @@ import DashboardLayout from "../../layouts/Dashboard";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getItem } from "../api/getItem";
 import { shortenName } from "../../components/search/flowCard";
-import {
-  ParameterDetail,
-  DependencyDetail,
-  LightTooltip,
-  TagChip,
-} from "../api/itemDetail";
+import { LightTooltip, TagChip } from "../api/itemDetail";
 
 import { Card, CardContent, Grid } from "@mui/material";
 import { MetaTag } from "../../components/MetaItems";
@@ -45,12 +40,28 @@ export async function getStaticProps({ params, locale }) {
 }
 
 function Flow({ data }) {
-  const router = useRouter();
-  const flowId = router.query.flowId;
+  function prettyPrint(str) {
+    let result = "";
+    let indentLevel = 0;
+    const indentSize = 2; // Number of spaces for each indentation level
 
-  let dependenciesMap = data.dependencies.split(", ").map((x) => x.split("_"));
-  let parameterCols = ["Name", "Description", "Type", "Default Value"];
+    for (let i = 0; i < str.length; i++) {
+      const char = str[i];
+      if (char === "(") {
+        indentLevel++;
+        result += char + "\n" + " ".repeat(indentLevel * indentSize);
+      } else if (char === ")") {
+        indentLevel--;
+        result += "\n" + " ".repeat(indentLevel * indentSize) + char;
+      } else if (char === ",") {
+        result += char + "\n" + " ".repeat(indentLevel * indentSize);
+      } else {
+        result += char;
+      }
+    }
 
+    return result;
+  }
   return (
     <Wrapper>
       <Helmet title="OpenML Flows" />
@@ -67,7 +78,10 @@ function Flow({ data }) {
                   >
                     <FontAwesomeIcon icon={faCogs} />
                     &nbsp;&nbsp;&nbsp;
-                    <StringLimiter maxLength={65} value={data.name} />
+                    <StringLimiter
+                      maxLength={65}
+                      value={shortenName(data.name)}
+                    />
                   </Typography>
                 </LightTooltip>
               </Grid>
@@ -109,11 +123,9 @@ function Flow({ data }) {
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                <Typography variant={"h4"}>
-                  Description of{" "}
-                  <span style={{ wordWrap: "break-word" }}>{data.name}</span>
-                </Typography>
+                <Typography variant={"h4"}>Description</Typography>
                 <ReactMarkdown>{data.description}</ReactMarkdown>
+                <pre>{prettyPrint(data.name)}</pre>
               </CardContent>
             </Card>
           </Grid>
@@ -124,22 +136,6 @@ function Flow({ data }) {
           </Grid>
           <Grid item xs={12}>
             <ParameterTable data={data.parameters} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <CollapsibleDataTable
-                  title={"Parameters"}
-                  data={data.parameters}
-                  rowrenderer={(m) => (
-                    <ParameterDetail key={"fd_" + m.name} item={m} />
-                  )}
-                  maxLength={7}
-                  columns={parameterCols}
-                />
-              </CardContent>
-            </Card>
           </Grid>
 
           <Grid item xs={12}>
