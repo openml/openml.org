@@ -23,6 +23,8 @@ import { CollapsibleDataTable, StringLimiter } from "../api/sizeLimiter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCogs, faTags } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../../components/Wrapper";
+import DependencyTable from "../../components/pages/flow/DependencyTable";
+import ParameterTable from "../../components/pages/flow/ParameterTable";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -52,117 +54,105 @@ function Flow({ data }) {
   return (
     <Wrapper>
       <Helmet title="OpenML Flows" />
-    
-    <React.Fragment>
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Grid container style={{ padding: "25px 0" }}>
-            <Grid item md={12}>
-              <LightTooltip title={data.name}>
-                <Typography
-                  variant={"h1"}
-                  style={{ marginBottom: "15px", wordWrap: "break-word" }}
-                >
-                  <FontAwesomeIcon icon={faCogs} />
-                  &nbsp;&nbsp;&nbsp;
-                  <StringLimiter maxLength={65} value={data.name} />
+
+      <React.Fragment>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Grid container style={{ padding: "25px 0" }}>
+              <Grid item md={12}>
+                <LightTooltip title={data.name}>
+                  <Typography
+                    variant={"h1"}
+                    style={{ marginBottom: "15px", wordWrap: "break-word" }}
+                  >
+                    <FontAwesomeIcon icon={faCogs} />
+                    &nbsp;&nbsp;&nbsp;
+                    <StringLimiter maxLength={65} value={data.name} />
+                  </Typography>
+                </LightTooltip>
+              </Grid>
+              <Grid item md={12}>
+                <MetaTag type={"status"} value={data.visibility} />
+                <MetaTag
+                  type={"uploaded"}
+                  date={data.date}
+                  uploader={data.uploader}
+                />
+                <br />
+                <MetaTag type={"likes"} value={data.nr_of_likes} />
+                <MetaTag type={"issues"} value={data.nr_of_issues} />
+                <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
+                <MetaTag type={"downloads"} value={data.nr_of_downloads} />
+                <MetaTag type={"runs"} value={data.runs} />
+              </Grid>
+            </Grid>
+
+            <Grid container>
+              <Grid item md={12}>
+                <FontAwesomeIcon icon={faTags} />{" "}
+                {data.tags.map((element) =>
+                  element.tag.toString().startsWith("study") ? (
+                    ""
+                  ) : (
+                    <TagChip
+                      key={"tag_" + element.tag}
+                      label={"  " + element.tag + "  "}
+                      size="small"
+                      onClick={() => updateTag(element.tag)}
+                    />
+                  ),
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant={"h4"}>
+                  Description of{" "}
+                  <span style={{ wordWrap: "break-word" }}>{data.name}</span>
                 </Typography>
-              </LightTooltip>
-            </Grid>
-            <Grid item md={12}>
-              <MetaTag type={"status"} value={data.visibility} />
-              <MetaTag
-                type={"uploaded"}
-                date={data.date}
-                uploader={data.uploader}
-              />
-              <br />
-              <MetaTag type={"likes"} value={data.nr_of_likes} />
-              <MetaTag type={"issues"} value={data.nr_of_issues} />
-              <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
-              <MetaTag type={"downloads"} value={data.nr_of_downloads} />
-              <MetaTag type={"runs"} value={data.runs} />
-            </Grid>
+                <ReactMarkdown>{data.description}</ReactMarkdown>
+              </CardContent>
+            </Card>
           </Grid>
 
-          <Grid container>
-            <Grid item md={12}>
-              <FontAwesomeIcon icon={faTags} />{" "}
-              {data.tags.map((element) =>
-                element.tag.toString().startsWith("study") ? (
-                  ""
-                ) : (
-                  <TagChip
-                    key={"tag_" + element.tag}
-                    label={"  " + element.tag + "  "}
-                    size="small"
-                    onClick={() => updateTag(element.tag)}
-                  />
-                ),
-              )}
-            </Grid>
+          {/* Dependency and Parameter tables */}
+          <Grid item xs={12}>
+            <DependencyTable data={data.dependencies} />
+          </Grid>
+          <Grid item xs={12}>
+            <ParameterTable data={data.parameters} />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <CollapsibleDataTable
+                  title={"Parameters"}
+                  data={data.parameters}
+                  rowrenderer={(m) => (
+                    <ParameterDetail key={"fd_" + m.name} item={m} />
+                  )}
+                  maxLength={7}
+                  columns={parameterCols}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant={"h4"}>Runs ({data.runs})</Typography>
+                <br />
+                Run visualization not currently supported
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant={"h4"}>
-                Description of{" "}
-                <span style={{ wordWrap: "break-word" }}>{data.name}</span>
-              </Typography>
-              <ReactMarkdown>{data.description}</ReactMarkdown>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <CollapsibleDataTable
-                title={"Dependencies"}
-                data={dependenciesMap}
-                rowrenderer={(dep) => (
-                  <DependencyDetail
-                    key={dep[0]}
-                    name={dep[0]}
-                    version={dep[1]}
-                  />
-                )}
-                maxLength={7}
-                columns={["Library", "Version"]}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <CollapsibleDataTable
-                title={"Parameters"}
-                data={data.parameters}
-                rowrenderer={(m) => (
-                  <ParameterDetail key={"fd_" + m.name} item={m} />
-                )}
-                maxLength={7}
-                columns={parameterCols}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant={"h4"}>Runs ({data.runs})</Typography>
-              <br />
-              Run visualization not currently supported
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-      {/* <Helmet title="OpenML Flows" />
+        {/* <Helmet title="OpenML Flows" />
       <Typography variant="h3" gutterBottom>
         Flow {flowId}
       </Typography>
@@ -172,7 +162,7 @@ function Flow({ data }) {
       <Typography variant="h5" gutterBottom>
         {shortenName(data.name)}
       </Typography> */}
-    </React.Fragment>
+      </React.Fragment>
     </Wrapper>
   );
 }

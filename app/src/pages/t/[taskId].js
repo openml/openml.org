@@ -67,79 +67,79 @@ function Task({ data }) {
   return (
     <Wrapper>
       <Helmet title="OpenML Tasks" />
-    <React.Fragment>
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Grid container style={{ padding: "25px 0" }}>
-            <Grid item md={12}>
-              <Typography
-                variant="h1"
-                className={"sectionTitle"}
-                style={{ marginBottom: "15px" }}
-              >
-                <FontAwesomeIcon icon={faTrophy} /> {data.tasktype.name} on{" "}
-                {data.source_data.name}{" "}
-              </Typography>
-            </Grid>
-            <Grid item md={12}>
-              <MetaTag type={"task"} value={data.task_id} />
-              <MetaTag type={"task-type"} value={data.tasktype.name} />
-              <SimpleLink
-                href={"search?type=data&id=" + data.source_data.data_id}
-              >
-                <MetaTag type={"dataset"} value={data.source_data.name} />
-              </SimpleLink>
-              created <FontAwesomeIcon icon={faClock} /> {data.date}
-              <br />
-              <MetaTag type={"likes"} value={data.nr_of_likes} />
-              <MetaTag type={"issues"} value={data.nr_of_issues} />
-              <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
-              <MetaTag type={"downloads"} value={data.nr_of_downloads} />
-              <MetaTag type={"runs"} value={data.runs} />
-            </Grid>
-          </Grid>
-          {data.tags[0]?.tag !== undefined && data.tags[0].tag.length > 0 && (
-            <Grid container>
+      <React.Fragment>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Grid container style={{ padding: "25px 0" }}>
               <Grid item md={12}>
-                <FontAwesomeIcon icon={faTags} />
-                {data.tags.map((element) =>
-                  element.tag.toString().startsWith("study") ? (
-                    ""
-                  ) : (
-                    <TagChip
-                      key={"tag_" + element.tag}
-                      label={"  " + element.tag + "  "}
-                      size="small"
-                      onClick={() => updateTag(element.tag)}
-                    />
-                  ),
-                )}
+                <Typography
+                  variant="h1"
+                  className={"sectionTitle"}
+                  style={{ marginBottom: "15px" }}
+                >
+                  <FontAwesomeIcon icon={faTrophy} /> {data.tasktype.name} on{" "}
+                  {data.source_data.name}{" "}
+                </Typography>
+              </Grid>
+              <Grid item md={12}>
+                <MetaTag type={"task"} value={data.task_id} />
+                <MetaTag type={"task-type"} value={data.tasktype.name} />
+                <SimpleLink
+                  href={"search?type=data&id=" + data.source_data.data_id}
+                >
+                  <MetaTag type={"dataset"} value={data.source_data.name} />
+                </SimpleLink>
+                created <FontAwesomeIcon icon={faClock} /> {data.date}
+                <br />
+                <MetaTag type={"likes"} value={data.nr_of_likes} />
+                <MetaTag type={"issues"} value={data.nr_of_issues} />
+                <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
+                <MetaTag type={"downloads"} value={data.nr_of_downloads} />
+                <MetaTag type={"runs"} value={data.runs} />
               </Grid>
             </Grid>
-          )}
-        </Grid>
+            {data.tags[0]?.tag !== undefined && data.tags[0].tag.length > 0 && (
+              <Grid container>
+                <Grid item md={12}>
+                  <FontAwesomeIcon icon={faTags} />
+                  {data.tags.map((element) =>
+                    element.tag.toString().startsWith("study") ? (
+                      ""
+                    ) : (
+                      <TagChip
+                        key={"tag_" + element.tag}
+                        label={"  " + element.tag + "  "}
+                        size="small"
+                        onClick={() => updateTag(element.tag)}
+                      />
+                    ),
+                  )}
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
 
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h4" mb={6}>
-                Details
-              </Typography>
-              <Table>
-                <TableBody>
-                  {taskDescription.map((x) => (
-                    <TableRow key={"row_" + x.name}>
-                      <TableCell>{x.name}</TableCell>
-                      <TableCell>{x.value}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h4" mb={6}>
+                  Details
+                </Typography>
+                <Table>
+                  <TableBody>
+                    {taskDescription.map((x) => (
+                      <TableRow key={"row_" + x.name}>
+                        <TableCell>{x.name}</TableCell>
+                        <TableCell>{x.value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </React.Fragment>
+      </React.Fragment>
     </Wrapper>
   );
 }
