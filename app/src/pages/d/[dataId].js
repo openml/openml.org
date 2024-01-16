@@ -6,7 +6,7 @@ import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
 import Wrapper from "../../components/Wrapper";
-import CroissantButton from "../../components/pages/data/CroissantButton";
+import CroissantMetaData from "../../components/pages/data/CroissantMetaData";
 import FeatureTable from "../../components/pages/data/FeatureTable";
 import QualityTable from "../../components/pages/data/QualityTable";
 
@@ -30,6 +30,7 @@ import {
   faCloudDownloadAlt,
   faCode,
   faDatabase,
+  faEdit,
   faFileAlt,
   faTags,
 } from "@fortawesome/free-solid-svg-icons";
@@ -86,6 +87,27 @@ export async function getStaticProps({ params, locale }) {
   }
 }
 
+const ActionButtons = ({ buttons }) => {
+  return (
+    <>
+      {buttons.map((button, index) => (
+        <Tooltip
+          key={index}
+          title={button.tooltipTitle}
+          placement="bottom-start"
+        >
+          <ActionButton color="primary" href={button.url}>
+            <Action>
+              {button.icon}
+              <Typography>{button.label}</Typography>
+            </Action>
+          </ActionButton>
+        </Tooltip>
+      ))}
+    </>
+  );
+};
+
 function Dataset({ data, error }) {
   const did = data.data_id;
   const did_padded = did.toString().padStart(4, "0");
@@ -106,66 +128,48 @@ function Dataset({ data, error }) {
     return <div>Error: {error}</div>;
   }
 
+  const buttonData = [
+    {
+      tooltipTitle: "Download Croissant description",
+      url: croissant_url,
+      icon: <Icon icon="fluent-emoji-high-contrast:croissant" />,
+      label: "Croissant",
+    },
+    {
+      tooltipTitle: "Download XML description",
+      url: `https://www.openml.org/api/v1/data/${data.data_id}`,
+      icon: <FontAwesomeIcon icon={faCode} />,
+      label: "xml",
+    },
+    {
+      tooltipTitle: "Download JSON description",
+      url: `https://www.openml.org/api/v1/json/data/${data.data_id}`,
+      icon: <FontAwesomeIcon icon={faFileAlt} />,
+      label: "json",
+    },
+    {
+      tooltipTitle: "Download dataset",
+      url: data.url,
+      icon: <FontAwesomeIcon icon={faCloudDownloadAlt} />,
+      label: "download",
+    },
+    {
+      tooltipTitle: "Edit dataset (requires login)",
+      getUrl: () =>
+        context.loggedIn ? `auth/data-edit?id=${data.data_id}` : "auth/sign-in",
+      getColor: () => (context.loggedIn ? "primary" : "default"),
+      icon: <FontAwesomeIcon icon={faEdit} />,
+      label: "edit",
+    },
+  ];
+
   return (
     <Wrapper>
       <Helmet title="OpenML Datasets" />
-      {/* Download buttons */}
-      <CroissantButton url={croissant_url} />
+      <CroissantMetaData url={croissant_url} />
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <React.Fragment>
-            <Tooltip
-              title="Download Croissant description"
-              placement="bottom-start"
-              suppressHydrationWarning
-            >
-              <ActionButton color="primary" href={croissant_url}>
-                <Action>
-                  <Icon icon="fluent-emoji-high-contrast:croissant" />
-                  <Typography>Croissant</Typography>
-                </Action>
-              </ActionButton>
-            </Tooltip>
-            <Tooltip title="Download XML description" placement="bottom-start">
-              <ActionButton
-                color="primary"
-                href={"https://www.openml.org/api/v1/data/" + data.data_id}
-              >
-                <Action>
-                  <FontAwesomeIcon icon={faCode} />
-                  <Typography>xml</Typography>
-                </Action>
-              </ActionButton>
-            </Tooltip>
-            <Tooltip title="Download JSON description" placement="bottom-start">
-              <ActionButton
-                color="primary"
-                href={"https://www.openml.org/api/v1/json/data/" + data.data_id}
-              >
-                <Action>
-                  <FontAwesomeIcon icon={faFileAlt} />
-                  <Typography>json</Typography>
-                </Action>
-              </ActionButton>
-            </Tooltip>
-            <Tooltip title="Download dataset" placement="bottom-start">
-              <ActionButton color="primary" href={data.url}>
-                <Action>
-                  <FontAwesomeIcon icon={faCloudDownloadAlt} />
-                  <Typography>download</Typography>
-                </Action>
-              </ActionButton>
-            </Tooltip>
-            {/* <Tooltip title="Edit dataset (requires login)" placement="bottom-start">
-              <ActionButton color={context.loggedIn ? "primary" : "default"} href={context.loggedIn ? "auth/data-edit?id=" + data.data_id : "auth/sign-in"}>
-                <Action>
-                  <FontAwesomeIcon icon="edit" />
-                  <Typography>edit</Typography>
-                </Action>
-              </ActionButton>
-            </Tooltip> */}
-          </React.Fragment>
-          {/* Metadata */}
+          <ActionButtons buttons={buttonData} />
           <Grid container>
             <Grid item md={12}>
               <Typography variant="h1" style={{ marginBottom: "15px" }}>

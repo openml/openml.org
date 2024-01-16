@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
-// Button to download the croissant description of a dataset
-const CroissantButton = ({ url }) => {
+// Adds the croissant meta-data in the header of the dataset page
+const CroissantMetaData = ({ url }) => {
   const [jsonData, setJsonData] = useState({});
 
   useEffect(() => {
@@ -38,4 +38,4 @@ const CroissantButton = ({ url }) => {
   );
 };
 
-export default CroissantButton;
+export default CroissantMetaData;
