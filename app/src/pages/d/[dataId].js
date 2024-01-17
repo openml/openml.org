@@ -96,7 +96,7 @@ const ActionButtons = ({ buttons }) => {
           title={button.tooltipTitle}
           placement="bottom-start"
         >
-          <ActionButton color="primary" href={button.url}>
+          <ActionButton color="primary" href={button.url || button.getUrl()}>
             <Action>
               {button.icon}
               <Typography>{button.label}</Typography>
@@ -128,6 +128,9 @@ function Dataset({ data, error }) {
     return <div>Error: {error}</div>;
   }
 
+  // TODO: update with actual login status
+  const loggedIn = true;
+
   const buttonData = [
     {
       tooltipTitle: "Download Croissant description",
@@ -156,8 +159,8 @@ function Dataset({ data, error }) {
     {
       tooltipTitle: "Edit dataset (requires login)",
       getUrl: () =>
-        context.loggedIn ? `auth/data-edit?id=${data.data_id}` : "auth/sign-in",
-      getColor: () => (context.loggedIn ? "primary" : "default"),
+        loggedIn ? `auth/data-edit?id=${data.data_id}` : "auth/sign-in",
+      getColor: () => (loggedIn ? "primary" : "default"),
       icon: <FontAwesomeIcon icon={faEdit} />,
       label: "edit",
     },
