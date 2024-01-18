@@ -53,7 +53,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 import { purple, blue, red, green, pink, grey } from "@mui/material/colors";
-import Chip from "../components/Chip";
+import { ActionChip } from "../components/Card";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -501,7 +501,7 @@ function About() {
                   </ResultsWrapper>
                 </SearchProvider>
               </Grid>
-              <Chip
+              <ActionChip
                 key="join_core"
                 link="https://docs.openml.org/Governance/"
                 icon={faUsers}

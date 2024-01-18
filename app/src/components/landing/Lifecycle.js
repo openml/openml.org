@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 
 import { spacing } from "@mui/system";
 import { Grid, Container, Typography } from "@mui/material";
-import InfoCard from "../../Card";
+import InfoCard from "../Card";
 
 import { faCogs, faDatabase, faFlask } from "@fortawesome/free-solid-svg-icons";
 import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";

@@ -14,6 +14,7 @@ import {
   faFlag,
   faHeart,
   faIdBadge,
+  faQuestion,
   faStar,
   faTable,
   faThumbsDown,

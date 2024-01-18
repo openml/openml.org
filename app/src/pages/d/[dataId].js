@@ -6,9 +6,10 @@ import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
 import Wrapper from "../../components/Wrapper";
-import CroissantMetaData from "../../components/pages/data/CroissantMetaData";
-import FeatureTable from "../../components/pages/data/FeatureTable";
-import QualityTable from "../../components/pages/data/QualityTable";
+import CroissantMetaData from "../../components/data/CroissantMetaData";
+import FeatureTable from "../../components/data/FeatureTable";
+import QualityTable from "../../components/data/QualityTable";
+import Property from "../../components/Property";
 
 import styled from "@emotion/styled";
 import {
@@ -26,16 +27,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {
+  faCheckCircle,
   faClock,
+  faClosedCaptioning,
+  faCloud,
   faCloudDownloadAlt,
   faCode,
+  faCodeBranch,
   faDatabase,
   faEdit,
+  faExclamationTriangle,
   faFileAlt,
+  faHeart,
+  faIdBadge,
+  faTable,
   faTags,
+  faTimes,
+  faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { MetaTag } from "../../components/MetaItems";
 import ReactMarkdown from "react-markdown";
 
 import { updateTag, TagChip } from "../api/itemDetail";
@@ -58,6 +68,13 @@ const Action = styled.div`
 
 const UserChip = styled(Chip)`
   margin-bottom: 5px;
+`;
+
+const VersionChip = styled(Chip)`
+  margin-bottom: 5px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 // Loads the information about the dataset from ElasticSearch
@@ -131,6 +148,7 @@ function Dataset({ data, error }) {
   // TODO: update with actual login status
   const loggedIn = true;
 
+  // Action buttons
   const buttonData = [
     {
       tooltipTitle: "Download Croissant description",
@@ -166,6 +184,61 @@ function Dataset({ data, error }) {
     },
   ];
 
+  // First row of dataset properties
+  const dataProps1 = [
+    { label: "id", value: "ID: " + data.data_id, icon: faIdBadge },
+    {
+      label: "version",
+      value: "v." + data.version,
+      icon: faCodeBranch,
+    },
+    {
+      label: "status",
+      value: data.status === "active" ? "verified" : data.status,
+      color:
+        data.status === "active"
+          ? "green"
+          : data.status === "deactivated"
+          ? "red"
+          : "orange",
+      icon:
+        data.status === "active"
+          ? faCheckCircle
+          : data.status === "deactivated"
+          ? faTimes
+          : faWrench,
+    },
+    {
+      label: "format",
+      value: data.format,
+      icon: faTable,
+    },
+    {
+      label: "licence",
+      value: data.licence,
+      icon: faClosedCaptioning,
+    },
+    {
+      label: "date",
+      value: data.date.split(" ")[0],
+      icon: faClock,
+    },
+  ];
+
+  const dataProps2 = [
+    { label: "likes", value: data.nr_of_likes + " likes", icon: faHeart },
+    {
+      label: "issues",
+      value: data.nr_of_issues + " issues",
+      icon: faExclamationTriangle,
+    },
+    {
+      label: "downloads",
+      value: data.nr_of_downloads + " downloads",
+      icon: faCloud,
+    },
+  ];
+
   return (
     <Wrapper>
       <Helmet title="OpenML Datasets" />
@@ -173,52 +246,26 @@ function Dataset({ data, error }) {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <ActionButtons buttons={buttonData} />
-          <Grid container>
+          <Grid container spacing={4}>
             <Grid item md={12}>
-              <Typography variant="h1" style={{ marginBottom: "15px" }}>
+              <Typography variant="h1">
                 <FontAwesomeIcon icon={faDatabase} />
                 &nbsp;&nbsp;&nbsp;{data.name}
               </Typography>
             </Grid>
+
             <Grid item md={12}>
-              <Grid container display="flex" spacing={2}>
+              <Grid container justifyContent="space-between" spacing={2}>
+                {/* Left-aligned Properties */}
                 <Grid item>
-                  <MetaTag type={"id"} value={"ID: " + data.data_id} />
+                  {dataProps1.map((tag) => (
+                    <Property key={tag.label} {...tag} />
+                  ))}
                 </Grid>
+
+                {/* Right-aligned Version Chip */}
                 <Grid item>
-                  <MetaTag
-                    type={"status"}
-                    value={data.status === "active" ? "verified" : data.status}
-                    color={
-                      data.status === "active"
-                        ? "green"
-                        : data.status === "deactivated"
-                        ? "red"
-                        : "orange"
-                    }
-                  />
-                </Grid>
-                <Grid item>
-                  <MetaTag type={"format"} value={data.format} />
-                </Grid>
-                <Grid item>
-                  <MetaTag type={"licence"} value={data.licence} />
-                </Grid>
-                <Grid item>
-                  <FontAwesomeIcon icon={faClock} /> {data.date.split(" ")[0]}
-                </Grid>
-                <Grid item>
-                  <MetaTag type={"version"} value={"v." + data.version} />
-                </Grid>
-                <Grid
-                  item
-                  style={{
-                    flexGrow: 1,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <UserChip
+                  <VersionChip
                     size="small"
                     color="primary"
                     label="Version history"
@@ -227,17 +274,15 @@ function Dataset({ data, error }) {
                         <FontAwesomeIcon icon={faClock} />
                       </Avatar>
                     }
-                    href={
-                      "search?type=data&sort=version&status=any&order=asc&exact_name=" +
-                      data.name
-                    }
+                    href={`search?type=data&sort=version&status=any&order=asc&exact_name=${data.name}`}
                     component="a"
                     clickable
                   />
                 </Grid>
               </Grid>
 
-              <Grid container display="flex" spacing={2}>
+              {/* User Chip and Second Row of Properties */}
+              <Grid container spacing={2}>
                 <Grid item>
                   <UserChip
                     size="small"
@@ -249,43 +294,35 @@ function Dataset({ data, error }) {
                       </Avatar>
                     }
                     label={data.uploader}
-                    href={"search?type=user&id=" + data.uploader_id}
+                    href={`search?type=user&id=${data.uploader_id}`}
                     component="a"
                     clickable
                   />
                 </Grid>
                 <Grid item>
-                  <MetaTag type={"likes"} value={data.nr_of_likes + " likes"} />
-                </Grid>
-                <Grid item>
-                  <MetaTag
-                    type={"issues"}
-                    value={data.nr_of_issues + " issues"}
-                  />
-                </Grid>
-                <Grid item>
-                  <MetaTag type={"downloads"} value={data.nr_of_downloads} />
+                  {dataProps2.map((tag) => (
+                    <Property key={tag.label} {...tag} />
+                  ))}
                 </Grid>
               </Grid>
-            </Grid>
-          </Grid>
 
-          {/* Tags */}
-          <Grid container>
-            <Grid item md={12}>
-              <FontAwesomeIcon icon={faTags} />{" "}
-              {data.tags.map((element) =>
-                element.tag.toString().startsWith("study") ? (
-                  ""
-                ) : (
-                  <TagChip
-                    key={"tag_" + element.tag}
-                    label={"  " + element.tag + "  "}
-                    size="small"
-                    onClick={() => updateTag(element.tag)}
-                  />
-                ),
-              )}
+              {/* Tags */}
+              <Grid container spacing={2} pt={1}>
+                <Grid item md={12}>
+                  <FontAwesomeIcon icon={faTags} />
+                  {data.tags.map(
+                    (element) =>
+                      !element.tag.toString().startsWith("study") && (
+                        <TagChip
+                          key={"tag_" + element.tag}
+                          label={"  " + element.tag + "  "}
+                          size="small"
+                          onClick={() => updateTag(element.tag)}
+                        />
+                      ),
+                  )}
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

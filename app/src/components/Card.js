@@ -7,8 +7,6 @@ import { useTheme } from "@mui/material/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NextLink from "next/link";
 
-import Chip from "../components/Chip";
-
 import {
   Button,
   Card as MuiCard,
@@ -21,7 +19,12 @@ import {
   ListItemText as MuiListItemText,
   Typography as MuiTypography,
   useMediaQuery,
+  IconButton,
+  Chip as MuiChip,
+  Snackbar,
 } from "@mui/material";
+
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Card = styled(MuiCard)`
   ${spacing};
@@ -76,19 +79,6 @@ const ListIcon = styled(FontAwesomeIcon)`
   margin-right: 10;
 `;
 
-const CardItem = ({ link, icon, color, text }) => {
-  return (
-    <ListItemButton href={link}>
-      <ListItemIcon>
-        <ListIcon icon={icon} size="2x" style={{ color: color }} />
-      </ListItemIcon>
-      <ListItemText>
-        <Markdown>{text}</Markdown>
-      </ListItemText>
-    </ListItemButton>
-  );
-};
-
 const TitleIcon = styled(FontAwesomeIcon)`
   padding-right: 15px;
 `;
@@ -106,6 +96,91 @@ const ButtonImage = styled.img`
     transform: scale(1.0325);
   }
 `;
+
+const Chip = styled(MuiChip)`
+  padding: 4px 4px;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  font-size: 100%;
+`;
+
+const CardItem = ({ link, icon, color, text }) => {
+  return (
+    <ListItemButton href={link}>
+      <ListItemIcon>
+        <ListIcon icon={icon} size="2x" style={{ color: color }} />
+      </ListItemIcon>
+      <ListItemText>
+        <Markdown>{text}</Markdown>
+      </ListItemText>
+    </ListItemButton>
+  );
+};
+
+export const ActionChip = ({
+  link,
+  icon,
+  text,
+  target,
+  copytext,
+  copymessage,
+}) => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (even, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <FontAwesomeIcon icon={faXmark} size="lg" />
+      </IconButton>
+    </React.Fragment>
+  );
+
+  const copyText = (text) => {
+    if (text !== undefined) {
+      navigator.clipboard.writeText(text);
+      setOpen(true);
+    }
+  };
+
+  return (
+    <React.Fragment>
+      <Chip
+        icon={<ListIcon icon={icon} size="lg" style={{ marginRight: 0 }} />}
+        component="a"
+        href={link}
+        label={text}
+        target={target}
+        onClick={() => copyText(copytext)}
+        clickable
+        color="primary"
+        //variant="outlined"
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={copymessage}
+        action={action}
+      />
+    </React.Fragment>
+  );
+};
 
 const InfoCard = ({ info }) => {
   const theme = useTheme();
@@ -160,7 +235,7 @@ const InfoCard = ({ info }) => {
             </NextLink>
           ))}
           {info.chips?.map((chip, i) => (
-            <Chip
+            <ActionChip
               key={chip.link + t(`${info.id}.chips.${i}`)}
               link={chip.link}
               icon={chip.icon}

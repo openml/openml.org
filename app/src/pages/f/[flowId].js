@@ -18,8 +18,8 @@ import { CollapsibleDataTable, StringLimiter } from "../api/sizeLimiter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCogs, faTags } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../../components/Wrapper";
-import DependencyTable from "../../components/pages/flow/DependencyTable";
-import ParameterTable from "../../components/pages/flow/ParameterTable";
+import DependencyTable from "../../components/flow/DependencyTable";
+import ParameterTable from "../../components/flow/ParameterTable";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered

@@ -4,9 +4,9 @@ import { useTranslation } from "next-i18next";
 import DashboardLayout from "../layouts/Dashboard";
 import { Helmet } from "react-helmet-async";
 
-import Integrations from "../components/pages/landing/Integrations";
-import Lifecycle from "../components/pages/landing/Lifecycle";
-import FAQ from "../components/pages/landing/FAQ";
+import Integrations from "../components/landing/Integrations";
+import Lifecycle from "../components/landing/Lifecycle";
+import FAQ from "../components/landing/FAQ";
 import Wrapper from "../components/Wrapper";
 
 import { Grid } from "@mui/material";
@@ -25,7 +25,7 @@ export async function getStaticProps({ locale }) {
 // Avoids a (dev-only) hydration warning for the svg diagram
 import dynamic from "next/dynamic";
 const Introduction = dynamic(
-  () => import("../components/pages/landing/Introduction"),
+  () => import("../components/landing/Introduction"),
   { ssr: false },
 );
 

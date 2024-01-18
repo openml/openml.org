@@ -52,7 +52,7 @@ SyntaxHighlighter.registerLanguage("java", java);
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 import "swagger-ui-themes/themes/3.x/theme-material.css";
-import StyledSwaggerUI from "../components/pages/apis/SwaggerUI";
+import StyledSwaggerUI from "../components/apis/SwaggerUI";
 
 // Server-side translation
 import { useTranslation } from "next-i18next";
@@ -67,10 +67,10 @@ export async function getStaticProps({ locale }) {
 }
 
 // Code examples
-import * as PythonExamples from "../components/pages/apis/pythonCodeExamples";
-import * as RExamples from "../components/pages/apis/rCodeExamples";
-import * as JuliaExamples from "../components/pages/apis/juliaCodeExamples";
-import * as JavaExamples from "../components/pages/apis/javaCodeExamples";
+import * as PythonExamples from "../components/apis/pythonCodeExamples";
+import * as RExamples from "../components/apis/rCodeExamples";
+import * as JuliaExamples from "../components/apis/juliaCodeExamples";
+import * as JavaExamples from "../components/apis/javaCodeExamples";
 import InfoCard from "../components/Card";
 import { faRust } from "@fortawesome/free-brands-svg-icons";
 import Wrapper from "../components/Wrapper";
