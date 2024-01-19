@@ -39,29 +39,30 @@ export async function getStaticProps({ params, locale }) {
   };
 }
 
-function Flow({ data }) {
-  function prettyPrint(str) {
-    let result = "";
-    let indentLevel = 0;
-    const indentSize = 2; // Number of spaces for each indentation level
+function prettyPrint(str) {
+  let result = "";
+  let indentLevel = 0;
+  const indentSize = 2; // Number of spaces for each indentation level
 
-    for (let i = 0; i < str.length; i++) {
-      const char = str[i];
-      if (char === "(") {
-        indentLevel++;
-        result += char + "\n" + " ".repeat(indentLevel * indentSize);
-      } else if (char === ")") {
-        indentLevel--;
-        result += "\n" + " ".repeat(indentLevel * indentSize) + char;
-      } else if (char === ",") {
-        result += char + "\n" + " ".repeat(indentLevel * indentSize);
-      } else {
-        result += char;
-      }
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (char === "(") {
+      indentLevel++;
+      result += char + "\n" + " ".repeat(indentLevel * indentSize);
+    } else if (char === ")") {
+      indentLevel--;
+      result += "\n" + " ".repeat(indentLevel * indentSize) + char;
+    } else if (char === ",") {
+      result += char + "\n" + " ".repeat(indentLevel * indentSize);
+    } else {
+      result += char;
     }
-
-    return result;
   }
+
+  return result;
+}
+
+function Flow({ data }) {
   return (
     <Wrapper>
       <Helmet title="OpenML Flows" />
