@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Typography } from "@mui/material";
@@ -13,7 +12,6 @@ import { LightTooltip, TagChip } from "../api/itemDetail";
 import { Card, CardContent, Grid } from "@mui/material";
 import { MetaTag } from "../../components/MetaItems";
 import ReactMarkdown from "react-markdown";
-import { CollapsibleDataTable, StringLimiter } from "../api/sizeLimiter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCogs, faTags } from "@fortawesome/free-solid-svg-icons";
@@ -78,11 +76,7 @@ function Flow({ data }) {
                     style={{ marginBottom: "15px", wordWrap: "break-word" }}
                   >
                     <FontAwesomeIcon icon={faCogs} />
-                    &nbsp;&nbsp;&nbsp;
-                    <StringLimiter
-                      maxLength={65}
-                      value={shortenName(data.name)}
-                    />
+                    &nbsp;&nbsp;&nbsp; {shortenName(data.name)}
                   </Typography>
                 </LightTooltip>
               </Grid>

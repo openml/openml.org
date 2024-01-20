@@ -47,8 +47,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReactMarkdown from "react-markdown";
+import { Tag } from "../../components/Tag";
 
-import { updateTag, TagChip } from "../api/itemDetail";
 export async function getStaticPaths() {
   // No paths are pre-rendered
   return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
@@ -59,15 +59,16 @@ const ActionButton = styled(IconButton)`
   border-radius: 0;
 `;
 
+const TagChip = styled(Chip)`
+  margin-bottom: 5px;
+  margin-left: 5px;
+`;
+
 const Action = styled.div`
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const UserChip = styled(Chip)`
-  margin-bottom: 5px;
 `;
 
 const VersionChip = styled(Chip)`
@@ -226,6 +227,12 @@ function Dataset({ data, error }) {
   ];
 
   const dataProps2 = [
+    {
+      label: "uploader",
+      value: data.uploader,
+      url: `/u/${data.uploader_id}`,
+      avatar: <Avatar>{data.uploader ? data.uploader.charAt(0) : "X"}</Avatar>,
+    },
     { label: "likes", value: data.nr_of_likes + " likes", icon: faHeart },
     {
       label: "issues",
@@ -284,22 +291,6 @@ function Dataset({ data, error }) {
               {/* User Chip and Second Row of Properties */}
               <Grid container spacing={2}>
                 <Grid item>
-                  <UserChip
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    avatar={
-                      <Avatar>
-                        {data.uploader ? data.uploader.charAt(0) : "X"}
-                      </Avatar>
-                    }
-                    label={data.uploader}
-                    href={`search?type=user&id=${data.uploader_id}`}
-                    component="a"
-                    clickable
-                  />
-                </Grid>
-                <Grid item>
                   {dataProps2.map((tag) => (
                     <Property key={tag.label} {...tag} />
                   ))}
@@ -310,17 +301,9 @@ function Dataset({ data, error }) {
               <Grid container spacing={2} pt={1}>
                 <Grid item md={12}>
                   <FontAwesomeIcon icon={faTags} />
-                  {data.tags.map(
-                    (element) =>
-                      !element.tag.toString().startsWith("study") && (
-                        <TagChip
-                          key={"tag_" + element.tag}
-                          label={"  " + element.tag + "  "}
-                          size="small"
-                          onClick={() => updateTag(element.tag)}
-                        />
-                      ),
-                  )}
+                  {data.tags.map((tag) => (
+                    <Tag key={tag.tag} tag={tag.tag} />
+                  ))}
                 </Grid>
               </Grid>
             </Grid>
