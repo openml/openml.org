@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-
 import { Typography } from "@mui/material";
+import { useTheme } from "@mui/system";
 
 import DashboardLayout from "../../layouts/Dashboard";
 import { getItem } from "../api/getItem";
@@ -10,6 +10,7 @@ import CroissantMetaData from "../../components/data/CroissantMetaData";
 import FeatureTable from "../../components/data/FeatureTable";
 import QualityTable from "../../components/data/QualityTable";
 import Property from "../../components/Property";
+import Tag from "../../components/Tag";
 
 import styled from "@emotion/styled";
 import {
@@ -31,7 +32,7 @@ import {
   faCheckCircle,
   faClock,
   faClosedCaptioning,
-  faCloud,
+  faCloudArrowDown,
   faCloudDownloadAlt,
   faCode,
   faCodeBranch,
@@ -48,21 +49,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReactMarkdown from "react-markdown";
-import { Tag } from "../../components/Tag";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
-  return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
+  return { paths: [], fallback: "blocking" }; // or fallback: true
 }
 
 const ActionButton = styled(IconButton)`
   float: right;
   border-radius: 0;
-`;
-
-const TagChip = styled(Chip)`
-  margin-bottom: 5px;
-  margin-left: 5px;
 `;
 
 const Action = styled.div`
@@ -135,12 +130,7 @@ const ActionButtons = ({ buttons }) => {
 };
 
 function Dataset({ data, error }) {
-  // When developing, reload i18n resources on page reload
-  const { i18n, t } = useTranslation();
-  if (process.env.NODE_ENV === "development") {
-    i18n.reloadResources();
-  }
-
+  const theme = useTheme();
   const did = data.data_id;
   const did_padded = did.toString().padStart(4, "0");
   const bucket_url = "https://openml1.win.tue.nl/datasets/";
@@ -259,7 +249,7 @@ function Dataset({ data, error }) {
     {
       label: "Data downloads",
       value: data.nr_of_downloads + " downloads",
-      icon: faCloud,
+      icon: faCloudArrowDown,
     },
   ];
 
@@ -273,8 +263,11 @@ function Dataset({ data, error }) {
           <Grid container spacing={4}>
             <Grid item md={12}>
               <Typography variant="h1">
-                <FontAwesomeIcon icon={faDatabase} />
-                &nbsp;&nbsp;&nbsp;{data.name}
+                <FontAwesomeIcon
+                  icon={faDatabase}
+                  color={theme.palette.entity["d"]}
+                />
+                &nbsp;&nbsp;{data.name}
               </Typography>
             </Grid>
 

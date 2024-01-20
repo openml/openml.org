@@ -9,31 +9,26 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getItem } from "../api/getItem";
 import {
   faClock,
-  faCloud,
+  faCloudArrowDown,
   faDatabase,
   faExclamationTriangle,
   faFlag,
   faHeart,
+  faIdBadge,
   faStar,
   faTags,
-  faThumbsDown,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Card, CardContent, Grid } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Link as MuiLink,
-} from "@mui/material";
+import { Table, TableBody, TableRow, TableCell } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { updateTag, TagChip } from "../api/itemDetail";
 import Wrapper from "../../components/Wrapper";
 import Property from "../../components/Property";
+import { useTheme } from "@mui/system";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -54,6 +49,8 @@ export async function getStaticProps({ params, locale }) {
 
 function Task({ data }) {
   const router = useRouter();
+  const theme = useTheme();
+
   const taskId = router.query.taskId;
 
   const taskDescription = [
@@ -70,28 +67,35 @@ function Task({ data }) {
   ];
 
   const dataProps1 = [
-    { label: "task", value: data.task_id, icon: faTrophy },
+    { label: "Task ID", value: "ID: " + data.task_id, icon: faIdBadge },
     {
-      label: "dataset",
+      label: "Task source",
       value: data.source_data.name,
       icon: faDatabase,
       color: green[500],
       url: "/d/" + data.source_data.data_id,
     },
-    { label: "task-type", value: data.tasktype.name, icon: faFlag },
+    { label: "Task type", value: data.tasktype.name, icon: faFlag },
     {
-      label: "date",
+      label: "Task date",
       value: data.date.split(" ")[0],
       icon: faClock,
     },
   ];
 
   const dataProps2 = [
-    { label: "likes", value: data.nr_of_likes, icon: faHeart },
-    { label: "issues", value: data.nr_of_issues, icon: faExclamationTriangle },
-    { label: "downvotes", value: data.nr_of_downvotes, icon: faThumbsDown },
-    { label: "downloads", value: data.nr_of_downloads, icon: faCloud },
-    { label: "runs", value: data.runs, icon: faStar },
+    { label: "Task likes", value: data.nr_of_likes, icon: faHeart },
+    {
+      label: "Task issues",
+      value: data.nr_of_issues,
+      icon: faExclamationTriangle,
+    },
+    {
+      label: "Task downloads",
+      value: data.nr_of_downloads,
+      icon: faCloudArrowDown,
+    },
+    { label: "Task runs", value: data.runs, icon: faStar },
   ];
 
   return (
@@ -100,15 +104,18 @@ function Task({ data }) {
       <React.Fragment>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Grid container style={{ padding: "25px 0" }}>
+            <Grid container spacing={2}>
               <Grid item md={12}>
                 <Typography
                   variant="h1"
                   className={"sectionTitle"}
                   style={{ marginBottom: "15px" }}
                 >
-                  <FontAwesomeIcon icon={faTrophy} /> {data.tasktype.name} on{" "}
-                  {data.source_data.name}{" "}
+                  <FontAwesomeIcon
+                    icon={faTrophy}
+                    color={theme.palette.entity["t"]}
+                  />{" "}
+                  {data.tasktype.name} on {data.source_data.name}{" "}
                 </Typography>
               </Grid>
               <Grid item md={12}>

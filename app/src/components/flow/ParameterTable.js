@@ -19,14 +19,18 @@ const columns = [
     headerName: "Default value",
     width: 200,
     renderCell: (params) => {
+      const maxChars = 50;
       try {
         // Attempt to parse the value as JSON
         const jsonObject = JSON.parse(params.value);
         const prettyJson = JSON.stringify(jsonObject, null, 2);
-
+        const displayText =
+          prettyJson && prettyJson.length > maxChars
+            ? prettyJson.substring(0, maxChars) + "..."
+            : prettyJson;
         return (
           <Tooltip title={<pre>{prettyJson}</pre>} arrow>
-            <span>{prettyJson.substring(0, 50)}...</span>
+            <span>{displayText}</span>
           </Tooltip>
         );
       } catch {
@@ -41,7 +45,7 @@ const columns = [
     width: 400,
     renderCell: (params) => {
       // Maximum characters to display in the cell
-      const maxChars = 50; // Adjust as needed
+      const maxChars = 50;
 
       // Truncate the description and add an ellipsis if it exceeds maxChars
       const displayText =

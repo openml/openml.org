@@ -7,7 +7,7 @@ const TagChip = styled(Chip)`
   margin-left: 5px;
 `;
 
-export const Tag = (tag) => {
+const Tag = (tag) => {
   const router = useRouter();
 
   const updateTag = (value) => {
@@ -34,3 +34,5 @@ export const Tag = (tag) => {
   }
   return null;
 };
+
+export default Tag;

@@ -744,7 +744,22 @@ tips:
     Data likes: "The number of likes the dataset has received."
     Data issues: "The number of issues reported for this dataset."
     Data downloads: "The number of times the dataset was downloaded."
-
+    Task ID: "The ID of the task. This is a unique permanent identifier."
+    Task source: "This is the main dataset that was used to create the task."
+    Task type: "The type of machine learning problem this is. For example, supervised classification."
+    Task date: "The date when the task was created on OpenML."
+    Task likes: "The number of likes the task has received."
+    Task issues: "The number of issues reported for this task."
+    Task downloads: "The number of times the task was downloaded."
+    Task runs: "The number of models evaluated on this task."
+    Flow uploader: "The person who uploaded the dataset to OpenML. For public domain data, this is not always the original author."
+    Flow visibility: "The visibility of the flow, i.e. whether it is public or private."
+    Flow date: "The date when the flow was uploaded to OpenML."
+    Flow likes: "The number of likes the flow has received."
+    Flow issues: "The number of issues reported for this flow."
+    Flow downloads: "The number of times the flow was downloaded."
+    Flow runs: "The number of times this flow was evaluated."
+ 
 
 
 
