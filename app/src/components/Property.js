@@ -3,6 +3,9 @@ import styled from "@emotion/styled";
 import { Tooltip, Link as MuiLink, Chip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+// Server-side translation
+import { useTranslation } from "next-i18next";
+
 const Icon = styled(FontAwesomeIcon)`
   padding-right: 0.5em;
 `;
@@ -19,8 +22,29 @@ const SimpleLink = styled(MuiLink)`
 `;
 
 const Property = ({ label, value, color, icon, url, avatar }) => {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
-    <Tooltip title={label} placement="top-start">
+    <Tooltip
+      title={t(`tips.${label}`)}
+      arrow
+      slotProps={{
+        popper: {
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, -14],
+              },
+            },
+          ],
+        },
+      }}
+    >
       <span
         style={{
           paddingRight: 15,

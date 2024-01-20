@@ -25,6 +25,7 @@ import { Icon } from "@iconify/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Server-side translation
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {
   faCheckCircle,
@@ -106,18 +107,25 @@ export async function getStaticProps({ params, locale }) {
 }
 
 const ActionButtons = ({ buttons }) => {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   return (
     <>
       {buttons.map((button, index) => (
         <Tooltip
           key={index}
-          title={button.tooltipTitle}
+          arrow
+          title={t(`tips.${button.label}`)}
           placement="bottom-start"
         >
           <ActionButton color="primary" href={button.url || button.getUrl()}>
             <Action>
               {button.icon}
-              <Typography>{button.label}</Typography>
+              <Typography>{t(`button.${button.label}`)}</Typography>
             </Action>
           </ActionButton>
         </Tooltip>
@@ -127,6 +135,12 @@ const ActionButtons = ({ buttons }) => {
 };
 
 function Dataset({ data, error }) {
+  // When developing, reload i18n resources on page reload
+  const { i18n, t } = useTranslation();
+  if (process.env.NODE_ENV === "development") {
+    i18n.reloadResources();
+  }
+
   const did = data.data_id;
   const did_padded = did.toString().padStart(4, "0");
   const bucket_url = "https://openml1.win.tue.nl/datasets/";
@@ -152,49 +166,48 @@ function Dataset({ data, error }) {
   // Action buttons
   const buttonData = [
     {
-      tooltipTitle: "Download Croissant description",
       url: croissant_url,
       icon: <Icon icon="fluent-emoji-high-contrast:croissant" />,
       label: "Croissant",
     },
     {
-      tooltipTitle: "Download XML description",
       url: `https://www.openml.org/api/v1/data/${data.data_id}`,
       icon: <FontAwesomeIcon icon={faCode} />,
-      label: "xml",
+      label: "XML",
     },
     {
-      tooltipTitle: "Download JSON description",
       url: `https://www.openml.org/api/v1/json/data/${data.data_id}`,
       icon: <FontAwesomeIcon icon={faFileAlt} />,
-      label: "json",
+      label: "JSON",
     },
     {
-      tooltipTitle: "Download dataset",
       url: data.url,
       icon: <FontAwesomeIcon icon={faCloudDownloadAlt} />,
-      label: "download",
+      label: "Download data",
     },
     {
-      tooltipTitle: "Edit dataset (requires login)",
       getUrl: () =>
         loggedIn ? `auth/data-edit?id=${data.data_id}` : "auth/sign-in",
       getColor: () => (loggedIn ? "primary" : "default"),
       icon: <FontAwesomeIcon icon={faEdit} />,
-      label: "edit",
+      label: "Edit data",
     },
   ];
 
   // First row of dataset properties
   const dataProps1 = [
-    { label: "id", value: "ID: " + data.data_id, icon: faIdBadge },
     {
-      label: "version",
+      label: "Data ID",
+      value: "ID: " + data.data_id,
+      icon: faIdBadge,
+    },
+    {
+      label: "Data version",
       value: "v." + data.version,
       icon: faCodeBranch,
     },
     {
-      label: "status",
+      label: "Data status",
       value: data.status === "active" ? "verified" : data.status,
       color:
         data.status === "active"
@@ -210,17 +223,17 @@ function Dataset({ data, error }) {
           : faWrench,
     },
     {
-      label: "format",
+      label: "Data format",
       value: data.format,
       icon: faTable,
     },
     {
-      label: "licence",
+      label: "Data licence",
       value: data.licence,
       icon: faClosedCaptioning,
     },
     {
-      label: "date",
+      label: "Data date",
       value: data.date.split(" ")[0],
       icon: faClock,
     },
@@ -228,19 +241,23 @@ function Dataset({ data, error }) {
 
   const dataProps2 = [
     {
-      label: "uploader",
+      label: "Data uploader",
       value: data.uploader,
       url: `/u/${data.uploader_id}`,
       avatar: <Avatar>{data.uploader ? data.uploader.charAt(0) : "X"}</Avatar>,
     },
-    { label: "likes", value: data.nr_of_likes + " likes", icon: faHeart },
     {
-      label: "issues",
+      label: "Data likes",
+      value: data.nr_of_likes + " likes",
+      icon: faHeart,
+    },
+    {
+      label: "Data issues",
       value: data.nr_of_issues + " issues",
       icon: faExclamationTriangle,
     },
     {
-      label: "downloads",
+      label: "Data downloads",
       value: data.nr_of_downloads + " downloads",
       icon: faCloud,
     },
@@ -301,8 +318,8 @@ function Dataset({ data, error }) {
               <Grid container spacing={2} pt={1}>
                 <Grid item md={12}>
                   <FontAwesomeIcon icon={faTags} />
-                  {data.tags.map((tag) => (
-                    <Tag key={tag.tag} tag={tag.tag} />
+                  {data.tags.map((tag, index) => (
+                    <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />
                   ))}
                 </Grid>
               </Grid>

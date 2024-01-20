@@ -722,6 +722,29 @@ filters:
     Weka: "Weka {{version}}"
     mlr: "MLR {{version}}"
     Moa: "Moa {{version}}"
+button:
+    Croissant: "Croissant"
+    XML: "XML"
+    JSON: "JSON"
+    Download data: "Download"
+    Edit data: "Edit"
+tips:
+    Croissant: "Download Croissant description"
+    XML: "Download XML description"
+    JSON: "Download JSON description"
+    Download data: "Download dataset"
+    Edit data: "Edit dataset (requires login)"
+    Data ID: "The ID of the dataset. This is a unique permanent identifier."
+    Data version: "The version of the dataset. New versions are created when the dataset is changed."
+    Data status: "The status of the dataset. `Verified` means that they could be automatically loaded and analyzed. `Deactivated` means that they should no longer be used, and have ben replaced by a better version. `In preparation` means that a problem was detected that the author is fixing."
+    Data format: "The format of the dataset. ARFF means tabular data. The internal storage format is always Parquet."
+    Data licence: "The licence under which the dataset is released by the original author. It is most often Public Domain, meaning that no copyright restrictions are known, or a Creative Commons licence, such as CC0 or CC-BY."
+    Data date: "The date when the dataset was uploaded to OpenML."
+    Data uploader: "The person who uploaded the dataset to OpenML. For public domain data, this is not always the original author."
+    Data likes: "The number of likes the dataset has received."
+    Data issues: "The number of issues reported for this dataset."
+    Data downloads: "The number of times the dataset was downloaded."
+
 
 
 

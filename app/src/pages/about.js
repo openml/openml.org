@@ -52,7 +52,7 @@ import {
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-import { purple, blue, red, green, pink, grey } from "@mui/material/colors";
+import { purple, blue, red, green, grey } from "@mui/material/colors";
 import { ActionChip } from "../components/Card";
 
 // Server-side translation
