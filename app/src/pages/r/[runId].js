@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { useTheme } from "@mui/system";
 
@@ -9,11 +9,28 @@ import { useTheme } from "@mui/system";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getItem } from "../api/getItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faTags, faTrophy } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faCloudArrowDown,
+  faCogs,
+  faDatabase,
+  faExclamationTriangle,
+  faEye,
+  faHeart,
+  faIdBadge,
+  faStar,
+  faTags,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
 import { MetaTag } from "../../components/MetaItems";
 import { CollapsibleDataTable } from "../api/sizeLimiter";
-import { EvaluationDetail, FlowDetail, TagChip } from "../api/itemDetail";
+import { EvaluationDetail, FlowDetail } from "../api/itemDetail";
 import Wrapper from "../../components/Wrapper";
+import Property from "../../components/Property";
+import Tag from "../../components/Tag";
+import { shortenName } from "../../components/search/flowCard";
+
+import { blue, green, yellow } from "@mui/material/colors";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -46,6 +63,62 @@ function Run({ data }) {
       }
     }
   }
+
+  const runProps1 = [
+    { label: "Run ID", value: "ID: " + data.run_id, icon: faIdBadge },
+    {
+      label: "Run task",
+      value: data.run_task.tasktype.name,
+      icon: faTrophy,
+      color: yellow[800],
+      url: "/t/" + data.run_task.task_id,
+    },
+    {
+      label: "Run data",
+      value: data.run_task.source_data.name,
+      icon: faDatabase,
+      color: green[500],
+      url: "/d/" + data.run_task.source_data.data_id,
+    },
+    {
+      label: "Run flow",
+      value: shortenName(data.run_flow.name).substring(0, 20) + "...",
+      icon: faCogs,
+      color: blue[500],
+      url: "/f/" + data.run_flow.flow_id,
+    },
+    { label: "Run visibility", value: data.visibility, icon: faEye },
+    {
+      label: "Run date",
+      value: data.date.split(" ")[0],
+      icon: faClock,
+    },
+  ];
+
+  const runProps2 = [
+    {
+      label: "Run uploader",
+      value: data.uploader,
+      url: `/u/${data.uploader_id}`,
+      avatar: <Avatar>{data.uploader ? data.uploader.charAt(0) : "X"}</Avatar>,
+    },
+    {
+      label: "Run likes",
+      value: data.nr_of_likes + " likes",
+      icon: faHeart,
+    },
+    {
+      label: "Run issues",
+      value: data.nr_of_issues + " issues",
+      icon: faExclamationTriangle,
+    },
+    {
+      label: "Run downloads",
+      value: data.nr_of_downloads + " downloads",
+      icon: faCloudArrowDown,
+    },
+  ];
+
   //parameter with the same names result in FlowDetail objects with the same keys,counter is used to prevent it
   var parameterID = 0;
   //ID counter for evaluations
@@ -67,39 +140,33 @@ function Run({ data }) {
                 </Typography>
               </Grid>
               <Grid item md={12}>
-                <MetaTag type={"task"} value={data.run_task.task_id} />
-                <MetaTag
-                  type={"dataset"}
-                  value={data.run_task.source_data.name}
-                />
-                <MetaTag type={"status"} value={data.visibility} />
-                <MetaTag
-                  type={"uploaded"}
-                  date={data.date}
-                  uploader={data.uploader}
-                />
-                <br />
-                <MetaTag type={"likes"} value={data.nr_of_likes} />
-                <MetaTag type={"issues"} value={data.nr_of_issues} />
-                <MetaTag type={"downvotes"} value={data.nr_of_downvotes} />
-                <MetaTag type={"downloads"} value={data.nr_of_downloads} />
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item md={12}>
-                <FontAwesomeIcon icon={faTags} />{" "}
-                {data.tags.map((element) =>
-                  element.tag.toString().startsWith("study") ? (
-                    ""
-                  ) : (
-                    <TagChip
-                      key={"tag_" + element.tag}
-                      label={"  " + element.tag + "  "}
-                      size="small"
-                      onClick={() => updateTag(element.tag)}
-                    />
-                  ),
-                )}
+                <Grid container justifyContent="space-between" spacing={2}>
+                  {/* Left-aligned Properties */}
+                  <Grid item>
+                    {runProps1.map((tag) => (
+                      <Property key={tag.label} {...tag} />
+                    ))}
+                  </Grid>
+                </Grid>
+
+                {/* User Chip and Second Row of Properties */}
+                <Grid container spacing={2}>
+                  <Grid item>
+                    {runProps2.map((tag) => (
+                      <Property key={tag.label} {...tag} />
+                    ))}
+                  </Grid>
+                </Grid>
+
+                {/* Tags */}
+                <Grid container spacing={2} pt={1}>
+                  <Grid item md={12}>
+                    <FontAwesomeIcon icon={faTags} />
+                    {data.tags.map((tag, index) => (
+                      <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />
+                    ))}
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
