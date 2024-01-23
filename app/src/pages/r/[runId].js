@@ -22,7 +22,6 @@ import {
   faTags,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
-import { MetaTag } from "../../components/MetaItems";
 import { CollapsibleDataTable } from "../api/sizeLimiter";
 import { EvaluationDetail, FlowDetail } from "../api/itemDetail";
 import Wrapper from "../../components/Wrapper";
