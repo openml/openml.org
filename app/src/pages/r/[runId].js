@@ -1,7 +1,6 @@
-import { useRouter } from "next/router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
+import { Avatar, Grid, Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { useTheme } from "@mui/system";
 
@@ -22,14 +21,14 @@ import {
   faTags,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
-import { CollapsibleDataTable } from "../api/sizeLimiter";
-import { EvaluationDetail, FlowDetail } from "../api/itemDetail";
 import Wrapper from "../../components/Wrapper";
 import Property from "../../components/Property";
 import Tag from "../../components/Tag";
 import { shortenName } from "../../components/search/flowCard";
 
 import { blue, green, yellow } from "@mui/material/colors";
+import ParameterTable from "../../components/run/ParameterTable";
+import EvaluationTable from "../../components/run/EvaluationTable";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -50,10 +49,6 @@ export async function getStaticProps({ params, locale }) {
 
 function Run({ data }) {
   const theme = useTheme();
-  const router = useRouter();
-  const runId = router.query.runId;
-  let flowCols = ["Parameter", "Value"];
-  let evaluationMeasureCols = ["Evaluation Measure", "Value", ""];
   var evaluations = [];
   if (data.evaluations) {
     for (let i = 0; i < data.evaluations.length; i++) {
@@ -118,10 +113,6 @@ function Run({ data }) {
     },
   ];
 
-  //parameter with the same names result in FlowDetail objects with the same keys,counter is used to prevent it
-  var parameterID = 0;
-  //ID counter for evaluations
-  var evaluationID = 0;
   return (
     <Wrapper>
       <Helmet title="OpenML Runs" />
@@ -169,48 +160,12 @@ function Run({ data }) {
               </Grid>
             </Grid>
           </Grid>
+          {/* Parameter tables */}
           <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant={"h4"}>Flow</Typography>
-                <br />
-                <span style={{ wordWrap: "break-word" }}>
-                  {data.run_flow.name}
-                </span>
-                <CollapsibleDataTable
-                  data={data.run_flow.parameters}
-                  rowrenderer={(m) => (
-                    <FlowDetail key={parameterID++} item={m}></FlowDetail>
-                  )}
-                  maxLength={7}
-                  columns={flowCols}
-                />
-              </CardContent>
-            </Card>
+            <ParameterTable data={data.run_flow.parameters} />
           </Grid>
           <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <CollapsibleDataTable
-                  title={
-                    "Evaluation Measures (" +
-                    data.run_task.estimation_procedure.name +
-                    ")"
-                  }
-                  data={evaluations}
-                  rowrenderer={(m) => (
-                    <EvaluationDetail
-                      key={evaluationID++}
-                      item={m}
-                      target_values={data.run_task.target_values}
-                      estimationProcedure={data.run_task.name}
-                    />
-                  )}
-                  maxLength={7}
-                  columns={evaluationMeasureCols}
-                />
-              </CardContent>
-            </Card>
+            <EvaluationTable data={data.evaluations} />
           </Grid>
         </Grid>
       </React.Fragment>

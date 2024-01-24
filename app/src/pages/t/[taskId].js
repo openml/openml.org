@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Typography } from "@mui/material";
@@ -25,10 +24,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Table, TableBody, TableRow, TableCell } from "@mui/material";
 import { green } from "@mui/material/colors";
-import { updateTag, TagChip } from "../api/itemDetail";
 import Wrapper from "../../components/Wrapper";
 import Property from "../../components/Property";
 import { useTheme } from "@mui/system";
+import Tag from "../../components/Tag";
 
 export async function getStaticPaths() {
   // No paths are pre-rendered
@@ -48,10 +47,7 @@ export async function getStaticProps({ params, locale }) {
 }
 
 function Task({ data }) {
-  const router = useRouter();
   const theme = useTheme();
-
-  const taskId = router.query.taskId;
 
   const taskDescription = [
     { name: "Task ID", value: data.task_id },
@@ -133,26 +129,18 @@ function Task({ data }) {
                     ))}
                   </Grid>
                 </Grid>
-                {data.tags[0]?.tag !== undefined &&
-                  data.tags[0].tag.length > 0 && (
-                    <Grid container>
-                      <Grid item md={12}>
-                        <FontAwesomeIcon icon={faTags} />
-                        {data.tags.map((element) =>
-                          element.tag.toString().startsWith("study") ? (
-                            ""
-                          ) : (
-                            <TagChip
-                              key={"tag_" + element.tag}
-                              label={"  " + element.tag + "  "}
-                              size="small"
-                              onClick={() => updateTag(element.tag)}
-                            />
-                          ),
-                        )}
-                      </Grid>
-                    </Grid>
-                  )}
+                {/* Tags */}
+                <Grid container spacing={2} pt={1}>
+                  <Grid item md={12}>
+                    <FontAwesomeIcon icon={faTags} />
+                    {data.tags.map((tag, index) => (
+                      <Tag
+                        key={`${tag.tag}-${index}`}
+                        tag={tag.tag.startsWith("study") ? "" : tag.tag}
+                      />
+                    ))}
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

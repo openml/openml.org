@@ -196,16 +196,6 @@ function Flow({ data }) {
             </Card>
           </Grid>
         </Grid>
-        {/* <Helmet title="OpenML Flows" />
-      <Typography variant="h3" gutterBottom>
-        Flow {flowId}
-      </Typography>
-      <Typography variant="p" gutterBottom>
-        {data.name}
-      </Typography>
-      <Typography variant="h5" gutterBottom>
-        {shortenName(data.name)}
-      </Typography> */}
       </React.Fragment>
     </Wrapper>
   );

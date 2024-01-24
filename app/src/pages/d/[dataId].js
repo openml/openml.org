@@ -279,7 +279,6 @@ function Dataset({ data, error }) {
                     <Property key={tag.label} {...tag} />
                   ))}
                 </Grid>
-
                 {/* Right-aligned Version Chip */}
                 <Grid item>
                   <VersionChip
@@ -297,7 +296,6 @@ function Dataset({ data, error }) {
                   />
                 </Grid>
               </Grid>
-
               {/* User Chip and Second Row of Properties */}
               <Grid container spacing={2}>
                 <Grid item>
@@ -306,7 +304,6 @@ function Dataset({ data, error }) {
                   ))}
                 </Grid>
               </Grid>
-
               {/* Tags */}
               <Grid container spacing={2} pt={1}>
                 <Grid item md={12}>
