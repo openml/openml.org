@@ -11,7 +11,7 @@ const FilterChip = styled(Chip)`
 `;
 
 // Handles special cases in the filter options
-const processOption = (option) => {
+const processOption = (option, translate = true) => {
   // Homogenize notation for library reporting and versioning
   const libraries = [
     "sklearn",
@@ -45,20 +45,29 @@ const processOption = (option) => {
     } else {
       return [`filters.${lib}`];
     }
-  } else {
+  } else if (translate) {
     // If comma or newline separated, return the first
     const segments = option.split(/,|\n/);
     return [`filters.${segments[0]}`];
+  } else {
+    return option;
   }
 };
 
 const Filter = ({ label, options, values, onRemove, onSelect }) => {
+  // Don't invoke translation for flows or datasets
+  const translate = !["flow", "dataset"].includes(label.split(".").pop());
   return (
     <React.Fragment>
       {options.map((option) => (
         <FilterChip
           label={
-            i18n.t(...processOption(option.value)) + "  (" + option.count + ")"
+            (translate
+              ? i18n.t(...processOption(option.value, translate))
+              : option.value) +
+            "  (" +
+            option.count +
+            ")"
           }
           key={option.value}
           clickable

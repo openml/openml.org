@@ -722,6 +722,8 @@ filters:
     Weka: "Weka {{version}}"
     mlr: "MLR {{version}}"
     Moa: "Moa {{version}}"
+    dataset: "Dataset"
+    flow: "Flow"
 button:
     Croissant: "Croissant"
     XML: "XML"
