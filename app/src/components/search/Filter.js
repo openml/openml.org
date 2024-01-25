@@ -45,12 +45,10 @@ const processOption = (option, translate = true) => {
     } else {
       return [`filters.${lib}`];
     }
-  } else if (translate) {
+  } else {
     // If comma or newline separated, return the first
     const segments = option.split(/,|\n/);
     return [`filters.${segments[0]}`];
-  } else {
-    return option;
   }
 };
 

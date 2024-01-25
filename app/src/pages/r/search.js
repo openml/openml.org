@@ -51,7 +51,6 @@ const search_facets = [
   {
     label: "filters.dataset",
     field: "run_task.source_data.name.keyword",
-    translate: false,
   },
   {
     label: "filters.tasktype",
@@ -60,7 +59,6 @@ const search_facets = [
   {
     label: "filters.flow",
     field: "run_flow.name",
-    translate: false,
   },
 ];
 
