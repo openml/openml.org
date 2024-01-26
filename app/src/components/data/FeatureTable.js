@@ -1,12 +1,76 @@
-import * as React from "react";
+import { useEffect, React } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardContent, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
+
 const CellContent = styled.span`
   font-weight: ${(props) => (props.isBold ? "bold" : "normal")};
 `;
+
+const ChartBox = styled.div`
+  width: 400px;
+  height: 100px;
+`;
+
+function StackedBarChart({ data, chartId }) {
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    const ctx = document.getElementById(chartId).getContext("2d");
+
+    // Assuming data is in the format: [categories, [class1Data, class2Data, ...]]
+    const categories = data[0];
+    const classData = data[1];
+
+    // Transpose classData to get data per category
+    const transposedData = categories.map((_, ci) =>
+      classData.map((row) => row[ci]),
+    );
+
+    const datasets = transposedData.map((data, index) => ({
+      label: `Class ${index + 1}`,
+      data: data,
+      borderWidth: 1,
+    }));
+
+    const myChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: categories,
+        datasets: datasets,
+      },
+      options: {
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true,
+            display: false,
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
+
+    return () => {
+      myChart.destroy();
+    };
+  }, [data]);
+
+  return <canvas id={chartId} width="400" height="400"></canvas>;
+}
 
 const columns = [
   { field: "id", headerName: "Index", type: "number", width: 90 },
@@ -42,6 +106,19 @@ const columns = [
     width: 110,
     editable: true,
   },
+  {
+    field: "distr",
+    headerName: "Distribution",
+    width: 400,
+    renderCell: (params) => {
+      const chartId = `chart-${params.row.id}`; // Assuming each row has a unique 'id'
+      return (
+        <ChartBox>
+          <StackedBarChart data={params.value} chartId={chartId} />
+        </ChartBox>
+      );
+    },
+  },
 ];
 
 const FeatureTable = ({ data }) => {
@@ -68,6 +145,7 @@ const FeatureTable = ({ data }) => {
             rows={rows}
             columns={columns}
             getRowId={(row) => row.index}
+            getRowHeight={(row) => 100}
             sortModel={[
               {
                 field: "id",
