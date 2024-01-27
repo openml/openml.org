@@ -192,6 +192,77 @@ function StackedBarChart({ data, chartId, showX, targets }) {
   return <canvas id={chartId}></canvas>;
 }
 
+function randomValues(count, min, max) {
+  const delta = max - min;
+  return Array.from({ length: count }).map(() => Math.random() * delta + min);
+}
+
+function HorizontalBoxPlot({ data, chartId }) {
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const ctx = document.getElementById(chartId).getContext("2d");
+
+    // Unpack your data. Assuming data is in the format { min, max, mean, stdev }
+    const { min, max, mean, stdev } = data;
+
+    // Calculate box plot data
+    const lowerQuartile = mean - stdev; // This is a simplification
+    const upperQuartile = mean + stdev; // This is a simplification
+
+    const chartData = {
+      labels: ["Stats"],
+      datasets: [
+        {
+          label: "Box Plot",
+          data: [randomValues(100, min, max)],
+          barPercentage: 0.5,
+          barThickness: 50,
+          maxBarThickness: 100,
+          minBarLength: 2,
+          errorBars: {
+            Stats: { plus: max - mean, minus: mean - min },
+          },
+        },
+      ],
+    };
+
+    const myChart = new Chart(ctx, {
+      type: "bar",
+      data: chartData,
+      options: {
+        indexAxis: "y",
+        scales: {
+          x: {
+            display: false,
+          },
+          y: {
+            display: true,
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
+
+    return () => {
+      myChart.destroy();
+    };
+  }, [data]);
+
+  return <canvas id={chartId} width="400" height="400"></canvas>;
+}
+
 const FeatureTable = ({ data }) => {
   // Check for targets
   let targets = [];
@@ -250,14 +321,24 @@ const FeatureTable = ({ data }) => {
       width: 200,
       renderCell: (params) => {
         const chartId = `chart-${params.row.id}`; // Assuming each row has a unique 'id'
+        const stats = {
+          min: params.row.min,
+          max: params.row.max,
+          mean: params.row.mean,
+          stdev: params.row.stdev,
+        };
         return (
           <ChartBox>
-            <StackedBarChart
-              data={params.value}
-              chartId={chartId}
-              showX={params.row.target === "1"}
-              targets={targets}
-            />
+            {params.row.type === "nominal" ? (
+              <StackedBarChart
+                data={params.value}
+                chartId={chartId}
+                showX={params.row.target === "1"}
+                targets={targets}
+              />
+            ) : params.row.type === "numeric" ? (
+              <HorizontalBoxPlot data={stats} chartId={chartId} />
+            ) : null}
           </ChartBox>
         );
       },
