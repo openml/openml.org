@@ -122,7 +122,7 @@ function Flow({ data }) {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container style={{ padding: "25px 0" }}>
-              <Grid item md={12}>
+              <Grid item xs={12}>
                 <Tooltip title={data.name}>
                   <Typography
                     variant={"h1"}

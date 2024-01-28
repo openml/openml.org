@@ -197,22 +197,6 @@ function Dataset({ data, error }) {
       icon: faCodeBranch,
     },
     {
-      label: "Data status",
-      value: data.status === "active" ? "verified" : data.status,
-      color:
-        data.status === "active"
-          ? "green"
-          : data.status === "deactivated"
-          ? "red"
-          : "orange",
-      icon:
-        data.status === "active"
-          ? faCheckCircle
-          : data.status === "deactivated"
-          ? faTimes
-          : faWrench,
-    },
-    {
       label: "Data format",
       value: data.format,
       icon: faTable,
@@ -235,6 +219,22 @@ function Dataset({ data, error }) {
       value: data.uploader,
       url: `/u/${data.uploader_id}`,
       avatar: <Avatar>{data.uploader ? data.uploader.charAt(0) : "X"}</Avatar>,
+    },
+    {
+      label: "Data status",
+      value: data.status === "active" ? "verified" : data.status,
+      color:
+        data.status === "active"
+          ? "green"
+          : data.status === "deactivated"
+          ? "red"
+          : "orange",
+      icon:
+        data.status === "active"
+          ? faCheckCircle
+          : data.status === "deactivated"
+          ? faTimes
+          : faWrench,
     },
     {
       label: "Data likes",
@@ -261,7 +261,7 @@ function Dataset({ data, error }) {
         <Grid item xs={12}>
           <ActionButtons buttons={buttonData} />
           <Grid container spacing={4}>
-            <Grid item md={12}>
+            <Grid item xs={12}>
               <Typography variant="h1">
                 <FontAwesomeIcon
                   icon={faDatabase}

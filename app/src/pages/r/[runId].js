@@ -120,7 +120,7 @@ function Run({ data }) {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container style={{ padding: "25px 0" }}>
-              <Grid item md={12}>
+              <Grid item xs={12}>
                 <Typography variant={"h1"} style={{ marginBottom: "15px" }}>
                   <FontAwesomeIcon
                     icon={faStar}

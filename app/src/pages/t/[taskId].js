@@ -101,7 +101,7 @@ function Task({ data }) {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item md={12}>
+              <Grid item xs={12}>
                 <Typography
                   variant="h1"
                   className={"sectionTitle"}
