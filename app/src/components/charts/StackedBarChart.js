@@ -70,7 +70,7 @@ const StackedBarChart = (props) => {
     return () => {
       myChart.destroy();
     };
-  }, [data]);
+  }, [data, chartId, showX, targets]);
 
   return <canvas id={chartId}></canvas>;
 };

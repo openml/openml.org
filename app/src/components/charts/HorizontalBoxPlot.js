@@ -81,7 +81,7 @@ const HorizontalBoxPlot = (props) => {
     return () => {
       myChart.destroy();
     };
-  }, [data]);
+  }, [data, chartId]);
 
   return <canvas id={chartId}></canvas>;
 };
