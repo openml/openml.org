@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import { Card, CardContent, Typography } from "@mui/material";
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 
 import StackedBarChart from "../charts/StackedBarChart";
 import HorizontalBoxPlot from "../charts/HorizontalBoxPlot";
@@ -23,6 +24,7 @@ const DataGrid = styled(MuiDataGrid)`
 `;
 
 const FeatureTable = ({ data }) => {
+  const { t } = useTranslation();
   // Check for targets
   let targets = [];
   // Define the rows for the grid
@@ -44,7 +46,7 @@ const FeatureTable = ({ data }) => {
     //{ field: "id", headerName: "Index", type: "number", width: 90 },
     {
       field: "name",
-      headerName: "Feature Name",
+      headerName: t("tableheader.feature"),
       width: 200,
       editable: true,
       valueGetter: (params) =>
@@ -56,7 +58,7 @@ const FeatureTable = ({ data }) => {
     },
     {
       field: "distr",
-      headerName: "Distribution",
+      headerName: t("tableheader.distribution"),
       width: 280,
       renderCell: (params) => {
         const chartId = `chart-${params.row.id}`; // Assuming each row has a unique 'id'
@@ -84,21 +86,21 @@ const FeatureTable = ({ data }) => {
     },
     {
       field: "type",
-      headerName: "Type",
+      headerName: t("tableheader.type"),
       width: 90,
       editable: true,
       align: "right",
     },
     {
       field: "distinct",
-      headerName: "Distinct values",
+      headerName: t("tableheader.distinct"),
       type: "number",
       width: 110,
       editable: true,
     },
     {
       field: "missing",
-      headerName: "Missing values",
+      headerName: t("tableheader.missing"),
       type: "number",
       width: 110,
       editable: true,
@@ -109,7 +111,7 @@ const FeatureTable = ({ data }) => {
     <Card>
       <CardContent>
         <Typography variant="h4" mb={6}>
-          {data.length + " Features"}
+          {data.length + t("tabletitle.features")}
         </Typography>
         <Box sx={{ width: "100%" }}>
           <DataGrid
