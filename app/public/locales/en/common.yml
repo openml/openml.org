@@ -764,9 +764,11 @@ tips:
 tableheader:
     feature: "Feature name"
     distribution: "Distribution"
-    missing: "Missing"
+    missing: "Missing values"
     type: "Type"
-    distinct: "Distinct"
+    distinct: "Distinct values"
 tabletitle:
     features: "Features"
     qualities: "Qualities (meta-features)"
+
+

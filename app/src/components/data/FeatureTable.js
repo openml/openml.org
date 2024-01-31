@@ -111,7 +111,7 @@ const FeatureTable = ({ data }) => {
     <Card>
       <CardContent>
         <Typography variant="h4" mb={6}>
-          {data.length + t("tabletitle.features")}
+          {data.length + " " + t("tabletitle.features")}
         </Typography>
         <Box sx={{ width: "100%" }}>
           <DataGrid
