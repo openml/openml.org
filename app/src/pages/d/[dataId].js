@@ -77,28 +77,25 @@ const VersionChip = styled(Chip)`
 // Loads the information about the dataset from ElasticSearch
 // Also loads the translations for the page
 export async function getStaticProps({ params, locale }) {
-  try {
-    // Fetch necessary data for the dataset page using params.dataId
-    const data = await getItem("data", params.dataId);
+  let data = null;
+  let error = null;
 
-    return {
-      props: {
-        data,
-        error: null, // No error occurred
-        ...(await serverSideTranslations(locale)),
-      },
-    };
+  try {
+    data = await getItem("data", params.dataId);
   } catch (error) {
     console.error("Error in getStaticProps:", error);
-
-    return {
-      props: {
-        data: null, // No data due to error
-        error: "Server is not responding.",
-        ...(await serverSideTranslations(locale)),
-      },
-    };
+    error = "Server is not responding.";
   }
+
+  const translations = await serverSideTranslations(locale);
+
+  return {
+    props: {
+      data,
+      error,
+      ...translations,
+    },
+  };
 }
 
 const ActionButtons = ({ buttons }) => {

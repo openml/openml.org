@@ -35,14 +35,23 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params, locale }) {
-  // Fetch necessary data for the flow page using params.flowId
-  const data = await getItem("flow", params.flowId);
+  let data = null;
+  let error = null;
+
+  try {
+    data = await getItem("flow", params.flowId);
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+    error = "Server is not responding.";
+  }
+
+  const translations = await serverSideTranslations(locale);
 
   return {
     props: {
       data,
-      // pass the translation props to the page component
-      ...(await serverSideTranslations(locale)),
+      error,
+      ...translations,
     },
   };
 }
