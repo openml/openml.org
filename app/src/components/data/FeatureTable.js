@@ -61,7 +61,7 @@ const FeatureTable = ({ data }) => {
       headerName: t("tableheader.distribution"),
       width: 280,
       renderCell: (params) => {
-        const chartId = `chart-${params.row.id}`; // Assuming each row has a unique 'id'
+        const chartId = `chart-${params.row.id}`;
         const stats = {
           min: parseFloat(params.row.min),
           max: parseFloat(params.row.max),

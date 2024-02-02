@@ -175,7 +175,7 @@ function Run({ data }) {
             <ParameterTable data={data.run_flow.parameters} />
           </Grid>
           <Grid item xs={12}>
-            <EvaluationTable data={data.evaluations} />
+            <EvaluationTable data={data} />
           </Grid>
         </Grid>
       </React.Fragment>
