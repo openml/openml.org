@@ -25,13 +25,33 @@ const columns = [
             data={params.value}
             chartId={chartId}
             showX={params.row.target === "1"}
+            showColors={true}
             targets={params.row.targets}
           />
         </ChartBox>
       );
     },
   },
-  { field: "per_fold", headerName: "Per fold", width: 200 },
+  {
+    field: "per_fold",
+    headerName: "Per fold",
+    width: 280,
+    renderCell: (params) => {
+      const chartId = `foldchart-${params.row.id}`;
+      const values = Array.isArray(params.value) ? params.value.flat() : [];
+      return (
+        <ChartBox>
+          <BarChart
+            data={values}
+            chartId={chartId}
+            showX={false}
+            showColors={false}
+            targets={[...Array(values.length).keys()]}
+          />
+        </ChartBox>
+      );
+    },
+  },
 ];
 
 const EvaluationTable = ({ data }) => {

@@ -7,13 +7,30 @@ import { Chart, registerables } from "chart.js";
 import { externalTooltipHandler } from "./helpers";
 Chart.register(...registerables, BoxPlotController, BoxAndWiskers);
 
+import { blue, green, orange, purple, red } from "@mui/material/colors";
+import { alpha } from "@mui/material/styles"; // Import alpha utility if you're using MUI v5 or later
+
 const BarChart = (props) => {
-  const { data, chartId, showX, targets } = props;
+  const { data, chartId, showX, showColors, targets } = props;
+
+  // Function to get color array
+  const muiColors = [blue[500], green[500], orange[500], purple[500], red[500]];
+  const getColorArray = () => {
+    return data.map((_, index) =>
+      alpha(muiColors[index % muiColors.length], 0.6),
+    );
+  };
+  const getBorderColorArray = () => {
+    return data.map((_, index) => muiColors[index % muiColors.length]);
+  };
+
   useEffect(() => {
     if (!data || data.length === 0) {
       return;
     }
     const ctx = document.getElementById(chartId).getContext("2d");
+    const colors = showColors ? getColorArray() : null;
+    const bordercolors = showColors ? getBorderColorArray() : null;
 
     const myChart = new Chart(ctx, {
       type: "bar",
@@ -23,6 +40,8 @@ const BarChart = (props) => {
           {
             data: data,
             borderWidth: 1,
+            backgroundColor: colors,
+            borderColor: bordercolors,
           },
         ],
       },
