@@ -5,6 +5,7 @@ import {
 } from "@sgratzl/chartjs-chart-boxplot";
 import { Chart, registerables } from "chart.js";
 import { externalTooltipHandler } from "./helpers";
+import { useTheme } from "@mui/material/styles";
 Chart.register(...registerables, BoxPlotController, BoxAndWiskers);
 
 import { blue, green, orange, purple, red } from "@mui/material/colors";
@@ -12,6 +13,7 @@ import { alpha } from "@mui/material/styles"; // Import alpha utility if you're 
 
 const BarChart = (props) => {
   const { data, chartId, showX, showColors, targets } = props;
+  const theme = useTheme();
 
   // Function to get color array
   const muiColors = [blue[500], green[500], orange[500], purple[500], red[500]];
@@ -51,6 +53,7 @@ const BarChart = (props) => {
             stacked: true,
             display: showX || (targets && targets.length < 5),
             ticks: {
+              color: theme.palette.text.primary,
               font: {
                 size: 10,
               },
@@ -79,7 +82,7 @@ const BarChart = (props) => {
     return () => {
       myChart.destroy();
     };
-  }, [data, chartId, showX, targets]);
+  }, [data, chartId, showX, targets, theme]);
 
   return <canvas id={chartId}></canvas>;
 };

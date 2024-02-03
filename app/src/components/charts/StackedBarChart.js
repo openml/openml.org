@@ -5,10 +5,13 @@ import {
 } from "@sgratzl/chartjs-chart-boxplot";
 import { Chart, registerables } from "chart.js";
 import { externalTooltipHandler } from "./helpers";
+import { useTheme } from "@mui/material/styles";
 Chart.register(...registerables, BoxPlotController, BoxAndWiskers);
 
 const StackedBarChart = (props) => {
   const { data, chartId, showX, targets } = props;
+  const theme = useTheme();
+
   useEffect(() => {
     if (!data || data.length === 0) {
       return;
@@ -42,6 +45,7 @@ const StackedBarChart = (props) => {
             stacked: true,
             display: showX || categories.length < 5,
             ticks: {
+              color: theme.palette.text.primary,
               font: {
                 size: 10,
               },
@@ -70,7 +74,7 @@ const StackedBarChart = (props) => {
     return () => {
       myChart.destroy();
     };
-  }, [data, chartId, showX, targets]);
+  }, [data, chartId, showX, targets, theme]);
 
   return <canvas id={chartId}></canvas>;
 };

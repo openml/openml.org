@@ -5,10 +5,12 @@ import {
 } from "@sgratzl/chartjs-chart-boxplot";
 import { Chart, registerables } from "chart.js";
 import { externalTooltipHandler } from "../charts/helpers";
+import { useTheme } from "@mui/material/styles";
 Chart.register(...registerables, BoxPlotController, BoxAndWiskers);
 
 const HorizontalBoxPlot = (props) => {
   const { data, chartId } = props;
+  const theme = useTheme();
 
   useEffect(() => {
     if (!data) {
@@ -64,6 +66,7 @@ const HorizontalBoxPlot = (props) => {
             min: data.min,
             max: data.max,
             ticks: {
+              color: theme.palette.text.primary,
               font: {
                 size: 10,
               },
@@ -81,7 +84,7 @@ const HorizontalBoxPlot = (props) => {
     return () => {
       myChart.destroy();
     };
-  }, [data, chartId]);
+  }, [data, chartId, theme]);
 
   return <canvas id={chartId}></canvas>;
 };
