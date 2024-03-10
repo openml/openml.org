@@ -11,6 +11,7 @@ from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 from server.config import Config
 
@@ -42,6 +43,9 @@ else:
     Config.SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "openml.db")
     Base = declarative_base()
     Base.metadata.reflect(engine)
+
+
+Session = sessionmaker(autoflush=False, bind=engine)
 
 argon2 = Argon2()
 db = SQLAlchemy()
