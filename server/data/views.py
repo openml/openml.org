@@ -1,5 +1,6 @@
 import json
 import os
+import tempfile
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -159,77 +160,73 @@ def data_upload():
     user = current_user()
     user_api_key = user.session_hash
 
-    print(request)
     data_file = request.files["dataset"]
-    print(data_file)
     metadata = request.files["metadata"]
-    print(metadata)
-    Path("temp_data/").mkdir(parents=True, exist_ok=True)
-    data_file.save(
-        "temp_data/" + user_api_key + "?" + secure_filename(data_file.filename)
-    )
-    path = "temp_data/" + user_api_key + "?" + secure_filename(data_file.filename)
-    metadata = metadata.read()
-    metadata = json.loads(metadata)
-    dataset_name = metadata["dataset_name"]
-    description = metadata["description"]
-    creator = metadata["creator"]
-    contributor = metadata["contributor"]
-    collection_date = metadata["collection_date"]
-    licence = metadata["licence"]
-    language = metadata["language"]
-    # attribute = metadata['attribute']
-    def_tar_att = metadata["def_tar_att"]
-    ignore_attribute = metadata["ignore_attribute"]
-    citation = metadata["citation"]
-    file_name, file_extension = os.path.splitext(data_file.filename)
-    # TODO: Support custom attribute types
-    supported_extensions = [".csv", ".parquet", ".json", ".feather", ".arff"]
 
-    if file_extension not in supported_extensions:
-        return jsonify({"msg": "format not supported"})
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        path = Path(tmpdirname) / f"{user_api_key}?{secure_filename(data_file.filename)}"
+        data_file.save(path)
 
-    elif file_extension == ".arff":
-        with open(path, "r") as arff_file:
-            arff_dict = arff.load(arff_file)
-        attribute_names, dtypes = zip(*arff_dict["attributes"])
-        data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
-        for attribute_name, dtype in arff_dict["attributes"]:
-            # 'real' and 'numeric' are probably interpreted correctly.
-            # Date support needs to be added.
-            if isinstance(dtype, list):
-                data[attribute_name] = data[attribute_name].astype("category")
-        df = data
+        metadata = metadata.read()
+        metadata = json.loads(metadata)
+        dataset_name = metadata["dataset_name"]
+        description = metadata["description"]
+        creator = metadata["creator"] or None
+        contributor = metadata["contributor"] or None
+        collection_date = metadata["collection_date"] or None
+        licence = metadata["licence"] or None
+        language = metadata["language"] or None
+        # attribute = metadata['attribute']
+        def_tar_att = metadata["def_tar_att"] or None
+        ignore_attribute = metadata["ignore_attribute"] or None
+        citation = metadata["citation"] or None
+        file_name, file_extension = os.path.splitext(data_file.filename)
+        # TODO: Support custom attribute types
+        supported_extensions = [".csv", ".parquet", ".json", ".feather", ".arff"]
 
-    elif file_extension == ".csv":
-        df = pd.read_csv(path)
+        if file_extension not in supported_extensions:
+            return jsonify({"msg": "format not supported"})
 
-    elif file_extension == ".json":
-        df = pd.read_json(path)
+        elif file_extension == ".arff":
+            with open(path, "r") as arff_file:
+                arff_dict = arff.load(arff_file)
+            attribute_names, dtypes = zip(*arff_dict["attributes"])
+            data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
+            for attribute_name, dtype in arff_dict["attributes"]:
+                # 'real' and 'numeric' are probably interpreted correctly.
+                # Date support needs to be added.
+                if isinstance(dtype, list):
+                    data[attribute_name] = data[attribute_name].astype("category")
+            df = data
 
-    elif file_extension == ".parquet":
-        df = pd.read_parquet(path)
+        elif file_extension == ".csv":
+            df = pd.read_csv(path)
 
-    elif file_extension == ".feather":
-        df = pd.read_feather(path)
+        elif file_extension == ".json":
+            df = pd.read_json(path)
 
-    oml_dataset = openml.datasets.create_dataset(
-        name=dataset_name,
-        description=description,
-        data=df,
-        creator=creator,
-        contributor=contributor,
-        collection_date=collection_date,
-        licence=licence,
-        language=language,
-        attributes="auto",
-        default_target_attribute=def_tar_att,
-        ignore_attribute=ignore_attribute,
-        citation=citation,
-    )
-    oml_dataset.publish()
-    print(path)
-    os.remove(path)
+        elif file_extension == ".parquet":
+            df = pd.read_parquet(path)
+
+        elif file_extension == ".feather":
+            df = pd.read_feather(path)
+
+        oml_dataset = openml.datasets.create_dataset(
+            name=dataset_name,
+            description=description,
+            data=df,
+            creator=creator,
+            contributor=contributor,
+            collection_date=collection_date,
+            licence=licence,
+            language=language,
+            attributes="auto",
+            default_target_attribute=def_tar_att,
+            ignore_attribute=ignore_attribute,
+            citation=citation,
+        )
+        oml_dataset.publish()
+
     # TODO Add error for bad dataset
     return jsonify({"msg": "dataset uploaded"}), 200
 
