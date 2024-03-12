@@ -104,7 +104,7 @@ function Public() {
       creator: event.target.creator.value,
       contributor: event.target.contributor.value,
       collection_date: event.target.collection_date.value,
-      licence: event.target.licence.value,
+      licence: licence,
       language: event.target.language.value,
       // attribute: event.target.attribute.value,
       ignore_attribute: event.target.ignore_attribute.value,
@@ -240,41 +240,17 @@ function Public() {
             </FormControl>
             <FormControl fullWidth mb={3}>
               <InputLabel id="licence">Licence Type</InputLabel>
-              <Select
-                labelId="licence"
-                id="licence"
-                value={licence}
-                onChange={handleChange}
-              >
-                <MenuItem value={"Public Domain (CCO)"}>
-                  Public Domain (CCO)
-                </MenuItem>
-                <MenuItem value={"Publicly available"}>
-                  Publicly available
-                </MenuItem>
-                <MenuItem value={"Attribution (CC BY)"}>
-                  Attribution (CC BY)
-                </MenuItem>
-                <MenuItem value={"Attribution-ShareAlike (CC BY-SA)"}>
-                  Attribution-ShareAlike (CC BY-SA)
-                </MenuItem>
-                <MenuItem value={"Attribution-NoDerivs (CC BY-ND)"}>
-                  Attribution-NoDerivs (CC BY-ND)
-                </MenuItem>
-                <MenuItem value={"Attribution-NonCommercial (CC BY-NC)"}>
-                  Attribution-NonCommercial (CC BY-NC)
-                </MenuItem>
-                <MenuItem
-                  value={"Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)"}
-                >
-                  Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
-                </MenuItem>
-                <MenuItem
-                  value={"Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)"}
-                >
-                  Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)
-                </MenuItem>
-              </Select>
+              <select labelId="licence" id="licence" value={licence} onChange={handleChange}
+              style={{padding: 15, marginTop: 50}}>
+                <option value="Public Domain (CCO)">Public Domain (CCO)</option>
+                <option value="Publicly available">Publicly available</option>
+                <option value="Attribution (CC BY)">Attribution (CC BY)</option>
+                <option value="Attribution-ShareAlike (CC BY-SA)">Attribution-ShareAlike (CC BY-SA)</option>
+                <option value="Attribution-NoDerivs (CC BY-ND)">Attribution-NoDerivs (CC BY-ND)</option>
+                <option value="Attribution-NonCommercial (CC BY-NC)">Attribution-NonCommercial (CC BY-NC)</option>
+                <option value="Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)">Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)</option>
+                <option value="Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)">Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)</option>
+              </select>
             </FormControl>
             {/*<FormControl fullWidth mb={3}>*/}
             {/*    <InputLabel htmlFor="attribute">Attribute</InputLabel>*/}
