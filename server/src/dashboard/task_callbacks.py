@@ -10,7 +10,6 @@ from openml.extensions.sklearn import SklearnExtension
 
 from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
-from .helpers import get_highest_rank
 from ...setup import SERVER_BASE_URL
 
 font = [
@@ -197,10 +196,19 @@ def register_task_callbacks(app, cache):
         max_score_by_uploader = df[["uploader_name", "value"]].groupby(["uploader_name"]).max()
         max_score_by_uploader = max_score_by_uploader.to_dict()["value"]
         submissions_by_uploader = df["uploader_name"].value_counts().to_dict()
+        rank_by_uploader = {
+            uploader: rank
+            for rank, (uploader, score) in enumerate(sorted(max_score_by_uploader.items(), key=lambda t: -t[1]), start=1)
+        }
 
         leaderboard = df.copy()[["uploader_name"]].drop_duplicates()
         leaderboard["Entries"] = leaderboard["uploader_name"].apply(submissions_by_uploader.get)
         leaderboard["Top Score"] = leaderboard["uploader_name"].apply(max_score_by_uploader.get)
+        leaderboard["Rank"] = leaderboard["uploader_name"].apply(rank_by_uploader.get)
+        leaderboard = leaderboard.rename(columns={"uploader_name": "Uploader"})
+        # Render order of columns matches dataframe column order.
+        leaderboard = leaderboard[["Rank", "Uploader", "Top Score", "Entries"]]
+
 
         # Create table
         table = html.Div(
