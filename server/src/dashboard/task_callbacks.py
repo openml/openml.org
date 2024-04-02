@@ -10,7 +10,6 @@ from openml.extensions.sklearn import SklearnExtension
 
 from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
-from .helpers import get_highest_rank
 from ...setup import SERVER_BASE_URL
 
 font = [
@@ -127,6 +126,7 @@ def register_task_callbacks(app, cache):
                 ),
             )
         ]
+
         layout = go.Layout(
             autosize=False,
             margin={"l": 400},
@@ -158,7 +158,6 @@ def register_task_callbacks(app, cache):
             tick_text.append(link)
 
         df["upload_time"] = pd.to_datetime(df["upload_time"])
-        df["upload_time"] = df["upload_time"].dt.date
 
         data = [
             go.Scatter(
@@ -177,7 +176,7 @@ def register_task_callbacks(app, cache):
             )
         ]
         layout = go.Layout(
-            title="Contributions over time,<br>every point is a run, "
+            title="Contributions over time, every point is a run."
             "click for details",
             autosize=True,
             margin={"l": 100},
@@ -194,29 +193,22 @@ def register_task_callbacks(app, cache):
         fig1 = go.Figure(data, layout)
 
         # Leaderboard table
+        max_score_by_uploader = df[["uploader_name", "value"]].groupby(["uploader_name"]).max()
+        max_score_by_uploader = max_score_by_uploader.to_dict()["value"]
+        submissions_by_uploader = df["uploader_name"].value_counts().to_dict()
+        rank_by_uploader = {
+            uploader: rank
+            for rank, (uploader, score) in enumerate(sorted(max_score_by_uploader.items(), key=lambda t: -t[1]), start=1)
+        }
 
-        top_uploader = df.sort_values("value", ascending=False).groupby(
-            ["uploader_name"], sort=False
-        )
-        name = top_uploader["uploader_name"].unique()
-        rank = list(range(1, len(name) + 1))
-        entries = top_uploader["uploader_name"].value_counts().values
-        leaderboard = pd.DataFrame(
-            {"Rank": rank, "Name": name, "Entries": entries}
-        ).reset_index()
-        leaderboard.drop("Name", axis=1, inplace=True)
-        ranks = []
-        df = top_uploader.head(df.shape[1])
-        for uploader in df["uploader_name"]:
-            ranks.append(
-                leaderboard[leaderboard["uploader_name"] == uploader].Rank.values[0]
-            )
-        df["Rank"] = ranks
+        leaderboard = df.copy()[["uploader_name"]].drop_duplicates()
+        leaderboard["Entries"] = leaderboard["uploader_name"].apply(submissions_by_uploader.get)
+        leaderboard["Top Score"] = leaderboard["uploader_name"].apply(max_score_by_uploader.get)
+        leaderboard["Rank"] = leaderboard["uploader_name"].apply(rank_by_uploader.get)
+        leaderboard = leaderboard.rename(columns={"uploader_name": "Uploader"})
+        # Render order of columns matches dataframe column order.
+        leaderboard = leaderboard[["Rank", "Uploader", "Top Score", "Entries"]]
 
-        # Sort by time
-        df.sort_values(by=["upload_time"], inplace=True)
-        # Get highest score
-        leaderboard = get_highest_rank(df, leaderboard)
 
         # Create table
         table = html.Div(
