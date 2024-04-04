@@ -56,7 +56,7 @@ def register_task_callbacks(app, cache):
         :return:
             Interactive graph (Evaluations tab) and leaderboard(People tab)
         """
-        n_runs = 100
+        n_runs = 1000
 
         # extract task id
         if pathname is not None and "/dashboard/task" in pathname:

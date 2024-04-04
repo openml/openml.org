@@ -245,7 +245,7 @@ def get_layout_from_task(task_id):
     # Fetch more runs button
     fetch_runs_button = html.Div(
         html.Button(
-            "Fetch next 100 runs",
+            "Fetch next 1000 runs",
             id="button",
             style={
                 "fontSize": 14,
