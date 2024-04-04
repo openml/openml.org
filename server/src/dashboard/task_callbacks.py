@@ -2,6 +2,7 @@ import re
 
 import pandas as pd
 import plotly.graph_objs as go
+import plotly.express as px
 from dash import dash_table as dt
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -159,38 +160,19 @@ def register_task_callbacks(app, cache):
 
         df["upload_time"] = pd.to_datetime(df["upload_time"])
 
-        data = [
-            go.Scatter(
-                y=df["value"],
-                x=df["upload_time"],
-                mode="text+markers",
-                text=run_link,
-                hovertext=df["uploader_name"],
-                hoverlabel=dict(bgcolor="white", bordercolor="black"),
-                marker=dict(
-                    opacity=0.5,
-                    symbol="diamond",
-                    color=df["uploader"],  # set color equal to a variable
-                    colorscale="Rainbow",
-                ),
-            )
-        ]
-        layout = go.Layout(
-            title="Contributions over time, every point is a run."
-            "click for details",
-            autosize=True,
-            margin={"l": 100},
-            hovermode="y",
-            font=dict(size=11),
-            xaxis=go.layout.XAxis(showgrid=False),
-            yaxis=go.layout.YAxis(
-                showgrid=True,
-                title=go.layout.yaxis.Title(text=str(metric)),
-                ticktext=tick_text + df["flow_name"],
-                showticklabels=True,
-            ),
+        fig1 = px.scatter(
+            df,
+            x="upload_time",
+            y="value",
+            color="uploader_name",
+            text=run_link,
+            custom_data=[df["uploader_name"]],
+            labels={"value":metric},
         )
-        fig1 = go.Figure(data, layout)
+        fig1.update_traces(
+            hovertemplate="<b>%{x}</b><br>" + metric + ": %{y:.3g}<br>%{customdata[0]}<extra></extra>",
+        )
+        fig1.update_layout(showlegend=False)
 
         # Leaderboard table
         max_score_by_uploader = df[["uploader_name", "value"]].groupby(["uploader_name"]).max()
