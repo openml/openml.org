@@ -43,7 +43,7 @@ function SignUp() {
       setError(true);
       setErrorMessage("Password too weak");
     } else if (
-      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(
+      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(
         event.target.email.value
       ) !== true
     ) {
