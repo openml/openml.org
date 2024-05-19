@@ -39,7 +39,7 @@ function SignUp() {
     event.preventDefault();
     console.log(event.target.email.value);
     console.log(event.target.password.value);
-    if (event.target.password.value.length < 6) {
+    if (event.target.password.value.length < 8) {
       setError(true);
       setErrorMessage("Password too weak");
     } else if (
