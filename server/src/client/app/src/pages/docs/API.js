@@ -211,7 +211,7 @@ const docs = {
   "Python" : "https://openml.github.io/openml-python",
   "R" : "https://github.com/mlr-org/mlr3oml",
   "Julia": "https://juliaai.github.io/OpenML.jl/stable/",
-  "Java" : "https://docs.openml.org/Java-guide"
+  "Java" : "https://openml.github.io/openml-java/"
 }
 
 const colab_links = {
