@@ -36,8 +36,8 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker Hub
         id: meta_dockerhub
         uses: docker/metadata-action@v5
-        flavor: |
-          prefix=dev_,onlatest=true
+        tags: |
+          type=semver,pattern={{raw}},prefix=dev_
         with:
           images: "openml/frontend"
 
