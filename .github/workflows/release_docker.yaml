@@ -39,7 +39,7 @@ jobs:
         with:
           images: "openml/frontend"
           tags: |
-            type=setype=semver,pattern={{raw}},prefix=dev_
+            type=semver,pattern={{raw}},prefix=dev_
 
       - name: Build and push
         id: docker_build
