@@ -36,6 +36,8 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker Hub
         id: meta_dockerhub
         uses: docker/metadata-action@v5
+        flavor: |
+          prefix=dev_,onlatest=true
         with:
           images: "openml/frontend"
 
@@ -45,7 +47,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          tags: "dev_${{ steps.meta_dockerhub.outputs.tags }}"
+          tags: ${{ steps.meta_dockerhub.outputs.tags }}
           labels: ${{ steps.meta_dockerhub.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name == 'push' }}
