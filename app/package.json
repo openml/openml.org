@@ -1,6 +1,6 @@
 {
   "name": "openml",
-  "version": "2.0.20241011",
+  "version": "2.0.20241110",
   "description": "OpenML - Open Source Machine Learning Platform",
   "author": "Joaquin Vanschoren",
   "private": false,
