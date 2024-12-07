@@ -22,6 +22,7 @@ import { MetaTag } from "./MetaItems";
 
 const UserChip = styled(Chip)`
   margin-bottom: 5px;
+  margin-right: 5px;
 `;
 
 const ActionButton = styled(IconButton)`
@@ -167,6 +168,24 @@ export class DatasetItem extends React.Component {
                 {this.props.object.date.split(" ")[0]}</Grid>
                 <Grid item><MetaTag type={"version"} value={'v.' + this.props.object.version} /></Grid>
                 <Grid item style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                
+                { this.props.object.kaggle_url &&
+                <Tooltip title="This dataset is also available on Kaggle. We integrate with other platforms to give you the benefits of all.">
+                <UserChip
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  avatar={
+                    <Avatar><FontAwesomeIcon icon={["fab","kaggle"]} /></Avatar>
+                  }
+                  label="Find on Kaggle"
+                  href={this.props.object.kaggle_url}
+                  component="a"
+                  clickable
+                />
+                </Tooltip>
+                }
+
                 <UserChip
                   size="small"
                   color="primary"
