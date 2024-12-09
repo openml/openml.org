@@ -170,7 +170,7 @@ export class DatasetItem extends React.Component {
                 <Grid item style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 
                 { this.props.object.kaggle_url &&
-                <Tooltip title="This dataset is also available on Kaggle. We integrate with other platforms to give you the benefits of all.">
+                <Tooltip title="This dataset is also available on Kaggle. We integrate with Kaggle to give you the benefits of both platforms.">
                 <UserChip
                   size="small"
                   variant="outlined"
