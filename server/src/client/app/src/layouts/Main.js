@@ -13,7 +13,10 @@ import { spacing } from "@mui/system";
 
 import {
   CssBaseline,
-  Paper as MuiPaper
+  Paper as MuiPaper,
+  Snackbar,
+  Button,
+  Alert
 } from "@mui/material";
 
 const GlobalStyle = createGlobalStyle`
@@ -74,6 +77,11 @@ function Main(props) {
   const [activeSearch, setActiveSearch] = useState(false);
   const [mode, setMode] = useState("wide");
 
+  const [bannerOpen, setBannerOpen] = React.useState(true);
+  const handleBannerClose = () => {
+    setBannerOpen(false);
+  };
+
   const hidden = useMediaQuery(theme => theme.breakpoints.up('lg'));
 
   const handleDrawerToggle = () => {
@@ -124,6 +132,24 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
+          <Snackbar
+            open={bannerOpen}        
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            autoHideDuration={10000}
+            onClose={handleBannerClose}
+            sx={{ width: '97%'}}
+          >
+            <Alert
+              onClose={handleBannerClose}
+              severity="warning"
+              sx={{ width: '100%'}}
+            >
+              OpenML is temporarily running with limited functionality until full service is restored.{" "}
+                <a href="https://github.com/orgs/openml/discussions/20"> 
+                  Learn more
+                </a>
+            </Alert>
+          </Snackbar>
           <Drawer drawerWidth={context.drawerWidth} open={false}>
             {hidden ? null : 
               <Sidebar

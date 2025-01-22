@@ -218,7 +218,7 @@ function SidebarLink({ name, to, badge, icon, showTooltip }) {
         </Tooltip>
         <CategoryText>
           {name}
-          {(name === "Documentation" || name === "Blog") && (
+          {(name === "Documentation" || name === "Discussions") && (
             <FontAwesomeIcon
               icon="external-link-alt"
               style={{ paddingLeft: 6, paddingRight: 6 }}
