@@ -144,7 +144,7 @@ function Main(props) {
               severity="warning"
               sx={{ width: '100%'}}
             >
-              OpenML is temporarily running with limited functionality until full service is restored.{" "}
+                We are restoring full service after a recent cyberattack. Some links may temporarily not work.{" "}
                 <a href="https://github.com/orgs/openml/discussions/20"> 
                   Learn more
                 </a>
