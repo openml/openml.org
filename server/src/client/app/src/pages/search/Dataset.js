@@ -38,7 +38,7 @@ const Action = styled.div`
 `;
 
 const SERVER_URL = process.env.REACT_APP_URL_API || "https://www.openml.org/";
-const MINIO_URL = process.env.REACT_APP_URL_MINIO || "https://openml1.win.tue.nl/";
+const MINIO_URL = process.env.REACT_APP_URL_MINIO || "https://data.openml.org/";
 
 const CroissantComponent = ({ url }) => {
   const [jsonData, setJsonData] = useState({});
