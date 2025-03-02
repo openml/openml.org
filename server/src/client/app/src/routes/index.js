@@ -318,7 +318,7 @@ const authRoutes = {
 
 const documentationRoutes = {
   id: "Documentation",
-  path: "https://openml.github.io/docs/",
+  path: "https://docs.openml.org",
   header: "Learn",
   icon: <GreenMenuIcon icon="book-open" fixedWidth />,
   component: null
