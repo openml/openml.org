@@ -100,11 +100,11 @@ export class DatasetItem extends React.Component {
     // const bucket_url = `${MINIO_URL}datasets/`;
     // const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
     // const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
-    const croissant_url = "https://www.openml.org/croissant/dataset/"+ did;
+    const croissant_url = "croissant/dataset/"+ did;
 
     const handleDownload = () => {
       const datasetId = this.props.object.data_id;
-      const url = `https://openml.org/croissant/dataset/${datasetId}`;
+      const url = new URL(`/croissant/dataset/${datasetId}`, window.location.origin);
       const filename = `dataset_${datasetId}_croissant.json`;
     
       const link = document.createElement("a");
@@ -115,34 +115,6 @@ export class DatasetItem extends React.Component {
       document.body.removeChild(link);
     };
 
-    const forceDownload = async () => {
-      try {
-        const datasetId = this.props.object.data_id;
-        const url = `https://www.openml.org/croissant/dataset/${datasetId}`;
-        const filename = `dataset_${datasetId}_croissant.json`;
-    
-        // Fetch the JSON file
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch file");
-    
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-    
-        // Create a download link
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-    
-        // Cleanup
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-      } catch (error) {
-        console.error("Download failed:", error);
-      }
-    };
-
     return (
       <React.Fragment>
         <CroissantComponent url={croissant_url} />
@@ -150,16 +122,8 @@ export class DatasetItem extends React.Component {
           <Grid item xs={12}>
             <MainContext.Consumer>
               {context => (
-                <React.Fragment>  
-                  <Tooltip title="Download Croissant file" placement="bottom-start">
-                    <ActionButton color="primary" onClick={forceDownload}>
-                      <Action>
-                        <Icon icon="fluent-emoji-high-contrast:croissant" />
-                        <Typography>Download</Typography>
-                      </Action>
-                    </ActionButton>
-                  </Tooltip>                
-                  <Tooltip title="Download Croissant description" placement="bottom-start">
+                <React.Fragment>           
+                  <Tooltip title="Downloads a delicious Croissant description" placement="bottom-start">
                     <ActionButton color="primary" onClick={handleDownload}>
                       <Action>
                         <Icon icon="fluent-emoji-high-contrast:croissant" />
