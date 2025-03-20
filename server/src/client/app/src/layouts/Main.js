@@ -132,7 +132,7 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
-          <Snackbar
+          {false && <Snackbar
             open={bannerOpen}        
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             autoHideDuration={10000}
@@ -149,7 +149,7 @@ function Main(props) {
                   Learn more
                 </a>
             </Alert>
-          </Snackbar>
+          </Snackbar>}
           <Drawer drawerWidth={context.drawerWidth} open={false}>
             {hidden ? null : 
               <Sidebar

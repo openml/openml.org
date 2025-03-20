@@ -296,7 +296,7 @@ function Public() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Your dataset is uploading, you can edit it via dashboard later
+              Your dataset is uploading, you can edit it via the dashboard later
               and share it with public.
               {error && <text> {errormessage}</text>}
             </DialogContentText>
@@ -311,7 +311,7 @@ function Public() {
           type="Submit"
           onClick={handleEditData}
         >
-          Edit dataset (In progress)
+          Edit dataset
         </Button>
       </form>
     );

@@ -85,6 +85,7 @@ export class DatasetItem extends React.Component {
     this.defaultFeatureListSizeLimit = 7;
     this.featureSizeLimit = this.defaultFeatureListSizeLimit;
   }
+
   render() {
     const featureTableColumns = [
       "",
@@ -99,6 +100,20 @@ export class DatasetItem extends React.Component {
     const bucket_url = `${MINIO_URL}datasets/`;
     const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
     const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
+
+    const handleDownload = () => {
+      const datasetId = this.props.object.data_id;
+      const url = `https://openml.org/croissant/dataset/${datasetId}`;
+      const filename = `dataset_${datasetId}_croissant.json`;
+    
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
     return (
       <React.Fragment>
         <CroissantComponent url={croissant_url} />
@@ -108,7 +123,7 @@ export class DatasetItem extends React.Component {
               {context => (
                 <React.Fragment>                  
                   <Tooltip title="Download Croissant description" placement="bottom-start">
-                    <ActionButton color="primary" href={croissant_url}>
+                    <ActionButton color="primary" onClick={handleDownload}>
                       <Action>
                         <Icon icon="fluent-emoji-high-contrast:croissant" />
                         <Typography>Croissant</Typography>

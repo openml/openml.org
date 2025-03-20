@@ -41,7 +41,7 @@ function SignUp() {
     console.log(event.target.password.value);
     if (event.target.password.value.length < 8) {
       setError(true);
-      setErrorMessage("Password too weak");
+      setErrorMessage("Password too weak. Use at least 8 characters, with numbers, digits, and special characters.");
     } else if (
       /[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(
         event.target.email.value
@@ -128,6 +128,10 @@ function SignUp() {
           <Redirect to="/auth/sign-up" />
         )}
       </form>
+      <p>
+        You will receive an email to confirm your account. If you don't receive
+        it, please check your spam folder. 
+      </p>
       <p>
         <RedIcon icon="exclamation-triangle" /> By joining, you agree to the{" "}
         <a
