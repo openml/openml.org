@@ -117,7 +117,7 @@ export class DatasetItem extends React.Component {
     const forceDownload = async () => {
       try {
         const datasetId = this.props.object.data_id;
-        const url = `https://openml.org/croissant/dataset/${datasetId}`;
+        const url = `https://www.openml.org/croissant/dataset/${datasetId}`;
         const filename = `dataset_${datasetId}_croissant.json`;
     
         // Fetch the JSON file
