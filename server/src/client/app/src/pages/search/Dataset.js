@@ -101,6 +101,7 @@ export class DatasetItem extends React.Component {
     // const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
     // const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
     const croissant_url = "croissant/dataset/"+ did;
+    const full_croissant_url = new URL(`/croissant/dataset/${did}`, window.location.origin);
 
     const handleDownload = () => {
       const datasetId = this.props.object.data_id;
@@ -124,7 +125,12 @@ export class DatasetItem extends React.Component {
               {context => (
                 <React.Fragment>           
                   <Tooltip title="Downloads a delicious Croissant description" placement="bottom-start">
-                    <ActionButton color="primary" onClick={handleDownload}>
+                    <ActionButton color="primary" component="a" href={full_croissant_url}
+                            onClick={(e) => {
+                              e.preventDefault(); // Prevents default link behavior
+                              handleDownload();
+                            }}
+                          >
                       <Action>
                         <Icon icon="fluent-emoji-high-contrast:croissant" />
                         <Typography>Croissant</Typography>
