@@ -96,10 +96,11 @@ export class DatasetItem extends React.Component {
     ];
     const qualityTableColumns = ["", "Quality Name", "Value"];
     const did = this.props.object.data_id;
-    const did_padded = did.toString().padStart(4, "0");
-    const bucket_url = `${MINIO_URL}datasets/`;
-    const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
-    const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
+    // const did_padded = did.toString().padStart(4, "0");
+    // const bucket_url = `${MINIO_URL}datasets/`;
+    // const bucket_bracket = Math.floor(did / 10000).toString().padStart(4, "0");
+    // const croissant_url = bucket_url + bucket_bracket + "/" + did_padded + "/dataset_" + did + "_croissant.json";
+    const croissant_url = "https://www.openml.org/croissant/dataset/"+ did;
 
     const handleDownload = () => {
       const datasetId = this.props.object.data_id;
