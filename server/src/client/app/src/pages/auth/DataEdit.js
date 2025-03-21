@@ -205,7 +205,7 @@ function DataEdit() {
                                             label=""
                                             id="description"
                                             rows={15}
-                                            multiline={true}
+                                            multiline
                                             value={description}
                                         />
                                     </FormControl>) : (
@@ -219,62 +219,62 @@ function DataEdit() {
                                         </Link>
                                     </Tooltip>
                                 </div>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="citation">Citation</InputLabel>
+                                <FormControl fullWidth sx={{ mb: 3 }}>
+                                    <InputLabel shrink htmlFor="citation">Citation</InputLabel>
                                     <Input id="citation" placeholder="citation" defaultValue={citation}
-                                        multiline={true} />
+                                        multiline />
                                 </FormControl>
-                                <FormControl fullWidth mb={3}>
+                                <FormControl fullWidth sx={{ mb: 3 }}>
                                     <TextField label="Creator" id="creator" maxRows={4} defaultValue={creator}
-                                        multiline={true} />
+                                        multiline />
                                 </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="Collection Date">
+                                <FormControl fullWidth sx={{ mb: 3 }}>
+                                    <InputLabel shrink htmlFor="Collection Date">
                                         Collection date
                                     </InputLabel>
                                     <Input id="collection_date" placeholder="Collection date" defaultValue={date}
-                                        multiline={true} />
+                                        multiline />
                                 </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="language">Language</InputLabel>
+                                <FormControl fullWidth sx={{ mb: 3 }}>
+                                    <InputLabel shrink htmlFor="language">Language</InputLabel>
                                     <Input id="language" placeholder="Language" defaultValue={language}
-                                        multiline={true} />
+                                        multiline />
                                 </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="original_data_url">
+                                <FormControl fullWidth sx={{ mb: 3 }}>
+                                    <InputLabel shrink htmlFor="original_data_url">
                                         Original data URL
                                     </InputLabel>
                                     <Input id="original_data_url" placeholder="original_data_url"
-                                        defaultValue={original_data_url} multiline={true} />
+                                        defaultValue={original_data_url} multiline />
                                 </FormControl>
-                                <FormControl fullWidth mb={3}>
-                                    <InputLabel htmlFor="paper_url">
+                                <FormControl fullWidth sx={{ mb: 3 }}>
+                                    <InputLabel shrink htmlFor="paper_url">
                                         Paper Url
                                     </InputLabel>
                                     <Input id="paper_url" placeholder="paper_url"
-                                        defaultValue={paper_url} multiline={true} />
+                                        defaultValue={paper_url} multiline />
                                 </FormControl>
                                 {owner && (
                                     <Box p={1} border="3px solid red" borderRadius="5px" padding={5} marginTop={10}
                                         marginBottom={10}>
                                         <b>Danger Zone (can only be edited by author)</b>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel
+                                        <FormControl fullWidth sx={{ mb: 3 }}>
+                                            <InputLabel shrink
                                                 htmlFor="default_target_attribute">default_target_attribute</InputLabel>
                                             <Input id="default_target_attribute" placeholder="default_target_attribute"
-                                                defaultValue={def_tar_att} multiline={true} />
+                                                defaultValue={def_tar_att} multiline />
                                         </FormControl>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel htmlFor="ignore_attribute">ignore_attribute</InputLabel>
+                                        <FormControl fullWidth sx={{ mb: 3 }}>
+                                            <InputLabel shrink htmlFor="ignore_attribute">ignore_attribute</InputLabel>
                                             <Input id="ignore_attribute" placeholder="ignore_attribute"
-                                                defaultValue={ignore_att} multiline={true} />
+                                                defaultValue={ignore_att} multiline />
                                         </FormControl>
-                                        <FormControl fullWidth mb={3}>
-                                            <InputLabel htmlFor="row_id_attribute">
+                                        <FormControl fullWidth sx={{ mb: 3 }}>
+                                            <InputLabel shrink htmlFor="row_id_attribute">
                                                 row_id_attribute
                                             </InputLabel>
                                             <Input id="row_id_attribute" placeholder="row_id_attribute"
-                                                defaultValue={row_id_att} multiline={true} />
+                                                defaultValue={row_id_att} multiline />
                                         </FormControl>
 
 

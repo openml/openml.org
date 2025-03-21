@@ -12,7 +12,8 @@ import {
   Input,
   InputLabel,
   TextField,
-  Typography
+  Typography,
+  CircularProgress
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -301,15 +302,14 @@ function Public() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Your dataset is uploading, you can edit it via the dashboard later
-              and share it with public.
+             <CircularProgress />
               {error && <text> {errormessage}</text>}
             </DialogContentText>
           </DialogContent>
           <DialogActions></DialogActions>
         </Dialog>
-        {success && <Redirect to="/" />}
-        &nbsp;&nbsp;&nbsp;
+        {success && <Redirect to="/search?type=data&status=active&sort=date" />}
+        {false &&
         <Button
           variant="contained"
           color="primary"
@@ -317,7 +317,7 @@ function Public() {
           onClick={handleEditData}
         >
           Edit dataset
-        </Button>
+        </Button>}
       </form>
     );
   }
