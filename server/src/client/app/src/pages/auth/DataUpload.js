@@ -117,34 +117,14 @@ function Public() {
     });
     const data = new FormData();
 
-    // Debugging
-    let datasetInput = event.target.dataset;
-    console.log("Dataset input element:", datasetInput);
-
-    //let dataset = event.target.dataset.files;  
-
     let dataset = acceptedFiles;
-
     if (!dataset || dataset.length === 0) {
       console.error("No file selected for dataset.");
       return;
     }
 
-    // Debugging
-    console.log("Dataset files:", dataset);
-    console.log("Dataset file count:", dataset.length);
-    if (dataset.length === 0) {
-      console.error("No file selected for dataset.");
-    }
-
     data.append("dataset", dataset[0]);
     data.append("metadata", blob);
-
-    console.log(data);
-
-    for (let pair of data.entries()) {
-      console.log(pair[0], pair[1]);
-    }
 
     if (uploaddata === true) {
       setError(false);
