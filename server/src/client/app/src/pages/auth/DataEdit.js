@@ -225,7 +225,8 @@ function DataEdit() {
                                         multiline />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
-                                    <TextField label="Creator" id="creator" maxRows={4} defaultValue={creator}
+                                    <InputLabel shrink htmlFor="creator">Creator</InputLabel>
+                                    <Input id="creator" placeholder="creator" defaultValue={creator}
                                         multiline />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
