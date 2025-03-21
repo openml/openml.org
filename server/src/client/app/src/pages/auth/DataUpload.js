@@ -121,7 +121,14 @@ function Public() {
     let datasetInput = event.target.dataset;
     console.log("Dataset input element:", datasetInput);
 
-    let dataset = event.target.dataset.files;  
+    //let dataset = event.target.dataset.files;  
+
+    let dataset = acceptedFiles;
+
+    if (!dataset || dataset.length === 0) {
+      console.error("No file selected for dataset.");
+      return;
+    }
 
     // Debugging
     console.log("Dataset files:", dataset);
@@ -132,7 +139,7 @@ function Public() {
 
     data.append("dataset", dataset[0]);
     data.append("metadata", blob);
-    
+
     console.log(data);
 
     for (let pair of data.entries()) {
