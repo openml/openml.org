@@ -151,18 +151,16 @@ function Public() {
               <InputLabel htmlFor="firstname">First name</InputLabel>
               <Input
                 id="firstname"
-                defaultValue={fname}
-                placeholder="First name"
-                multiline={false}
+                value={fname}
+                onChange={(e) => setFname(e.target.value)}
               />
             </FormControl>
             <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="lastname">Last name</InputLabel>
               <Input
                 id="lastname"
-                defaultValue={lname}
-                placeholder="Last name"
-                multiline={false}
+                value={lname}
+                onChange={(e) => setLname(e.target.value)}
               />
             </FormControl>
             <FormControl fullWidth mb={3}>
@@ -170,19 +168,20 @@ function Public() {
               <Input
                 id="email"
                 type="email"
-                defaultValue={email}
-                placeholder="Email"
-                multiline={false}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl fullWidth mb={3}>
               <TextField
                 label="Biography"
                 id="biography"
-                multiline={true}
+                multiline
                 rows={3}
                 maxRows={4}
-                defaultValue={bio}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                InputLabelProps={{ shrink: true }}
               />
             </FormControl>
           </Grid>
