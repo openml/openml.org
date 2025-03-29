@@ -6,8 +6,7 @@ import {
   Avatar,
   Button,
   Dialog, 
-  DialogContent, 
-  DialogTitle,
+  DialogContent,
   Card as MuiCard,
   CardContent,
   Grid,
@@ -34,6 +33,9 @@ const BlueMenuIcon = styled(FontAwesomeIcon)({
 });
 const MainPaper = styled(Paper)`
   flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: ${props =>
     props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
@@ -107,10 +109,10 @@ function Public() {
   }, [id]);
 
   const items = [
-    { keyword: 'dataset', count: dataset, url: '../search?type=data&sort=date&uploader_id='+id, color: green[400] },
-    { keyword: 'task', count: task, url: '../search?type=data&sort=task&uploader_id='+id, color: yellow[700] },
-    { keyword: 'model', count: flow, url: '../search?type=data&sort=flow&uploader_id='+id, color: blue[800] },
-    { keyword: 'run', count: run, url: '../search?type=data&sort=run&uploader_id='+id, color: red[400] },
+    { keyword: 'dataset', count: dataset, url: '../search?type=data&sort=date&uploader_id=%3D_'+id, color: green[400] },
+    { keyword: 'task', count: task, url: '../search?type=task&sort=date&uploader_id=%3D_'+id, color: yellow[700] },
+    { keyword: 'model', count: flow, url: '../search?type=flow&sort=date&uploader_id=%3D_'+id, color: blue[800] },
+    { keyword: 'run', count: run, url: '../search?type=run&sort=date&uploader_id=%3D_'+id, color: red[400] },
   ];
 
   return (
