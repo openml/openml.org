@@ -79,10 +79,10 @@ function APIKey() {
 
   return (
     <React.Fragment>
-      <Typography component="h1" variant="h4" align="center" gutterBottom>
+      <Typography variant="h4" align="center" gutterBottom>
         API Key
       </Typography>
-      <Typography component="h4" variant="h4" align="center" gutterBottom>
+      <Typography variant="h6" align="center" gutterBottom>
         Keep it secret, keep it safe!
       </Typography>
       <form onSubmit={resetApiKey}>
