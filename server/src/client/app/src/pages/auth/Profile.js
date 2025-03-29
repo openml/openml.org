@@ -148,26 +148,13 @@ function Public() {
         <Grid container spacing={6}>
           <Grid item md={8}>
             <FormControl fullWidth mb={3}>
-              <TextField
-                label="Biography"
-                id="biography"
-                multiline={true}
-                rows={3}
-                maxRows={4}
-                defaultValue={bio}
-              />
-            </FormControl>
-            <FormControl fullWidth mb={3}>
-              <TextField
-                label="First Name"
+              <InputLabel htmlFor="firstname">First name</InputLabel>
+              <Input
                 id="firstname"
-                multiline={true}
-                rows={3}
-                maxRows={4}
                 defaultValue={fname}
+                placeholder="First name"
+                multiline={false}
               />
-              {/*<InputLabel htmlFor="firstname">First name</InputLabel>*/}
-              {/*<Input id="firstname" defaultValue={fname} placeholder="First name" />*/}
             </FormControl>
             <FormControl fullWidth mb={3}>
               <InputLabel htmlFor="lastname">Last name</InputLabel>
@@ -175,7 +162,7 @@ function Public() {
                 id="lastname"
                 defaultValue={lname}
                 placeholder="Last name"
-                multiline={true}
+                multiline={false}
               />
             </FormControl>
             <FormControl fullWidth mb={3}>
@@ -185,7 +172,17 @@ function Public() {
                 type="email"
                 defaultValue={email}
                 placeholder="Email"
+                multiline={false}
+              />
+            </FormControl>
+            <FormControl fullWidth mb={3}>
+              <TextField
+                label="Biography"
+                id="biography"
                 multiline={true}
+                rows={3}
+                maxRows={4}
+                defaultValue={bio}
               />
             </FormControl>
           </Grid>
