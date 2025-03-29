@@ -52,7 +52,6 @@ function APIKeyModalButton() {
       <Button variant="contained" color="primary" onClick={handleOpen}>
         API Key
       </Button>
-
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogContent>
           <APIKey />
@@ -108,10 +107,10 @@ function Public() {
   }, [id]);
 
   const items = [
-    { keyword: 'dataset', count: dataset, url: 'search?type=data&sort=date&uploader_id='+id, color: green[400] },
-    { keyword: 'task', count: task, url: 'search?type=data&sort=task&uploader_id='+id, color: yellow[700] },
-    { keyword: 'model', count: flow, url: 'search?type=data&sort=flow&uploader_id='+id, color: blue[800] },
-    { keyword: 'run', count: run, url: 'search?type=data&sort=run&uploader_id='+id, color: red[400] },
+    { keyword: 'dataset', count: dataset, url: '../search?type=data&sort=date&uploader_id='+id, color: green[400] },
+    { keyword: 'task', count: task, url: '../search?type=data&sort=task&uploader_id='+id, color: yellow[700] },
+    { keyword: 'model', count: flow, url: '../search?type=data&sort=flow&uploader_id='+id, color: blue[800] },
+    { keyword: 'run', count: run, url: '../search?type=data&sort=run&uploader_id='+id, color: red[400] },
   ];
 
   return (

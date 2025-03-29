@@ -84,7 +84,7 @@ function APIKey() {
       </Typography>
       <form onSubmit={resetApiKey}>
         <FormControl margin="normal" required fullWidth>
-          <CopyableAPIKey />
+          <CopyableAPIKey apikey={apikey}/>
         </FormControl>
         <Button
           type="submit"

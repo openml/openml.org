@@ -39,7 +39,6 @@ const CollectionTasksUpload = async(() =>
 );
 const DataEdit = async(() => import("../pages/auth/DataEdit"));
 const TaskUpload = async(() => import("../pages/auth/TaskUpload"));
-const APIPage = async(() => import("../pages/auth/APIKey"));
 const Page404 = async(() => import("./Page404"));
 const Page500 = async(() => import("./Page500"));
 
@@ -199,11 +198,6 @@ const profileRoutes = {
       path: "/auth/edit-profile",
       name: "Edit Profile",
       component: EditProfile
-    },
-    {
-      path: "/auth/api-key",
-      name: "API-Key",
-      component: APIPage
     }
   ]
 };
