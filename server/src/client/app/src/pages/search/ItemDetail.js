@@ -305,12 +305,12 @@ export class EntryDetails extends React.Component {
          this.state.obj.uploader_id !== this.props.userID)){
       return (
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '50vh' }}>
-          <Grid item xs={6}>
+          <Grid item xs={6} style={{ textAlign: 'center' }}>
             <h2>This is not the {this.props.type} you are looking for.</h2>
-            { (this.state.obj.visibility === "private" || this.props.userID === undefined) &&
-            <p>You might see more after logging in.</p>
+            {(this.state.obj.visibility === "private" || this.props.userID === undefined) &&
+              <p>You might see more after logging in.</p>
             }
-          </Grid>   
+          </Grid>
           <Grid item xs={3} style={{marginTop:50}}>
            <PaperPlane color={this.props.color}/>
           </Grid>
