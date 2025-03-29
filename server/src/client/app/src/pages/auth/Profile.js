@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect, Component } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {
@@ -21,8 +21,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Redirect } from "react-router-dom";
 
 const Card = styled(MuiCard)(spacing);
-
-const Divider = styled(MuiDivider)(spacing);
 
 const FormControl = styled(MuiFormControl)(spacing);
 
@@ -49,11 +47,11 @@ const BigAvatar = styled(Avatar)`
 `;
 
 function Public() {
-  const [email, setEmail] = useState(false);
-  const [bio, setBio] = useState(false);
-  const [fname, setFname] = useState(false);
-  const [lname, setLname] = useState(false);
-  const [image, setImage] = useState(false);
+  const [email, setEmail] = useState('');
+  const [bio, setBio] = useState('');
+  const [fname, setFname] = useState('');
+  const [lname, setLname] = useState('');
+  const [image, setImage] = useState('');
   const [error, setError] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -63,20 +61,22 @@ function Public() {
       Authorization: "Bearer " + localStorage.getItem("token")
     }
   };
-  axios
-    .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
-    .then(function(response) {
-      console.log(response);
 
-      setImage(response.data.image);
-      setEmail(response.data.email);
-      setBio(response.data.bio);
-      setFname(response.data.first_name);
-      setLname(response.data.last_name);
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
+      .then(function(response) {
+        console.log(response);
+        setImage(response.data.image || '');
+        setEmail(response.data.email || '');
+        setBio(response.data.bio || '');
+        setFname(response.data.first_name || '');
+        setLname(response.data.last_name || '');
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }, []); // Only run once on mount
 
   function profiletoflask(event) {
     // Both request should not be clubbed together because it will give error on server side image
