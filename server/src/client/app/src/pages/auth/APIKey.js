@@ -82,6 +82,9 @@ function APIKey() {
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         API Key
       </Typography>
+      <Typography component="h4" variant="h4" align="center" gutterBottom>
+        Keep it secret, keep it safe!
+      </Typography>
       <form onSubmit={resetApiKey}>
         <FormControl margin="normal" required fullWidth>
           <CopyableAPIKey apikey={apikey}/>
