@@ -307,8 +307,8 @@ export class EntryDetails extends React.Component {
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '50vh' }}>
           <Grid item xs={6}>
             <h2>This is not the {this.props.type} you are looking for.</h2>
-            { this.props.userID === undefined &&
-            <p>We couldn't find this. You might see more after logging in.</p>
+            { (this.state.obj.visibility === "private" || this.props.userID === undefined) &&
+            <p>You might see more after logging in.</p>
             }
           </Grid>   
           <Grid item xs={3} style={{marginTop:50}}>
