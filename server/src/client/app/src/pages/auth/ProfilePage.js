@@ -146,8 +146,8 @@ function Public() {
       </Card>
       <Grid container spacing={6}>
       {items.map(({ keyword, count, url, color }, index) => (
-        <Grid item sm={6} md={3} key={index}>
-          <Card>
+        <Grid item sm={6} md={3} key={index} style={{ display: "flex" }}>
+          <Card style={{ flex: 1 }}>
             <CardActionArea component="a" href={url}>
               <CardContent>
                 <Typography variant="h6" gutterBottom color={color}>
