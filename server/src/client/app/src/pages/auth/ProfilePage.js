@@ -1,52 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
 import {
   Avatar,
   Button,
+  Dialog, 
+  DialogContent, 
+  DialogTitle,
   Card as MuiCard,
   CardContent,
-  Divider as MuiDivider,
   Grid,
-  Typography
+  Typography,
+  Paper,
+  CardActionArea
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { green, yellow, blue, red } from "@mui/material/colors";
+import APIKey from "./APIKey"; 
 
 const Card = styled(MuiCard)(spacing);
-
-const Divider = styled(MuiDivider)(spacing);
-
-const CenteredContent = styled.div`
-  text-align: center;
-`;
 
 const BigAvatar = styled(Avatar)`
   width: 120px;
   height: 120px;
   margin: 0 auto ${props => props.theme.spacing(2)}px;
 `;
-const GreenMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: green[400]
-});
-const YellowMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: yellow[700]
-});
 const BlueMenuIcon = styled(FontAwesomeIcon)({
   cursor: "pointer",
   color: blue[800]
 });
-const RedMenuIcon = styled(FontAwesomeIcon)({
-  cursor: "pointer",
-  color: red[400]
-});
+const MainPaper = styled(Paper)`
+  flex: 1;
+  background: ${props =>
+    props.bg === "Gradient" ? "transparent" : props.theme.body.background};
+  padding: 40px;
+`;
 
 const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+
+function APIKeyModalButton() {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  return (
+    <>
+      <Button variant="contained" color="primary" onClick={handleOpen}>
+        API Key
+      </Button>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogContent>
+          <APIKey />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 
 function Public() {
   const [email, setEmail] = useState("");
@@ -93,83 +107,71 @@ function Public() {
       });
   }, [id]);
 
+  const items = [
+    { keyword: 'dataset', count: dataset, url: 'search?type=data&sort=date&uploader_id='+id, color: green[400] },
+    { keyword: 'task', count: task, url: 'search?type=data&sort=task&uploader_id='+id, color: yellow[700] },
+    { keyword: 'model', count: flow, url: 'search?type=data&sort=flow&uploader_id='+id, color: blue[800] },
+    { keyword: 'run', count: run, url: 'search?type=data&sort=run&uploader_id='+id, color: red[400] },
+  ];
+
   return (
+    <React.Fragment>
     <Card mb={6}>
       <Grid container spacing={6}>
         <Grid item md={8}>
           <CardContent>
-            <Typography variant="h1" gutterBottom>
-              {fname} {lname}
-            </Typography>
-            <br />
-
-            <Typography gutterBottom>
-              <br />
-              User ID: {id}
-              <br />
-              Email: {email}
-              <br />
-              Bio: {bio}
-            </Typography>
-          </CardContent>
-        </Grid>
-        <Grid item md={8}>
-          <CardContent>
-            <br />
-            <GreenMenuIcon icon="database" fixedWidth />
-            Datasets uploaded: {dataset}
-            <br />
-            <YellowMenuIcon icon={["fas", "flag"]} fixedWidth />
-            Tasks uploaded: {task}
-            <br />
-            <BlueMenuIcon icon="cog" fixedWidth />
-            Flows uploaded: {flow}
-            <br />
-            <RedMenuIcon icon="flask" fixedWidth />
-            Runs uploaded: {run}
-          </CardContent>
-        </Grid>
-        <Grid item md={4}>
-          <CenteredContent>
             <BigAvatar alt="User Image" id="dp" src={image} />
-            <input
-              accept="image/*"
-              style={{ display: "none" }}
-              id="raised-button-file"
-              multiple
-              type="file"
-            />
-          </CenteredContent>
+            <Typography variant="h1" gutterBottom>
+              {fname || lname ? `${fname ?? ''} ${lname ?? ''}`.trim() : 'Anonymous'}
+            </Typography>
+            {bio ? bio : "No bio available."}
+            <br />
+            <br />
+            <BlueMenuIcon icon="user-tag" fixedWidth /> ID: {id ? id : "unknown"}
+          </CardContent>
         </Grid>
       </Grid>
-      <Button variant="contained" color="primary" href="/auth/edit-profile">
-        Edit Profile
-      </Button>
-      &nbsp;&nbsp;&nbsp;
-      <Button variant="contained" color="primary" href="/auth/api-key">
-        API Key
-      </Button>
-    </Card>
-  );
-}
-
-function Settings() {
-  return (
-    <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
-
-      <Divider my={6} />
-
       <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Public />
-          {/*<Private />*/}
+        <Grid item md={8}>
+        <CardContent>
+          <Button variant="contained" color="primary" href="/auth/edit-profile">
+            Edit Profile
+          </Button>
+          &nbsp;&nbsp;&nbsp;
+          <APIKeyModalButton />
+          </CardContent>
         </Grid>
+      </Grid>
+      </Card>
+      <Grid container spacing={6}>
+      {items.map(({ keyword, count, url, color }, index) => (
+        <Grid item sm={6} md={3} key={index}>
+          <Card>
+            <CardActionArea component="a" href={url}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom color={color}>
+                  {count} {keyword}{count !== 1 ? 's' : ''}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
+      ))}
       </Grid>
     </React.Fragment>
   );
+}
+
+class Settings extends Component {
+  render() {
+    return (
+      <React.Fragment>
+        <MainPaper>
+          <Public />
+        </MainPaper>
+      </React.Fragment>
+    );
+  }
 }
 
 export default Settings;

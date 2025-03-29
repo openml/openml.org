@@ -33,6 +33,7 @@
     "@material-ui/system": "^4.12.1",
     "@mui/lab": "^5.0.0-alpha.87",
     "@mui/material": "^5.8.5",
+    "@mui/icons-material": "^5.8.0",
     "@mui/styled-engine-sc": "^5.8.0",
     "@mui/styles": "^5.8.4",
     "@react-spring/web": "^9.4.2",

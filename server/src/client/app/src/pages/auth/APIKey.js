@@ -1,84 +1,102 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-
-
 import {
-    FormControl,
-    InputLabel,
-    Button as MuiButton,
-    Paper,
-    Typography
+  FormControl,
+  Button as MuiButton,
+  Typography,
+  Tooltip, 
+  IconButton
 } from "@mui/material";
-import {spacing} from "@mui/system";
+import { spacing } from "@mui/system";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const Button = styled(MuiButton)(spacing);
 
-const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
-  width: 100%;
+function CopyableAPIKey({ apikey }) {
+  const [copied, setCopied] = useState(false);
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
-  }
-`;
-
-const yourConfig = {
-    headers: {
-        Authorization: "Bearer " + localStorage.getItem("token")
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(apikey);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500); // Hide tooltip after 1.5s
+    } catch (err) {
+      console.error("Failed to copy!", err);
     }
+  };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <Typography variant="body1" id="api-key" sx={{ wordBreak: "break-all" }}>
+        {apikey || "Loading..."}
+      </Typography>
+      {apikey && (
+        <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
+          <IconButton size="small" onClick={handleCopy}>
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  );
 }
 
 function APIKey() {
-    const [apikey, setApikey] = useState(false);
-    axios.get(process.env.REACT_APP_URL_SITE_BACKEND + "api-key", yourConfig)
-        .then(function (response) {
-            console.log(response);
-            setApikey(response.data.apikey);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+  const [apikey, setApikey] = useState('');
+  const yourConfig = {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  };
 
-    function apiFlask(event) {
-        event.preventDefault();
-        axios
-            .post(process.env.REACT_APP_URL_SITE_BACKEND + "api-key", {
-                resetapikey:true
-            }, yourConfig)
-            .then(function (response) {
-                console.log(response.data);
-            })
-            .catch(function (error) {
-                console.log(error.data);
-            });
-        return false;
-    }
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_URL_SITE_BACKEND + "api-key", yourConfig)
+      .then((response) => {
+        setApikey(response.data.apikey);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
-    return (
-        <Wrapper>
-            <Typography component="h1" variant="h4" align="center" gutterBottom>
-                API Key
-            </Typography>
-            <Typography component="h2" variant="body1" align="center">
-            </Typography>
-            <form onSubmit={apiFlask}>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="email">API-key</InputLabel>
-                    {apikey}
-                </FormControl>
-                <Button
-                    type="Submit"
-                    to=""
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    mt={2}
-                >
-                    Reset API-Key
-                </Button>
-            </form>
-        </Wrapper>
+  function resetApiKey(event) {
+    event.preventDefault();
+    axios
+      .post(
+        process.env.REACT_APP_URL_SITE_BACKEND + "api-key",
+        { resetapikey: true },
+        yourConfig
+      )
+      .then((response) => {
+        setApikey(response.data.apikey); // Refresh it immediately
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  return (
+    <React.Fragment>
+      <Typography component="h1" variant="h4" align="center" gutterBottom>
+        API Key
+      </Typography>
+      <form onSubmit={resetApiKey}>
+        <FormControl margin="normal" required fullWidth>
+          <CopyableAPIKey />
+        </FormControl>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          mt={2}
+        >
+          Reset API Key
+        </Button>
+      </form>
+    </React.Fragment>
     );
 }
 
