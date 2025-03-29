@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import {
@@ -8,10 +8,12 @@ import {
   Divider as MuiDivider,
   FormControl as MuiFormControl,
   Grid,
+  Paper,
   Input,
   InputLabel,
   TextField,
-  Typography
+  Typography,
+  CardContent
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -25,6 +27,16 @@ const Divider = styled(MuiDivider)(spacing);
 const FormControl = styled(MuiFormControl)(spacing);
 
 const FAIcon = styled(FontAwesomeIcon)(spacing);
+
+const MainPaper = styled(Paper)`
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: ${props =>
+    props.bg === "Gradient" ? "transparent" : props.theme.body.background};
+  padding: 40px;
+`;
 
 const CenteredContent = styled.div`
   text-align: center;
@@ -121,9 +133,10 @@ function Public() {
 
   return (
     <Card mb={6}>
+      <CardContent>
       <form onSubmit={profiletoflask}>
         <Typography variant="h6" gutterBottom>
-          Public info
+          Profile information
         </Typography>
         {error && (
           <Typography component="h3" variant="body1" align="center" color="red">
@@ -204,27 +217,21 @@ function Public() {
           Save changes
         </Button>
       </form>
+      </CardContent>
     </Card>
   );
 }
 
-function Settings() {
-  return (
-    <React.Fragment>
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
-
-      <Divider my={6} />
-
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
+class EditProfile extends Component {
+  render() {
+    return (
+      <React.Fragment>
+        <MainPaper>
           <Public />
-          {/*<Private />*/}
-        </Grid>
-      </Grid>
-    </React.Fragment>
-  );
+        </MainPaper>
+      </React.Fragment>
+    );
+  }
 }
 
-export default Settings;
+export default EditProfile;

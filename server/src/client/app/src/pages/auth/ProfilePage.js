@@ -163,7 +163,7 @@ function Public() {
   );
 }
 
-class Settings extends Component {
+class ProfilePage extends Component {
   render() {
     return (
       <React.Fragment>
@@ -175,4 +175,4 @@ class Settings extends Component {
   }
 }
 
-export default Settings;
+export default ProfilePage;
