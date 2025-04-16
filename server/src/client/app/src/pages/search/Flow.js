@@ -126,7 +126,7 @@ export class FlowItem extends React.Component {
                   Runs ({this.props.object.runs})
                 </Typography>
                 <br />
-                Run visualization not currently supported
+                Open the Runs tab to see all the runs with this flow.
               </CardContent>
             </Card>
           </Grid>
