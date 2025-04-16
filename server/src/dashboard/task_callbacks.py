@@ -30,27 +30,21 @@ font = [
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
-
 class TorchNameNormalizer:
     def __init__(self):
         self.counter = defaultdict(int)
 
-    def normalize(self, s):
-        # Step 1: Strip 'torch.nn.' prefix
-        s = re.sub(r'^torch\.nn\.', 'torch.', s)
+    def strip_hash(self, name):
+        """Remove known suffixes like .<hash> and (1)"""
+        name = re.sub(r'^torch\.nn\.', 'torch.', name)  # replace prefix
+        name = re.sub(r'\.[a-f0-9]{8,}$', '', name)     # strip .hash
+        return name
 
-        # Step 2: Remove trailing hash or version like .<hash>
-        s = re.sub(r'\.[a-f0-9]{8,}$', '', s)
-
-        # Step 3: Count and rename duplicates
-        base = s
-        count = self.counter[base]
+    def normalize(self, full_name):
+        base = self.strip_hash(full_name)
         self.counter[base] += 1
-
-        if count == 0:
-            return base
-        else:
-            return f"{base} ({count})"
+        count = self.counter[base]
+        return base if count == 1 else f"{base} ({count})"
 
 normalizer = TorchNameNormalizer()
 
@@ -138,7 +132,7 @@ def register_task_callbacks(app, cache):
             go.Scatter(
                 y=df["flow_name"],
                 x=df["value"],
-                mode="markers+text",
+                mode="markers",
                 text=run_link,
                 textposition="middle right", 
                 customdata=df["run_id"],     
@@ -148,7 +142,7 @@ def register_task_callbacks(app, cache):
                     color=df["value"],       
                     colorscale="Turbo",
                     opacity=0.8,
-                    size=10,
+                    size=8,
                     symbol="diamond",
                 ),
             )
@@ -241,7 +235,7 @@ def register_task_callbacks(app, cache):
             ),
         )
         dummy_fig = html.Div(dcc.Graph(figure=fig), style={"display": "none"})
-        eval_div = html.Div(dcc.Graph(figure=fig))
+        eval_div = html.Div(dcc.Graph(id="task-eval-graph", figure=fig))
 
         return (
             dummy_fig,
