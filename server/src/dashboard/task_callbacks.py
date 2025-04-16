@@ -30,6 +30,11 @@ font = [
 
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
+def clean_torch_name(s):
+    # Remove 'torch.nn.' prefix, strip trailing .<hash> and (number)
+    s = re.sub(r'^torch\.nn\.', 'torch.', s)
+    s = re.sub(r'\.[a-f0-9]{8,}|\(\d+\)$', '', s)
+    return s
 
 def register_task_callbacks(app, cache):
     @app.callback(
@@ -102,8 +107,11 @@ def register_task_callbacks(app, cache):
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df["flow_name"].values:
-            truncated.append(SklearnExtension.trim_flow_name(flow))
-            # truncated.append(short[:50] + '..' if len(short) > 50 else short)
+            if flow.startswith("torch.nn"):
+                truncated.append(clean_torch_name(flow))
+            else:
+                truncated.append(SklearnExtension.trim_flow_name(flow))
+                # truncated.append(short[:50] + '..' if len(short) > 50 else short)
 
         df["flow_name"] = truncated
 

@@ -3,12 +3,38 @@ import { EvaluationDetail } from "./ItemDetail.js";
 import { FlowDetail } from "./ItemDetail.js";
 import { MetaTag } from "./MetaItems.js";
 
-import { Card, CardContent, Typography, Grid } from "@mui/material";
+import { 
+  Table, 
+  TableBody, 
+  TableRow, 
+  TableCell, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Grid, 
+  Link, 
+  Dialog,
+  DialogContent,
+  IconButton} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollapsibleDataTable } from "./sizeLimiter";
 
 export class RunItem extends React.Component {
+  state = {
+    openImage: null, // { name, url } or null
+  };
+
+  handleOpenImage = (name, url) => {
+    this.setState({ openImage: { name, url } });
+  };
+
+  handleCloseImage = () => {
+    this.setState({ openImage: null });
+  };
+
   render() {
+    console.log(this.props.object.output_files)
     let flowCols = ["Parameter", "Value"];
     let evaluationMeasureCols = ["Evaluation Measure", "Value", ""];
 
@@ -116,7 +142,69 @@ export class RunItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
-        </Grid>
+        <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h4" mb={6}>Output files</Typography>
+                <Table>
+                  <TableBody>
+                    {Object.entries(this.props.object.output_files).map(([name, file], index) => (
+                      <TableRow  key={"row_"+name}>
+                        <TableCell>
+                          <Link href={file.url} target="_blank" rel="noopener">
+                            {name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>{file.format}</TableCell>
+                        <TableCell>
+                          {file.format === 'png' && (
+                            <img
+                              src={file.url}
+                              alt={name}
+                              style={{
+                                maxHeight: '80px',
+                                maxWidth: '120px',
+                                objectFit: 'contain',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
+                              }}
+                              onClick={() => this.handleOpenImage(name, file.url)}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            <Dialog
+              open={!!this.state.openImage}
+              onClose={this.handleCloseImage}
+              maxWidth="md"
+            >
+              <DialogContent
+                sx={{ position: 'relative', p: 2, backgroundColor: '#fefefe' }}
+              >
+                <IconButton
+                  onClick={this.handleCloseImage}
+                  sx={{ position: 'absolute', top: 8, right: 8 }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                {this.state.openImage && (
+                  <img
+                    src={this.state.openImage.url}
+                    alt={this.state.openImage.name}
+                    style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
+          </Grid>
+          </Grid>
       </React.Fragment>
     );
   }
