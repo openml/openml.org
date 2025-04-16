@@ -35,9 +35,10 @@ class TorchNameNormalizer:
         self.counter = defaultdict(int)
 
     def strip_hash(self, name):
-        """Remove known suffixes like .<hash> and (1)"""
-        name = re.sub(r'^torch\.nn\.', 'torch.', name)  # replace prefix
-        name = re.sub(r'\.[a-f0-9]{8,}$', '', name)     # strip .hash
+        # Replace torch.nn. with torch.
+        name = re.sub(r'^torch\.nn\.', 'torch.', name)
+        # Strip the last .<segment>
+        name = re.sub(r'\.[^.]+$', '', name)
         return name
 
     def normalize(self, full_name):
@@ -158,6 +159,7 @@ def register_task_callbacks(app, cache):
             font=dict(size=11),
             width=1000,
             hovermode='closest',
+            clickmode='event+select',
             xaxis=go.layout.XAxis(side="top"),
             yaxis=go.layout.YAxis(
                 autorange="reversed",
@@ -234,7 +236,7 @@ def register_task_callbacks(app, cache):
                 id="tasktable",
             ),
         )
-        dummy_fig = html.Div(dcc.Graph(figure=fig), style={"display": "none"})
+        dummy_fig = html.Div(dcc.Graph(id="task-eval-dummy", figure=fig), style={"display": "none"})
         eval_div = html.Div(dcc.Graph(id="task-eval-graph", figure=fig))
 
         return (
