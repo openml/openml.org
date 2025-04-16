@@ -8,6 +8,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 from openml import evaluations
 from openml.extensions.sklearn import SklearnExtension
+from collections import defaultdict
 
 from .caching import CACHE_DIR_DASHBOARD
 from .dash_config import DASH_CACHING
@@ -27,14 +28,31 @@ font = [
     "Segoe UI Symbol",
 ]
 
-
 TIMEOUT = 5 * 60 if DASH_CACHING else 0
 
-def clean_torch_name(s):
-    # Remove 'torch.nn.' prefix, strip trailing .<hash> and (number)
-    s = re.sub(r'^torch\.nn\.', 'torch.', s)
-    s = re.sub(r'\.[a-f0-9]{8,}|\(\d+\)$', '', s)
-    return s
+
+class TorchNameNormalizer:
+    def __init__(self):
+        self.counter = defaultdict(int)
+
+    def normalize(self, s):
+        # Step 1: Strip 'torch.nn.' prefix
+        s = re.sub(r'^torch\.nn\.', 'torch.', s)
+
+        # Step 2: Remove trailing hash or version like .<hash>
+        s = re.sub(r'\.[a-f0-9]{8,}$', '', s)
+
+        # Step 3: Count and rename duplicates
+        base = s
+        count = self.counter[base]
+        self.counter[base] += 1
+
+        if count == 0:
+            return base
+        else:
+            return f"{base} ({count})"
+
+normalizer = TorchNameNormalizer()
 
 def register_task_callbacks(app, cache):
     @app.callback(
@@ -108,7 +126,7 @@ def register_task_callbacks(app, cache):
         # Truncate flow names (50 chars)
         for flow in df["flow_name"].values:
             if flow.startswith("torch.nn"):
-                truncated.append(clean_torch_name(flow))
+                truncated.append(normalizer.normalize(flow))
             else:
                 truncated.append(SklearnExtension.trim_flow_name(flow))
                 # truncated.append(short[:50] + '..' if len(short) > 50 else short)
@@ -120,18 +138,18 @@ def register_task_callbacks(app, cache):
             go.Scatter(
                 y=df["flow_name"],
                 x=df["value"],
-                mode="text+markers",
+                mode="markers+text",
                 text=run_link,
-                # hovertext=df["value"].astype(str)+['<br>'] *
-                # df.shape[0] + ['click for more info'] * df.shape[0],
-                # hoverinfo='text',
-                # hoveron = 'points+fills',
+                textposition="middle right", 
+                customdata=df["run_id"],     
+                hovertemplate="<b>%{y}</b><br>Value: %{x:.3f}<br>Run ID: %{customdata}<extra></extra>",
                 hoverlabel=dict(bgcolor="white", bordercolor="black", namelength=-1),
                 marker=dict(
-                    opacity=0.5,
+                    color=df["value"],       
+                    colorscale="Turbo",
+                    opacity=0.8,
+                    size=10,
                     symbol="diamond",
-                    color=df["run_id"],  # set color equal to a variable
-                    colorscale="RdBu",
                 ),
             )
         ]
@@ -145,7 +163,7 @@ def register_task_callbacks(app, cache):
             "Top " + str(n_runs) + " runs shown<br>",
             font=dict(size=11),
             width=1000,
-            # hovermode='x',
+            hovermode='closest',
             xaxis=go.layout.XAxis(side="top"),
             yaxis=go.layout.YAxis(
                 autorange="reversed",
