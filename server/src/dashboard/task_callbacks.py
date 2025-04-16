@@ -99,11 +99,11 @@ def register_task_callbacks(app, cache):
         truncated = []
         # Plotly hack to add href to each data point
         for run_id in df["run_id"].values:
-            link = f'<a href="{SERVER_BASE_URL}/r/{run_id}/">'
+            link = f'<a href="{SERVER_BASE_URL}r/{run_id}">'
             run_link.append(link)
         # Plotly hack to link flow names
         for flow_id in df["flow_id"].values:
-            link = f'<a href="{SERVER_BASE_URL}/f/{flow_id}/">'
+            link = f'<a href="{SERVER_BASE_URL}f/{flow_id}">'
             tick_text.append(link)
         # Truncate flow names (50 chars)
         for flow in df["flow_name"].values:
