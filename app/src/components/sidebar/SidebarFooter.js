@@ -4,7 +4,7 @@ import { rgba, darken } from "polished";
 
 import { Grid, ListItemButton, ListItemText } from "@mui/material";
 import { Settings as SettingsIcon } from "@mui/icons-material";
-import Settings from "../settings";
+import Settings from "../Settings";
 import { useTranslation } from "next-i18next";
 
 const Footer = styled.div`
