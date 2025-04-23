@@ -1,9 +1,18 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "import"],
   "rules": {
     "prettier/prettier": "error",
     "@next/next/link-passhref": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "import/no-unresolved": "error"
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@", "./"]],
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".json", ".svg"]
+      }
+    }
   }
 }
