@@ -18,10 +18,10 @@ import {
 import { TabContext, TabPanel } from "@mui/lab";
 
 import ResultCard from "./ResultCard";
+import ResultGridCard from "./ResultGridCard";
 import Sort from "./Sort";
 
 import styled from "@emotion/styled";
-
 import {
   Facet,
   SearchProvider,
@@ -35,8 +35,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
+  faGrip,
+  faGripHorizontal,
   faList,
+  faSquare,
   faTable,
+  faTableCells,
+  faTableCellsLarge,
 } from "@fortawesome/free-solid-svg-icons";
 import Wrapper from "../Wrapper";
 import { i18n } from "next-i18next";
@@ -124,6 +129,9 @@ const ViewToggle = ({ onChange, view }) => (
     </ToggleButton>
     <ToggleButton value="table">
       <FontAwesomeIcon icon={faTable} />
+    </ToggleButton>
+    <ToggleButton value="grid">
+      <FontAwesomeIcon icon={faGripHorizontal} />
     </ToggleButton>
   </ToggleButtonGroup>
 );
@@ -247,6 +255,17 @@ const SearchContainer = memo(
                 <WithSearch mapContextToProps={({ results }) => ({ results })}>
                   {({ results }) => (
                     <ResultsTable results={results} columns={columns} />
+                  )}
+                </WithSearch>
+              )}
+              {view === "grid" && (
+                <WithSearch mapContextToProps={({ results }) => ({ results })}>
+                  {({ results }) => (
+                    <Grid container spacing={3} alignItems="stretch">
+                      {results.map((res, i) => (
+                        <ResultGridCard result={res} key={res.id} />
+                      ))}
+                    </Grid>
                   )}
                 </WithSearch>
               )}

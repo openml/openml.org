@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 
 import styled from "@emotion/styled";
-import { Card, Tooltip } from "@mui/material";
+import { Box, Card, Tooltip } from "@mui/material";
 
 import TimeAgo from "react-timeago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,6 +35,7 @@ import {
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
 
 const SearchResultCard = styled(Card)`
+  height: 100%;
   border-radius: 0px;
   padding-left: 20px;
   padding-right: 20px;
@@ -174,6 +175,7 @@ const ResultCard = ({ result }) => {
         <ColoredIcon icon={faHistory} fixedWidth />
         <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
       </ColorStats>
+      <Box sx={{ flexGrow: 1 }} />
       <ID color={grey[400]}>
         <Tooltip title={type + " ID"} placement="top-start">
           <RightStats>
