@@ -128,9 +128,9 @@ function Run({ data }) {
       <Helmet title="OpenML Runs" />
       <React.Fragment>
         <Grid container spacing={6}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container style={{ padding: "25px 0" }}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant={"h1"} style={{ marginBottom: "15px" }}>
                   <FontAwesomeIcon
                     icon={faStar}
@@ -139,10 +139,13 @@ function Run({ data }) {
                   &nbsp;&nbsp; Run {data.run_id}
                 </Typography>
               </Grid>
-              <Grid item md={12}>
+              <Grid
+                size={{
+                  md: 12
+                }}>
                 <Grid container justifyContent="space-between" spacing={2}>
                   {/* Left-aligned Properties */}
-                  <Grid item>
+                  <Grid>
                     {runProps1.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
@@ -151,7 +154,7 @@ function Run({ data }) {
 
                 {/* User Chip and Second Row of Properties */}
                 <Grid container spacing={2}>
-                  <Grid item>
+                  <Grid>
                     {runProps2.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
@@ -160,7 +163,10 @@ function Run({ data }) {
 
                 {/* Tags */}
                 <Grid container spacing={2} pt={1}>
-                  <Grid item md={12}>
+                  <Grid
+                    size={{
+                      md: 12
+                    }}>
                     <FontAwesomeIcon icon={faTags} />
                     {data.tags.map((tag, index) => (
                       <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />
@@ -171,10 +177,10 @@ function Run({ data }) {
             </Grid>
           </Grid>
           {/* Parameter tables */}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ParameterTable data={data.run_flow.parameters} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <EvaluationTable data={data} />
           </Grid>
         </Grid>

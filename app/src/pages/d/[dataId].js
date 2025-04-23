@@ -255,10 +255,10 @@ function Dataset({ data, error }) {
       <Helmet title="OpenML Datasets" />
       <CroissantMetaData url={croissant_url} />
       <Grid container spacing={6}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ActionButtons buttons={buttonData} />
           <Grid container spacing={4}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h1">
                 <FontAwesomeIcon
                   icon={faDatabase}
@@ -268,16 +268,19 @@ function Dataset({ data, error }) {
               </Typography>
             </Grid>
 
-            <Grid item md={12}>
+            <Grid
+              size={{
+                md: 12
+              }}>
               <Grid container justifyContent="space-between" spacing={2}>
                 {/* Left-aligned Properties */}
-                <Grid item>
+                <Grid>
                   {dataProps1.map((tag) => (
                     <Property key={tag.label} {...tag} />
                   ))}
                 </Grid>
                 {/* Right-aligned Version Chip */}
-                <Grid item>
+                <Grid>
                   <VersionChip
                     size="small"
                     color="primary"
@@ -295,7 +298,7 @@ function Dataset({ data, error }) {
               </Grid>
               {/* User Chip and Second Row of Properties */}
               <Grid container spacing={2}>
-                <Grid item>
+                <Grid>
                   {dataProps2.map((tag) => (
                     <Property key={tag.label} {...tag} />
                   ))}
@@ -303,7 +306,10 @@ function Dataset({ data, error }) {
               </Grid>
               {/* Tags */}
               <Grid container spacing={2} pt={1}>
-                <Grid item md={12}>
+                <Grid
+                  size={{
+                    md: 12
+                  }}>
                   <FontAwesomeIcon icon={faTags} />
                   {data.tags.map((tag, index) => (
                     <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />
@@ -314,7 +320,7 @@ function Dataset({ data, error }) {
           </Grid>
         </Grid>
         {/* Description */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Card>
             <CardContent>
               <Typography variant="h4" mb={6}>
@@ -328,10 +334,10 @@ function Dataset({ data, error }) {
         </Grid>
 
         {/* Feature and Quality tables */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FeatureTable data={data.features} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <QualityTable data={data.qualities} />
         </Grid>
       </Grid>

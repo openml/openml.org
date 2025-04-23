@@ -68,7 +68,11 @@ function FAQ() {
         <Spacer mb={8} />
 
         <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs={12} xl={8}>
+          <Grid
+            size={{
+              xs: 12,
+              xl: 8
+            }}>
             {[1, 2, 3].map((faq) => (
               <Accordion key={faq}>
                 <AccordionSummary

@@ -386,10 +386,10 @@ function Contribute() {
         </ContactButton>
       </Zoom>
       <Grid container spacing={10}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Hero />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="intro"
             title={t("contribute.header.intro")}
@@ -398,11 +398,17 @@ function Contribute() {
           />
         </Grid>
         {[help_dev, help_science, help_exec, help_donate].map((card) => (
-          <Grid item display="flex" xs={12} sm={6} key={card.id}>
+          <Grid
+            display="flex"
+            key={card.id}
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <InfoCard info={card} />
           </Grid>
         ))}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="help"
             title={t("contribute.header.contribute")}
@@ -411,11 +417,18 @@ function Contribute() {
           />
         </Grid>
         {[code, website, docs, datasets, ambassador].map((card) => (
-          <Grid item display="flex" xs={12} sm={6} lg={4} key={card.id}>
+          <Grid
+            display="flex"
+            key={card.id}
+            size={{
+              xs: 12,
+              sm: 6,
+              lg: 4
+            }}>
             <InfoCard info={card} />
           </Grid>
         ))}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="support"
             title={t("contribute.header.donation")}
@@ -423,10 +436,10 @@ function Contribute() {
             color={blue[500]}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <InfoCard info={donate} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="sponsor"
             title={t("contribute.header.sponsor")}
@@ -435,7 +448,7 @@ function Contribute() {
           />
         </Grid>
         {[sponsor_why, sponsor_how, sponsor_what].map((card) => (
-          <Grid item xs={12} key={card.id}>
+          <Grid key={card.id} size={12}>
             <InfoCard info={card} />
           </Grid>
         ))}

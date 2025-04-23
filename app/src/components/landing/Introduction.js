@@ -279,15 +279,15 @@ function Introduction() {
           justifyContent="center"
           spacing={10}
         >
-          <Grid item>
+          <Grid>
             <Hero>{t("landing.openml")}</Hero>
             <Title>{t("landing.title")}</Title>
             <SubTitle>{t("landing.subtitle")}</SubTitle>
           </Grid>
-          <Grid item>
+          <Grid>
             <IntroGraph />
           </Grid>
-          <Grid item>
+          <Grid>
             <GradientButton
               component={Link}
               href="/auth/sign-up"

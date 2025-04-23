@@ -41,10 +41,10 @@ function Footer() {
         <Grid
           sx={{ display: { xs: "none", md: "block" } }}
           container
-          item
-          xs={12}
-          md={6}
-        >
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <List>
             <ListItemButton component="a" href="apis">
               <ListItemText primary="APIs" />
@@ -63,7 +63,13 @@ function Footer() {
             </ListItemButton>
           </List>
         </Grid>
-        <Grid container item xs={12} md={6} justifyContent="flex-end">
+        <Grid
+          container
+          justifyContent="flex-end"
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <List>
             <ListItemButton>
               <ListItemText

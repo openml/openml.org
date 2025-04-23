@@ -109,9 +109,9 @@ function Task({ data }) {
       <Helmet title="OpenML Tasks" />
       <React.Fragment>
         <Grid container spacing={6}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography
                   variant="h1"
                   className={"sectionTitle"}
@@ -124,16 +124,19 @@ function Task({ data }) {
                   {data.tasktype.name} on {data.source_data.name}{" "}
                 </Typography>
               </Grid>
-              <Grid item md={12}>
+              <Grid
+                size={{
+                  md: 12
+                }}>
                 <Grid container justifyContent="space-between" spacing={2}>
-                  <Grid item>
+                  <Grid>
                     {dataProps1.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
                   </Grid>
                 </Grid>
                 <Grid container justifyContent="space-between" spacing={2}>
-                  <Grid item>
+                  <Grid>
                     {dataProps2.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
@@ -141,7 +144,10 @@ function Task({ data }) {
                 </Grid>
                 {/* Tags */}
                 <Grid container spacing={2} pt={1}>
-                  <Grid item md={12}>
+                  <Grid
+                    size={{
+                      md: 12
+                    }}>
                     <FontAwesomeIcon icon={faTags} />
                     {data.tags.map((tag, index) => (
                       <Tag
@@ -155,7 +161,7 @@ function Task({ data }) {
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Card>
               <CardContent>
                 <Typography variant="h4" mb={6}>

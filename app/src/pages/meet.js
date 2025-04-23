@@ -105,12 +105,12 @@ function MeetUp() {
     <Wrapper>
       <Helmet title={t("meetup.helmet")} />
       <Grid container spacing={10}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Title variant="h2" align="center">
             {t("meetup.title")}
           </Title>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="meetup"
             title={t("meetup.header.meetup")}
@@ -119,7 +119,7 @@ function MeetUp() {
           />
           <InfoCard info={hackathons} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="upcoming"
             title={t("meetup.header.upcoming")}
@@ -128,7 +128,7 @@ function MeetUp() {
           />
           <InfoCard info={nextEvent} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="sponsor"
             title={t("meetup.header.sponsor")}

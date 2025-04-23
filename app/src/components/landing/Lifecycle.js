@@ -52,7 +52,13 @@ function Lifecycle() {
         </Typography>
         <Grid container spacing={6}>
           {[ai_ready_data, integrations, ml_results].map((card) => (
-            <Grid item display="flex" xs={12} md={4} key={card.id}>
+            <Grid
+              display="flex"
+              key={card.id}
+              size={{
+                xs: 12,
+                md: 4
+              }}>
               <InfoCard info={card} />
             </Grid>
           ))}

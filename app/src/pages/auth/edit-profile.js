@@ -58,7 +58,10 @@ function Public() {
         </Typography>
 
         <Grid container spacing={6}>
-          <Grid item md={8}>
+          <Grid
+            size={{
+              md: 8
+            }}>
             <TextField
               id="username"
               label="Username"
@@ -80,7 +83,10 @@ function Public() {
               />
             </FormControl>
           </Grid>
-          <Grid item md={4}>
+          <Grid
+            size={{
+              md: 4
+            }}>
             <CenteredContent>
               <BigAvatar
                 alt="Remy Sharp"
@@ -124,7 +130,10 @@ function Private() {
         </Typography>
 
         <Grid container spacing={6}>
-          <Grid item md={6}>
+          <Grid
+            size={{
+              md: 6
+            }}>
             <TextField
               id="first-name"
               label="First name"
@@ -134,7 +143,10 @@ function Private() {
               my={2}
             />
           </Grid>
-          <Grid item md={6}>
+          <Grid
+            size={{
+              md: 6
+            }}>
             <TextField
               id="last-name"
               label="Last name"
@@ -173,7 +185,10 @@ function Private() {
         />
 
         <Grid container spacing={6}>
-          <Grid item md={6}>
+          <Grid
+            size={{
+              md: 6
+            }}>
             <TextField
               id="city"
               label="City"
@@ -182,7 +197,10 @@ function Private() {
               my={2}
             />
           </Grid>
-          <Grid item md={4}>
+          <Grid
+            size={{
+              md: 4
+            }}>
             <TextField
               id="state"
               label="State"
@@ -191,7 +209,10 @@ function Private() {
               my={2}
             />
           </Grid>
-          <Grid item md={2}>
+          <Grid
+            size={{
+              md: 2
+            }}>
             <TextField
               id="zip"
               label="Zip"
@@ -214,11 +235,9 @@ function EditProfile() {
   return (
     <React.Fragment>
       <Helmet title="Edit Profile" />
-
       <Typography variant="h3" gutterBottom display="inline">
         Edit Profile
       </Typography>
-
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>
         <Link href="/" passHref>
           Dashboard
@@ -228,11 +247,9 @@ function EditProfile() {
         </Link>
         <Typography>Edit Profile</Typography>
       </Breadcrumbs>
-
       <Divider my={6} />
-
       <Grid container spacing={6}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Public />
           <Private />
         </Grid>

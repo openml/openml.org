@@ -129,9 +129,9 @@ function Flow({ data }) {
       <Helmet title="OpenML Flows" />
       <React.Fragment>
         <Grid container spacing={6}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container style={{ padding: "25px 0" }}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Tooltip title={data.name}>
                   <Typography
                     variant={"h1"}
@@ -145,10 +145,13 @@ function Flow({ data }) {
                   </Typography>
                 </Tooltip>
               </Grid>
-              <Grid item md={12}>
+              <Grid
+                size={{
+                  md: 12
+                }}>
                 <Grid container justifyContent="space-between" spacing={2}>
                   {/* Left-aligned Properties */}
-                  <Grid item>
+                  <Grid>
                     {flowProps1.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
@@ -157,7 +160,7 @@ function Flow({ data }) {
 
                 {/* User Chip and Second Row of Properties */}
                 <Grid container spacing={2}>
-                  <Grid item>
+                  <Grid>
                     {flowProps2.map((tag) => (
                       <Property key={tag.label} {...tag} />
                     ))}
@@ -166,7 +169,10 @@ function Flow({ data }) {
 
                 {/* Tags */}
                 <Grid container spacing={2} pt={1}>
-                  <Grid item md={12}>
+                  <Grid
+                    size={{
+                      md: 12
+                    }}>
                     <FontAwesomeIcon icon={faTags} />
                     {data.tags.map((tag, index) => (
                       <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />
@@ -177,7 +183,7 @@ function Flow({ data }) {
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Card>
               <CardContent>
                 <Typography variant={"h4"}>Description</Typography>
@@ -188,14 +194,14 @@ function Flow({ data }) {
           </Grid>
 
           {/* Dependency and Parameter tables */}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <DependencyTable data={data.dependencies} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ParameterTable data={data.parameters} />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Card>
               <CardContent>
                 <Typography variant={"h4"}>Runs ({data.runs})</Typography>

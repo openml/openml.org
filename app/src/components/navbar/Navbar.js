@@ -104,7 +104,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
       <AppBar position="sticky" elevation={0} ecolor={ecolor}>
         <Toolbar>
           <Grid container alignItems="center">
-            <Grid item sx={{ display: { xs: "block", md: "none" } }}>
+            <Grid sx={{ display: { xs: "block", md: "none" } }}>
               <IconButton
                 color="inherit"
                 aria-label="Open drawer"
@@ -114,7 +114,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
                 <MenuIcon />
               </IconButton>
             </Grid>
-            <Grid item>
+            <Grid>
               <BrandIcon />
               <Brand ecolor={ecolor}>
                 <Box ml={1} mr={2}>
@@ -122,17 +122,17 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
                 </Box>
               </Brand>
             </Grid>
-            <Grid item>
+            <Grid>
               {section && <Brand ecolor={ecolor}>|&nbsp;&nbsp;{section}</Brand>}
             </Grid>
-            <Grid item xs sx={{ display: { xs: "block", sm: "none" } }} />
-            <Grid item sx={{ display: { xs: "none", md: "block" } }}>
+            <Grid sx={{ display: { xs: "block", sm: "none" } }} size="grow" />
+            <Grid sx={{ display: { xs: "none", md: "block" } }}>
               <SearchContainer ecolor={ecolor} />
             </Grid>
-            <Grid item xs />
-            <Grid item>
+            <Grid size="grow" />
+            <Grid>
               <Grid container>
-                <Grid item xs sx={{ display: { xs: "block", md: "none" } }}>
+                <Grid sx={{ display: { xs: "block", md: "none" } }} size="grow">
                   <NavbarSearch
                     toggleSearch={() => setShowSearchBar((prev) => !prev)}
                   />
@@ -143,7 +143,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
                   variant="middle"
                   sx={{ display: { xs: "block", md: "none" }, m: 2 }}
                 />
-                <Grid item>
+                <Grid>
                   <NavbarLanguagesDropdown />
                   {!smallerThanMid && <NavbarCreationDropdown />}
                   <NavbarNotificationsDropdown />

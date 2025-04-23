@@ -235,12 +235,12 @@ function Terms() {
     <Wrapper>
       <Helmet title={t("terms.helmet")} />
       <Grid container spacing={10}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Title variant="h2" align="center">
             {t("terms.title")}
           </Title>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="licence"
             title={t("terms.header.licence")}
@@ -249,7 +249,7 @@ function Terms() {
           />
           <InfoCard info={contact} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="citation"
             title={t("terms.header.citation")}
@@ -259,11 +259,17 @@ function Terms() {
           />
         </Grid>
         {[cite_openml, cite_python, cite_r, cite_benchmark].map((card) => (
-          <Grid item display="flex" xs={12} sm={6} key={card.id}>
+          <Grid
+            display="flex"
+            key={card.id}
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <InfoCard info={card} />
           </Grid>
         ))}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="termsofuse"
             title={t("terms.header.termsofuse")}
@@ -272,7 +278,7 @@ function Terms() {
           />
         </Grid>
         {[honor_code, terms, privacy_policy].map((card) => (
-          <Grid item display="flex" xs={12} key={card.id}>
+          <Grid display="flex" key={card.id} size={12}>
             <InfoCard info={card} />
           </Grid>
         ))}

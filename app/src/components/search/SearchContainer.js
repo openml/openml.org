@@ -220,10 +220,9 @@ const SearchContainer = memo(
             ))}
           </FilterBox>
         </TabContext>
-
         <Wrapper fullWidth>
           <Grid container spacing={3}>
-            <Grid item xs={12} m={2}>
+            <Grid m={2} size={12}>
               <Box
                 sx={{
                   display: "flex",
@@ -242,7 +241,7 @@ const SearchContainer = memo(
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               {view === "list" && (
                 <SearchResults
                   resultView={ResultCard}
@@ -270,7 +269,7 @@ const SearchContainer = memo(
                 </WithSearch>
               )}
             </Grid>
-            <Grid item xs={12} m={2}>
+            <Grid m={2} size={12}>
               <Box
                 sx={{
                   display: "flex",

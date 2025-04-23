@@ -80,7 +80,7 @@ function Demo({ title, themeVariant }) {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Grid item xs={6}>
+    <Grid size={6}>
       <DemoButton
         active={themeVariant === theme}
         onClick={() => setTheme(themeVariant)}

@@ -123,7 +123,13 @@ const Person = ({ result }) => {
   const name = result.first_name.raw + " " + result.last_name.raw;
   const id = result.user_id.raw; //TODO: go to user profile on click
   return (
-    <Grid item xs={12} sm={4} md={3} xl={2}>
+    <Grid
+      size={{
+        xs: 12,
+        sm: 4,
+        md: 3,
+        xl: 2
+      }}>
       <Grid container direction="column" alignItems="center" sx={{ pb: 5 }}>
         <BigAvatar alt="..." src={result.image.raw} align="center">
           {name.match(/\b(\w)/g).join("")}
@@ -168,7 +174,13 @@ const MiniPerson = ({ result }) => {
   if (name.includes("[bot]")) return <div></div>;
 
   return (
-    <Grid item xs={6} sm={4} md={3} lg={2}>
+    <Grid
+      size={{
+        xs: 6,
+        sm: 4,
+        md: 3,
+        lg: 2
+      }}>
       <AvatarContainer onClick={() => window.open(result.html_url, "_blank")}>
         <AvatarLabel>
           <Avatar
@@ -469,12 +481,12 @@ function About() {
         </ContactButton>
       </Zoom>
       <Grid container spacing={10}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Title variant="h2" align="center">
             {t("about.title")}
           </Title>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="team"
             title={t("about.header.team")}
@@ -511,7 +523,7 @@ function About() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item display="flex" xs={12} key={contact.id}>
+        <Grid display="flex" key={contact.id} size={12}>
           <Card>
             <InfoCard info={contributors} />
             <CardContent>
@@ -519,7 +531,7 @@ function About() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="contact"
             title={t("about.header.contact")}
@@ -528,10 +540,10 @@ function About() {
           />
           <InfoCard info={contact} />
         </Grid>
-        <Grid item display="flex" xs={12} key={contact_issues.id}>
+        <Grid display="flex" key={contact_issues.id} size={12}>
           <InfoCard info={contact_issues} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="mission"
             title={t("about.header.mission")}
@@ -540,13 +552,13 @@ function About() {
           />
           <InfoCard info={mission} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <InfoCard info={community} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <InfoCard info={governance} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Header
             id="foundation"
             title={t("about.header.foundation")}
@@ -555,7 +567,7 @@ function About() {
           />
           <InfoCard info={foundation} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <InfoCard info={foundation_mission} />
           <Accordion>
             <AccordionSummary

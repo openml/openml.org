@@ -40,7 +40,11 @@ function Testimonial() {
     <Wrapper pt={10} pb={20}>
       <Container>
         <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs={12} md={8}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 8
+            }}>
             <Typography variant="h2" component="h3" gutterBottom>
               &quot;OpenML is the easiest way to get access to thousands of
               machine learning datasets&quot;

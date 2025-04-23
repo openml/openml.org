@@ -28,7 +28,7 @@ const NavbarSimple = ({ onDrawerToggle }) => {
       <AppBar position="sticky" elevation={0}>
         <Toolbar>
           <Grid container alignItems="center">
-            <Grid item sx={{ display: { xs: "block", md: "none" } }}>
+            <Grid sx={{ display: { xs: "block", md: "none" } }}>
               <IconButton
                 color="inherit"
                 aria-label="Open drawer"

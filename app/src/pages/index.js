@@ -40,7 +40,7 @@ function Presentation() {
     <Wrapper>
       <Helmet title={t("landing.helmet")} />
       <Grid container spacing={10}>
-        <Grid item>
+        <Grid>
           <Introduction />
           <Lifecycle />
           <Integrations />
