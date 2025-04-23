@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     connectorsCache[indexName] = new ElasticsearchAPIConnector({
       host: use_dev_proxy
         ? "http://localhost:3001/proxy"
-        : "https://es.openml.org/",
+        : "https://www.openml.org/es/",
       index: indexName,
       apiKey: "",
     });
