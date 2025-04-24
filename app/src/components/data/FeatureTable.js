@@ -29,6 +29,7 @@ const FeatureTable = ({ data }) => {
   let targets = [];
   // Define the rows for the grid
   const rows = data.map((feature) => {
+    console.log("Feature:", feature);
     const id = feature.index; // Rename index to id
     if (feature.target === "1" && feature.distr) {
       targets = feature.distr[0];
@@ -49,11 +50,13 @@ const FeatureTable = ({ data }) => {
       headerName: t("tableheader.feature"),
       width: 200,
       editable: true,
-      valueGetter: (params) =>
-        `${params.row.name} ${params.row.target === "1" ? "(target)" : ""}`,
       renderCell: (params) => {
         const isBold = params.row.target === "1";
-        return <CellContent isBold={isBold}>{params.value}</CellContent>;
+        return (
+          <CellContent isBold={isBold}>
+            {params.value} {isBold && " (target)"}
+          </CellContent>
+        );
       },
     },
     {

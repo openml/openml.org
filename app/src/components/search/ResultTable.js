@@ -27,7 +27,7 @@ const DataGrid = styled(MuiDataGrid)`
 
 // Map the way ElasticSearch returns the data to the way the DataGrid expects it
 export const valueGetter = (fieldName) => (params) => {
-  let value = params.row[fieldName]?.raw ?? params.row[fieldName];
+  let value = params?.raw ?? params;
   if (typeof value === "string") {
     // Remove quotes from string values
     return value.replace(/^"(.*)"$/, "$1");
