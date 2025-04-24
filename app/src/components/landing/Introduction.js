@@ -84,8 +84,10 @@ const GradientButton = styled(Button)`
   color: inherit;
   box-shadow: 0 0 6px 0 rgba(157, 96, 212, 0.5);
   border: solid 1px transparent;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)),
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0)
+    ),
     linear-gradient(to right, #fc466b, #3f5efb);
   background-origin: border-box;
   background-clip: content-box, border-box;

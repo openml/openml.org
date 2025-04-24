@@ -224,14 +224,14 @@ function Dataset({ data, error }) {
         data.status === "active"
           ? "green"
           : data.status === "deactivated"
-            ? "red"
-            : "orange",
+          ? "red"
+          : "orange",
       icon:
         data.status === "active"
           ? faCheckCircle
           : data.status === "deactivated"
-            ? faTimes
-            : faWrench,
+          ? faTimes
+          : faWrench,
     },
     {
       label: "Data likes",
