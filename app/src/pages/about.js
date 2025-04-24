@@ -128,8 +128,9 @@ const Person = ({ result }) => {
         xs: 12,
         sm: 4,
         md: 3,
-        xl: 2
-      }}>
+        xl: 2,
+      }}
+    >
       <Grid container direction="column" alignItems="center" sx={{ pb: 5 }}>
         <BigAvatar alt="..." src={result.image.raw} align="center">
           {name.match(/\b(\w)/g).join("")}
@@ -179,8 +180,9 @@ const MiniPerson = ({ result }) => {
         xs: 6,
         sm: 4,
         md: 3,
-        lg: 2
-      }}>
+        lg: 2,
+      }}
+    >
       <AvatarContainer onClick={() => window.open(result.html_url, "_blank")}>
         <AvatarLabel>
           <Avatar

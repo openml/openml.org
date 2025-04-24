@@ -57,8 +57,9 @@ function Lifecycle() {
               key={card.id}
               size={{
                 xs: 12,
-                md: 4
-              }}>
+                md: 4,
+              }}
+            >
               <InfoCard info={card} />
             </Grid>
           ))}

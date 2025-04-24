@@ -403,8 +403,9 @@ function Contribute() {
             key={card.id}
             size={{
               xs: 12,
-              sm: 6
-            }}>
+              sm: 6,
+            }}
+          >
             <InfoCard info={card} />
           </Grid>
         ))}
@@ -423,8 +424,9 @@ function Contribute() {
             size={{
               xs: 12,
               sm: 6,
-              lg: 4
-            }}>
+              lg: 4,
+            }}
+          >
             <InfoCard info={card} />
           </Grid>
         ))}

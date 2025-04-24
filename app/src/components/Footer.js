@@ -43,8 +43,9 @@ function Footer() {
           container
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <List>
             <ListItemButton component="a" href="apis">
               <ListItemText primary="APIs" />
@@ -68,8 +69,9 @@ function Footer() {
           justifyContent="flex-end"
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <List>
             <ListItemButton>
               <ListItemText

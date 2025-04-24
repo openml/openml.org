@@ -8,8 +8,9 @@ const ResultGridCard = ({ result }) => {
       size={{
         xs: 12,
         sm: 6,
-        md: 3
-      }}>
+        md: 3,
+      }}
+    >
       <ResultCard result={result} />
     </Grid>
   );

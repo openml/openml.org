@@ -126,8 +126,9 @@ function Task({ data }) {
               </Grid>
               <Grid
                 size={{
-                  md: 12
-                }}>
+                  md: 12,
+                }}
+              >
                 <Grid container justifyContent="space-between" spacing={2}>
                   <Grid>
                     {dataProps1.map((tag) => (
@@ -146,8 +147,9 @@ function Task({ data }) {
                 <Grid container spacing={2} pt={1}>
                   <Grid
                     size={{
-                      md: 12
-                    }}>
+                      md: 12,
+                    }}
+                  >
                     <FontAwesomeIcon icon={faTags} />
                     {data.tags.map((tag, index) => (
                       <Tag

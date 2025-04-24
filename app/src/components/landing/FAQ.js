@@ -71,8 +71,9 @@ function FAQ() {
           <Grid
             size={{
               xs: 12,
-              xl: 8
-            }}>
+              xl: 8,
+            }}
+          >
             {[1, 2, 3].map((faq) => (
               <Accordion key={faq}>
                 <AccordionSummary

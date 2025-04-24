@@ -60,8 +60,9 @@ function Public() {
         <Grid container spacing={6}>
           <Grid
             size={{
-              md: 8
-            }}>
+              md: 8,
+            }}
+          >
             <TextField
               id="username"
               label="Username"
@@ -85,8 +86,9 @@ function Public() {
           </Grid>
           <Grid
             size={{
-              md: 4
-            }}>
+              md: 4,
+            }}
+          >
             <CenteredContent>
               <BigAvatar
                 alt="Remy Sharp"
@@ -132,8 +134,9 @@ function Private() {
         <Grid container spacing={6}>
           <Grid
             size={{
-              md: 6
-            }}>
+              md: 6,
+            }}
+          >
             <TextField
               id="first-name"
               label="First name"
@@ -145,8 +148,9 @@ function Private() {
           </Grid>
           <Grid
             size={{
-              md: 6
-            }}>
+              md: 6,
+            }}
+          >
             <TextField
               id="last-name"
               label="Last name"
@@ -187,8 +191,9 @@ function Private() {
         <Grid container spacing={6}>
           <Grid
             size={{
-              md: 6
-            }}>
+              md: 6,
+            }}
+          >
             <TextField
               id="city"
               label="City"
@@ -199,8 +204,9 @@ function Private() {
           </Grid>
           <Grid
             size={{
-              md: 4
-            }}>
+              md: 4,
+            }}
+          >
             <TextField
               id="state"
               label="State"
@@ -211,8 +217,9 @@ function Private() {
           </Grid>
           <Grid
             size={{
-              md: 2
-            }}>
+              md: 2,
+            }}
+          >
             <TextField
               id="zip"
               label="Zip"

@@ -43,8 +43,9 @@ function Testimonial() {
           <Grid
             size={{
               xs: 12,
-              md: 8
-            }}>
+              md: 8,
+            }}
+          >
             <Typography variant="h2" component="h3" gutterBottom>
               &quot;OpenML is the easiest way to get access to thousands of
               machine learning datasets&quot;

@@ -147,8 +147,9 @@ function Flow({ data }) {
               </Grid>
               <Grid
                 size={{
-                  md: 12
-                }}>
+                  md: 12,
+                }}
+              >
                 <Grid container justifyContent="space-between" spacing={2}>
                   {/* Left-aligned Properties */}
                   <Grid>
@@ -171,8 +172,9 @@ function Flow({ data }) {
                 <Grid container spacing={2} pt={1}>
                   <Grid
                     size={{
-                      md: 12
-                    }}>
+                      md: 12,
+                    }}
+                  >
                     <FontAwesomeIcon icon={faTags} />
                     {data.tags.map((tag, index) => (
                       <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />

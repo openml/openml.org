@@ -3,7 +3,6 @@
 See https://docs.openml.org/Website/ for instructions on the current (React) app.
 For the new (Next.js) app, see below.
 
-
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

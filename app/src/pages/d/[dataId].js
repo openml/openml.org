@@ -224,14 +224,14 @@ function Dataset({ data, error }) {
         data.status === "active"
           ? "green"
           : data.status === "deactivated"
-          ? "red"
-          : "orange",
+            ? "red"
+            : "orange",
       icon:
         data.status === "active"
           ? faCheckCircle
           : data.status === "deactivated"
-          ? faTimes
-          : faWrench,
+            ? faTimes
+            : faWrench,
     },
     {
       label: "Data likes",
@@ -270,8 +270,9 @@ function Dataset({ data, error }) {
 
             <Grid
               size={{
-                md: 12
-              }}>
+                md: 12,
+              }}
+            >
               <Grid container justifyContent="space-between" spacing={2}>
                 {/* Left-aligned Properties */}
                 <Grid>
@@ -308,8 +309,9 @@ function Dataset({ data, error }) {
               <Grid container spacing={2} pt={1}>
                 <Grid
                   size={{
-                    md: 12
-                  }}>
+                    md: 12,
+                  }}
+                >
                   <FontAwesomeIcon icon={faTags} />
                   {data.tags.map((tag, index) => (
                     <Tag key={`${tag.tag}-${index}`} tag={tag.tag} />

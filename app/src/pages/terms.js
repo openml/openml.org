@@ -264,8 +264,9 @@ function Terms() {
             key={card.id}
             size={{
               xs: 12,
-              sm: 6
-            }}>
+              sm: 6,
+            }}
+          >
             <InfoCard info={card} />
           </Grid>
         ))}
