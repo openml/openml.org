@@ -327,11 +327,11 @@ const governance = {
   iconColor: purple[300],
   chips: [
     {
-      link: "https://docs.openml.org/Contributing/",
+      link: "https://docs.openml.org/contributing/",
       icon: faHandHoldingHeart,
     },
     {
-      link: "https://docs.openml.org/Governance/",
+      link: "https://docs.openml.org/intro/Governance/",
       icon: faUsers,
     },
     {
