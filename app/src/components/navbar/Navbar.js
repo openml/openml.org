@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import SearchContainer from "./NavbarSearch";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  Box,
   Grid,
-  ListItemButton,
   AppBar as MuiAppBar,
   IconButton as MuiIconButton,
   Toolbar,
@@ -23,49 +21,20 @@ import NavbarNotificationsDropdown from "./NavbarNotificationsDropdown";
 import NavbarCreationDropdown from "./NavbarCreationDropdown";
 import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
+import Brand from "./NavBrand";
 
-import Logo from "@/public/static/svg/logo.svg";
 import { useTheme } from "@mui/system";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) =>
-    props.ecolor ? props.ecolor : props.theme.header.background};
-  color: ${(props) => props.theme.header.color};
+    props.ecolor ? props.ecolor : props.theme.palette.header.background};
+  color: ${(props) => props.theme.palette.header.color};
 `;
 
 const IconButton = styled(MuiIconButton)`
   svg {
     width: 22px;
     height: 22px;
-  }
-`;
-
-const BrandIcon = styled(Logo)`
-  color: ${(props) => props.theme.sidebar.header.brand.color};
-  fill: ${(props) => props.theme.sidebar.header.brand.color};
-  width: 36px;
-  height: 36px;
-  display: none; // Hide for now.
-
-  ${(props) => props.theme.breakpoints.up("md")} {
-    display: none;
-  }
-`;
-
-const Brand = styled(ListItemButton)`
-  font-size: ${(props) => props.theme.typography.h4.fontSize};
-  font-weight: ${(props) => props.theme.typography.fontWeightBold};
-  font-family: ${(props) => props.theme.typography.fontFamily};
-  min-height: 56px;
-  padding-top: ${(props) => props.theme.spacing(3.5)};
-  padding-left: ${(props) => props.theme.spacing(0)};
-  padding-right: ${(props) => props.theme.spacing(0)};
-  cursor: pointer;
-  flex-grow: 0;
-  display: block;
-
-  ${(props) => props.theme.breakpoints.up("md")} {
-    display: none;
   }
 `;
 
@@ -115,15 +84,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
               </IconButton>
             </Grid>
             <Grid>
-              <BrandIcon />
-              <Brand ecolor={ecolor}>
-                <Box ml={1} mr={2}>
-                  OpenML
-                </Box>
-              </Brand>
-            </Grid>
-            <Grid>
-              {section && <Brand ecolor={ecolor}>|&nbsp;&nbsp;{section}</Brand>}
+              <Brand ecolor={ecolor} section={section} />
             </Grid>
             <Grid sx={{ display: { xs: "block", sm: "none" } }} size="grow" />
             <Grid sx={{ display: { xs: "none", md: "block" } }}>

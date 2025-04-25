@@ -1,7 +1,5 @@
 import createCache from "@emotion/cache";
 
-const createEmotionCache = () => {
-  return createCache({ key: "css" });
-};
-
-export default createEmotionCache;
+export default function createEmotionCache() {
+  return createCache({ key: "css", prepend: true });
+}

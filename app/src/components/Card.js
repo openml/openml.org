@@ -1,7 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "next-i18next";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { spacing } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -85,17 +85,16 @@ const TitleIcon = styled(FontAwesomeIcon)`
 
 const Typography = styled(MuiTypography)(spacing);
 
-const ButtonImage = styled.img`
-  height: 40px;
-  width: auto;
-  transition: 0.15s ease-in-out;
-  padding-right: 15px;
-  border-radius: 4px;
-
-  &:hover {
-    transform: scale(1.0325);
-  }
-`;
+const ButtonImage = styled("img")(({ theme }) => ({
+  height: 40,
+  width: "auto",
+  transition: "0.15s ease-in-out",
+  paddingRight: 15,
+  borderRadius: 4,
+  "&:hover": {
+    transform: "scale(1.0325)",
+  },
+}));
 
 const Chip = styled(MuiChip)`
   padding: 4px 4px;

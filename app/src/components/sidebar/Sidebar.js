@@ -1,13 +1,13 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import Link from "next/link";
 
 import { Box, Drawer as MuiDrawer, ListItemButton } from "@mui/material";
 
-import Logo from "@/public/static/svg/logo.svg";
-
 import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
+
+const Logo = () => <img src="/static/svg/logo.svg" alt="Logo" />;
 
 const Drawer = styled(MuiDrawer)`
   border-right: 0;
@@ -20,9 +20,9 @@ const Drawer = styled(MuiDrawer)`
 const Brand = styled(ListItemButton)`
   font-size: ${(props) => props.theme.typography.h4.fontSize};
   font-weight: ${(props) => props.theme.typography.fontWeightBold};
-  color: ${(props) => props.theme.sidebar.header.color};
+  color: ${(props) => props.theme.palette.sidebar.header.color};
   background-color: ${(props) =>
-    props.ecolor ? props.ecolor : props.theme.sidebar.header.background};
+    props.ecolor ? props.ecolor : props.theme.palette.sidebar.header.background};
   font-family: ${(props) => props.theme.typography.fontFamily};
   min-height: 56px;
   padding-left: ${(props) => props.theme.spacing(10)};
@@ -37,13 +37,13 @@ const Brand = styled(ListItemButton)`
 
   &:hover {
     background-color: ${(props) =>
-      props.ecolor ? props.ecolor : props.theme.sidebar.header.background};
+      props.ecolor ? props.ecolor : props.theme.palette.sidebar.header.background};
   }
 `;
 
 const BrandIcon = styled(Logo)`
-  color: ${(props) => props.theme.sidebar.header.brand.color};
-  fill: ${(props) => props.theme.sidebar.header.brand.color};
+  color: ${(props) => props.theme.palette.sidebar.header.brand.color};
+  fill: ${(props) => props.theme.palette.sidebar.header.brand.color};
   margin-left: -26px;
   width: 36px;
   height: 36px;

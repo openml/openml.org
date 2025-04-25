@@ -112,41 +112,41 @@ const defaultVariant = {
     },
     entity: openmlColors,
     icon: openmlIcons,
-  },
-  header: {
-    color: grey[700],
-    background: "#FFF",
-    search: {
-      color: grey[800],
-    },
-    indicator: {
-      background: customBlue[600],
-    },
-  },
-  footer: {
-    color: grey[500],
-    background: "#FFF",
-  },
-  sidebar: {
-    color: grey[200],
-    background: "#233044",
     header: {
-      color: grey[200],
-      background: "#233044",
-      brand: {
-        color: "rgba(0, 0, 0, 0.5)",
+      color: grey[700],
+      background: "#FFF",
+      search: {
+        color: grey[800],
+      },
+      indicator: {
+        background: customBlue[600],
       },
     },
     footer: {
-      color: grey[200],
-      background: "#1E2A38",
-      online: {
-        background: green[500],
-      },
+      color: grey[500],
+      background: "#FFF",
     },
-    badge: {
+    sidebar: {
       color: grey[200],
       background: "#233044",
+      header: {
+        color: grey[200],
+        background: "#233044",
+        brand: {
+          color: "rgba(0, 0, 0, 0.5)",
+        },
+      },
+      footer: {
+        color: grey[200],
+        background: "#1E2A38",
+        online: {
+          background: green[500],
+        },
+      },
+      badge: {
+        color: grey[200],
+        background: "#233044",
+      },
     },
   },
 };
@@ -169,24 +169,24 @@ const darkVariant = merge(defaultVariant, {
     },
     entity: openmlColors,
     icon: openmlIcons,
-  },
-  sidebar: {
-    header: {
-      brand: {
-        color: "rgba(255, 255, 255, 0.5)",
+    sidebar: {
+      header: {
+        brand: {
+          color: "rgba(255, 255, 255, 0.5)",
+        },
       },
     },
-  },
-  header: {
-    color: grey[300],
-    background: "#1B2635",
-    search: {
-      color: grey[200],
+    header: {
+      color: grey[300],
+      background: "#1B2635",
+      search: {
+        color: grey[200],
+      },
     },
-  },
-  footer: {
-    color: grey[300],
-    background: "#233044",
+    footer: {
+      color: grey[300],
+      background: "#233044",
+    },
   },
 });
 
@@ -196,37 +196,37 @@ const lightVariant = merge(defaultVariant, {
     mode: "light",
     entity: openmlColors,
     icon: openmlIcons,
-  },
-  header: {
-    color: grey[200],
-    background: customBlue[800],
-    search: {
-      color: grey[100],
-    },
-    indicator: {
-      background: red[700],
-    },
-  },
-  sidebar: {
-    color: grey[900],
-    background: "#FFF",
     header: {
-      color: "#FFF",
+      color: grey[200],
       background: customBlue[800],
-      brand: {
-        color: "#FFFFFF",
+      search: {
+        color: grey[100],
+      },
+      indicator: {
+        background: red[700],
       },
     },
-    footer: {
-      color: grey[800],
-      background: "#F7F7F7",
-      online: {
-        background: green[500],
-      },
-    },
-    badge: {
+    sidebar: {
       color: grey[900],
       background: "#FFF",
+      header: {
+        color: "#FFF",
+        background: customBlue[800],
+        brand: {
+          color: "#FFFFFF",
+        },
+      },
+      footer: {
+        color: grey[800],
+        background: "#F7F7F7",
+        online: {
+          background: green[500],
+        },
+      },
+      badge: {
+        color: grey[900],
+        background: "#FFF",
+      },
     },
   },
 });
@@ -244,32 +244,32 @@ const indigoVariant = merge(defaultVariant, {
     },
     entity: openmlColors,
     icon: openmlIcons,
-  },
-  header: {
-    indicator: {
-      background: indigo[600],
-    },
-  },
-  sidebar: {
-    color: "#FFF",
-    background: indigo[700],
     header: {
-      color: "#FFF",
-      background: indigo[800],
-      brand: {
-        color: "rgba(0, 0, 0, 0.5)",
+      indicator: {
+        background: indigo[600],
       },
     },
-    footer: {
-      color: "#FFF",
-      background: indigo[800],
-      online: {
-        background: "#FFF",
-      },
-    },
-    badge: {
+    sidebar: {
       color: "#FFF",
       background: indigo[700],
+      header: {
+        color: "#FFF",
+        background: indigo[800],
+        brand: {
+          color: "rgba(0, 0, 0, 0.5)",
+        },
+      },
+      footer: {
+        color: "#FFF",
+        background: indigo[800],
+        online: {
+          background: "#FFF",
+        },
+      },
+      badge: {
+        color: "#FFF",
+        background: indigo[700],
+      },
     },
   },
 });

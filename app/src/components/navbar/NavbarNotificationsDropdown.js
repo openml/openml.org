@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import NextLink from "next/link";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import {
   Avatar as MuiAvatar,
@@ -31,7 +31,7 @@ const Popover = styled(MuiPopover)`
 
 const Indicator = styled(Badge)`
   .MuiBadge-badge {
-    background: ${(props) => props.theme.header.indicator.background};
+    background: ${(props) => props.theme.palette.header.indicator.background};
     color: ${(props) => props.theme.palette.common.white};
   }
 `;

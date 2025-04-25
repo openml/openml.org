@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import { Box, CssBaseline, Paper as MuiPaper, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -14,17 +14,17 @@ import Footer from "../components/Footer";
 
 const drawerWidth = 258;
 
-const Root = styled.div`
-  display: flex;
-  min-height: 100vh;
-`;
+const Root = styled("div")(({ theme }) => ({
+  display: "flex",
+  minHeight: "100vh",
+}));
 
-const Drawer = styled.div`
-  ${(props) => props.theme.breakpoints.up("md")} {
-    width: ${drawerWidth}px;
-    flex-shrink: 0;
-  }
-`;
+const Drawer = styled("div")(({ theme }) => ({
+  [theme.breakpoints.up("md")]: {
+    width: `${drawerWidth}px`,
+    flexShrink: 0,
+  },
+}));
 
 const AppContent = styled(Box)`
   display: flex;

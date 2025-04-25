@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "next-i18next";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { green, red, blue, deepPurple } from "@mui/material/colors";
 import Link from "next/link";
 
@@ -18,13 +18,13 @@ import {
   faSquareFull,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Wrapper = styled.div`
-  padding-top: 3.5rem;
-  padding-bottom: 1rem;
-  position: relative;
-  text-align: center;
-  overflow: hidden;
-`;
+const Wrapper = styled('div')(({ theme }) => ({
+  paddingTop: '3.5rem',
+  paddingBottom: '1rem',
+  position: 'relative',
+  textAlign: 'center',
+  overflow: 'hidden',
+}));
 
 const Hero = styled(Typography)`
   line-height: 1.2;

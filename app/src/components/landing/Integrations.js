@@ -1,16 +1,16 @@
 import React from "react";
 import { useTranslation } from "next-i18next";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import Link from "next/link";
 
 import { Button, Box, Container, Typography, Tooltip } from "@mui/material";
 import { spacing } from "@mui/system";
 import { ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
 
-const Wrapper = styled.div`
-  ${spacing};
-  text-align: center;
-`;
+const Wrapper = styled("div")(({ theme }) => ({
+  ...spacing(theme),
+  textAlign: "center",
+}));
 
 const TypographyOverline = styled(Typography)`
   text-transform: uppercase;
@@ -18,18 +18,18 @@ const TypographyOverline = styled(Typography)`
   font-weight: ${(props) => props.theme.typography.fontWeightMedium};
 `;
 
-const BrandIcon = styled.img`
-  vertical-align: middle;
-  height: auto;
-`;
+const BrandIcon = styled("img")({
+  verticalAlign: "middle",
+  height: "auto",
+});
 
-const Brand = styled.div`
-  background: white;
-  display: inline-block;
-  padding: 12px 16px;
-  border-radius: 10px;
-  margin: 10px;
-`;
+const Brand = styled("div")({
+  background: "white",
+  display: "inline-block",
+  padding: "12px 16px",
+  borderRadius: 10,
+  margin: 10,
+});
 
 const ArrowForward = styled(ArrowForwardIcon)`
   margin-left: ${(props) => props.theme.spacing(2)};

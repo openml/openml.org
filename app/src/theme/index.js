@@ -15,23 +15,16 @@ const createTheme = (name) => {
     themeConfig = variants[0];
   }
 
-  return createMuiTheme(
-    {
-      spacing: 4,
-      breakpoints: breakpoints,
-      // @ts-ignore
-      components: components,
-      typography: typography,
-      shadows: shadows,
-      palette: themeConfig.palette,
-    },
-    {
-      name: themeConfig.name,
-      header: themeConfig.header,
-      footer: themeConfig.footer,
-      sidebar: themeConfig.sidebar,
-    },
-  );
+  const baseTheme = createMuiTheme({
+    spacing: 4,
+    breakpoints,
+    components,
+    typography,
+    shadows,
+    palette: themeConfig.palette, // ✅ Now includes header/footer/sidebar inside palette
+  });
+
+  return baseTheme; // ✅ no need to spread extra fields anymore
 };
 
 export default createTheme;

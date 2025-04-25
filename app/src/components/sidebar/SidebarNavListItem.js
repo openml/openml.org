@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { rgba, darken } from "polished";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -22,20 +22,20 @@ const Item = styled(ListItemButton)`
     props.theme.spacing(props.depth && props.depth > 0 ? 4 : 7)};
   font-weight: ${(props) => props.theme.typography.fontWeightRegular};
   svg {
-    color: ${(props) => props.theme.sidebar.color};
+    color: ${(props) => props.theme.palette.sidebar.color};
     font-size: 20px;
     width: 20px;
     height: 20px;
   }
   &:hover {
     background: rgba(0, 0, 0, 0.08);
-    color: ${(props) => props.theme.sidebar.color};
+    color: ${(props) => props.theme.palette.sidebar.color};
   }
   &.${(props) => props.activeclassname} {
     background-color: ${(props) =>
-      darken(0.03, props.theme.sidebar.background)};
+      darken(0.03, props.theme.palette.sidebar.background)};
     span {
-      color: ${(props) => props.theme.sidebar.color};
+      color: ${(props) => props.theme.palette.sidebar.color};
     }
   }
 `;
@@ -45,7 +45,7 @@ const Title = styled(ListItemText)`
   span {
     color: ${(props) =>
       rgba(
-        props.theme.sidebar.color,
+        props.theme.palette.sidebar.color,
         props.depth && props.depth > 0 ? 0.7 : 1,
       )};
     font-size: ${(props) => props.theme.typography.body1.fontSize}px;
@@ -60,28 +60,28 @@ const Badge = styled(Chip)`
   right: 26px;
   top: ${(props) =>
     props.theme.spacing(props.depth && props.depth > 0 ? "8px" : "12px")};
-  background: ${(props) => props.theme.sidebar.badge.background};
+  background: ${(props) => props.theme.palette.sidebar.badge.background};
   z-index: 1;
   span.MuiChip-label,
   span.MuiChip-label:hover {
     font-size: 11px;
     cursor: pointer;
-    color: ${(props) => props.theme.sidebar.badge.color};
+    color: ${(props) => props.theme.palette.sidebar.badge.color};
     padding-left: ${(props) => props.theme.spacing(2)};
     padding-right: ${(props) => props.theme.spacing(2)};
   }
 `;
 
 const ExpandLessIcon = styled(ExpandLess)`
-  color: ${(props) => rgba(props.theme.sidebar.color, 0.5)};
+  color: ${(props) => rgba(props.theme.palette.sidebar.color, 0.5)};
 `;
 
 const ExpandMoreIcon = styled(ExpandMore)`
-  color: ${(props) => rgba(props.theme.sidebar.color, 0.5)};
+  color: ${(props) => rgba(props.theme.palette.sidebar.color, 0.5)};
 `;
 
 const OpenInNewIcon = styled(OpenInNew)`
-  color: ${(props) => rgba(props.theme.sidebar.color, 0.5)};
+  color: ${(props) => rgba(props.theme.palette.sidebar.color, 0.5)};
   width: 14px !important;
   padding-left: ${(props) => props.theme.spacing(1)};
 `;

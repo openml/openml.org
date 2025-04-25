@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import { Typography } from "@mui/material";
 
@@ -7,7 +7,7 @@ import SidebarNavList from "./SidebarNavList";
 import { useTranslation } from "next-i18next";
 
 const Title = styled(Typography)`
-  color: ${(props) => props.theme.sidebar.color};
+  color: ${(props) => props.theme.palette.sidebar.color};
   font-size: ${(props) => props.theme.typography.caption.fontSize};
   padding: ${(props) => props.theme.spacing(4)}
     ${(props) => props.theme.spacing(7)} ${(props) => props.theme.spacing(1)};

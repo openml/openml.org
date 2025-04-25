@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { darken } from "polished";
 import { useTranslation } from "next-i18next";
 import dataSearchConfig from "../../search_configs/dataConfig";
@@ -22,27 +22,30 @@ import { SearchProvider, SearchBox } from "@elastic/react-search-ui";
 const SearchWrapper = styled(Box)`
   border-radius: 2px;
   background-color: ${(props) =>
-    props.ecolor ? props.ecolor : props.theme.header.background};
+    props.ecolor ? props.ecolor : props.theme.palette.header.background};
   position: relative;
   width: 100%;
-  color: ${(props) => props.theme.sidebar.header.brand.color};
+  color: ${(props) => props.theme.palette.sidebar.header.brand.color};
 
   background-color: ${(props) =>
-    darken(0.05, props.ecolor ? props.ecolor : props.theme.header.background)};
+    darken(
+      0.05,
+      props.ecolor ? props.ecolor : props.theme.palette.header.background,
+    )};
 `;
 
-const SearchIcon = styled.div`
-  svg {
-    width: 19px;
-    height: 19px;
-    padding-top: ${(props) => props.theme.spacing(2.5)};
-    padding-bottom: ${(props) => props.theme.spacing(1.5)};
-    padding-left: ${(props) => props.theme.spacing(2.5)};
-  }
-`;
+const SearchIcon = styled("div")(({ theme }) => ({
+  svg: {
+    width: 19,
+    height: 19,
+    paddingTop: theme.spacing(2.5),
+    paddingBottom: theme.spacing(1.5),
+    paddingLeft: theme.spacing(2.5),
+  },
+}));
 
 const IndexSelect = styled(Select)`
-  color: ${(props) => props.theme.header.search.color};
+  color: ${(props) => props.theme.palette.header.search.color};
   padding-left: ${(props) => props.theme.spacing(1.5)};
   border: none;
   height: 40px;
@@ -53,7 +56,7 @@ const IndexSelect = styled(Select)`
   }
 
   svg {
-    color: ${(props) => props.theme.header.search.color};
+    color: ${(props) => props.theme.palette.header.search.color};
   }
 `;
 
@@ -67,7 +70,7 @@ const Input = styled(InputBase)`
   width: 100%;
 
   > input {
-    color: ${(props) => props.theme.header.search.color};
+    color: ${(props) => props.theme.palette.header.search.color};
     padding-top: ${(props) => props.theme.spacing(2.5)};
     padding-right: ${(props) => props.theme.spacing(2.5)};
     padding-bottom: ${(props) => props.theme.spacing(2.5)};

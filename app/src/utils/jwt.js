@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { verify, sign } from "jsonwebtoken";
 import axios from "./axios";
 

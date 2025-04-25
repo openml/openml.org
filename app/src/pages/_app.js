@@ -21,7 +21,7 @@ import "../vendor/perfect-scrollbar.css";
 
 import createTheme from "../theme";
 
-import { ThemeProvider } from "../contexts/ThemeContext";
+import { ThemeProvider as CustomThemeProvider } from "../contexts/ThemeContext"; // renamed to avoid confusion
 import useTheme from "../hooks/useTheme";
 import { store } from "../redux/store";
 import createEmotionCache from "../utils/createEmotionCache";
@@ -32,8 +32,6 @@ import { AuthProvider } from "../contexts/JWTContext";
 const clientSideEmotionCache = createEmotionCache();
 
 function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
-  const { theme } = useTheme();
-
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
@@ -42,11 +40,13 @@ function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
         <Helmet titleTemplate="OpenML | %s" defaultTitle="OpenML - Next" />
         <Provider store={store}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <MuiThemeProvider theme={createTheme(theme)}>
-              <AuthProvider>
-                {getLayout(<Component {...pageProps} />)}
-              </AuthProvider>
-            </MuiThemeProvider>
+            <CustomThemeProvider>
+              <ThemeConsumerWrapper
+                Component={Component}
+                pageProps={pageProps}
+                getLayout={getLayout}
+              />
+            </CustomThemeProvider>
           </LocalizationProvider>
         </Provider>
       </HelmetProvider>
@@ -54,16 +54,15 @@ function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
   );
 }
 
-const withThemeProvider = (Component) => {
-  const AppWithThemeProvider = (props) => {
-    return (
-      <ThemeProvider>
-        <Component {...props} />
-      </ThemeProvider>
-    );
-  };
-  AppWithThemeProvider.displayName = "AppWithThemeProvider";
-  return AppWithThemeProvider;
-};
+function ThemeConsumerWrapper({ Component, pageProps, getLayout }) {
+  const { theme } = useTheme(); // ✅ ThemeContext is already mounted now
+  const muiTheme = createTheme(theme);
 
-export default appWithTranslation(withThemeProvider(App));
+  return (
+    <MuiThemeProvider theme={muiTheme}>
+      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+    </MuiThemeProvider>
+  );
+}
+
+export default appWithTranslation(App);
