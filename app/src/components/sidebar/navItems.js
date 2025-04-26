@@ -120,6 +120,10 @@ const communitySection = [
 
 const learnSection = [
   {
+    href: "https://docs.openml.org/",
+    title: "sidebar.docs",
+  },
+  {
     href: "/apis",
     title: "sidebar.apis",
   },

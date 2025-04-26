@@ -2,7 +2,7 @@ import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Box, Card, Tooltip } from "@mui/material";
 
 import TimeAgo from "react-timeago";
@@ -48,36 +48,41 @@ const SearchResultCard = styled(Card)`
     background: rgba(0, 0, 0, 0.08);
   }
 `;
-const Stats = styled.div`
-  padding-right: 8px;
-  display: inline-block;
-  font-size: 12px;
-`;
-const ColorStats = styled.div`
-  padding-right: 8px;
-  display: inline-block;
-  font-size: 12px;
-  color: ${(props) => props.color};
-`;
-const ID = styled.div`
-  font-size: 12px;
-  font-weight: 400;
-  color: ${(props) => props.color};
-`;
-const RightStats = styled.div`
-  float: right;
-  font-size: 12px;
-`;
+const Stats = styled("div")({
+  paddingRight: "8px",
+  display: "inline-block",
+  fontSize: "12px",
+});
+
+const ColorStats = styled("div")(({ color }) => ({
+  paddingRight: "8px",
+  display: "inline-block",
+  fontSize: "12px",
+  color: color,
+}));
+
+const ID = styled("div")(({ color }) => ({
+  fontSize: "12px",
+  fontWeight: 400,
+  color: color,
+}));
+
+const RightStats = styled("div")({
+  float: "right",
+  fontSize: "12px",
+});
+
+const TitleWrapper = styled("div")({
+  paddingBottom: "5px",
+  fontSize: "16px",
+  fontWeight: 600,
+  display: "flex",
+  alignItems: "baseline",
+});
+
 const ColoredIcon = styled(FontAwesomeIcon)`
   color: ${(props) => props.color};
   align-self: center;
-`;
-const TitleWrapper = styled.div`
-  padding-bottom: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: baseline;
 `;
 
 // Helper functions to get nested properties like 'qualities.raw.NumberOfClasses'

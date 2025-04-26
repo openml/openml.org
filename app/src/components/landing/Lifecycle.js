@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { useTranslation } from "next-i18next";
 
 import { spacing } from "@mui/system";
@@ -9,10 +9,9 @@ import InfoCard from "../Card";
 import { faCogs, faDatabase, faFlask } from "@fortawesome/free-solid-svg-icons";
 import { purple, blue, red, yellow, green, orange } from "@mui/material/colors";
 
-const Wrapper = styled.div`
-  ${spacing};
-  text-align: center;
-`;
+const Wrapper = styled("div")(spacing, {
+  textAlign: "center",
+});
 
 // Maybe add chips as well to other parts of the landing page or docs
 const ai_ready_data = {

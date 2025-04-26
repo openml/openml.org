@@ -21,7 +21,7 @@ import ResultCard from "./ResultCard";
 import ResultGridCard from "./ResultGridCard";
 import Sort from "./Sort";
 
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import {
   Facet,
   SearchProvider,
@@ -178,6 +178,8 @@ const SearchContainer = memo(
       if (newView !== null) {
         setView(newView);
       }
+
+
     };
 
     return (

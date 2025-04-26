@@ -2,19 +2,19 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardContent, Typography } from "@mui/material";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import BarChart from "../charts/BarChart";
 import { grey } from "@mui/material/colors";
 
-const ChartBox = styled.div`
-  width: 275px;
-  height: 50px;
-`;
+const ChartBox = styled("div")({
+  width: "275px",
+  height: "50px",
+});
 
-const ChartBoxSmall = styled.div`
-  width: 135px;
-  height: 50px;
-`;
+const ChartBoxSmall = styled("div")({
+  width: "135px",
+  height: "50px",
+});
 
 const columns = [
   { field: "measure", headerName: "Evaluation measure", width: 240 },

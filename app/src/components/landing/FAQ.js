@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import {
   Accordion as MuiAccordion,
@@ -14,12 +14,12 @@ import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 import { useTranslation } from "next-i18next";
 
-const Spacer = styled.div(spacing);
+const Spacer = styled("div")(spacing);
 
-const Wrapper = styled.div`
-  ${spacing};
-  text-align: center;
-`;
+const Wrapper = styled("div")(({ theme }) => ({
+  ...theme.spacing,
+  textAlign: "center",
+}));
 
 const TypographyOverline = styled(Typography)`
   text-transform: uppercase;

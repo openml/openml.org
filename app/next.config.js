@@ -1,7 +1,8 @@
-const path = require("path");
 const { i18n } = require("./next-i18next.config");
 
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  turbopack: {},
   transpilePackages: [
     "@babel/preset-react",
     "@mui/system",
@@ -18,29 +19,8 @@ module.exports = {
       transform: "@mui/icons-material//{{member}}",
     },
   },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: [
-        {
-          loader: "@svgr/webpack",
-          options: {
-            svgoConfig: {
-              plugins: [
-                {
-                  name: "removeViewBox",
-                  active: false,
-                },
-              ],
-            },
-          },
-        },
-      ],
-    });
-    config.resolve.alias["@"] = path.resolve(__dirname);
-
-    return config;
-  },
   i18n,
   reactStrictMode: true,
 };
+
+module.exports = nextConfig;

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Chip } from "@mui/material";
 import { useRouter } from "next/router";
 

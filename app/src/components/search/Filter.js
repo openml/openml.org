@@ -1,5 +1,5 @@
 import { Chip } from "@mui/material";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { i18n } from "next-i18next";
 import React from "react";
 

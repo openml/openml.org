@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import Link from "next/link";
@@ -27,7 +27,7 @@ function SignIn() {
   return (
     <Formik
       initialValues={{
-        email: "demo@bootlab.io",
+        email: "welcome@openml.org",
         password: "unsafepassword",
         submit: false,
       }}
@@ -63,7 +63,7 @@ function SignIn() {
       }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Alert mt={3} mb={3} severity="info">
-            Use <strong>demo@bootlab.io</strong> and{" "}
+            Use <strong>welcome@openml.org</strong> and{" "}
             <strong>unsafepassword</strong> to sign in
           </Alert>
           {errors.submit && (

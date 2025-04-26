@@ -2,20 +2,20 @@ import React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import { Card, CardContent, Typography } from "@mui/material";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { useTranslation } from "next-i18next";
 
 import StackedBarChart from "../charts/StackedBarChart";
 import HorizontalBoxPlot from "../charts/HorizontalBoxPlot";
 
-const CellContent = styled.span`
-  font-weight: ${(props) => (props.isBold ? "bold" : "normal")};
-`;
+const CellContent = styled("span")(({ isBold }) => ({
+  fontWeight: isBold ? "bold" : "normal",
+}));
 
-const ChartBox = styled.div`
-  width: 275px;
-  height: 50px;
-`;
+const ChartBox = styled("div")({
+  width: "275px",
+  height: "50px",
+});
 
 const DataGrid = styled(MuiDataGrid)`
   & .MuiDataGrid-row > .MuiDataGrid-cell {

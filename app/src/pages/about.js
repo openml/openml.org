@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Helmet } from "react-helmet-async";
 import { spacing } from "@mui/system";
 
@@ -105,19 +105,18 @@ const BigAvatar = styled(Avatar)`
 `;
 
 // Needed to override the default list styling of the search results
-const ResultsWrapper = styled.div`
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    padding-left: 0;
-    list-style-type: none;
-  }
-
-  ul li {
-    flex: 1 0 calc(25% - 20px);
-    margin: 10px;
-  }
-`;
+const ResultsWrapper = styled("div")({
+  ul: {
+    display: "flex",
+    flexWrap: "wrap",
+    paddingLeft: 0,
+    listStyleType: "none",
+  },
+  "ul li": {
+    flex: "1 0 calc(25% - 20px)",
+    margin: "10px",
+  },
+});
 
 const Person = ({ result }) => {
   const name = result.first_name.raw + " " + result.last_name.raw;
@@ -152,22 +151,22 @@ const Person = ({ result }) => {
   );
 };
 
-const AvatarContainer = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-  cursor: pointer;
-  & > * {
-    margin: 4px;
-  }
-  &:hover {
-    filter: brightness(85%);
-  }
-`;
+const AvatarContainer = styled("div")({
+  display: "flex",
+  marginBottom: "10px",
+  cursor: "pointer",
+  "& > *": {
+    margin: "4px",
+  },
+  "&:hover": {
+    filter: "brightness(85%)",
+  },
+});
 
-const AvatarLabel = styled.div`
-  display: flex;
-  align-items: center;
-`;
+const AvatarLabel = styled("div")({
+  display: "flex",
+  alignItems: "center",
+});
 
 const MiniPerson = ({ result }) => {
   const name = result.login;

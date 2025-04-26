@@ -1,41 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import { THEMES } from "../constants";
 
 const initialState = {
-  theme: THEMES.DEFAULT,
+  theme: "DEFAULT",
   setTheme: () => {},
 };
 
 const ThemeContext = React.createContext(initialState);
 
 function ThemeProvider({ children }) {
-  // 🔥 Instead of always defaulting to initialState.theme,
-  // check if window exists to use localStorage
-  const getInitialTheme = () => {
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem("theme");
-      if (storedTheme) {
-        return JSON.parse(storedTheme);
-      }
-    }
-    return initialState.theme;
-  };
-
-  const [theme, _setTheme] = React.useState(getInitialTheme); // ✅ initialized immediately
+  const [theme, _setTheme] = useState();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Optional: double-check after mount
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
       _setTheme(JSON.parse(storedTheme));
+    } else {
+      _setTheme(THEMES.DEFAULT);
     }
+    setReady(true);
   }, []);
 
   const setTheme = (theme) => {
     localStorage.setItem("theme", JSON.stringify(theme));
     _setTheme(theme);
   };
+
+  if (!ready) {
+    // Prevent rendering until theme is loaded
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>

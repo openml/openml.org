@@ -1,122 +1,133 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import SearchContainer from "./NavbarSearch";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import { useTheme } from "@mui/system";
 import {
-  Grid,
   AppBar as MuiAppBar,
   IconButton as MuiIconButton,
   Toolbar,
   Tooltip,
-  useMediaQuery,
+  Box,
   Divider,
+  useMediaQuery,
 } from "@mui/material";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Menu as MenuIcon } from "@mui/icons-material";
 
 import NavbarNotificationsDropdown from "./NavbarNotificationsDropdown";
 import NavbarCreationDropdown from "./NavbarCreationDropdown";
 import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
+import SearchContainer from "./NavbarSearch";
 import Brand from "./NavBrand";
 
-import { useTheme } from "@mui/system";
+const AppBar = styled(MuiAppBar)(({ theme, ecolor }) => ({
+  background: ecolor || theme.palette.header.background,
+  color: theme.palette.header.color,
+}));
 
-const AppBar = styled(MuiAppBar)`
-  background: ${(props) =>
-    props.ecolor ? props.ecolor : props.theme.palette.header.background};
-  color: ${(props) => props.theme.palette.header.color};
-`;
-
-const IconButton = styled(MuiIconButton)`
+const IconButtonStyled = styled(MuiIconButton)`
   svg {
     width: 22px;
     height: 22px;
   }
 `;
 
-function NavbarSearch({ toggleSearch }) {
-  return (
-    <React.Fragment>
-      <Tooltip title="Search">
-        <IconButton color="inherit" onClick={toggleSearch} size="large">
-          <FontAwesomeIcon icon={faSearch} />
-        </IconButton>
-      </Tooltip>
-    </React.Fragment>
-  );
-}
-
 const SubToolbar = styled(Toolbar)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 `;
 
-const SearchMiniBar = ({ ecolor }) => {
+function NavbarSearch({ toggleSearch }) {
   return (
-    <SubToolbar>
-      <SearchContainer ecolor={ecolor} />
-    </SubToolbar>
+    <Tooltip title="Search">
+      <IconButtonStyled color="inherit" onClick={toggleSearch} size="large">
+        <FontAwesomeIcon icon={faSearch} />
+      </IconButtonStyled>
+    </Tooltip>
   );
-};
+}
+
+const SearchMiniBar = ({ ecolor }) => (
+  <SubToolbar>
+    <SearchContainer ecolor={ecolor} />
+  </SubToolbar>
+);
 
 const Navbar = ({ onDrawerToggle, ecolor, section }) => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const theme = useTheme();
-  const smallerThanMid = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <React.Fragment>
+    <>
       <AppBar position="sticky" elevation={0} ecolor={ecolor}>
         <Toolbar>
-          <Grid container alignItems="center">
-            <Grid sx={{ display: { xs: "block", md: "none" } }}>
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={onDrawerToggle}
-                size="large"
-              >
-                <MenuIcon />
-              </IconButton>
-            </Grid>
-            <Grid>
-              <Brand ecolor={ecolor} section={section} />
-            </Grid>
-            <Grid sx={{ display: { xs: "block", sm: "none" } }} size="grow" />
-            <Grid sx={{ display: { xs: "none", md: "block" } }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              gap: 2,
+            }}
+          >
+            {/* Drawer Toggle (mobile only) */}
+            <IconButtonStyled
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={onDrawerToggle}
+              size="large"
+              sx={{ display: { xs: "flex", md: "none" } }}
+            >
+              <MenuIcon />
+            </IconButtonStyled>
+
+            {/* Brand */}
+            <Brand ecolor={ecolor} section={section} />
+
+            {/* Spacer */}
+            <Box sx={{ flexGrow: 1 }} />
+
+            {/* Search on desktop */}
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <SearchContainer ecolor={ecolor} />
-            </Grid>
-            <Grid size="grow" />
-            <Grid>
-              <Grid container>
-                <Grid sx={{ display: { xs: "block", md: "none" } }} size="grow">
-                  <NavbarSearch
-                    toggleSearch={() => setShowSearchBar((prev) => !prev)}
-                  />
-                </Grid>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  variant="middle"
-                  sx={{ display: { xs: "block", md: "none" }, m: 2 }}
-                />
-                <Grid>
-                  <NavbarLanguagesDropdown />
-                  {!smallerThanMid && <NavbarCreationDropdown />}
-                  <NavbarNotificationsDropdown />
-                  <NavbarUserDropdown />
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+            </Box>
+
+            {/* Spacer */}
+            <Box sx={{ flexGrow: 1 }} />
+
+            {/* Right-side Icons */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              {/* Search IconButton on mobile */}
+              <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <NavbarSearch toggleSearch={() => setShowSearchBar((prev) => !prev)} />
+              </Box>
+
+              {/* Divider on mobile */}
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ display: { xs: "flex", md: "none" }, mx: 1 }}
+              />
+
+              <NavbarLanguagesDropdown />
+              {!isMobile && <NavbarCreationDropdown />}
+              <NavbarNotificationsDropdown />
+              <NavbarUserDropdown />
+            </Box>
+          </Box>
         </Toolbar>
-        {showSearchBar && smallerThanMid && <SearchMiniBar ecolor={ecolor} />}
+
+        {/* Search bar (mobile only) */}
+        {showSearchBar && isMobile && <SearchMiniBar ecolor={ecolor} />}
       </AppBar>
-    </React.Fragment>
+    </>
   );
 };
 

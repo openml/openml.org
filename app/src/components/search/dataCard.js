@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Tooltip } from "@mui/material";
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { blue, green, grey, orange, purple, red } from "@mui/material/colors";
 import {
   faBars,
@@ -20,18 +20,19 @@ const ColoredIcon = styled(FontAwesomeIcon)`
   color: ${(props) => props.color};
   align-self: center;
 `;
-const VersionStats = styled.div`
-  font-size: 12px;
-  font-weight: 400;
-  padding-left: 8px;
-  padding-right: 2px;
-  color: ${grey[400]};
-`;
-const Stats = styled.div`
-  padding-right: 8px;
-  display: inline-block;
-  font-size: 12px;
-`;
+const VersionStats = styled("div")({
+  fontSize: "12px",
+  fontWeight: 400,
+  paddingLeft: "8px",
+  paddingRight: "2px",
+  color: grey[400],
+});
+
+const Stats = styled("div")({
+  paddingRight: "8px",
+  display: "inline-block",
+  fontSize: "12px",
+});
 
 const status = {
   active: {

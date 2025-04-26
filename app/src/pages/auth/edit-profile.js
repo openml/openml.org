@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import NextLink from "next/link";
 import { Helmet } from "react-helmet-async";
 
@@ -34,9 +34,9 @@ const Button = styled(MuiButton)(spacing);
 
 const CloudUpload = styled(MuiCloudUpload)(spacing);
 
-const CenteredContent = styled.div`
-  text-align: center;
-`;
+const CenteredContent = styled("div")({
+  textAlign: "center",
+});
 
 const BigAvatar = styled(Avatar)`
   width: 120px;

@@ -12,7 +12,7 @@ import QualityTable from "../../components/data/QualityTable";
 import Property from "../../components/Property";
 import Tag from "../../components/Tag";
 
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import {
   Avatar,
   Card,
@@ -60,12 +60,12 @@ const ActionButton = styled(IconButton)`
   border-radius: 0;
 `;
 
-const Action = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
+const Action = styled("div")({
+  display: "inline-flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+});
 
 const VersionChip = styled(Chip)`
   margin-bottom: 5px;

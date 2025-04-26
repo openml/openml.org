@@ -1,5 +1,5 @@
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Box, IconButton, Snackbar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

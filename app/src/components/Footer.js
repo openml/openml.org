@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import {
   Grid,
@@ -8,12 +8,11 @@ import {
   ListItemButton as MuiListItemButton,
 } from "@mui/material";
 
-const Wrapper = styled.div`
-  padding: ${(props) => props.theme.spacing(0.25)}
-    ${(props) => props.theme.spacing(4)};
-  background: ${(props) => props.theme.footer.background};
-  position: relative;
-`;
+const Wrapper = styled("div")(({ theme }) => ({
+  padding: `${theme.spacing(0.25)} ${theme.spacing(4)}`,
+  background: theme.footer.background,
+  position: "relative",
+}));
 
 const ListItemButton = styled(MuiListItemButton)`
   display: inline-block;

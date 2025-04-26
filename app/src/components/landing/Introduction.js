@@ -56,28 +56,27 @@ const Title = styled(Typography)`
   -webkit-text-fill-color: transparent;
 `;
 
-const SubTitle = styled.div`
-  height: auto;
-  padding-top: 15px;
-  padding-bottom: 35px;
-  font-size: 1.2em;
-  font-weight: 500;
-  text-align: center;
-`;
+const SubTitle = styled("div")({
+  height: "auto",
+  paddingTop: "15px",
+  paddingBottom: "35px",
+  fontSize: "1.2em",
+  fontWeight: 500,
+  textAlign: "center",
+});
 
-const SubText = styled.div`
-  height: auto;
-  display: inline;
-  padding-top: 10px;
-  padding-bottom: 5px;
-  font-size: 1.2em;
-  margin-left: 10px;
-
-  > a {
-    color: white;
-    padding-left: 10px;
-  }
-`;
+const SubText = styled("div")({
+  height: "auto",
+  display: "inline",
+  paddingTop: "10px",
+  paddingBottom: "5px",
+  fontSize: "1.2em",
+  marginLeft: "10px",
+  "& > a": {
+    color: "white",
+    paddingLeft: "10px",
+  },
+});
 
 const GradientButton = styled(Button)`
   border-radius: 50px;

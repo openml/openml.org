@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { useTranslation } from "next-i18next";
 
 import {
@@ -18,11 +18,11 @@ const IconButton = styled(MuiIconButton)`
   }
 `;
 
-const Flag = styled.img`
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-`;
+const Flag = styled("img")({
+  borderRadius: "50%",
+  width: "22px",
+  height: "22px",
+});
 
 const languageOptions = {
   en: {

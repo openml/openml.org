@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 
 import { spacing } from "@mui/system";
 import {
@@ -9,11 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 
-const Wrapper = styled.div`
-  ${spacing};
-  background: ${(props) => props.theme.palette.background.paper};
-  text-align: center;
-`;
+const Wrapper = styled("div")(spacing, ({ theme }) => ({
+  background: theme.palette.background.paper,
+  textAlign: "center",
+}));
 
 const Container = styled(MuiContainer)`
   align-items: center;
@@ -27,13 +26,13 @@ const Avatar = styled(MuiAvatar)`
   height: 48px;
 `;
 
-const AvatarWrapper = styled.div`
-  text-align: left;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: ${(props) => props.theme.spacing(3)};
-`;
+const AvatarWrapper = styled("div")(({ theme }) => ({
+  textAlign: "left",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: theme.spacing(3),
+}));
 
 function Testimonial() {
   return (

@@ -21,10 +21,13 @@ const createTheme = (name) => {
     components,
     typography,
     shadows,
-    palette: themeConfig.palette, // ✅ Now includes header/footer/sidebar inside palette
+    palette: themeConfig.palette,
   });
 
-  return baseTheme; // ✅ no need to spread extra fields anymore
+  return {
+    ...baseTheme,
+    name: themeConfig.name,
+  };
 };
 
 export default createTheme;

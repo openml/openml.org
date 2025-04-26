@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { withTheme } from "@emotion/react";
 import NextLink from "next/link";
 import { Helmet } from "react-helmet-async";
@@ -69,13 +69,9 @@ const Grid = styled(MuiGrid)(spacing);
 
 const LinearProgress = styled(MuiLinearProgress)(spacing);
 
-const Spacer = styled.div(spacing);
+const Spacer = styled("div")(spacing);
 
 const Typography = styled(MuiTypography)(spacing);
-
-const Centered = styled.div`
-  text-align: center;
-`;
 
 const Avatar = styled(MuiAvatar)`
   display: inline-block;
@@ -83,32 +79,34 @@ const Avatar = styled(MuiAvatar)`
   width: 128px;
 `;
 
-const AboutIcon = styled.span`
-  display: flex;
-  padding-right: ${(props) => props.theme.spacing(2)};
+const Centered = styled("div")({
+  textAlign: "center",
+});
 
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-`;
+const AboutIcon = styled("span")(({ theme }) => ({
+  display: "flex",
+  paddingRight: theme.spacing(2),
+  svg: {
+    width: "14px",
+    height: "14px",
+  },
+}));
 
-const ChartWrapper = styled.div`
-  height: 280px;
-  position: relative;
-`;
+const ChartWrapper = styled("div")({
+  height: "280px",
+  position: "relative",
+});
 
-const StatsIcon = styled.div`
-  position: absolute;
-  right: 16px;
-  top: 32px;
-
-  svg {
-    width: 32px;
-    height: 32px;
-    color: ${(props) => props.theme.palette.secondary.main};
-  }
-`;
+const StatsIcon = styled("div")(({ theme }) => ({
+  position: "absolute",
+  right: "16px",
+  top: "32px",
+  svg: {
+    width: "32px",
+    height: "32px",
+    color: theme.palette.secondary.main,
+  },
+}));
 
 const Link = styled(NextLink)`
   text-decoration: none;
@@ -124,10 +122,10 @@ const ProductsChip = styled(Chip)`
   color: ${(props) => props.theme.palette.common.white};
 `;
 
-const TableWrapper = styled.div`
-  overflow-y: auto;
-  max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
-`;
+const TableWrapper = styled("div")(({ theme }) => ({
+  overflowY: "auto",
+  maxWidth: `calc(100vw - ${theme.spacing(12)})`,
+}));
 
 function Details() {
   return (

@@ -1,12 +1,12 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { LinearProgress } from "@mui/material";
 
-const Root = styled.div`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-`;
+const Root = styled("div")({
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex",
+});
 
 export default function Loader() {
   return (

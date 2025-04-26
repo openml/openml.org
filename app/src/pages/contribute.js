@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { Helmet } from "react-helmet-async";
 import { spacing } from "@mui/system";
 

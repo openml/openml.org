@@ -1,68 +1,54 @@
 import React from "react";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { styled } from "@mui/material/styles";
 
 import { grey, indigo } from "@mui/material/colors";
 import { Box, Drawer, Grid, ListItemButton, Typography } from "@mui/material";
 
-import { THEMES } from "../constants";
 import useTheme from "../hooks/useTheme";
 import { useTranslation } from "next-i18next";
 
-const DemoButton = styled.div`
-  cursor: pointer;
-  background: ${(props) => props.theme.palette.background.paper};
-  height: 80px;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.825rem;
-  position: relative;
-  border: 1px solid
-    ${(props) =>
-      !props.active
-        ? props.theme.palette.action.selected
-        : props.theme.palette.action.active};
-`;
+const DemoButton = styled("div")(({ theme, active }) => ({
+  cursor: "pointer",
+  background: theme.palette.background.paper,
+  height: "80px",
+  borderRadius: "0.3rem",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "0.825rem",
+  position: "relative",
+  border: `1px solid ${
+    !active ? theme.palette.action.selected : theme.palette.action.active
+  }`,
+}));
 
-const DemoButtonInner = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px ${(props) => props.theme.palette.action.selected};
-  position: relative;
+const DemoButtonInner = styled("div")(({ theme, selectedTheme }) => ({
+  width: "50px",
+  height: "50px",
+  borderRadius: "50%",
+  position: "relative",
+  boxShadow: `0 0 0 1px ${theme.palette.action.selected}`,
+  ...(selectedTheme === "DEFAULT" && {
+    background: `linear-gradient(-45deg, #23303f 50%, ${grey[100]} 0)`,
+  }),
+  ...(selectedTheme === "DARK" && {
+    background: "#23303f",
+  }),
+  ...(selectedTheme === "LIGHT" && {
+    background: grey[100],
+  }),
+  ...(selectedTheme === "INDIGO" && {
+    background: `linear-gradient(-45deg, ${indigo[500]} 50%, ${grey[100]} 0)`,
+  }),
+}));
 
-  ${(props) =>
-    props.selectedTheme === THEMES.DEFAULT &&
-    css`
-      background: linear-gradient(-45deg, #23303f 50%, ${grey[100]} 0);
-    `}
-  ${(props) =>
-    props.selectedTheme === THEMES.DARK &&
-    css`
-      background: #23303f;
-    `}
-  ${(props) =>
-    props.selectedTheme === THEMES.LIGHT &&
-    css`
-      background: ${grey[100]};
-    `}
-  ${(props) =>
-    props.selectedTheme === THEMES.INDIGO &&
-    css`
-      background: linear-gradient(-45deg, ${indigo[500]} 50%, ${grey[100]} 0);
-    `}
-`;
+const Wrapper = styled("div")({
+  width: "258px",
+  overflowX: "hidden",
+});
 
 const DemoTitle = styled(Typography)`
   text-align: center;
-`;
-
-const Wrapper = styled.div`
-  width: 258px;
-  overflow-x: hidden;
 `;
 
 const Heading = styled(ListItemButton)`
@@ -107,10 +93,10 @@ function Demos() {
 
       <Box px={4} my={3}>
         <Grid container spacing={3}>
-          <Demo title={t("settings.dark")} themeVariant={THEMES.DARK} />
-          <Demo title={t("settings.light")} themeVariant={THEMES.LIGHT} />
-          <Demo title={t("settings.default")} themeVariant={THEMES.DEFAULT} />
-          <Demo title={t("settings.indigo")} themeVariant={THEMES.INDIGO} />
+          <Demo title={t("settings.dark")} themeVariant="DARK" />
+          <Demo title={t("settings.light")} themeVariant="LIGHT" />
+          <Demo title={t("settings.default")} themeVariant="DEFAULT" />
+          <Demo title={t("settings.indigo")} themeVariant="INDIGO" />
         </Grid>
       </Box>
     </Wrapper>

@@ -12,7 +12,6 @@ import {
   lightBlue,
   deepPurple,
 } from "@mui/material/colors";
-import { THEMES } from "../constants";
 import {
   faDatabase,
   faHandHoldingHeart,
@@ -22,16 +21,14 @@ import {
   faFlask,
   faChartColumn,
   faTachometerAlt,
-  faBookOpen,
-  faCode,
   faCampground,
   faUsers,
   faScaleBalanced,
   faUser,
   faLayerGroup,
   faCircleUser,
-  faFire,
   faRocket,
+  faBookOpenReader,
 } from "@fortawesome/free-solid-svg-icons";
 
 const customBlue = {
@@ -84,7 +81,7 @@ const openmlIcons = {
   benchmarks: faChartColumn,
   tasktypes: faFlag,
   measures: faTachometerAlt,
-  docs: faBookOpen,
+  docs: faBookOpenReader,
   blog: faRss,
   apis: faRocket,
   contribute: faHandHoldingHeart,
@@ -95,7 +92,7 @@ const openmlIcons = {
 };
 
 const defaultVariant = {
-  name: THEMES.DEFAULT,
+  name: "DEFAULT",
   palette: {
     mode: "light",
     primary: {
@@ -152,7 +149,7 @@ const defaultVariant = {
 };
 
 const darkVariant = merge(defaultVariant, {
-  name: THEMES.DARK,
+  name: "DARK",
   palette: {
     mode: "dark",
     primary: {
@@ -191,7 +188,7 @@ const darkVariant = merge(defaultVariant, {
 });
 
 const lightVariant = merge(defaultVariant, {
-  name: THEMES.LIGHT,
+  name: "LIGHT",
   palette: {
     mode: "light",
     entity: openmlColors,
@@ -232,7 +229,7 @@ const lightVariant = merge(defaultVariant, {
 });
 
 const indigoVariant = merge(defaultVariant, {
-  name: THEMES.INDIGO,
+  name: "INDIGO",
   palette: {
     primary: {
       main: indigo[600],

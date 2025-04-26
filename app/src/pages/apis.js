@@ -278,7 +278,7 @@ function APIs() {
       </ApiTabs>
       <Wrapper>
         {api === "rest" ? (
-          <StyledSwaggerUI value="REST" theme={theme}>
+          <StyledSwaggerUI>
             <SwaggerUI url="openml-api.json" />
           </StyledSwaggerUI>
         ) : api !== "others" ? (

@@ -54,8 +54,9 @@ function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
   );
 }
 
+// This wrapper is used to provide the theme to the components so it can be updated dynamically
 function ThemeConsumerWrapper({ Component, pageProps, getLayout }) {
-  const { theme } = useTheme(); // ✅ ThemeContext is already mounted now
+  const { theme } = useTheme();
   const muiTheme = createTheme(theme);
 
   return (

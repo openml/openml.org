@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material/styles";
 import { css, keyframes } from "@emotion/react";
 
 import { CssBaseline } from "@mui/material";
@@ -16,28 +16,27 @@ const animation = (props) => css`
   ${gradientBG} 15s ease 10;
 `;
 
-const Root = styled.div`
-  display: flex;
-  min-height: 100vh;
+const Root = styled("div")(({ theme }) => ({
+  display: "flex",
+  minHeight: "100vh",
+  [theme.breakpoints.up("sm")]: {
+    animation: `${animation}`,
+    animationPlayState: "running",
+    WebkitAnimationTimingFunction: "linear",
+    background: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
+    backgroundSize: "300% 300%",
+  },
+}));
 
-  ${(props) => props.theme.breakpoints.up("sm")} {
-    animation: ${animation};
-    animation-play-state: running;
-    -webkit-animation-timing-function: linear;
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 300% 300%;
-  }
-`;
-
-const RootContent = styled.div`
-  max-width: 520px;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  min-height: 100%;
-  flex-direction: column;
-`;
+const RootContent = styled("div")(({ theme }) => ({
+  maxWidth: "520px",
+  margin: "0 auto",
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex",
+  minHeight: "100%",
+  flexDirection: "column",
+}));
 
 const Auth = ({ children }) => {
   return (
