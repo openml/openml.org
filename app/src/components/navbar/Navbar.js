@@ -18,6 +18,7 @@ import NavbarNotificationsDropdown from "./NavbarNotificationsDropdown";
 import NavbarCreationDropdown from "./NavbarCreationDropdown";
 import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
 import NavbarUserDropdown from "./NavbarUserDropdown";
+import NavbarDocs from "./NavbarDocs";
 import SearchContainer from "./NavbarSearch";
 import Brand from "./NavBrand";
 
@@ -106,7 +107,9 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
             >
               {/* Search IconButton on mobile */}
               <Box sx={{ display: { xs: "flex", md: "none" } }}>
-                <NavbarSearch toggleSearch={() => setShowSearchBar((prev) => !prev)} />
+                <NavbarSearch
+                  toggleSearch={() => setShowSearchBar((prev) => !prev)}
+                />
               </Box>
 
               {/* Divider on mobile */}
@@ -116,6 +119,7 @@ const Navbar = ({ onDrawerToggle, ecolor, section }) => {
                 sx={{ display: { xs: "flex", md: "none" }, mx: 1 }}
               />
 
+              <NavbarDocs />
               <NavbarLanguagesDropdown />
               {!isMobile && <NavbarCreationDropdown />}
               <NavbarNotificationsDropdown />

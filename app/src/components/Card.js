@@ -69,10 +69,19 @@ const List = styled(MuiList)`
 const ListItemText = styled(MuiListItemText)`
   margin: 0px;
 `;
-const Markdown = styled(ReactMarkdown)`
-  margin-block-start: -0.5em;
-  margin-block-end: -0.5em;
-`;
+
+const MarkdownWrapper = styled("div")(({ theme }) => ({
+  marginBlockStart: "-0.5em",
+  marginBlockEnd: "-0.5em",
+}));
+
+const Markdown = ({ children, ...props }) => {
+  return (
+    <MarkdownWrapper>
+      <ReactMarkdown {...props}>{children}</ReactMarkdown>
+    </MarkdownWrapper>
+  );
+};
 
 const ListIcon = styled(FontAwesomeIcon)`
   margin-left: 10;

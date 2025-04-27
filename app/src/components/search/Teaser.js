@@ -1,26 +1,33 @@
 import { styled } from "@mui/material/styles";
 import ReactMarkdown from "react-markdown";
 
-const Markdown = styled(ReactMarkdown)`
-  margin-bottom: 10px;
-  font-size: 12px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; // Limit to 3 lines
-  text-overflow: ellipsis;
-  white-space: normal; // Override the default 'nowrap'
-  word-break: break-word; // To prevent overflow
-  max-height: none;
+const MarkdownWrapper = styled("div")(({ theme }) => ({
+  marginBottom: "10px",
+  fontSize: "12px",
+  overflow: "hidden",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: 2, // Limit to 2 lines
+  textOverflow: "ellipsis",
+  whiteSpace: "normal",
+  wordBreak: "break-word",
+  maxHeight: "none",
+  "& code": {
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    padding: "2px",
+    borderRadius: "4px",
+    fontSize: "12px",
+    fontFamily: "'Roboto Mono', monospace",
+  },
+}));
 
-  code {
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 2px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-family: "Roboto Mono", monospace;
-  }
-`;
+const Markdown = ({ children, ...props }) => {
+  return (
+    <MarkdownWrapper>
+      <ReactMarkdown {...props}>{children}</ReactMarkdown>
+    </MarkdownWrapper>
+  );
+};
 
 const Teaser = ({ description, limit }) => {
   if (!description) {

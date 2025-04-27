@@ -84,7 +84,7 @@ const Input = styled(InputBase)`
 
   ${(props) => props.theme.breakpoints.up("md")} {
     & > input {
-      min-width: calc(100vw - 650px);
+      min-width: calc(100vw - 720px);
     }
   }
 `;
