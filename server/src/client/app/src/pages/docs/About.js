@@ -326,12 +326,12 @@ export default class About extends React.Component {
               </Paragraph>
 
               <ContactChip
-                link="https://docs.openml.org/Contributing/"
+                link="https://docs.openml.org/contributing/"
                 icon={["fas", "hand-holding-heart"]}
                 text="Contribution guide"
               />
               <ContactChip
-                link="https://docs.openml.org/Governance/"
+                link="https://docs.openml.org/intro/Governance/"
                 icon={["fas", "users"]}
                 text="Governance model"
               />
