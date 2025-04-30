@@ -13,7 +13,7 @@ import pythonIcon from "@iconify/icons-logos/python";
 import rLang from "@iconify/icons-logos/r-lang";
 import javaIcon from "@iconify/icons-logos/java";
 import cSharp from "@iconify/icons-logos/c-sharp";
-import pytorchIcon from "@iconify/icons-logos/pytorch";
+import pytorchIcon from "@iconify/icons-logos/pytorch-icon";
 import jupyterIcon from "@iconify/icons-logos/jupyter";
 
 import {
