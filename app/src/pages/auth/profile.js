@@ -138,10 +138,10 @@ function Details() {
         <Spacer mb={4} />
 
         <Centered>
-          <Avatar alt="Lucy Lavender" src="/static/img/avatars/avatar-1.jpg" />
+          <Avatar alt="Sky Blue" src="/static/img/avatars/avatar-1.jpg" />
           <Typography variant="body2" component="div" gutterBottom>
-            <Box fontWeight="fontWeightMedium">Lucy Lavender</Box>
-            <Box fontWeight="fontWeightRegular">Lead Developer</Box>
+            <Box fontWeight="fontWeightMedium">Sky Blue</Box>
+            <Box fontWeight="fontWeightRegular">Lead Scientist</Box>
           </Typography>
 
           <Button mr={2} variant="contained" color="primary" size="small">
@@ -200,7 +200,7 @@ function About() {
           </Grid>
           <Grid item>
             Lives in{" "}
-            <Link href="https://mira.bootlab.io/">San Fransisco, SA</Link>
+            <Link href="https://www.openml.org/">San Fransisco, SA</Link>
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" mb={2}>
@@ -210,7 +210,7 @@ function About() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            Works at <Link href="https://mira.bootlab.io/">Material UI</Link>
+            Works at <Link href="https://www.openml.org/">Material UI</Link>
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center">
@@ -220,7 +220,7 @@ function About() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            Lives in <Link href="https://mira.bootlab.io/">Boston</Link>
+            Lives in <Link href="https://www.openml.org/">Boston</Link>
           </Grid>
         </Grid>
       </CardContent>
@@ -245,7 +245,7 @@ function Elsewhere() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            <Link href="https://mira.bootlab.io/">lucylavender.io</Link>
+            <Link href="https://www.openml.org/">skyblue.io</Link>
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" mb={2}>
@@ -255,7 +255,7 @@ function Elsewhere() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            <Link href="https://mira.bootlab.io/">Twitter</Link>
+            <Link href="hhttps://www.openml.org/">Twitter</Link>
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" mb={2}>
@@ -265,7 +265,7 @@ function Elsewhere() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            <Link href="https://mira.bootlab.io/">Facebook</Link>
+            <Link href="https://www.openml.org/">Facebook</Link>
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center">
@@ -275,7 +275,7 @@ function Elsewhere() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            <Link href="https://mira.bootlab.io/">Instagram</Link>
+            <Link href="https://www.openml.org/">Instagram</Link>
           </Grid>
         </Grid>
       </CardContent>

@@ -30,10 +30,10 @@ function SignIn() {
       <Brand />
       <Wrapper>
         <Helmet title="Sign In" />
-        <BigAvatar alt="Lucy" src="/static/img/avatars/avatar-1.jpg" />
+        <BigAvatar alt="Sky" src="/static/img/avatars/avatar-1.jpg" />
 
         <Typography component="h1" variant="h4" align="center" gutterBottom>
-          Welcome back, Lucy!
+          Welcome back, Sky!
         </Typography>
         <Typography component="h2" variant="body1" align="center">
           Sign in to your account to continue

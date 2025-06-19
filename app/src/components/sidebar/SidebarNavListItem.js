@@ -117,9 +117,10 @@ const SidebarNavListItem = (props) => {
 
   const { pathname } = useRouter();
 
-  const color = theme.palette.entity[href.split(/[./]+/)[1]];
-  const icon = theme.palette.icon[href.split(/[./]+/)[1]];
   const isExternal = href[0] != "/" ? true : false;
+  const key = isExternal && !href.includes("openml.org") ? href?.split("/").pop() : href?.split(/[./]+/)[1];
+  const color = theme.palette.entity[key];
+  const icon = theme.palette.icon[key];
 
   const [open, setOpen] = React.useState(openProp);
 

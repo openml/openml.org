@@ -15,7 +15,6 @@ import {
 import {
   faDatabase,
   faHandHoldingHeart,
-  faRss,
   faFlag,
   faCog,
   faFlask,
@@ -29,6 +28,7 @@ import {
   faCircleUser,
   faRocket,
   faBookOpenReader,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 
 const customBlue = {
@@ -58,7 +58,7 @@ const openmlColors = {
   tasktypes: orange[400],
   measures: deepPurple[400],
   docs: green[400],
-  blog: blue[800],
+  discussions: blue[800],
   apis: red[400],
   contribute: purple[400],
   meet: yellow[800],
@@ -82,7 +82,7 @@ const openmlIcons = {
   tasktypes: faFlag,
   measures: faTachometerAlt,
   docs: faBookOpenReader,
-  blog: faRss,
+  discussions: faComments,
   apis: faRocket,
   contribute: faHandHoldingHeart,
   meet: faCampground,

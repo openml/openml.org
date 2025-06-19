@@ -13,6 +13,7 @@ class SearchAPIConnector {
   }
 
   async onSearch(requestState, queryConfig) {
+    console.log("onSearch", requestState, queryConfig);
     const request = {
       method: "POST",
       headers: {
@@ -31,18 +32,17 @@ class SearchAPIConnector {
   }
 
   async onAutocomplete(requestState, queryConfig) {
+    console.log("onAutocomplete", requestState, queryConfig);
     const request = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         indexName: this.indexName,
         requestState,
         queryConfig,
+        isSuggest: true, // if you want
       }),
     };
-    //console.log(request.body);
     const response = await fetch("/api/autocomplete", request);
     return response.json();
   }

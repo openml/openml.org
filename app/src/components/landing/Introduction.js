@@ -18,12 +18,12 @@ import {
   faSquareFull,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Wrapper = styled('div')(({ theme }) => ({
-  paddingTop: '3.5rem',
-  paddingBottom: '1rem',
-  position: 'relative',
-  textAlign: 'center',
-  overflow: 'hidden',
+const Wrapper = styled("div")(({ theme }) => ({
+  paddingTop: "3.5rem",
+  paddingBottom: "1rem",
+  position: "relative",
+  textAlign: "center",
+  overflow: "hidden",
 }));
 
 const Hero = styled(Typography)`

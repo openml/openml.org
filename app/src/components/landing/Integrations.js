@@ -7,12 +7,9 @@ import { Button, Box, Container, Typography, Tooltip } from "@mui/material";
 import { spacing } from "@mui/system";
 import { ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
 
-const Wrapper = styled("div")(
-  spacing,
-  {
-    textAlign: "center",
-  }
-);
+const Wrapper = styled("div")(spacing, {
+  textAlign: "center",
+});
 
 const TypographyOverline = styled(Typography)`
   text-transform: uppercase;

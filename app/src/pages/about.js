@@ -355,6 +355,8 @@ const foundation_mission = {
 const apiConnector = new Connector("user");
 const coreConfig = {
   apiConnector: apiConnector,
+  urlPushDebounceLength: 0,
+  trackUrlState: false,
   alwaysSearchOnInitialLoad: true,
   searchQuery: {
     result_fields: {
@@ -375,6 +377,7 @@ const coreConfig = {
 
 function Contributors() {
   const [data, setData] = useState([]);
+  const [error, setError] = useState(false); // true if contributors couldn't be fetched
 
   useEffect(() => {
     const fetchData = async () => {
@@ -394,49 +397,58 @@ function Contributors() {
         "server-api",
       ];
 
-      try {
-        // Use Promise.all to wait for all fetch requests to complete
-        const responses = await Promise.all(
-          repos.map((repo) =>
-            fetch(`https://api.github.com/repos/openml/${repo}/contributors`),
-          ),
-        );
+      const responses = await Promise.all(
+        repos.map((repo) =>
+          fetch(`https://api.github.com/repos/openml/${repo}/contributors`),
+        ),
+      );
 
-        // Convert the responses to JSON
-        const jsonData = await Promise.all(responses.map((res) => res.json()));
+      const validResponses = [];
 
-        // Merge the results, sum contributions and filter out unique logins
-        const contributorsMap = new Map();
+      for (const res of responses) {
+        if (res.ok) {
+          validResponses.push(await res.json());
+        } else {
+          //console.warn("Could not fetch contributors:", await res.json());
+          setError(true);
+          return;
+        }
+      }
 
-        jsonData.forEach((repoContributors) => {
-          repoContributors.forEach((contributor) => {
-            if (contributorsMap.has(contributor.login)) {
-              // If the contributor already exists, add to their contributions
-              contributorsMap.get(contributor.login).contributions +=
-                contributor.contributions;
-            } else {
-              // If the contributor does not exist, add them to the Map
-              contributorsMap.set(contributor.login, {
-                ...contributor,
-                contributions: contributor.contributions,
-              });
-            }
-          });
+      const contributorsMap = new Map();
+
+      (validResponses ?? [])
+        .filter(Array.isArray)
+        .flat()
+        .forEach((contributor) => {
+          if (contributorsMap.has(contributor.login)) {
+            contributorsMap.get(contributor.login).contributions +=
+              contributor.contributions;
+          } else {
+            contributorsMap.set(contributor.login, {
+              ...contributor,
+              contributions: contributor.contributions,
+            });
+          }
         });
 
-        // Convert the Map values to an array and sort by contributions
-        const sortedData = Array.from(contributorsMap.values()).sort(
-          (a, b) => b.contributions - a.contributions,
-        );
+      const sortedData = Array.from(contributorsMap.values()).sort(
+        (a, b) => b.contributions - a.contributions,
+      );
 
-        setData(sortedData);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
+      setData(sortedData);
     };
 
     fetchData();
-  }, []); // No dependencies, this effect runs once on mount
+  }, []);
+
+  if (error) {
+    return (
+      <Typography mt={4}>
+        Oops, could not fetch contributors. Please try again later.
+      </Typography>
+    );
+  }
 
   return (
     <Grid container spacing={0}>
@@ -453,9 +465,7 @@ function About() {
   if (process.env.NODE_ENV === "development") {
     i18n.reloadResources();
   }
-  // We're rendering the list of core members using Search UI.
-  // This requires a SearchProvider, but we don't want to show search options.
-  // The CoreFilter component applies the needed search options on loading.
+
   return (
     <Wrapper>
       <Helmet title={t("about.helmet")} />

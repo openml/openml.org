@@ -33,7 +33,7 @@ const Brand = ({ ecolor, section }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   if (!isMobile) {
-    // ❌ On desktop and larger: show nothing
+    // On desktop and larger: show nothing
     return null;
   }
 

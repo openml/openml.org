@@ -108,7 +108,7 @@ function AuthProvider({ children }) {
           id: state?.user?.sub,
           avatar: state?.user?.picture,
           email: state?.user?.email,
-          displayName: "Lucy",
+          displayName: "Sky",
           role: "user",
         },
         signIn,

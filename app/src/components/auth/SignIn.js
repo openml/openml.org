@@ -42,7 +42,7 @@ function SignIn() {
         try {
           await signIn(values.email, values.password);
 
-          router.push("/private");
+          router.push("/auth/profile");
         } catch (error) {
           const message = error.message || "Something went wrong";
 

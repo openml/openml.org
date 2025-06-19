@@ -2,16 +2,17 @@ import { faker } from "@faker-js/faker";
 
 import mock from "./adapter";
 
-import { verify, sign } from "../utils/jwt";
+import { verify, sign } from "../utils/mock-jwt";
 
 const JWT_SECRET = "super-secret-key";
 const JWT_EXPIRES_IN = "3 days";
 
+// User Database :)
 const users = [
   {
     id: "a8553063-7bd5-45ed-adbe-db6f069a3802",
-    displayName: "Lucy Lavender",
-    email: "demo@bootlab.io",
+    displayName: "Sky Blue",
+    email: "welcome@openml.org",
     password: "unsafepassword",
     avatar: "/static/img/avatars/avatar-1.jpg",
   },

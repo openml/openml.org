@@ -113,14 +113,14 @@ const communitySection = [
     title: "sidebar.meet_up",
   },
   {
-    href: "https://blog.openml.org/",
-    title: "sidebar.blog",
+    href: "https://github.com/orgs/openml/discussions",
+    title: "sidebar.discussions",
   },
 ];
 
 const learnSection = [
   {
-    href: "https://docs.openml.org/",
+    href: "https://docs.openml.org",
     title: "sidebar.docs",
   },
   {

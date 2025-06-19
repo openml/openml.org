@@ -28,7 +28,6 @@ import {
   faBookReader,
   faDatabase,
   faUsers,
-  faBlog,
   faMedal,
   faTShirt,
   faComments,
@@ -279,8 +278,8 @@ const ambassador = {
   iconColor: red[200],
   chips: [
     {
-      link: "https://openml.github.io/blog",
-      icon: faBlog,
+      link: "https://github.com/orgs/openml/discussions",
+      icon: faComments,
       target: "_blank",
     },
     {

@@ -20,7 +20,7 @@ sidebar:
   server_error: "Server error"
   learn: "Learn"
   docs: "Docs"
-  blog: "Blog"
+  discussions: "Discussions"
   apis: "Getting started"
   contribute: "Contribute"
   meet_up: "Meet up"
@@ -67,7 +67,7 @@ landing:
   helmet: "Welcome"
   openml: "OpenML"
   title: "Machine learning, better, together"
-  subtitle: "An open platform with machine-readable datasets, automated training, and reproducible benchmarks."
+  subtitle: "An open platform for frictionless, collaborative machine learning."
   signup: "Sign up"
   open: "OpenML is open and free"
   animation:
@@ -77,20 +77,20 @@ landing:
     header: "OpenML simplifies the entire machine learning lifecycle"
     sub_header: "and organizes everything into one collective memory"
   ai_ready_data:
-    title: "AI-ready data"
+    title: "AI-ready datasets"
     text: >
-      All datasets are uniformy formatted, have rich, consistent metadata, and can be 
-      loaded directly into your favourite environments.
+      All datasets are uniformy formatted, have rich, consistent metadata, and are 
+      loaded automatically into your favourite environments.
   integrations:
-    title: "ML library integrations"
+    title: "Automated training"
     text: >
-      Pipelines and models can be shared directly from your favourite machine learning 
-      libraries. No manual steps required.
+      OpenML is integrated into your favourite machine learning libraries, so you can load data, 
+      train models, and share results fully automatically.
   ml_results:
-    title: "A treasure of ML results"
+    title: "Reprodicible evaluations"
     text: >
-      Learn from millions of reproducible machine learning benchmarks from thousands of 
-      models trained on thousands of datasets.
+      All model evaluations are automatically annotated for full reproducibility, so you can 
+      learn from millions of benchmarks on thousands of models and datasets.
   integration:
     overline: "Integrations"
     heading: "Frictionless machine learning"

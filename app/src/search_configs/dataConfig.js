@@ -110,19 +110,17 @@ const searchConfig = {
     sortList: [{ field: "runs", direction: "desc" }],
   },
   autocompleteQuery: {
-    results: {
-      resultsPerPage: 100,
-      result_fields: {
-        // specify the fields you want from the index to display the results
-        name: { snippet: { size: 100, fallback: true } },
-        url: { raw: {} },
-      },
-      search_fields: {
-        // specify the fields you want to search on
-        name: {},
-      },
+    search_fields: {
+      name: {}
     },
-  },
+    result_fields: {
+      name: { snippet: { size: 100, fallback: true } },
+      url: { raw: {} }
+    },
+    suggestions: {
+      // Optional, only if you want 'keyword' type suggestions
+    }
+  }
 };
 
 export default searchConfig;

@@ -8,9 +8,9 @@ import dataSearchConfig from "../../search_configs/dataConfig";
 import taskSearchConfig from "../../search_configs/taskConfig";
 import flowSearchConfig from "../../search_configs/flowConfig";
 import runSearchConfig from "../../search_configs/runConfig";
-import collectionSearchConfig from "../../search_configs/dataConfig"; // TODO: update when collection config is created
-import benchmarkSearchConfig from "../../search_configs/dataConfig"; // TODO: update when benchmark config is created
-import measureSearchConfig from "../../search_configs/dataConfig"; // TODO: update when measure config is created
+import collectionSearchConfig from "../../search_configs/dataConfig";
+import benchmarkSearchConfig from "../../search_configs/dataConfig";
+import measureSearchConfig from "../../search_configs/dataConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +30,7 @@ const SearchWrapper = styled(Box)`
   background-color: ${(props) =>
     darken(
       0.05,
-      props.ecolor ? props.ecolor : props.theme.palette.header.background,
+      props.ecolor ? props.ecolor : props.theme.palette.header.background
     )};
 `;
 
@@ -93,7 +93,6 @@ const SearchBar = memo(() => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  // List of configs for each index
   const indexConfigs = {
     data: dataSearchConfig,
     task: taskSearchConfig,
@@ -103,7 +102,7 @@ const SearchBar = memo(() => {
     benchmark: benchmarkSearchConfig,
     measure: measureSearchConfig,
   };
-  // Mapping of indices for the select dropdown
+
   const indices = useMemo(
     () => [
       { key: "data", value: "Datasets" },
@@ -114,19 +113,14 @@ const SearchBar = memo(() => {
       { key: "benchmark", value: "Benchmark" },
       { key: "measure", value: "Measures" },
     ],
-    [],
+    []
   );
 
   const [selectedIndex, setSelectedIndex] = useState("data");
-  const [currentConfig, setCurrentConfig] = useState(dataSearchConfig);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchStarted, setSearchStarted] = useState(false);
 
-  const handleIndexChange = (event) => {
-    const newIndex = event.target.value;
-    setSelectedIndex(newIndex);
-    setCurrentConfig(indexConfigs[newIndex]);
-  };
-
-  // Set the index based on the current path
+  // Listen to index changes
   useEffect(() => {
     const pathSegments = router.pathname.split("/");
     const indexFromUrl = pathSegments[1];
@@ -137,10 +131,40 @@ const SearchBar = memo(() => {
         setSelectedIndex(index.key);
       }
     }
-  }, [router.pathname, indices]); // Depend on router.pathname to re-run the effect when the route changes
+  }, [router.pathname, indices]);
+
+  // Listen to query changes
+  useEffect(() => {
+    if (typeof router.query.q === "string") {
+      setSearchTerm(router.query.q);
+      setSearchStarted(true);
+    }
+  }, [router.query.q]);
+
+  const handleIndexChange = (event) => {
+    const newIndex = event.target.value;
+    setSelectedIndex(newIndex);
+  
+    if (searchStarted && searchTerm) {
+      router.push(`/${newIndex[0]}/search?q=${encodeURIComponent(searchTerm)}`);
+    }
+  }; 
+
+  // Copies the the search term into the config when starting the search
+  const buildSearchConfig = (selectedIndex, searchTerm) => ({
+    ...indexConfigs[selectedIndex],
+    initialState: {
+      searchTerm: searchTerm || "",
+    },
+    alwaysSearchOnInitialLoad: true,
+  });
+
+  const buildSearchConfigSimpler = (selectedIndex, searchTerm) => ({
+    ...indexConfigs[selectedIndex]
+  });
 
   return (
-    <SearchProvider config={currentConfig}>
+    <>
       <IndexSelect
         labelId="index-select-label"
         id="index-select"
@@ -151,8 +175,7 @@ const SearchBar = memo(() => {
           PaperProps: {
             sx: {
               boxShadow: 2,
-              border: `1px solid rgba(0, 0, 0, 0.12);
-              `,
+              border: `1px solid rgba(0, 0, 0, 0.12)`,
             },
           },
         }}
@@ -163,53 +186,87 @@ const SearchBar = memo(() => {
           </IndexMenuItem>
         ))}
       </IndexSelect>
-      <SearchBox
-        searchAsYouType={true}
-        debounceLength={300}
-        autocompleteMinimumCharacters={3}
-        autocompleteResults={{
-          linkTarget: "_blank",
-          sectionTitle: "Results",
-          titleField: "name",
-          urlField: "url",
-          shouldTrackClickThrough: true,
-          clickThroughTags: ["test"],
-        }}
-        autocompleteSuggestions={true}
-        onSubmit={(searchTerm) => {
-          window.location.href = `/${selectedIndex[0]}/search?q=${searchTerm}`;
-        }}
-        inputView={({ getAutocomplete, getInputProps, getButtonProps }) => (
-          <>
-            <Input
-              {...getInputProps({
-                placeholder: t("search." + selectedIndex),
-              })}
-            />
-            {getAutocomplete()}
-          </>
-        )}
-      />
-    </SearchProvider>
+
+      {searchStarted && searchTerm ? ( // Wait for a search to be started before activating the search context
+        <SearchProvider config={buildSearchConfigSimpler(selectedIndex, searchTerm)}>
+          <SearchBox
+            defaultInputValue={searchTerm}
+            searchAsYouType={true}
+            debounceLength={300}
+            autocompleteMinimumCharacters={3}
+            autocompleteResults={{
+              linkTarget: "_blank",
+              sectionTitle: "Results",
+              titleField: "name",
+              urlField: "url",
+              shouldTrackClickThrough: true,
+              clickThroughTags: ["test"],
+            }}
+            autocompleteSuggestions={true}
+            onSubmit={(term) => {
+              setSearchTerm(term); // update committed search
+              router.push(`/${selectedIndex[0]}/search?q=${encodeURIComponent(term)}`);
+            }}
+            autocompleteView={({ autocompletedResults, getItemProps }) => (
+              <div className="sui-search-box__autocomplete-container">
+                {autocompletedResults.map((result, i) => (
+                  <div
+                    {...getItemProps({
+                      key: result.id || i,
+                      item: result,
+                    })}
+                    className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    {result.title?.snippet || "No title"}
+                  </div>
+                ))}
+              </div>
+            )}
+            //inputView={({ getInputProps }) => {
+            //  const inputProps = getInputProps();
+            //  return (
+            //    <Input
+            //      {...inputProps}
+            //      placeholder={t("search." + selectedIndex)}
+            //    />
+            //  );
+            //}}
+          />
+        </SearchProvider>
+      ) : (
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (searchTerm) {
+            setSearchStarted(true);
+            router.push(`/${selectedIndex[0]}/search?q=${encodeURIComponent(searchTerm)}`);
+          }
+        }}>
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t("search." + selectedIndex)}
+          />
+        </form>
+      )
+    }
+  </>
   );
 });
 
-const SearchContainer = ({ ecolor }) => {
-  return (
-    <SearchWrapper
-      ecolor={ecolor}
-      sx={{
-        display: "flex",
-        alignItems: "flex-end",
-      }}
-    >
-      <SearchIcon>
-        <FontAwesomeIcon icon={faSearch} />
-      </SearchIcon>
-      <SearchBar />
-    </SearchWrapper>
-  );
-};
+const SearchContainer = ({ ecolor }) => (
+  <SearchWrapper
+    ecolor={ecolor}
+    sx={{
+      display: "flex",
+      alignItems: "flex-end",
+    }}
+  >
+    <SearchIcon>
+      <FontAwesomeIcon icon={faSearch} />
+    </SearchIcon>
+    <SearchBar />
+  </SearchWrapper>
+);
 
 SearchBar.displayName = "Search";
 

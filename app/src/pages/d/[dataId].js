@@ -129,19 +129,8 @@ const ActionButtons = ({ buttons }) => {
 function Dataset({ data, error }) {
   const theme = useTheme();
   const did = data.data_id;
-  const did_padded = did.toString().padStart(4, "0");
-  const bucket_url = "https://openml1.win.tue.nl/datasets/";
-  const bucket_bracket = Math.floor(did / 10000)
-    .toString()
-    .padStart(4, "0");
-  const croissant_url =
-    bucket_url +
-    bucket_bracket +
-    "/" +
-    did_padded +
-    "/dataset_" +
-    did +
-    "_croissant.json";
+  const croissant_url = "croissant/dataset/"+ did;
+  const full_croissant_url = new URL(`/croissant/dataset/${did}`, `https://www.openml.org`);
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -153,7 +142,7 @@ function Dataset({ data, error }) {
   // Action buttons
   const buttonData = [
     {
-      url: croissant_url,
+      url: full_croissant_url,
       icon: <Icon icon="fluent-emoji-high-contrast:croissant" />,
       label: "Croissant",
     },
@@ -253,7 +242,7 @@ function Dataset({ data, error }) {
   return (
     <Wrapper>
       <Helmet title="OpenML Datasets" />
-      <CroissantMetaData url={croissant_url} />
+      <CroissantMetaData url={full_croissant_url} />
       <Grid container spacing={6}>
         <Grid size={12}>
           <ActionButtons buttons={buttonData} />

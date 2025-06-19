@@ -2,14 +2,19 @@ import { jwtDecode } from "jwt-decode";
 import { verify, sign } from "jsonwebtoken";
 import axios from "./axios";
 
+
 const isValidToken = (accessToken) => {
-  if (!accessToken) {
+  if (!accessToken || accessToken.split(".").length !== 3) {
     return false;
   }
-  const decoded = jwtDecode(accessToken);
-  const currentTime = Date.now() / 1000;
-
-  return decoded.exp > currentTime;
+  try {
+    const decoded = jwtDecode(accessToken);
+    const currentTime = Date.now() / 1000;
+    return decoded.exp > currentTime;
+  } catch (error) {
+    console.error("Invalid or expired token", error);
+    return false;
+  }
 };
 
 //  const handleTokenExpired = (exp) => {

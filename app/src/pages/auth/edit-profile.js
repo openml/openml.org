@@ -66,7 +66,7 @@ function Public() {
             <TextField
               id="username"
               label="Username"
-              defaultValue="lucylavender"
+              defaultValue="skyblue"
               variant="outlined"
               fullWidth
               my={2}
@@ -80,7 +80,7 @@ function Public() {
                 rows={3}
                 maxRows={4}
                 variant="outlined"
-                defaultValue="Lucy is a Freelance Writer and Social Media Manager who helps finance professionals and Fin-tech startups build an audience and get more paying clients online."
+                defaultValue="Sky is an open science enthusiast aiming to make the world a better pleace through AI."
               />
             </FormControl>
           </Grid>
@@ -91,7 +91,7 @@ function Public() {
           >
             <CenteredContent>
               <BigAvatar
-                alt="Remy Sharp"
+                alt="Sky Blue"
                 src="/static/img/avatars/avatar-1.jpg"
               />
               <input
@@ -141,7 +141,7 @@ function Private() {
               id="first-name"
               label="First name"
               variant="outlined"
-              defaultValue="Lucy"
+              defaultValue="Sky"
               fullWidth
               my={2}
             />
@@ -155,7 +155,7 @@ function Private() {
               id="last-name"
               label="Last name"
               variant="outlined"
-              defaultValue="Lavender"
+              defaultValue="Blue"
               fullWidth
               my={2}
             />
@@ -167,7 +167,7 @@ function Private() {
           label="Email"
           variant="outlined"
           type="email"
-          defaultValue="lucylavender@gmail.com"
+          defaultValue="skyblue@gmail.com"
           fullWidth
           my={2}
         />
