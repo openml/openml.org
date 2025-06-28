@@ -1,6 +1,5 @@
-import datetime
-import hashlib
 import os
+import secrets
 from distutils.util import strtobool
 
 from flask_cors import CORS
@@ -58,12 +57,10 @@ def signupfunc():
             user.external_source = "0000"
             user.external_id = "0000"
             user.password_hash = "0000"
-            timestamp = datetime.datetime.now()
-            timestamp = timestamp.strftime("%d %H:%M:%S")
-            md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
-            user.update_activation_code(md5_digest)
+            token = secrets.token_hex()
+            user.update_activation_code(token)
             if DO_SEND_EMAIL:
-                confirmation_email(user.email, md5_digest)
+                confirmation_email(user.email, token)
             session.add(user)
             session.commit()
 
@@ -76,18 +73,16 @@ def signupfunc():
 def password():
     """Sending forgotten password code"""
     jobj = request.get_json()
-    timestamp = datetime.datetime.now()
-    timestamp = timestamp.strftime("%d %H:%M:%S")
-    md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
     with Session() as session:
         user = session.query(User).filter_by(email=jobj["email"]).first()
         if not user:
             logger.warning(f"No user found with email {jobj['email']}")
             return jsonify({"msg": "Token sent"}), 200  # not leaking info if email exists
-        user.update_forgotten_code(md5_digest)
+        token = secrets.token_hex()
+        user.update_forgotten_code(token)
         # user.update_forgotten_time(timestamp)
         if DO_SEND_EMAIL:
-            forgot_password_email(user.email, md5_digest)
+            forgot_password_email(user.email, token)
         session.merge(user)
         session.commit()
     return jsonify({"msg": "Token sent"}), 200
@@ -97,18 +92,16 @@ def password():
 def confirmation_token():
     """Sending confirmation token again"""
     jobj = request.get_json()
-    timestamp = datetime.datetime.now()
-    timestamp = timestamp.strftime("%d %H:%M:%S")
-    md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
     with Session() as session:
         user = session.query(User).filter_by(email=jobj["email"]).first()
         if not user:
             logger.warning(f"No user found with email {jobj['email']}")
             # not leaking info if email exists
             return jsonify({"msg": "User confirmation token sent"}), 200
-        user.update_activation_code(md5_digest)
+        token = secrets.token_hex()
+        user.update_activation_code(token)
         if DO_SEND_EMAIL:
-            confirmation_email(user.email, md5_digest)
+            confirmation_email(user.email, token)
         # updating user groups here
         user_group = UserGroups(user_id=user.id, group_id=2)
         session.merge(user)
