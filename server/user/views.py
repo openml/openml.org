@@ -1,6 +1,5 @@
-import datetime
-import hashlib
 import os
+import secrets
 from distutils.util import strtobool
 from urllib.parse import parse_qs, urlparse
 
@@ -52,7 +51,8 @@ def login():
 
     jobj = request.get_json()
     with Session() as session:
-        user = session.query(User).filter_by(email=jobj["email"]).first()
+        # need to inspect jobj. Is `email` actually username or is there also a `username`?
+        user = session.query(User).filter_by(username=jobj["email"]).first()
         print(jobj)
         if user is None:
             print("user does not exist")
@@ -73,7 +73,7 @@ def login():
                 user_.set_group()
                 session.add(user_)
                 session.commit()
-            access_token = create_access_token(identity=user.email)
+            access_token = create_access_token(identity=user.username)
             testing = strtobool(os.environ.get("TESTING", "True"))
             print(testing)
             if testing:
@@ -91,12 +91,12 @@ def profile():
     """
     current_user = get_jwt_identity()
     with Session() as session:
-        user = session.query(User).filter_by(email=current_user).first()
+        user = session.query(User).filter_by(username=current_user).first()
         if request.method == "GET":
             return (
                 jsonify(
                     {
-                        "username": user.email,
+                        "username": user.username,
                         "bio": user.bio,
                         "first_name": user.first_name,
                         "last_name": user.last_name,
@@ -115,11 +115,9 @@ def profile():
             user.update_last_name(data["last_name"])
             if data["email"] != user.email:
                 print("email changed")
-                timestamp = datetime.datetime.now()
-                timestamp = timestamp.strftime("%d %H:%M:%S")
-                md5_digest = hashlib.md5(timestamp.encode()).hexdigest()
-                user.update_activation_code(md5_digest)
-                confirmation_email(data["email"], md5_digest)
+                token = secrets.token_hex()
+                user.update_activation_code(token)
+                confirmation_email(data["email"], token)
                 user.update_email(data["email"])
 
             session.merge(user)
@@ -142,13 +140,13 @@ def image():
     """Function to receive and set user image"""
     current_user = get_jwt_identity()
     with Session() as session:
-        user = session.query(User).filter_by(email=current_user).first()
+        user = session.query(User).filter_by(username=current_user).first()
         f = request.files["file"]
-        Path("dev_data/" + str(user.email)).mkdir(parents=True, exist_ok=True)
+        Path("dev_data/" + str(user.username)).mkdir(parents=True, exist_ok=True)
         f.save(
-            os.path.join("dev_data/" + str(user.email) + "/", secure_filename(f.filename))
+            os.path.join("dev_data/" + str(user.username) + "/", secure_filename(f.filename))
         )
-        path = "imgs/dev_data/" + str(user.email) + "/" + secure_filename(f.filename)
+        path = "imgs/dev_data/" + str(user.username) + "/" + secure_filename(f.filename)
         user.update_image_address(path)
         session.merge(user)
         session.commit()
@@ -185,7 +183,7 @@ def apikey():
     """Change and retrieve API-Key"""
     current_user = get_jwt_identity()
     with Session() as session:
-        user = session.query(User).filter(User.email == current_user).first()
+        user = session.query(User).filter(User.username == current_user).first()
         if request.method == "GET":
             api_key = user.session_hash
             return jsonify({"apikey": api_key}), 200
