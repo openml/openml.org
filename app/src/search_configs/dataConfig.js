@@ -40,7 +40,6 @@ const searchConfig = {
       "qualities.NumberOfFeatures": { raw: {} },
       "qualities.NumberOfClasses": { raw: {} },
       "qualities.NumberOfMissingValues": { raw: {} },
-      "qualities.NumberOfClasses": { raw: {} },
       last_update: { raw: {} },
       licence: { raw: {} },
       nr_of_likes: { raw: {} },
