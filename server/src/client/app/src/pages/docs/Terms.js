@@ -297,31 +297,31 @@ function Terms() {
         <Grid item container spacing={4} xs={12}>
           <Reference
             header="OpenML as a whole"
-            author="Joaquin Vanschoren and Jan N. van Rijn and Bernd Bischl and Luis Torgo"
-            title="OpenML: networked science in machine learning"
-            journal="SIGKDD Explorations"
-            volume="15"
-            number="2"
-            year="2013"
-            pages="49-60"
-            url="http://doi.acm.org/10.1145/2641190.264119"
-            doi="10.1145/2641190.2641198"
-            publisher="ACM"
-            arxiv={"https://arxiv.org/pdf/1407.7722.pdf"}
+            author="Bernd Bischl and Giuseppe Casalicchio and Taniya Das and Matthias Feurer and Sebastian Fischer and Pieter Gijsbers and Subhaditya Mukherjee and Andreas C Müller and László Németh and Luis Oala and Lennart Purucker and Sahithya Ravi and Jan N van Rijn and Prabhant Singh and Joaquin Vanschoren and Jos van der Velde and Marcel Wever"
+            title="OpenML: Insights from 10 years and more than a thousand papers"
+            journal="Patterns"
+            volume="6"
+            number="7"
+            year="2025"
+            pages="101317"
+            url="https://www.cell.com/patterns/fulltext/S2666-3899(25)00165-5"
+            doi="10.1016/j.patter.2025.101317"
+            publisher="Cell Press"
+            arxiv={"https://www.cell.com/patterns/fulltext/S2666-3899(25)00165-5"}
           />
           <Reference
             header="OpenML Python package"
             author="Matthias Feurer and Jan N. van Rijn and Arlind Kadra and Pieter Gijsbers and Neeratyoy Mallik and Sahithya Ravi and Andreas Mueller and Joaquin Vanschoren and Frank Hutter"
             title="OpenML-Python: an extensible Python API for OpenML"
-            journal="arXiv"
-            volume="1911.02490"
-            number=""
-            year="2020"
-            pages=""
-            url="https://arxiv.org/pdf/1911.02490.pdf"
+            journal="JMLR"
+            volume="22"
+            number="100"
+            year="2021"
+            pages="1-5"
+            url="https://jmlr.org/papers/v22/19-920.html"
             doi=""
             publisher=""
-            arxiv={"https://arxiv.org/pdf/1911.02490.pdf"}
+            arxiv={"https://jmlr.org/papers/v22/19-920.html"}
           />
           <Reference
             header="OpenML R package"
@@ -346,8 +346,8 @@ function Terms() {
             volume=""
             number=""
             pages=""
-            url="https://openreview.net/forum?id=OCrD8ycKjG"
-            arxiv={"https://arxiv.org/abs/1708.03731"}
+            url="https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html"
+            arxiv={"https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html"}
             doi=""
             publisher=""
           />

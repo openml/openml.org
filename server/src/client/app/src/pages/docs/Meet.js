@@ -154,20 +154,18 @@ export default class GetInvolved extends React.Component {
             <CardActionArea>
               <CardMedia
                 style={{ height: 240 }}
-                image="https://cs.ut.ee/sites/default/files/styles/facebook/public/2021-11/51511539475_87ce389662_o.jpg?itok=rj-JSmWt"
+                image="https://www.holland.com/upload_mm/7/2/d/68530_fullimage_leiden_canals.jpg"
                 title="Hackathon"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2023 Summer Hackathon - 12-16 June, University of Tartu, Tartu, Estonia
+                  2025 Winter Hackathon - December/January - Leiden University, Leiden, The Netherlands
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Join us at the University of Tartu, Estonia's oldest university, to work
-                  on the next generation of OpenML.
+                  Join us at Leiden University to work on the next generation of OpenML.
                   
-                  There are a few travel grants available, so if you need financial assistance to attend, apply through the link below.
-                  The travel grants are primarily for people that would be unable to attend otherwise.
-                  We will prioritize members of groups that are historically underrepresented in ML, including but not limited to BIPOC or LGBTIQA+ individuals, women, and individuals with a disability.
+                  The dates are still being explored, but most likely end of December or early January.
+                  Join our Slack channel to join the discussion.
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -175,21 +173,14 @@ export default class GetInvolved extends React.Component {
             <Button
                 size="small"
                 color="primary"
-                href="https://forms.gle/kiBGgCfuUoAWgVgW6"
+                href=""
               >
                 Registration (free)
               </Button>
               <Button
                 size="small"
                 color="primary"
-                href="https://docs.google.com/forms/d/e/1FAIpQLScR5ahDVuda2qoxHR4Ctdp3VC_ukkn5RGhLs6uUPuvRm_p2Xw/viewform"
-              >
-                Travel Grant
-              </Button>
-              <Button
-                size="small"
-                color="primary"
-                href="https://docs.google.com/document/d/1UQzZJoaTO-3Tk5SOvtGjA4MPezPEq2Tsg7rleVmBerg/edit?usp=sharing"
+                href=""
               >
                 Schedule and more
               </Button>
