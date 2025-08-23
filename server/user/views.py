@@ -33,7 +33,7 @@ CORS(user_blueprint)
 
 blocklist = set()
 
-ALLOWED_IMAGE_EXTENSIONS = ["webp", "png", "jpg", "jpeg"]
+ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg"]
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, decrypted_token):
