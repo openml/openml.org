@@ -226,7 +226,7 @@ class SearchElement extends React.Component {
           <SlimCardHeader
             avatar={
               <Avatar
-                src={this.props.image}
+                src="images/anonymousMan.png"
                 style={{
                   height: 50,
                   width: 50,
