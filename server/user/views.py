@@ -1,6 +1,7 @@
 import os
 import secrets
 from distutils.util import strtobool
+from http import HTTPStatus
 from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
@@ -31,6 +32,7 @@ CORS(user_blueprint)
 
 blocklist = set()
 
+ALLOWED_IMAGE_EXTENSIONS = ["webp", "png", "jpg", "jpeg"]
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, decrypted_token):
@@ -138,6 +140,12 @@ def verifytoken():
 @jwt_required()
 def image():
     """Function to receive and set user image"""
+    if "file" not in request.files:
+        return jsonify({"msg": "No image file supplied"}), HTTPStatus.BAD_REQUEST
+    file_name = request.files["file"].filename
+    if '.' not in file_name or file_name.rsplit('.')[1].casefold() not in ALLOWED_IMAGE_EXTENSIONS:
+        return jsonify({"msg": "Images of this file type are not supported"}), HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
