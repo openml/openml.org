@@ -137,7 +137,7 @@ function SignUp() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://docs.openml.org/terms/"
+          href="https://docs.openml.org/intro/terms/"
         >
           Honor Code and Terms of Use
         </a>
