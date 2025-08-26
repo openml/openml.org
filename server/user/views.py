@@ -1,6 +1,8 @@
 import os
 import secrets
+import uuid
 from distutils.util import strtobool
+from http import HTTPStatus
 from urllib.parse import parse_qs, urlparse
 
 from flask import Blueprint, jsonify, request, send_from_directory, abort, Response
@@ -31,6 +33,7 @@ CORS(user_blueprint)
 
 blocklist = set()
 
+ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg"]
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, decrypted_token):
@@ -138,18 +141,37 @@ def verifytoken():
 @jwt_required()
 def image():
     """Function to receive and set user image"""
+    if "file" not in request.files:
+        return jsonify({"msg": "No image file supplied"}), HTTPStatus.BAD_REQUEST
+    file_name = request.files["file"].filename
+    if '.' not in file_name or (file_extension := file_name.rsplit('.', 1)[1].casefold()) not in ALLOWED_IMAGE_EXTENSIONS:
+        return jsonify({"msg": "Images of this file type are not supported"}), HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+
     current_user = get_jwt_identity()
+    previous_image = None
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
+        previous_image = getattr(user, "image", None)
+
         f = request.files["file"]
-        Path("dev_data/" + str(user.username)).mkdir(parents=True, exist_ok=True)
-        f.save(
-            os.path.join("dev_data/" + str(user.username) + "/", secure_filename(f.filename))
-        )
-        path = "imgs/dev_data/" + str(user.username) + "/" + secure_filename(f.filename)
-        user.update_image_address(path)
+
+        file_directory = Path("dev_data/" + str(user.id))
+        file_directory.mkdir(parents=True, exist_ok=True)
+
+        new_file_name = secure_filename(f.filename)
+        if not new_file_name:
+            new_file_name = uuid.uuid4().hex + file_extension
+
+        new_file_path = file_directory / new_file_name
+
+        f.save(new_file_path)
+        user.update_image_address(new_file_path)
         session.merge(user)
         session.commit()
+
+    if previous_image and Path(previous_image).exists():
+        Path(previous_image).unlink()
+
     return jsonify({"msg": "User image changed"}), 200
 
 

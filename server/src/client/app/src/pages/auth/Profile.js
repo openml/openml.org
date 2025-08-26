@@ -189,7 +189,7 @@ function Public() {
             <CenteredContent>
               <BigAvatar alt="User Image" id="dp" src={image} />
               <input
-                accept="image/*"
+                accept="image/jpeg, image/jpg"
                 style={{ display: "none" }}
                 id="image"
                 multiple
