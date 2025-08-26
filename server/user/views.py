@@ -144,7 +144,7 @@ def image():
     if "file" not in request.files:
         return jsonify({"msg": "No image file supplied"}), HTTPStatus.BAD_REQUEST
     file_name = request.files["file"].filename
-    if '.' not in file_name or (file_extension := file_name.rsplit('.')[1].casefold()) not in ALLOWED_IMAGE_EXTENSIONS:
+    if '.' not in file_name or (file_extension := file_name.rsplit('.', 1)[1].casefold()) not in ALLOWED_IMAGE_EXTENSIONS:
         return jsonify({"msg": "Images of this file type are not supported"}), HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
     current_user = get_jwt_identity()
