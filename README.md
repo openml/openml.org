@@ -9,7 +9,7 @@ Development branch:
 [![Build Status](https://travis-ci.com/openml/openml.org.svg?branch=develop)](https://travis-ci.com/openml/openml.org)
 
 ## Getting started
-Please see the [Website documentation](https://docs.openml.org/Website/) for installation instructions and further information on structure and guidelines.
+Please see the [Website documentation](https://docs.openml.org/contributing/website/Website/) for installation instructions and further information on structure and guidelines.
 
 ## How to contribute
 We welcome all contributions to:
