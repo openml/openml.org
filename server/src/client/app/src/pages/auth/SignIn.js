@@ -46,11 +46,11 @@ function SignIn() {
       })
       .then(response => {
         console.log(response.data);
-        if (response.data.msg === "NotConfirmed") {
+        if (response.data.msg === "UserNotConfirmed") {
           setConfirm(true);
-        } else if (response.data.msg === "Wrong username or password") {
+        } else if (response.data.msg === "WrongUsernameOrPassword") {
           setNotExist(true);
-        } else if (response.data.msg === "wrong password") {
+        } else if (response.data.msg === "WrongPassword") {
           setWrongPass(true);
         } else {
           localStorage.setItem("token", response.data.access_token);
