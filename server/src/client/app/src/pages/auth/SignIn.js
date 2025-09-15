@@ -75,12 +75,15 @@ function SignIn() {
       )}
       <Grid item md={7} xs={10}>
         <Wrapper>
+          {/** Header **/}
           <Typography component="h1" variant="h4" align="center" gutterBottom>
             Welcome back!
           </Typography>
           <Typography component="h2" variant="body1" align="center">
             Sign in to continue
           </Typography>
+
+          {/** Start Error Banner **/}
           {errorlog && (
             <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
@@ -90,7 +93,8 @@ function SignIn() {
               {errormsg}
             </Typography>
           )}
-          {wrongpass && (
+          {/* User with this email & password could not be found */}
+          {(wrongpass || notexist) && (
             <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"
@@ -99,6 +103,7 @@ function SignIn() {
               Wrong username or password
             </Typography>
           )}
+          {/* User's account not yet confirmed */}
           {confirmflag && (
             <Typography
               component="h3"
@@ -110,15 +115,9 @@ function SignIn() {
               <a href="/auth/confirmation-token">(resend activation token)</a>
             </Typography>
           )}
-          {notexist && (
-            <Typography component="h3" align="center" style={{ color: "red" }}>
-              <FontAwesomeIcon
-                icon="exclamation-triangle"
-                style={{ marginRight: 5 }}
-              />
-              Wrong username or password
-            </Typography>
-          )}
+          {/** End Error Banner **/}
+
+          {/** Start Entry Fields **/}
           <form onSubmit={sendtoflask}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -156,6 +155,7 @@ function SignIn() {
               Forgot password
             </Button>
           </form>
+          {/** End Entry Fields **/}
         </Wrapper>
       </Grid>
       <Grid item md={7} xs={10}>
