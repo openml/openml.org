@@ -55,16 +55,16 @@ def login():
         user = session.query(User).filter_by(username=jobj["email"]).first()
         print(jobj)
         if user is None:
-            print("user does not exist")
-            return jsonify({"msg": "Wrong username or password"}), 200
+            print("User does not exist")
+            return jsonify({"msg": "WrongUsernameOrPassword"}), 200
 
         elif not user.check_password(jobj["password"]):
             print("Wrong password")
-            return jsonify({"msg": "wrong password"}), 200
+            return jsonify({"msg": "WrongPassword"}), 200
 
         elif user.active == 0:
             print("User not confirmed")
-            return jsonify({"msg": "NotConfirmed"}), 200
+            return jsonify({"msg": "UserNotConfirmed"}), 200
 
         else:
             user_g = session.query(UserGroups).filter_by(user_id=user.id).first()
