@@ -228,7 +228,7 @@ def reset(session=Session()):
     user.set_password(data["password"])
     session.merge(user)
     session.commit()
-    return jsonify({"msg": "password changed"}), 200
+    return jsonify({"msg": "Password changed"}), 200
 
 
 @user_blueprint.route("/confirmation", methods=["POST"])
