@@ -52,7 +52,7 @@ def login():
     jobj = request.get_json()
     with Session() as session:
         # need to inspect jobj. Is `email` actually username or is there also a `username`?
-        user = session.query(User).filter_by(username=jobj["email"]).first()
+        user = session.query(User).filter_by(email=jobj["email"]).first()
         print(jobj)
         if user is None:
             print("User does not exist")
