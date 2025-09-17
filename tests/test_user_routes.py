@@ -9,7 +9,6 @@ from server.user.models import User
 @pytest.fixture
 def db_session(test_client, valid_user, unconfirmed_user):
     # setup
-    print("setup")
     session = Session()
     session.add(valid_user)
     session.add(unconfirmed_user)
@@ -17,11 +16,9 @@ def db_session(test_client, valid_user, unconfirmed_user):
     
     try:
         # test
-        print("test")
         yield session
     finally:
         # cleanup
-        print("cleanup")
         session.delete(valid_user)
         session.delete(unconfirmed_user)
         session.commit()
@@ -135,7 +132,6 @@ def test_get_profile(test_client, init_database, db_session, valid_user):
 
 def test_profile_changes(test_client, init_database, db_session, valid_user):
     login(test_client, valid_user.email, "abcabc")
-    print(db_session, "HELLO2")
 
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))
     headers = {"Authorization": "Bearer {}".format(access_token)}
