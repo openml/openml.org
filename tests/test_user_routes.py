@@ -181,6 +181,7 @@ def test_api_key_post(test_client, init_database, db_session, valid_user):
 
     # confirm session hash has been updated
     assert valid_user.session_hash != old_session_hash
+    assert response.json["apikey"] == valid_user.session_hash
     assert response.json["msg"] == "API Key updated"
     assert response.status_code == 200
 

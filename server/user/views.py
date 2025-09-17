@@ -179,16 +179,18 @@ def logout(session=Session()):
 def apikey(session=Session()):
     """Change and retrieve API-Key"""
     current_user = get_jwt_identity()
-    with Session() as session:
-        user = session.query(User).filter_by(username=current_user).first()
-        if request.method == "GET":
-            api_key = user.session_hash
-            return jsonify({"apikey": api_key}), 200
-        elif request.method == "POST":
-            user.set_session_hash()
-            session.merge(user)
-            session.commit()
-            return jsonify({"msg": "API Key updated"}), 200
+    user = session.query(User).filter_by(username=current_user).first()
+    if request.method == "GET":
+        api_key = user.session_hash
+        return jsonify({"apikey": api_key}), 200
+    elif request.method == "POST":
+        user.set_session_hash()
+        session.merge(user)
+        session.commit()
+        return jsonify({
+            "msg": "API Key updated",
+            "apikey": user.session_hash
+        }), 200
 
 
 @user_blueprint.route("/delete", methods=["GET", "POST"])

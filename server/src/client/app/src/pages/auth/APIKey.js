@@ -44,10 +44,10 @@ function CopyableAPIKey({ apikey }) {
 
 function APIKey() {
   const [apikey, setApikey] = useState('');
-  const yourConfig = {
+const yourConfig = {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
   };
 
   useEffect(() => {
@@ -66,7 +66,7 @@ function APIKey() {
     axios
       .post(
         process.env.REACT_APP_URL_SITE_BACKEND + "api-key",
-        { resetapikey: true },
+        {}, // no form data required
         yourConfig
       )
       .then((response) => {
