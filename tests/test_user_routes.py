@@ -6,7 +6,7 @@ from server.extensions import Session
 from server.user.models import User
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def db_session(test_client, valid_user, unconfirmed_user):
     # setup
     session = Session()
@@ -35,7 +35,7 @@ def valid_user():
         country="0000",
         bio="No Bio",
         session_hash="0000",
-        forgotten_password_code="0000",
+        forgotten_password_code="1234",
         active=1
     )
     user.set_password("abcabc")
@@ -55,7 +55,7 @@ def unconfirmed_user():
         bio="No Bio",
         session_hash="0000",
         activation_code="0000",
-        forgotten_password_code="0000",
+        forgotten_password_code="5678",
         active=0
     )
     user.set_password("ff")
@@ -231,6 +231,8 @@ def test_reset_password(test_client, init_database, db_session, valid_user):
     )
 
     db_session.refresh(valid_user)
+    print(valid_user.id)
 
     assert valid_user.check_password(new_password)
+    assert response.json["msg"] == "Password changed"
     assert response.status_code == 200
