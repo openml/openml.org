@@ -70,6 +70,32 @@ def login(test_client, email, password):
     return response
 
 
+def signup(test_client, init_database, db_session):
+    registration_data = {
+        "email": "new@user.com",
+        "password": "newpassword",
+        "first_name": "Ana",
+        "last_name": "Brown"
+    }
+
+    response = test_client.post(
+        "/signup",
+        json={
+            "email": registration_data.email,
+            "password": registration_data.password,
+            "first_name": registration_data.first_name,
+            "last_name": registration_data.last_name
+        }
+    )
+
+    registered_user = db_session.query(User).filter_by(registration_data.email).first()
+
+    assert registered_user.check_password(registration_data)
+    assert registered_user.first_name == registration_data.first_name
+    assert registered_user.last_name == registration_data.last_name
+    assert response.status_code == 200
+
+
 def test_confirm_user(test_client, init_database, db_session, unconfirmed_user):
     url = "?token=" + str(unconfirmed_user.activation_code)
     response = test_client.post(
@@ -231,7 +257,6 @@ def test_reset_password(test_client, init_database, db_session, valid_user):
     )
 
     db_session.refresh(valid_user)
-    print(valid_user.id)
 
     assert valid_user.check_password(new_password)
     assert response.json["msg"] == "Password changed"

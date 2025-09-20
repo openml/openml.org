@@ -92,14 +92,16 @@ function Public() {
         setFname(response.data.first_name);
         setLname(response.data.last_name);
         setId(response.data.id);
-        if (id !== false) {
+        if (id) {
           fetch(`${ELASTICSEARCH_SERVER}user/user/` + id.toString())
             .then(response => response.json())
             .then(data => {
-              setDataset(data._source.datasets_uploaded);
-              setRun(data._source.runs_uploaded);
-              setTask(data._source.tasks_uploaded);
-              setFlow(data._source.flows_uploaded);
+              if (data._source) {
+                setDataset(data._source.datasets_uploaded);
+                setRun(data._source.runs_uploaded);
+                setTask(data._source.tasks_uploaded);
+                setFlow(data._source.flows_uploaded);
+              }
             });
         }
       })
