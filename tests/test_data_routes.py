@@ -1,4 +1,4 @@
-def test_data_upload(test_client, init_database):
+def test_data_upload(test_client):
     # access_token = str(os.environ.get('TEST_ACCESS_TOKEN'))
     # headers = {
     #     'Authorization': 'Bearer {}'.format(access_token)
