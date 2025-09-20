@@ -4,7 +4,7 @@ import sys
 import pytest
 
 from autoapp import app
-from server.extensions import db
+from server.extensions import Session, engine, Base
 
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
@@ -28,10 +28,18 @@ def test_client():
     ctx.pop()
 
 
-@pytest.fixture(scope="module")
-def init_database():
-    # Create the database and the database table
+@pytest.fixture(scope="session")
+def session():
+    session = Session()
+    yield session
 
-    # Insert user data
 
-    yield db  # this is where the testing happens!
+# DB reset between tests currently needed with existing
+# implementation
+@pytest.fixture(scope="function", autouse=True)
+def reset_db():
+    # Start w/ clean db. Drop and recreate the tables.
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+    yield # run tests

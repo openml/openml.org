@@ -44,7 +44,7 @@ function CopyableAPIKey({ apikey }) {
 
 function APIKey() {
   const [apikey, setApikey] = useState('');
-const yourConfig = {
+  const yourConfig = {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
     }

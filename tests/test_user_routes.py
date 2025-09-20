@@ -1,28 +1,16 @@
 import os
 
 import pytest
-from server.extensions import Session
 
 from server.user.models import User
 
 
-@pytest.fixture(scope="function")
-def db_session(test_client, valid_user, unconfirmed_user):
-    # setup
-    session = Session()
+@pytest.fixture(scope="function", autouse=True)
+def setup(session, valid_user, unconfirmed_user):
     session.add(valid_user)
     session.add(unconfirmed_user)
     session.commit()
-    
-    try:
-        # test
-        yield session
-    finally:
-        # cleanup
-        session.delete(valid_user)
-        session.delete(unconfirmed_user)
-        session.commit()
-
+    yield
 
 @pytest.fixture(scope="function")
 def valid_user():
@@ -70,7 +58,7 @@ def login(test_client, email, password):
     return response
 
 
-def signup(test_client, init_database, db_session):
+def test_signup(test_client, session):
     registration_data = {
         "email": "new@user.com",
         "password": "newpassword",
@@ -78,25 +66,31 @@ def signup(test_client, init_database, db_session):
         "last_name": "Brown"
     }
 
+    user_before_signup = session.query(User).filter_by(email=registration_data["email"]).first()
+
     response = test_client.post(
         "/signup",
         json={
-            "email": registration_data.email,
-            "password": registration_data.password,
-            "first_name": registration_data.first_name,
-            "last_name": registration_data.last_name
+            "email": registration_data["email"],
+            "password": registration_data["password"],
+            "first_name": registration_data["first_name"],
+            "last_name": registration_data["last_name"]
         }
     )
 
-    registered_user = db_session.query(User).filter_by(registration_data.email).first()
+    registered_user = session.query(User).filter_by(email=registration_data["email"]).first()
 
-    assert registered_user.check_password(registration_data)
-    assert registered_user.first_name == registration_data.first_name
-    assert registered_user.last_name == registration_data.last_name
+    assert user_before_signup == None
+    assert registered_user.check_password(registration_data["password"])
+    assert registered_user.first_name == registration_data["first_name"]
+    assert registered_user.last_name == registration_data["last_name"]
     assert response.status_code == 200
 
+    session.delete(registered_user)
+    session.commit()
 
-def test_confirm_user(test_client, init_database, db_session, unconfirmed_user):
+
+def test_confirm_user(test_client, unconfirmed_user):
     url = "?token=" + str(unconfirmed_user.activation_code)
     response = test_client.post(
         "/confirmation", json={"url": url, "password": "ff"}, follow_redirects=True
@@ -105,35 +99,35 @@ def test_confirm_user(test_client, init_database, db_session, unconfirmed_user):
     assert response.status_code == 200
 
 
-def test_login(test_client, init_database, db_session, valid_user):
+def test_login(test_client, valid_user):
     response = login(test_client, valid_user.email, "abcabc")
 
     assert response.json["access_token"]
     assert response.status_code == 200
 
 
-def test_login_wrong_password(test_client, init_database, db_session, valid_user):
+def test_login_wrong_password(test_client, valid_user):
     response = login(test_client, valid_user.email, "wrongpassword")
 
     assert response.json["msg"] == "WrongPassword"
     assert response.status_code == 200
 
 
-def test_login_user_not_existent(test_client, init_database, db_session):
+def test_login_user_not_existent(test_client):
     response = login(test_client, "fake@user.com", "wrongpassword")
 
     assert response.json["msg"] == "WrongUsernameOrPassword"
     assert response.status_code == 200
 
 
-def test_login_user_not_confirmed(test_client, init_database, db_session, unconfirmed_user):
+def test_login_user_not_confirmed(test_client, unconfirmed_user):
     response = login(test_client, unconfirmed_user.email, "ff")
 
     assert response.json["msg"] == "UserNotConfirmed"
     assert response.status_code == 200
 
 
-def test_get_profile(test_client, init_database, db_session, valid_user):
+def test_get_profile(test_client, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))
@@ -156,7 +150,7 @@ def test_get_profile(test_client, init_database, db_session, valid_user):
     assert retrieved_profile == profile
 
 
-def test_profile_changes(test_client, init_database, db_session, valid_user):
+def test_profile_changes(test_client, session, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))
@@ -171,7 +165,7 @@ def test_profile_changes(test_client, init_database, db_session, valid_user):
     }
 
     response = test_client.post("/profile", headers=headers, json=changes)
-    db_session.refresh(valid_user)
+    session.refresh(valid_user)
 
     assert valid_user.bio == changes["bio"]
     assert valid_user.first_name == changes["first_name"]
@@ -183,7 +177,7 @@ def test_profile_changes(test_client, init_database, db_session, valid_user):
     assert response.status_code == 200
 
 
-def test_api_key_get(test_client, init_database, db_session, valid_user):
+def test_api_key_get(test_client, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))
@@ -194,7 +188,7 @@ def test_api_key_get(test_client, init_database, db_session, valid_user):
     assert response.status_code == 200
 
 
-def test_api_key_post(test_client, init_database, db_session, valid_user):
+def test_api_key_post(test_client, session, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     old_session_hash = valid_user.session_hash
@@ -203,7 +197,7 @@ def test_api_key_post(test_client, init_database, db_session, valid_user):
     headers = {"Authorization": "Bearer {}".format(access_token)}
     response = test_client.post("/api-key", headers=headers)
 
-    db_session.refresh(valid_user)
+    session.refresh(valid_user)
 
     # confirm session hash has been updated
     assert valid_user.session_hash != old_session_hash
@@ -212,7 +206,7 @@ def test_api_key_post(test_client, init_database, db_session, valid_user):
     assert response.status_code == 200
 
 
-def test_logout(test_client, init_database, db_session, valid_user):
+def test_logout(test_client, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     access_token = str(os.environ.get("TEST_ACCESS_TOKEN"))
@@ -222,7 +216,7 @@ def test_logout(test_client, init_database, db_session, valid_user):
     assert response.status_code == 200
 
 
-def test_forgot_token(test_client, init_database, db_session, valid_user):
+def test_forgot_token(test_client, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     url = "?token=" + str(valid_user.forgotten_password_code)
@@ -234,7 +228,7 @@ def test_forgot_token(test_client, init_database, db_session, valid_user):
     assert response.status_code == 200
 
 
-def test_forgot_token_invalid_token(test_client, init_database, db_session, valid_user):
+def test_forgot_token_invalid_token(test_client, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     url = "?token=faketoken"
@@ -246,7 +240,7 @@ def test_forgot_token_invalid_token(test_client, init_database, db_session, vali
     assert response.status_code == 401
 
 
-def test_reset_password(test_client, init_database, db_session, valid_user):
+def test_reset_password(test_client, session, valid_user):
     login(test_client, valid_user.email, "abcabc")
 
     new_password = "newpassword"
@@ -256,7 +250,7 @@ def test_reset_password(test_client, init_database, db_session, valid_user):
         "/resetpassword", json={"url": url, "password": new_password}, follow_redirects=True
     )
 
-    db_session.refresh(valid_user)
+    session.refresh(valid_user)
 
     assert valid_user.check_password(new_password)
     assert response.json["msg"] == "Password changed"
