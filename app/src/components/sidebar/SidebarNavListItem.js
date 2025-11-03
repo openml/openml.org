@@ -118,7 +118,10 @@ const SidebarNavListItem = (props) => {
   const { pathname } = useRouter();
 
   const isExternal = href[0] != "/" ? true : false;
-  const key = isExternal && !href.includes("openml.org") ? href?.split("/").pop() : href?.split(/[./]+/)[1];
+  const key =
+    isExternal && !href.includes("openml.org")
+      ? href?.split("/").pop()
+      : href?.split(/[./]+/)[1];
   const color = theme.palette.entity[key];
   const icon = theme.palette.icon[key];
 
@@ -130,7 +133,7 @@ const SidebarNavListItem = (props) => {
 
   if (children) {
     return (
-      <React.Fragment>
+      <>
         <Item depth={depth} onClick={handleToggle}>
           {icon && <SidebarIcon color={color} icon={icon} />}
           <Title depth={depth}>
@@ -140,7 +143,7 @@ const SidebarNavListItem = (props) => {
           {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Item>
         <Collapse in={open}>{children}</Collapse>
-      </React.Fragment>
+      </>
     );
   }
   return (

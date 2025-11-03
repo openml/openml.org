@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import AuthLayout from "../../layouts/Auth";
 
@@ -21,7 +21,9 @@ const Wrapper = styled("div")(({ theme }) => ({
 function Page404() {
   return (
     <Wrapper>
-      <Helmet title="404 Error" />
+      <Head>
+        <title>404 Error - OpenML</title>
+      </Head>
       <Typography component="h1" variant="h1" align="center" gutterBottom>
         404
       </Typography>

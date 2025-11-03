@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { spacing } from "@mui/system";
 
 import DashboardLayout from "../layouts/Dashboard";
@@ -468,7 +468,9 @@ function About() {
 
   return (
     <Wrapper>
-      <Helmet title={t("about.helmet")} />
+      <Head>
+        <title>{t("about.helmet")} - OpenML</title>
+      </Head>
       <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
         <ContactButton
           color="primary"

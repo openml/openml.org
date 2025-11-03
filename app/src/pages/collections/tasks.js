@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 
@@ -17,12 +17,12 @@ export async function getStaticProps({ locale }) {
 
 function TaskCollectionList() {
   return (
-    <React.Fragment>
-      <Helmet title="OpenML Collections" />
+    <>
+      <Head>
       <Typography variant="h3" gutterBottom>
         Task collections
       </Typography>
-    </React.Fragment>
+    </>
   );
 }
 

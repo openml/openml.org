@@ -147,7 +147,7 @@ export const ActionChip = ({
   };
 
   const action = (
-    <React.Fragment>
+    <>
       <IconButton
         size="small"
         aria-label="close"
@@ -156,7 +156,7 @@ export const ActionChip = ({
       >
         <FontAwesomeIcon icon={faXmark} size="lg" />
       </IconButton>
-    </React.Fragment>
+    </>
   );
 
   const copyText = (text) => {
@@ -167,7 +167,7 @@ export const ActionChip = ({
   };
 
   return (
-    <React.Fragment>
+    <>
       <Chip
         icon={<ListIcon icon={icon} size="lg" style={{ marginRight: 0 }} />}
         component="a"
@@ -186,7 +186,7 @@ export const ActionChip = ({
         message={copymessage}
         action={action}
       />
-    </React.Fragment>
+    </>
   );
 };
 

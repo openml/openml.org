@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import { Avatar, Paper, Typography } from "@mui/material";
 
@@ -26,10 +26,10 @@ const BigAvatar = styled(Avatar)`
 
 function SignIn() {
   return (
-    <React.Fragment>
+    <>
       <Brand />
       <Wrapper>
-        <Helmet title="Sign In" />
+        <Head />
         <BigAvatar alt="Sky" src="/static/img/avatars/avatar-1.jpg" />
 
         <Typography component="h1" variant="h4" align="center" gutterBottom>
@@ -41,7 +41,7 @@ function SignIn() {
 
         <SignInComponent />
       </Wrapper>
-    </React.Fragment>
+    </>
   );
 }
 

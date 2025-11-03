@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 // Adds the croissant meta-data in the header of the dataset page
 const CroissantMetaData = ({ url }) => {
@@ -32,9 +32,9 @@ const CroissantMetaData = ({ url }) => {
     fetchJsonData();
   }, [url]);
   return (
-    <Helmet>
+    <Head>
       <script type="application/ld+json">{JSON.stringify(jsonData)}</script>
-    </Helmet>
+    </Head>
   );
 };
 

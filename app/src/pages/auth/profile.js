@@ -1,31 +1,15 @@
 import React from "react";
-import { styled } from "@mui/material/styles";
-import { withTheme } from "@emotion/react";
 import NextLink from "next/link";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { Bar } from "react-chartjs-2";
 
+import AuthGuard from "../../components/guards/AuthGuard";
 import DashboardLayout from "../../layouts/Dashboard";
 
-import {
-  Avatar as MuiAvatar,
-  Box,
-  Breadcrumbs as MuiBreadcrumbs,
-  Button as MuiButton,
-  Card as MuiCard,
-  CardContent,
-  Chip as MuiChip,
-  Divider as MuiDivider,
-  Grid as MuiGrid,
-  LinearProgress as MuiLinearProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography as MuiTypography,
-} from "@mui/material";
-import { spacing } from "@mui/system";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 import {
   faBriefcase,
@@ -46,6 +30,7 @@ import {
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -55,102 +40,52 @@ export async function getStaticProps({ locale }) {
   };
 }
 
-const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
-
-const Button = styled(MuiButton)(spacing);
-
-const Card = styled(MuiCard)(spacing);
-
-const Chip = styled(MuiChip)(spacing);
-
-const Divider = styled(MuiDivider)(spacing);
-
-const Grid = styled(MuiGrid)(spacing);
-
-const LinearProgress = styled(MuiLinearProgress)(spacing);
-
-const Spacer = styled("div")(spacing);
-
-const Typography = styled(MuiTypography)(spacing);
-
-const Avatar = styled(MuiAvatar)`
-  display: inline-block;
-  height: 128px;
-  width: 128px;
-`;
-
-const Centered = styled("div")({
-  textAlign: "center",
-});
-
-const AboutIcon = styled("span")(({ theme }) => ({
-  display: "flex",
-  paddingRight: theme.spacing(2),
-  svg: {
-    width: "14px",
-    height: "14px",
-  },
-}));
-
-const ChartWrapper = styled("div")({
-  height: "280px",
-  position: "relative",
-});
-
-const StatsIcon = styled("div")(({ theme }) => ({
-  position: "absolute",
-  right: "16px",
-  top: "32px",
-  svg: {
-    width: "32px",
-    height: "32px",
-    color: theme.palette.secondary.main,
-  },
-}));
-
-const Link = styled(NextLink)`
-  text-decoration: none;
-  color: ${(props) => props.theme.palette.secondary.main};
-`;
-
-const ProductsChip = styled(Chip)`
-  height: 20px;
-  padding: 4px 0;
-  font-size: 90%;
-  background-color: ${(props) =>
-    props.theme.palette[props.color ? props.color : "primary"].light};
-  color: ${(props) => props.theme.palette.common.white};
-`;
-
-const TableWrapper = styled("div")(({ theme }) => ({
-  overflowY: "auto",
-  maxWidth: `calc(100vw - ${theme.spacing(12)})`,
-}));
+const Link = ({ href, children, className }) => (
+  <NextLink
+    href={href}
+    className={`text-blue-600 hover:text-blue-800 no-underline ${className}`}
+  >
+    {children}
+  </NextLink>
+);
 
 function Details() {
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
+    <Card className="mb-6">
+      <CardContent className="p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Profile Details
-        </Typography>
+        </h3>
 
-        <Spacer mb={4} />
+        <div className="text-center">
+          <Avatar className="w-32 h-32 mx-auto mb-4">
+            <AvatarImage
+              src="/static/img/avatars/avatar-1.jpg"
+              alt="Sky Blue"
+            />
+            <AvatarFallback>SB</AvatarFallback>
+          </Avatar>
 
-        <Centered>
-          <Avatar alt="Sky Blue" src="/static/img/avatars/avatar-1.jpg" />
-          <Typography variant="body2" component="div" gutterBottom>
-            <Box fontWeight="fontWeightMedium">Sky Blue</Box>
-            <Box fontWeight="fontWeightRegular">Lead Scientist</Box>
-          </Typography>
+          <div className="mb-4">
+            <div className="font-medium text-gray-900">Sky Blue</div>
+            <div className="text-gray-600">Lead Scientist</div>
+          </div>
 
-          <Button mr={2} variant="contained" color="primary" size="small">
-            Follow
-          </Button>
-          <Button mr={2} variant="contained" color="primary" size="small">
-            Message
-          </Button>
-        </Centered>
+          <div className="space-x-2">
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Follow
+            </Button>
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Message
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -158,25 +93,30 @@ function Details() {
 
 function Skills() {
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
+    <Card className="mb-6">
+      <CardContent className="py-6 px-3">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 px-3">
           Skills
-        </Typography>
+        </h3>
 
-        <Spacer mb={4} />
-
-        <Centered>
-          <Chip size="small" mr={1} mb={1} label="HTML" color="secondary" />
-          <Chip size="small" mr={1} mb={1} label="JavaScript" />
-          <Chip size="small" mr={1} mb={1} label="Sass" />
-          <Chip size="small" mr={1} mb={1} label="React" />
-          <Chip size="small" mr={1} mb={1} label="Redux" />
-          <Chip size="small" mr={1} mb={1} label="Next.js" />
-          <Chip size="small" mr={1} mb={1} label="Material UI" />
-          <Chip size="small" mr={1} mb={1} label="UI" />
-          <Chip size="small" mr={1} mb={1} label="UX" />
-        </Centered>
+        <div className="text-center">
+          <div className="flex flex-wrap gap-[0.4rem] justify-center">
+            <Badge
+              variant="secondary"
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              HTML
+            </Badge>
+            <Badge variant="outline">JavaScript</Badge>
+            <Badge variant="outline">Sass</Badge>
+            <Badge variant="outline">React</Badge>
+            <Badge variant="outline">Redux</Badge>
+            <Badge variant="outline">Next.js</Badge>
+            <Badge variant="outline">Material UI</Badge>
+            <Badge variant="outline">UI</Badge>
+            <Badge variant="outline">UX</Badge>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -184,263 +124,309 @@ function Skills() {
 
 function About() {
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          About
-        </Typography>
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
 
-        <Spacer mb={4} />
-
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faHome} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
+      <div className="space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faHome} className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-sm text-gray-600">
             Lives in{" "}
-            <Link href="https://www.openml.org/">San Fransisco, SA</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faBriefcase} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            Works at <Link href="https://www.openml.org/">Material UI</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center">
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faMapPin} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            Lives in <Link href="https://www.openml.org/">Boston</Link>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+            <a
+              href="https://www.openml.org/"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              San Fransisco, SA
+            </a>
+          </span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faBriefcase} className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-sm text-gray-600">
+            Works at{" "}
+            <a
+              href="https://www.openml.org/"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Material UI
+            </a>
+          </span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faMapPin} className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-sm text-gray-600">
+            Lives in{" "}
+            <a
+              href="https://www.openml.org/"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Boston
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Elsewhere() {
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Elsewhere
-        </Typography>
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Elsewhere</h3>
 
-        <Spacer mb={4} />
+      <div className="space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faExternalLink} className="w-3.5 h-3.5" />
+          </div>
+          <a
+            href="https://www.openml.org/"
+            className="text-blue-600 hover:text-blue-800 text-sm"
+          >
+            skyblue.io
+          </a>
+        </div>
 
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faExternalLink} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            <Link href="https://www.openml.org/">skyblue.io</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faTwitter} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            <Link href="hhttps://www.openml.org/">Twitter</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faFacebook} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            <Link href="https://www.openml.org/">Facebook</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center">
-          <Grid item>
-            <AboutIcon>
-              <FontAwesomeIcon icon={faInstagram} />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            <Link href="https://www.openml.org/">Instagram</Link>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faTwitter} className="w-3.5 h-3.5" />
+          </div>
+          <a
+            href="https://www.openml.org/"
+            className="text-blue-600 hover:text-blue-800 text-sm"
+          >
+            Twitter
+          </a>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faFacebook} className="w-3.5 h-3.5" />
+          </div>
+          <a
+            href="https://www.openml.org/"
+            className="text-blue-600 hover:text-blue-800 text-sm"
+          >
+            Facebook
+          </a>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-5 h-5 text-gray-500">
+            <FontAwesomeIcon icon={faInstagram} className="w-3.5 h-3.5" />
+          </div>
+          <a
+            href="https://www.openml.org/"
+            className="text-blue-600 hover:text-blue-800 text-sm"
+          >
+            Instagram
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Earnings() {
   return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">$ 2.405</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Total Earnings
-          </Typography>
+    <div className="relative">
+      <div className="bg-white rounded-lg shadow p-6 mb-6 pt-4">
+        <div className="relative">
+          <h2 className="text-3xl font-normal text-gray-900 mb-1">$ 2.405</h2>
+          <p className="text-sm text-gray-600 mt-3 mb-0">Total Earnings</p>
 
-          <StatsIcon>
-            <FontAwesomeIcon icon={faDollarSign} />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={75}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
+          <div className="absolute right-4 top-8">
+            <FontAwesomeIcon
+              icon={faDollarSign}
+              className="w-8 h-8 text-blue-600"
+            />
+          </div>
+
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: "75%" }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Orders() {
   return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">30</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Orders Today
-          </Typography>
+    <div className="relative">
+      <div className="bg-white rounded-lg shadow p-6 mb-6 pt-4">
+        <div className="relative">
+          <h2 className="text-3xl font-normal text-gray-900 mb-1">30</h2>
+          <p className="text-sm text-gray-600 mt-3 mb-0">Orders Today</p>
 
-          <StatsIcon>
-            <FontAwesomeIcon icon={faShoppingBag} />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={30}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
+          <div className="absolute right-4 top-8">
+            <FontAwesomeIcon
+              icon={faShoppingBag}
+              className="w-8 h-8 text-blue-600"
+            />
+          </div>
+
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: "30%" }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Revenue() {
   return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">$ 1.224</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Total Revenue
-          </Typography>
+    <div className="relative">
+      <div className="bg-white rounded-lg shadow p-6 mb-6 pt-4">
+        <div className="relative">
+          <h2 className="text-3xl font-normal text-gray-900 mb-1">$ 1.224</h2>
+          <p className="text-sm text-gray-600 mt-3 mb-0">Total Revenue</p>
 
-          <StatsIcon>
-            <FontAwesomeIcon icon={faDollarSign} />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={50}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
+          <div className="absolute right-4 top-8">
+            <FontAwesomeIcon
+              icon={faDollarSign}
+              className="w-8 h-8 text-blue-600"
+            />
+          </div>
+
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: "50%" }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Products() {
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Products
-        </Typography>
-        <TableWrapper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Tech</TableCell>
-                <TableCell>License</TableCell>
-                <TableCell>Sales</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  AppStack
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="HTML" color="primary" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>76</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Mira
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="React" color="success" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>38</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Milo
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="HTML" color="primary" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>43</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Robust UI Kit
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="Angular" color="error" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>27</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Spark
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="React" color="success" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>12</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableWrapper>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Products</h3>
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tech
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                License
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Sales
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            <tr className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                AppStack
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                  HTML
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                Single License
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                76
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                Mira
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                  React
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                Single License
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                38
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                Milo
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                  HTML
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                Single License
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                43
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                Robust UI Kit
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                  Angular
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                Single License
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                27
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                Spark
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                  React
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                Single License
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                12
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
-const SalesRevenue = withTheme(({ theme }) => {
+function SalesRevenue() {
   const data = {
     labels: [
       "Jan",
@@ -459,20 +445,20 @@ const SalesRevenue = withTheme(({ theme }) => {
     datasets: [
       {
         label: "Sales",
-        backgroundColor: theme.palette.secondary.main,
-        borderColor: theme.palette.secondary.main,
-        hoverBackgroundColor: theme.palette.secondary.main,
-        hoverBorderColor: theme.palette.secondary.main,
+        backgroundColor: "#3B82F6",
+        borderColor: "#3B82F6",
+        hoverBackgroundColor: "#3B82F6",
+        hoverBorderColor: "#3B82F6",
         data: [54, 67, 41, 55, 62, 45, 55, 73, 60, 76, 48, 79],
         barPercentage: 0.625,
         categoryPercentage: 0.5,
       },
       {
         label: "Revenue",
-        backgroundColor: theme.palette.grey[200],
-        borderColor: theme.palette.grey[200],
-        hoverBackgroundColor: theme.palette.grey[200],
-        hoverBorderColor: theme.palette.grey[200],
+        backgroundColor: "#E5E7EB",
+        borderColor: "#E5E7EB",
+        hoverBackgroundColor: "#E5E7EB",
+        hoverBorderColor: "#E5E7EB",
         data: [69, 66, 24, 48, 52, 51, 44, 53, 62, 79, 51, 68],
         barPercentage: 0.625,
         categoryPercentage: 0.5,
@@ -505,72 +491,75 @@ const SalesRevenue = withTheme(({ theme }) => {
   };
 
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Sales / Revenue
-        </Typography>
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-6">
+        Sales / Revenue
+      </h3>
 
-        <Spacer mb={6} />
-
-        <ChartWrapper>
-          <Bar data={data} options={options} />
-        </ChartWrapper>
-      </CardContent>
-    </Card>
+      <div className="h-70 relative">
+        <Bar data={data} options={options} />
+      </div>
+    </div>
   );
-});
+}
 
 function Profile() {
+  const { t } = useTranslation();
+
   return (
-    <React.Fragment>
-      <Helmet title="Profile" />
+    <div className="min-h-screen bg-gray-50 p-6">
+      <Head>
+        <title>{t("profile")} - OpenML</title>
+      </Head>
 
-      <Typography variant="h3" gutterBottom display="inline">
-        Profile
-      </Typography>
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {t("profile")}
+        </h1>
 
-      <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <Link href="/" passHref>
-          Dashboard
-        </Link>
-        <Link href="/" passHref>
-          Pages
-        </Link>
-        <Typography>Profile</Typography>
-      </Breadcrumbs>
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+          <Link href="/" className="hover:text-gray-700">
+            {t("dashboard")}
+          </Link>
+          <span>/</span>
+          <Link href="/" className="hover:text-gray-700">
+            {t("pages")}
+          </Link>
+          <span>/</span>
+          <span className="text-gray-900">{t("profile")}</span>
+        </nav>
 
-      <Divider my={6} />
+        <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-12 gap-6">
+          <div className="lg:col-span-1 xl:col-span-3 space-y-6">
+            <Details />
+            <Skills />
+            <About />
+            <Elsewhere />
+          </div>
 
-      <Grid container spacing={6}>
-        <Grid item xs={12} lg={4} xl={3}>
-          <Details />
-          <Skills />
-          <About />
-          <Elsewhere />
-        </Grid>
-        <Grid item xs={12} lg={8} xl={9}>
-          <SalesRevenue />
-          <Grid container spacing={6}>
-            <Grid item xs={12} lg={4}>
+          <div className="lg:col-span-3 xl:col-span-9 space-y-6">
+            <SalesRevenue />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Earnings />
-            </Grid>
-            <Grid item xs={12} lg={4}>
               <Orders />
-            </Grid>
-            <Grid item xs={12} lg={4}>
               <Revenue />
-            </Grid>
-          </Grid>
-          <Products />
-        </Grid>
-      </Grid>
-    </React.Fragment>
+            </div>
+
+            <Products />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 Profile.getLayout = function getLayout(page) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return (
+    <AuthGuard>
+      <DashboardLayout>{page}</DashboardLayout>
+    </AuthGuard>
+  );
 };
 
 export default Profile;

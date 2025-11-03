@@ -98,19 +98,23 @@ function AuthProvider({ children }) {
   }, []);
 
   const signIn = async (email, password) => {
+    console.log("JWTContext: Starting sign in process");
     const response = await axios.post("/api/auth/sign-in", {
       email,
       password,
     });
+    console.log("JWTContext: Got response:", response.data);
     const { accessToken, user } = response.data;
 
     setSession(accessToken);
+    console.log("JWTContext: Session set, dispatching sign in action");
     dispatch({
       type: SIGN_IN,
       payload: {
         user,
       },
     });
+    console.log("JWTContext: Sign in complete");
   };
 
   const signOut = async () => {

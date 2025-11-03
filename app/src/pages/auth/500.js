@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import AuthLayout from "../../layouts/Auth";
 
@@ -22,7 +22,7 @@ const Wrapper = styled("div")(({ theme }) => ({
 function Page500() {
   return (
     <Wrapper>
-      <Helmet title="500 Error" />
+      <Head />
       <Typography component="h1" variant="h1" align="center" gutterBottom>
         500
       </Typography>

@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import { Paper, Typography } from "@mui/material";
 
@@ -18,10 +18,10 @@ const Wrapper = styled(Paper)`
 
 function ResetPassword() {
   return (
-    <React.Fragment>
+    <>
       <Brand />
       <Wrapper>
-        <Helmet title="Reset Password" />
+        <Head>
 
         <Typography component="h1" variant="h4" align="center" gutterBottom>
           Reset Password
@@ -32,7 +32,7 @@ function ResetPassword() {
 
         <ResetPasswordComponent />
       </Wrapper>
-    </React.Fragment>
+    </>
   );
 }
 

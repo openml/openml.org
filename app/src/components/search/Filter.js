@@ -56,7 +56,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
   // Don't invoke translation for flows or datasets
   const translate = !["flow", "dataset"].includes(label.split(".").pop());
   return (
-    <React.Fragment>
+    <>
       {options.map((option) => (
         <FilterChip
           label={
@@ -76,7 +76,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           variant={option.selected ? "default" : "outlined"}
         />
       ))}
-    </React.Fragment>
+    </>
   );
 };
 

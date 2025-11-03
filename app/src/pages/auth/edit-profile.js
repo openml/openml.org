@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import NextLink from "next/link";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import DashboardLayout from "../../layouts/Dashboard";
 
@@ -240,8 +240,10 @@ function Private() {
 
 function EditProfile() {
   return (
-    <React.Fragment>
-      <Helmet title="Edit Profile" />
+    <>
+      <Head>
+        <title>Edit Profile - OpenML</title>
+      </Head>
       <Typography variant="h3" gutterBottom display="inline">
         Edit Profile
       </Typography>
@@ -261,7 +263,7 @@ function EditProfile() {
           <Private />
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }
 

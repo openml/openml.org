@@ -1,4 +1,11 @@
 import React, { useEffect, useState } from "react";
+import variants from "../theme/variants";
+
+// Create THEMES constant from variants
+const THEMES = variants.reduce((acc, variant) => {
+  acc[variant.name] = variant.name;
+  return acc;
+}, {});
 
 const initialState = {
   theme: "DEFAULT",
@@ -14,7 +21,16 @@ function ThemeProvider({ children }) {
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
-      _setTheme(JSON.parse(storedTheme));
+      try {
+        _setTheme(JSON.parse(storedTheme));
+      } catch (error) {
+        console.warn(
+          "Invalid theme data in localStorage, using default theme:",
+          error,
+        );
+        localStorage.removeItem("theme");
+        _setTheme(THEMES.DEFAULT);
+      }
     } else {
       _setTheme(THEMES.DEFAULT);
     }

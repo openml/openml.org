@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 
@@ -106,8 +106,8 @@ function Task({ data }) {
 
   return (
     <Wrapper>
-      <Helmet title="OpenML Tasks" />
-      <React.Fragment>
+      <Head />
+      <>
         <Grid container spacing={6}>
           <Grid size={12}>
             <Grid container spacing={2}>
@@ -183,7 +183,7 @@ function Task({ data }) {
             </Card>
           </Grid>
         </Grid>
-      </React.Fragment>
+      </>
     </Wrapper>
   );
 }

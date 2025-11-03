@@ -121,7 +121,7 @@ const Dashboard = ({ children }) => {
           ecolor={ecolor}
           section={section}
         />
-        <MainContent>{children}</MainContent>
+        <MainContent className="flex active">{children}</MainContent>
         {/*<Footer />*/}
       </AppContent>
     </Root>

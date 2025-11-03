@@ -11,12 +11,12 @@ import { shortenName } from "./flowCard";
 
 export const Title = ({ result }) => {
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ pl: 2 }}>
         {shortenName(result.run_flow.raw.name)} on{" "}
         {result.run_task.raw.source_data.name} by {result.uploader.raw}
       </Box>
-    </React.Fragment>
+    </>
   );
 };
 

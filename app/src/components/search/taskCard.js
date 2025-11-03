@@ -10,11 +10,11 @@ import Teaser from "./Teaser";
 
 export const Title = ({ result }) => {
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ pl: 2 }}>
         {result.tasktype.raw.name} on {result.source_data.raw.name}
       </Box>
-    </React.Fragment>
+    </>
   );
 };
 

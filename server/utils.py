@@ -2,6 +2,7 @@ import smtplib
 import ssl
 import os
 from distutils.util import strtobool
+from typing import Union, Optional
 
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from server.extensions import Session
@@ -68,7 +69,7 @@ def _send_mail(sender, receiver, message):
         server.sendmail(sender, receiver, message)
 
 
-def current_user() -> User | None:
+def current_user() -> Union[User, None]:
     if verify_jwt_in_request():
         jwt_identity = get_jwt_identity()
         with Session() as session:

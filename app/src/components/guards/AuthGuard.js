@@ -14,11 +14,7 @@ function AuthGuard({ children }) {
     }
   }, [isInitialized, isAuthenticated, router]);
 
-  return isInitialized && isAuthenticated ? (
-    <React.Fragment>{children}</React.Fragment>
-  ) : (
-    <React.Fragment />
-  );
+  return isInitialized && isAuthenticated ? <>{children}</> : "";
 }
 
 export default AuthGuard;

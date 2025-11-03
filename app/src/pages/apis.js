@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import DashboardLayout from "../layouts/Dashboard";
 import { spacing, useTheme } from "@mui/system";
@@ -259,8 +259,10 @@ function APIs() {
   };
 
   return (
-    <React.Fragment>
-      <Helmet title={t("apis.helmet")} />
+    <>
+      <Head>
+        <title>{t("apis.helmet")} - OpenML</title>
+      </Head>
       <ApiTabs
         value={api}
         onChange={(event, newValue) => setApi(newValue)}
@@ -321,7 +323,7 @@ function APIs() {
         message={t("apis.copied")}
         onClose={() => setOpen(false)}
       />
-    </React.Fragment>
+    </>
   );
 }
 

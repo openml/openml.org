@@ -54,7 +54,7 @@ const status = {
 
 export const Title = ({ result }) => {
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ pl: 2 }}>{result.name.raw}</Box>
       <VersionStats>v.{result.version.raw}</VersionStats>
       <Tooltip title={status[result.status.raw]["title"]} placement="top-start">
@@ -66,7 +66,7 @@ export const Title = ({ result }) => {
           />
         </Stats>
       </Tooltip>
-    </React.Fragment>
+    </>
   );
 };
 
