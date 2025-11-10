@@ -16,7 +16,7 @@ function ThemeProvider({ children }) {
     if (storedTheme) {
       _setTheme(JSON.parse(storedTheme));
     } else {
-      _setTheme(THEMES.DEFAULT);
+      _setTheme(initialState.theme);
     }
     setReady(true);
   }, []);
