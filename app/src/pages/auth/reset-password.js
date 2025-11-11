@@ -21,7 +21,7 @@ function ResetPassword() {
     <>
       <Brand />
       <Wrapper>
-        <Head>
+        <Head />
 
         <Typography component="h1" variant="h4" align="center" gutterBottom>
           Reset Password

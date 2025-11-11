@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+    # 1. PYTHON/FLASK BACKEND API (The authoritative API layer)
+    backend:
+        # Uses the multi-stage Dockerfile provided at the repository root
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        ports:
+            # Expose Flask's port for host access (e.g., Postman testing)
+            - '5000:5000'
+        volumes:
+            # Mount the entire application code for rapid iteration
+            - .:/app
+            - /app/venv # Exclude the venv if present on the host
+        environment:
+            # Use the Docker Compose service name 'db' for the database connection
+            DATABASE_URL: mysql+pymysql://user:password@db/your_db
+            JWT_SECRET_KEY: <a_strong_secret_key_for_jwt>
+        depends_on:
+            - db
+        # MANDATORY: Enforce production architecture parity (Linux/AMD64) on your Apple M4 Mac
+        platform: 'linux/amd64'
+
+    # 2. NEXT.JS FRONTEND (New Presentation Layer Development)
+    frontend-nextjs:
+        build:
+            context: ./app
+            dockerfile: Dockerfile.nextjs_dev # Dedicated Dockerfile for Next.js dev server
+        ports:
+            # Access this at http://localhost:3000
+            - '3000:3000'
+        volumes:
+            # Crucial for Next.js Fast Refresh and source code synchronization
+            - ./app:/app
+            - /app/node_modules # Isolate node_modules inside the container
+        environment:
+            # NEXT.JS calls the backend using the internal Docker service name
+            NEXT_PUBLIC_API_URL: http://backend:5000
+        depends_on:
+            - backend
+        # Starts the development server with live reloading
+        command: npm run dev
+        # Optional: Omit platform or set to 'linux/arm64' for fastest native performance on M4.
+
+    # 3. EXISTING FRONTEND PROXY (Legacy React/Testing Layer)
+    frontend-proxy:
+        # Use a standard Node image for the Express proxy server
+        image: node:22.11.0-slim
+        ports:
+            # Access this at http://localhost:8080 (or your desired proxy port)
+            - '8080:8080'
+        volumes:
+            # Mount the proxy source code
+            - ./server-proxy:/app
+        working_dir: /app
+        depends_on:
+            - backend
+        # Install dependencies and start the proxy server
+        command: sh -c "npm install && node index.js"
+
+    # 4. DATABASE (MySQL)
+    db:
+        image: mysql:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: your_db
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        volumes:
+            # Persistent data storage for the database
+            - db_data:/var/lib/mysql
+        # Exposing the port is optional, useful for desktop clients
+        ports:
+            - '3306:3306'
+        # MANDATORY: Enforce production architecture parity
+        platform: 'linux/amd64'
+
+volumes:
+    db_data:
