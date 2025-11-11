@@ -105,11 +105,11 @@ function Demos() {
 
 const Settings = ({ ...rest }) => {
   return (
-    <React.Fragment>
+    <>
       <Drawer anchor="right" {...rest}>
         <Demos />
       </Drawer>
-    </React.Fragment>
+    </>
   );
 };
 

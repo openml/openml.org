@@ -1,6 +1,5 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { HelmetProvider, Helmet } from "react-helmet-async";
 import { CacheProvider } from "@emotion/react";
 
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
@@ -16,6 +15,9 @@ import "chart.js/auto";
 
 // Note: Remove the following line if you want to disable the API mocks.
 import "../mocks";
+
+// TailwindCSS global styles
+import "../styles/globals.css";
 
 import "../vendor/perfect-scrollbar.css";
 
@@ -36,20 +38,17 @@ function App({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
 
   return (
     <CacheProvider value={emotionCache}>
-      <HelmetProvider>
-        <Helmet titleTemplate="OpenML | %s" defaultTitle="OpenML - Next" />
-        <Provider store={store}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <CustomThemeProvider>
-              <ThemeConsumerWrapper
-                Component={Component}
-                pageProps={pageProps}
-                getLayout={getLayout}
-              />
-            </CustomThemeProvider>
-          </LocalizationProvider>
-        </Provider>
-      </HelmetProvider>
+      <Provider store={store}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <CustomThemeProvider>
+            <ThemeConsumerWrapper
+              Component={Component}
+              pageProps={pageProps}
+              getLayout={getLayout}
+            />
+          </CustomThemeProvider>
+        </LocalizationProvider>
+      </Provider>
     </CacheProvider>
   );
 }

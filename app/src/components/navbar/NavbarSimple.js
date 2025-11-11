@@ -24,7 +24,7 @@ const IconButton = styled(MuiIconButton)`
 
 const NavbarSimple = ({ onDrawerToggle }) => {
   return (
-    <React.Fragment>
+    <>
       <AppBar position="sticky" elevation={0}>
         <Toolbar>
           <Grid container alignItems="center">
@@ -41,7 +41,7 @@ const NavbarSimple = ({ onDrawerToggle }) => {
           </Grid>
         </Toolbar>
       </AppBar>
-    </React.Fragment>
+    </>
   );
 };
 

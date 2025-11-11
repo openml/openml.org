@@ -115,11 +115,11 @@ export function shortenName(str) {
 
 export const Title = ({ result }) => {
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ pl: 2, wordBreak: "break-all" }}>
         {shortenName(result.name.raw)}
       </Box>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { Typography } from "@mui/material";
 import { useTheme } from "@mui/system";
 
@@ -129,8 +129,11 @@ const ActionButtons = ({ buttons }) => {
 function Dataset({ data, error }) {
   const theme = useTheme();
   const did = data.data_id;
-  const croissant_url = "croissant/dataset/"+ did;
-  const full_croissant_url = new URL(`/croissant/dataset/${did}`, `https://www.openml.org`);
+  const croissant_url = "croissant/dataset/" + did;
+  const full_croissant_url = new URL(
+    `/croissant/dataset/${did}`,
+    `https://www.openml.org`,
+  );
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -213,14 +216,14 @@ function Dataset({ data, error }) {
         data.status === "active"
           ? "green"
           : data.status === "deactivated"
-          ? "red"
-          : "orange",
+            ? "red"
+            : "orange",
       icon:
         data.status === "active"
           ? faCheckCircle
           : data.status === "deactivated"
-          ? faTimes
-          : faWrench,
+            ? faTimes
+            : faWrench,
     },
     {
       label: "Data likes",
@@ -241,7 +244,7 @@ function Dataset({ data, error }) {
 
   return (
     <Wrapper>
-      <Helmet title="OpenML Datasets" />
+      <Head />
       <CroissantMetaData url={full_croissant_url} />
       <Grid container spacing={6}>
         <Grid size={12}>

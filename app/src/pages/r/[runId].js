@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { Avatar, Grid, Typography } from "@mui/material";
 import DashboardLayout from "../../layouts/Dashboard";
 import { useTheme } from "@mui/system";
@@ -125,8 +125,8 @@ function Run({ data }) {
 
   return (
     <Wrapper>
-      <Helmet title="OpenML Runs" />
-      <React.Fragment>
+      <Head />
+      <>
         <Grid container spacing={6}>
           <Grid size={12}>
             <Grid container style={{ padding: "25px 0" }}>
@@ -186,7 +186,7 @@ function Run({ data }) {
             <EvaluationTable data={data} />
           </Grid>
         </Grid>
-      </React.Fragment>
+      </>
     </Wrapper>
   );
 }

@@ -12,6 +12,17 @@ const FilterChip = styled(Chip)`
 
 // Handles special cases in the filter options
 const processOption = (option, translate = true) => {
+  // Ensure option is a string - handle cases where non-string values are passed
+  if (typeof option !== "string") {
+    if (option && typeof option === "object") {
+      // If it's an object, try to stringify it or use a property
+      option = option.toString();
+    } else {
+      // If it's null, undefined, or other non-string type, convert to string
+      option = String(option || "");
+    }
+  }
+
   // Homogenize notation for library reporting and versioning
   const libraries = [
     "sklearn",
@@ -56,7 +67,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
   // Don't invoke translation for flows or datasets
   const translate = !["flow", "dataset"].includes(label.split(".").pop());
   return (
-    <React.Fragment>
+    <>
       {options.map((option) => (
         <FilterChip
           label={
@@ -76,7 +87,7 @@ const Filter = ({ label, options, values, onRemove, onSelect }) => {
           variant={option.selected ? "default" : "outlined"}
         />
       ))}
-    </React.Fragment>
+    </>
   );
 };
 

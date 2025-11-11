@@ -14,7 +14,7 @@ const SidebarNavList = (props) => {
     [],
   );
 
-  return <React.Fragment>{childRoutes}</React.Fragment>;
+  return <>{childRoutes}</>;
 };
 
 export default SidebarNavList;

@@ -82,7 +82,7 @@ function NavbarCreationDropdown() {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Tooltip title={t("tooltips.create")}>
         <IconButton color="inherit" ref={ref} onClick={handleOpen} size="large">
           <FontAwesomeIcon icon={faMagicWandSparkles} />
@@ -102,7 +102,7 @@ function NavbarCreationDropdown() {
             {t("create.title")}
           </Typography>
         </MessageHeader>
-        <React.Fragment>
+        <>
           <List disablePadding>
             <Message
               title={t("create.new_data")}
@@ -123,9 +123,9 @@ function NavbarCreationDropdown() {
               color={theme.palette.entity.collections}
             />
           </List>
-        </React.Fragment>
+        </>
       </Popover>
-    </React.Fragment>
+    </>
   );
 }
 

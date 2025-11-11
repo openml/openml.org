@@ -15,7 +15,7 @@ function GuestGuard({ children }) {
   }, [isInitialized, isAuthenticated, router]);
 
   return isInitialized && !isAuthenticated ? (
-    <React.Fragment>{children}</React.Fragment>
+    <>{children}</>
   ) : (
     <React.Fragment />
   );
