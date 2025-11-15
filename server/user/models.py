@@ -13,25 +13,32 @@ class User(Base):
     def set_password(self, password):
         self.password = argon2.generate_password_hash(password)
 
-    def check_password(self, passwd):
+    def check_password(self, password):
         """
         Check if the passwordhash  is in Argon2 or Bcrypt(old) format
         Resets the password hash to argon2 format if stored in bcrypt
         Returns value for login route
         """
+
+        # check password (if bcrypt hash)
         try:
-            if bcrypt.check_password_hash(self.password, passwd):
-                bpass = True
+            if bcrypt.check_password_hash(self.password, password):
+                self.set_password(password)
+                # pwd in bcrypt form and correct
+                return True
         except ValueError as error:
             print(error)
-            bpass = False
-        if argon2.check_password_hash(self.password, passwd):
-            return True
-        elif not argon2.check_password_hash(self.password, passwd) and not bpass:
-            return False
-        elif not argon2.check_password_hash(self.password, passwd) and bpass:
-            self.set_password(passwd)
-            return True
+
+        # check password (if argon2 hash)
+        try:
+            if argon2.check_password_hash(self.password, password):
+                self.set_password(password)
+                # pwd in argon2 form and correct
+                return True
+        except ValueError as error:
+            print(error)
+
+        return False
 
     def update_bio(self, new_bio):
         self.bio = new_bio
