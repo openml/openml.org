@@ -55,13 +55,16 @@ const status = {
 export const Title = ({ result }) => {
   return (
     <React.Fragment>
-      <Box sx={{ pl: 2 }}>{result.name.raw}</Box>
-      <VersionStats>v.{result.version.raw}</VersionStats>
-      <Tooltip title={status[result.status.raw]["title"]} placement="top-start">
+      <Box sx={{ pl: 1.5 }}>{result?.name?.raw || "Unnamed"}</Box>
+      <VersionStats>v.{result?.version?.raw || "0"}</VersionStats>
+      <Tooltip
+        title={status[result?.status?.raw]?.["title"] || "unknown"}
+        placement="top-start"
+      >
         <Stats>
           <ColoredIcon
-            color={status[result.status.raw]["color"]}
-            icon={status[result.status.raw].icon}
+            color={status[result?.status?.raw]?.["color"] || grey[500]}
+            icon={status[result?.status?.raw]?.icon || faNotdef}
             fixedWidth
           />
         </Stats>
@@ -115,7 +118,7 @@ export const Description = ({ result }) => {
   return (
     <Teaser
       description={
-        result.description.raw
+        result?.description?.raw
           ? result.description.raw.toString()
           : "Description missing"
       }

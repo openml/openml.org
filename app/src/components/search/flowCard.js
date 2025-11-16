@@ -117,7 +117,8 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2, wordBreak: "break-all" }}>
-        {shortenName(result.name.raw)}
+        {shortenName(result.run_flow.raw.name)} on{" "}
+        {result.run_task.raw.source_data.name} by {result.uploader.raw}
       </Box>
     </React.Fragment>
   );

@@ -12,7 +12,9 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {result.tasktype.raw.name} on {result.source_data.raw.name}
+        {shortenName(result.run_flow.raw.name)} on{" "}
+        {result.run_task.raw.source_data.name} by {result.uploader.raw}
+        {/* {result.tasktype.raw.name} on {result.source_data.raw.name} */}
       </Box>
     </React.Fragment>
   );

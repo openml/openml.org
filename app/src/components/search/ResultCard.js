@@ -33,6 +33,7 @@ import {
 } from "./runCard";
 
 import { faHashtag, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { fontSize } from "@mui/system";
 
 const SearchResultCard = styled(Card)`
   height: 100%;
@@ -133,7 +134,7 @@ const ResultCard = ({ result }) => {
   const theme = useTheme();
   const router = useRouter();
 
-  const type = result._meta.rawHit._type;
+  const type = result._meta?.rawHit?._type || "data";
   const color = theme.palette.entity[type];
   const icon = theme.palette.icon[type];
 
@@ -154,16 +155,25 @@ const ResultCard = ({ result }) => {
       fullwidth={fullwidth}
       variant="outlined"
     >
-      <TitleWrapper>
+      <TitleWrapper sx={{ fontSize: "1.5rem", mb: -1 }}>
         <ColoredIcon color={color} icon={icon} fixedWidth />
         <Title result={result} />
       </TitleWrapper>
-      <Description result={result} />
+      <Box sx={{ fontSize: ".9rem", lineHeight: 1.7, my: -2 }}>
+        <Description result={result} />
+      </Box>
       {stats !== undefined && (
         <React.Fragment>
           {stats.map((stat, index) => (
             <Tooltip key={index} title={stat.unit} placement="top-start">
-              <Stats>
+              <Stats
+                sx={{
+                  fontSize: ".9rem",
+                  ml: index === 0 ? 0 : 3,
+                  pt: 1,
+                  my: 0,
+                }}
+              >
                 <ColoredIcon
                   color={stat.color}
                   icon={stat.icon}
@@ -176,14 +186,14 @@ const ResultCard = ({ result }) => {
           ))}
         </React.Fragment>
       )}
-      <ColorStats color={grey[400]}>
-        <ColoredIcon icon={faHistory} fixedWidth />
+      <ColorStats color={grey[400]} sx={{ fontSize: ".9rem", ml: 3, pt: 1 }}>
+        <ColoredIcon icon={faHistory} fixedWidth sx={{ pr: 1.5, ml: 6 }} />
         <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
       </ColorStats>
       <Box sx={{ flexGrow: 1 }} />
-      <ID color={grey[400]}>
+      <ID color={grey[400]} sx={{ fontSize: ".9rem" }}>
         <Tooltip title={type + " ID"} placement="top-start">
-          <RightStats>
+          <RightStats sx={{ fontSize: ".9rem" }}>
             <ColoredIcon color={grey[400]} icon={faHashtag} fixedWidth />{" "}
             {result.id.raw}
           </RightStats>

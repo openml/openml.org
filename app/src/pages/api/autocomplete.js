@@ -1,6 +1,9 @@
 import axios from "axios";
-
 const ELASTICSEARCH_SERVER = "https://www.openml.org/es/";
+
+// export default async function handler(req, res) {
+//   const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}/_msearch`;
+//   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
 export default async function handler(req, res) {
   const { requestState, queryConfig, indexName } = req.body;
@@ -16,18 +19,18 @@ export default async function handler(req, res) {
         match: {
           name: {
             query: searchTerm,
-            fuzziness: "AUTO"
-          }
-        }
+            fuzziness: "AUTO",
+          },
+        },
       },
       size: queryConfig?.autocompleteQuery?.resultsPerPage || 5,
-      _source: ["name", "url"]
+      _source: ["name", "url"],
     };
 
     const response = await axios.post(
-      `${ELASTICSEARCH_SERVER}/${indexName}/_search`,
+      `${ELASTICSEARCH_SERVER}/${indexName}/_msearch`,
       esQuery,
-      { headers: { "Content-Type": "application/json" } }
+      { headers: { "Content-Type": "application/json" } },
     );
 
     const hits = response.data.hits.hits || [];
@@ -35,7 +38,7 @@ export default async function handler(req, res) {
     const autocompletedResults = hits.map((hit) => ({
       id: { raw: hit._id },
       title: { snippet: hit._source.name },
-      url: { raw: hit._source.url }
+      url: { raw: hit._source.url },
     }));
 
     res.status(200).json({

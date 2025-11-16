@@ -1,21 +1,34 @@
-import React from "react";
-import { useNextRouting } from "../../utils/useNextRouting";
+/**
+ * Flow Search Redirect Page
+ *
+ * This page redirects from the old /f/search URL to the new SEO-friendly /flows URL
+ * Preserves all query parameters during redirect
+ */
 
-import DashboardLayout from "../../layouts/Dashboard";
-import SearchContainer from "../../components/search/SearchContainer";
-import {
-  renderCell,
-  valueGetter,
-  renderDescription,
-  renderDate,
-  renderTags,
-  renderChips,
-} from "../../components/search/ResultTable";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-import flowConfig from "../../search_configs/flowConfig";
+export default function FlowSearchRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Get all query parameters from current URL
+    const { query } = router;
+
+    // Redirect to /flows with the same query parameters
+    router.replace({
+      pathname: "/flows",
+      query: query,
+    });
+  }, [router]);
+
+  // Show nothing while redirecting
+  return null;
+}
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
 export async function getStaticProps(context) {
   // extract the locale identifier from the URL
   const { locale } = context;
@@ -68,6 +81,14 @@ const search_facets = [
 ];
 
 // Controls how columns are rendered and manipulated in the table view
+// Define the required helper functions
+const valueGetter = (field) => (params) => params.row[field];
+const renderCell = (params) => params.value;
+const renderDescription = (params) => params.value;
+const renderDate = (params) => params.value;
+const renderChips = (getChipProps) => (params) => params.value;
+const renderTags = (params) => params.value;
+
 const columns = [
   {
     field: "flow_id",
@@ -144,5 +165,3 @@ FlowSearchContainer.getLayout = function getLayout(page) {
 };
 
 FlowSearchContainer.displayName = "FlowSearchContainer";
-
-export default FlowSearchContainer;

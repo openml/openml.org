@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+// Define THEMES constant
+const THEMES = {
+  DEFAULT: "light", // or "dark" - choose your default
+  LIGHT: "light",
+  DARK: "dark",
+};
+
 const initialState = {
-  theme: "DEFAULT",
+  theme: THEMES.DEFAULT,
   setTheme: () => {},
 };
 
@@ -38,4 +45,4 @@ function ThemeProvider({ children }) {
   );
 }
 
-export { ThemeProvider, ThemeContext };
+export { ThemeProvider, ThemeContext, THEMES };

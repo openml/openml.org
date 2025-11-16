@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 
 const MarkdownWrapper = styled("div")(({ theme }) => ({
   marginBottom: "10px",
-  fontSize: "12px",
+  fontSize: "inherit", // Inherit font size from parent instead of hardcoding
   overflow: "hidden",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
@@ -16,7 +16,7 @@ const MarkdownWrapper = styled("div")(({ theme }) => ({
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     padding: "2px",
     borderRadius: "4px",
-    fontSize: "12px",
+    fontSize: "inherit",
     fontFamily: "'Roboto Mono', monospace",
   },
 }));
