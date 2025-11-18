@@ -117,8 +117,7 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2, wordBreak: "break-all" }}>
-        {shortenName(result.run_flow.raw.name)} on{" "}
-        {result.run_task.raw.source_data.name} by {result.uploader.raw}
+        {result.name?.raw ? shortenName(result.name.raw) : "Unnamed Flow"}
       </Box>
     </React.Fragment>
   );

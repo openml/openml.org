@@ -147,10 +147,44 @@ const ResultCard = ({ result }) => {
   const selected = false;
   const fullwidth = undefined;
 
+  // Get the correct ID field based on entity type
+  const getEntityId = (type, result) => {
+    const idFieldMap = {
+      data: result.data_id?.raw,
+      task: result.task_id?.raw,
+      flow: result.flow_id?.raw,
+      run: result.run_id?.raw,
+    };
+    return idFieldMap[type] || result.id?.raw;
+  };
+
+  // Map entity types to their SEO-friendly URL paths
+  const getEntityUrl = (type, id) => {
+    const urlMap = {
+      data: `/datasets/${id}`,
+      task: `/tasks/${id}`,
+      flow: `/flows/${id}`,
+      run: `/runs/${id}`,
+    };
+    return urlMap[type] || `/${id}`;
+  };
+
+  const handleClick = () => {
+    const entityId = getEntityId(type, result);
+    const url = getEntityUrl(type, entityId);
+    console.log("=== ResultCard Click Debug ===");
+    console.log("Type:", type);
+    console.log("Entity ID:", entityId);
+    console.log("URL:", url);
+    console.log("result._meta:", result._meta);
+    console.log("=============================");
+    router.push(url);
+  };
+
   //console.log("result", result);
   return (
     <SearchResultCard
-      onClick={() => router.push(result.id.raw)}
+      onClick={handleClick}
       color={selected ? "#f1f3f4" : "#fff"}
       fullwidth={fullwidth}
       variant="outlined"

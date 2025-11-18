@@ -15,6 +15,7 @@ const searchConfig = {
       uploader: { weight: 2 },
     },
     result_fields: {
+      run_id: { raw: {} },
       uploader: { raw: {} },
       run_task: { raw: {} },
       run_flow: { raw: {} },

@@ -142,6 +142,9 @@ class OpenMLSearchConnector {
         _meta: {
           id: hit._id,
           score: hit._score,
+          rawHit: {
+            _type: this.indexName, // Add the index name as the type
+          },
         },
       };
 

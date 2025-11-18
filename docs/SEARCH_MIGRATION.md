@@ -15,21 +15,29 @@ Successfully migrated OpenML search functionality from old routes to new SEO-fri
 
 ### 1. New SEO-Friendly Routes
 
-All search pages now use clean, SEO-optimized URLs:
+All search and detail pages now use clean, SEO-optimized URLs:
 
-| Old URL     | New URL     | Status  |
-| ----------- | ----------- | ------- |
-| `/d/search` | `/datasets` | ✅ Live |
-| `/t/search` | `/tasks`    | ✅ Live |
-| `/f/search` | `/flows`    | ✅ Live |
-| `/r/search` | `/runs`     | ✅ Live |
+| Old URL     | New URL         | Status  |
+| ----------- | --------------- | ------- |
+| `/d/search` | `/datasets`     | ✅ Live |
+| `/d/:id`    | `/datasets/:id` | ✅ Live |
+| `/t/search` | `/tasks`        | ✅ Live |
+| `/f/search` | `/flows`        | ✅ Live |
+| `/r/search` | `/runs`         | ✅ Live |
+
+**Backward Compatibility:**
+
+-   Old URLs like `/d/:id` automatically redirect to `/datasets/:id` (SEO canonical)
+-   All old search URLs redirect to new routes
+-   Academic papers and citations with old links continue to work
 
 **Benefits:**
 
--   Better Google indexing
--   Cleaner URLs for sharing
+-   Better Google indexing and SEO ranking
+-   Cleaner, more semantic URLs for sharing
 -   Improved user experience
--   All old URLs automatically redirect (no broken links)
+-   Maintains compatibility with academic papers and citations
+-   New URLs are now the canonical version for search engines
 
 ---
 

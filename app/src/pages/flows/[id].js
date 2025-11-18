@@ -1,31 +1,62 @@
-/**
- * Flow Detail Page Redirect (Old URL)
- *
- * This page redirects from the old URL to the new SEO-friendly URL
- * Route: /f/:id redirects to /flows/:id
- *
- * Purpose: Maintain backward compatibility with old paper links and citations
- * that reference /f/:id while using new /flows/:id URLs for better SEO
- */
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Avatar, Tooltip, Typography } from "@mui/material";
+import DashboardLayout from "../../layouts/Dashboard";
+import { useTheme } from "@mui/system";
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { getItem } from "../api/getItem";
+import { shortenName } from "../../components/search/flowCard";
 
-export default function FlowDetailRedirect() {
-  const router = useRouter();
-  const { flowId } = router.query;
+import { Card, CardContent, Grid } from "@mui/material";
+import ReactMarkdown from "react-markdown";
 
-  useEffect(() => {
-    if (flowId) {
-      // Redirect to the new SEO-friendly flow detail page
-      router.replace(`/flows/${flowId}`);
-    }
-  }, [flowId, router]);
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faCloudArrowDown,
+  faCogs,
+  faExclamationTriangle,
+  faEye,
+  faHeart,
+  faStar,
+  faTags,
+} from "@fortawesome/free-solid-svg-icons";
+import Wrapper from "../../components/Wrapper";
+import DependencyTable from "../../components/flow/DependencyTable";
+import ParameterTable from "../../components/flow/ParameterTable";
+import Tag from "../../components/Tag";
+import Property from "../../components/Property";
 
-  // Show nothing while redirecting
-  return null;
+export async function getStaticPaths() {
+  // No paths are pre-rendered
+  return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
 }
 
+export async function getStaticProps({ params, locale }) {
+  let data = null;
+  let error = null;
+
+  try {
+    data = await getItem("flow", params.id);
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+    error = "Server is not responding.";
+  }
+
+  const translations = await serverSideTranslations(locale);
+
+  return {
+    props: {
+      data,
+      error,
+      ...translations,
+    },
+  };
+}
+
+function prettyPrint(str) {
   let result = "";
   let indentLevel = 0;
   const indentSize = 2; // Number of spaces for each indentation level

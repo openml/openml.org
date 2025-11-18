@@ -12,9 +12,8 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {shortenName(result.run_flow.raw.name)} on{" "}
-        {result.run_task.raw.source_data.name} by {result.uploader.raw}
-        {/* {result.tasktype.raw.name} on {result.source_data.raw.name} */}
+        {result.tasktype?.raw?.name || "Unknown task type"} on{" "}
+        {result.source_data?.raw?.name || "Unknown dataset"}
       </Box>
     </React.Fragment>
   );
