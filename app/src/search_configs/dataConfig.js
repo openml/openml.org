@@ -1,5 +1,6 @@
-import Connector from "../services/SearchAPIConnector";
-const apiConnector = new Connector("data");
+// Using custom OpenML connector instead of API proxy
+import OpenMLSearchConnector from "../services/OpenMLSearchConnector";
+const apiConnector = new OpenMLSearchConnector("data");
 
 const searchConfig = {
   apiConnector: apiConnector,
@@ -110,16 +111,16 @@ const searchConfig = {
   },
   autocompleteQuery: {
     search_fields: {
-      name: {}
+      name: {},
     },
     result_fields: {
       name: { snippet: { size: 100, fallback: true } },
-      url: { raw: {} }
+      url: { raw: {} },
     },
     suggestions: {
       // Optional, only if you want 'keyword' type suggestions
-    }
-  }
+    },
+  },
 };
 
 export default searchConfig;
