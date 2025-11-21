@@ -12,7 +12,8 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2 }}>
-        {result.tasktype.raw.name} on {result.source_data.raw.name}
+        {result.tasktype?.raw?.name || "Unknown task type"} on{" "}
+        {result.source_data?.raw?.name || "Unknown dataset"}
       </Box>
     </React.Fragment>
   );

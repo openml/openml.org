@@ -1,30 +1,10 @@
-/**
- * Dataset Detail Page Redirect (Old URL)
- *
- * This page redirects from the old URL to the new SEO-friendly URL
- * Route: /d/:id redirects to /datasets/:id
- *
- * Purpose: Maintain backward compatibility with old paper links and citations
- * that reference /d/:id while using new /datasets/:id URLs for better SEO
- */
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Typography } from "@mui/material";
+import { useTheme } from "@mui/system";
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-
-export default function DatasetDetailRedirect() {
-  const router = useRouter();
-  const { dataId } = router.query;
-
-  useEffect(() => {
-    if (dataId) {
-      // Redirect to the new SEO-friendly dataset detail page
-      router.replace(`/datasets/${dataId}`);
-    }
-  }, [dataId, router]);
-
-  // Show nothing while redirecting
-  return null;
-}
+import DashboardLayout from "../../layouts/Dashboard";
+import { getItem } from "../api/getItem";
 import Wrapper from "../../components/Wrapper";
 import CroissantMetaData from "../../components/data/CroissantMetaData";
 import FeatureTable from "../../components/data/FeatureTable";
@@ -101,7 +81,7 @@ export async function getStaticProps({ params, locale }) {
   let error = null;
 
   try {
-    data = await getItem("data", params.dataId);
+    data = await getItem("data", params.id);
   } catch (error) {
     console.error("Error in getStaticProps:", error);
     error = "Server is not responding.";
@@ -362,3 +342,5 @@ function Dataset({ data, error }) {
 Dataset.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
+
+export default Dataset;

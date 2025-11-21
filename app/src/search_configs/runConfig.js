@@ -1,5 +1,6 @@
-import Connector from "../services/SearchAPIConnector";
-const apiConnector = new Connector("run");
+// Using custom OpenML connector instead of API proxy
+import OpenMLSearchConnector from "../services/OpenMLSearchConnector";
+const apiConnector = new OpenMLSearchConnector("run");
 
 const searchConfig = {
   apiConnector: apiConnector,
@@ -14,6 +15,7 @@ const searchConfig = {
       uploader: { weight: 2 },
     },
     result_fields: {
+      run_id: { raw: {} },
       uploader: { raw: {} },
       run_task: { raw: {} },
       run_flow: { raw: {} },

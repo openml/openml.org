@@ -6,9 +6,13 @@ import { useTheme } from "@mui/material/styles";
 const WrapBox = styled(Box)`
   display: flex;
   justify-content: center;
-  align: center;
-  max-width: 1600px;
-  margin: auto;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
 `;
 
 const Wrapper = ({ children, fullWidth }) => {
@@ -16,10 +20,7 @@ const Wrapper = ({ children, fullWidth }) => {
   const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
   return (
-    <WrapBox
-      px={isLgUp ? 12 : isSmUp ? 10 : fullWidth ? 0 : 5}
-      py={fullWidth ? 0 : isLgUp ? 12 : isSmUp ? 10 : 5}
-    >
+    <WrapBox py={fullWidth ? 0 : isLgUp ? 12 : isSmUp ? 10 : 5}>
       {children}
     </WrapBox>
   );

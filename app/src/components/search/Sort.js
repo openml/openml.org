@@ -49,12 +49,11 @@ const SortView = ({ options, value, onChange }) => {
 
 function Sort({ sortOptions, setSort, sortList }) {
   // Handle sort direction toggle
-  const [sortDirection, setSortDirection] = useState("desc");
+  const sortDirection =
+    sortList.length > 0 && sortList[0]["direction"] === "asc" ? "asc" : "desc";
+
   const toggleSortDirection = () => {
-    const newDirection =
-      sortList.length > 0 && sortList[0]["direction"] === "asc"
-        ? "desc"
-        : "asc";
+    const newDirection = sortDirection === "asc" ? "desc" : "asc";
 
     let newSortList = [];
     if (sortList.length > 0) {
@@ -62,7 +61,6 @@ function Sort({ sortOptions, setSort, sortList }) {
     }
 
     setSort(newSortList); // Update the Search UI state
-    setSortDirection(newDirection); // Update the local state (for button)
   };
 
   //Translate sort options

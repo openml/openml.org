@@ -1,5 +1,6 @@
-import Connector from "../services/SearchAPIConnector";
-const apiConnector = new Connector("flow");
+// Using custom OpenML connector instead of API proxy
+import OpenMLSearchConnector from "../services/OpenMLSearchConnector";
+const apiConnector = new OpenMLSearchConnector("flow");
 
 const searchConfig = {
   apiConnector: apiConnector,
