@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { spacing } from "@mui/system";
 
 import DashboardLayout from "../layouts/Dashboard";
@@ -372,7 +372,9 @@ function Contribute() {
 
   return (
     <Wrapper>
-      <Helmet title={t("contribute.helmet")} />
+      <Head>
+        <title>{t("contribute.helmet")} - OpenML</title>
+      </Head>
       <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
         <ContactButton
           color="secondary"

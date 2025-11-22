@@ -40,10 +40,13 @@ function SignIn() {
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
+          console.log("Attempting to sign in with:", values.email);
           await signIn(values.email, values.password);
+          console.log("Sign in successful, redirecting to profile");
 
           router.push("/auth/profile");
         } catch (error) {
+          console.error("Sign in error:", error);
           const message = error.message || "Something went wrong";
 
           setStatus({ success: false });

@@ -160,7 +160,7 @@ const ResultCard = ({ result }) => {
       </TitleWrapper>
       <Description result={result} />
       {stats !== undefined && (
-        <React.Fragment>
+        <>
           {stats.map((stat, index) => (
             <Tooltip key={index} title={stat.unit} placement="top-start">
               <Stats>
@@ -174,7 +174,7 @@ const ResultCard = ({ result }) => {
               </Stats>
             </Tooltip>
           ))}
-        </React.Fragment>
+        </>
       )}
       <ColorStats color={grey[400]}>
         <ColoredIcon icon={faHistory} fixedWidth />

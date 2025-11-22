@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { spacing } from "@mui/system";
 
 import DashboardLayout from "../layouts/Dashboard";
@@ -103,7 +103,9 @@ function MeetUp() {
 
   return (
     <Wrapper>
-      <Helmet title={t("meetup.helmet")} />
+      <Head>
+        <title>{t("meetup.helmet")} - OpenML</title>
+      </Head>
       <Grid container spacing={10}>
         <Grid size={12}>
           <Title variant="h2" align="center">

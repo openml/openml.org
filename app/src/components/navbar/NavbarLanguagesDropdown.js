@@ -78,7 +78,7 @@ function NavbarLanguagesDropdown() {
   };
 
   return (
-    <React.Fragment>
+    <>
       {selectedLanguage && (
         <Tooltip title={t("tooltips.languages")}>
           <IconButton
@@ -107,7 +107,7 @@ function NavbarLanguagesDropdown() {
           </MenuItem>
         ))}
       </Menu>
-    </React.Fragment>
+    </>
   );
 }
 

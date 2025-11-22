@@ -1,8 +1,8 @@
 import React from "react";
+import Head from "next/head";
 import { useTranslation } from "next-i18next";
 
 import DashboardLayout from "../layouts/Dashboard";
-import { Helmet } from "react-helmet-async";
 
 import Integrations from "../components/landing/Integrations";
 import Lifecycle from "../components/landing/Lifecycle";
@@ -38,7 +38,9 @@ function Presentation() {
 
   return (
     <Wrapper>
-      <Helmet title={t("landing.helmet")} />
+      <Head>
+        <title>{t("landing.helmet")}</title>
+      </Head>
       <Grid container spacing={10}>
         <Grid>
           <Introduction />

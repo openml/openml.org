@@ -92,7 +92,7 @@ function NavbarNotificationsDropdown() {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Tooltip title="Notifications">
         <IconButton color="inherit" ref={ref} onClick={handleOpen} size="large">
           <Indicator badgeContent={1}>
@@ -114,7 +114,7 @@ function NavbarNotificationsDropdown() {
             {t("notifications.new_notifications")}
           </Typography>
         </NotificationHeader>
-        <React.Fragment>
+        <>
           <List disablePadding>
             <Notification
               title="A new OpenML is coming!"
@@ -127,9 +127,9 @@ function NavbarNotificationsDropdown() {
               {t("notifications.show_all")}
             </Button>
           </Box>
-        </React.Fragment>
+        </>
       </Popover>
-    </React.Fragment>
+    </>
   );
 }
 

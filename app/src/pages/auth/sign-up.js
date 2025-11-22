@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 
 import { Paper, Typography } from "@mui/material";
 
@@ -18,11 +18,12 @@ const Wrapper = styled(Paper)`
 
 function SignUp() {
   return (
-    <React.Fragment>
+    <>
+      <Head>
+        <title>Sign Up - OpenML</title>
+      </Head>
       <Brand />
       <Wrapper>
-        <Helmet title="Sign Up" />
-
         <Typography component="h1" variant="h4" align="center" gutterBottom>
           Get started
         </Typography>
@@ -32,7 +33,7 @@ function SignUp() {
 
         <SignUpComponent />
       </Wrapper>
-    </React.Fragment>
+    </>
   );
 }
 

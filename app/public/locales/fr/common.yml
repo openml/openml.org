@@ -1,2 +1,4 @@
 Search: "Rechercher…"
 SearchShort: "Rechercher"
+sidebar:
+  frontend_guide: "Guide Frontend"
