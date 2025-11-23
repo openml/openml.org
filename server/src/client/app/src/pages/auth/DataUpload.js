@@ -13,7 +13,7 @@ import {
   InputLabel,
   TextField,
   Typography,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -27,26 +27,26 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { green } from "@mui/material/colors";
-import { useDropzone } from 'react-dropzone'
+import { useDropzone } from "react-dropzone";
 
 const DropCard = styled(Card)`
-  padding: ${props => props.theme.spacing(3)};
-  margin-top:20px;
-  margin-bottom:20px;
+  padding: ${(props) => props.theme.spacing(3)};
+  margin-top: 20px;
+  margin-bottom: 20px;
   background-color: ${green[50]};
 `;
 
 const Paragraph = styled(Typography)({
-  paddingBottom: "1vw"
+  paddingBottom: "1vw",
 });
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
-  margin-top:20px;
-  margin-bottom:20px;
+  padding: ${(props) => props.theme.spacing(6)};
+  margin-top: 20px;
+  margin-bottom: 20px;
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
@@ -62,24 +62,24 @@ function Public() {
   const [editsuccess, setEditSuccess] = useState(false);
   const [licence, setLicence] = useState(false);
 
-  const onDrop = useCallback(acceptedFiles => {
+  const onDrop = useCallback((acceptedFiles) => {
     console.log(acceptedFiles);
   }, []);
-  
+
   const maxSize = 1000000000;
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     onDrop,
     minSize: 0,
     maxSize: maxSize,
   });
-  
-  const handleChange = event => {
+
+  const handleChange = (event) => {
     setLicence(event.target.value);
   };
   const yourConfig = {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("token")
-    }
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
   };
   //alert dialogue code
   const [open, setOpen] = useState(false);
@@ -110,11 +110,11 @@ function Public() {
       // attribute: event.target.attribute.value,
       ignore_attribute: event.target.ignore_attribute.value,
       def_tar_att: event.target.def_tar_att.value,
-      citation: event.target.citation.value
+      citation: event.target.citation.value,
     };
     const json = JSON.stringify(obj);
     const blob = new Blob([json], {
-      type: "application/json"
+      type: "application/json",
     });
     const data = new FormData();
 
@@ -133,9 +133,9 @@ function Public() {
         .post(
           process.env.REACT_APP_URL_SITE_BACKEND + "data-upload",
           data,
-          yourConfig
+          yourConfig,
         )
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.msg === "dataset uploaded") {
             setSuccess(true);
           }
@@ -144,7 +144,7 @@ function Public() {
             setError(true);
           }
         })
-        .catch(errors => console.log(errors));
+        .catch((errors) => console.log(errors));
     }
 
     if (editdata === true) {
@@ -152,14 +152,14 @@ function Public() {
         .post(
           process.env.REACT_APP_URL_SITE_BACKEND + "data-edit-upload",
           data,
-          yourConfig
+          yourConfig,
         )
-        .then(function(response) {
+        .then(function (response) {
           setEditPath(response.data.msg);
           console.log(response.data.msg);
           setEditSuccess(true);
         })
-        .catch(errors => console.log(errors));
+        .catch((errors) => console.log(errors));
     }
 
     return false;
@@ -184,34 +184,58 @@ function Public() {
           Dataset Upload
         </Typography>
         {error && (
-          <Typography
-            component="h3"
-            variant="body1"
-            align="center"
-            color="red"
-          >
+          <Typography component="h3" variant="body1" align="center" color="red">
             {errormessage}
           </Typography>
         )}
         <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <DropCard variant="outlined">
-            <div {...getRootProps()}>
-              <input {...getInputProps()} id="dataset" />
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <FontAwesomeIcon icon="cloud-upload-alt" size="2x" color={green[800]}/>
-              </Box>
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Drag 'n' drop some files here, or click to select files.</Paragraph>
-              </Box>                
-              <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Currently we only support text based formats like csv and json</Paragraph>
-              </Box>
-            </div>
-          </DropCard>
-            {acceptedFiles.length > 0 && acceptedFiles.map(acceptedFile => (
-              <Chip variant="outlined" label={acceptedFile.name} color="primary" />
-            ))}
+          <Grid item xs={12}>
+            <DropCard variant="outlined">
+              <div {...getRootProps()}>
+                <input {...getInputProps()} id="dataset" />
+                <Box
+                  display="flex"
+                  flex-direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <FontAwesomeIcon
+                    icon="cloud-upload-alt"
+                    size="2x"
+                    color={green[800]}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  flex-direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Paragraph>
+                    Drag 'n' drop some files here, or click to select files.
+                  </Paragraph>
+                </Box>
+                <Box
+                  display="flex"
+                  flex-direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Paragraph>
+                    Currently we only support text based formats like csv and
+                    json
+                  </Paragraph>
+                </Box>
+              </div>
+            </DropCard>
+            {acceptedFiles.length > 0 &&
+              acceptedFiles.map((acceptedFile) => (
+                <Chip
+                  variant="outlined"
+                  label={acceptedFile.name}
+                  color="primary"
+                />
+              ))}
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth mb={3}>
@@ -235,9 +259,7 @@ function Public() {
               <Input id="contributor" placeholder="Last name" />
             </FormControl>
             <FormControl fullWidth mb={3}>
-              <InputLabel htmlFor="Collection Date">
-                Collection date
-              </InputLabel>
+              <InputLabel htmlFor="Collection Date">Collection date</InputLabel>
               <Input id="collection_date" placeholder="Collection date" />
             </FormControl>
             <FormControl fullWidth mb={3}>
@@ -246,16 +268,31 @@ function Public() {
             </FormControl>
             <FormControl fullWidth mb={3}>
               <InputLabel id="licence">Licence Type</InputLabel>
-              <select labelId="licence" id="licence" value={licence} onChange={handleChange}
-              style={{padding: 15, marginTop: 50}}>
+              <select
+                labelId="licence"
+                id="licence"
+                value={licence}
+                onChange={handleChange}
+                style={{ padding: 15, marginTop: 50 }}
+              >
                 <option value="Public Domain (CCO)">Public Domain (CCO)</option>
                 <option value="Publicly available">Publicly available</option>
                 <option value="Attribution (CC BY)">Attribution (CC BY)</option>
-                <option value="Attribution-ShareAlike (CC BY-SA)">Attribution-ShareAlike (CC BY-SA)</option>
-                <option value="Attribution-NoDerivs (CC BY-ND)">Attribution-NoDerivs (CC BY-ND)</option>
-                <option value="Attribution-NonCommercial (CC BY-NC)">Attribution-NonCommercial (CC BY-NC)</option>
-                <option value="Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)">Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)</option>
-                <option value="Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)">Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)</option>
+                <option value="Attribution-ShareAlike (CC BY-SA)">
+                  Attribution-ShareAlike (CC BY-SA)
+                </option>
+                <option value="Attribution-NoDerivs (CC BY-ND)">
+                  Attribution-NoDerivs (CC BY-ND)
+                </option>
+                <option value="Attribution-NonCommercial (CC BY-NC)">
+                  Attribution-NonCommercial (CC BY-NC)
+                </option>
+                <option value="Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)">
+                  Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
+                </option>
+                <option value="Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)">
+                  Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)
+                </option>
               </select>
             </FormControl>
             {/*<FormControl fullWidth mb={3}>*/}
@@ -302,22 +339,23 @@ function Public() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-             <CircularProgress />
+              <CircularProgress />
               {error && <text> {errormessage}</text>}
             </DialogContentText>
           </DialogContent>
           <DialogActions></DialogActions>
         </Dialog>
         {success && <Redirect to="/search?type=data&status=active&sort=date" />}
-        {false &&
-        <Button
-          variant="contained"
-          color="primary"
-          type="Submit"
-          onClick={handleEditData}
-        >
-          Edit dataset
-        </Button>}
+        {false && (
+          <Button
+            variant="contained"
+            color="primary"
+            type="Submit"
+            onClick={handleEditData}
+          >
+            Edit dataset
+          </Button>
+        )}
       </form>
     );
   }
@@ -332,7 +370,7 @@ function Settings() {
           {/*<Private />*/}
         </Wrapper>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }
 

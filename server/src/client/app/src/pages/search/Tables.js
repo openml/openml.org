@@ -12,7 +12,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -33,7 +33,7 @@ const TablePaper = styled(Paper)`
 `;
 const TableWrapper = styled.div`
   overflow-y: auto;
-  max-width: calc(100vw - ${props => props.theme.spacing(12)}px);
+  max-width: calc(100vw - ${(props) => props.theme.spacing(12)}px);
   cursor: pointer;
   padding-left: 10px;
 `;
@@ -55,7 +55,7 @@ function stableSort(array, cmp) {
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  return stabilizedThis.map(el => el[0]);
+  return stabilizedThis.map((el) => el[0]);
 }
 
 function getSorting(order, orderBy) {
@@ -65,19 +65,13 @@ function getSorting(order, orderBy) {
 }
 
 function shortenHeader(s) {
-  s = s
-    .replace("qualities.", "")
-    .replace("NumberOf", "")
-    .replace("nr_of_", "");
-  s = s
-    .replace(".name", "")
-    .replace("run_task.", "")
-    .replace(/_/g, " ");
+  s = s.replace("qualities.", "").replace("NumberOf", "").replace("nr_of_", "");
+  s = s.replace(".name", "").replace("run_task.", "").replace(/_/g, " ");
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 class EnhancedTableHead extends React.Component {
-  createSortHandler = property => event => {
+  createSortHandler = (property) => (event) => {
     this.props.onRequestSort(event, property);
   };
 
@@ -88,7 +82,7 @@ class EnhancedTableHead extends React.Component {
         <TableRow>
           {rows !== undefined &&
             rows.map(
-              r => (
+              (r) => (
                 <ShortCell
                   key={r.id}
                   align={r.numeric ? "left" : "left"}
@@ -111,7 +105,7 @@ class EnhancedTableHead extends React.Component {
                   </Tooltip>
                 </ShortCell>
               ),
-              this
+              this,
             )}
         </TableRow>
       </TableHead>
@@ -125,14 +119,14 @@ EnhancedTableHead.propTypes = {
   onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired
+  rowCount: PropTypes.number.isRequired,
 };
 
 export class DetailTable extends React.Component {
   static contextType = MainContext;
   //const type = props.entity_type;
 
-  isNumber = n => {
+  isNumber = (n) => {
     return !isNaN(parseFloat(n)) && !isNaN(n - 0);
   };
 
@@ -144,7 +138,7 @@ export class DetailTable extends React.Component {
         "comp_name",
         "quality_id",
         "eval_id",
-        "measure_id"
+        "measure_id",
       ].includes(k)
     ) {
       return false;
@@ -153,7 +147,7 @@ export class DetailTable extends React.Component {
     }
   };
 
-  buildColumns = row => {
+  buildColumns = (row) => {
     if (row) {
       return Object.entries(row)
         .filter(this.skipColumns)
@@ -163,7 +157,7 @@ export class DetailTable extends React.Component {
               id: k,
               numeric: this.isNumber(v),
               disablePadding: true,
-              label: k
+              label: k,
             };
           } else {
             return undefined;
@@ -172,7 +166,7 @@ export class DetailTable extends React.Component {
     }
   };
 
-  buildRows = rows => {
+  buildRows = (rows) => {
     if (rows) {
       return rows.map((row, index) => {
         row.id = index;
@@ -186,7 +180,7 @@ export class DetailTable extends React.Component {
     orderBy: this.props.entity_type + "_id",
     selected: [],
     page: 0,
-    rowsPerPage: 100
+    rowsPerPage: 100,
   };
 
   handleRequestSort = (event, property) => {
@@ -200,9 +194,9 @@ export class DetailTable extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleSelectAllClick = event => {
+  handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
+      this.setState((state) => ({ selected: state.data.map((n) => n.id) }));
       return;
     }
     this.setState({ selected: [] });
@@ -212,13 +206,13 @@ export class DetailTable extends React.Component {
     this.setState({ page });
   };
 
-  handleChangeRowsPerPage = event => {
+  handleChangeRowsPerPage = (event) => {
     if (event.target.value !== 0) {
       this.setState({ rowsPerPage: event.target.value });
     }
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  isSelected = (id) => this.state.selected.indexOf(id) !== -1;
 
   render() {
     let rows = [];
@@ -251,23 +245,23 @@ export class DetailTable extends React.Component {
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
+                .map((n) => {
                   const isSelected = this.isSelected(n.id);
                   var cells = [];
-                  rows.forEach(row => {
+                  rows.forEach((row) => {
                     cells.push(
                       <ShortCell align="left" key={row.id}>
                         {isNaN(n[row.id]) ? "" + n[row.id] : n[row.id]}
-                      </ShortCell>
+                      </ShortCell>,
                     );
                   });
                   return (
                     <TableRow
                       hover
-                      onClick={event =>
+                      onClick={(event) =>
                         this.props.table_select(
                           event,
-                          data[n.id][this.context.type + "_id"]
+                          data[n.id][this.context.type + "_id"],
                         )
                       }
                       role="checkbox"
@@ -298,10 +292,10 @@ export class DetailTable extends React.Component {
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
-            "aria-label": "Previous Page"
+            "aria-label": "Previous Page",
           }}
           nextIconButtonProps={{
-            "aria-label": "Next Page"
+            "aria-label": "Next Page",
           }}
           onPageChange={this.handleChangePage}
           onRowsPerPageChange={this.handleChangeRowsPerPage}

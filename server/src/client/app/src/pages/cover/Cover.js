@@ -33,7 +33,7 @@ import {
   Link as MuiLink,
   CardMedia,
   CardActionArea,
-  CardActions
+  CardActions,
 } from "@mui/material";
 import { MainContext } from "../../App.js";
 import { ContactChipFull } from "../docs/GetInvolved.js";
@@ -48,18 +48,18 @@ const CardContent = styled(MuiCardContent)`
   margin-top: 10px;
 
   &:last-child {
-    padding-bottom: ${props => props.theme.spacing(8)};
+    padding-bottom: ${(props) => props.theme.spacing(8)};
   }
 `;
 
 const Paragraph = styled(Typography)({
   paddingBottom: "2vw",
-  fontSize: "1.1em"
+  fontSize: "1.1em",
 });
 
 const ListIcon = styled(FontAwesomeIcon)({
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const OpenMLTitle = styled.div`
@@ -183,9 +183,9 @@ const CoverSubTitle = styled(Typography)`
 `;
 const FixedIcon = styled(FontAwesomeIcon)`
   position: absolute;
-  font-size: ${props => (props.sizept ? props.sizept : 20)}pt;
-  left: ${props => props.l}px;
-  top: ${props => props.t}px;
+  font-size: ${(props) => (props.sizept ? props.sizept : 20)}pt;
+  left: ${(props) => props.l}px;
+  top: ${(props) => props.t}px;
 `;
 const GreenFixedIcon = styled(FixedIcon)`
   color: ${green[400]};
@@ -284,13 +284,13 @@ function IntroGraph() {
     <div
       style={{
         position: "relative",
-        margin: "auto"
+        margin: "auto",
       }}
     >
       <svg
         style={{
           minHeight: 250,
-          minWidth: 350
+          minWidth: 350,
         }}
       >
         <defs>
@@ -377,7 +377,7 @@ function OpenMLGraph() {
         margin: "auto",
         marginTop: 40,
         width: 345,
-        height: 250
+        height: 250,
       }}
     >
       <GreenFixedIcon icon="database" l="0" t="50" />
@@ -524,7 +524,7 @@ function ReproGraph() {
           margin: "auto",
           width: 345,
           height: 180,
-          marginTop: 60
+          marginTop: 60,
         }}
       >
         <PurpleFixedIcon icon="cogs" sizept="20" l="20" t="10" />
@@ -599,7 +599,7 @@ function ReproGraph() {
   );
 }
 
-const CodeCard = props => {
+const CodeCard = (props) => {
   const { language, value, title } = props;
   return (
     <Card style={{ marginTop: 10, opacity: 0.9 }}>
@@ -643,7 +643,7 @@ class Cover extends React.Component {
   render() {
     return (
       <MainContext.Consumer>
-        {context => (
+        {(context) => (
           <Container maxWidth="md">
             <Grid
               container
@@ -669,8 +669,8 @@ class Cover extends React.Component {
                 <FormControl style={{ display: "inline" }}>
                   <CoverInput
                     placeholder="Search OpenML"
-                    onKeyPress={event => {
-                      if (event.key === 'Enter') {
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
                         event.preventDefault();
                         context.setQuery(event.target.value);
                       }
@@ -682,10 +682,10 @@ class Cover extends React.Component {
                     id="type-select"
                     value={context.type ? context.type : "data"}
                     input={<CustomInput />}
-                    onChange={event => {
+                    onChange={(event) => {
                       context.setType(event.target.value);
                     }}
-                    style={{ fontSize: "1.2em", paddingBottom:2 }}
+                    style={{ fontSize: "1.2em", paddingBottom: 2 }}
                   >
                     <MenuItem value={"data"}>Datasets</MenuItem>
                     <MenuItem value={"task"}>Tasks</MenuItem>
@@ -710,14 +710,14 @@ class Cover extends React.Component {
               spacing={10}
               style={{
                 paddingLeft: 40,
-                paddingRight: 20
+                paddingRight: 20,
               }}
             >
               <Grid
                 container
                 spacing={3}
                 style={{
-                  paddingTop: 100
+                  paddingTop: 100,
                 }}
               >
                 <Grid item xs={12} md={4}>
@@ -785,7 +785,7 @@ class Cover extends React.Component {
                   marginTop: 20,
                   marginBottom: 20,
                   fontSize: 50,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 <Grid item xs={2} md={1}>
@@ -863,7 +863,7 @@ class Cover extends React.Component {
                 spacing={3}
                 style={{
                   paddingTop: 180,
-                  paddingBottom: 30
+                  paddingBottom: 30,
                 }}
               >
                 <Grid item xs={12} md={6}>
@@ -959,7 +959,7 @@ class Cover extends React.Component {
                 spacing={3}
                 style={{
                   paddingTop: 140,
-                  paddingBottom: 30
+                  paddingBottom: 30,
                 }}
               >
                 <Grid item xs={12} md={6}>
@@ -1026,7 +1026,7 @@ class Cover extends React.Component {
                 container
                 spacing={6}
                 style={{
-                  paddingTop: 40
+                  paddingTop: 40,
                 }}
               >
                 <Grid item xs={12} sm={6} md={3} style={{ display: "flex" }}>
@@ -1239,7 +1239,7 @@ class Cover extends React.Component {
                 container
                 spacing={3}
                 style={{
-                  paddingTop: 20
+                  paddingTop: 20,
                 }}
               >
                 <Grid item xs={12} md={3}>
@@ -1331,7 +1331,7 @@ class Cover extends React.Component {
                   marginTop: 20,
                   marginBottom: 0,
                   fontSize: 50,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 {" "}
@@ -1357,7 +1357,7 @@ class Cover extends React.Component {
                 style={{
                   marginTop: 20,
                   marginBottom: 100,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 <Grid item xs={12} md={3}>

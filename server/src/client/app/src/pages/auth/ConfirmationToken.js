@@ -2,41 +2,45 @@ import React from "react";
 import styled from "styled-components";
 import axios from "axios";
 
-
 import {
   FormControl,
   Input,
   InputLabel,
   Button as MuiButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
+  padding: ${(props) => props.theme.spacing(6)};
   width: 100%;
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
 function ConfirmationToken() {
-    function sendflask(event){
-     event.preventDefault();
-    console.log('executed');
-    axios.post(process.env.REACT_APP_URL_SITE_BACKEND+"send-confirmation-token",{
-        email: event.target.email.value
-    }).then(function(response) {
+  function sendflask(event) {
+    event.preventDefault();
+    console.log("executed");
+    axios
+      .post(
+        process.env.REACT_APP_URL_SITE_BACKEND + "send-confirmation-token",
+        {
+          email: event.target.email.value,
+        },
+      )
+      .then(function (response) {
         console.log(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error.data);
       });
-    }
+  }
 
   return (
     <Wrapper>

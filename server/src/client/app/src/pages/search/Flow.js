@@ -3,7 +3,7 @@ import { StringLimiter, CollapsibleDataTable } from "./sizeLimiter.js";
 import {
   LightTooltip,
   ParameterDetail,
-  DependencyDetail
+  DependencyDetail,
 } from "./ItemDetail.js";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent, Typography, Grid } from "@mui/material";
@@ -14,7 +14,7 @@ export class FlowItem extends React.Component {
   render() {
     let dependenciesMap = this.props.object.dependencies
       .split(", ")
-      .map(x => x.split("_"));
+      .map((x) => x.split("_"));
     let parameterCols = ["Name", "Description", "Type", "Default Value"];
 
     return (
@@ -89,7 +89,7 @@ export class FlowItem extends React.Component {
                 <CollapsibleDataTable
                   title={"Dependencies"}
                   data={dependenciesMap}
-                  rowrenderer={dep => (
+                  rowrenderer={(dep) => (
                     <DependencyDetail
                       key={dep[0]}
                       name={dep[0]}
@@ -109,7 +109,7 @@ export class FlowItem extends React.Component {
                 <CollapsibleDataTable
                   title={"Parameters"}
                   data={this.props.object.parameters}
-                  rowrenderer={m => (
+                  rowrenderer={(m) => (
                     <ParameterDetail key={"fd_" + m.name} item={m} />
                   )}
                   maxLength={7}

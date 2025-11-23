@@ -27,17 +27,17 @@ All search and detail pages now use clean, SEO-optimized URLs:
 
 **Backward Compatibility:**
 
--   Old URLs like `/d/:id` automatically redirect to `/datasets/:id` (SEO canonical)
--   All old search URLs redirect to new routes
--   Academic papers and citations with old links continue to work
+- Old URLs like `/d/:id` automatically redirect to `/datasets/:id` (SEO canonical)
+- All old search URLs redirect to new routes
+- Academic papers and citations with old links continue to work
 
 **Benefits:**
 
--   Better Google indexing and SEO ranking
--   Cleaner, more semantic URLs for sharing
--   Improved user experience
--   Maintains compatibility with academic papers and citations
--   New URLs are now the canonical version for search engines
+- Better Google indexing and SEO ranking
+- Cleaner, more semantic URLs for sharing
+- Improved user experience
+- Maintains compatibility with academic papers and citations
+- New URLs are now the canonical version for search engines
 
 ---
 
@@ -49,19 +49,19 @@ All search and detail pages now use clean, SEO-optimized URLs:
 
 **Key Features:**
 
--   Direct fetch() API calls to Elasticsearch
--   Handles search terms, filters, pagination, sorting, and facets
--   Wraps results in Search UI's expected `{ raw: value }` format
--   Strips invalid `name` fields from range aggregations
--   Compatible with ES 6.8.23 query format
+- Direct fetch() API calls to Elasticsearch
+- Handles search terms, filters, pagination, sorting, and facets
+- Wraps results in Search UI's expected `{ raw: value }` format
+- Strips invalid `name` fields from range aggregations
+- Compatible with ES 6.8.23 query format
 
 **Files Updated:**
 
--   `app/src/services/OpenMLSearchConnector.js` (new)
--   `app/src/search_configs/dataConfig.js`
--   `app/src/search_configs/taskConfig.js`
--   `app/src/search_configs/flowConfig.js`
--   `app/src/search_configs/runConfig.js`
+- `app/src/services/OpenMLSearchConnector.js` (new)
+- `app/src/search_configs/dataConfig.js`
+- `app/src/search_configs/taskConfig.js`
+- `app/src/search_configs/flowConfig.js`
+- `app/src/search_configs/runConfig.js`
 
 ---
 
@@ -94,10 +94,10 @@ Browser → Next.js → OpenMLSearchConnector → Elasticsearch (direct)
 
 **Benefits:**
 
--   One less failure point
--   Faster queries (no proxy overhead)
--   Easier debugging with direct ES error messages
--   No dependency on Flask backend for read operations
+- One less failure point
+- Faster queries (no proxy overhead)
+- Easier debugging with direct ES error messages
+- No dependency on Flask backend for read operations
 
 ---
 
@@ -110,9 +110,9 @@ Browser → Next.js → OpenMLSearchConnector → Elasticsearch (direct)
 
 **Elasticsearch Status:**
 
--   Cluster: `openmlelasticsearch`
--   Version: 6.8.23
--   Endpoint: `https://www.openml.org/es/`
+- Cluster: `openmlelasticsearch`
+- Version: 6.8.23
+- Endpoint: `https://www.openml.org/es/`
 
 ---
 
@@ -120,24 +120,24 @@ Browser → Next.js → OpenMLSearchConnector → Elasticsearch (direct)
 
 ### New Files
 
--   `app/src/pages/datasets.js`
--   `app/src/pages/tasks.js`
--   `app/src/pages/flows.js`
--   `app/src/pages/runs.js`
--   `app/src/services/OpenMLSearchConnector.js`
--   `app/src/components/search/DatasetSearchResults.jsx`
+- `app/src/pages/datasets.js`
+- `app/src/pages/tasks.js`
+- `app/src/pages/flows.js`
+- `app/src/pages/runs.js`
+- `app/src/services/OpenMLSearchConnector.js`
+- `app/src/components/search/DatasetSearchResults.jsx`
 
 ### Modified Files
 
--   `app/src/pages/d/search.js` (now redirects)
--   `app/src/pages/t/search.js` (now redirects)
--   `app/src/pages/f/search.js` (now redirects)
--   `app/src/pages/r/search.js` (now redirects)
--   All config files in `app/src/search_configs/`
--   `app/src/components/search/SearchContainer.js`
--   `app/src/components/search/Teaser.js`
--   `app/src/components/Wrapper.js`
--   `app/src/components/search/ResultGridCard.js`
+- `app/src/pages/d/search.js` (now redirects)
+- `app/src/pages/t/search.js` (now redirects)
+- `app/src/pages/f/search.js` (now redirects)
+- `app/src/pages/r/search.js` (now redirects)
+- All config files in `app/src/search_configs/`
+- `app/src/components/search/SearchContainer.js`
+- `app/src/components/search/Teaser.js`
+- `app/src/components/Wrapper.js`
+- `app/src/components/search/ResultGridCard.js`
 
 ---
 
@@ -159,10 +159,10 @@ None at this time. All major functionality working as expected.
 
 ## Technical Notes
 
--   **No Docker Required:** Frontend connects directly to production Elasticsearch
--   **No Flask Backend Needed:** For read-only search operations
--   **Backwards Compatible:** All old URLs redirect automatically
--   **SEO Optimized:** Each page has proper meta tags, Open Graph tags, and canonical URLs
+- **No Docker Required:** Frontend connects directly to production Elasticsearch
+- **No Flask Backend Needed:** For read-only search operations
+- **Backwards Compatible:** All old URLs redirect automatically
+- **SEO Optimized:** Each page has proper meta tags, Open Graph tags, and canonical URLs
 
 ---
 
@@ -170,6 +170,6 @@ None at this time. All major functionality working as expected.
 
 For questions or issues, check:
 
--   Browser console logs (prefixed with `[OpenMLSearchConnector]`)
--   Network tab for Elasticsearch requests to `https://www.openml.org/es/`
--   Server terminal for Next.js errors
+- Browser console logs (prefixed with `[OpenMLSearchConnector]`)
+- Network tab for Elasticsearch requests to `https://www.openml.org/es/`
+- Server terminal for Next.js errors

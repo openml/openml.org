@@ -18,26 +18,19 @@ import {
   Toolbar,
   CardHeader,
   ListItemIcon,
-  Avatar
+  Avatar,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 
-import {
-  blue,
-  yellow,
-  orange,
-  red,
-  green,
-  purple
-} from "@mui/material/colors";
+import { blue, yellow, orange, red, green, purple } from "@mui/material/colors";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MainContext } from "../App.js";
 
 const AppBar = styled(MuiAppBar)`
-  background: ${props => props.theme.header.background};
-  color: ${props => props.theme.header.color};
-  box-shadow: ${props => props.theme.shadows[1]};
+  background: ${(props) => props.theme.header.background};
+  color: ${(props) => props.theme.header.color};
+  box-shadow: ${(props) => props.theme.shadows[1]};
 `;
 
 const IconButton = styled(MuiIconButton)`
@@ -48,17 +41,17 @@ const IconButton = styled(MuiIconButton)`
 `;
 
 const Search = styled.div`
-  ${props =>
+  ${(props) =>
     props.bg === "Gradient" &&
     css`
       background: transparent;
     `}
-  ${props =>
+  ${(props) =>
     props.bg !== "Gradient" &&
     props.searchcolor &&
     props.currenttheme === 1 &&
     css`
-      background-color: ${props => props.searchcolor};
+      background-color: ${(props) => props.searchcolor};
     `}
   border-radius: 2px;
   display: none;
@@ -66,28 +59,28 @@ const Search = styled.div`
   width: 100%;
 
   &:hover {
-    background-color: ${props =>
-    props.bg === "Gradient"
-      ? "transparent"
-      : darken(0.05, props.theme.header.background)};
-    ${props =>
-    props.bg !== "Gradient" &&
-    props.searchcolor &&
-    props.currenttheme === 1 &&
-    css`
-        background-color: ${props => darken(0.05, props.searchcolor)};
+    background-color: ${(props) =>
+      props.bg === "Gradient"
+        ? "transparent"
+        : darken(0.05, props.theme.header.background)};
+    ${(props) =>
+      props.bg !== "Gradient" &&
+      props.searchcolor &&
+      props.currenttheme === 1 &&
+      css`
+        background-color: ${(props) => darken(0.05, props.searchcolor)};
       `}
   }
 
-  ${props => props.theme.breakpoints.up("md")} {
+  ${(props) => props.theme.breakpoints.up("md")} {
     display: inline-block;
     margin-left: 60px;
   }
-  ${props => props.theme.breakpoints.up("lg")} {
+  ${(props) => props.theme.breakpoints.up("lg")} {
     display: inline-block;
     margin-left: 0px;
   }
-  ${props =>
+  ${(props) =>
     props.bg === "" &&
     css`
       display: block;
@@ -114,18 +107,18 @@ const Input = styled(InputBase)`
   width: 100%;
 
   > input {
-    color: ${props =>
-    props.bg === "Gradient" ? "white" : props.theme.header.search.color};
-    padding-top: ${props => props.theme.spacing(2.5)};
-    padding-right: ${props => props.theme.spacing(2.5)};
-    padding-bottom: ${props => props.theme.spacing(2.5)};
-    padding-left: ${props => props.theme.spacing(8)};
+    color: ${(props) =>
+      props.bg === "Gradient" ? "white" : props.theme.header.search.color};
+    padding-top: ${(props) => props.theme.spacing(2.5)};
+    padding-right: ${(props) => props.theme.spacing(2.5)};
+    padding-bottom: ${(props) => props.theme.spacing(2.5)};
+    padding-left: ${(props) => props.theme.spacing(8)};
     width: 80%;
   }
 
   > input::placeholder {
-    color: ${props =>
-    props.bg === "Gradient" ? "white" : props.theme.header.search.color};
+    color: ${(props) =>
+      props.bg === "Gradient" ? "white" : props.theme.header.search.color};
     opacity: 0.8;
   }
 `;
@@ -145,43 +138,43 @@ const StyledLink = styled(Link)`
 `;
 
 const WhiteIcon = styled(FontAwesomeIcon)`
-  color: ${props =>
+  color: ${(props) =>
     props.bg === "Gradient" ? "white" : props.theme.header.color};
 `;
 
 const UserButton = styled(Button)`
-  display: ${props => (props.bg === "" ? "none" : "inline-block")};
-  color: ${props =>
+  display: ${(props) => (props.bg === "" ? "none" : "inline-block")};
+  color: ${(props) =>
     props.bg === "Gradient" || props.currenttheme === 1 ? "white" : "inherit"};
-  border-color: ${props => (props.bg === "Gradient" ? "white" : "inherit")};
+  border-color: ${(props) => (props.bg === "Gradient" ? "white" : "inherit")};
 
-  ${props => props.theme.breakpoints.up("md")} {
+  ${(props) => props.theme.breakpoints.up("md")} {
     display: inline-block;
   }
 `;
 const SearchButton = styled(Button)`
-  color: ${props =>
+  color: ${(props) =>
     props.bg === "Gradient" || props.theme === 1 ? "white" : "inherit"};
 `;
 const SlimCardHeader = styled(CardHeader)({
   padding: 0,
-  marginRight: 0
+  marginRight: 0,
 });
 
 const StyledMenu = withStyles({
   paper: {
-    border: "1px solid #d3d4d5"
-  }
-})(props => (
+    border: "1px solid #d3d4d5",
+  },
+})((props) => (
   <Menu
     elevation={0}
     anchorOrigin={{
       vertical: "bottom",
-      horizontal: "center"
+      horizontal: "center",
     }}
     transformOrigin={{
       vertical: "top",
-      horizontal: "center"
+      horizontal: "center",
     }}
     {...props}
   />
@@ -189,7 +182,7 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = styled(MenuItem)`
   &:hover {
-    background-color: ${props => props.theme.palette.primary.main};
+    background-color: ${(props) => props.theme.palette.primary.main};
   }
   ,
   .MuiListItemIcon-root {
@@ -198,7 +191,6 @@ const StyledMenuItem = styled(MenuItem)`
 `;
 
 class UserMenu extends Component {
-
   randomColor = () => {
     let colors = [blue, orange, red, green, purple];
     return colors[Math.floor(Math.random() * colors.length)][
@@ -209,13 +201,13 @@ class UserMenu extends Component {
   state = {
     anchorMenu: null,
     anchorNewMenu: null,
-    avatarColor: this.randomColor
+    avatarColor: this.randomColor,
   };
 
-  toggleMenu = event => {
+  toggleMenu = (event) => {
     this.setState({ anchorMenu: event.currentTarget });
   };
-  toggleNewMenu = event => {
+  toggleNewMenu = (event) => {
     this.setState({ anchorNewMenu: event.currentTarget });
   };
 
@@ -231,7 +223,7 @@ class UserMenu extends Component {
 
     return (
       <MainContext.Consumer>
-        {context => (
+        {(context) => (
           <React.Fragment>
             {loggedOut ? (
               <React.Fragment>
@@ -257,46 +249,48 @@ class UserMenu extends Component {
                 </StyledLink>
               </React.Fragment>
             ) : (
-                <React.Fragment>
-                  <IconButton
-                    aria-owns={newOpen ? "menu-new" : undefined}
-                    aria-haspopup="true"
-                    onClick={this.toggleNewMenu}
-                    color="inherit"
-                    size="large">
-                    <WhiteIcon
-                      bg={this.props.bg}
-                      icon="plus"
-                      style={{
-                        height: 20,
-                        width: 20
-                      }}
-                    />
-                  </IconButton>
-                  <IconButton
-                    aria-owns={open ? "menu-appbar" : undefined}
-                    aria-haspopup="true"
-                    onClick={this.toggleMenu}
-                    color="inherit"
-                    size="large">
-                    <SlimCardHeader
-                      avatar={
-                        <Avatar
-                          src={context.userImage}
-                          style={{
-                            height: 40,
-                            width: 40,
-                            marginRight: -16,
-                            backgroundColor: avatarColor
-                          }}
-                        >
-                          {context.userInitials}
-                        </Avatar>
-                      }
-                    />
-                  </IconButton>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <IconButton
+                  aria-owns={newOpen ? "menu-new" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.toggleNewMenu}
+                  color="inherit"
+                  size="large"
+                >
+                  <WhiteIcon
+                    bg={this.props.bg}
+                    icon="plus"
+                    style={{
+                      height: 20,
+                      width: 20,
+                    }}
+                  />
+                </IconButton>
+                <IconButton
+                  aria-owns={open ? "menu-appbar" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.toggleMenu}
+                  color="inherit"
+                  size="large"
+                >
+                  <SlimCardHeader
+                    avatar={
+                      <Avatar
+                        src={context.userImage}
+                        style={{
+                          height: 40,
+                          width: 40,
+                          marginRight: -16,
+                          backgroundColor: avatarColor,
+                        }}
+                      >
+                        {context.userInitials}
+                      </Avatar>
+                    }
+                  />
+                </IconButton>
+              </React.Fragment>
+            )}
             <StyledMenu
               id="menu-new"
               anchorEl={anchorNewMenu}
@@ -367,23 +361,23 @@ class UserMenu extends Component {
                 onClick={() => {
                   const yourConfig = {
                     headers: {
-                      Authorization: "Bearer " + localStorage.getItem("token")
-                    }
+                      Authorization: "Bearer " + localStorage.getItem("token"),
+                    },
                   };
                   axios
                     .post(
                       process.env.REACT_APP_URL_SITE_BACKEND + "logout",
                       {
-                        logout: "true"
+                        logout: "true",
                       },
-                      yourConfig
+                      yourConfig,
                     )
-                    .then(response => {
+                    .then((response) => {
                       console.log(response.data);
                       context.logOut();
                       context.setSearchActive(false);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       console.log(error);
                     });
                   this.closeMenu();
@@ -403,26 +397,26 @@ class UserMenu extends Component {
 }
 
 const FlexAppBar = styled(AppBar)`
-  ${props =>
+  ${(props) =>
     props.bg === "Gradient" &&
     css`
       background: transparent;
     `}
-  ${props =>
+  ${(props) =>
     props.bg !== "Gradient" &&
     props.searchcolor &&
     props.currenttheme === 1 &&
     css`
-      background-color: ${props => props.searchcolor};
+      background-color: ${(props) => props.searchcolor};
     `}
-  box-shadow: ${props =>
+  box-shadow: ${(props) =>
     props.bg === "Gradient" || props.searchcolor ? "none" : ""};
 `;
 
 const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
   <React.Fragment>
     <MainContext.Consumer>
-      {context => (
+      {(context) => (
         <FlexAppBar
           position="sticky"
           elevation={0}
@@ -434,7 +428,11 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
             <Grid container alignItems="center">
               <Hidden lgUp>
                 <Grid item>
-                  <IconButton aria-label="Open drawer" onClick={onDrawerToggle} size="large">
+                  <IconButton
+                    aria-label="Open drawer"
+                    onClick={onDrawerToggle}
+                    size="large"
+                  >
                     <WhiteIcon
                       icon="bars"
                       bg={context.searchActive ? "" : bg}
@@ -449,7 +447,7 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                       currenttheme={context.currentTheme}
                       style={{
                         fontSize: 18,
-                        width: 90
+                        width: 90,
                       }}
                     >
                       OpenML
@@ -481,8 +479,8 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     placeholder={"Search " + context.getSearchTopic()}
                     defaultValue={context.query ? context.query : null}
                     bg={context.searchActive ? "" : bg}
-                    onKeyPress={event => {
-                      if (event.key === 'Enter') {
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
                         event.preventDefault();
                         context.setQuery(event.target.value);
                       }
@@ -500,8 +498,8 @@ const Header = ({ onDrawerToggle, bg, routes, loggedIn }) => (
                     {context.searchActive ? (
                       <FontAwesomeIcon icon="times" />
                     ) : (
-                        "Search"
-                      )}
+                      "Search"
+                    )}
                   </SearchButton>
                 </Box>
               </Grid>

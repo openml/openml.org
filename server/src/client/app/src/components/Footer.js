@@ -6,21 +6,21 @@ import {
   Hidden,
   List,
   ListItemText,
-  ListItem as MuiListItem
+  ListItem as MuiListItem,
 } from "@mui/material";
 
 const Wrapper = styled.div`
-  padding: ${props => props.theme.spacing(1) / 4}
-    ${props => props.theme.spacing(4)};
-  background: ${props => props.theme.palette.common.white};
+  padding: ${(props) => props.theme.spacing(1) / 4}
+    ${(props) => props.theme.spacing(4)};
+  background: ${(props) => props.theme.palette.common.white};
   position: relative;
 `;
 
 const ListItem = styled(MuiListItem)`
   display: inline-block;
   width: auto;
-  padding-left: ${props => props.theme.spacing(2)};
-  padding-right: ${props => props.theme.spacing(2)};
+  padding-left: ${(props) => props.theme.spacing(2)};
+  padding-right: ${(props) => props.theme.spacing(2)};
 
   &,
   &:hover,

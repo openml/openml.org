@@ -5,7 +5,7 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell
+  TableCell,
 } from "@mui/material";
 
 import { Typography } from "@mui/material";
@@ -82,7 +82,7 @@ export class CollapsibleDataTable extends React.Component {
       this.props.columns !== undefined ? (
         <TableHead>
           <TableRow>
-            {this.props.columns.map(m => (
+            {this.props.columns.map((m) => (
               <TableCell key={m}>{m}</TableCell>
             ))}
           </TableRow>

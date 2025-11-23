@@ -13,7 +13,7 @@ import {
   Button,
   Chip,
   List,
-  Typography as MuiTypography
+  Typography as MuiTypography,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -23,7 +23,7 @@ const TopLink = styled(HashLink)({
   color: grey[600],
   marginLeft: 10,
   marginRight: 10,
-  textDecoration: "none"
+  textDecoration: "none",
 });
 const Card = styled(MuiCard)(spacing);
 
@@ -32,25 +32,25 @@ const Typography = styled(MuiTypography)(spacing);
 const HeroTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
-  padding: "2vw 5vw"
+  padding: "2vw 5vw",
 });
 const HeroSubTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
   fontSize: "1.1rem",
-  paddingTop: "0.5vw"
+  paddingTop: "0.5vw",
 });
 
 const MainPaper = styled(Paper)`
   flex: 1;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
 `;
 const ListIcon = styled(FontAwesomeIcon)({
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const ContactChip = ({ link, icon, text }) => {
@@ -86,7 +86,7 @@ export default class GetInvolved extends React.Component {
             component="nav"
             style={{
               marginTop: -10,
-              marginBottom: 20
+              marginBottom: 20,
             }}
           >
             <TopLink smooth to="/meet#meetup">
@@ -159,29 +159,22 @@ export default class GetInvolved extends React.Component {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2025 Winter Hackathon - December/January - Leiden University, Leiden, The Netherlands
+                  2025 Winter Hackathon - December/January - Leiden University,
+                  Leiden, The Netherlands
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Join us at Leiden University to work on the next generation of OpenML.
-                  
-                  The dates are still being explored, but most likely end of December or early January.
-                  Join our Slack channel to join the discussion.
+                  Join us at Leiden University to work on the next generation of
+                  OpenML. The dates are still being explored, but most likely
+                  end of December or early January. Join our Slack channel to
+                  join the discussion.
                 </Typography>
               </CardContent>
             </CardActionArea>
             <CardActions>
-            <Button
-                size="small"
-                color="primary"
-                href=""
-              >
+              <Button size="small" color="primary" href="">
                 Registration (free)
               </Button>
-              <Button
-                size="small"
-                color="primary"
-                href=""
-              >
+              <Button size="small" color="primary" href="">
                 Schedule and more
               </Button>
               <Button

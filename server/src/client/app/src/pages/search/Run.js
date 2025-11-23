@@ -3,20 +3,21 @@ import { EvaluationDetail } from "./ItemDetail.js";
 import { FlowDetail } from "./ItemDetail.js";
 import { MetaTag } from "./MetaItems.js";
 
-import { 
-  Table, 
-  TableBody, 
-  TableRow, 
-  TableCell, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Grid, 
-  Link, 
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Link,
   Dialog,
   DialogContent,
-  IconButton} from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollapsibleDataTable } from "./sizeLimiter";
 
@@ -34,7 +35,7 @@ export class RunItem extends React.Component {
   };
 
   render() {
-    console.log(this.props.object.output_files)
+    console.log(this.props.object.output_files);
     let flowCols = ["Parameter", "Value"];
     let evaluationMeasureCols = ["Evaluation Measure", "Value", ""];
 
@@ -109,7 +110,7 @@ export class RunItem extends React.Component {
                 </span>
                 <CollapsibleDataTable
                   data={this.props.object.run_flow.parameters}
-                  rowrenderer={m => (
+                  rowrenderer={(m) => (
                     <FlowDetail key={parameterID++} item={m}></FlowDetail>
                   )}
                   maxLength={7}
@@ -128,7 +129,7 @@ export class RunItem extends React.Component {
                     ")"
                   }
                   data={evaluations}
-                  rowrenderer={m => (
+                  rowrenderer={(m) => (
                     <EvaluationDetail
                       key={evaluationID++}
                       item={m}
@@ -142,39 +143,49 @@ export class RunItem extends React.Component {
               </CardContent>
             </Card>
           </Grid>
-        <Grid item xs={12}>
+          <Grid item xs={12}>
             <Card>
               <CardContent>
-                <Typography variant="h4" mb={6}>Output files</Typography>
+                <Typography variant="h4" mb={6}>
+                  Output files
+                </Typography>
                 <Table>
                   <TableBody>
-                    {Object.entries(this.props.object.output_files).map(([name, file], index) => (
-                      <TableRow  key={"row_"+name}>
-                        <TableCell>
-                          <Link href={file.url} target="_blank" rel="noopener">
-                            {name}
-                          </Link>
-                        </TableCell>
-                        <TableCell>{file.format}</TableCell>
-                        <TableCell>
-                          {file.format === 'png' && (
-                            <img
-                              src={file.url}
-                              alt={name}
-                              style={{
-                                maxHeight: '80px',
-                                maxWidth: '120px',
-                                objectFit: 'contain',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
-                              }}
-                              onClick={() => this.handleOpenImage(name, file.url)}
-                            />
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {Object.entries(this.props.object.output_files).map(
+                      ([name, file], index) => (
+                        <TableRow key={"row_" + name}>
+                          <TableCell>
+                            <Link
+                              href={file.url}
+                              target="_blank"
+                              rel="noopener"
+                            >
+                              {name}
+                            </Link>
+                          </TableCell>
+                          <TableCell>{file.format}</TableCell>
+                          <TableCell>
+                            {file.format === "png" && (
+                              <img
+                                src={file.url}
+                                alt={name}
+                                style={{
+                                  maxHeight: "80px",
+                                  maxWidth: "120px",
+                                  objectFit: "contain",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                  boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+                                }}
+                                onClick={() =>
+                                  this.handleOpenImage(name, file.url)
+                                }
+                              />
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -186,11 +197,11 @@ export class RunItem extends React.Component {
               maxWidth="md"
             >
               <DialogContent
-                sx={{ position: 'relative', p: 2, backgroundColor: '#fefefe' }}
+                sx={{ position: "relative", p: 2, backgroundColor: "#fefefe" }}
               >
                 <IconButton
                   onClick={this.handleCloseImage}
-                  sx={{ position: 'absolute', top: 8, right: 8 }}
+                  sx={{ position: "absolute", top: 8, right: 8 }}
                 >
                   <CloseIcon />
                 </IconButton>
@@ -198,13 +209,17 @@ export class RunItem extends React.Component {
                   <img
                     src={this.state.openImage.url}
                     alt={this.state.openImage.name}
-                    style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      borderRadius: "4px",
+                    }}
                   />
                 )}
               </DialogContent>
             </Dialog>
           </Grid>
-          </Grid>
+        </Grid>
       </React.Fragment>
     );
   }

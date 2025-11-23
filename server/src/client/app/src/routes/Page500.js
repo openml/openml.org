@@ -8,11 +8,11 @@ import { spacing } from "@mui/system";
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)}px;
+  padding: ${(props) => props.theme.spacing(6)}px;
   text-align: center;
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)}px;
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)}px;
   }
 `;
 

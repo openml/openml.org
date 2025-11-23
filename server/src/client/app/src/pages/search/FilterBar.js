@@ -7,12 +7,11 @@ import {
   Collapse,
   Chip as MuiChip,
   Tooltip,
-  TextField
+  TextField,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { MainContext } from "../../App.js";
-
 
 const FilterButton = styled(Button)`
   min-width: 0;
@@ -20,7 +19,7 @@ const FilterButton = styled(Button)`
   height: 45px;
   font-size: 20px;
   margin-top: 2px;
-  color: ${props => props.textcolor};
+  color: ${(props) => props.textcolor};
 `;
 const FilterStats = styled.div`
   padding-left: 15px;
@@ -30,7 +29,7 @@ const FilterStats = styled.div`
   text-overflow: ellipsis;
   font-size: 11pt;
   float: left;
-  color: ${props => props.textcolor};
+  color: ${(props) => props.textcolor};
 `;
 const FilterChip = styled(MuiChip)`
   margin-left: 10px;
@@ -79,7 +78,7 @@ const typeName = {
   task: "task",
   task_type: "task type",
   user: "user",
-  measure: "measure"
+  measure: "measure",
 };
 
 export class FilterBar extends React.Component {
@@ -92,46 +91,46 @@ export class FilterBar extends React.Component {
       showFilter: false,
       sortVisible: false,
       activeFilter: false,
-      splitToggleVisible: (window.innerWidth >= 600 ? true : false)
+      splitToggleVisible: window.innerWidth >= 600 ? true : false,
     };
   }
 
-  sortChange = value => {
+  sortChange = (value) => {
     console.log("Set sort to", value);
     this.props.sortChange({ sort: value });
   };
 
-  orderChange = value => {
+  orderChange = (value) => {
     console.log("Set order to", value);
     this.props.sortChange({ order: value });
   };
 
-  activateFilter = value => {
+  activateFilter = (value) => {
     console.log(value);
     this.setState({ activeFilter: value });
   };
 
-  filterChange = filters => {
+  filterChange = (filters) => {
     let filter = {
       name: this.props.filterOptions[this.state.activeFilter].value,
       type: filters.type,
       value: filters.value,
-      value2: filters.value2
+      value2: filters.value2,
     };
     //this.setState({ showFilter: false });
     this.props.filterChange([filter]);
   };
 
   flipFilter = () => {
-    this.setState(state => ({ showFilter: !state.showFilter }));
+    this.setState((state) => ({ showFilter: !state.showFilter }));
   };
 
   closeFilter = () => {
-    this.setState(state => ({ showFilter: false }));
+    this.setState((state) => ({ showFilter: false }));
   };
 
   flipSorter = () => {
-    this.setState(state => ({ sortVisible: !state.sortVisible }));
+    this.setState((state) => ({ sortVisible: !state.sortVisible }));
   };
 
   toggleSelect = () => {
@@ -142,7 +141,7 @@ export class FilterBar extends React.Component {
       } else {
         this.context.toggleStats();
       }
-    } else if (this.context.displayStats){
+    } else if (this.context.displayStats) {
       this.context.toggleSplit();
     } else {
       this.context.toggleStats();
@@ -157,11 +156,11 @@ export class FilterBar extends React.Component {
       "uci",
       "concept_drift",
       "artificial",
-      "finance"
+      "finance",
     ].join(", ");
   };
 
-  isActiveOption = option => {
+  isActiveOption = (option) => {
     let oname = this.props.filterOptions[this.state.activeFilter].value;
     if (oname in this.context.filters) {
       if (
@@ -174,47 +173,58 @@ export class FilterBar extends React.Component {
     return false;
   };
 
-  filterLabel = key => {
-    if (this.context.filters[key]["value"] === "active"){
+  filterLabel = (key) => {
+    if (this.context.filters[key]["value"] === "active") {
       return "verified";
-    } else if (this.context.filters[key]["value"] === "ARFF"){
+    } else if (this.context.filters[key]["value"] === "ARFF") {
       return "dense";
-    } else if (this.context.filters[key]["value"] === "Sparse_ARFF"){
+    } else if (this.context.filters[key]["value"] === "Sparse_ARFF") {
       return "sparse";
     } else if (key.includes("NumberOfClasses")) {
       if (this.context.filters[key]["value"] === "1") {
         return "regression";
-      } else if (this.context.filters[key]["type"] === "gte" && this.context.filters[key]["value"] === "2") {
+      } else if (
+        this.context.filters[key]["type"] === "gte" &&
+        this.context.filters[key]["value"] === "2"
+      ) {
         return "multi-class";
       } else {
         return "binary class";
       }
     } else if (key.includes("NumberOf")) {
-        let keyname = key.split("s.")[1].replace("NumberOf","").toLowerCase();
-        if (this.context.filters[key]["type"] === "lte"){
-          return "<10 "+keyname;
-        } else {
-          return ">" + this.context.filters[key]["value"] + " " + keyname;
-        }
+      let keyname = key.split("s.")[1].replace("NumberOf", "").toLowerCase();
+      if (this.context.filters[key]["type"] === "lte") {
+        return "<10 " + keyname;
+      } else {
+        return ">" + this.context.filters[key]["value"] + " " + keyname;
+      }
     } else if (key.includes("tasktype")) {
       console.log(this.context.filters[key]);
-      if (this.context.filters[key]["value"] === "1"){
+      if (this.context.filters[key]["value"] === "1") {
         return "classification";
-      } else if (this.context.filters[key]["value"] === "2"){
+      } else if (this.context.filters[key]["value"] === "2") {
         return "regression";
-      } else if (this.context.filters[key]["value"] === "4"){
+      } else if (this.context.filters[key]["value"] === "4") {
         return "stream classification";
-      } else if (this.context.filters[key]["value"] === "5"){
+      } else if (this.context.filters[key]["value"] === "5") {
         return "clustering";
       }
     } else if (key.includes("s.")) {
-      return key.split("s.")[1].replace("_"," ") + "s " + this.context.filters[key]["value"];
+      return (
+        key.split("s.")[1].replace("_", " ") +
+        "s " +
+        this.context.filters[key]["value"]
+      );
     } else if (key.includes(".")) {
-      return key.split(".")[0].replace("_"," ") + " " + this.context.filters[key]["value"];
+      return (
+        key.split(".")[0].replace("_", " ") +
+        " " +
+        this.context.filters[key]["value"]
+      );
     } else {
       return this.context.filters[key]["value"];
     }
-  }
+  };
 
   render() {
     return (
@@ -222,27 +232,35 @@ export class FilterBar extends React.Component {
         <FilterContainer>
           <FilterBox>
             <FilterStats textcolor={this.props.searchColor}>
-              {this.context.updateType === "query" ? "Loading..." : this.context.counts +
-                " " +
-                typeName[this.context.type] + (this.context.counts !== 1 ? "s" : "") + 
-                " found"}
+              {this.context.updateType === "query"
+                ? "Loading..."
+                : this.context.counts +
+                  " " +
+                  typeName[this.context.type] +
+                  (this.context.counts !== 1 ? "s" : "") +
+                  " found"}
             </FilterStats>
             {Object.keys(this.context.filters).map((key) => {
-              return this.context.filters[key]["value"] !== "any" &&
-                <FilterChip
-                  label={this.filterLabel(key)}
-                  key={key + this.context.filters[key]["value"]}
-                  clickable
-                  color="secondary"
-                  variant="outlined"
-                  onClick={this.flipFilter}
-                  onDelete={() => {
-                    this.props.clearFilters(key);
-                    this.closeFilter();
-                    this.setState({ activeFilter: false })
-                  }}
-                  deleteIcon={<FontAwesomeIcon size="lg" icon="times-circle" />}
-                />
+              return (
+                this.context.filters[key]["value"] !== "any" && (
+                  <FilterChip
+                    label={this.filterLabel(key)}
+                    key={key + this.context.filters[key]["value"]}
+                    clickable
+                    color="secondary"
+                    variant="outlined"
+                    onClick={this.flipFilter}
+                    onDelete={() => {
+                      this.props.clearFilters(key);
+                      this.closeFilter();
+                      this.setState({ activeFilter: false });
+                    }}
+                    deleteIcon={
+                      <FontAwesomeIcon size="lg" icon="times-circle" />
+                    }
+                  />
+                )
+              );
             })}
             <Tooltip title="Filter results" placement="bottom-start">
               <FilterControl
@@ -264,7 +282,7 @@ export class FilterBar extends React.Component {
                 style={{
                   borderLeft: "1px solid rgba(0,0,0,0.12)",
                   paddingLeft: 10,
-                  marginLeft: 0
+                  marginLeft: 0,
                 }}
                 control={
                   <FilterButton
@@ -276,11 +294,8 @@ export class FilterBar extends React.Component {
                 }
               />
             </Tooltip>
-            {this.state.splitToggleVisible &&
-              <Tooltip
-                title="Toggle split pane"
-                placement="bottom-start"
-              >
+            {this.state.splitToggleVisible && (
+              <Tooltip title="Toggle split pane" placement="bottom-start">
                 <FilterControl
                   control={
                     <FilterButton
@@ -288,17 +303,28 @@ export class FilterBar extends React.Component {
                       textcolor={this.props.searchColor}
                     >
                       <FontAwesomeIcon
-                        icon={this.context.displaySplit ? ["far", "window-maximize"] : "columns"}
+                        icon={
+                          this.context.displaySplit
+                            ? ["far", "window-maximize"]
+                            : "columns"
+                        }
                       />
                     </FilterButton>
                   }
                 />
               </Tooltip>
-            }
+            )}
             <Tooltip
               title={
-                this.context.displaySplit ? (this.context.id  ? "Maximize view" : "Show overview") :
-                (this.context.id ? "Back to list" : (this.context.displayStats ? "Show list" : "Show overview"))
+                this.context.displaySplit
+                  ? this.context.id
+                    ? "Maximize view"
+                    : "Show overview"
+                  : this.context.id
+                    ? "Back to list"
+                    : this.context.displayStats
+                      ? "Show list"
+                      : "Show overview"
               }
               placement="bottom-start"
             >
@@ -309,8 +335,17 @@ export class FilterBar extends React.Component {
                     textcolor={this.props.searchColor}
                   >
                     <FontAwesomeIcon
-                      icon={this.context.displaySplit ? (this.context.id ? "expand-alt" : "poll") :
-                        (this.context.id ? "angle-left" : (this.context.displayStats ? "list" : "poll"))}
+                      icon={
+                        this.context.displaySplit
+                          ? this.context.id
+                            ? "expand-alt"
+                            : "poll"
+                          : this.context.id
+                            ? "angle-left"
+                            : this.context.displayStats
+                              ? "list"
+                              : "poll"
+                      }
                     />
                   </FilterButton>
                 }
@@ -323,7 +358,7 @@ export class FilterBar extends React.Component {
                 <FilterStats textcolor={this.props.searchColor}>
                   Sort by
                 </FilterStats>
-                {this.props.sortOptions.map(item => (
+                {this.props.sortOptions.map((item) => (
                   <FilterChip
                     label={item.name}
                     key={item.name}
@@ -345,7 +380,7 @@ export class FilterBar extends React.Component {
                   clickable
                   onClick={() =>
                     this.orderChange(
-                      this.context.order === "desc" ? "asc" : "desc"
+                      this.context.order === "desc" ? "asc" : "desc",
                     )
                   }
                   variant="outlined"
@@ -354,8 +389,8 @@ export class FilterBar extends React.Component {
                     this.context.order === "desc" ? (
                       <FilterIcon icon="chevron-down" />
                     ) : (
-                        <FilterIcon icon="chevron-up" />
-                      )
+                      <FilterIcon icon="chevron-up" />
+                    )
                   }
                 />
               </FilterFormControl>
@@ -386,7 +421,7 @@ export class FilterBar extends React.Component {
                       }
                       icon={<FilterIcon icon="chevron-down" />}
                     />
-                  )
+                  ),
                 )}
                 <FilterChip
                   label={"Tag"}
@@ -406,7 +441,7 @@ export class FilterBar extends React.Component {
                 {this.state.activeFilter &&
                   this.props.filterOptions[this.state.activeFilter] &&
                   this.props.filterOptions[this.state.activeFilter].options.map(
-                    option => (
+                    (option) => (
                       <FilterChip
                         label={option.name}
                         key={option.name}
@@ -419,7 +454,7 @@ export class FilterBar extends React.Component {
                           this.isActiveOption(option) ? "default" : "outlined"
                         }
                       />
-                    )
+                    ),
                   )}
               </FilterFormControl>
               <FilterFormControl key="tag">
@@ -427,11 +462,15 @@ export class FilterBar extends React.Component {
                   <TextField
                     style={{ margin: 8, paddingRight: 16 }}
                     placeholder={"Type tag name. e.g. " + this.getExampleTags()}
-                    defaultValue={this.context.filters['tags.tag'] ? this.context.filters['tags.tag']['value'] : undefined}
+                    defaultValue={
+                      this.context.filters["tags.tag"]
+                        ? this.context.filters["tags.tag"]["value"]
+                        : undefined
+                    }
                     fullWidth
                     margin="dense"
                     variant="outlined"
-                    onKeyPress={event => {
+                    onKeyPress={(event) => {
                       if (event.key === "Enter") {
                         event.preventDefault();
                         this.props.tagChange(event.target.value);
@@ -448,10 +487,10 @@ export class FilterBar extends React.Component {
   }
 
   updateWindowDimensions = () => {
-    if( window.innerWidth < 600) {
-      this.setState({splitToggleVisible: false});
+    if (window.innerWidth < 600) {
+      this.setState({ splitToggleVisible: false });
     } else {
-      this.setState({splitToggleVisible: true});
+      this.setState({ splitToggleVisible: true });
     }
   };
 
@@ -459,5 +498,4 @@ export class FilterBar extends React.Component {
     // Reflow when the user changes the window size
     window.addEventListener("resize", this.updateWindowDimensions);
   }
-
 }

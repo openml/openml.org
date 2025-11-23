@@ -9,17 +9,17 @@ import {
   InputLabel,
   Button as MuiButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
+  padding: ${(props) => props.theme.spacing(6)};
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
@@ -28,12 +28,12 @@ function ResetPage() {
   const [redirect, setRedirect] = useState(false);
   axios
     .post(process.env.REACT_APP_URL_SITE_BACKEND + "forgot-token", {
-      url: window.location.href
+      url: window.location.href,
     })
-    .then(function(response) {
+    .then(function (response) {
       console.log(response.data);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error.data);
     });
   function sendflask(event) {
@@ -42,13 +42,13 @@ function ResetPage() {
     axios
       .post(process.env.REACT_APP_URL_SITE_BACKEND + "resetpassword", {
         url: window.location.href,
-        password: event.target.password.value
+        password: event.target.password.value,
       })
-      .then(function(response) {
+      .then(function (response) {
         console.log(response.data);
         setRedirect(true);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("error");
         console.log(error.data);
       });

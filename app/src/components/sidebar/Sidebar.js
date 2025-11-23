@@ -22,7 +22,9 @@ const Brand = styled(ListItemButton)`
   font-weight: ${(props) => props.theme.typography.fontWeightBold};
   color: ${(props) => props.theme.palette.sidebar.header.color};
   background-color: ${(props) =>
-    props.ecolor ? props.ecolor : props.theme.palette.sidebar.header.background};
+    props.ecolor
+      ? props.ecolor
+      : props.theme.palette.sidebar.header.background};
   font-family: ${(props) => props.theme.typography.fontFamily};
   min-height: 56px;
   padding-left: ${(props) => props.theme.spacing(10)};
@@ -37,7 +39,9 @@ const Brand = styled(ListItemButton)`
 
   &:hover {
     background-color: ${(props) =>
-      props.ecolor ? props.ecolor : props.theme.palette.sidebar.header.background};
+      props.ecolor
+        ? props.ecolor
+        : props.theme.palette.sidebar.header.background};
   }
 `;
 

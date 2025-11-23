@@ -8,7 +8,7 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  CssBaseline
+  CssBaseline,
 } from "@mui/material";
 
 const GlobalStyle = createGlobalStyle`
@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${props => props.theme.body.background};
+    background: ${(props) => props.theme.body.background};
   }
 `;
 
@@ -29,18 +29,17 @@ var gradientBG = keyframes`
   	100% { background-position: 0% 50%;	}
   `;
 
-const animation = props =>
-  css`
-    ${gradientBG} 15s ease 10;
-  `;
+const animation = (props) => css`
+  ${gradientBG} 15s ease 10;
+`;
 
 const Root = styled.div`
-  animation: ${props => (props.bg === "Gradient" ? animation : "none")};
-  animation-play-state: ${props => (props.bgrunning ? "running" : "paused")};
+  animation: ${(props) => (props.bg === "Gradient" ? animation : "none")};
+  animation-play-state: ${(props) => (props.bgrunning ? "running" : "paused")};
   -webkit-animation-timing-function: linear;
   display: flex;
   min-height: 100vh;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient"
       ? "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)"
       : "none"};
@@ -83,7 +82,7 @@ function Page({ children }) {
               style={{
                 background: "transparent",
                 boxShadow: "none",
-                height: "50"
+                height: "50",
               }}
             >
               <Toolbar variant="dense">
@@ -93,7 +92,8 @@ function Page({ children }) {
                   onClick={() => {
                     history.goBack();
                   }}
-                  size="large">
+                  size="large"
+                >
                   <FontAwesomeIcon icon="chevron-left" />
                   <Typography
                     variant="h6"

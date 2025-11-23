@@ -9,19 +9,19 @@ import {
   Input,
   InputLabel,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
 import { Redirect } from "react-router-dom";
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
-  margin-top:20px;
-  margin-bottom:20px;
+  padding: ${(props) => props.theme.spacing(6)};
+  margin-top: 20px;
+  margin-bottom: 20px;
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
@@ -35,8 +35,8 @@ function Public() {
 
   const yourConfig = {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("token")
-    }
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
   };
 
   function datatoflask(event) {
@@ -48,17 +48,17 @@ function Public() {
         {
           description: event.target.description.value,
           collectionname: event.target.collectionname.value,
-          taskids: event.target.taskids.value
+          taskids: event.target.taskids.value,
         },
-        yourConfig
+        yourConfig,
       )
-      .then(function(response) {
+      .then(function (response) {
         if (response.data.msg === "collection uploaded") {
           setSuccess(true);
         }
         console.log(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         setError(true);
         setErrorMessage("Could not upload collection");
         console.log(error.data);
@@ -71,10 +71,10 @@ function Public() {
     <form onSubmit={datatoflask}>
       <Typography variant="h1" gutterBottom>
         Create Task Collection
-      </Typography>          
-        <Button color="primary" href="/auth/upload-collection-runs">
-          Want to create a run collection instead?
-        </Button>
+      </Typography>
+      <Button color="primary" href="/auth/upload-collection-runs">
+        Want to create a run collection instead?
+      </Button>
       {error && (
         <Typography component="h3" variant="body1" align="center" color="red">
           {errormessage}
@@ -117,9 +117,9 @@ function Settings() {
         <Wrapper>
           <Public />
           {/*<Private />*/}
-          </Wrapper>
+        </Wrapper>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }
 

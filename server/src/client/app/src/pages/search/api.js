@@ -1,7 +1,7 @@
 export function errorCheck(response) {
   if (!response.ok) {
     console.error(
-      "Request failed: [" + response.status + "] " + response.statusText
+      "Request failed: [" + response.status + "] " + response.statusText,
     );
     console.log(response);
     if (
@@ -13,12 +13,12 @@ export function errorCheck(response) {
     if (typeof data !== "undefined") {
       return response
         .json()
-        .then(data =>
-          Promise.reject("[ElasticSearch] " + data.error.root_cause[0].reason)
+        .then((data) =>
+          Promise.reject("[ElasticSearch] " + data.error.root_cause[0].reason),
         );
     } else {
       return Promise.reject(
-        "[ElasticSearch] " + response.status + ": " + response.statusText
+        "[ElasticSearch] " + response.status + ": " + response.statusText,
       );
     }
     //throw new Error("Request failed: " + request.statusText);
@@ -44,7 +44,7 @@ export function getProperty(obj, param) {
       }
       return getProperty(
         obj[param.substring(0, index)],
-        param.substring(index + 1)
+        param.substring(index + 1),
       );
     } else {
       //console.log("Cannot load property " + param);
@@ -58,8 +58,10 @@ export function getProperty(obj, param) {
   }
 }
 
-const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
-const ELASTICSEARCH_VERSION_MAYOR = process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6
+const ELASTICSEARCH_SERVER =
+  process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+const ELASTICSEARCH_VERSION_MAYOR =
+  process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6;
 
 // general search
 export function search(
@@ -71,7 +73,7 @@ export function search(
   order = "desc",
   filter = [],
   from = 0,
-  size = 50
+  size = 50,
 ) {
   if (tag !== undefined) {
     //nested query for tag
@@ -81,19 +83,19 @@ export function search(
           path: "tags",
           query: {
             term: {
-              "tags.tag": tag
-            }
-          }
-        }
-      }
+              "tags.tag": tag,
+            },
+          },
+        },
+      },
     ];
   }
   let qterms = { match_all: {} };
   if (query !== undefined) {
     qterms = {
       query_string: {
-        query: query
-      }
+        query: query,
+      },
     };
   }
 
@@ -107,78 +109,84 @@ export function search(
         should: [
           {
             term: {
-              visibility: "public"
-            }
-          }
+              visibility: "public",
+            },
+          },
         ],
-        minimum_should_match: 1
-      }
+        minimum_should_match: 1,
+      },
     },
     aggs: {
       type: {
-        terms: { field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type" }
-      }
+        terms: { field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type" },
+      },
     },
-    _source: fields.filter(l => !!l)
+    _source: fields.filter((l) => !!l),
   };
-  if (sort !== "match"){
+  if (sort !== "match") {
     params["sort"] = {
       [sort]: {
-        order: order
-      }
-    }
+        order: order,
+      },
+    };
   }
   // uncomment for debugging the search
   //console.log("Search: " + JSON.stringify(params));
   //return fetch(process.env.REACT_APP_URL_ELASTICSEARCH + '/' + type + '/'+ type + '/_search?type=' + type,
-  const search_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? type + "/_search" : type + "/" + type + "/_search?type=" + type
-  return fetch(
-    ELASTICSEARCH_SERVER + search_url,
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify(params)
-    }
-  )
+  const search_url =
+    ELASTICSEARCH_VERSION_MAYOR >= 8
+      ? type + "/_search"
+      : type + "/" + type + "/_search?type=" + type;
+  return fetch(ELASTICSEARCH_SERVER + search_url, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    mode: "cors",
+    body: JSON.stringify(params),
+  })
     .then(errorCheck)
-    .then(request => request.json())
-    .then(data => {
+    .then((request) => request.json())
+    .then((data) => {
       return {
-        counts: ELASTICSEARCH_VERSION_MAYOR >= 8 ? data["hits"]["total"]["value"] : data["hits"]["total"],
-        results: data["hits"]["hits"].map(x => {
+        counts:
+          ELASTICSEARCH_VERSION_MAYOR >= 8
+            ? data["hits"]["total"]["value"]
+            : data["hits"]["total"],
+        results: data["hits"]["hits"].map((x) => {
           let source = x["_source"];
           let res = {};
-          fields.forEach(field => {
+          fields.forEach((field) => {
             res[field] = getProperty(source, field);
           });
           return res;
-        })
+        }),
       };
     });
 }
 
 //get specific item
 export function getItem(type, itemId) {
-  const search_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? type + "/_doc/" + itemId : type + "/" + type + "/" + itemId
+  const search_url =
+    ELASTICSEARCH_VERSION_MAYOR >= 8
+      ? type + "/_doc/" + itemId
+      : type + "/" + type + "/" + itemId;
   return fetch(ELASTICSEARCH_SERVER + search_url, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    mode: "cors"
+    mode: "cors",
   })
     .then(errorCheck)
-    .then(request => request.json())
-    .then(data => {
+    .then((request) => request.json())
+    .then((data) => {
       if (data["found"] !== true) {
         throw Error(
           'No task with id "' +
             itemId +
-            '" found. It may have been removed or renamed'
+            '" found. It may have been removed or renamed',
         );
       }
       return Promise.resolve(data["_source"]);
@@ -190,18 +198,18 @@ export function getList(itemId) {
   return fetch(ELASTICSEARCH_SERVER + "data/data/list/tag/" + itemId, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    mode: "cors"
+    mode: "cors",
   })
     .then(errorCheck)
-    .then(request => request.json())
-    .then(data => {
+    .then((request) => request.json())
+    .then((data) => {
       if (data["found"] !== true) {
         throw Error(
           'No task with id "' +
             itemId +
-            '" found. It may have been removed or renamed'
+            '" found. It may have been removed or renamed',
         );
       }
       return Promise.resolve(data["_source"]);

@@ -6,7 +6,6 @@ The frontend for OpenML.
 
 The easiest way to use the OpenML image is using [Openml Services](https://github.com/openml/services).
 
-
 Alternatively, run the container directly using
 
 ```bash
@@ -17,12 +16,14 @@ docker kill openml-frontend  # the container doesn't seem to respond to a friend
 ## Build and publish
 
 For local development using docker compose (openml services):
+
 ```bash
 docker build -f docker/Dockerfile --tag openml/frontend:dev_[version] .
 docker push openml/frontend:dev_[version]
 ```
 
 For production on kubernetes:
+
 ```bash
 docker build -f docker/Dockerfile --tag openml/frontend:k8s_[version] --build-arg environment=.k8s .
 docker push openml/frontend:k8s_[version]

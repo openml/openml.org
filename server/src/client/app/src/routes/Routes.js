@@ -15,9 +15,9 @@ const childRoutes = (Layout, routes) =>
         background,
         entity_type,
         searchcolor,
-        component: Component
+        component: Component,
       },
-      index
+      index,
     ) =>
       children ? (
         // Route item with children
@@ -29,15 +29,15 @@ const childRoutes = (Layout, routes) =>
               entity_type,
               searchcolor,
               subtype,
-              component: Component
+              component: Component,
             },
-            index
+            index,
           ) => (
             <Route
               key={index}
               path={path}
               exact
-              render={props => (
+              render={(props) => (
                 <Layout>
                   <Component
                     type={entity_type}
@@ -48,7 +48,7 @@ const childRoutes = (Layout, routes) =>
                 </Layout>
               )}
             />
-          )
+          ),
         )
       ) : (
         // Route item without children
@@ -56,7 +56,7 @@ const childRoutes = (Layout, routes) =>
           key={index}
           path={path}
           exact
-          render={props => (
+          render={(props) => (
             <Layout background={background}>
               <Component
                 type={entity_type}
@@ -66,7 +66,7 @@ const childRoutes = (Layout, routes) =>
             </Layout>
           )}
         />
-      )
+      ),
   );
 
 const Routes = () => (

@@ -11,7 +11,7 @@ import {
   InputLabel,
   Button as MuiButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import axios from "axios";
@@ -19,15 +19,15 @@ import axios from "axios";
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
+  padding: ${(props) => props.theme.spacing(6)};
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
 const RedIcon = styled(FontAwesomeIcon)({
-  color: red[500]
+  color: red[500],
 });
 
 function SignUp() {
@@ -41,10 +41,12 @@ function SignUp() {
     console.log(event.target.password.value);
     if (event.target.password.value.length < 8) {
       setError(true);
-      setErrorMessage("Password too weak. Use at least 8 characters, with numbers, digits, and special characters.");
+      setErrorMessage(
+        "Password too weak. Use at least 8 characters, with numbers, digits, and special characters.",
+      );
     } else if (
       /[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(
-        event.target.email.value
+        event.target.email.value,
       ) !== true
     ) {
       setError(true);
@@ -55,9 +57,9 @@ function SignUp() {
           first_name: event.target.fname.value,
           last_name: event.target.lname.value,
           email: event.target.email.value,
-          password: event.target.password.value
+          password: event.target.password.value,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.msg === "User created") {
             console.log(response.data);
             setRegister(true);
@@ -65,7 +67,7 @@ function SignUp() {
             setDuplicateUser(true);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.data);
         });
     }
@@ -130,7 +132,7 @@ function SignUp() {
       </form>
       <p>
         You will receive an email to confirm your account. If you don't receive
-        it, please check your spam folder. 
+        it, please check your spam folder.
       </p>
       <p>
         <RedIcon icon="exclamation-triangle" /> By joining, you agree to the{" "}

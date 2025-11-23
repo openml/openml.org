@@ -5,8 +5,8 @@ import {
   FormControl,
   Button as MuiButton,
   Typography,
-  Tooltip, 
-  IconButton
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -43,7 +43,7 @@ function CopyableAPIKey({ apikey }) {
 }
 
 function APIKey() {
-  const [apikey, setApikey] = useState('');
+  const [apikey, setApikey] = useState("");
   const yourConfig = {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token"),
@@ -67,7 +67,7 @@ function APIKey() {
       .post(
         process.env.REACT_APP_URL_SITE_BACKEND + "api-key",
         { resetapikey: true },
-        yourConfig
+        yourConfig,
       )
       .then((response) => {
         setApikey(response.data.apikey); // Refresh it immediately
@@ -87,7 +87,7 @@ function APIKey() {
       </Typography>
       <form onSubmit={resetApiKey}>
         <FormControl margin="normal" required fullWidth>
-          <CopyableAPIKey apikey={apikey}/>
+          <CopyableAPIKey apikey={apikey} />
         </FormControl>
         <Button
           type="submit"
@@ -100,7 +100,7 @@ function APIKey() {
         </Button>
       </form>
     </React.Fragment>
-    );
+  );
 }
 
 export default APIKey;

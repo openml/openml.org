@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -11,12 +11,7 @@ import { MainContext } from "../App.js";
 import { Redirect } from "react-router-dom";
 import { spacing } from "@mui/system";
 
-import {
-  CssBaseline,
-  Paper as MuiPaper,
-  Snackbar,
-  Alert
-} from "@mui/material";
+import { CssBaseline, Paper as MuiPaper, Snackbar, Alert } from "@mui/material";
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -26,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${props =>
+    background: ${(props) =>
       window.location.pathname === "/" ? "#fff" : props.theme.body.background};
   }
 `;
@@ -34,11 +29,11 @@ const GlobalStyle = createGlobalStyle`
 const Root = styled.div`
   display: flex;
   min-height: 100vh;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient"
       ? "linear-gradient(217deg, rgba(255,0,0,1), rgba(255,0,0,0) 70.71%), linear-gradient(336deg, rgba(0,200,0,1), rgba(0,200,0,0) 70.71%), linear-gradient(127deg, rgba(0,0,255,1), rgba(0,0,255,0) 70.71%)"
       : "none"};
-  background-size: 100vw ${props => (props.width <= 960 ? "900px" : "600px")};
+  background-size: 100vw ${(props) => (props.width <= 960 ? "900px" : "600px")};
   background-repeat: no-repeat;
 `;
 
@@ -53,11 +48,11 @@ const Paper = styled(MuiPaper)(spacing);
 
 const MainContent = styled(Paper)`
   flex: 1;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient" ? "transparent" : props.theme.body.background};
-  box-shadow ${props =>
+  box-shadow ${(props) =>
     props.bg === "Gradient" ? "none" : props.theme.body.background};
-  padding: ${props => (props.bg === "Gradient" ? "10px" : "0")};
+  padding: ${(props) => (props.bg === "Gradient" ? "10px" : "0")};
 
   @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     flex: none;
@@ -65,8 +60,8 @@ const MainContent = styled(Paper)`
 `;
 
 const Drawer = styled.div`
-  ${props => props.theme.breakpoints.up("lg")} {
-    width: ${props => props.drawerWidth}px;
+  ${(props) => props.theme.breakpoints.up("lg")} {
+    width: ${(props) => props.drawerWidth}px;
     flex-shrink: 0;
   }
 `;
@@ -81,7 +76,7 @@ function Main(props) {
     setBannerOpen(false);
   };
 
-  const hidden = useMediaQuery(theme => theme.breakpoints.up('lg'));
+  const hidden = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -89,14 +84,15 @@ function Main(props) {
 
   useEffect(() => {
     const listenToScroll = () => {
-      const position = document.documentElement.clientHeight - window.pageYOffset;
+      const position =
+        document.documentElement.clientHeight - window.pageYOffset;
       if (!activeSearch && position < 260) {
         setActiveSearch(true);
       } else if (activeSearch && position > 260) {
         setActiveSearch(false);
       }
     };
-  
+
     const updateDimensions = () => {
       if (mode !== "wide" && window.innerWidth > 960) {
         setMode("wide");
@@ -104,24 +100,24 @@ function Main(props) {
         setMode("small");
       }
     };
-    window.addEventListener('scroll', listenToScroll);
-    window.addEventListener('resize', updateDimensions);
+    window.addEventListener("scroll", listenToScroll);
+    window.addEventListener("resize", updateDimensions);
 
     return () => {
-      window.removeEventListener('scroll', listenToScroll);
-      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener("scroll", listenToScroll);
+      window.removeEventListener("resize", updateDimensions);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { children, routes, background } = props;
 
   const theme = useTheme();
-  const largeScreen = useMediaQuery(theme.breakpoints.up("lg"))
+  const largeScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
   return (
     <MainContext.Consumer>
-      {context => (
+      {(context) => (
         <Root bg={background} width={window.innerWidth}>
           {context.query !== undefined && context.type === undefined && (
             <Redirect to="/search?type=data" />
@@ -131,26 +127,29 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
-          {false && <Snackbar
-            open={bannerOpen}        
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            autoHideDuration={10000}
-            onClose={handleBannerClose}
-            sx={{ width: '97%'}}
-          >
-            <Alert
+          {false && (
+            <Snackbar
+              open={bannerOpen}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              autoHideDuration={10000}
               onClose={handleBannerClose}
-              severity="warning"
-              sx={{ width: '100%'}}
+              sx={{ width: "97%" }}
             >
-                We are restoring full service after a recent cyberattack. Some links may temporarily not work.{" "}
-                <a href="https://github.com/orgs/openml/discussions/20"> 
+              <Alert
+                onClose={handleBannerClose}
+                severity="warning"
+                sx={{ width: "100%" }}
+              >
+                We are restoring full service after a recent cyberattack. Some
+                links may temporarily not work.{" "}
+                <a href="https://github.com/orgs/openml/discussions/20">
                   Learn more
                 </a>
-            </Alert>
-          </Snackbar>}
+              </Alert>
+            </Snackbar>
+          )}
           <Drawer drawerWidth={context.drawerWidth} open={false}>
-            {hidden ? null : 
+            {hidden ? null : (
               <Sidebar
                 routes={routes}
                 PaperProps={{ style: { width: context.drawerWidth } }}
@@ -158,11 +157,11 @@ function Main(props) {
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
               />
-            }
+            )}
             <Sidebar
               routes={routes}
               PaperProps={{ style: { width: context.drawerWidth } }}
-              sx={{ display: { lg: 'block', xs: 'none' } }}
+              sx={{ display: { lg: "block", xs: "none" } }}
             />
           </Drawer>
           <AppContent>
@@ -172,7 +171,7 @@ function Main(props) {
               routes={routes}
               loggedIn={context.loggedIn}
             />
-            <MainContent p={{largeScreen} ? 10 : 8} bg={background}>
+            <MainContent p={{ largeScreen } ? 10 : 8} bg={background}>
               {children}
             </MainContent>
             {/*<Footer />*/}

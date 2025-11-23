@@ -6,11 +6,10 @@ import { Settings as SettingsIcon } from "@mui/icons-material";
 import Settings from "../Settings";
 import { useTranslation } from "next-i18next";
 
-
-const Footer = styled('div')(({ theme }) => ({
+const Footer = styled("div")(({ theme }) => ({
   backgroundColor: `${theme.palette.sidebar.footer.background} !important`,
   padding: 0,
-  borderRight: '1px solid rgba(0, 0, 0, 0.12)'
+  borderRight: "1px solid rgba(0, 0, 0, 0.12)",
 }));
 
 const Item = styled(ListItemButton)(({ theme }) => ({
@@ -27,7 +26,7 @@ const Item = styled(ListItemButton)(({ theme }) => ({
     height: 20,
     opacity: 0.5,
   },
-  '&:hover': {
+  "&:hover": {
     backgroundColor: darken(theme.palette.sidebar.footer.background, 0.03),
   },
 }));

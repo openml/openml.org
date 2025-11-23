@@ -8,8 +8,8 @@ import WebFont from "webfontloader";
 
 WebFont.load({
   google: {
-    families: ["Lato:400,700", "sans-serif"]
-  }
+    families: ["Lato:400,700", "sans-serif"],
+  },
 });
 
 ReactDOM.render(<App />, document.getElementById("root"));

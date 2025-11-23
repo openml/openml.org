@@ -9,11 +9,11 @@ import { useHistory } from "react-router-dom";
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
+  padding: ${(props) => props.theme.spacing(6)};
   text-align: center;
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 

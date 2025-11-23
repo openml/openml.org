@@ -30,7 +30,7 @@ const SearchWrapper = styled(Box)`
   background-color: ${(props) =>
     darken(
       0.05,
-      props.ecolor ? props.ecolor : props.theme.palette.header.background
+      props.ecolor ? props.ecolor : props.theme.palette.header.background,
     )};
 `;
 
@@ -113,7 +113,7 @@ const SearchBar = memo(() => {
       { key: "benchmark", value: "Benchmark" },
       { key: "measure", value: "Measures" },
     ],
-    []
+    [],
   );
 
   const [selectedIndex, setSelectedIndex] = useState("data");
@@ -144,11 +144,11 @@ const SearchBar = memo(() => {
   const handleIndexChange = (event) => {
     const newIndex = event.target.value;
     setSelectedIndex(newIndex);
-  
+
     if (searchStarted && searchTerm) {
       router.push(`/${newIndex[0]}/search?q=${encodeURIComponent(searchTerm)}`);
     }
-  }; 
+  };
 
   // Copies the the search term into the config when starting the search
   const buildSearchConfig = (selectedIndex, searchTerm) => ({
@@ -160,7 +160,7 @@ const SearchBar = memo(() => {
   });
 
   const buildSearchConfigSimpler = (selectedIndex, searchTerm) => ({
-    ...indexConfigs[selectedIndex]
+    ...indexConfigs[selectedIndex],
   });
 
   return (
@@ -188,7 +188,9 @@ const SearchBar = memo(() => {
       </IndexSelect>
 
       {searchStarted && searchTerm ? ( // Wait for a search to be started before activating the search context
-        <SearchProvider config={buildSearchConfigSimpler(selectedIndex, searchTerm)}>
+        <SearchProvider
+          config={buildSearchConfigSimpler(selectedIndex, searchTerm)}
+        >
           <SearchBox
             defaultInputValue={searchTerm}
             searchAsYouType={true}
@@ -205,7 +207,9 @@ const SearchBar = memo(() => {
             autocompleteSuggestions={true}
             onSubmit={(term) => {
               setSearchTerm(term); // update committed search
-              router.push(`/${selectedIndex[0]}/search?q=${encodeURIComponent(term)}`);
+              router.push(
+                `/${selectedIndex[0]}/search?q=${encodeURIComponent(term)}`,
+              );
             }}
             autocompleteView={({ autocompletedResults, getItemProps }) => (
               <div className="sui-search-box__autocomplete-container">
@@ -234,22 +238,25 @@ const SearchBar = memo(() => {
           />
         </SearchProvider>
       ) : (
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          if (searchTerm) {
-            setSearchStarted(true);
-            router.push(`/${selectedIndex[0]}/search?q=${encodeURIComponent(searchTerm)}`);
-          }
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (searchTerm) {
+              setSearchStarted(true);
+              router.push(
+                `/${selectedIndex[0]}/search?q=${encodeURIComponent(searchTerm)}`,
+              );
+            }
+          }}
+        >
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t("search." + selectedIndex)}
           />
         </form>
-      )
-    }
-  </>
+      )}
+    </>
   );
 });
 

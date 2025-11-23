@@ -8,7 +8,7 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid
+  Grid,
 } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -124,7 +124,11 @@ export class StudyItem extends React.Component {
               variant="outlined"
               color="primary"
               avatar={
-                <Avatar>{this.props.object.uploader ? this.props.object.uploader.charAt(0) : "X"}</Avatar>
+                <Avatar>
+                  {this.props.object.uploader
+                    ? this.props.object.uploader.charAt(0)
+                    : "X"}
+                </Avatar>
               }
               label={this.props.object.uploader}
               href={"search?type=user&id=" + this.props.object.uploader_id}
@@ -132,7 +136,10 @@ export class StudyItem extends React.Component {
               clickable
             />
             <br />
-            <MetaTag type={"data"} value={this.props.object.datasets_included} />
+            <MetaTag
+              type={"data"}
+              value={this.props.object.datasets_included}
+            />
             <MetaTag type={"tasks"} value={this.props.object.tasks_included} />
             <MetaTag type={"flows"} value={this.props.object.flows_included} />
             <MetaTag type={"runs"} value={this.props.object.runs_included} />

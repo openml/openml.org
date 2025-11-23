@@ -25,7 +25,7 @@ class AuthProvider extends React.Component {
         value={{
           isAuth: this.state.isAuth,
           login: this.login,
-          logout: this.logout
+          logout: this.logout,
         }}
       >
         {this.props.children}

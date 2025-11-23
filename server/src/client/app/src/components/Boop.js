@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSpring } from '@react-spring/web';
+import React from "react";
+import { useSpring } from "@react-spring/web";
 
 function useBoop({
   x = 0,

@@ -2,7 +2,6 @@ import { jwtDecode } from "jwt-decode";
 import { verify, sign } from "jsonwebtoken";
 import axios from "./axios";
 
-
 const isValidToken = (accessToken) => {
   if (!accessToken || accessToken.split(".").length !== 3) {
     return false;

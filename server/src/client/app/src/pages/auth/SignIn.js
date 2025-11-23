@@ -11,7 +11,7 @@ import {
   InputLabel,
   Button as MuiButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,10 +20,10 @@ import { MainContext } from "../../App.js";
 const Button = styled(MuiButton)(spacing);
 
 const Wrapper = styled(Paper)`
-  padding: ${props => props.theme.spacing(6)};
+  padding: ${(props) => props.theme.spacing(6)};
 
-  ${props => props.theme.breakpoints.up("md")} {
-    padding: ${props => props.theme.spacing(10)};
+  ${(props) => props.theme.breakpoints.up("md")} {
+    padding: ${(props) => props.theme.spacing(10)};
   }
 `;
 
@@ -42,9 +42,9 @@ function SignIn() {
     axios
       .post(process.env.REACT_APP_URL_SITE_BACKEND + "login", {
         email: event.target.email.value,
-        password: event.target.password.value
+        password: event.target.password.value,
       })
-      .then(response => {
+      .then((response) => {
         console.log(response.data);
         if (response.data.msg === "NotConfirmed") {
           setConfirm(true);
@@ -58,7 +58,7 @@ function SignIn() {
           setLogger(true);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         setError(true);
         setErrorMsg(String(error));

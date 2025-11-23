@@ -21,7 +21,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Typography as MuiTypography
+  Typography as MuiTypography,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
@@ -31,7 +31,7 @@ const TopLink = styled(NavHashLink)({
   color: grey[600],
   marginLeft: 10,
   marginRight: 10,
-  textDecoration: "none"
+  textDecoration: "none",
 });
 
 const Card = styled(MuiCard)(spacing);
@@ -41,24 +41,24 @@ const Typography = styled(MuiTypography)(spacing);
 const ContactButton = styled(Fab)({
   margin: 0,
   top: 85,
-  bottom: 'auto',
-  left: 'auto',
-  position: 'fixed'
+  bottom: "auto",
+  left: "auto",
+  position: "fixed",
 });
 
 const HeroTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
-  padding: "2vw 5vw"
+  padding: "2vw 5vw",
 });
 
 const Paragraph = styled(Typography)({
-  paddingBottom: "2vw"
+  paddingBottom: "2vw",
 });
 
 const MainPaper = styled(Paper)`
   flex: 1;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
 `;
@@ -66,13 +66,13 @@ const MainPaper = styled(Paper)`
 const ListIcon = styled(FontAwesomeIcon)({
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const BigAvatar = styled(Avatar)`
   width: 120px;
   height: 120px;
-  margin: 0 auto ${props => props.theme.spacing(2)}px;
+  margin: 0 auto ${(props) => props.theme.spacing(2)}px;
   background-image: linear-gradient(
     to bottom right,
     DeepSkyBlue,
@@ -86,7 +86,10 @@ const BigBadge = styled(Badge)`
 `;
 
 const tc_ids = [1, 2, 27, 86, 348, 970];
-const core_ids = [1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744, 35875, 35755, 34097, 34198];
+const core_ids = [
+  1, 2, 27, 86, 348, 970, 1140, 869, 8111, 9186, 3744, 35875, 35755, 34097,
+  34198,
+];
 const active_ids = [10700, 5348, 2902, 8309, 3744];
 const contributor_ids = [1478, 5341];
 
@@ -115,7 +118,7 @@ const Person = ({ id, name, bio, image }) => {
             style={{
               overflow: "hidden",
               textOverflow: "ellipsis",
-              maxHeight: 115
+              maxHeight: 115,
             }}
           >
             {bio}
@@ -183,7 +186,7 @@ function ListItemLink(props) {
 
 export default class About extends React.Component {
   state = {
-    people: []
+    people: [],
   };
 
   fetch(ids) {
@@ -194,12 +197,12 @@ export default class About extends React.Component {
       ["user_id", "first_name", "last_name", "bio", "image"],
       undefined,
       undefined,
-      { terms: { user_id: ids } }
+      { terms: { user_id: ids } },
     )
-      .then(data => {
+      .then((data) => {
         this.setState({ people: data.results.sort(orderList) });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -224,7 +227,7 @@ export default class About extends React.Component {
             component="nav"
             style={{
               marginTop: -10,
-              marginBottom: 20
+              marginBottom: 20,
             }}
           >
             <TopLink smooth to="/about#about">
@@ -240,17 +243,24 @@ export default class About extends React.Component {
               Foundation
             </TopLink>
           </List>
-          <Zoom in={true} style={{ transitionDelay: '1000ms'}}>
-            <ContactButton color="primary" size="medium" style={{ right: 16}}
-              href="https://twitter.com/intent/tweet?screen_name=open_ml">
-              <FontAwesomeIcon icon={["fab", "twitter"]} size="lg"/>
+          <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
+            <ContactButton
+              color="primary"
+              size="medium"
+              style={{ right: 16 }}
+              href="https://twitter.com/intent/tweet?screen_name=open_ml"
+            >
+              <FontAwesomeIcon icon={["fab", "twitter"]} size="lg" />
             </ContactButton>
           </Zoom>
-          <Zoom in={true} style={{ transitionDelay: '1000ms'}}>
-            <ContactButton color="primary" size="medium"
-                 style={{ backgroundColor: purple[500], right: 76}}
-                 href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ">
-              <FontAwesomeIcon icon={["fab", "slack"]} size="lg"/>
+          <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
+            <ContactButton
+              color="primary"
+              size="medium"
+              style={{ backgroundColor: purple[500], right: 76 }}
+              href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ"
+            >
+              <FontAwesomeIcon icon={["fab", "slack"]} size="lg" />
             </ContactButton>
           </Zoom>
           <HeroTitle variant="h3" align="center" id="about">
@@ -276,20 +286,21 @@ export default class About extends React.Component {
                   well-organized and easily accessible to anyone.
                 </b>{" "}
                 There is amazing machine learning research going on every day in
-                labs all over the world. What if we could easily share the latest
-                great results (datasets, code, experiments) from all of our labs
-                and organize them online, so that everyone can easily discover and
-                access them, use them in myriad unexpected ways, and solve problems
-                together on a global scale?
+                labs all over the world. What if we could easily share the
+                latest great results (datasets, code, experiments) from all of
+                our labs and organize them online, so that everyone can easily
+                discover and access them, use them in myriad unexpected ways,
+                and solve problems together on a global scale?
               </Paragraph>
               <Paragraph>
-                We strive to make as many datasets as possible easily discoverable, well
-                documented, and frictionlessly accessible. When new models are trained and
-                evaluated, we also make these results easily discoverable, clearly
-                documented and reproducible, so that we can trust them, learn from them,
-                and build on the combined results of the planet. And of course, we use
-                machine learning on top of all this data to make new discoveries and
-                automate our work.
+                We strive to make as many datasets as possible easily
+                discoverable, well documented, and frictionlessly accessible.
+                When new models are trained and evaluated, we also make these
+                results easily discoverable, clearly documented and
+                reproducible, so that we can trust them, learn from them, and
+                build on the combined results of the planet. And of course, we
+                use machine learning on top of all this data to make new
+                discoveries and automate our work.
               </Paragraph>
               <Typography
                 variant="h6"
@@ -301,15 +312,17 @@ export default class About extends React.Component {
               </Typography>
               <Paragraph>
                 <b>
-                  We want to build the tools that we ourselves like to
-                  use, that empower us as researchers, and make our lives easier.
+                  We want to build the tools that we ourselves like to use, that
+                  empower us as researchers, and make our lives easier.
                 </b>{" "}
-                Built around open interfaces, OpenML can be used to <b>automatically</b> share
-                (and import) datasets, algorithms, and experiments results straight from the
-                tools that we already know and love. Through our APIs, OpenML can be easily
-                integrated into new workflows and processes, to import new data and
-                export new results. We also believe in great standards for collecting and
-                sharing data and for collecting and analysing experimental results.
+                Built around open interfaces, OpenML can be used to{" "}
+                <b>automatically</b> share (and import) datasets, algorithms,
+                and experiments results straight from the tools that we already
+                know and love. Through our APIs, OpenML can be easily integrated
+                into new workflows and processes, to import new data and export
+                new results. We also believe in great standards for collecting
+                and sharing data and for collecting and analysing experimental
+                results.
               </Paragraph>
 
               <Paragraph>
@@ -363,7 +376,7 @@ export default class About extends React.Component {
                       bio={bio}
                       image={image}
                     />
-                  )
+                  ),
                 )}
                 <Person
                   key="0"
@@ -517,23 +530,24 @@ export default class About extends React.Component {
                 style={{ marginBottom: 20 }}
               >
                 <ListIcon icon="hands" size="lg" style={{ color: blue[400] }} />
-                <br /> <b>Our mission</b> <br /> is to make machine learning simple,
-                accessible, collaborative and open
+                <br /> <b>Our mission</b> <br /> is to make machine learning
+                simple, accessible, collaborative and open
               </Typography>
               <Paragraph>
-                ... to enhance and streamline machine learning research, education and
-                skillful practice. The foundation aims to achieve this mission by, among others,
-                supporting the OpenML.org platform to offer a worldwide
-                community the means to openly share and build upon each other’s
-                work, enhancing collaboration, education, scholarship, openness
-                of data and code, automation of processes, and reproducibility
-                of results. We do this in close collaboration with the OpenML
-                community and in accordance with the guiding principles of the
-                OpenML platform, such as the code of honor and the citation
-                policy. More generally, we aim to provide the infrastructure,
-                data, code, and scientific foundations necessary to accelerate
-                research for the general benefit of society and to create
-                positive outcomes for future generations.
+                ... to enhance and streamline machine learning research,
+                education and skillful practice. The foundation aims to achieve
+                this mission by, among others, supporting the OpenML.org
+                platform to offer a worldwide community the means to openly
+                share and build upon each other’s work, enhancing collaboration,
+                education, scholarship, openness of data and code, automation of
+                processes, and reproducibility of results. We do this in close
+                collaboration with the OpenML community and in accordance with
+                the guiding principles of the OpenML platform, such as the code
+                of honor and the citation policy. More generally, we aim to
+                provide the infrastructure, data, code, and scientific
+                foundations necessary to accelerate research for the general
+                benefit of society and to create positive outcomes for future
+                generations.
               </Paragraph>
             </CardContent>
           </Card>

@@ -23,7 +23,7 @@ import {
   ListItemText,
   Drawer as MuiDrawer,
   List as MuiList,
-  Typography
+  Typography,
 } from "@mui/material";
 
 import routes from "../routes/index";
@@ -53,39 +53,39 @@ const Drawer = styled(MuiDrawer)`
 `;
 
 const Scrollbar = styled(CustomScrollbar)`
-  background-color: ${props => props.theme.sidebar.background};
+  background-color: ${(props) => props.theme.sidebar.background};
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 `;
 
 const List = styled(MuiList)`
-  background-color: ${props => props.theme.sidebar.background};
+  background-color: ${(props) => props.theme.sidebar.background};
   margin-top: -18px;
 `;
 
 const Items = styled.div`
-  padding-top: ${props => props.theme.spacing(2.5)};
-  padding-bottom: ${props => props.theme.spacing(2.5)};
+  padding-top: ${(props) => props.theme.spacing(2.5)};
+  padding-bottom: ${(props) => props.theme.spacing(2.5)};
 `;
 
 const Brand = styled(ListItem)`
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.h5.fontSize};
-  font-weight: ${props => props.theme.typography.fontWeightMedium};
-  color: ${props =>
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-size: ${(props) => props.theme.typography.h5.fontSize};
+  font-weight: ${(props) => props.theme.typography.fontWeightMedium};
+  color: ${(props) =>
     !props.searchcolor && props.currenttheme === 1
       ? "#333"
       : props.theme.sidebar.header.color};
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.searchcolor && props.currenttheme === 1
       ? props.searchcolor
       : props.searchcolor
-      ? props.theme.sidebar.background
-      : props.theme.sidebar.header.background};
-  padding-left: ${props => props.theme.spacing(3)};
+        ? props.theme.sidebar.background
+        : props.theme.sidebar.header.background};
+  padding-left: ${(props) => props.theme.spacing(3)};
   font-size: 13pt;
   height: 56px;
 
-  ${props => props.theme.breakpoints.up("sm")} {
+  ${(props) => props.theme.breakpoints.up("sm")} {
     height: 64px;
     font-size: 14pt;
   }
@@ -100,13 +100,13 @@ const BrandIcon = styled(Icon)`
 `;
 
 const Category = styled(ListItem)`
-  padding-top: ${props => props.theme.spacing(2.4)};
-  padding-bottom: ${props => props.theme.spacing(2.4)};
-  padding-left: ${props => props.theme.spacing(4)};
-  padding-right: ${props => props.theme.spacing(1)};
-  font-weight: ${props => props.theme.typography.fontWeightRegular};
-  border-left: ${props => (props.activecategory === "true" ? "3px" : "0px")}
-    solid ${props => props.currentcolor};
+  padding-top: ${(props) => props.theme.spacing(2.4)};
+  padding-bottom: ${(props) => props.theme.spacing(2.4)};
+  padding-left: ${(props) => props.theme.spacing(4)};
+  padding-right: ${(props) => props.theme.spacing(1)};
+  font-weight: ${(props) => props.theme.typography.fontWeightRegular};
+  border-left: ${(props) => (props.activecategory === "true" ? "3px" : "0px")}
+    solid ${(props) => props.currentcolor};
 
   svg {
     font-size: 20px;
@@ -118,9 +118,9 @@ const Category = styled(ListItem)`
     background: rgba(0, 0, 0, 0.15);
   }
 
-  &.${props => props.activeClassName} {
+  &.${(props) => props.activeClassName} {
     span {
-      color: ${props => props.theme.sidebar.color};
+      color: ${(props) => props.theme.sidebar.color};
     }
   }
 `;
@@ -128,15 +128,15 @@ const Category = styled(ListItem)`
 const CategoryText = styled(ListItemText)`
   margin: 0;
   span {
-    color: ${props => props.theme.sidebar.color};
-    font-size: ${props => props.theme.typography.body1.fontSize};
-    font-weight: ${props => props.theme.typography.fontWeightRegular};
-    padding: 0 ${props => props.theme.spacing(4)};
+    color: ${(props) => props.theme.sidebar.color};
+    font-size: ${(props) => props.theme.typography.body1.fontSize};
+    font-weight: ${(props) => props.theme.typography.fontWeightRegular};
+    padding: 0 ${(props) => props.theme.spacing(4)};
   }
 `;
 
 const CategoryIcon = styled(FontAwesomeIcon)`
-  color: ${props => props.currentcolor};
+  color: ${(props) => props.currentcolor};
   width: 25px !important;
 `;
 
@@ -144,16 +144,16 @@ const CountBadge = styled(Chip)`
   font-size: 11px;
   height: 20px;
   float: right;
-  color: ${props => props.theme.sidebar.color};
+  color: ${(props) => props.theme.sidebar.color};
   background-color: unset;
   border: none;
   margin-right: 10px;
 `;
 
 const SidebarSection = styled(Typography)`
-  color: ${props => props.theme.sidebar.color};
-  padding: ${props => props.theme.spacing(0)}
-    ${props => props.theme.spacing(4)} ${props => props.theme.spacing(0)};
+  color: ${(props) => props.theme.sidebar.color};
+  padding: ${(props) => props.theme.spacing(0)}
+    ${(props) => props.theme.spacing(4)} ${(props) => props.theme.spacing(0)};
   opacity: 0.9;
   display: block;
   margin-bottom: 6px;
@@ -162,17 +162,18 @@ const SidebarSection = styled(Typography)`
 `;
 
 const SidebarFooter = styled.div`
-  padding: ${props => props.theme.spacing(4)};
+  padding: ${(props) => props.theme.spacing(4)};
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  color: ${props => props.theme.sidebar.color};
-  background-color: ${props => props.theme.sidebar.background};
+  color: ${(props) => props.theme.sidebar.color};
+  background-color: ${(props) => props.theme.sidebar.background};
   width: 260px;
   overflow: hidden;
 `;
 
-
-const ELASTICSEARCH_SERVER = process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
-const ELASTICSEARCH_VERSION_MAYOR = process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6
+const ELASTICSEARCH_SERVER =
+  process.env.REACT_APP_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+const ELASTICSEARCH_VERSION_MAYOR =
+  process.env.REACT_APP_ELASTICSEARCH_VERSION_MAYOR || 6;
 
 function SidebarCategory({
   name,
@@ -234,22 +235,22 @@ class Sidebar extends React.Component {
   intervalID = 0;
 
   state = {
-    counts: {}
+    counts: {},
   };
 
-  toggle = index => {
+  toggle = (index) => {
     // Collapse all elements
     Object.keys(this.state).forEach(
-      item =>
+      (item) =>
         this.state[index] ||
         this.setState(() => ({
-          [item]: false
-        }))
+          [item]: false,
+        })),
     );
 
     // Toggle selected element
-    this.setState(state => ({
-      [index]: !state[index]
+    this.setState((state) => ({
+      [index]: !state[index],
     }));
   };
 
@@ -263,7 +264,7 @@ class Sidebar extends React.Component {
       const isHome = route.containsHome && pathName === "/" ? true : false;
 
       this.setState(() => ({
-        [index]: isActive || isOpen || isHome
+        [index]: isActive || isOpen || isHome,
       }));
     });
 
@@ -275,7 +276,7 @@ class Sidebar extends React.Component {
   }
 
   // Abbreviate counts
-  abbreviateNumber = value => {
+  abbreviateNumber = (value) => {
     let newValue = value;
     if (value > 1000) {
       const suffixes = ["", "k", "M", "B", "T"];
@@ -294,69 +295,91 @@ class Sidebar extends React.Component {
   axiosCancelToken = axios.CancelToken.source();
 
   countUpdate = async () => {
-
     const data = {
       size: 0,
-      query: { bool: { should: [ { term: { status: "active" } },
-                                 { bool: { must_not: { exists: { field: "status" } } } } ] } },
+      query: {
+        bool: {
+          should: [
+            { term: { status: "active" } },
+            { bool: { must_not: { exists: { field: "status" } } } },
+          ],
+        },
+      },
       aggs: {
         count_by_type: {
-            terms: {
-                field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type",
-                size: 100
-            }
-        }
-      }
+          terms: {
+            field: ELASTICSEARCH_VERSION_MAYOR >= 8 ? "_index" : "_type",
+            size: 100,
+          },
+        },
+      },
     };
 
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      cancelToken: this.axiosCancelToken.token
+      cancelToken: this.axiosCancelToken.token,
     };
 
     axios
       .post(ELASTICSEARCH_SERVER + "_all/_search", data, headers)
-      .then(response => {
+      .then((response) => {
         let res = response.data.aggregations.count_by_type.buckets;
         let counts = {};
-        res.forEach(r => {
+        res.forEach((r) => {
           counts[r.key] = this.abbreviateNumber(r.doc_count);
         });
         this.setState({ counts: counts });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
-    
+
     // second query for benchmark counts
-    const study_url = ELASTICSEARCH_VERSION_MAYOR >= 8 ? "study/_search" : "study/study/_search"
+    const study_url =
+      ELASTICSEARCH_VERSION_MAYOR >= 8
+        ? "study/_search"
+        : "study/study/_search";
     const bench_data = {
       size: 0,
-      query: { bool : { filter : { bool: { should: [ {"wildcard": { "name": "*benchmark*" }}, {"wildcard": { "name": "*suite*" }}] } }}}
+      query: {
+        bool: {
+          filter: {
+            bool: {
+              should: [
+                { wildcard: { name: "*benchmark*" } },
+                { wildcard: { name: "*suite*" } },
+              ],
+            },
+          },
+        },
+      },
     };
     axios
       .post(ELASTICSEARCH_SERVER + study_url, bench_data, headers)
-      .then(response => {
+      .then((response) => {
         let counts = this.state.counts;
-        counts["benchmark"] = ELASTICSEARCH_VERSION_MAYOR >= 8 ? response.data.hits.total.value : response.data.hits.total;
+        counts["benchmark"] =
+          ELASTICSEARCH_VERSION_MAYOR >= 8
+            ? response.data.hits.total.value
+            : response.data.hits.total;
         this.setState({ counts: counts });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
   componentWillUnmount() {
     clearInterval(this.intervalID);
-    this.axiosCancelToken.cancel("Sidebar unmounted")
+    this.axiosCancelToken.cancel("Sidebar unmounted");
   }
 
   render() {
     const { classes, staticContext, location, ...other } = this.props;
     return (
       <MainContext.Consumer>
-        {context => (
+        {(context) => (
           <Drawer variant="permanent" open={false} {...other}>
             {/* The OpenML logo in svg format */}
             <SimpleLink href="/">
@@ -493,9 +516,11 @@ class Sidebar extends React.Component {
                                             context.filters.study_type.value) // Only show subtype counts if a subtype is selected
                                         ? context.counts
                                         : 0
-                                      : this.state.counts[category.entity_type] 
-                                      ? this.state.counts[category.entity_type]
-                                      : 0
+                                      : this.state.counts[category.entity_type]
+                                        ? this.state.counts[
+                                            category.entity_type
+                                          ]
+                                        : 0
                                   }
                                 />
                               ))}
@@ -523,9 +548,9 @@ class Sidebar extends React.Component {
                                     ? this.abbreviateNumber(context.counts)
                                     : this.state.counts[category.entity_type]
                                   : context.type === undefined &&
-                                    this.state.counts[category.entity_type]
-                                  ? this.state.counts[category.entity_type]
-                                  : 0
+                                      this.state.counts[category.entity_type]
+                                    ? this.state.counts[category.entity_type]
+                                    : 0
                               }
                               activecategory={
                                 (location.pathname !== "/search" &&
@@ -583,31 +608,27 @@ class Sidebar extends React.Component {
             </Scrollbar>
             <SidebarFooter>
               <MainContext.Consumer>
-                {context => (
+                {(context) => (
                   <Grid container spacing={6}>
                     <Grid item>
                       {context.miniDrawer ? (
                         <Tooltip title="Expand menu" placement="top-start">
                           <Button
                             color="secondary"
-                            onClick={() => context.miniDrawerToggle()} 
-                            theme={context.currentTheme}>
-                            <FontAwesomeIcon
-                              icon="chevron-right"
-                              size="lg"
-                            />
+                            onClick={() => context.miniDrawerToggle()}
+                            theme={context.currentTheme}
+                          >
+                            <FontAwesomeIcon icon="chevron-right" size="lg" />
                           </Button>
                         </Tooltip>
                       ) : (
                         <Tooltip title="Minify menu" placement="top-start">
-                          <Button 
+                          <Button
                             onClick={() => context.miniDrawerToggle()}
                             color="secondary"
-                            theme={context.currentTheme}>
-                            <FontAwesomeIcon
-                              icon="chevron-left"
-                              size="lg"
-                            />
+                            theme={context.currentTheme}
+                          >
+                            <FontAwesomeIcon icon="chevron-left" size="lg" />
                             <Typography
                               display="inline"
                               style={{ paddingLeft: 10 }}
@@ -624,14 +645,12 @@ class Sidebar extends React.Component {
                           title="Switch to Light theme"
                           placement="top-start"
                         >
-                          <Button 
+                          <Button
                             color="secondary"
-                            onClick={() => context.setTheme(1)} 
-                            theme={context.currentTheme}>
-                            <FontAwesomeIcon
-                              icon="moon"
-                              size="lg"
-                            />
+                            onClick={() => context.setTheme(1)}
+                            theme={context.currentTheme}
+                          >
+                            <FontAwesomeIcon icon="moon" size="lg" />
                             <Typography
                               display="inline"
                               style={{ paddingLeft: 10 }}
@@ -648,11 +667,9 @@ class Sidebar extends React.Component {
                           <Button
                             color="secondary"
                             onClick={() => context.setTheme(0)}
-                            theme={context.currentTheme}>
-                            <FontAwesomeIcon
-                              icon="sun"
-                              size="lg"
-                            />
+                            theme={context.currentTheme}
+                          >
+                            <FontAwesomeIcon icon="sun" size="lg" />
                             <Typography
                               display="inline"
                               style={{ paddingLeft: 10 }}

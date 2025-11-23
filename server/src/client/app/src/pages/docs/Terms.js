@@ -19,14 +19,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography as MuiTypography
+  Typography as MuiTypography,
 } from "@mui/material";
 
 import { spacing } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { HashLink } from "react-router-hash-link";
 
-const scrollOffset = el => {
+const scrollOffset = (el) => {
   el.scrollIntoView(true);
   window.scrollBy(0, -64);
 };
@@ -34,7 +34,7 @@ const TopLink = styled(HashLink)({
   color: grey[600],
   marginLeft: 10,
   marginRight: 10,
-  textDecoration: "none"
+  textDecoration: "none",
 });
 
 const Card = styled(MuiCard)(spacing);
@@ -44,45 +44,45 @@ const Typography = styled(MuiTypography)(spacing);
 const HeroTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
-  padding: "2vw 5vw"
+  padding: "2vw 5vw",
 });
 const HeroSubTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
   fontSize: "1.1rem",
-  paddingTop: "0.5vw"
+  paddingTop: "0.5vw",
 });
 const GreenIcon = styled(FontAwesomeIcon)({
   color: green[400],
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const OrangeIcon = styled(FontAwesomeIcon)({
   color: orange[400],
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const RedIcon = styled(FontAwesomeIcon)({
   color: red[400],
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 
 const MainPaper = styled(Paper)`
   flex: 1;
-  background: ${props =>
+  background: ${(props) =>
     props.bg === "Gradient" ? "transparent" : props.theme.body.background};
   padding: 40px;
 `;
 const ListIcon = styled(FontAwesomeIcon)({
   marginLeft: 10,
   marginRight: 10,
-  fontWeight: 800
+  fontWeight: 800,
 });
 const ContactChip = ({ link, icon, text }) => {
   return (
@@ -112,7 +112,7 @@ const Reference = ({
   url,
   doi,
   publisher,
-  arxiv
+  arxiv,
 }) => {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -168,7 +168,8 @@ const Reference = ({
             onClick={handleExpandClick}
             aria-expanded={expanded}
             style={{ marginLeft: "auto" }}
-            size="large">
+            size="large"
+          >
             <FontAwesomeIcon icon="graduation-cap" fixedWidth />
           </IconButton>
         </CardActions>
@@ -204,19 +205,27 @@ function Terms() {
           component="nav"
           style={{
             marginTop: -10,
-            marginBottom: 20
+            marginBottom: 20,
           }}
         >
-          <TopLink smooth to="/terms#licences" scroll={el => scrollOffset(el)}>
+          <TopLink
+            smooth
+            to="/terms#licences"
+            scroll={(el) => scrollOffset(el)}
+          >
             Licenses
           </TopLink>
-          <TopLink smooth to="/terms#citation" scroll={el => scrollOffset(el)}>
+          <TopLink
+            smooth
+            to="/terms#citation"
+            scroll={(el) => scrollOffset(el)}
+          >
             Citation
           </TopLink>
-          <TopLink smooth to="/terms#terms" scroll={el => scrollOffset(el)}>
+          <TopLink smooth to="/terms#terms" scroll={(el) => scrollOffset(el)}>
             Terms
           </TopLink>
-          <TopLink smooth to="/terms#privacy" scroll={el => scrollOffset(el)}>
+          <TopLink smooth to="/terms#privacy" scroll={(el) => scrollOffset(el)}>
             Privacy
           </TopLink>
         </List>
@@ -307,7 +316,9 @@ function Terms() {
             url="https://www.cell.com/patterns/fulltext/S2666-3899(25)00165-5"
             doi="10.1016/j.patter.2025.101317"
             publisher="Cell Press"
-            arxiv={"https://www.cell.com/patterns/fulltext/S2666-3899(25)00165-5"}
+            arxiv={
+              "https://www.cell.com/patterns/fulltext/S2666-3899(25)00165-5"
+            }
           />
           <Reference
             header="OpenML Python package"
@@ -347,7 +358,9 @@ function Terms() {
             number=""
             pages=""
             url="https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html"
-            arxiv={"https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html"}
+            arxiv={
+              "https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/hash/c7e1249ffc03eb9ded908c236bd1996d-Abstract-round2.html"
+            }
             doi=""
             publisher=""
           />

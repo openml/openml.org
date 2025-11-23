@@ -15,7 +15,7 @@ import {
   green,
   grey,
   purple,
-  pink
+  pink,
 } from "@mui/material/colors";
 
 import maTheme from "./theme";
@@ -34,24 +34,24 @@ class App extends React.Component {
     searchActive: false,
     animation: true,
     drawerWidth: 260,
-    setTheme: value =>
+    setTheme: (value) =>
       this.setState({ currentTheme: value }, this.log("Theme changed")),
-    toggleAnimation: value =>
+    toggleAnimation: (value) =>
       this.setState({ animation: value }, this.log("Animation changed")),
-    setSearchActive: value =>
+    setSearchActive: (value) =>
       this.setState({ searchActive: value }, this.log("Search bar changed")),
     toggleSearch: () =>
       this.setState(
         { searchActive: !this.state.searchActive },
-        this.log("Search bar changed")
+        this.log("Search bar changed"),
       ),
     miniDrawerToggle: () =>
       this.setState(
         {
           miniDrawer: !this.state.miniDrawer,
-          drawerWidth: this.state.miniDrawer ? 260 : 57
+          drawerWidth: this.state.miniDrawer ? 260 : 57,
         },
-        this.log("Drawer changed")
+        this.log("Drawer changed"),
       ),
 
     // Auth
@@ -64,20 +64,26 @@ class App extends React.Component {
       if (token != null) {
         const yourConfig = {
           headers: {
-            Authorization: "Bearer " + token
-          }
+            Authorization: "Bearer " + token,
+          },
         };
         axios
-          .get(process.env.REACT_APP_URL_SITE_BACKEND + "verifytoken", yourConfig)
-          .then(response => {
+          .get(
+            process.env.REACT_APP_URL_SITE_BACKEND + "verifytoken",
+            yourConfig,
+          )
+          .then((response) => {
             if (
               response.statusText !== undefined &&
               response.statusText === "OK" &&
               !this.state.loggedIn
             ) {
               axios
-                .get(process.env.REACT_APP_URL_SITE_BACKEND + "profile", yourConfig)
-                .then(response => {
+                .get(
+                  process.env.REACT_APP_URL_SITE_BACKEND + "profile",
+                  yourConfig,
+                )
+                .then((response) => {
                   let img = undefined;
                   if (response.data.image.includes(path.sep)) {
                     img = response.data.image;
@@ -91,26 +97,26 @@ class App extends React.Component {
                       loggedIn: true,
                       userImage: img,
                       userInitials: ini,
-                      userID: userID
+                      userID: userID,
                     },
-                    this.log("Login changed: User profile loaded")
+                    this.log("Login changed: User profile loaded"),
                   );
                 })
-                .catch(error => {
+                .catch((error) => {
                   console.log("Could not fetch profile.");
                 });
             } else if (this.state.loggedIn) {
               this.setState(
                 { loggedIn: false },
-                this.log("Login changed: Authentication failed")
+                this.log("Login changed: Authentication failed"),
               );
             }
           })
-          .catch(error => {
+          .catch((error) => {
             if (this.state.loggedIn) {
               this.setState(
                 { loggedIn: false },
-                this.log("Login changed: Authentication check failed")
+                this.log("Login changed: Authentication check failed"),
               );
             }
           });
@@ -119,7 +125,7 @@ class App extends React.Component {
     logIn: () => {
       this.setState(
         { loggedIn: true },
-        this.log("Login changed: user logged in")
+        this.log("Login changed: user logged in"),
       );
     },
     logOut: () => {
@@ -128,19 +134,19 @@ class App extends React.Component {
           loggedIn: false,
           userImage: undefined,
           userInitials: undefined,
-          userID: undefined
+          userID: undefined,
         },
-        this.log("Login changed: user logged out")
+        this.log("Login changed: user logged out"),
       );
     },
-    setUserImage: value => {
+    setUserImage: (value) => {
       console.log(value);
       if (value.includes(path.sep)) {
         //check if valid path
         this.setState({ userImage: value }, this.log("User image changed"));
       }
     },
-    setUserInitials: value => {
+    setUserInitials: (value) => {
       console.log(value);
       this.setState({ userInitials: value }, this.log("User initials changed"));
     },
@@ -179,33 +185,38 @@ class App extends React.Component {
     toggleSplit: () =>
       this.setState(
         { displaySplit: !this.state.displaySplit },
-        this.log("Split view changed")
+        this.log("Split view changed"),
       ),
     toggleStats: () =>
       this.setState(
         { displayStats: !this.state.displayStats },
-        this.log("Stats view changed")
+        this.log("Stats view changed"),
       ),
-    setType: value => {
+    setType: (value) => {
       this.setState({ type: value, activeTab: 0 }, this.log("Type changed"));
     },
-    setActiveTab: value => {
+    setActiveTab: (value) => {
       this.setState({ activeTab: value }, this.log("Active tab changed"));
     },
-    setSubType: value => {
+    setSubType: (value) => {
       this.setState({ subType: value }, this.log("SubType changed"));
     },
-    setTag: value => {
+    setTag: (value) => {
       this.setState({ tag: value }, this.log("Tag changed"));
     },
-    setLoading: value => {
+    setLoading: (value) => {
       this.setState({ loading: value }, this.log("Loading changed"));
     },
-    setQuery: value => {
+    setQuery: (value) => {
       if (value === "") {
         value = undefined;
       }
-      let state_update = { query: value, updateType: "query", startCount: 0, results: [] };
+      let state_update = {
+        query: value,
+        updateType: "query",
+        startCount: 0,
+        results: [],
+      };
       if (value !== undefined) {
         state_update["sort"] = "match";
       } else {
@@ -213,30 +224,31 @@ class App extends React.Component {
       }
       this.setState(state_update, this.log("Query set"));
     },
-    setFields: value => {
+    setFields: (value) => {
       this.setState({ fields: value }, this.log("Fields changed"));
     },
-    setSort: value => {
+    setSort: (value) => {
       this.setState({ sort: value }, this.log("Sort changed"));
     },
     resetStartCount: () => {
-      this.setState({ startCount: 0, startSubCount: 0 }, this.log("StartCount reset"));
+      this.setState(
+        { startCount: 0, startSubCount: 0 },
+        this.log("StartCount reset"),
+      );
     },
-    setOrder: value => {
+    setOrder: (value) => {
       this.setState({ order: value }, this.log("Order changed"));
     },
-    setID: value => {
+    setID: (value) => {
       this.setState({ id: value, activeTab: 0 }, this.log("ID changed"));
     },
     setResults: (counts, results) => {
-      this.setState(
-        {
-          counts: counts,
-          results: results,
-          updateType: "results",
-          startCount: results.length
-        },
-      );
+      this.setState({
+        counts: counts,
+        results: results,
+        updateType: "results",
+        startCount: results.length,
+      });
     },
     setSubResults: (counts, results) => {
       this.setState(
@@ -244,9 +256,9 @@ class App extends React.Component {
           subCounts: counts,
           subResults: results,
           updateType: "subresults",
-          startSubCount: results.length
+          startSubCount: results.length,
         },
-        this.log("Search subresults changed")
+        this.log("Search subresults changed"),
       );
     },
     setSubSearch: (type, filters) => {
@@ -255,11 +267,12 @@ class App extends React.Component {
         subFilters: filters,
         updateType: "subquery",
         subResults: [],
-        startSubCount: 0
+        startSubCount: 0,
       };
       this.setState(update);
     },
-    setSearch: (qp, fields) => { // parses search from url query parameters 
+    setSearch: (qp, fields) => {
+      // parses search from url query parameters
       if (JSON.stringify(qp) === this.state.qjson) return;
       let qchanged = false;
       let idChanged = false;
@@ -271,20 +284,22 @@ class App extends React.Component {
         displaySearch: true,
         filters: this.state.type === qp.type ? this.state.filters : [],
         // reset query if type changes
-        query: (this.state.type === qp.type || this.state.type === undefined) ? this.state.query : undefined
+        query:
+          this.state.type === qp.type || this.state.type === undefined
+            ? this.state.query
+            : undefined,
       };
-      if (this.state.type !== qp.type){
+      if (this.state.type !== qp.type) {
         document.getElementById("searchbar").value = "";
       }
-      
+
       // check for removed keys
-      Object.keys(this.state.filters).forEach(key => {
+      Object.keys(this.state.filters).forEach((key) => {
         if (!(key in qp)) {
           delete this.state.filters[key];
           qchanged = true;
         }
-      }
-      );
+      });
       // process query parameters
       Object.entries(qp).forEach(([key, value]) => {
         // Sorting and ID filters
@@ -293,7 +308,8 @@ class App extends React.Component {
           if (this.state[key] !== value && key !== "id") {
             qchanged = true;
           }
-          if (key === "type" && this.state[key] !== value ) { //reset active tab if type changes
+          if (key === "type" && this.state[key] !== value) {
+            //reset active tab if type changes
             update["activeTab"] = 0;
             update["startSubCount"] = 0;
             qchanged = true;
@@ -305,12 +321,21 @@ class App extends React.Component {
           let type = "=";
           let value2 = undefined;
           // TODO: we need to add a special case for every filter that can have '_' in its values, think of a better way
-          if (!key.startsWith("tags") && !key.startsWith("status") && !key.startsWith("format") && value.split("_").length === 2) {
+          if (
+            !key.startsWith("tags") &&
+            !key.startsWith("status") &&
+            !key.startsWith("format") &&
+            value.split("_").length === 2
+          ) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
           }
-          if (!key.startsWith("tags") && !key.startsWith("status") && value.split("_").length === 3) {
+          if (
+            !key.startsWith("tags") &&
+            !key.startsWith("status") &&
+            value.split("_").length === 3
+          ) {
             let vals = value.split("_");
             type = vals[0];
             value = vals[1];
@@ -322,7 +347,7 @@ class App extends React.Component {
               this.state.filters[key].type !== type ||
               this.state.filters[key].value !== value
             ) {
-              if (update.filters[key] !== undefined){
+              if (update.filters[key] !== undefined) {
                 update.filters[key].type = type;
                 update.filters[key].value = value;
               }
@@ -355,7 +380,7 @@ class App extends React.Component {
         update.startCount = 0;
         this.setState(update);
       } else if (
-        (qp["id"] !== undefined && this.state.id !== qp["id"]) || 
+        (qp["id"] !== undefined && this.state.id !== qp["id"]) ||
         (qp["id"] === undefined && this.state.id !== undefined) ||
         idChanged
       ) {
@@ -365,12 +390,12 @@ class App extends React.Component {
           updateType: "id",
           displaySearch: update["displaySearch"],
           startSubCount: 0,
-          activeTab: 0
+          activeTab: 0,
         });
       } else {
         if (this.state.updateType !== undefined) {
           this.setState({
-            updateType: undefined
+            updateType: undefined,
           });
         }
         //console.log("Nothing to do");
@@ -385,11 +410,11 @@ class App extends React.Component {
       }
       //console.log(filters);
       this.setState(update);
-    }
+    },
   };
 
   // Logs state change when in developer mode.
-  log = message => {
+  log = (message) => {
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
       // console.log(message);
     }
@@ -400,10 +425,7 @@ class App extends React.Component {
       return green[500];
     } else if (type === "task") {
       return orange[600];
-    } else if (
-      type === "flow" ||
-      window.location.pathname.startsWith("/api")
-    ) {
+    } else if (type === "flow" || window.location.pathname.startsWith("/api")) {
       return blue[800];
     } else if (
       type === "run" ||
@@ -415,7 +437,7 @@ class App extends React.Component {
       window.location.pathname.startsWith("/meet")
     ) {
       return purple[600];
-    } else if ( type === "benchmark" ) {
+    } else if (type === "benchmark") {
       return pink[400];
     } else if (
       type === "task_type" ||
@@ -443,7 +465,7 @@ class App extends React.Component {
       case "flow":
         return "cog";
       case "run":
-        return "flask";      
+        return "flask";
       case "study":
         return "layer-group";
       case "benchmark":
