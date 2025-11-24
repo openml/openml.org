@@ -9,8 +9,8 @@ def test_upload_task(test_client, init_database):
     headers = {"Authorization": "Bearer {}".format(access_token)}
     json_obj = {
         "dataset_id": "128",
-        "task_type": "classification",
-        "target_name": "class",
+        "task_type": "classNameification",
+        "target_name": "className",
         "evaluation_measure": "predictive_accuracy",
     }
     response = test_client.post("/upload-task", headers=headers, json=json_obj)

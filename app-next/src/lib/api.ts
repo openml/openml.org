@@ -14,7 +14,7 @@ import type {
  * This client provides methods to interact with the Flask API backend,
  * with proper TypeScript typing and error handling.
  */
-class OpenMLAPIClient {
+className OpenMLAPIClient {
   private client: AxiosInstance;
 
   constructor() {

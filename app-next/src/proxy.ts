@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Middleware for backward-compatible URL redirects
+ * Proxy for backward-compatible URL redirects
  *
  * Academic papers and external links often cite OpenML entities using short URLs:
  * - /d/:id (datasets)
@@ -10,7 +10,7 @@ import type { NextRequest } from "next/server";
  * - /f/:id (flows)
  * - /r/:id (runs)
  *
- * This middleware ensures these legacy URLs redirect to the new SEO-friendly URLs:
+ * This proxy ensures these legacy URLs redirect to the new SEO-friendly URLs:
  * - /d/:id → /datasets/:id (301 permanent redirect)
  * - /t/:id → /tasks/:id (301 permanent redirect)
  * - /f/:id → /flows/:id (301 permanent redirect)
@@ -23,7 +23,7 @@ import type { NextRequest } from "next/server";
  * ✅ External blog posts
  * ✅ Google PageRank (301 redirects pass link equity)
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Map of legacy URL patterns to new SEO-friendly URLs
@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
     "^/t/(\\d+)": "/tasks/$1",
     "^/f/(\\d+)": "/flows/$1",
     "^/r/(\\d+)": "/runs/$1",
-    
+
     // Search pages (backward compatibility)
     "^/d/search": "/datasets",
     "^/t/search": "/tasks",
@@ -51,7 +51,7 @@ export function middleware(request: NextRequest) {
       const newPath = pathname.replace(regex, replacement);
       const url = request.nextUrl.clone();
       url.pathname = newPath;
-      
+
       // Preserve query parameters (important for search filters/sorting)
       // e.g., /d/search?status=active → /datasets?status=active
 
@@ -65,7 +65,7 @@ export function middleware(request: NextRequest) {
 }
 
 /**
- * Configure which routes this middleware should run on
+ * Configure which routes this proxy should run on
  * We only want to check legacy short URL patterns
  */
 export const config = {

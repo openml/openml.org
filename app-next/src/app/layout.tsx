@@ -44,7 +44,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col antialiased">
         <ThemeProvider
-          attribute="class"
+          attribute="className"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange={false}

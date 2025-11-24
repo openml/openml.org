@@ -6,7 +6,7 @@ env = Env()
 env.read_env()
 
 
-class TestConfig(object):
+className TestConfig(object):
     """
     Config object for flask app
     """

@@ -1,4 +1,30 @@
 /**
+ * Feature information for a dataset
+ */
+export interface DatasetFeature {
+  index: number;
+  name: string;
+  type: "nominal" | "numeric" | "string" | "date";
+  distinct?: number;
+  missing?: number;
+  target?: string; // "1" if target, undefined otherwise
+  min?: string;
+  max?: string;
+  mean?: string;
+  stdev?: string;
+  distr?: any[]; // Distribution data for charts
+}
+
+/**
+ * Tag information
+ */
+export interface DatasetTag {
+  tag: string;
+  uploader?: number;
+  window?: number;
+}
+
+/**
  * OpenML Dataset Entity
  * Represents a dataset in the OpenML platform
  */
@@ -6,17 +32,28 @@ export interface Dataset {
   // Core identifiers
   data_id: number;
   name: string;
-  version: string;
+  version: number;
   version_label?: string;
 
   // Metadata
   description: string;
   format: string;
-  uploader: number;
-  uploader_name: string;
-  upload_date: string;
+
+  // Uploader information
+  uploader: string; // uploader name
+  uploader_id: number;
+
+  // Dates
+  date: string; // upload date
+  upload_date?: string;
+  processing_date?: string;
+
+  // Status and visibility
   status: "active" | "deactivated" | "in_preparation";
-  visibility: "public" | "private";
+  visibility?: "public" | "private";
+
+  // License
+  licence: string;
 
   // Target and ID attributes
   row_id_attribute?: string;
@@ -24,33 +61,40 @@ export interface Dataset {
   ignore_attribute?: string;
 
   // Tags and categorization
-  tag: string[];
+  tags: DatasetTag[];
+  tag?: string[]; // Alternative format
 
-  // Dataset statistics
-  instances: number;
-  features: number;
-  missing_values: number;
+  // Dataset statistics (summary)
+  instances?: number;
+  missing_values?: number;
 
-  // Quality metrics (dynamic, can have any numeric property)
-  qualities?: Record<string, number>;
+  // Features - detailed feature information
+  features: DatasetFeature[];
+
+  // Quality metrics (meta-features)
+  qualities: Record<string, number>;
 
   // File information
   file_id?: number;
   md5_checksum?: string;
-  url?: string;
+  url: string;
+
+  // Social metrics
+  nr_of_likes: number;
+  nr_of_downloads: number;
+  nr_of_issues: number;
+  runs?: number; // number of runs
 
   // Related entities
   tasks?: number[];
-  runs?: number[];
 
   // Processing metadata
-  processing_date?: string;
   original_data_url?: string;
   paper_url?: string;
   citation?: string;
-  licence?: string;
   collection_date?: string;
   language?: string;
+  creator?: string;
 }
 
 /**

@@ -8,36 +8,27 @@ import { LanguageSwitcher } from "@/components/header/language-switcher";
 import { NotificationsBell } from "@/components/header/notifications-bell";
 import { AccountMenu } from "@/components/header/account-menu";
 
-/**
- * Modern Header Component
- * Full-width header with logo, search bar, and action icons
- *
- * Layout:
- * - Left: OpenML Logo
- * - Middle: Search Bar (flexible width)
- * - Right: Documentation, Language, Create, Theme, Notifications, Account
- */
 export function Header() {
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-      <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="flex h-16 items-center gap-4">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex h-24 items-center gap-4">
           {/* Logo - Left */}
           <Link href="/" className="flex flex-shrink-0 items-center">
             <Image
-              src="/logo_openml.png"
+              src="/logo_openML_light-bkg.png"
               alt="OpenML"
-              width={120}
-              height={40}
-              className="h-8 w-auto dark:hidden"
+              width={180}
+              height={60}
+              className="size-18 w-auto dark:hidden"
               priority
             />
             <Image
               src="/logo_openML_dark-bkg.png"
               alt="OpenML"
-              width={120}
-              height={40}
-              className="hidden h-8 w-auto dark:block"
+              width={180}
+              height={60}
+              className="hidden size-18 w-auto dark:block"
               priority
             />
           </Link>

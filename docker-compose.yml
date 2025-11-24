@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:5000"
+    environment:
+      - FLASK_APP=autoapp.py
+      - FLASK_ENV=development
+      - DATABASE_URI=sqlite:///openml.db
+      - APP_SECRET_KEY=abcd
+      - JWT_SECRET_KEY=abcd
+    volumes:
+      - ./openml.db:/app/openml.db

@@ -8,7 +8,7 @@ export interface Flow {
   full_name?: string;
   name: string;
   custom_name?: string;
-  class_name?: string;
+  className_name?: string;
   version: string;
   external_version?: string;
 

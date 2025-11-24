@@ -1,3 +1,4 @@
+import { HeroHome } from "@/components/Hero-Home";
 import { HeroSection } from "@/components/home/hero-section";
 import { ExploreSection } from "@/components/home/explore-section";
 import { DownloadsSection } from "@/components/home/downloads-section";
@@ -11,6 +12,7 @@ import { FrictionlessMLSection } from "@/components/home/frictionless-ml-section
 export default function HomePage() {
   return (
     <>
+      <HeroHome />
       <HeroSection />
       <ExploreSection />
       <DownloadsSection />
