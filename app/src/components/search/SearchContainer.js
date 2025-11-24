@@ -20,6 +20,7 @@ import { TabContext, TabPanel } from "@mui/lab";
 import ResultCard from "./ResultCard";
 import ResultGridCard from "./ResultGridCard";
 import Sort from "./Sort";
+import DatasetSearchResults from "./DatasetSearchResults";
 
 import { styled } from "@mui/material/styles";
 import {
@@ -178,14 +179,55 @@ const SearchContainer = memo(
       if (newView !== null) {
         setView(newView);
       }
-
-
     };
 
     return (
       <SearchProvider config={config}>
-        <WithSearch mapContextToProps={({ isLoading }) => ({ isLoading })}>
-          {({ isLoading }) => (isLoading ? <LinearProgress /> : null)}
+        <WithSearch
+          mapContextToProps={({
+            isLoading,
+            wasSearched,
+            resultSearchTerm,
+            totalResults,
+            error,
+          }) => ({
+            isLoading,
+            wasSearched,
+            resultSearchTerm,
+            totalResults,
+            error,
+          })}
+        >
+          {({
+            isLoading,
+            wasSearched,
+            resultSearchTerm,
+            totalResults,
+            error,
+          }) => {
+            // Debug logging
+            console.log("🔍 SearchContainer Debug:", {
+              isLoading,
+              wasSearched,
+              resultSearchTerm,
+              totalResults,
+              error,
+              configKeys: Object.keys(config || {}),
+            });
+
+            return (
+              <>
+                {isLoading && <LinearProgress />}
+                {error && (
+                  <Box sx={{ m: 2 }}>
+                    <Typography color="error">
+                      Error: {error.message || "Failed to load search results"}
+                    </Typography>
+                  </Box>
+                )}
+              </>
+            );
+          }}
         </WithSearch>
         {false && <TagFilter />}
         <TabContext value={filter}>
@@ -223,8 +265,8 @@ const SearchContainer = memo(
           </FilterBox>
         </TabContext>
         <Wrapper fullWidth>
-          <Grid container spacing={3}>
-            <Grid m={2} size={12}>
+          <Grid container spacing={0} sx={{ width: "100%" }}>
+            <Grid size={12} sx={{ px: 0, py: 2 }}>
               <Box
                 sx={{
                   display: "flex",
@@ -243,35 +285,11 @@ const SearchContainer = memo(
                 </Box>
               </Box>
             </Grid>
-            <Grid size={12}>
-              {view === "list" && (
-                <SearchResults
-                  resultView={ResultCard}
-                  titleField="name"
-                  urlField="data_id"
-                  shouldTrackClickThrough
-                />
-              )}
-              {view === "table" && (
-                <WithSearch mapContextToProps={({ results }) => ({ results })}>
-                  {({ results }) => (
-                    <ResultsTable results={results} columns={columns} />
-                  )}
-                </WithSearch>
-              )}
-              {view === "grid" && (
-                <WithSearch mapContextToProps={({ results }) => ({ results })}>
-                  {({ results }) => (
-                    <Grid container spacing={3} alignItems="stretch">
-                      {results.map((res, i) => (
-                        <ResultGridCard result={res} key={res.id} />
-                      ))}
-                    </Grid>
-                  )}
-                </WithSearch>
-              )}
+            <Grid size={12} sx={{ px: 0 }}>
+              {/* Use the new DatasetSearchResults component */}
+              <DatasetSearchResults view={view} columns={columns} />
             </Grid>
-            <Grid m={2} size={12}>
+            <Grid size={12} sx={{ px: 0, py: 2 }}>
               <Box
                 sx={{
                   display: "flex",

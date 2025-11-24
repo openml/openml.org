@@ -1,31 +1,63 @@
-/**
- * Run Detail Page Redirect (Old URL)
- *
- * This page redirects from the old URL to the new SEO-friendly URL
- * Route: /r/:id redirects to /runs/:id
- *
- * Purpose: Maintain backward compatibility with old paper links and citations
- * that reference /r/:id while using new /runs/:id URLs for better SEO
- */
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Avatar, Grid, Typography } from "@mui/material";
+import DashboardLayout from "../../layouts/Dashboard";
+import { useTheme } from "@mui/system";
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+// Server-side translation
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { getItem } from "../api/getItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faCloudArrowDown,
+  faCogs,
+  faDatabase,
+  faExclamationTriangle,
+  faEye,
+  faHeart,
+  faIdBadge,
+  faStar,
+  faTags,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
+import Wrapper from "../../components/Wrapper";
+import Property from "../../components/Property";
+import Tag from "../../components/Tag";
+import { shortenName } from "../../components/search/flowCard";
 
-export default function RunDetailRedirect() {
-  const router = useRouter();
-  const { runId } = router.query;
+import { blue, green, yellow } from "@mui/material/colors";
+import ParameterTable from "../../components/run/ParameterTable";
+import EvaluationTable from "../../components/run/EvaluationTable";
 
-  useEffect(() => {
-    if (runId) {
-      // Redirect to the new SEO-friendly run detail page
-      router.replace(`/runs/${runId}`);
-    }
-  }, [runId, router]);
-
-  // Show nothing while redirecting
-  return null;
+export async function getStaticPaths() {
+  // No paths are pre-rendered
+  return { paths: [], fallback: "blocking" }; // or fallback: true, if you prefer
 }
 
+export async function getStaticProps({ params, locale }) {
+  let data = null;
+  let error = null;
+
+  try {
+    data = await getItem("run", params.id);
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+    error = "Server is not responding.";
+  }
+
+  const translations = await serverSideTranslations(locale);
+
+  return {
+    props: {
+      data,
+      error,
+      ...translations,
+    },
+  };
+}
+
+function Run({ data }) {
   const theme = useTheme();
   var evaluations = [];
   if (data.evaluations) {
@@ -43,21 +75,21 @@ export default function RunDetailRedirect() {
       value: data.run_task.tasktype.name,
       icon: faTrophy,
       color: yellow[800],
-      url: "/t/" + data.run_task.task_id,
+      url: "/tasks/" + data.run_task.task_id,
     },
     {
       label: "Run data",
       value: data.run_task.source_data.name,
       icon: faDatabase,
       color: green[500],
-      url: "/d/" + data.run_task.source_data.data_id,
+      url: "/datasets/" + data.run_task.source_data.data_id,
     },
     {
       label: "Run flow",
       value: shortenName(data.run_flow.name).substring(0, 20) + "...",
       icon: faCogs,
       color: blue[500],
-      url: "/f/" + data.run_flow.flow_id,
+      url: "/flows/" + data.run_flow.flow_id,
     },
     { label: "Run visibility", value: data.visibility, icon: faEye },
     {

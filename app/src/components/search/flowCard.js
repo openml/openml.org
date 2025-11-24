@@ -117,7 +117,7 @@ export const Title = ({ result }) => {
   return (
     <React.Fragment>
       <Box sx={{ pl: 2, wordBreak: "break-all" }}>
-        {shortenName(result.name.raw)}
+        {result.name?.raw ? shortenName(result.name.raw) : "Unnamed Flow"}
       </Box>
     </React.Fragment>
   );
