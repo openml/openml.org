@@ -159,12 +159,12 @@ export default class GetInvolved extends React.Component {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2025 Winter Hackathon - December/January - Leiden University, Leiden, The Netherlands
+                  2026 Winter Hackathon - February 16-20 - Leiden University, Leiden, The Netherlands
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
                   Join us at Leiden University to work on the next generation of OpenML.
                   
-                  The dates are still being explored, but most likely end of December or early January.
+                  By day we'll be at the <a href="https://www.universiteitleiden.nl/en/dossiers/building-projects/gorlaeus-building">brand new Science Campus</a> creating the next version of OpenML, and by night we'll relax in the cosy city center.
                   Join our Slack channel to join the discussion.
                 </Typography>
               </CardContent>
@@ -173,14 +173,14 @@ export default class GetInvolved extends React.Component {
             <Button
                 size="small"
                 color="primary"
-                href=""
+                href="https://forms.gle/iPAXC6k85k4L3fs46"
               >
                 Registration (free)
               </Button>
               <Button
                 size="small"
                 color="primary"
-                href=""
+                href="https://docs.google.com/document/d/1jtqKIb91sz8ry7FkJVRobSKD8CnGpwzylFSA97ZdSK4/edit?usp=sharing"
               >
                 Schedule and more
               </Button>
