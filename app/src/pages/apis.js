@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { styled } from "@mui/material/styles";
 import { Helmet } from "react-helmet-async";
 
@@ -49,7 +50,8 @@ SyntaxHighlighter.registerLanguage("java", java);
 // API Docs. Note: swagger-ui-react is no longer actively maintained and uses
 // outdated lifecycle methods (results in warnings).
 // Replace with new API docs when available.
-import SwaggerUI from "swagger-ui-react";
+// Dynamic import with SSR disabled to avoid class component issues
+const SwaggerUI = dynamic(() => import("swagger-ui-react"), { ssr: false });
 import "swagger-ui-react/swagger-ui.css";
 import "swagger-ui-themes/themes/3.x/theme-material.css";
 import StyledSwaggerUI from "../components/apis/SwaggerUI";
@@ -76,36 +78,47 @@ import { faRust } from "@fortawesome/free-brands-svg-icons";
 import Wrapper from "../components/Wrapper";
 
 const Typography = styled(MuiTypography)(spacing);
-const FixedIcon = styled(FontAwesomeIcon)`
-  font-size: ${(props) => (props.sizept ? props.sizept : 15)}pt;
-  left: ${(props) => props.l}px;
-  top: ${(props) => props.t}px;
-  margin-left: ${(props) => props.ml}px;
-  margin-right: ${(props) => props.mr}px;
-  color: ${(props) => props.color};
-`;
-const ApiTabs = styled(Tabs)`
-  height: 61px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-`;
-const ApiTab = styled(Tab)`
-  color: ${(props) => props.searchcolor} !important;
-  font-size: 11pt;
-  margin-top: 5px;
-`;
+
+// Small presentational wrapper for FontAwesomeIcon to avoid forwarding unknown props to the DOM
+const FixedIcon = ({ icon, sizept = 15, l = 0, t = 0, ml = 0, mr = 0, color, ...rest }) => (
+  <FontAwesomeIcon
+    icon={icon}
+    style={{
+      fontSize: `${sizept}pt`,
+      position: l || t ? "relative" : undefined,
+      left: l ? `${l}px` : undefined,
+      top: t ? `${t}px` : undefined,
+      marginLeft: ml ? `${ml}px` : undefined,
+      marginRight: mr ? `${mr}px` : undefined,
+      color: color || undefined,
+    }}
+    {...rest}
+  />
+);
+
+const ApiTabs = styled(Tabs)(({ theme }) => ({
+  height: 61,
+  borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+  borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+}));
+
+const ApiTab = styled(Tab)(({ theme }) => ({
+  fontSize: "11pt",
+  marginTop: 5,
+}));
+
 const HeroTitle = styled(Typography)({
   textAlign: "center",
   lineHeight: "150%",
   padding: "2vw 5vw",
 });
-const CardContent = styled(MuiCardContent)`
-  margin-top: 10px;
 
-  &:last-child {
-    padding-bottom: ${(props) => props.theme.spacing(8)};
-  }
-`;
+const CardContent = styled(MuiCardContent)(({ theme }) => ({
+  marginTop: 10,
+  "&:last-child": {
+    paddingBottom: theme.spacing(8),
+  },
+}));
 
 const docs = {
   python: "https://openml.github.io/openml-python",
@@ -175,7 +188,8 @@ const CodeCard = (props) => {
           <SyntaxHighlighter
             language={language}
             style={codeTheme}
-            customStyle={{ marginBottom: 0, paddingTop: -40 }}
+            // removed negative paddingTop which is invalid
+            customStyle={{ marginBottom: 0, paddingTop: 0 }}
           >
             {examples[language][section]}
           </SyntaxHighlighter>
@@ -189,7 +203,7 @@ const CodeCard = (props) => {
               onClick={() => window.open(colab, "_blank")}
               size="large"
             >
-              <FixedIcon icon={faPlay} mr="3" ml="3" />
+              <FixedIcon icon={faPlay} mr={3} ml={3} />
             </IconButton>
           </Tooltip>
         )}
@@ -197,12 +211,14 @@ const CodeCard = (props) => {
           <IconButton
             color="primary"
             onClick={() => {
-              navigator.clipboard.writeText(examples[language][section]);
+              if (typeof navigator !== "undefined" && navigator.clipboard) {
+                navigator.clipboard.writeText(examples[language][section]);
+              }
               snackBarOpen(true);
             }}
             size="large"
           >
-            <FixedIcon icon={faCopy} mr="3" ml="3" />
+            <FixedIcon icon={faCopy} mr={3} ml={3} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -241,7 +257,8 @@ function APIs() {
   const [api, setApi] = useState("python");
   const [open, setOpen] = React.useState(false); // Snackbar
   const theme = useTheme();
-  const codeTheme = theme.name === "DARK" ? dark : light;
+  // use palette.mode instead of theme.name
+  const codeTheme = theme?.palette?.mode === "dark" ? dark : light;
 
   const buildCodeExamples = (language) => {
     return sections[language].map((section) => {
@@ -288,19 +305,19 @@ function APIs() {
             </HeroTitle>
             <CenteredBox pb={15}>
               <DocButton href={docs[api]}>
-                <FixedIcon icon={faPaperPlane} mr="10" />
+                <FixedIcon icon={faPaperPlane} mr={10} />
                 {t("apis.docs_link")}
               </DocButton>
             </CenteredBox>
             {buildCodeExamples(api)}
             <CenteredBox pb={5}>
               {t("apis.outro_1")}
-              <FixedIcon icon={faThumbsUp} mr="10" ml="10" color={green[500]} />
+              <FixedIcon icon={faThumbsUp} mr={10} ml={10} color={green[500]} />
               {t("apis.outro_2")}
             </CenteredBox>
             <CenteredBox pb={15}>
               <DocButton href={docs[api]}>
-                <FixedIcon icon={faLocationArrow} mr="10" />
+                <FixedIcon icon={faLocationArrow} mr={10} />
                 {t("apis.guide_link")}
               </DocButton>
             </CenteredBox>
