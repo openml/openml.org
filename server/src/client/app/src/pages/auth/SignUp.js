@@ -60,8 +60,6 @@ function SignUp() {
       password: password
     };
 
-    console.log("Registration data: ", registrationData);
-
     if (password.length < MIN_PASSWORD_LENGTH) {
      // Password must meet minimum length
      // Using NIST recommendation
