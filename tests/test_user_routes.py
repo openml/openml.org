@@ -23,7 +23,7 @@ def valid_user():
         country="0000",
         bio="No Bio",
         session_hash="0000",
-        forgotten_password_code="1234",
+        forgotten_password_code="valid_user_token",
         active=1
     )
     user.set_password("abcabc")
