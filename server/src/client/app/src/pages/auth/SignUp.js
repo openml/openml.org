@@ -36,6 +36,8 @@ const RedIcon = styled(FontAwesomeIcon)({
   color: red[500]
 });
 
+const MIN_PASSWORD_LENGTH = 15;
+
 function SignUp() {
   const [register, setRegister] = useState(false);
   const [duplicateUser, setDuplicateUser] = useState(false);
@@ -60,10 +62,11 @@ function SignUp() {
 
     console.log("Registration data: ", registrationData);
 
-    if (password.length < 8) {
-     // Password must be 8+ characters
+    if (password.length < MIN_PASSWORD_LENGTH) {
+     // Password must meet minimum length
+     // Using NIST recommendation
       setError(true);
-      setErrorMessage("Password too weak. Use at least 8 characters, with numbers, digits, and special characters.");
+      setErrorMessage(`Password too weak. Use at least ${MIN_PASSWORD_LENGTH} characters.`);
     } else if ( (/[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(email)) === false) {
       // Email must be in valid format
       setError(true);
@@ -159,7 +162,7 @@ function SignUp() {
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="password">
-            Password (min 8 characters)
+            Password (min {MIN_PASSWORD_LENGTH} characters)
           </InputLabel>
           <Input
             id="password"
