@@ -1,0 +1,201 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem; /* Slightly more refined rounding */
+
+  /* Light Mode - Clean, professional academic palette */
+  --background: oklch(0.99 0.005 250); /* Crisp white with subtle blue tint */
+  --foreground: oklch(0.15 0.02 250); /* Deep navy for excellent readability */
+
+  --card: oklch(1 0 0); /* Pure white cards */
+  --card-foreground: oklch(0.15 0.02 250);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 250);
+
+  /* Primary - Deep navy blue, professional and trustworthy */
+  --primary: oklch(0.28 0.05 250); /* Sophisticated navy */
+  --primary-foreground: oklch(0.99 0 0); /* White */
+
+  /* Secondary - Warm gray for academic sophistication */
+  --secondary: oklch(0.96 0.005 250); /* Light gray with blue undertone */
+  --secondary-foreground: oklch(0.28 0.05 250);
+
+  /* Muted - Professional gray scale */
+  --muted: oklch(0.94 0.01 250); /* Very subtle blue tint */
+  --muted-foreground: oklch(0.45 0.02 250); /* Medium gray for secondary text */
+
+  /* Accent - Teal/blue-green for scientific appeal */
+  --accent: oklch(0.92 0.03 190); /* Fresh, clean teal accent */
+  --accent-foreground: oklch(0.28 0.05 250);
+
+  /* Destructive - Professional red for errors/warnings */
+  --destructive: oklch(0.58 0.2 25); /* Muted but clear red */
+
+  /* Borders - Subtle and refined */
+  --border: oklch(0.88 0.015 250); /* Very light blue-gray */
+  --input: oklch(0.95 0.01 250);
+  --ring: oklch(0.28 0.05 250); /* Match primary */
+
+  /* Charts - Scientific color palette (colorblind friendly) */
+  --chart-1: oklch(66.565% 0.13239 268.569); /* Navy */
+  --chart-2: oklch(0.6 0.15 190); /* Teal */
+  --chart-3: oklch(0.55 0.18 320); /* Purple */
+  --chart-4: oklch(0.65 0.16 80); /* Olive green */
+  --chart-5: oklch(0.58 0.14 30); /* Rust/orange */
+
+  /* Sidebar - Clean and distinct */
+  --sidebar: oklch(0.98 0.008 250); /* Slightly tinted white */
+  --sidebar-foreground: oklch(0.15 0.02 250);
+  --sidebar-primary: oklch(0.28 0.05 250);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.94 0.01 250);
+  --sidebar-accent-foreground: oklch(0.28 0.05 250);
+  --sidebar-border: oklch(0.88 0.015 250);
+  --sidebar-ring: oklch(66.565% 0.13239 268.569);
+}
+
+.dark {
+  /* Dark Mode - Professional dark theme for research */
+  --background: oklch(0.12 0.02 250); /* Deep navy-black */
+  --foreground: oklch(0.98 0.005 250); /* Soft white */
+
+  /* Cards with subtle depth */
+  --card: oklch(0.16 0.03 250); /* Slightly lighter than background */
+  --card-foreground: oklch(0.98 0.005 250);
+
+  --popover: oklch(0.16 0.03 250);
+  --popover-foreground: oklch(0.98 0.005 250);
+
+  /* Primary - Bright but professional blue */
+  --primary: oklch(66.565% 0.13239 268.569); /* Clear, readable blue */
+  --primary-foreground: oklch(0.12 0.02 250); /* Dark background */
+
+  /* Secondary - Medium dark gray */
+  --secondary: oklch(0.2 0.03 250);
+  --secondary-foreground: oklch(0.98 0.005 250);
+
+  /* Muted - Professional dark grays */
+  --muted: oklch(0.2 0.03 250);
+  --muted-foreground: oklch(0.65 0.03 250); /* Medium gray text */
+
+  /* Accent - Teal that works well in dark mode */
+  --accent: oklch(0.3 0.08 190);
+  --accent-foreground: oklch(0.98 0.005 250);
+
+  /* Destructive - Clear but not overwhelming */
+  --destructive: oklch(0.65 0.18 25);
+
+  /* Borders - Defined but subtle */
+  --border: oklch(0.25 0.04 250);
+  --input: oklch(0.2 0.03 250);
+  --ring: oklch(66.565% 0.13239 268.569); /* Match primary */
+
+  /* Charts - Optimized for dark background */
+  --chart-1: oklch(66.565% 0.13239 268.569); /* Bright navy */
+  --chart-2: oklch(0.75 0.18 190); /* Bright teal */
+  --chart-3: oklch(0.72 0.2 320); /* Bright purple */
+  --chart-4: oklch(0.78 0.16 80); /* Bright olive */
+  --chart-5: oklch(0.68 0.14 30); /* Bright rust */
+
+  /* Sidebar */
+  --sidebar: oklch(0.14 0.025 250);
+  --sidebar-foreground: oklch(0.98 0.005 250);
+  --sidebar-primary: oklch(66.565% 0.13239 268.569);
+  --sidebar-primary-foreground: oklch(0.12 0.02 250);
+  --sidebar-accent: oklch(0.2 0.03 250);
+  --sidebar-accent-foreground: oklch(0.98 0.005 250);
+  --sidebar-border: oklch(0.25 0.04 250);
+  --sidebar-ring: oklch(66.565% 0.13239 268.569);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Hero gradient utilities */
+  .gradient-bg {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+  }
+
+  .card-gradient {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+}
