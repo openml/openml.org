@@ -10,6 +10,14 @@ from server.user.models import User
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 
+
+# Currently disable email in testing
+@pytest.fixture(scope="module", autouse=True)
+def disable_email_send():
+    os.environ['SEND_EMAIL'] = "False"
+    yield
+
+
 @pytest.fixture(scope="module")
 def test_client():
     flask_app = app
