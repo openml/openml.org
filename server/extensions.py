@@ -35,12 +35,12 @@ if not strtobool(os.environ.get("TESTING", "True")):
     Base = declarative_base()
     Base.metadata.reflect(engine)
 else:
-    logging.warning("Testing mode, using local sqlite db.")
+    logging.warning("Testing mode, using local sqlite test db.")
     engine = create_engine(
-        "sqlite:///" + os.path.join(basedir, "openml.db"),
+        "sqlite:///" + os.path.join(basedir, "openml.test.db"),
         echo=False,
     )
-    Config.SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "openml.db")
+    Config.SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "openml.test.db")
     Base = declarative_base()
     Base.metadata.reflect(engine)
 

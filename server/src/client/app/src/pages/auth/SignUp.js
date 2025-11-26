@@ -7,12 +7,18 @@ import { useState } from "react";
 
 import {
   FormControl,
+  IconButton,
   Input,
   InputLabel,
+  InputAdornment,
   Button as MuiButton,
   Paper,
   Typography
 } from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material';
 import { spacing } from "@mui/system";
 import axios from "axios";
 
@@ -30,53 +36,84 @@ const RedIcon = styled(FontAwesomeIcon)({
   color: red[500]
 });
 
+const MIN_PASSWORD_LENGTH = 15;
+
 function SignUp() {
   const [register, setRegister] = useState(false);
   const [duplicateUser, setDuplicateUser] = useState(false);
   const [error, setError] = useState(false);
   const [errormessage, setErrorMessage] = useState(false);
-  function sendflask(event) {
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  function handleSubmit(event) {
     event.preventDefault();
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
-    if (event.target.password.value.length < 8) {
+    var registrationData = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password
+    };
+
+    if (password.length < MIN_PASSWORD_LENGTH) {
+     // Password must meet minimum length
+     // Using NIST recommendation
       setError(true);
-      setErrorMessage("Password too weak. Use at least 8 characters, with numbers, digits, and special characters.");
-    } else if (
-      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(
-        event.target.email.value
-      ) !== true
-    ) {
+      setErrorMessage(`Password too weak. Use at least ${MIN_PASSWORD_LENGTH} characters.`);
+    } else if ( (/[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(email)) === false) {
+      // Email must be in valid format
       setError(true);
       setErrorMessage("Please enter valid email");
     } else {
-      axios
-        .post(process.env.REACT_APP_URL_SITE_BACKEND + "signup", {
-          first_name: event.target.fname.value,
-          last_name: event.target.lname.value,
-          email: event.target.email.value,
-          password: event.target.password.value
-        })
-        .then(function(response) {
-          if (response.data.msg === "User created") {
-            console.log(response.data);
-            setRegister(true);
-          } else if (response.data.msg === "User already exists") {
-            setDuplicateUser(true);
-          }
-        })
-        .catch(function(error) {
-          console.log(error.data);
-        });
+      sendflask(registrationData);
     }
+
     return false;
   }
+
+  function handleMouseDownPassword(event) {
+    event.preventDefault(); // Prevents focus loss
+  }
+
+  function handleClickShowPassword() {
+    setShowPassword(function(prev) {
+      return !prev;
+    });
+  }
+
+  function sendflask(registrationData) {
+    axios
+      .post(process.env.REACT_APP_URL_SITE_BACKEND + "signup", {
+        first_name: registrationData.firstName,
+        last_name: registrationData.lastName,
+        email: registrationData.email,
+        password: registrationData.password
+      })
+      .then(function(response) {
+        if (response.data.msg === "User created") {
+          console.log(response.data);
+          setRegister(true);
+        } else if (response.data.msg === "User alredy exists") {
+          setDuplicateUser(true);
+        }
+      })
+      .catch(function(error) {
+        console.log(error.data);
+      })
+  }
+
   return (
     <Wrapper>
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Almost there
       </Typography>
-      <form onSubmit={sendflask}>
+      <form onSubmit={handleSubmit}>
+        {/* Error Banner */}
         {duplicateUser && (
           <Typography component="h3" variant="body1" align="center" color="red">
             User already exists
@@ -87,31 +124,64 @@ function SignUp() {
             {errormessage}
           </Typography>
         )}
+
+        {/* Input fields */}
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="fname">First name</InputLabel>
-          <Input id="fname" name="fname" autoFocus />
+          <Input
+            id="fname"
+            name="fname"
+            value={firstName}
+            onChange={function(e) { setFirstName(e.target.value); }}
+            autoFocus
+          />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="lname">Last name</InputLabel>
-          <Input id="lname" name="lname" autoFocus />
+          <Input
+            id="lname"
+            name="lname"
+            value={lastName}
+            onChange={function(e) { setLastName(e.target.value); }}
+            autoFocus
+          />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="email">
             Email Address (we never share your email)
           </InputLabel>
-          <Input id="email" name="email" autoComplete="email" />
+          <Input
+            id="email"
+            name="email"
+            value={email}
+            onChange={function(e) { setEmail(e.target.value); }}
+            autoComplete="email"
+          />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="password">
-            Password (min 8 characters)
+            Password (min {MIN_PASSWORD_LENGTH} characters)
           </InputLabel>
           <Input
-            name="password"
-            type="password"
             id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
+            onChange={function(e) {setPassword(e.target.value)}}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
         </FormControl>
+
         <Button
           type="submit"
           fullWidth
