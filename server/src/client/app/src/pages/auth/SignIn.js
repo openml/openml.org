@@ -33,8 +33,7 @@ function SignIn() {
   const [errorlog, setError] = useState(false);
   const [confirmflag, setConfirm] = useState(false);
   const [errormsg, setErrorMsg] = useState(false);
-  const [notexist, setNotExist] = useState(false);
-  const [wrongpass, setWrongPass] = useState(false);
+  const [incorrectCredentials, setIncorrectCredentials] = useState(false);
   const context = useContext(MainContext);
 
   function sendtoflask(event) {
@@ -49,9 +48,7 @@ function SignIn() {
         if (response.data.msg === "UserNotConfirmed") {
           setConfirm(true);
         } else if (response.data.msg === "WrongUsernameOrPassword") {
-          setNotExist(true);
-        } else if (response.data.msg === "WrongPassword") {
-          setWrongPass(true);
+          setIncorrectCredentials(true);
         } else {
           localStorage.setItem("token", response.data.access_token);
           context.checkLogIn();
@@ -94,7 +91,7 @@ function SignIn() {
             </Typography>
           )}
           {/* User with this email & password could not be found */}
-          {(wrongpass || notexist) && (
+          {(incorrectCredentials) && (
             <Typography component="h3" align="center" style={{ color: "red" }}>
               <FontAwesomeIcon
                 icon="exclamation-triangle"

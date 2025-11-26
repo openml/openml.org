@@ -109,7 +109,7 @@ def test_login(test_client, valid_user):
 def test_login_wrong_password(test_client, valid_user):
     response = login(test_client, valid_user.email, "wrongpassword")
 
-    assert response.json["msg"] == "WrongPassword"
+    assert response.json["msg"] == "WrongUsernameOrPassword"
     assert response.status_code == 200
 
 

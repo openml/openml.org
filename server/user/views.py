@@ -59,7 +59,7 @@ def login(session=Session()):
 
     elif not user.check_password(jobj["password"]):
         print("Wrong password")
-        return jsonify({"msg": "WrongPassword"}), 200
+        return jsonify({"msg": "WrongUsernameOrPassword"}), 200
 
     elif user.active == 0:
         print("User not confirmed")
