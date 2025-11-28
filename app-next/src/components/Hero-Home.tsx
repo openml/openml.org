@@ -2,18 +2,18 @@
 import React from "react";
 import Image from "next/image";
 
-export const HeroHome: React.FC = () => {
+const HeroHomeExtra: React.FC = () => {
   return (
-    <div className="hero-container w-full bg-slate-950">
-      <section className="hero-container max-w-8xl mx-auto px-4 pt-[5%] pb-[6%] md:px-8">
-        <div className="grid grid-cols-1 items-center lg:mx-6 lg:grid-cols-2 lg:gap-6 lg:gap-16 xl:mx-8 xl:gap-10 2xl:mx-12 2xl:gap-16">
+    <div className="gradient w-full bg-slate-950">
+      <section className="gradient max-w-8xl mx-auto px-4 pt-[5%] pb-[6%] md:px-8">
+        <div className="grid grid-cols-1 items-center lg:mx-6 lg:grid-cols-2 lg:gap-16 xl:mx-8 xl:gap-10 2xl:mx-12 2xl:gap-16">
           {/* Left Column - Text */}
-          <div className="hero-container text-center lg:text-left">
+          <div className="gradient text-center lg:text-left">
             <div className="mb-3 inline-block rounded-full bg-slate-800 px-4 py-1 text-sm font-medium">
               <span className="gradient-text">Version 3.0 is here</span>
             </div>
 
-            <h1 className="title-font gradient-text mb-4 [font-size:clamp(3rem,4.6vw,72px)] leading-tight [line-height:clamp(3.4rem,5vw,76px)] font-bold tracking-tight">
+            <h1 className="title-font gradient-text mb-4 text-[clamp(3rem,4.6vw,72px)] leading-[clamp(3.4rem,5vw,76px)] font-bold tracking-tight">
               <span className="block text-[2.2rem] text-white opacity-90">
                 The Global Lab
               </span>
@@ -94,7 +94,7 @@ export const HeroHome: React.FC = () => {
               style={{ aspectRatio: "664 / 424" }}
             >
               <div className="floating absolute inset-0 overflow-hidden rounded-2xl border border-slate-700 shadow-2xl">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 opacity-20 blur-3xl" />
+                <div className="absolute inset-0 rounded-full bg-linear-to-r from-indigo-500 to-purple-600 opacity-20 blur-3xl" />
 
                 <Image
                   src="/hero_light_hero-img.png"
@@ -147,85 +147,8 @@ export const HeroHome: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Global styles */}
-      <style jsx global>{`
-        .hero-container {
-          --primary: #6366f1;
-          --secondary: #8b5cf6;
-          --accent: #ec4899;
-          font-family: "Inter", sans-serif;
-          background-color: #0f172a;
-          color: #f8fafc;
-        }
-        .title-font {
-          font-family: "Space Grotesk", sans-serif;
-        }
-        .gradient-text {
-          background: linear-gradient(
-            90deg,
-            var(--primary),
-            var(--secondary),
-            var(--accent)
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-        }
-        .gradient-bg {
-          background: linear-gradient(
-            135deg,
-            var(--primary),
-            var(--secondary),
-            var(--accent)
-          );
-        }
-        .card-gradient {
-          background: linear-gradient(145deg, #1e293b, #0f172a);
-        }
-        .feature-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2);
-        }
-        .glow-effect {
-          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-        }
-        .hero-image {
-          mask-image: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            black 60%,
-            transparent 100%
-          );
-        }
-        .animated-underline {
-          position: relative;
-        }
-        .animated-underline::after {
-          content: "";
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: currentColor;
-          transition: width 0.3s ease;
-        }
-        .animated-underline:hover::after {
-          width: 100%;
-        }
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .floating {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };
+
+export default HeroHomeExtra;

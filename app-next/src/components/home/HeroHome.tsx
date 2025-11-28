@@ -6,9 +6,9 @@ import { CornerRightUp, MoveUpRight } from "lucide-react";
 
 export const HeroHome: React.FC = () => {
   return (
-    <div className="hero-container w-full bg-slate-950">
-      {/* <section className="hero-container mx-auto w-fit bg-[url(/img/06.jpeg)] bg-cover bg-center px-4 pt-[5%] pb-[6%] md:px-8"> */}
-      <section className="hero-container mx-auto w-fit px-4 pt-[5%] pb-[6%] md:px-8">
+    <div className="gradient-container w-full bg-slate-950">
+      {/* <section className="gradient mx-auto w-fit bg-[url(/img/06.jpeg)] bg-cover bg-center px-4 pt-[5%] pb-[6%] md:px-8"> */}
+      <section className="gradient mx-auto w-fit px-4 pt-[5%] pb-[6%] md:px-8">
         <div className="grid max-w-7xl grid-cols-1 items-center gap-8 lg:mx-6 lg:grid-cols-2 lg:gap-10 2xl:mx-16">
           {/* Left Column - Text */}
           <div className="text-center lg:text-left">
@@ -162,83 +162,6 @@ export const HeroHome: React.FC = () => {
           }}
         />
       </section>
-
-      {/* Global styles */}
-      <style jsx>{`
-        .hero-container {
-          --hero-primary: #6366f1;
-          --hero-secondary: #8b5cf6;
-          --hero-accent: #ec4899;
-          font-family: "Inter", sans-serif;
-        }
-        .title-font {
-          font-family: "Space Grotesk", sans-serif;
-        }
-        .gradient-text {
-          background: linear-gradient(
-            90deg,
-            var(--hero-primary),
-            var(--hero-secondary),
-            var(--hero-accent)
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-        }
-        .gradient-bg {
-          background: linear-gradient(
-            135deg,
-            var(--hero-primary),
-            var(--hero-secondary),
-            var(--hero-accent)
-          );
-        }
-        .card-gradient {
-          background: linear-gradient(145deg, #1e293b, #0f172a);
-        }
-        .feature-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2);
-        }
-        .glow-effect {
-          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-        }
-        .hero-image {
-          mask-image: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            black 60%,
-            transparent 100%
-          );
-        }
-        .animated-underline {
-          position: relative;
-        }
-        .animated-underline::after {
-          content: "";
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: currentColor;
-          transition: width 0.3s ease;
-        }
-        .animated-underline:hover::after {
-          width: 100%;
-        }
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .floating {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };

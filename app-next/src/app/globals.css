@@ -165,7 +165,7 @@
 }
 
 @layer utilities {
-  /* Hero gradient utilities */
+  /* Gradient utilities */
   .gradient-bg {
     background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
   }
@@ -194,8 +194,43 @@
       transform: translateY(-10px);
     }
   }
-
   .floating {
     animation: float 6s ease-in-out infinite;
+  }
+  .gradient-container {
+    --gradient-primary: #6366f1;
+    --gradient-secondary: #8b5cf6;
+    --gradient-accent: #ec4899;
+    font-family: "Inter", sans-serif;
+  }
+  .title-font {
+    font-family: "Space Grotesk", sans-serif;
+  }
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2);
+  }
+  .hero-image {
+    mask-image: radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      black 60%,
+      transparent 100%
+    );
+  }
+  .animated-underline {
+    position: relative;
+  }
+  .animated-underline::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  .animated-underline:hover::after {
+    width: 100%;
   }
 }
