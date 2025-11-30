@@ -1,18 +1,18 @@
-import { HeroHome } from "@/components/home/HeroHome";
-import { HeroSection } from "@/components/home/hero-section";
-import { ExploreSection } from "@/components/home/explore-section";
-import { DownloadsSection } from "@/components/home/downloads-section";
-import { BenchmarksSection } from "@/components/home/benchmarks-section";
+import { HeroHome } from "@/components/home/hero-home";
+import { ThreePillarsSection } from "@/components/home/three-pillars-section";
+import { AccessibilitySection } from "@/components/home/accessibility-section";
+import { BenchmarkingSection } from "@/components/home/benchmarking-section";
+import { WorkflowLoopSection } from "@/components/home/workflow-loop-section";
 import { FrictionlessMLSection } from "@/components/home/frictionless-ml-section";
 
 export default function HomePage() {
   return (
     <>
       <HeroHome />
-      <HeroSection />
-      <ExploreSection />
-      <DownloadsSection />
-      <BenchmarksSection />
+      <ThreePillarsSection />
+      <AccessibilitySection />
+      <BenchmarkingSection />
+      <WorkflowLoopSection />
       <FrictionlessMLSection />
     </>
   );

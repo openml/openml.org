@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { SectionContainer } from "@/components/layout/section-container";
 import { Target, BarChart3, ArrowRight, MoveUpRight } from "lucide-react";
 
-export function DownloadsSection() {
+export function BenchmarkingSection() {
   return (
     <SectionContainer
       id="benchmarking-suites"

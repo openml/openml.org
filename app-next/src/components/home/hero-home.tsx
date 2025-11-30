@@ -123,7 +123,7 @@ export const HeroHome: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    <button className="text-bold mt-2 block flex max-w-sm items-center space-x-2 rounded-lg bg-slate-800 p-2 px-4 text-sm text-white shadow-lg outline -outline-offset-1 outline-white/10 transition hover:scale-105 hover:opacity-90">
+                    <button className="text-bold mt-2 flex max-w-sm items-center space-x-2 rounded-lg bg-slate-800 p-2 px-4 text-sm text-white shadow-lg outline -outline-offset-1 outline-white/10 transition hover:scale-105 hover:opacity-90">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5"

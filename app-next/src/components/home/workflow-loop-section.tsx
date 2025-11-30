@@ -15,7 +15,7 @@ import Image from "next/image";
  * The Workflow Loop Section - Server Component
  * Visualizes the cycle of open science: Local Environment → Cloud → Community
  */
-export function BenchmarksSection() {
+export function WorkflowLoopSection() {
   return (
     <SectionContainer
       id="workflow-loop"
