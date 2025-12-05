@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Use environment variable to toggle between dev proxy and production ES
-const USE_DEV_PROXY = process.env.USE_DEV_PROXY === "true" || true; // Default to true for development
-
-const ELASTICSEARCH_SERVER = USE_DEV_PROXY
-  ? "http://localhost:3001/proxy/"
-  : process.env.NEXT_PUBLIC_URL_ELASTICSEARCH || "https://www.openml.org/es/";
+// Direct connection to Elasticsearch - works server-side without CORS issues
+const ELASTICSEARCH_SERVER = "https://es.openml.org/";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +19,6 @@ export async function POST(req: NextRequest) {
 
     console.log("🔍 [ES Proxy] Search request for index:", indexName);
     console.log("📡 [ES Proxy] Endpoint:", url);
-    console.log("🔧 [ES Proxy] Using dev proxy:", USE_DEV_PROXY);
 
     const response = await fetch(url, {
       method: "POST",
@@ -46,9 +41,6 @@ export async function POST(req: NextRequest) {
           error: "Elasticsearch request failed",
           status: response.status,
           message: errorText,
-          hint: USE_DEV_PROXY
-            ? "Dev proxy is enabled. Make sure server-proxy is running on port 3001 (cd server-proxy && node server.js)"
-            : "Direct ES connection failed. Try enabling dev proxy by setting USE_DEV_PROXY=true in .env.local",
         },
         { status: 500 },
       );
@@ -67,9 +59,6 @@ export async function POST(req: NextRequest) {
       {
         error: "Error fetching from Elasticsearch",
         details: error.message,
-        hint: USE_DEV_PROXY
-          ? "Dev proxy is enabled. Make sure server-proxy is running on port 3001"
-          : "Check your Elasticsearch connection",
       },
       { status: 500 },
     );
