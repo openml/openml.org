@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
+import Image from "next/image";
 import {
   Tooltip,
   TooltipContent,
@@ -8,7 +8,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface Integration {
   name: string;
@@ -18,7 +17,7 @@ interface Integration {
 }
 
 interface IntegrationsProps {
-  translations: {
+  content: {
     overline: string;
     heading: string;
     subtitle: string;
@@ -26,7 +25,7 @@ interface IntegrationsProps {
   };
 }
 
-export default function Integrations({ translations }: IntegrationsProps) {
+export default function Integrations({ content }: IntegrationsProps) {
   const integrations: Integration[] = [
     {
       name: "Python API",
@@ -53,25 +52,26 @@ export default function Integrations({ translations }: IntegrationsProps) {
   return (
     <TooltipProvider>
       <section className="py-3 text-center">
-        <div className="mx-auto mb-3 inline-block rounded-sm bg-slate-800 px-6 py-2 text-[.8rem] font-medium text-white uppercase">
-          {translations.overline}
+        <div className="mx-auto inline-block text-xl font-medium text-slate-200">
+          {content.overline}
         </div>
-
-        <h1 className="title-font gradient-text my-2 text-[clamp(2.6rem,4.2vw,68px)] leading-[clamp(3rem,4.6vw,72px)] font-bold tracking-tight">
-          {translations.heading}
+        <h1 className="title-font gradient-text mb-2 text-[clamp(3rem,4.6vw,72px)] leading-[1.2] font-bold tracking-tight">
+          {content.heading}
         </h1>
-        <p className="mx-auto mb-6 max-w-2xl text-center text-[clamp(12px,16px,14px)] leading-[1.8] text-slate-300">
-          {translations.subtitle}
+        <p className="mx-auto mb-6 max-w-2xl text-center text-xl leading-[1.6] font-light text-slate-300">
+          {content.subtitle}
         </p>
 
-        <div className="my-6 flex flex-wrap justify-center gap-4">
+        <div className="my-6 flex flex-wrap justify-center gap-4 pt-3">
           {integrations.map((integration) => (
             <Tooltip key={integration.name}>
               <TooltipTrigger asChild>
-                <div className="mx-2.5 inline-block rounded-lg bg-slate-100 p-3 shadow-sm transition-shadow hover:shadow-md">
-                  <img
+                <div className="mx-3.5 inline-block rounded-lg bg-slate-100 p-3 shadow-sm transition-shadow hover:shadow-md">
+                  <Image
                     alt={integration.name}
                     src={integration.icon}
+                    width={40}
+                    height={40}
                     className="h-auto align-middle"
                     style={{
                       height: integration.height,
@@ -80,15 +80,9 @@ export default function Integrations({ translations }: IntegrationsProps) {
                   />
                 </div>
               </TooltipTrigger>
-              {/* <TooltipContent
-                className={cn(
-                  "gradient-bg text-md -mt-2 border-none px-4 py-0.5 text-white",
-                )}
-                arrowClassName="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"
-              > */}
               <TooltipContent
-                className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white"
-                arrowClassName="fill-slate-100 bg-slate-100"
+                sideOffset={-3}
+                className="bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 px-2 py-0.5 text-base font-medium text-white shadow-lg"
               >
                 <p>{integration.name}</p>
               </TooltipContent>
@@ -101,91 +95,14 @@ export default function Integrations({ translations }: IntegrationsProps) {
             asChild
             variant="default"
             size="lg"
-            className="mb-6 px-12 transition hover:scale-105 hover:opacity-90"
+            className="mb-10 px-12 transition hover:scale-105 hover:opacity-90"
           >
             <Link href="/documentation/welcome" target="_blank">
-              {translations.button}
-              {/* <ArrowRightIcon className="ml-2 h-5 w-5 bg-slate-100 text-red-600" /> */}
+              {content.button}
             </Link>
           </Button>
         </div>
       </section>
-      {/* Global styles */}
-      <style jsx>{`
-        .hero-container {
-          --hero-primary: #6366f1;
-          --hero-secondary: #8b5cf6;
-          --hero-accent: #ec4899;
-          font-family: "Inter", sans-serif;
-        }
-        .title-font {
-          font-family: "Space Grotesk", sans-serif;
-        }
-        .gradient-text {
-          background: linear-gradient(
-            90deg,
-            var(--hero-primary),
-            var(--hero-secondary),
-            var(--hero-accent)
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-        }
-        .gradient-bg {
-          background: linear-gradient(
-            135deg,
-            var(--hero-primary),
-            var(--hero-secondary),
-            var(--hero-accent)
-          );
-        }
-        .card-gradient {
-          background: linear-gradient(145deg, #1e293b, #0f172a);
-        }
-        .feature-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2);
-        }
-        .glow-effect {
-          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-        }
-        .hero-image {
-          mask-image: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            black 60%,
-            transparent 100%
-          );
-        }
-        .animated-underline {
-          position: relative;
-        }
-        .animated-underline::after {
-          content: "";
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: currentColor;
-          transition: width 0.3s ease;
-        }
-        .animated-underline:hover::after {
-          width: 100%;
-        }
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .floating {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </TooltipProvider>
   );
 }

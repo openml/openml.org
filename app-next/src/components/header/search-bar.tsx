@@ -87,10 +87,10 @@ export function SearchBar() {
         - Search icon in the middle
         - Input field on the right
       */}
-      <div className="bg-muted/50 border-input relative flex items-center overflow-hidden rounded-md border">
+      <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 !bg-slate-100 !text-slate-900">
         {/* Index Selector - Embedded on the left */}
         <Select value={selectedIndex} onValueChange={handleIndexChange}>
-          <SelectTrigger className="h-10 w-[130px] border-none bg-transparent shadow-none focus:ring-0">
+          <SelectTrigger className="h-10 w-[130px] border-none !bg-transparent !text-slate-900 shadow-none focus:ring-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -103,10 +103,10 @@ export function SearchBar() {
         </Select>
 
         {/* Vertical Divider */}
-        <div className="bg-border h-6 w-px" />
+        <div className="h-6 w-px bg-slate-300" />
 
         {/* Search Icon */}
-        <Search className="text-muted-foreground ml-3 h-4 w-4 shrink-0" />
+        <Search className="ml-3 h-4 w-4 shrink-0 text-slate-600" />
 
         {/* Search Input - Takes remaining space */}
         <Input
@@ -114,7 +114,7 @@ export function SearchBar() {
           placeholder={`Search ${currentIndexLabel.toLowerCase()}...`}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-none bg-transparent pl-2 shadow-none focus-visible:ring-0"
+          className="border-none !bg-transparent pl-2 !text-slate-900 shadow-none placeholder:!text-slate-500 focus-visible:ring-0"
         />
       </div>
     </form>

@@ -74,8 +74,8 @@ export function InteractiveCodeSnippet({
 
   return (
     <div className={className}>
-      {/* Language Selector - Horizontal */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      {/* Language Selector - buttons */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         {examples.map((example) => {
           const IconComponent = iconMap[example.iconName];
           const isSelected = selectedLanguage === example.language;
@@ -84,28 +84,24 @@ export function InteractiveCodeSnippet({
             <button
               key={example.language}
               onClick={() => setSelectedLanguage(example.language)}
-              className={`group flex flex-col items-center justify-center gap-1 rounded-xl border transition-all ${
-                isSelected
-                  ? "border-slate-600 bg-slate-800/50 shadow-lg"
-                  : "border-slate-800 bg-slate-900/30 hover:border-slate-700 hover:bg-slate-800/40"
-              }`}
+              className="group flex flex-col items-center justify-center gap-1 bg-transparent transition-all"
               title={example.language}
             >
               {/* Icon */}
               <IconComponent
                 className={`h-8 w-8 transition-colors ${
                   isSelected
-                    ? "text-slate-100"
-                    : "text-slate-400 group-hover:text-slate-300"
+                    ? "text-slate-800 group-hover:text-slate-500 dark:text-slate-400 dark:group-hover:text-slate-100"
+                    : "text-slate-400 group-hover:text-slate-500 dark:group-hover:text-slate-100"
                 }`}
               />
 
               {/* Language name */}
               <span
-                className={`text-center text-xs font-medium transition-colors ${
+                className={`flex items-center justify-center text-xs font-medium transition-colors ${
                   isSelected
-                    ? "text-slate-100"
-                    : "text-slate-400 group-hover:text-slate-300"
+                    ? "border-b-3 border-slate-900 pt-0.5 text-slate-900 dark:border-slate-200 dark:text-slate-100"
+                    : "border-b-3 border-transparent pt-0.5 text-slate-400 group-hover:border-slate-400 group-hover:text-slate-700 dark:group-hover:border-slate-600 dark:group-hover:text-slate-100"
                 }`}
               >
                 {example.language}
@@ -116,7 +112,7 @@ export function InteractiveCodeSnippet({
       </div>
 
       {/* Code Container */}
-      <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-slate-950">
+      <div className="relative overflow-hidden rounded-lg border border-slate-800 bg-slate-950">
         {/* Header with language badge and copy button */}
         <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/50 px-4 py-2">
           <div className="flex items-center gap-2">
@@ -143,11 +139,11 @@ export function InteractiveCodeSnippet({
         <div className="overflow-x-auto">
           <div className="flex min-w-full">
             {/* Line numbers */}
-            <div className="border-r border-slate-800 bg-slate-900/70 pt-6 text-right leading-relaxed opacity-15 select-none">
+            <div className="bg-slate-0/70 border-r border-slate-800 pt-6 pr-2 pl-4 text-right leading-relaxed text-slate-400 select-none dark:text-slate-400">
               {codeLines.map((_, index) => (
                 <div
                   key={index}
-                  className="font-mono text-sm leading-relaxed text-slate-400"
+                  className="pt-[0.08rem] font-mono text-sm leading-relaxed text-slate-400 dark:text-slate-400"
                 >
                   {index + 1}
                 </div>

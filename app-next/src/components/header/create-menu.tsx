@@ -24,9 +24,9 @@ export function CreateMenu() {
         <Button
           variant="default"
           size="sm"
-          className="hidden gap-2 md:inline-flex"
+          className="hidden cursor-pointer gap-2 border-2 border-slate-700 bg-transparent py-3 font-semibold text-slate-700 hover:bg-slate-700 hover:text-white md:inline-flex"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="size-6" />
           <span>Add new</span>
         </Button>
       </DropdownMenuTrigger>
@@ -35,19 +35,19 @@ export function CreateMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/datasets/upload" className="flex items-center">
-            <Database className="mr-2 h-4 w-4" />
+            <Database className="mr-2 size-6" />
             <span>Upload Dataset</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/tasks/create" className="flex items-center">
-            <Target className="mr-2 h-4 w-4" />
+            <Target className="mr-2 size-6" />
             <span>Define Task</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/collections/create" className="flex items-center">
-            <FolderPlus className="mr-2 h-4 w-4" />
+            <FolderPlus className="mr-2 size-6" />
             <span>New Collection</span>
           </Link>
         </DropdownMenuItem>

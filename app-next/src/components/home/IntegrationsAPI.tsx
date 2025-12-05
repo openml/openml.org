@@ -18,15 +18,15 @@ interface Integration {
 }
 
 interface IntegrationsProps {
-  content: {
-    label: string;
-    title: string;
-    description: string;
-    cta: React.ReactNode;
+  translations: {
+    overline: string;
+    heading: string;
+    subtitle: string;
+    button: React.ReactNode;
   };
 }
 
-export default function Integrations({ content }: IntegrationsProps) {
+export default function Integrations({ translations }: IntegrationsProps) {
   const integrations: Integration[] = [
     {
       name: "Python API",
@@ -54,14 +54,14 @@ export default function Integrations({ content }: IntegrationsProps) {
     <TooltipProvider>
       <section className="py-3 text-center">
         <div className="mx-auto mb-3 inline-block rounded-sm bg-slate-800 px-6 py-2 text-[.8rem] font-medium text-white uppercase">
-          {content.label}
+          {translations.overline}
         </div>
 
-        <h1 className="title-font gradient-text my-2 text-[clamp(1.9rem,3.2vw,51px)] leading-normal font-semibold tracking-tight">
-          {content.title}
-        </h1>
-        <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-300">
-          {content.description}
+        <h2 className="gradient-text title-font py-3 text-4xl leading-[1.05] font-semibold tracking-tight lg:text-[clamp(1.9rem,3.2vw,51px)]">
+          {translations.heading}
+        </h2>
+        <p className="text-muted-foreground mx-auto mb-6 max-w-3xl text-center text-lg leading-[1.8] font-semibold">
+          {translations.subtitle}
         </p>
 
         <div className="my-6 flex flex-wrap justify-center gap-4">
@@ -82,10 +82,10 @@ export default function Integrations({ content }: IntegrationsProps) {
               </TooltipTrigger>
 
               <TooltipContent
-                className="py-0.6 bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 px-4 text-white"
-                arrowClassName="fill-slate-100"
+                className="bg-linear-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white"
+                arrowClassName="fill-slate-100 bg-slate-100"
               >
-                <p className="text-lg font-medium">{integration.name}</p>
+                <p>{integration.name}</p>
               </TooltipContent>
             </Tooltip>
           ))}
@@ -96,10 +96,10 @@ export default function Integrations({ content }: IntegrationsProps) {
             asChild
             variant="default"
             size="lg"
-            className="mb-12 px-12 transition hover:scale-105 hover:opacity-90"
+            className="mb-6 px-12 transition hover:scale-105 hover:opacity-90"
           >
             <Link href="/documentation/welcome" target="_blank">
-              {content.cta}
+              {translations.button}
             </Link>
           </Button>
         </div>

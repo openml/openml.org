@@ -18,13 +18,14 @@ export const HeroHome: React.FC = () => {
               </span>
             </div>
 
-            <h1 className="title-font gradient-text my-4 text-[clamp(3rem,4.6vw,72px)] leading-[clamp(3.4rem,5vw,76px)] font-bold tracking-tight">
+            <h1 className="title-font gradient-text my-4 text-[clamp(3rem,4.6vw,72px)] leading-[1.15] font-bold tracking-tight">
               <span className="block text-xl tracking-normal text-white opacity-90">
                 The Global Lab
               </span>
               for Machine Learning Research
             </h1>
-            <p className="mx-auto mb-6 max-w-2xl text-center text-[clamp(12px,16px,14px)] leading-[1.8] text-slate-300 lg:mr-auto lg:ml-0 lg:text-left">
+
+            <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-300 lg:mr-auto lg:ml-0 lg:text-left">
               Machine learning thrives on <b>transparency</b>. OpenML is the
               open, collaborative environment where scientists{" "}
               <b>share FAIR data</b>, <b>organize experiments</b>, and{" "}
@@ -148,7 +149,7 @@ export const HeroHome: React.FC = () => {
 
       <section className="flex flex-wrap justify-center gap-8">
         <Integrations
-          translations={{
+          content={{
             overline: "The Ecosystem",
             heading: "Frictionless Integration",
             subtitle:

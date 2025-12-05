@@ -29,10 +29,13 @@ export function AccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-          <Avatar className="h-9 w-9">
+        <Button
+          variant="ghost"
+          className="relative size-10 cursor-pointer rounded-full hover:bg-slate-100"
+        >
+          <Avatar className="size-10">
             <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="bg-primary text-primary-foreground">
+            <AvatarFallback className="bg-slate-700 text-white hover:border hover:border-slate-700 hover:bg-slate-300 hover:text-slate-800">
               {user.initials}
             </AvatarFallback>
           </Avatar>

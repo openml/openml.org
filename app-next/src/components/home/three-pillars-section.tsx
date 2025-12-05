@@ -12,9 +12,8 @@ import Image from "next/image";
 export function ThreePillarsSection() {
   return (
     <div className="three-pillars-background relative overflow-hidden">
-      <div className="from-primary/5 absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] via-transparent to-transparent" />
-      <div className="relative container mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-32">
-        {/* Main Heading */}
+      <div className="py-18md:px-6 relative container mx-auto max-w-7xl px-4 md:py-24">
+        {/* Heading */}
         <div className="mb-8 text-center">
           <h1 className="from-foreground to-foreground/70 light:text-slate-950 mb-6 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight md:text-6xl dark:bg-[linear-gradient(15deg,#ec4899,#6366f1,#ec4899,#8b5cf6,#ec4899)] dark:bg-clip-text dark:text-transparent">
             The Three Pillars of OpenML

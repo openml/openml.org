@@ -46,10 +46,14 @@ export function NotificationsBell() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9">
-          <Bell className="h-5 w-5" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative mr-3 size-10 cursor-pointer text-slate-700 hover:bg-slate-300 hover:text-slate-900"
+        >
+          <Bell className="size-6" />
           {hasUnread && (
-            <span className="bg-destructive absolute top-1 right-1 h-2 w-2 rounded-full" />
+            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600" />
           )}
           <span className="sr-only">Notifications</span>
         </Button>
@@ -69,7 +73,7 @@ export function NotificationsBell() {
           >
             <div className="flex w-full items-start">
               {notification.unread && (
-                <span className="bg-primary mt-1 mr-2 h-2 w-2 flex-shrink-0 rounded-full" />
+                <span className="bg-primary mt-1 mr-2 h-2 w-2 shrink-0 rounded-full" />
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{notification.title}</p>

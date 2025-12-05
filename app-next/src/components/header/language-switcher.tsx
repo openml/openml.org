@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Globe } from "lucide-react";
+// import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,12 +35,16 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {/* <Button variant="ghost" size="icon" className="h-9 w-9">
-          <Globe className="h-5 w-5" />
-          <span className="sr-only">Change language</span>
-        </Button> */}
-        <Button variant="ghost" size="icon" className="h-9 w-9">
-          <LanguageNetworkIcon className="h-5 w-5" />
+        {/* <Button variant="ghost" size="icon" className="size-10">
+            <Globe className="size-6" />
+            <span className="sr-only">Change language</span>
+          </Button> */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-10 cursor-pointer text-slate-700 hover:bg-slate-300 hover:text-slate-900"
+        >
+          <LanguageIcon className="size-6 cursor-pointer" />
           <span className="sr-only">Change language</span>
         </Button>
       </DropdownMenuTrigger>
@@ -62,27 +66,6 @@ export function LanguageSwitcher() {
     </DropdownMenu>
   );
 }
-
-export const LanguageNetworkIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.7"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="12" cy="12" r="9" />
-    <circle cx="8" cy="10" r="1" />
-    <circle cx="16" cy="8" r="1" />
-    <circle cx="15" cy="15" r="1" />
-    <path d="M8.8 10.8l5.2 3.7" />
-    <path d="M9 10l5.5-2.3" />
-    <path d="M12 3v18" opacity=".6" />
-    <path d="M3 12h18" opacity=".6" />
-  </svg>
-);
 
 export const LanguageIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg

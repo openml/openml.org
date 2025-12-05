@@ -5,6 +5,7 @@ import { QueryProvider } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { OpenMLFooter } from "@/components/layout/OpenMLFooter";
 
 const inter = Inter({
   variable: "--font-inter",

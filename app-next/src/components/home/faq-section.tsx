@@ -199,9 +199,9 @@ export default function FAQSection() {
         <div className="mx-auto inline-block rounded-sm px-6 text-2xl font-medium text-slate-700 uppercase dark:text-white">
           OpenML FAQ
         </div>
-        <h2 className="gradient-text title-font py-3 text-4xl leading-[1.05] font-semibold tracking-tight lg:text-[clamp(1.9rem,3.2vw,51px)]">
+        <h1 className="gradient-text title-font py-3 text-4xl leading-[1.05] font-semibold tracking-tight lg:text-[clamp(1.9rem,3.2vw,51px)]">
           Clear answers to the most important questions
-        </h2>
+        </h1>
         <p className="mx-auto max-w-3xl text-lg leading-[1.8] font-semibold text-slate-700 dark:text-slate-300">
           Whether you're training your first model or running large-scale
           benchmarks, OpenML streamlines every step of your workflow. This Q&A

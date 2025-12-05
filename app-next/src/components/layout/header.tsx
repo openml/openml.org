@@ -10,24 +10,17 @@ import { CreateMenu } from "@/components/header/create-menu";
 
 export function Header() {
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#eaeff5]/95 text-slate-800 shadow-sm">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-24 items-center gap-4">
           {/* Logo - Left */}
+          {/* Logo - Left - Always Light Mode */}
           <Image
             src="/logo_openML_light-bkg.png"
             alt="OpenML"
             width={180}
             height={60}
-            className="size-18 w-auto dark:hidden"
-            priority
-          />
-          <Image
-            src="/logo_openML_dark-bkg.png"
-            alt="OpenML"
-            width={180}
-            height={60}
-            className="hidden size-18 w-auto dark:block"
+            className="size-18 w-auto"
             priority
           />
 
@@ -37,13 +30,13 @@ export function Header() {
           </div>
 
           {/* Action Icons - Right */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             {/* Documentation */}
             <Button
               variant="ghost"
               size="icon"
               asChild
-              className="hidden h-9 w-9 lg:inline-flex"
+              className="hidden size-10 cursor-pointer text-slate-700 hover:bg-slate-300 hover:text-slate-900 lg:inline-flex"
             >
               <a
                 href="https://docs.openml.org"
@@ -51,7 +44,7 @@ export function Header() {
                 rel="noopener noreferrer"
                 title="Documentation"
               >
-                <BookOpen className="h-5 w-5" />
+                <BookOpen className="size-6" />
                 <span className="sr-only">Documentation</span>
               </a>
             </Button>
@@ -76,7 +69,11 @@ export function Header() {
             <AccountMenu />
 
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="h-9 w-9 md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-slate-700 hover:bg-slate-100 hover:text-slate-900 md:hidden"
+            >
               <span className="text-sm">☰</span>
               <span className="sr-only">Menu</span>
             </Button>

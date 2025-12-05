@@ -56,10 +56,7 @@ function TooltipContent({
       >
         {children}
         <TooltipPrimitive.Arrow
-          className={cn(
-            "bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_+_5.25px)] rotate-45 rounded-[2px]",
-            arrowClassName,
-          )}
+          className={cn("z-50 h-3 w-6 fill-current", arrowClassName)}
         />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>

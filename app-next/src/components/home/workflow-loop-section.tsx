@@ -4,201 +4,269 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SectionContainer } from "@/components/layout/section-container";
-import { Download, Cog, Upload, ArrowRight } from "lucide-react";
+import {
+  Download,
+  Cog,
+  Upload,
+  ArrowBigRight,
+  CornerRightUp,
+} from "lucide-react";
 import Image from "next/image";
+import {
+  WorkflowImportIcon,
+  WorkflowRunIcon,
+  WorkflowExportIcon,
+} from "@/components/home/workflowLoopIcons";
 
-/**
- * The Workflow Loop Section - Server Component
- * Visualizes the cycle of open science: Local Environment → Cloud → Community
- */
 export function WorkflowLoopSection() {
   return (
-    <SectionContainer
-      id="workflow-loop"
-      className="bg-muted/30"
-      style={{
-        backgroundImage:
-          "conic-gradient(at right center, rgb(199, 210, 254), rgb(71, 85, 105), rgb(199, 210, 254))",
-      }}
-    >
-      <div className="mb-16 text-center">
-        <h2 className="gradient-text mb-6 text-4xl font-bold tracking-tight md:text-5xl">
-          The Workflow Loop
-          <span className="text-muted-foreground mt-2 block text-2xl font-normal">
-            Frictionless ML
-          </span>
-        </h2>
-        <p className="text-muted-foreground mx-auto max-w-3xl text-lg leading-relaxed">
-          <span className="text-foreground font-semibold">
-            The Cycle of Open Science:
-          </span>{" "}
-          Seamlessly integrate OpenML into your ML workflow
-        </p>
-      </div>
-      <Image
-        src="/licensed-image.jpg"
-        alt="Workflow Loop"
-        width={350}
-        height={250}
-        className="mx-auto"
-      />
-
-      <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
-        {/* Step 1: Import */}
-        <Card className="group hover:border-primary relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-          <CardHeader className="relative space-y-6 p-8">
+    <SectionContainer className="bg-muted/30 overflow-hidden">
+      <div className="relative container mx-auto max-w-7xl px-4 py-18 md:px-6 md:py-12">
+        <div className="mb-8 text-center">
+          <h1 className="text-muted-foreground mb-10 text-4xl font-bold tracking-tight md:text-5xl">
+            The OpenML Workflow Loop
+            <span className="my-3 block text-2xl font-normal text-slate-800 dark:text-slate-300">
+              Integrate OpenML into every step of your ML workflow.
+            </span>
+          </h1>
+        </div>
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-1 lg:grid-cols-3">
+          <WorkflowConnectorArrow className="left-[calc(33.33%-0.5rem)]" />
+          <WorkflowConnectorArrow className="left-[calc(66.66%+0.3rem)]" />
+          {/* Step 1: Import */}
+          <Card className="group hover:border-primary relative mb-0 flex flex-col overflow-hidden border-2 pb-6 transition-all duration-300 hover:shadow-xl">
+            <div className="absolute inset-0 bg-linear-to-br from-[#6366f1]/5 to-[#8b5cf6]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             {/* Step Number Badge */}
-            <div className="absolute -top-2 -right-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-xl font-bold text-white shadow-lg">
+            <div className="absolute -top-2 -right-2 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-tl from-[#6366f1] to-[#8b5cf6] text-xl font-bold text-white shadow-lg">
               1
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
-                <Download className="h-7 w-7" />
+            <CardHeader className="relative mb-0 space-y-2 px-8 pt-3 pb-0">
+              <div className="flex items-end gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-baseline rounded-xl bg-linear-to-br from-[#6366f1] to-[#8b5cf6] text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <WorkflowImportIcon />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="-mb-2 text-2xl font-bold">
+                    Import
+                  </CardTitle>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="mb-2 text-2xl font-bold">
-                  Import
-                </CardTitle>
-              </div>
-            </div>
-
-            <CardDescription className="text-base leading-relaxed">
-              Load data in one line. Compatible with Scikit-learn, PyTorch,
-              TensorFlow, and XGBoost.
-            </CardDescription>
-
-            {/* Technology Badges */}
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="text-xs">
-                Scikit-learn
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                PyTorch
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                TensorFlow
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                XGBoost
-              </Badge>
-            </div>
-
-            <Link href="/docs/getting-started" className="block">
-              <Button
-                variant="outline"
-                className="group/btn w-full transition-all duration-300 hover:bg-green-500 hover:text-white"
+              <CardDescription className="my-1 text-base leading-relaxed">
+                Load OpenML datasets in a single line of code, compatible with
+                scikit-learn, PyTorch, TensorFlow, XGBoost, and more.
+              </CardDescription>
+              {/* logos placeholder */}
+              <Step1Visuals />
+            </CardHeader>
+            <CardFooter className="mt-6 -mb-6 flex-1">
+              <Link
+                href="/docs/getting-started"
+                className="mt-2 mb-0 flex w-full border-t-2 border-slate-400 lg:my-6"
               >
-                Get Started Guide
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-              </Button>
-            </Link>
-          </CardHeader>
-        </Card>
-
-        {/* Step 2: Build & Run */}
-        <Card className="group hover:border-primary relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-          <CardHeader className="relative space-y-6 p-8">
+                <Button
+                  variant="outline"
+                  className="group/btn mr-2 w-full justify-end transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 dark:hover:bg-transparent dark:hover:text-white"
+                >
+                  Get Started Guide
+                  <CornerRightUp className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+          <WorkflowVerticalArrow className="left-[calc(50%)] -mt-3 block rotate-90" />
+          {/* Step 2: Build & Run */}
+          <Card className="group hover:border-primary relative mb-0 overflow-hidden border-2 pb-6 transition-all duration-300 hover:shadow-xl">
+            <div className="absolute inset-0 flex flex-col bg-linear-to-br from-[#8b5cf6]/5 to-[#ec4899]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             {/* Step Number Badge */}
-            <div className="absolute -top-2 -right-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 text-xl font-bold text-white shadow-lg">
+            <div className="absolute -top-2 -right-2 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-[#8b5cf6] to-[#ec4899] text-xl font-bold text-white shadow-lg">
               2
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
-                <Cog className="h-7 w-7" />
+            <CardHeader className="relative mb-0 space-y-2 px-8 pt-3 pb-0">
+              <div className="flex items-end gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-end rounded-xl bg-linear-to-br from-[#8b5cf6] to-[#ec4899] text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <WorkflowRunIcon />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="-mb-2 text-2xl font-bold">
+                    Build & Run
+                  </CardTitle>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="mb-2 text-2xl font-bold">
-                  Build & Run
-                </CardTitle>
-              </div>
-            </div>
+              <CardDescription className="my-1 text-base leading-relaxed">
+                Train and evaluate models on those tasks using your favorite ML
+                libraries. Try different pipelines and hyperparameters until you
+                get results you are happy with.
+              </CardDescription>
+              {/* Visual Emphasis */}
+              <Step2Diagram
+                light="/img/step2-BuildRun_lMode.png"
+                dark="/img/step2-BuildRun_dMode.png"
+                alt="Step 2 Build & Run diagram"
+              />
+            </CardHeader>
+          </Card>
+          <WorkflowVerticalArrow className="left-[calc(50%)] -mt-3 block rotate-90" />
 
-            <CardDescription className="text-base leading-relaxed">
-              Train your models locally using your preferred compute resources.
-              Full control over your development environment and infrastructure.
-            </CardDescription>
-
-            {/* Visual Emphasis */}
-            <div className="border-muted-foreground/30 bg-muted/50 rounded-lg border border-dashed p-4">
-              <p className="text-muted-foreground text-center text-sm">
-                <span className="font-semibold">Local Control</span>
-                <br />
-                Your compute, your way
-              </p>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Step 3: Export & Publish */}
-        <Card className="group hover:border-primary relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-          <CardHeader className="relative space-y-6 p-8">
+          <Card className="group hover:border-primary relative mb-0 overflow-hidden border-2 pb-6 transition-all duration-300 hover:shadow-xl">
+            <div className="absolute inset-0 bg-linear-to-br from-[#ec4899]/5 to-[#6366f1]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             {/* Step Number Badge */}
-            <div className="absolute -top-2 -right-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-600 text-xl font-bold text-white shadow-lg">
+            <div className="absolute -top-2 -right-2 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-[#ec4899] to-[#6366f1] text-xl font-bold text-white shadow-lg">
               3
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
-                <Upload className="h-7 w-7" />
+            <CardHeader className="relative mb-0 space-y-2 px-8 pt-3 pb-0">
+              <div className="flex items-end gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#ec4899] to-[#6366f1] text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <WorkflowExportIcon />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="mb-2 text-2xl font-bold">
+                    Export & Publish
+                  </CardTitle>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="mb-2 text-2xl font-bold">
-                  Export & Publish
-                </CardTitle>
+              <CardDescription className="my-1 text-base leading-relaxed">
+                <span className="font-semibold">Automatically publish</span>:{" "}
+                Upload your workflows (flows), experiments (runs), and
+                evaluation metrics back to OpenML so others can compare and
+                reuse them.
+              </CardDescription>
+              {/* Flow Tags */}
+              <div className="ml-3 space-y-2">
+                <Link
+                  href="/flows"
+                  className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
+                >
+                  → Flows
+                  <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
+                    workflows
+                  </span>
+                </Link>
+                <Link
+                  href="/runs"
+                  className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
+                >
+                  → Runs
+                  <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
+                    experiments
+                  </span>
+                </Link>
+                <Link
+                  href="/measures"
+                  className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
+                >
+                  → Metrics
+                  <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
+                    evaluation
+                  </span>
+                </Link>
               </div>
-            </div>
-
-            <CardDescription className="text-base leading-relaxed">
-              <span className="font-semibold">Automatic Publishing.</span> Push
-              your workflows, run parameters, and evaluation metrics to the
-              OpenML hub for citations and collaboration.
-            </CardDescription>
-
-            {/* Flow Tags */}
-            <div className="space-y-2">
-              <Link
-                href="/flows"
-                className="text-primary flex items-center gap-2 text-sm font-medium hover:underline"
-              >
-                → Flows
-                <span className="text-muted-foreground text-xs">
-                  (workflows)
-                </span>
-              </Link>
-              <Link
-                href="/runs"
-                className="text-primary flex items-center gap-2 text-sm font-medium hover:underline"
-              >
-                → Runs
-                <span className="text-muted-foreground text-xs">
-                  (experiments)
-                </span>
-              </Link>
-              <Link
-                href="/measures"
-                className="text-primary flex items-center gap-2 text-sm font-medium hover:underline"
-              >
-                → Metrics
-                <span className="text-muted-foreground text-xs">
-                  (evaluation)
-                </span>
-              </Link>
-            </div>
-          </CardHeader>
-        </Card>
+            </CardHeader>
+          </Card>
+        </div>
       </div>
     </SectionContainer>
   );
 }
+
+const Step1Visuals = () => (
+  <div className="relative mt-2 flex w-full justify-between gap-x-2">
+    <Link
+      href="/documentation/pytorch/"
+      title="OpenML is compatible with PyTorch Flows"
+    >
+      <Image
+        src="/img/PyTorch-logo.png"
+        alt="PyTorch logo"
+        height={150}
+        width={150}
+        priority
+        className="h-9 w-auto rounded-xs bg-white object-contain p-0.75"
+      />
+    </Link>
+    <Link href="/runs">
+      <Image
+        src="/img/Scikit-learn-logo.png"
+        alt="Scikit-learn logo"
+        height={150}
+        width={150}
+        priority
+        className="h-9 w-auto rounded-xs bg-white object-contain p-0.75"
+      />
+    </Link>
+    <Link href="/runs">
+      <Image
+        src="/img/TensorFlow-logo.png"
+        alt="TensorFlow logo"
+        height={150}
+        width={150}
+        priority
+        className="h-9 w-auto rounded-xs bg-white object-contain p-0.75"
+      />
+    </Link>
+    <Link href="/runs">
+      <Image
+        src="/img/XGBoost-logo.png"
+        alt="XGBoost logo"
+        height={150}
+        width={150}
+        priority
+        className="h-9 w-auto rounded-xs bg-white object-contain p-0.75"
+      />
+    </Link>
+  </div>
+);
+
+const Step2Diagram: React.FC<{ light: string; dark: string; alt: string }> = ({
+  light,
+  dark,
+  alt,
+}) => {
+  return (
+    <div className="relative mt-2 w-full">
+      <Image
+        src={light}
+        alt={alt}
+        width={1400}
+        height={700}
+        className="h-auto w-full object-contain dark:hidden"
+        sizes="(max-width: 768px) 100vw, 33vw"
+        priority
+      />
+      <Image
+        src={dark}
+        alt={alt}
+        width={1400}
+        height={700}
+        className="hidden h-auto w-full object-contain dark:block"
+        sizes="(max-width: 768px) 100vw, 33vw"
+        priority
+      />
+    </div>
+  );
+};
+
+const WorkflowConnectorArrow: React.FC<{ className?: string }> = ({
+  className,
+}) => (
+  <div
+    className={`absolute top-3/10 z-10 hidden h-9 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-white/70 shadow-md lg:flex ${className}`}
+  >
+    <ArrowBigRight className="text-primary/70 h-8 w-8" />
+  </div>
+);
+
+const WorkflowVerticalArrow: React.FC<{ className?: string }> = ({
+  className,
+}) => (
+  <div
+    className={`absolute top-3/10 z-10 flex h-9 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-white/70 shadow-md lg:hidden ${className}`}
+  >
+    <ArrowBigRight className="text-primary/70 h-8 w-8" />
+  </div>
+);
+
