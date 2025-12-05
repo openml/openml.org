@@ -1,9 +1,6 @@
 import ElasticsearchAPIConnector from "@elastic/search-ui-elasticsearch-connector";
 
 const connectorsCache = {};
-
-// Set to true if you want to use the dev proxy
-// This requires starting server-proxy app with `node server.js`
 const use_dev_proxy = true;
 
 export default async function handler(req, res) {
@@ -14,37 +11,46 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Index name is required" });
     }
 
-    const esHost = use_dev_proxy
-      ? "http://localhost:3001/proxy"
-      : "https://www.openml.org/es/";
+    const proxyHost = "https://es.openml.org";
+    const directHost = "https://www.openml.org/es/";
+    const esHost = use_dev_proxy ? proxyHost : directHost;
 
-    console.log("Connecting to:", esHost, "Index:", indexName);
+    console.log("🔍 /api/search called:", {
+      indexName,
+      host: esHost,
+      hasRequestState: !!requestState,
+      hasQueryConfig: !!queryConfig,
+    });
 
     if (!connectorsCache[indexName]) {
+      console.log("📦 Creating connector for:", indexName);
       connectorsCache[indexName] = new ElasticsearchAPIConnector({
         host: esHost,
         index: indexName,
         apiKey: "",
       });
+      console.log("✅ Connector created successfully");
     }
 
-    //This runs server-side, so the output appears in the terminal
-    console.log("OnSearch", indexName, requestState, queryConfig);
+    console.log("🔎 Executing search...");
     const response = await connectorsCache[indexName].onSearch(
       requestState,
       queryConfig,
     );
-    console.log("Search response:", response);
+    console.log("✅ Search successful:", {
+      resultsCount: response?.results?.length || 0,
+      totalResults: response?.totalResults || 0,
+    });
     res.json(response);
   } catch (error) {
-    console.error("Search API error:", error);
-    res.status(500).json({
-      error: "Search failed",
+    console.error("❌ Error in /api/search:", {
       message: error.message,
-      details: error.toString(),
-      hint: use_dev_proxy
-        ? "Dev proxy is enabled. Make sure server-proxy is running on port 3001 (npm run dev from server-proxy directory)"
-        : "Direct ES connection failed. The endpoint may be returning HTML. Try enabling dev proxy.",
+      stack: error.stack,
+    });
+    res.status(500).json({
+      error: error.message,
+      type: error.name,
+      details: "Check server logs for more information",
     });
   }
 }
