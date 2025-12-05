@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { BookOpen, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/header/theme-toggle";
 import { SearchBar } from "@/components/header/search-bar";
 import { LanguageSwitcher } from "@/components/header/language-switcher";
 import { NotificationsBell } from "@/components/header/notifications-bell";
