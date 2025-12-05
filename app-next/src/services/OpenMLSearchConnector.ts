@@ -21,11 +21,9 @@ interface FacetConfig {
 }
 
 class OpenMLSearchConnector implements APIConnector {
-  baseUrl: string;
   indexName: string;
 
   constructor(indexName: string) {
-    this.baseUrl = "https://www.openml.org/es/";
     this.indexName = indexName;
   }
 
