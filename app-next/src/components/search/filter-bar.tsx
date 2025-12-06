@@ -60,6 +60,8 @@ function formatFacetValue(value: string, field: string): string {
 }
 
 export function FilterBar({ facets }: FilterBarProps) {
+  const [openPopover, setOpenPopover] = React.useState<string | null>(null);
+
   return (
     <div className="bg-background flex flex-wrap items-center gap-2 border-b p-4">
       <span className="text-muted-foreground mr-2 text-sm font-medium">
@@ -75,9 +77,15 @@ export function FilterBar({ facets }: FilterBarProps) {
           view={({ options, onSelect, onRemove, values }) => {
             const selectedValues = new Set(values);
             const hasActiveFilters = selectedValues.size > 0;
+            const isOpen = openPopover === facet.field;
 
             return (
-              <Popover>
+              <Popover
+                open={isOpen}
+                onOpenChange={(open) =>
+                  setOpenPopover(open ? facet.field : null)
+                }
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -145,12 +153,14 @@ export function FilterBar({ facets }: FilterBarProps) {
                           return (
                             <CommandItem
                               key={valueStr}
-                              onSelect={() => {
+                              onSelect={(e) => {
                                 if (isSelected) {
                                   onRemove(option.value as any);
                                 } else {
                                   onSelect(option.value as any);
                                 }
+                                // Prevent popover from closing
+                                e.preventDefault?.();
                               }}
                             >
                               <div

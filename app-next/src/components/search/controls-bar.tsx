@@ -75,7 +75,7 @@ export function ControlsBar({
         {/* Sort Dropdown */}
         <Sorting
           sortOptions={sortOptions}
-          view={({ options, value, onChange }) => {
+          view={({ value, onChange }) => {
             // value can be a string or an array of sort objects
             const currentField =
               Array.isArray(value) && value.length > 0
@@ -90,10 +90,11 @@ export function ControlsBar({
                   onValueChange={(field) => {
                     const option = sortOptions.find(
                       (opt) =>
-                        opt.value[0]?.field === field ||
+                        (opt.value.length > 0 &&
+                          opt.value[0]?.field === field) ||
                         (field === "relevance" && opt.value.length === 0),
                     );
-                    if (option) {
+                    if (option && option.value) {
                       onChange(option.value);
                     }
                   }}
@@ -124,13 +125,26 @@ export function ControlsBar({
           onValueChange={(value) => value && onViewChange?.(value)}
           className="border"
         >
-          <ToggleGroupItem value="list" aria-label="List view">
+          <ToggleGroupItem
+            value="list"
+            aria-label="List view"
+            className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+          >
             <List className="h-4 w-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem value="table" aria-label="Table view">
+          <ToggleGroupItem
+            value="table"
+            aria-label="Table view"
+            className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+          >
             <Table2 className="h-4 w-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem value="grid" aria-label="Grid view">
+          <ToggleGroupItem
+            value="grid"
+            aria-label="Grid view"
+            className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+            // className="data-[state=on]:bg-primary hover:bg-slate-600 hover:text-white data-[state=on]:text-slate-100"
+          >
             <Grid3x3 className="h-4 w-4" />
           </ToggleGroupItem>
         </ToggleGroup>

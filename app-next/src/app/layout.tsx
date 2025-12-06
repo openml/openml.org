@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { OpenMLFooter } from "@/components/layout/OpenMLFooter";
+import HomePage from "./page";
 
 const inter = Inter({
   variable: "--font-inter",

@@ -50,8 +50,8 @@ const dataConfig = {
       version: { raw: {} },
     },
     disjunctiveFacets: [
-      "status",
-      "licence",
+      "status.keyword",
+      "licence.keyword",
       "qualities.NumberOfInstances",
       "qualities.NumberOfFeatures",
       "qualities.NumberOfclassNamees",

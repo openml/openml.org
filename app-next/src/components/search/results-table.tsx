@@ -79,14 +79,16 @@ export function ResultsTable({ results }: ResultsTableProps) {
           Array.isArray(value) && value.length > 0 ? value[0] : null;
 
         const handleSort = (field: string) => {
-          if (currentSort?.field === field) {
-            // Toggle direction
-            const newDirection =
-              currentSort.direction === "asc" ? "desc" : "asc";
-            onChange([{ field, direction: newDirection }]);
-          } else {
-            // Set new field with desc as default
-            onChange([{ field, direction: "desc" }]);
+          if (onChange && typeof onChange === "function") {
+            if (currentSort?.field === field) {
+              // Toggle direction
+              const newDirection =
+                currentSort.direction === "asc" ? "desc" : "asc";
+              onChange([{ field, direction: newDirection }]);
+            } else {
+              // Set new field with desc as default
+              onChange([{ field, direction: "desc" }]);
+            }
           }
         };
 
@@ -133,14 +135,16 @@ export function ResultsTable({ results }: ResultsTableProps) {
                     <TableCell>
                       <Link
                         href={`/d/${result.data_id?.raw || result.id?.raw}`}
-                        className="text-primary hover:underline"
+                        className="text-primary line-clamp-3 hover:underline"
                       >
                         {result.name?.snippet || result.name?.raw || "Untitled"}
                       </Link>
                     </TableCell>
                     <TableCell>{result.status?.raw || "-"}</TableCell>
                     <TableCell>{result.version?.raw || "-"}</TableCell>
-                    <TableCell>{result.creator?.raw || "-"}</TableCell>
+                    <TableCell className="line-clamp-3">
+                      {result.creator?.raw || "-"}
+                    </TableCell>
                     <TableCell>
                       {result.date?.raw
                         ? new Date(result.date.raw).toLocaleDateString()

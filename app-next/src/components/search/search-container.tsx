@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SearchProvider,
-  WithSearch,
-  Results,
-  Paging,
-} from "@elastic/react-search-ui";
+import { SearchProvider, WithSearch, Paging } from "@elastic/react-search-ui";
+import type { SearchDriverOptions } from "@elastic/search-ui";
 import dataConfig from "./search-config";
 import { ResultsTable } from "./results-table";
 import { FilterBar } from "./filter-bar";
 import { ControlsBar } from "./controls-bar";
+import { ResultCard } from "./result-card";
 
 // Facet configuration matching old app
 const searchFacets = [
@@ -24,17 +21,15 @@ const searchFacets = [
 
 export function SearchContainer() {
   const [view, setView] = useState("table");
-
   return (
-    <SearchProvider config={dataConfig as any}>
+    <SearchProvider config={dataConfig as SearchDriverOptions}>
       <WithSearch
-        mapContextToProps={({ wasSearched, isLoading, error }) => ({
-          wasSearched,
+        mapContextToProps={({ isLoading, error }) => ({
           isLoading,
           error,
         })}
       >
-        {({ wasSearched, isLoading, error }) => (
+        {({ isLoading, error }) => (
           <div className="space-y-0">
             {isLoading && (
               <div className="bg-primary/20 h-1 w-full overflow-hidden">
@@ -48,7 +43,7 @@ export function SearchContainer() {
                   Error:{" "}
                   {typeof error === "string"
                     ? error
-                    : (error as any).message || "Unknown error"}
+                    : (error as Error).message || "Unknown error"}
                 </p>
               </div>
             )}
@@ -57,17 +52,49 @@ export function SearchContainer() {
             <ControlsBar view={view} onViewChange={setView} />
 
             <div className="p-4">
-              {view === "table" && <Results resultView={ResultsTable} />}
-              {view === "list" && (
-                <div className="text-muted-foreground p-8 text-center">
-                  List view coming soon...
-                </div>
-              )}
-              {view === "grid" && (
-                <div className="text-muted-foreground p-8 text-center">
-                  Grid view coming soon...
-                </div>
-              )}
+              <WithSearch mapContextToProps={({ results }) => ({ results })}>
+                {({ results }) => (
+                  <>
+                    {view === "table" && <ResultsTable results={results} />}
+                    {view === "list" && (
+                      <div className="space-y-0">
+                        {results && results.length > 0 ? (
+                          results.map((result: any, index: number) => (
+                            <ResultCard
+                              key={
+                                result.id?.raw || result.data_id?.raw || index
+                              }
+                              result={result}
+                            />
+                          ))
+                        ) : (
+                          <div className="text-muted-foreground p-8 text-center">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {view === "grid" && (
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {results && results.length > 0 ? (
+                          results.map((result: any, index: number) => (
+                            <ResultCard
+                              key={
+                                result.id?.raw || result.data_id?.raw || index
+                              }
+                              result={result}
+                            />
+                          ))
+                        ) : (
+                          <div className="text-muted-foreground col-span-full p-8 text-center">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </WithSearch>
             </div>
 
             <div className="flex justify-center border-t p-4">
@@ -81,7 +108,7 @@ export function SearchContainer() {
                     1,
                     current - Math.floor(maxVisible / 2),
                   );
-                  let endPage = Math.min(
+                  const endPage = Math.min(
                     totalPages,
                     startPage + maxVisible - 1,
                   );

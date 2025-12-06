@@ -4,193 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, abbreviateNumber } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDatabase,
-  faFlag,
-  faCog,
-  faFlask,
-  faLayerGroup,
-  faChartColumn,
-  faTachometerAlt,
-  faUser,
-  faBookOpenReader,
-  faRocket,
-  faHandHoldingHeart,
-  faScaleBalanced,
-  faUsers,
-  faCampground,
-  faComments,
-} from "@fortawesome/free-solid-svg-icons";
 import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { navItems, type NavItem, entityColors } from "@/constants";
 import Image from "next/image";
-
-// Entity colors from old app (variants.js)
-const entityColors: Record<string, string> = {
-  data: "#66bb6a", // green[400]
-  task: "#f9a825", // yellow[800]
-  flow: "#2f65cb", // customBlue[800]
-  run: "#ef5350", // red[400]
-  collections: "#ec407a", // pink[400]
-  benchmarks: "#ab47bc", // purple[400]
-  measures: "#7e57c2", // deepPurple[400]
-  docs: "#66bb6a", // green[400]
-  discussions: "#1565c0", // blue[800]
-  apis: "#ef5350", // red[400]
-  contribute: "#ab47bc", // purple[400]
-  meet: "#f9a825", // yellow[800]
-  about: "#66bb6a", // green[400]
-  terms: "#42a5f5", // blue[400]
-  auth: "#29b6f6", // lightBlue[500]
-};
-
-interface NavItem {
-  title: string;
-  href: string;
-  icon?: any;
-  color?: string;
-  index?: string; // Elasticsearch index name for fetching counts
-  children?: NavItem[];
-}
-
-const navItems: { title: string; items: NavItem[] }[] = [
-  {
-    title: "Explore",
-    items: [
-      {
-        title: "Datasets",
-        href: "/datasets",
-        icon: faDatabase,
-        color: entityColors.data,
-        index: "data",
-      },
-      {
-        title: "Tasks",
-        href: "/tasks",
-        icon: faFlag,
-        color: entityColors.task,
-        index: "task",
-      },
-      {
-        title: "Flows",
-        href: "/flows",
-        icon: faCog,
-        color: entityColors.flow,
-        index: "flow",
-      },
-      {
-        title: "Runs",
-        href: "/runs",
-        icon: faFlask,
-        color: entityColors.run,
-        index: "run",
-      },
-      {
-        title: "Collections",
-        href: "/collections",
-        icon: faLayerGroup,
-        color: entityColors.collections,
-        children: [
-          { title: "Tasks", href: "/collections/tasks" },
-          { title: "Runs", href: "/collections/runs" },
-        ],
-      },
-      {
-        title: "Benchmarks",
-        href: "/benchmarks",
-        icon: faChartColumn,
-        color: entityColors.benchmarks,
-        children: [
-          { title: "Task Suites", href: "/benchmarks/tasks" },
-          { title: "Run Studies", href: "/benchmarks/runs" },
-        ],
-      },
-      {
-        title: "Measures",
-        href: "/measures",
-        icon: faTachometerAlt,
-        color: entityColors.measures,
-        children: [
-          { title: "Data Qualities", href: "/measures/data" },
-          { title: "Model Evaluations", href: "/measures/evaluation" },
-          { title: "Test Procedures", href: "/measures/procedures" },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Learn",
-    items: [
-      {
-        title: "Documentation",
-        href: "https://docs.openml.org",
-        icon: faBookOpenReader,
-        color: entityColors.docs,
-      },
-      {
-        title: "APIs",
-        href: "/apis",
-        icon: faRocket,
-        color: entityColors.apis,
-      },
-      {
-        title: "Contribute",
-        href: "/contribute",
-        icon: faHandHoldingHeart,
-        color: entityColors.contribute,
-      },
-      {
-        title: "Terms & Citation",
-        href: "/terms",
-        icon: faScaleBalanced,
-        color: entityColors.terms,
-      },
-    ],
-  },
-  {
-    title: "Community",
-    items: [
-      {
-        title: "About Us",
-        href: "/about",
-        icon: faUsers,
-        color: entityColors.about,
-      },
-      {
-        title: "Meet Up",
-        href: "/meet",
-        icon: faCampground,
-        color: entityColors.meet,
-      },
-      {
-        title: "Discussions",
-        href: "https://github.com/orgs/openml/discussions",
-        icon: faComments,
-        color: entityColors.discussions,
-      },
-    ],
-  },
-  {
-    title: "Extra",
-    items: [
-      {
-        title: "Auth",
-        href: "/auth",
-        icon: faUser,
-        color: entityColors.auth,
-        children: [
-          { title: "Sign In", href: "/auth/sign-in" },
-          { title: "Sign Up", href: "/auth/sign-up" },
-          { title: "Reset Password", href: "/auth/reset-password" },
-          { title: "Page Not Found", href: "/auth/404" },
-          { title: "Server Error", href: "/auth/500" },
-        ],
-      },
-    ],
-  },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -253,7 +72,7 @@ export function Sidebar() {
         )}
       >
         {/* Logo Header */}
-        <div className="relative flex min-h-[120px] items-center justify-center bg-[#233044] px-6 py-8">
+        <div className="relative flex min-h-40 items-center justify-center bg-[#233044] px-6 py-8">
           <Link href="/" className="flex items-center justify-center">
             <Image
               src="/logo_openML_dark-bkg.png"

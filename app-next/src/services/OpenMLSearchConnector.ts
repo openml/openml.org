@@ -76,23 +76,47 @@ class OpenMLSearchConnector implements APIConnector {
     if (filters) {
       filters.forEach((filter) => {
         filter.values.forEach((filterValue: any) => {
-          if (filter.type === "any") {
-            // Term filter for exact matches
-            query.bool.filter.push({
-              term: { [filter.field]: filterValue },
-            });
-          } else if (filter.type === "all") {
-            // Must match all values
-            query.bool.filter.push({
-              term: { [filter.field]: filterValue },
-            });
-          } else if (filterValue.from || filterValue.to) {
-            // Range filter for numeric fields
+          // Handle range filters (from facets)
+          if (
+            typeof filterValue === "object" &&
+            (filterValue.from !== undefined || filterValue.to !== undefined)
+          ) {
             const range: any = {};
-            if (filterValue.from !== undefined) range.gte = filterValue.from;
-            if (filterValue.to !== undefined) range.lte = filterValue.to;
+            if (filterValue.from !== undefined)
+              range.gte = Number(filterValue.from);
+            if (filterValue.to !== undefined)
+              range.lte = Number(filterValue.to);
             query.bool.filter.push({
               range: { [filter.field]: range },
+            });
+          }
+          // Handle string values that might be range names like "1000.0-9999.0"
+          else if (
+            typeof filterValue === "string" &&
+            filterValue.includes("-")
+          ) {
+            // This is a range name from facet config - look it up
+            const facetConfig = queryConfig.facets?.[filter.field] as any;
+            if (facetConfig?.type === "range" && facetConfig.ranges) {
+              const rangeConfig = facetConfig.ranges.find(
+                (r: any) => r.name === filterValue,
+              );
+              if (rangeConfig) {
+                const range: any = {};
+                if (rangeConfig.from !== undefined)
+                  range.gte = Number(rangeConfig.from);
+                if (rangeConfig.to !== undefined)
+                  range.lte = Number(rangeConfig.to);
+                query.bool.filter.push({
+                  range: { [filter.field]: range },
+                });
+              }
+            }
+          }
+          // Handle exact term matches
+          else {
+            query.bool.filter.push({
+              term: { [filter.field]: filterValue },
             });
           }
         });
