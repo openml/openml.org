@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
 // Direct connection to Elasticsearch - works server-side without CORS issues
 const ELASTICSEARCH_SERVER = "https://es.openml.org/";
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+
   try {
     const body = await req.json();
     const { indexName, esQuery } = body;
+
+    console.log("🔍 [ES Proxy] Request for index:", indexName);
 
     if (!indexName || !esQuery) {
       return NextResponse.json(
@@ -16,35 +21,29 @@ export async function POST(req: NextRequest) {
     }
 
     const url = `${ELASTICSEARCH_SERVER}${indexName}/_search`;
+    console.log("⏳ [ES Proxy] Sending to:", url);
 
-    const response = await fetch(url, {
-      method: "POST",
+    const response = await axios.post(url, esQuery, {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(esQuery),
+      timeout: 30000, // 30 second timeout
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(
-        "❌ [ES Proxy] Elasticsearch request failed:",
-        response.status,
-        errorText,
-      );
+    const duration = Date.now() - startTime;
+    console.log(
+      `✅ [ES Proxy] Success in ${duration}ms - ${response.data.hits?.total?.value || 0} results`,
+    );
 
-      return NextResponse.json(
-        {
-          error: "Elasticsearch request failed",
-          status: response.status,
-          message: errorText,
-        },
-        { status: 500 },
-      );
+    return NextResponse.json(response.data);
+  } catch (error: unknown) {
+    const duration = Date.now() - startTime;
+    console.error(`❌ [ES Proxy] Failed after ${duration}ms`);
+
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error code:", error.code);
+      console.error("Axios error message:", error.message);
+      console.error("Response status:", error.response?.status);
     }
 
-    const data = await response.json();
-
-    return NextResponse.json(data);
-  } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("❌ [ES Proxy] Error:", errorMessage);
     return NextResponse.json(

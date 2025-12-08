@@ -62,7 +62,7 @@ function formatFacetValue(value: string, field: string): string {
 export function FilterBar({ facets }: FilterBarProps) {
   const [openPopover, setOpenPopover] = React.useState<string | null>(null);
   const [pendingSelections, setPendingSelections] = React.useState<
-    Map<string, Set<any>>
+    Map<string, Set<string>>
   >(new Map());
 
   return (
@@ -211,7 +211,10 @@ export function FilterBar({ facets }: FilterBarProps) {
                           <CommandGroup>
                             <CommandItem
                               onSelect={() => {
-                                values.forEach((v: any) => onRemove(v));
+                                values.forEach(
+                                  (v: string | number | { name: string }) =>
+                                    onRemove(v),
+                                );
                               }}
                               className="justify-center text-center"
                             >

@@ -7,6 +7,24 @@ import { Button } from "@/components/ui/button";
  * Active Filters Display Component for Header
  * Shows selected filters in horizontal layout on right side of page header
  */
+
+// Elastic Search UI types
+type FieldValue = string | number | boolean | Array<string | number | boolean>;
+type FilterValueRange = {
+  from?: FieldValue;
+  name: string;
+  to?: FieldValue;
+};
+type FilterValue = FieldValue | FilterValueRange;
+type FilterType = "any" | "all" | "none";
+
+interface Filter {
+  field: string;
+  type: FilterType;
+  values: FilterValue[];
+  persistent?: boolean;
+}
+
 interface ActiveFiltersHeaderProps {
   facetLabels: Record<string, string>;
 }
@@ -50,16 +68,24 @@ export function ActiveFiltersHeader({ facetLabels }: ActiveFiltersHeaderProps) {
           { label: string; values: string[] }
         >();
 
-        filters.forEach((filter: any) => {
+        filters.forEach((filter: Filter) => {
           const label = facetLabels[filter.field] || filter.field;
           if (!filtersByField.has(filter.field)) {
             filtersByField.set(filter.field, { label, values: [] });
           }
-          filter.values.forEach((value: any) => {
-            const displayValue =
-              typeof value === "string"
-                ? formatFacetValue(value, filter.field)
-                : value.name || String(value);
+          filter.values.forEach((value: FilterValue) => {
+            let displayValue: string;
+            if (typeof value === "string") {
+              displayValue = formatFacetValue(value, filter.field);
+            } else if (
+              typeof value === "object" &&
+              value !== null &&
+              "name" in value
+            ) {
+              displayValue = value.name;
+            } else {
+              displayValue = String(value);
+            }
             filtersByField.get(filter.field)!.values.push(displayValue);
           });
         });
@@ -90,7 +116,7 @@ export function ActiveFiltersHeader({ facetLabels }: ActiveFiltersHeaderProps) {
                             onClick={() => {
                               // Find the original value to remove
                               const filterToRemove = filters.find(
-                                (f: any) => f.field === field,
+                                (f: Filter) => f.field === field,
                               );
                               if (filterToRemove && removeFilter) {
                                 const originalValue =

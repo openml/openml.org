@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { parseDescription } from "./teaser";
 import {
   Database,
   Heart,
-  Download,
+  CloudDownload,
   FlaskConical,
   Hash,
   Clock,
@@ -97,18 +98,20 @@ export function ResultCard({ result }: ResultCardProps) {
     statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
   const StatusIcon = statusInfo.icon;
 
-  const description = result.description?.raw || "";
+  // Parse description to get clean text and metadata
+  const { cleanDescription } = parseDescription(result.description?.raw);
+
   const truncatedDescription =
-    description.length > 200
-      ? description.substring(0, 200) + "..."
-      : description;
+    cleanDescription.length > 200
+      ? cleanDescription.substring(0, 200) + "..."
+      : cleanDescription;
 
   return (
     <Card className="hover:bg-accent/50 cursor-pointer rounded-none border-0 border-b shadow-none transition-colors">
-      <CardContent className="px-6 py-5">
-        <Link href={`/d/${dataId}`} className="block">
+      <CardContent className="p-2">
+        <Link href={`/datasets/${dataId}`} className="block">
           {/* Title Row */}
-          <div className="mb-2 flex items-start gap-3">
+          <div className="mb-2 flex items-start gap-1">
             <Database className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" />
             <div className="min-w-0 grow">
               <div className="flex flex-wrap items-baseline gap-2">
@@ -131,28 +134,28 @@ export function ResultCard({ result }: ResultCardProps) {
 
           {/* Description */}
           {truncatedDescription && (
-            <p className="text-muted-foreground mb-3 ml-8 line-clamp-3 text-[15px] leading-relaxed">
+            <p className="text-muted-foreground mb-2 line-clamp-3 text-[15px] leading-relaxed">
               {truncatedDescription}
             </p>
           )}
 
           {/* Stats Row */}
-          <div className="text-muted-foreground ml-8 flex flex-wrap gap-4 text-sm">
+          <div className="text-muted-foreground flex flex-wrap gap-3 text-sm">
             {result.runs && result.runs.raw > 0 && (
               <span className="flex items-center gap-1.5" title="runs">
-                <FlaskConical className="h-4 w-4 text-red-500" />
+                <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
                 {abbreviateNumber(result.runs.raw)}
               </span>
             )}
             {result.nr_of_likes && result.nr_of_likes.raw > 0 && (
               <span className="flex items-center gap-1.5" title="likes">
-                <Heart className="h-4 w-4 text-purple-500" />
+                <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
                 {abbreviateNumber(result.nr_of_likes.raw)}
               </span>
             )}
             {result.nr_of_downloads && result.nr_of_downloads.raw > 0 && (
               <span className="flex items-center gap-1.5" title="downloads">
-                <Download className="h-4 w-4 text-blue-500" />
+                <CloudDownload className="h-4 w-4 text-blue-500" />
                 {abbreviateNumber(result.nr_of_downloads.raw)}
               </span>
             )}
@@ -178,13 +181,14 @@ export function ResultCard({ result }: ResultCardProps) {
               <Clock className="h-4 w-4" />
               {result.date?.raw ? timeAgo(result.date.raw) : "Unknown"}
             </span>
-            <span
-              className="text-muted-foreground/70 flex items-center gap-1.5"
+            <Badge
+              variant="openml"
+              className="flex items-center gap-0.75 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"
               title="dataset ID"
             >
-              <Hash className="h-4 w-4" />
+              <Hash className="h-3.5 w-3.5" />
               {dataId}
-            </span>
+            </Badge>
           </div>
         </Link>
       </CardContent>

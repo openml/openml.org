@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { List, Table2, Grid3x3 } from "lucide-react";
+import { List, Table2, Grid3x3, PanelLeftClose } from "lucide-react";
 import {
   ResultsPerPage,
   PagingInfo,
@@ -90,7 +90,7 @@ export function ControlsBar({
   onViewChange,
 }: ControlsBarProps) {
   return (
-    <div className="bg-background flex items-center justify-between gap-4 border-b p-4">
+    <div className="bg-background flex items-center justify-around gap-6 border-b p-4">
       {/* Left side: Sort and View Toggle */}
       <div className="flex items-center gap-4">
         {/* Sort Dropdown */}
@@ -124,7 +124,6 @@ export function ControlsBar({
                       return;
                     }
                     if (setSort) {
-                      // @ts-ignore - Elastic Search UI type mismatch
                       setSort(option.value);
                     }
                   }}
@@ -170,9 +169,15 @@ export function ControlsBar({
             value="grid"
             aria-label="Grid view"
             className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
-            // className="data-[state=on]:bg-primary hover:bg-slate-600 hover:text-white data-[state=on]:text-slate-100"
           >
             <Grid3x3 className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="split"
+            aria-label="Split pane view"
+            className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+          >
+            <PanelLeftClose className="h-4 w-4" />
           </ToggleGroupItem>
         </ToggleGroup>
       </div>

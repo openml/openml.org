@@ -134,7 +134,7 @@ export function ResultsTable({ results }: ResultsTableProps) {
                     </TableCell>
                     <TableCell>
                       <Link
-                        href={`/d/${result.data_id?.raw || result.id?.raw}`}
+                        href={`/datasets/${result.data_id?.raw || result.id?.raw}`}
                         className="text-primary line-clamp-3 hover:underline"
                       >
                         {result.name?.snippet || result.name?.raw || "Untitled"}

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import axios from "axios";
 
 const ELASTICSEARCH_SERVER =
   process.env.ELASTICSEARCH_SERVER || "https://www.openml.org/es/";
@@ -19,45 +20,51 @@ export async function GET() {
   const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}_msearch`;
   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
+  console.log("🔍 [Count API] Starting request to:", elasticsearchEndpoint);
+  console.log("📦 [Count API] Indices:", indices);
+
   // Build NDJSON body for _msearch - correct format
   let requestBody = "";
   indices.forEach((index) => {
     requestBody += `{ "index": "${index}" }\n{ "size": 0 }\n`;
   });
 
+  const startTime = Date.now();
+
   try {
-    const response = await fetch(elasticsearchEndpoint, {
-      method: "POST",
+    console.log("⏳ [Count API] Sending request...");
+
+    const response = await axios.post(elasticsearchEndpoint, requestBody, {
       headers: { "Content-Type": "application/x-ndjson" },
-      body: requestBody,
+      timeout: 30000, // 30 second timeout
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(
-        "Elasticsearch request failed:",
-        response.status,
-        errorText,
-      );
-      return NextResponse.json(
-        { error: "Failed to query Elasticsearch", details: errorText },
-        { status: 502 },
-      );
-    }
-
-    // Only parse JSON if response is OK
-    const data = (await response.json()) as MultiSearchResponse;
+    const duration = Date.now() - startTime;
+    console.log(`✅ [Count API] Success in ${duration}ms`);
 
     // Extract counts safely
-    const counts = data.responses.map((r, i) => ({
-      index: indices[i],
-      count:
-        typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
-    }));
+    const counts = response.data.responses.map(
+      (r: ElasticsearchResponse, i: number) => ({
+        index: indices[i],
+        count:
+          typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
+      }),
+    );
 
+    console.log("📊 [Count API] Counts:", counts);
     return NextResponse.json(counts);
   } catch (error) {
-    console.error("Error fetching counts from Elasticsearch:", error);
+    const duration = Date.now() - startTime;
+    console.error(`❌ [Count API] Failed after ${duration}ms`);
+    console.error("Error details:", error);
+
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error code:", error.code);
+      console.error("Axios error message:", error.message);
+      console.error("Response status:", error.response?.status);
+      console.error("Response data:", error.response?.data);
+    }
+
     return NextResponse.json(
       {
         error: "Internal server error",

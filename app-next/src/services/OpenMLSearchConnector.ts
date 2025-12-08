@@ -192,9 +192,17 @@ class OpenMLSearchConnector implements APIConnector {
     const validCurrent = current && current > 0 ? current : 1;
     const from = (validCurrent - 1) * size;
 
+    // Elasticsearch has a max_result_window limit (default 10,000)
+    // If exceeds limit, cap to last accessible page to prevent error
+    const MAX_RESULT_WINDOW = 10000;
+    const actualFrom =
+      from + size > MAX_RESULT_WINDOW
+        ? Math.max(0, MAX_RESULT_WINDOW - size)
+        : from;
+
     const esQuery: any = {
       query,
-      from,
+      from: actualFrom,
       size,
       aggs,
     };
