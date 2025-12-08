@@ -1,0 +1,144 @@
+{
+  "sidebar": {
+    "explore": "EXPLORER",
+    "datasets": "Ensembles de Données",
+    "tasks": "Tâches",
+    "flows": "Flux",
+    "runs": "Exécutions",
+    "collections": "Collections",
+    "taskCollections": "Tâches",
+    "runCollections": "Exécutions",
+    "benchmarks": "Benchmarks",
+    "taskSuites": "Suites de Tâches",
+    "runStudies": "Études d'Exécutions",
+    "measures": "Mesures",
+    "dataQualities": "Qualités des Données",
+    "modelEvaluations": "Évaluations de Modèles",
+    "testProcedures": "Procédures de Test",
+    "learn": "APPRENDRE",
+    "documentation": "Documentation",
+    "apis": "APIs",
+    "contribute": "Contribuer",
+    "termsAndCitation": "Conditions & Citation",
+    "community": "COMMUNAUTÉ",
+    "aboutUs": "À Propos",
+    "meetUp": "Rencontres",
+    "discussions": "Discussions",
+    "extra": "EXTRA",
+    "auth": "Authentification",
+    "signIn": "Se Connecter",
+    "signUp": "S'Inscrire",
+    "resetPassword": "Réinitialiser le Mot de Passe",
+    "pageNotFound": "Page Non Trouvée",
+    "serverError": "Erreur Serveur"
+  },
+  "footer": {
+    "tagline": "Construire un écosystème ouvert et fluide de données, modèles et benchmarks d'apprentissage automatique — faire progresser l'IA ouvertement pour le bénéfice de l'humanité.",
+    "getInvolved": "Participez :",
+    "joinWorkshops": "Participez à des ateliers et groupes d'étude",
+    "platform": "Plateforme",
+    "datasets": "Ensembles de données",
+    "tasks": "Tâches",
+    "flows": "Flux",
+    "runs": "Exécutions",
+    "benchmarks": "Benchmarks",
+    "documentation": "Documentation",
+    "gettingStarted": "Prise en main",
+    "concepts": "Concepts",
+    "apisAndSdks": "API & SDK",
+    "python": "Python",
+    "r": "R",
+    "java": "Java",
+    "community": "Communauté",
+    "aboutUs": "À propos",
+    "contributing": "Contribuer",
+    "team": "Équipe",
+    "publications": "Publications",
+    "blog": "Blog",
+    "contact": "Contact",
+    "copyright": "© {year} OpenML. Sous licence BSD 3-Clause",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "imprint": "Mentions légales"
+  },
+  "nav": {
+    "explore": "EXPLORER",
+    "learn": "APPRENDRE",
+    "datasets": "Datasets",
+    "tasks": "Tâches",
+    "flows": "Flows",
+    "runs": "Exécutions",
+    "collections": "Collections",
+    "benchmarks": "Benchmarks",
+    "measures": "Mesures",
+    "documentation": "Documentation",
+    "apis": "APIs",
+    "contribute": "Contribuer",
+    "termsAndCitation": "Conditions & Citation"
+  },
+  "header": {
+    "search": "Rechercher ensembles de données, tâches, flux...",
+    "addNew": "Ajouter nouveau",
+    "selectLanguage": "Sélectionner la langue",
+    "documentation": "Documentation",
+    "menu": "Menu",
+    "searchIndices": {
+      "datasets": "Ensembles de données",
+      "tasks": "Tâches",
+      "flows": "Flux",
+      "runs": "Exécutions",
+      "collections": "Collections",
+      "benchmarks": "Benchmarks",
+      "measures": "Mesures"
+    },
+    "createMenu": {
+      "title": "Créer nouveau",
+      "uploadDataset": "Importer ensemble de données",
+      "defineTask": "Définir tâche",
+      "createCollection": "Créer collection"
+    },
+    "languages": {
+      "en": "Anglais",
+      "nl": "Néerlandais",
+      "fr": "Français",
+      "de": "Allemand"
+    }
+  },
+  "datasets": {
+    "title": "Datasets",
+    "subtitle": "Explorez des milliers de datasets d'apprentissage automatique",
+    "filters": {
+      "status": "Statut",
+      "license": "Licence",
+      "size": "Taille",
+      "features": "Caractéristiques",
+      "taskType": "Type de Tâche",
+      "format": "Format",
+      "applyFilters": "Appliquer les Filtres",
+      "clearAll": "Tout Effacer",
+      "selected": "sélectionné"
+    },
+    "status": {
+      "active": "Vérifié",
+      "deactivated": "Désactivé",
+      "in_preparation": "En Préparation"
+    },
+    "sort": {
+      "label": "Trier par:",
+      "relevance": "Pertinence"
+    },
+    "view": {
+      "show": "Afficher:",
+      "showingResults": "Affichage de {start} - {end} sur {total} résultats"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "noResults": "Aucun résultat trouvé"
+  }
+}

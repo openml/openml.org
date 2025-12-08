@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const nextConfig: NextConfig = {
   // Built-in 301 redirects for backward compatibility
@@ -9,7 +12,7 @@ const nextConfig: NextConfig = {
       // SIMPLE PATH-BASED REDIRECTS (✅ Works in next.config.ts)
       // ========================================
 
-      // Entity detail pages: /d/123 → /datasets/123
+      // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
       {
         source: "/d/:id",
         destination: "/datasets/:id",
@@ -71,7 +74,7 @@ const nextConfig: NextConfig = {
       // These URLs require middleware because they have query parameters
       // that need to be parsed and transformed:
       //
-      // /search?type=data&id=1464 → /datasets/1464
+      // /search?type=data&id=1464 → /datasets/1464 (English)
       // /search?type=task → /tasks
       // /search?type=flow → /flows
       // /search?type=run → /runs
@@ -86,9 +89,9 @@ const nextConfig: NextConfig = {
       // /search?type=measure&measure_type=evaluation_measure → /measures/evaluation-measures
       // /search?type=measure&measure_type=estimation_procedure → /measures/estimation-procedures
       //
-      // Solution: Create src/middleware.ts (see implementation below)
+      // Solution: Create src/middleware.ts (see implementation)
     ];
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

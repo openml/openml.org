@@ -3,6 +3,7 @@ import {
   RequestState,
   ResponseState,
   AutocompleteResponseState,
+  AutocompleteQueryConfig,
   APIConnector,
 } from "@elastic/search-ui";
 
@@ -74,6 +75,9 @@ class OpenMLSearchConnector implements APIConnector {
 
     // Add filters
     if (filters) {
+      // Group filters by field for multi-select support
+      const filtersByField = new Map<string, any[]>();
+
       filters.forEach((filter) => {
         filter.values.forEach((filterValue: any) => {
           // Handle range filters (from facets)
@@ -113,13 +117,31 @@ class OpenMLSearchConnector implements APIConnector {
               }
             }
           }
-          // Handle exact term matches
+          // Handle exact term matches - collect for multi-select
           else {
-            query.bool.filter.push({
-              term: { [filter.field]: filterValue },
-            });
+            if (!filtersByField.has(filter.field)) {
+              filtersByField.set(filter.field, []);
+            }
+            filtersByField.get(filter.field)!.push(filterValue);
           }
         });
+      });
+
+      // Add term/terms queries for collected values
+      filtersByField.forEach((values, field) => {
+        if (values.length > 0) {
+          if (values.length === 1) {
+            // Single value: use term query
+            query.bool.filter.push({
+              term: { [field]: values[0] },
+            });
+          } else {
+            // Multiple values: use terms query for OR logic
+            query.bool.filter.push({
+              terms: { [field]: values },
+            });
+          }
+        }
       });
     }
 
@@ -265,17 +287,13 @@ class OpenMLSearchConnector implements APIConnector {
     requestState: RequestState,
     queryConfig: QueryConfig,
   ): Promise<ResponseState> {
-    console.log("[OpenMLSearchConnector] onSearch Request:", requestState);
+    // console.log("[OpenMLSearchConnector] onSearch Request:", requestState);
     try {
       const esQuery = this.buildQuery(requestState, queryConfig);
-      console.log(
-        "[OpenMLSearchConnector] Built ES Query:",
-        JSON.stringify(esQuery, null, 2),
-      );
 
       // Use local proxy to avoid CORS
       const url = "/api/es-proxy";
-      console.log("[OpenMLSearchConnector] Fetching via proxy:", url);
+      // console.log("[OpenMLSearchConnector] Fetching via proxy:", url);
 
       const response = await fetch(url, {
         method: "POST",
@@ -298,24 +316,18 @@ class OpenMLSearchConnector implements APIConnector {
         );
       }
 
-      console.log(
-        "[OpenMLSearchConnector] ES Response Hits:",
-        data.hits?.total,
-      );
-
       return this.formatResponse(data, requestState);
     } catch (error) {
       console.error("[OpenMLSearchConnector] Error:", error);
       throw error;
     }
   }
-
   /**
    * Autocomplete method (optional, called by Search UI for suggestions)
    */
   async onAutocomplete(
     requestState: RequestState,
-    queryConfig: any, // Relaxed type to match base className expectation or ignore mismatch
+    _queryConfig: AutocompleteQueryConfig,
   ): Promise<AutocompleteResponseState> {
     return {
       autocompletedResults: [],

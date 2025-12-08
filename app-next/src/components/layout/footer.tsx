@@ -1,11 +1,15 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/config/routing";
 import Image from "next/image";
-import { Github, Twitter, Mail, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * Footer Component - Unified openml.org + docs.openml.org
+ * Now with full i18n support
  */
 export function Footer() {
+  const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
 
   return (
@@ -29,9 +33,7 @@ export function Footer() {
               />
             </Link>
             <p className="-mt-3 text-sm leading-relaxed text-slate-400">
-              Building a seamless, open ecosystem of machine learning data,
-              models, and benchmarks—advancing AI openly for the benefit of
-              humanity.{" "}
+              {t("tagline")}{" "}
               <span className="text-acforeground font-semibold">
                 Simple. Accessible. Collaborative.
               </span>
@@ -40,7 +42,7 @@ export function Footer() {
             {/* Community & Contact - Visible only on lg+ screens, part of Brand Section */}
             <div className="hidden lg:block lg:max-w-[50%]">
               <h4 className="mt-6 mb-4 text-sm font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-100">
-                Get Involved
+                {t("getInvolved")}
               </h4>
               <div className="space-y-3">
                 {/* Social Links */}
@@ -104,7 +106,7 @@ export function Footer() {
                 </div>
 
                 <p className="text-xs text-slate-400 dark:text-slate-400">
-                  Join workshops and study groups
+                  {t("joinWorkshops")}
                 </p>
               </div>
             </div>
@@ -113,7 +115,7 @@ export function Footer() {
           {/* Community & Contact - Separate column, visible only on md and smaller screens */}
           <div className="lg:hidden">
             <h4 className="mb-4 text-sm font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-100">
-              Get Involved
+              {t("getInvolved")}
             </h4>
             <div className="space-y-3">
               {/* Social Links */}
@@ -177,7 +179,7 @@ export function Footer() {
               </div>
 
               <p className="text-xs text-slate-400 dark:text-slate-400">
-                Join workshops and study groups
+                {t("joinWorkshops")}
               </p>
             </div>
           </div>
@@ -185,7 +187,7 @@ export function Footer() {
           {/* Platform */}
           <div className="col-span-1">
             <h4 className="mb-4 text-sm font-semibold tracking-wider text-white uppercase">
-              Platform
+              {t("platform")}
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
@@ -193,7 +195,7 @@ export function Footer() {
                   href="/datasets"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Datasets</span>
+                  <span className="animated-underline">{t("datasets")}</span>
                 </Link>
               </li>
               <li>
@@ -201,7 +203,7 @@ export function Footer() {
                   href="/tasks"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Tasks</span>
+                  <span className="animated-underline">{t("tasks")}</span>
                 </Link>
               </li>
               <li>
@@ -209,7 +211,7 @@ export function Footer() {
                   href="/flows"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Flows</span>
+                  <span className="animated-underline">{t("flows")}</span>
                 </Link>
               </li>
               <li>
@@ -217,15 +219,15 @@ export function Footer() {
                   href="/runs"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Runs</span>
+                  <span className="animated-underline">{t("runs")}</span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/benchmarks"
+                  href="/benchmarks/tasks-suites"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Benchmarks</span>
+                  <span className="animated-underline">{t("benchmarks")}</span>
                 </Link>
               </li>
             </ul>
@@ -234,7 +236,7 @@ export function Footer() {
           {/* Documentation */}
           <div className="col-span-1">
             <h4 className="mb-4 text-sm font-semibold tracking-wider text-white uppercase">
-              Documentation
+              {t("documentation")}
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
@@ -242,7 +244,9 @@ export function Footer() {
                   href="/docs"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Getting Started</span>
+                  <span className="animated-underline">
+                    {t("gettingStarted")}
+                  </span>
                 </Link>
               </li>
               <li>
@@ -250,7 +254,7 @@ export function Footer() {
                   href="/docs/concepts"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Concepts</span>
+                  <span className="animated-underline">{t("concepts")}</span>
                 </Link>
               </li>
               <li>
@@ -258,7 +262,7 @@ export function Footer() {
                   href="/docs/apis"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">APIs & SDKs</span>
+                  <span className="animated-underline">{t("apisAndSdks")}</span>
                 </Link>
               </li>
               <li>
@@ -266,7 +270,7 @@ export function Footer() {
                   href="/docs/python"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Python</span>
+                  <span className="animated-underline">{t("python")}</span>
                 </Link>
               </li>
               <li>
@@ -274,7 +278,7 @@ export function Footer() {
                   href="/docs/r"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">R</span>
+                  <span className="animated-underline">{t("r")}</span>
                 </Link>
               </li>
               <li>
@@ -282,7 +286,7 @@ export function Footer() {
                   href="/docs/java"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Java</span>
+                  <span className="animated-underline">{t("java")}</span>
                 </Link>
               </li>
             </ul>
@@ -291,7 +295,7 @@ export function Footer() {
           {/* Community */}
           <div className="col-span-1">
             <h4 className="mb-4 text-sm font-semibold tracking-wider text-white uppercase">
-              Community
+              {t("community")}
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
@@ -299,7 +303,7 @@ export function Footer() {
                   href="/about"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">About Us</span>
+                  <span className="animated-underline">{t("aboutUs")}</span>
                 </Link>
               </li>
               <li>
@@ -307,7 +311,9 @@ export function Footer() {
                   href="/contributing"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Contributing</span>
+                  <span className="animated-underline">
+                    {t("contributing")}
+                  </span>
                 </Link>
               </li>
               <li>
@@ -315,7 +321,7 @@ export function Footer() {
                   href="/team"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Team</span>
+                  <span className="animated-underline">{t("team")}</span>
                 </Link>
               </li>
               <li>
@@ -323,7 +329,9 @@ export function Footer() {
                   href="/publications"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Publications</span>
+                  <span className="animated-underline">
+                    {t("publications")}
+                  </span>
                 </Link>
               </li>
               <li>
@@ -331,7 +339,7 @@ export function Footer() {
                   href="/blog"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Blog</span>
+                  <span className="animated-underline">{t("blog")}</span>
                 </Link>
               </li>
               <li>
@@ -339,7 +347,7 @@ export function Footer() {
                   href="/contact"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">Contact</span>
+                  <span className="animated-underline">{t("contact")}</span>
                 </Link>
               </li>
             </ul>
@@ -350,15 +358,7 @@ export function Footer() {
         <div className="mt-8 border-t border-slate-800 pt-3 pb-0">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-slate-400 md:flex-row">
             <p className="text-center md:text-left">
-              © {currentYear} OpenML. Licensed under{" "}
-              <a
-                href="https://opensource.org/license/bsd-3-clause/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="animated-underline text-slate-300 transition-colors hover:text-white"
-              >
-                BSD 3-Clause
-              </a>
+              {t("copyright", { year: currentYear })}
             </p>
 
             <div className="flex gap-6 text-xs">
@@ -366,19 +366,19 @@ export function Footer() {
                 href="/privacy"
                 className="animated-underline transition-colors hover:text-white"
               >
-                Privacy Policy
+                {t("privacyPolicy")}
               </Link>
               <Link
                 href="/terms"
                 className="animated-underline transition-colors hover:text-white"
               >
-                Terms of Service
+                {t("termsOfService")}
               </Link>
               <Link
                 href="/imprint"
                 className="animated-underline transition-colors hover:text-white"
               >
-                Imprint
+                {t("imprint")}
               </Link>
             </div>
           </div>

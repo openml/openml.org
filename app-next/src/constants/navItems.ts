@@ -21,6 +21,7 @@ import {
 
 export interface NavItem {
   title: string;
+  titleKey: string; // Translation key for i18n
   href: string;
   icon?: IconDefinition;
   color?: string;
@@ -28,139 +29,199 @@ export interface NavItem {
   children?: NavItem[];
 }
 
-export const navItems: { title: string; items: NavItem[] }[] = [
-  {
-    title: "Explore",
-    items: [
-      {
-        title: "Datasets",
-        href: "/datasets",
-        icon: faDatabase,
-        color: entityColors.data,
-        index: "data",
-      },
-      {
-        title: "Tasks",
-        href: "/tasks",
-        icon: faFlag,
-        color: entityColors.task,
-        index: "task",
-      },
-      {
-        title: "Flows",
-        href: "/flows",
-        icon: faCog,
-        color: entityColors.flow,
-        index: "flow",
-      },
-      {
-        title: "Runs",
-        href: "/runs",
-        icon: faFlask,
-        color: entityColors.run,
-        index: "run",
-      },
-      {
-        title: "Collections",
-        href: "/collections",
-        icon: faLayerGroup,
-        color: entityColors.collections,
-        children: [
-          { title: "Tasks", href: "/collections/tasks" },
-          { title: "Runs", href: "/collections/runs" },
-        ],
-      },
-      {
-        title: "Benchmarks",
-        href: "/benchmarks",
-        icon: faChartColumn,
-        color: entityColors.benchmarks,
-        children: [
-          { title: "Task Suites", href: "/benchmarks/tasks" },
-          { title: "Run Studies", href: "/benchmarks/runs" },
-        ],
-      },
-      {
-        title: "Measures",
-        href: "/measures",
-        icon: faTachometerAlt,
-        color: entityColors.measures,
-        children: [
-          { title: "Data Qualities", href: "/measures/data" },
-          { title: "Model Evaluations", href: "/measures/evaluation" },
-          { title: "Test Procedures", href: "/measures/procedures" },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Learn",
-    items: [
-      {
-        title: "Documentation",
-        href: "https://docs.openml.org",
-        icon: faBookOpenReader,
-        color: entityColors.docs,
-      },
-      {
-        title: "APIs",
-        href: "/apis",
-        icon: faRocket,
-        color: entityColors.apis,
-      },
-      {
-        title: "Contribute",
-        href: "/contribute",
-        icon: faHandHoldingHeart,
-        color: entityColors.contribute,
-      },
-      {
-        title: "Terms & Citation",
-        href: "/terms",
-        icon: faScaleBalanced,
-        color: entityColors.terms,
-      },
-    ],
-  },
-  {
-    title: "Community",
-    items: [
-      {
-        title: "About Us",
-        href: "/about",
-        icon: faUsers,
-        color: entityColors.about,
-      },
-      {
-        title: "Meet Up",
-        href: "/meet",
-        icon: faCampground,
-        color: entityColors.meet,
-      },
-      {
-        title: "Discussions",
-        href: "https://github.com/orgs/openml/discussions",
-        icon: faComments,
-        color: entityColors.discussions,
-      },
-    ],
-  },
-  {
-    title: "Extra",
-    items: [
-      {
-        title: "Auth",
-        href: "/auth",
-        icon: faUser,
-        color: entityColors.auth,
-        children: [
-          { title: "Sign In", href: "/auth/sign-in" },
-          { title: "Sign Up", href: "/auth/sign-up" },
-          { title: "Reset Password", href: "/auth/reset-password" },
-          { title: "Page Not Found", href: "/auth/404" },
-          { title: "Server Error", href: "/auth/500" },
-        ],
-      },
-    ],
-  },
-];
+export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
+  [
+    {
+      title: "Explore",
+      titleKey: "explore",
+      items: [
+        {
+          title: "Datasets",
+          titleKey: "datasets",
+          href: "/datasets",
+          icon: faDatabase,
+          color: entityColors.data,
+          index: "data",
+        },
+        {
+          title: "Tasks",
+          titleKey: "tasks",
+          href: "/tasks",
+          icon: faFlag,
+          color: entityColors.task,
+          index: "task",
+        },
+        {
+          title: "Flows",
+          titleKey: "flows",
+          href: "/flows",
+          icon: faCog,
+          color: entityColors.flow,
+          index: "flow",
+        },
+        {
+          title: "Runs",
+          titleKey: "runs",
+          href: "/runs",
+          icon: faFlask,
+          color: entityColors.run,
+          index: "run",
+        },
+        {
+          title: "Collections",
+          titleKey: "collections",
+          href: "/collections",
+          icon: faLayerGroup,
+          color: entityColors.collections,
+          children: [
+            {
+              title: "Tasks",
+              titleKey: "taskCollections",
+              href: "/collections/tasks",
+            },
+            {
+              title: "Runs",
+              titleKey: "runCollections",
+              href: "/collections/runs",
+            },
+          ],
+        },
+        {
+          title: "Benchmarks",
+          titleKey: "benchmarks",
+          href: "/benchmarks",
+          icon: faChartColumn,
+          color: entityColors.benchmarks,
+          children: [
+            {
+              title: "Task Suites",
+              titleKey: "taskSuites",
+              href: "/benchmarks/tasks",
+            },
+            {
+              title: "Run Studies",
+              titleKey: "runStudies",
+              href: "/benchmarks/runs",
+            },
+          ],
+        },
+        {
+          title: "Measures",
+          titleKey: "measures",
+          href: "/measures",
+          icon: faTachometerAlt,
+          color: entityColors.measures,
+          children: [
+            {
+              title: "Data Qualities",
+              titleKey: "dataQualities",
+              href: "/measures/data",
+            },
+            {
+              title: "Model Evaluations",
+              titleKey: "modelEvaluations",
+              href: "/measures/evaluation",
+            },
+            {
+              title: "Test Procedures",
+              titleKey: "testProcedures",
+              href: "/measures/procedures",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Learn",
+      titleKey: "learn",
+      items: [
+        {
+          title: "Documentation",
+          titleKey: "documentation",
+          href: "https://docs.openml.org",
+          icon: faBookOpenReader,
+          color: entityColors.docs,
+        },
+        {
+          title: "APIs",
+          titleKey: "apis",
+          href: "/apis",
+          icon: faRocket,
+          color: entityColors.apis,
+        },
+        {
+          title: "Contribute",
+          titleKey: "contribute",
+          href: "/contribute",
+          icon: faHandHoldingHeart,
+          color: entityColors.contribute,
+        },
+        {
+          title: "Terms & Citation",
+          titleKey: "termsAndCitation",
+          href: "/terms",
+          icon: faScaleBalanced,
+          color: entityColors.terms,
+        },
+      ],
+    },
+    {
+      title: "Community",
+      titleKey: "community",
+      items: [
+        {
+          title: "About Us",
+          titleKey: "aboutUs",
+          href: "/about",
+          icon: faUsers,
+          color: entityColors.about,
+        },
+        {
+          title: "Meet Up",
+          titleKey: "meetUp",
+          href: "/meet",
+          icon: faCampground,
+          color: entityColors.meet,
+        },
+        {
+          title: "Discussions",
+          titleKey: "discussions",
+          href: "https://github.com/orgs/openml/discussions",
+          icon: faComments,
+          color: entityColors.discussions,
+        },
+      ],
+    },
+    {
+      title: "Extra",
+      titleKey: "extra",
+      items: [
+        {
+          title: "Auth",
+          titleKey: "auth",
+          href: "/auth",
+          icon: faUser,
+          color: entityColors.auth,
+          children: [
+            { title: "Sign In", titleKey: "signIn", href: "/auth/sign-in" },
+            { title: "Sign Up", titleKey: "signUp", href: "/auth/sign-up" },
+            {
+              title: "Reset Password",
+              titleKey: "resetPassword",
+              href: "/auth/reset-password",
+            },
+            {
+              title: "Page Not Found",
+              titleKey: "pageNotFound",
+              href: "/auth/404",
+            },
+            {
+              title: "Server Error",
+              titleKey: "serverError",
+              href: "/auth/500",
+            },
+          ],
+        },
+      ],
+    },
+  ];

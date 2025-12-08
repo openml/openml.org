@@ -1,0 +1,144 @@
+{
+  "sidebar": {
+    "explore": "ERKUNDEN",
+    "datasets": "Datensätze",
+    "tasks": "Aufgaben",
+    "flows": "Flows",
+    "runs": "Läufe",
+    "collections": "Sammlungen",
+    "taskCollections": "Aufgaben",
+    "runCollections": "Läufe",
+    "benchmarks": "Benchmarks",
+    "taskSuites": "Aufgabensuites",
+    "runStudies": "Laufstudien",
+    "measures": "Maße",
+    "dataQualities": "Datenqualitäten",
+    "modelEvaluations": "Modellbewertungen",
+    "testProcedures": "Testverfahren",
+    "learn": "LERNEN",
+    "documentation": "Dokumentation",
+    "apis": "APIs",
+    "contribute": "Beitragen",
+    "termsAndCitation": "Bedingungen & Zitierung",
+    "community": "GEMEINSCHAFT",
+    "aboutUs": "Über Uns",
+    "meetUp": "Treffen",
+    "discussions": "Diskussionen",
+    "extra": "EXTRA",
+    "auth": "Authentifizierung",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "resetPassword": "Passwort Zurücksetzen",
+    "pageNotFound": "Seite Nicht Gefunden",
+    "serverError": "Serverfehler"
+  },
+  "footer": {
+    "tagline": "Aufbau eines nahtlosen, offenen Ökosystems für Maschinendaten, Modelle und Benchmarks — Förderung von KI offen zum Wohle der Menschheit.",
+    "getInvolved": "Mitmachen:",
+    "joinWorkshops": "Nehmen Sie an Workshops und Studiengruppen teil",
+    "platform": "Plattform",
+    "datasets": "Datensätze",
+    "tasks": "Aufgaben",
+    "flows": "Flüsse",
+    "runs": "Läufe",
+    "benchmarks": "Benchmarks",
+    "documentation": "Dokumentation",
+    "gettingStarted": "Erste Schritte",
+    "concepts": "Konzepte",
+    "apisAndSdks": "APIs & SDKs",
+    "python": "Python",
+    "r": "R",
+    "java": "Java",
+    "community": "Community",
+    "aboutUs": "Über uns",
+    "contributing": "Beitragen",
+    "team": "Team",
+    "publications": "Publikationen",
+    "blog": "Blog",
+    "contact": "Kontakt",
+    "copyright": "© {year} OpenML. Lizenziert unter BSD 3-Clause",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "termsOfService": "Nutzungsbedingungen",
+    "imprint": "Impressum"
+  },
+  "nav": {
+    "explore": "ERKUNDEN",
+    "learn": "LERNEN",
+    "datasets": "Datasets",
+    "tasks": "Aufgaben",
+    "flows": "Flows",
+    "runs": "Läufe",
+    "collections": "Sammlungen",
+    "benchmarks": "Benchmarks",
+    "measures": "Maße",
+    "documentation": "Dokumentation",
+    "apis": "APIs",
+    "contribute": "Beitragen",
+    "termsAndCitation": "Bedingungen & Zitation"
+  },
+  "header": {
+    "search": "Datasets, Aufgaben, Flüsse suchen...",
+    "addNew": "Neu hinzufügen",
+    "selectLanguage": "Sprache auswählen",
+    "documentation": "Dokumentation",
+    "menu": "Menü",
+    "searchIndices": {
+      "datasets": "Datensätze",
+      "tasks": "Aufgaben",
+      "flows": "Flüsse",
+      "runs": "Läufe",
+      "collections": "Sammlungen",
+      "benchmarks": "Benchmarks",
+      "measures": "Maßnahmen"
+    },
+    "createMenu": {
+      "title": "Neu erstellen",
+      "uploadDataset": "Datensatz hochladen",
+      "defineTask": "Aufgabe definieren",
+      "createCollection": "Sammlung erstellen"
+    },
+    "languages": {
+      "en": "Englisch",
+      "nl": "Niederländisch",
+      "fr": "Französisch",
+      "de": "Deutsch"
+    }
+  },
+  "datasets": {
+    "title": "Datasets",
+    "subtitle": "Erkunden Sie Tausende von Machine-Learning-Datasets",
+    "filters": {
+      "status": "Status",
+      "license": "Lizenz",
+      "size": "Größe",
+      "features": "Merkmale",
+      "taskType": "Aufgabentyp",
+      "format": "Format",
+      "applyFilters": "Filter Anwenden",
+      "clearAll": "Alles Löschen",
+      "selected": "ausgewählt"
+    },
+    "status": {
+      "active": "Verifiziert",
+      "deactivated": "Deaktiviert",
+      "in_preparation": "In Vorbereitung"
+    },
+    "sort": {
+      "label": "Sortieren nach:",
+      "relevance": "Relevanz"
+    },
+    "view": {
+      "show": "Zeige:",
+      "showingResults": "Zeige {start} - {end} von {total} Ergebnissen"
+    },
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter"
+    }
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "noResults": "Keine Ergebnisse gefunden"
+  }
+}

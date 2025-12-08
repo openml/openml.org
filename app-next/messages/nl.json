@@ -1,0 +1,144 @@
+{
+  "sidebar": {
+    "explore": "VERKENNEN",
+    "datasets": "Datasets",
+    "tasks": "Taken",
+    "flows": "Flows",
+    "runs": "Runs",
+    "collections": "Collecties",
+    "taskCollections": "Taken",
+    "runCollections": "Runs",
+    "benchmarks": "Benchmarks",
+    "taskSuites": "Takensuites",
+    "runStudies": "Run Studies",
+    "measures": "Metingen",
+    "dataQualities": "Datakwaliteiten",
+    "modelEvaluations": "Modelevaluaties",
+    "testProcedures": "Testprocedures",
+    "learn": "LEREN",
+    "documentation": "Documentatie",
+    "apis": "APIs",
+    "contribute": "Bijdragen",
+    "termsAndCitation": "Voorwaarden & Citatie",
+    "community": "GEMEENSCHAP",
+    "aboutUs": "Over Ons",
+    "meetUp": "Bijeenkomsten",
+    "discussions": "Discussies",
+    "extra": "EXTRA",
+    "auth": "Authenticatie",
+    "signIn": "Inloggen",
+    "signUp": "Registreren",
+    "resetPassword": "Wachtwoord Resetten",
+    "pageNotFound": "Pagina Niet Gevonden",
+    "serverError": "Serverfout"
+  },
+  "footer": {
+    "tagline": "Bouwen aan een naadloos, open ecosysteem van machine learning-gegevens, modellen en benchmarks — AI openlijk vooruithelpen ten behoeve van de mensheid.",
+    "getInvolved": "Doe mee:",
+    "joinWorkshops": "Doe mee aan workshops en studiegroepen",
+    "platform": "Platform",
+    "datasets": "Datasets",
+    "tasks": "Taken",
+    "flows": "Stromen",
+    "runs": "Runs",
+    "benchmarks": "Benchmarks",
+    "documentation": "Documentatie",
+    "gettingStarted": "Snel aan de slag",
+    "concepts": "Concepten",
+    "apisAndSdks": "API's en SDK's",
+    "python": "Python",
+    "r": "R",
+    "java": "Java",
+    "community": "Gemeenschap",
+    "aboutUs": "Over ons",
+    "contributing": "Bijdragen",
+    "team": "Team",
+    "publications": "Publicaties",
+    "blog": "Blog",
+    "contact": "Contact",
+    "copyright": "© {year} OpenML. Gelicentieerd onder BSD 3-Clause",
+    "privacyPolicy": "Privacybeleid",
+    "termsOfService": "Algemene voorwaarden",
+    "imprint": "Colofon"
+  },
+  "nav": {
+    "explore": "VERKENNEN",
+    "learn": "LEREN",
+    "datasets": "Datasets",
+    "tasks": "Taken",
+    "flows": "Flows",
+    "runs": "Runs",
+    "collections": "Collecties",
+    "benchmarks": "Benchmarks",
+    "measures": "Metingen",
+    "documentation": "Documentatie",
+    "apis": "APIs",
+    "contribute": "Bijdragen",
+    "termsAndCitation": "Voorwaarden & Citatie"
+  },
+  "header": {
+    "search": "Zoek datasets, taken, flows...",
+    "addNew": "Nieuwe toevoegen",
+    "selectLanguage": "Selecteer taal",
+    "documentation": "Documentatie",
+    "menu": "Menu",
+    "searchIndices": {
+      "datasets": "Datasets",
+      "tasks": "Taken",
+      "flows": "Stromen",
+      "runs": "Runs",
+      "collections": "Collecties",
+      "benchmarks": "Benchmarks",
+      "measures": "Metingen"
+    },
+    "createMenu": {
+      "title": "Nieuw aanmaken",
+      "uploadDataset": "Dataset uploaden",
+      "defineTask": "Taak definiëren",
+      "createCollection": "Collectie aanmaken"
+    },
+    "languages": {
+      "en": "English",
+      "nl": "Nederlands",
+      "fr": "Français",
+      "de": "Deutsch"
+    }
+  },
+  "datasets": {
+    "title": "Datasets",
+    "subtitle": "Verken duizenden machine learning datasets",
+    "filters": {
+      "status": "Status",
+      "license": "Licentie",
+      "size": "Grootte",
+      "features": "Kenmerken",
+      "taskType": "Taaktype",
+      "format": "Formaat",
+      "applyFilters": "Filters Toepassen",
+      "clearAll": "Alles Wissen",
+      "selected": "geselecteerd"
+    },
+    "status": {
+      "active": "Geverifieerd",
+      "deactivated": "Gedeactiveerd",
+      "in_preparation": "In Voorbereiding"
+    },
+    "sort": {
+      "label": "Sorteer op:",
+      "relevance": "Relevantie"
+    },
+    "view": {
+      "show": "Toon:",
+      "showingResults": "Toont {start} - {end} van {total} resultaten"
+    },
+    "pagination": {
+      "previous": "Vorige",
+      "next": "Volgende"
+    }
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fout",
+    "noResults": "Geen resultaten gevonden"
+  }
+}

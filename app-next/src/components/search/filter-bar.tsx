@@ -61,6 +61,9 @@ function formatFacetValue(value: string, field: string): string {
 
 export function FilterBar({ facets }: FilterBarProps) {
   const [openPopover, setOpenPopover] = React.useState<string | null>(null);
+  const [pendingSelections, setPendingSelections] = React.useState<
+    Map<string, Set<any>>
+  >(new Map());
 
   return (
     <div className="bg-background flex flex-wrap items-center gap-2 border-b p-4">
@@ -79,21 +82,32 @@ export function FilterBar({ facets }: FilterBarProps) {
             const hasActiveFilters = selectedValues.size > 0;
             const isOpen = openPopover === facet.field;
 
+            // Get pending selections for this facet
+            const pending = pendingSelections.get(facet.field) || new Set();
+
             return (
               <Popover
                 open={isOpen}
-                onOpenChange={(open) =>
-                  setOpenPopover(open ? facet.field : null)
-                }
+                onOpenChange={(open) => {
+                  if (open) {
+                    // Initialize pending with current selections
+                    const newPending = new Map(pendingSelections);
+                    newPending.set(facet.field, new Set(selectedValues));
+                    setPendingSelections(newPending);
+                    setOpenPopover(facet.field);
+                  } else {
+                    setOpenPopover(null);
+                  }
+                }}
               >
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "h-8 border-dashed",
+                      "h-8 border-dashed dark:hover:text-slate-100",
                       hasActiveFilters &&
-                        "bg-accent text-accent-foreground border-solid",
+                        "bg-accent text-accent-foreground border-solid dark:text-slate-300",
                     )}
                   >
                     {facet.label}
@@ -105,37 +119,10 @@ export function FilterBar({ facets }: FilterBarProps) {
                         />
                         <Badge
                           variant="secondary"
-                          className="rounded-sm px-1 font-normal lg:hidden"
+                          className="rounded-sm px-1 font-normal"
                         >
-                          {selectedValues.size}
+                          {selectedValues.size} selected
                         </Badge>
-                        <div className="hidden space-x-1 lg:flex">
-                          {selectedValues.size > 2 ? (
-                            <Badge
-                              variant="secondary"
-                              className="rounded-sm px-1 font-normal"
-                            >
-                              {selectedValues.size} selected
-                            </Badge>
-                          ) : (
-                            options
-                              .filter((option) =>
-                                selectedValues.has(option.value),
-                              )
-                              .map((option) => (
-                                <Badge
-                                  variant="secondary"
-                                  key={String(option.value)}
-                                  className="rounded-sm px-1 font-normal"
-                                >
-                                  {formatFacetValue(
-                                    String(option.value),
-                                    facet.field,
-                                  )}
-                                </Badge>
-                              ))
-                          )}
-                        </div>
                       </>
                     )}
                     <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
@@ -148,19 +135,24 @@ export function FilterBar({ facets }: FilterBarProps) {
                       <CommandEmpty>No results found.</CommandEmpty>
                       <CommandGroup>
                         {options.map((option) => {
-                          const isSelected = selectedValues.has(option.value);
+                          const isSelected = pending.has(option.value);
                           const valueStr = String(option.value);
                           return (
                             <CommandItem
                               key={valueStr}
-                              onSelect={(e) => {
-                                if (isSelected) {
-                                  onRemove(option.value as any);
+                              value={valueStr}
+                              onSelect={() => {
+                                // Toggle in pending selections
+                                const newPending = new Map(pendingSelections);
+                                const facetPending =
+                                  newPending.get(facet.field) || new Set();
+                                if (facetPending.has(option.value)) {
+                                  facetPending.delete(option.value);
                                 } else {
-                                  onSelect(option.value as any);
+                                  facetPending.add(option.value);
                                 }
-                                // Prevent popover from closing
-                                e.preventDefault?.();
+                                newPending.set(facet.field, facetPending);
+                                setPendingSelections(newPending);
                               }}
                             >
                               <div
@@ -182,6 +174,36 @@ export function FilterBar({ facets }: FilterBarProps) {
                             </CommandItem>
                           );
                         })}
+                      </CommandGroup>
+                      <CommandSeparator />
+                      <CommandGroup>
+                        <CommandItem
+                          onSelect={() => {
+                            // Apply pending selections
+                            const facetPending = pending;
+                            const currentValues = Array.from(selectedValues);
+
+                            // Remove deselected items
+                            currentValues.forEach((v) => {
+                              if (!facetPending.has(v)) {
+                                onRemove(v);
+                              }
+                            });
+
+                            // Add newly selected items
+                            facetPending.forEach((v) => {
+                              if (!selectedValues.has(v)) {
+                                onSelect(v);
+                              }
+                            });
+
+                            // Close popover
+                            setOpenPopover(null);
+                          }}
+                          className="bg-primary text-primary-foreground hover:bg-primary/90 justify-center"
+                        >
+                          Apply Filters
+                        </CommandItem>
                       </CommandGroup>
                       {hasActiveFilters && (
                         <>

@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-// import { Globe } from "lucide-react";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/config/routing";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,22 +16,20 @@ const languages = [
   { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "de", name: "Deutsch", flag: "🇩🇪" },
   { code: "nl", name: "Nederlands", flag: "🇳🇱" },
-];
+] as const;
 
 /**
  * Language Switcher - Client Component
- * Dropdown menu for language selection
+ * Dropdown menu for language selection with next-intl integration
  */
 export function LanguageSwitcher() {
-  const [currentLang, setCurrentLang] = React.useState("en");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleLanguageChange = (langCode: string) => {
-    setCurrentLang(langCode);
-    // TODO: Integrate with i18n system
-    console.log(`Language changed to: ${langCode}`);
+    router.replace(pathname as any, { locale: langCode });
   };
-
-  const currentLanguage = languages.find((lang) => lang.code === currentLang);
 
   return (
     <DropdownMenu>
@@ -57,7 +56,7 @@ export function LanguageSwitcher() {
           >
             <span className="mr-2">{lang.flag}</span>
             <span>{lang.name}</span>
-            {lang.code === currentLang && (
+            {lang.code === locale && (
               <span className="text-primary ml-auto">✓</span>
             )}
           </DropdownMenuItem>

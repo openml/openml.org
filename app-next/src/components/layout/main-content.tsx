@@ -1,0 +1,23 @@
+"use client";
+
+import { usePathname } from "@/config/routing";
+import { useSidebar } from "@/contexts/sidebar-context";
+import { cn } from "@/lib/utils";
+
+export function MainContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+  const { isCollapsed } = useSidebar();
+
+  return (
+    <main
+      className={cn(
+        "w-full flex-1 transition-all duration-300",
+        !isHomePage && "lg:ml-64",
+        !isHomePage && isCollapsed && "lg:ml-0",
+      )}
+    >
+      {children}
+    </main>
+  );
+}

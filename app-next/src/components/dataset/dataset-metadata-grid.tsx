@@ -22,7 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
-import Link from "next/link";
+import { Link } from "@/config/routing";
 
 interface DatasetMetadataGridProps {
   dataset: Dataset;

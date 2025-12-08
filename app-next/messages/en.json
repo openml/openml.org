@@ -1,0 +1,129 @@
+{
+  "sidebar": {
+    "explore": "EXPLORE",
+    "datasets": "Datasets",
+    "tasks": "Tasks",
+    "flows": "Flows",
+    "runs": "Runs",
+    "collections": "Collections",
+    "taskCollections": "Tasks",
+    "runCollections": "Runs",
+    "benchmarks": "Benchmarks",
+    "taskSuites": "Task Suites",
+    "runStudies": "Run Studies",
+    "measures": "Measures",
+    "dataQualities": "Data Qualities",
+    "modelEvaluations": "Model Evaluations",
+    "testProcedures": "Test Procedures",
+    "learn": "LEARN",
+    "documentation": "Documentation",
+    "apis": "APIs",
+    "contribute": "Contribute",
+    "termsAndCitation": "Terms & Citation",
+    "community": "COMMUNITY",
+    "aboutUs": "About Us",
+    "meetUp": "Meet Up",
+    "discussions": "Discussions",
+    "extra": "EXTRA",
+    "auth": "Auth",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "resetPassword": "Reset Password",
+    "pageNotFound": "Page Not Found",
+    "serverError": "Server Error"
+  },
+  "header": {
+    "search": "Search datasets, tasks, flows...",
+    "addNew": "Add new",
+    "selectLanguage": "Select language",
+    "documentation": "Documentation",
+    "menu": "Menu",
+    "searchIndices": {
+      "datasets": "Datasets",
+      "tasks": "Tasks",
+      "flows": "Flows",
+      "runs": "Runs",
+      "collections": "Collections",
+      "benchmarks": "Benchmarks",
+      "measures": "Measures"
+    },
+    "createMenu": {
+      "title": "Create New",
+      "uploadDataset": "Upload Dataset",
+      "defineTask": "Define Task",
+      "createCollection": "Create Collection"
+    },
+    "languages": {
+      "en": "English",
+      "nl": "Nederlands",
+      "fr": "Français",
+      "de": "Deutsch"
+    }
+  },
+  "footer": {
+    "tagline": "Building a seamless, open ecosystem of machine learning data, models, and benchmarks—advancing AI openly for the benefit of humanity.",
+    "getInvolved": "Get Involved:",
+    "joinWorkshops": "Join workshops and study groups",
+    "platform": "Platform",
+    "datasets": "Datasets",
+    "tasks": "Tasks",
+    "flows": "Flows",
+    "runs": "Runs",
+    "benchmarks": "Benchmarks",
+    "documentation": "Documentation",
+    "gettingStarted": "Getting Started",
+    "concepts": "Concepts",
+    "apisAndSdks": "APIs & SDKs",
+    "python": "Python",
+    "r": "R",
+    "java": "Java",
+    "community": "Community",
+    "aboutUs": "About Us",
+    "contributing": "Contributing",
+    "team": "Team",
+    "publications": "Publications",
+    "blog": "Blog",
+    "contact": "Contact",
+    "copyright": "© {year} OpenML. Licensed under BSD 3-Clause",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "imprint": "Imprint"
+  },
+  "datasets": {
+    "title": "Datasets",
+    "subtitle": "Explore thousands of machine learning datasets",
+    "filters": {
+      "status": "Status",
+      "license": "License",
+      "size": "Size",
+      "features": "Features",
+      "taskType": "Task Type",
+      "format": "Format",
+      "applyFilters": "Apply Filters",
+      "clearAll": "Clear All",
+      "selected": "selected"
+    },
+    "status": {
+      "active": "Verified",
+      "deactivated": "Deactivated",
+      "in_preparation": "In Preparation"
+    },
+    "sort": {
+      "label": "Sort by:",
+      "relevance": "Relevance"
+    },
+    "view": {
+      "show": "Show:",
+      "showingResults": "Showing {start} - {end} of {total} results"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "noResults": "No results found"
+  }
+}

@@ -17,16 +17,11 @@ export async function POST(req: NextRequest) {
 
     const url = `${ELASTICSEARCH_SERVER}${indexName}/_search`;
 
-    console.log("🔍 [ES Proxy] Search request for index:", indexName);
-    console.log("📡 [ES Proxy] Endpoint:", url);
-
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(esQuery),
     });
-
-    console.log("📡 [ES Proxy] Response status:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -47,18 +42,15 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await response.json();
-    console.log(
-      "✅ [ES Proxy] Search completed. Total hits:",
-      data.hits?.total?.value || data.hits?.total || 0,
-    );
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("❌ [ES Proxy] Error:", error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("❌ [ES Proxy] Error:", errorMessage);
     return NextResponse.json(
       {
         error: "Error fetching from Elasticsearch",
-        details: error.message,
+        details: errorMessage,
       },
       { status: 500 },
     );

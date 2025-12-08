@@ -1,32 +1,40 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/config/routing"; // Use localized usePathname
+import { Link } from "@/config/routing"; // Use localized Link
+import { useTranslations } from "next-intl";
 import { cn, abbreviateNumber } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  ArrowRightFromLine,
+  ArrowLeftFromLine,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { navItems, type NavItem, entityColors } from "@/constants";
+import { navItems, type NavItem } from "@/constants";
 import Image from "next/image";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 export function Sidebar() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isCollapsed, setIsCollapsed } = useSidebar();
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const t = useTranslations("sidebar");
 
   // Fetch entity counts on mount
   useEffect(() => {
-    console.log("🔍 Sidebar: Fetching counts from /api/count");
     fetch("/api/count")
       .then((response) => {
-        console.log("📡 Sidebar: Received response:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         return response.json();
       })
       .then((data) => {
-        console.log("📊 Sidebar: Received data:", data);
         if (Array.isArray(data)) {
           const countsMap = data.reduce(
             (
@@ -38,69 +46,68 @@ export function Sidebar() {
             },
             {},
           );
-          console.log("✅ Sidebar: Counts map:", countsMap);
           setCounts(countsMap);
         } else {
-          console.error("❌ Expected array but got:", data);
+          console.warn(
+            "⚠️ API returned non-array data, counts unavailable:",
+            data,
+          );
+          // Don't show error to user, just use empty counts
         }
       })
       .catch((error) => {
-        console.error("❌ Error fetching counts:", error);
+        console.warn(
+          "⚠️ Could not fetch entity counts (sidebar will work without them):",
+          error.message,
+        );
+        // Sidebar still works, just without count badges
       });
   }, []);
 
   return (
     <>
-      {/* Collapsed state - only show expand button */}
-      {isCollapsed && !isHomePage && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsCollapsed(false)}
-          className="fixed top-2 left-2 z-100 h-8 w-8 rounded-full border border-gray-600 bg-[#233044] text-gray-200 hover:bg-[#1E2A38] hover:text-white"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      )}
-
       {/* Full sidebar */}
       <div
         className={cn(
           "fixed top-0 left-0 z-100 hidden h-screen border-r-0 bg-[#233044] transition-all duration-300 ease-in-out lg:flex lg:w-64 lg:shrink-0 lg:flex-col",
-          isHomePage && "-translate-x-full",
-          isCollapsed && "-translate-x-full",
+          isHomePage && "!hidden",
+          isCollapsed && "-translate-x-[calc(100%-22px)]",
         )}
       >
         {/* Logo Header */}
-        <div className="relative flex min-h-40 items-center justify-center bg-[#233044] px-6 py-8">
+        <div className="relative flex min-h-40 items-center justify-center bg-[#233044] pb-6">
           <Link href="/" className="flex items-center justify-center">
             <Image
               src="/logo_openML_dark-bkg.png"
               alt="OpenML Logo"
-              width={108}
-              height={108}
+              width={200}
+              height={100}
               className="object-contain"
             />
           </Link>
 
           {/* Collapse Button */}
           <Button
-            variant="ghost"
+            variant="openml"
             size="icon"
-            onClick={() => setIsCollapsed(true)}
-            className="absolute top-1/2 -right-3 h-6 w-6 -translate-y-1/2 rounded-full border border-gray-600 bg-[#1E2A38] text-gray-200 hover:bg-[#1E2A38] hover:text-white"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="border-tr-2 border-br-2 hover:border[#233044] hover:text-[#233044 absolute top-24 -right-4.5 size-9 -translate-y-1/2 rounded-full border-slate-300 bg-[#233044] text-slate-300 hover:bg-slate-300 hover:text-[#1E2A38]"
           >
-            <ChevronLeft className="h-4 w-4" />
+            {!isCollapsed ? (
+              <ArrowLeftFromLine className="size-6" />
+            ) : (
+              <ArrowRightFromLine className="size-6" />
+            )}
           </Button>
         </div>
 
         {/* Navigation */}
-        <ScrollArea className="flex-1 py-4">
+        <ScrollArea className="-mt-4 flex-1 pb-4">
           <div className="space-y-6 px-3">
             {navItems.map((section) => (
               <div key={section.title}>
-                <h4 className="mb-2 px-3 text-xs font-semibold tracking-tight text-gray-400 uppercase">
-                  {section.title}
+                <h4 className="mb-1.5 px-3 text-sm font-semibold tracking-tight text-gray-400 uppercase">
+                  {t(section.titleKey)}
                 </h4>
                 <div className="space-y-1">
                   {section.items.map((item) => (
@@ -109,6 +116,7 @@ export function Sidebar() {
                       item={item}
                       pathname={pathname}
                       counts={counts}
+                      t={t}
                     />
                   ))}
                 </div>
@@ -125,10 +133,12 @@ function SidebarItem({
   item,
   pathname,
   counts,
+  t,
 }: {
   item: NavItem;
   pathname: string;
   counts?: Record<string, number>;
+  t: (key: string) => string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isActive =
@@ -136,14 +146,6 @@ function SidebarItem({
   const hasChildren = item.children && item.children.length > 0;
   const count = item.index && counts ? counts[item.index] : null;
   const countText = count ? abbreviateNumber(count) : "";
-
-  console.log(`🔢 SidebarItem "${item.title}":`, {
-    index: item.index,
-    count,
-    countText,
-    hasCounts: !!counts,
-    countsKeys: counts ? Object.keys(counts) : [],
-  });
 
   if (hasChildren) {
     return (
@@ -164,7 +166,7 @@ function SidebarItem({
                 style={{ color: item.color, width: "16px" }}
               />
             )}
-            <span className="text-sm">{item.title}</span>
+            <span className="text-sm">{t(item.titleKey)}</span>
           </span>
           <span className="flex items-center gap-2">
             {countText && (
@@ -185,6 +187,7 @@ function SidebarItem({
                 item={child}
                 pathname={pathname}
                 counts={counts}
+                t={t}
               />
             ))}
           </div>
@@ -202,7 +205,10 @@ function SidebarItem({
         isActive && "bg-[#1E2A38] font-medium text-white",
       )}
     >
-      <Link href={item.href} className="flex items-center justify-between">
+      <Link
+        href={item.href as any}
+        className="flex items-center justify-between"
+      >
         <span className="flex items-center">
           {item.icon && (
             <FontAwesomeIcon
@@ -211,7 +217,7 @@ function SidebarItem({
               style={{ color: item.color, width: "16px" }}
             />
           )}
-          <span className="text-sm">{item.title}</span>
+          <span className="text-sm">{t(item.titleKey)}</span>
         </span>
         {countText && (
           <span className="ml-auto text-xs text-gray-400">{countText}</span>

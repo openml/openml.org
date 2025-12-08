@@ -41,7 +41,7 @@ const dataConfig = {
       description: { snippet: { size: 100, fallback: true } },
       "qualities.NumberOfInstances": { raw: {} },
       "qualities.NumberOfFeatures": { raw: {} },
-      "qualities.NumberOfclassNamees": { raw: {} },
+      "qualities.NumberOfClasses": { raw: {} },
       licence: { raw: {} },
       nr_of_likes: { raw: {} },
       nr_of_downloads: { raw: {} },
@@ -54,7 +54,7 @@ const dataConfig = {
       "licence.keyword",
       "qualities.NumberOfInstances",
       "qualities.NumberOfFeatures",
-      "qualities.NumberOfclassNamees",
+      "qualities.NumberOfClasses",
       "format",
     ],
     facets: {
@@ -80,12 +80,12 @@ const dataConfig = {
           { from: 10000, name: "10000s" },
         ],
       },
-      "qualities.NumberOfclassNamees": {
+      "qualities.NumberOfClasses": {
         type: "range",
         ranges: [
           { from: 0, to: 2, name: "Regression" },
-          { from: 2, to: 2, name: "Binary classNameification" },
-          { from: 2, name: "Multi-className" },
+          { from: 2, to: 2, name: "Binary Classification" },
+          { from: 2, name: "Multi-class" },
         ],
       },
       format: { type: "value", size: 30 },

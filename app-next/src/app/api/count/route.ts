@@ -1,21 +1,29 @@
 import { NextResponse } from "next/server";
 
-// Use environment variable for Elasticsearch server, fallback to production URL
 const ELASTICSEARCH_SERVER =
   process.env.ELASTICSEARCH_SERVER || "https://www.openml.org/es/";
+
+interface ElasticsearchHits {
+  total: number | { value: number; relation?: string };
+}
+
+interface ElasticsearchResponse {
+  hits: ElasticsearchHits;
+}
+
+interface MultiSearchResponse {
+  responses: ElasticsearchResponse[];
+}
 
 export async function GET() {
   const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}_msearch`;
   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
-  // Multi-search body to count all indices at once
+  // Build NDJSON body for _msearch - correct format
   let requestBody = "";
   indices.forEach((index) => {
     requestBody += `{ "index": "${index}" }\n{ "size": 0 }\n`;
   });
-
-  console.log("🔍 /api/count: Fetching counts from Elasticsearch");
-  console.log("📡 Endpoint:", elasticsearchEndpoint);
 
   try {
     const response = await fetch(elasticsearchEndpoint, {
@@ -24,38 +32,35 @@ export async function GET() {
       body: requestBody,
     });
 
-    console.log("📡 Elasticsearch response status:", response.status);
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error(
-        "❌ Elasticsearch request failed:",
+        "Elasticsearch request failed:",
         response.status,
         errorText,
       );
-      throw new Error(`Elasticsearch request failed: ${response.statusText}`);
+      return NextResponse.json(
+        { error: "Failed to query Elasticsearch", details: errorText },
+        { status: 502 },
+      );
     }
 
-    const data = await response.json();
-    console.log("📊 Elasticsearch response received");
+    // Only parse JSON if response is OK
+    const data = (await response.json()) as MultiSearchResponse;
 
-    // Extract counts for each index
-    const counts = data.responses.map((r: any, i: number) => ({
+    // Extract counts safely
+    const counts = data.responses.map((r, i) => ({
       index: indices[i],
-      count: r.hits.total.value || r.hits.total,
+      count:
+        typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
     }));
 
-    console.log("✅ Counts calculated:", counts);
     return NextResponse.json(counts);
   } catch (error) {
-    console.error("❌ Error fetching counts from Elasticsearch:", error);
-    console.error(
-      "❌ Error details:",
-      error instanceof Error ? error.message : error,
-    );
+    console.error("Error fetching counts from Elasticsearch:", error);
     return NextResponse.json(
       {
-        error: "Error fetching counts from Elasticsearch",
+        error: "Internal server error",
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },

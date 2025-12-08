@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -10,7 +9,11 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { List, Table2, Grid3x3 } from "lucide-react";
-import { ResultsPerPage, PagingInfo, Sorting } from "@elastic/react-search-ui";
+import {
+  ResultsPerPage,
+  PagingInfo,
+  WithSearch,
+} from "@elastic/react-search-ui";
 
 /**
  * Controls Bar Component
@@ -29,33 +32,51 @@ import { ResultsPerPage, PagingInfo, Sorting } from "@elastic/react-search-ui";
  */
 
 const sortOptions = [
-  { name: "Relevance", value: [] },
-  { name: "Most Runs", value: [{ field: "runs", direction: "desc" }] },
-  { name: "Most Likes", value: [{ field: "nr_of_likes", direction: "desc" }] },
+  { name: "Relevance", value: [], id: "relevance" },
+  {
+    name: "Most Runs",
+    value: [{ field: "runs", direction: "desc" }],
+    id: "runs",
+  },
+  {
+    name: "Most Likes",
+    value: [{ field: "nr_of_likes", direction: "desc" }],
+    id: "likes",
+  },
   {
     name: "Most Downloads",
     value: [{ field: "nr_of_downloads", direction: "desc" }],
+    id: "downloads",
   },
-  { name: "Most Recent", value: [{ field: "date", direction: "desc" }] },
+  {
+    name: "Most Recent",
+    value: [{ field: "date", direction: "desc" }],
+    id: "recent",
+  },
   {
     name: "Most Instances",
     value: [{ field: "qualities.NumberOfInstances", direction: "desc" }],
+    id: "instances",
   },
   {
     name: "Most Features",
     value: [{ field: "qualities.NumberOfFeatures", direction: "desc" }],
+    id: "features",
   },
   {
     name: "Most Numeric Features",
     value: [{ field: "qualities.NumberOfNumericFeatures", direction: "desc" }],
+    id: "numeric",
   },
   {
     name: "Most Missing Values",
     value: [{ field: "qualities.NumberOfMissingValues", direction: "desc" }],
+    id: "missing",
   },
   {
-    name: "Most classNamees",
-    value: [{ field: "qualities.NumberOfclassNamees", direction: "desc" }],
+    name: "Most Classes",
+    value: [{ field: "qualities.NumberOfClasses", direction: "desc" }],
+    id: "classes",
   },
 ];
 
@@ -73,29 +94,38 @@ export function ControlsBar({
       {/* Left side: Sort and View Toggle */}
       <div className="flex items-center gap-4">
         {/* Sort Dropdown */}
-        <Sorting
-          sortOptions={sortOptions}
-          view={({ value, onChange }) => {
-            // value can be a string or an array of sort objects
-            const currentField =
-              Array.isArray(value) && value.length > 0
-                ? value[0]?.field
-                : "relevance";
+        <WithSearch
+          mapContextToProps={({ sortList, setSort }) => ({
+            sortList,
+            setSort,
+          })}
+        >
+          {({ sortList, setSort }) => {
+            const currentSortId = (() => {
+              if (!sortList || sortList.length === 0) {
+                return "relevance";
+              }
+              const currentField = sortList[0]?.field;
+              const matchedOption = sortOptions.find(
+                (opt) => opt.value[0]?.field === currentField,
+              );
+              return matchedOption?.id || "relevance";
+            })();
 
             return (
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-sm">Sort by:</span>
                 <Select
-                  value={currentField || "relevance"}
-                  onValueChange={(field) => {
-                    const option = sortOptions.find(
-                      (opt) =>
-                        (opt.value.length > 0 &&
-                          opt.value[0]?.field === field) ||
-                        (field === "relevance" && opt.value.length === 0),
-                    );
-                    if (option && option.value) {
-                      onChange(option.value);
+                  value={currentSortId}
+                  onValueChange={(id) => {
+                    const option = sortOptions.find((opt) => opt.id === id);
+                    if (!option) {
+                      console.error(`Sort option not found for id: ${id}`);
+                      return;
+                    }
+                    if (setSort) {
+                      // @ts-ignore - Elastic Search UI type mismatch
+                      setSort(option.value);
                     }
                   }}
                 >
@@ -103,11 +133,8 @@ export function ControlsBar({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {sortOptions.map((option, index) => (
-                      <SelectItem
-                        key={index}
-                        value={option.value[0]?.field || "relevance"}
-                      >
+                    {sortOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
                         {option.name}
                       </SelectItem>
                     ))}
@@ -116,7 +143,7 @@ export function ControlsBar({
               </div>
             );
           }}
-        />
+        </WithSearch>
 
         {/* View Toggle */}
         <ToggleGroup

@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,19 +25,21 @@ import {
  * - Index selector dropdown embedded in search bar
  * - Dynamic search with URL integration
  * - Responsive design
+ * - Full i18n support
  */
 
 const searchIndices = [
-  { key: "data", label: "Datasets", route: "/datasets" },
-  { key: "task", label: "Tasks", route: "/tasks" },
-  { key: "flow", label: "Flows", route: "/flows" },
-  { key: "run", label: "Runs", route: "/runs" },
-  { key: "collection", label: "Collections", route: "/collections" },
-  { key: "benchmark", label: "Benchmarks", route: "/benchmarks" },
-  { key: "measure", label: "Measures", route: "/measures" },
+  { key: "data", labelKey: "datasets", route: "/datasets" },
+  { key: "task", labelKey: "tasks", route: "/tasks" },
+  { key: "flow", labelKey: "flows", route: "/flows" },
+  { key: "run", labelKey: "runs", route: "/runs" },
+  { key: "collection", labelKey: "collections", route: "/collections" },
+  { key: "benchmark", labelKey: "benchmarks", route: "/benchmarks" },
+  { key: "measure", labelKey: "measures", route: "/measures" },
 ];
 
 export function SearchBar() {
+  const t = useTranslations("header");
   const router = useRouter();
   const pathname = usePathname();
   const [selectedIndex, setSelectedIndex] = useState("data");
@@ -90,13 +93,13 @@ export function SearchBar() {
       <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 !bg-slate-100 !text-slate-900">
         {/* Index Selector - Embedded on the left */}
         <Select value={selectedIndex} onValueChange={handleIndexChange}>
-          <SelectTrigger className="h-10 w-[130px] border-none !bg-transparent !text-slate-900 shadow-none focus:ring-0">
+          <SelectTrigger className="h-10 w-[130px] border-none bg-transparent! text-slate-900! shadow-none focus:ring-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {searchIndices.map((index) => (
               <SelectItem key={index.key} value={index.key}>
-                {index.label}
+                {t(`searchIndices.${index.labelKey}`)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -111,7 +114,7 @@ export function SearchBar() {
         {/* Search Input - Takes remaining space */}
         <Input
           type="search"
-          placeholder={`Search ${currentIndexLabel.toLowerCase()}...`}
+          placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="border-none !bg-transparent pl-2 !text-slate-900 shadow-none placeholder:!text-slate-500 focus-visible:ring-0"

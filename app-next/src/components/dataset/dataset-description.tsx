@@ -28,7 +28,7 @@ export function DatasetDescription({ dataset }: DatasetDescriptionProps) {
         <CardHeader>
           <CardTitle>Description</CardTitle>
           <CardDescription>
-            Detailed information about this dataset
+            And many more Detailed information about this dataset
           </CardDescription>
         </CardHeader>
         <CardContent>

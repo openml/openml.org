@@ -73,7 +73,7 @@ export function DatasetActionBar({
   ];
 
   return (
-    <div className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-16 z-10 -mx-4 border-b px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+    <div className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-16 z-10 -mx-4 border-b px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
       <TooltipProvider>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-muted-foreground mr-2 text-sm font-medium">
