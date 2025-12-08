@@ -6,19 +6,25 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import SidebarNavSection from "./SidebarNavSection";
 
-const Scrollbar = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.sidebar?.background || theme.palette.background.default || "#FFF",
-  borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+const Scrollbar = styled("div")(({ theme }) => ({
+  backgroundColor:
+    theme.palette.sidebar?.background ||
+    theme.palette.background.default ||
+    "#FFF",
+  borderRight: "1px solid rgba(0, 0, 0, 0.12)",
   flexGrow: 1,
 }));
 
 const PerfectScrollbarWrapper = styled(ReactPerfectScrollbar)(({ theme }) => ({
-  backgroundColor: theme.palette.sidebar?.background || theme.palette.background.default || "#FFF",
-  borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+  backgroundColor:
+    theme.palette.sidebar?.background ||
+    theme.palette.background.default ||
+    "#FFF",
+  borderRight: "1px solid rgba(0, 0, 0, 0.12)",
   flexGrow: 1,
 }));
 
-const Items = styled('div')(({ theme }) => ({
+const Items = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(2.5),
   paddingBottom: theme.spacing(2.5),
 }));
@@ -33,11 +39,15 @@ const SidebarNav = ({ items }) => {
     fetch("/api/count")
       .then((response) => response.json())
       .then((data) => {
-        const counts = data.reduce((acc, item) => {
-          acc[item.index] = item.count;
-          return acc;
-        }, {});
-        setCount(counts);
+        if (Array.isArray(data)) {
+          const counts = data.reduce((acc, item) => {
+            acc[item.index] = item.count;
+            return acc;
+          }, {});
+          setCount(counts);
+        } else {
+          console.error("Expected array but got:", data);
+        }
       })
       .catch((error) => {
         console.error("Error fetching count:", error);

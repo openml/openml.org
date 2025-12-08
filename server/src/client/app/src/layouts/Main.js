@@ -131,7 +131,7 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
-          {false && <Snackbar
+          {<Snackbar
             open={bannerOpen}        
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             autoHideDuration={10000}
@@ -143,9 +143,9 @@ function Main(props) {
               severity="warning"
               sx={{ width: '100%'}}
             >
-                We are restoring full service after a recent cyberattack. Some links may temporarily not work.{" "}
-                <a href="https://github.com/orgs/openml/discussions/20"> 
-                  Learn more
+                We're performing maintenance work on our servers in the week of 24-28 November. During this time, OpenML will be in read-only mode.{" "}
+                <a href="https://github.com/orgs/openml/discussions/27"> 
+                  Learn more.
                 </a>
             </Alert>
           </Snackbar>}

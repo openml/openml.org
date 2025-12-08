@@ -3,8 +3,7 @@ ARG environment=.dev
 COPY ./ /app
 
 RUN npm install --prefix /app/server/src/client/app
-RUN /app/server/src/client/app/node_modules/.bin/env-cmd -f /app/.env${environment} npm run build --prefix /app/server/src/client/app
-
+RUN /app/server/src/client/app/node_modules/.bin/env-cmd -f /app/.env npm run build --prefix /app/server/src/client/app
 
 
 FROM python:3.11-slim-bookworm
@@ -17,7 +16,6 @@ WORKDIR /app
 RUN python -m pip install -r requirements.txt
 
 RUN useradd --create-home unprivileged-user
-USER unprivileged-user
 
 COPY --from=build /app/server/src/client/app/build /app/server/src/client/app/build
 

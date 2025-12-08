@@ -1,8 +1,13 @@
-import React from "react";
-import { useNextRouting } from "../../utils/useNextRouting";
-
+/**
+ * DEPRECATED: This route is kept for backward compatibility
+ * Please use /datasets instead
+ *
+ * This file redirects /d/search to /datasets
+ */
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import DashboardLayout from "../../layouts/Dashboard";
-import SearchContainer from "../../components/search/SearchContainer";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import {
   renderCell,
   valueGetter,
@@ -29,243 +34,75 @@ import {
 
 // Server-side translation
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+/**
+ * getStaticProps - Required for i18n but redirects immediately
+ */
 export async function getStaticProps(context) {
-  // extract the locale identifier from the URL
   const { locale } = context;
   return {
     props: {
-      // pass the translation props to the page component
       ...(await serverSideTranslations(locale)),
     },
   };
 }
 
-// Defines chips in table view
-const getChipProps = (value) => {
-  switch (value) {
-    // Dataset status
-    case "active":
-      return {
-        label: "Verified",
-        icon: <FontAwesomeIcon icon={faCheck} />,
-        color: "success",
-      };
-    case "deactivated":
-      return {
-        label: "Deprecated",
-        icon: <FontAwesomeIcon icon={faTriangleExclamation} />,
-        color: "error",
-      };
-    case "in_preparation":
-      return {
-        label: "In preparation",
-        icon: <FontAwesomeIcon icon={faRotate} />,
-        color: "warning",
-      };
-    // Dataset licence
-    case "public":
-    case "Public":
-      return {
-        label: "Public",
-        icon: <FontAwesomeIcon icon={faCreativeCommonsPd} />,
-        color: "success",
-      };
-    case "CC0":
-    case "CCZero":
-    case "CC0: Public Domain":
-    case "Public Domain (CC0)":
-      return {
-        label: "CC0",
-        icon: <FontAwesomeIcon icon={faCreativeCommonsZero} />,
-        color: "success",
-      };
-    case "CC BY 4.0":
-    case "CC BY-NC-ND":
-    case "CC BY-NC 4.0":
-    case "CC BY-SA":
-    case "CC BY":
-    case "Creative Commons Attribution":
-      return {
-        label: value,
-        icon: <FontAwesomeIcon icon={faCreativeCommonsBy} />,
-        color: "primary",
-      };
-    case "Open Database License (ODbL)":
-      return {
-        label: "ODbL",
-        icon: <FontAwesomeIcon icon={faCreativeCommonsPd} />,
-        color: "success",
-      };
-    default:
-      return {
-        label: value,
-      };
-  }
-};
+/**
+ * DataSearchRedirect - Redirects users to the new /datasets route
+ *
+ * Why redirect instead of just updating the route?
+ * - Old links and bookmarks still work
+ * - Search engines get told about the new URL
+ * - Users see a brief message explaining the redirect
+ *
+ * How it works:
+ * 1. Component mounts
+ * 2. useEffect runs and initiates redirect
+ * 3. Query parameters are preserved (e.g., ?status=active)
+ */
+function DataSearchRedirect() {
+  const router = useRouter();
 
-const sort_options = [
-  {
-    name: "search.relevance",
-    value: [],
-  },
-  {
-    name: "search.most_runs",
-    value: [{ field: "runs", direction: "desc" }],
-  },
-  {
-    name: "search.most_likes",
-    value: [{ field: "nr_of_likes", direction: "desc" }],
-  },
-  {
-    name: "search.most_downloads",
-    value: [{ field: "nr_of_downloads", direction: "desc" }],
-  },
-  {
-    name: "search.most_recent",
-    value: [{ field: "date", direction: "desc" }],
-  },
-  {
-    name: "search.most_instances",
-    value: [{ field: "qualities.NumberOfInstances", direction: "desc" }],
-  },
-  {
-    name: "search.most_features",
-    value: [{ field: "qualities.NumberOfFeatures", direction: "desc" }],
-  },
-  {
-    name: "search.most_numeric_features",
-    value: [{ field: "qualities.NumberOfNumericFeatures", direction: "desc" }],
-  },
-  {
-    name: "search.most_missing_values",
-    value: [{ field: "qualities.NumberOfMissing values", direction: "desc" }],
-  },
-  {
-    name: "search.most_classes",
-    value: [{ field: "qualities.NumberOfClasses", direction: "desc" }],
-  },
-];
+  useEffect(() => {
+    // Preserve query parameters when redirecting
+    // Example: /d/search?status=active → /datasets?status=active
+    const query = router.query;
 
-const search_facets = [
-  {
-    label: "filters.status",
-    field: "status.keyword",
-  },
-  {
-    label: "filters.licence",
-    field: "licence.keyword",
-  },
-  {
-    label: "filters.size",
-    field: "qualities.NumberOfInstances",
-  },
-  {
-    label: "filters.features",
-    field: "qualities.NumberOfFeatures",
-  },
-  {
-    label: "filters.target",
-    field: "qualities.NumberOfClasses",
-  },
-  {
-    label: "filters.format",
-    field: "format",
-  },
-];
+    // Use replace instead of push to not add to browser history
+    // This means users can't go "back" to the old URL
+    router.replace({
+      pathname: "/datasets",
+      query: query, // Keep all query parameters
+    });
+  }, [router]);
 
-// Controls how columns are rendered and manipulated in the table view
-const columns = [
-  {
-    field: "data_id",
-    headerName: "Data_id",
-    valueGetter: valueGetter("data_id"),
-    renderCell: renderCell,
-    width: 70,
-  },
-  {
-    field: "name",
-    headerName: "Name",
-    valueGetter: valueGetter("name"),
-    renderCell: renderCell,
-    width: 230,
-  },
-  {
-    field: "version",
-    headerName: "Version",
-    valueGetter: valueGetter("version"),
-    renderCell: renderCell,
-    width: 60,
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    valueGetter: valueGetter("status"),
-    renderCell: renderChips(getChipProps),
-    type: "singleSelect",
-    valueOptions: ["active", "deactivated", "in_preparation"],
-    width: 136,
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    valueGetter: valueGetter("description"),
-    renderCell: renderDescription,
-    width: 360,
-  },
-  {
-    field: "date",
-    headerName: "Date",
-    valueGetter: valueGetter("date"),
-    renderCell: renderDate,
-  },
-  {
-    field: "licence",
-    headerName: "Licence",
-    valueGetter: valueGetter("licence"),
-    renderCell: renderChips(getChipProps),
-    width: 110,
-  },
-  {
-    field: "creator",
-    headerName: "Creator",
-    valueGetter: valueGetter("creator"),
-    renderCell: renderCell,
-    width: 150,
-  },
-  {
-    field: "url",
-    headerName: "Url",
-    valueGetter: valueGetter("url"),
-    renderCell: copyCell,
-    copyMessage: true,
-    width: 50,
-  },
-  {
-    field: "tags",
-    headerName: "Tags",
-    valueGetter: valueGetter("tags"),
-    renderCell: renderTags,
-    width: 400,
-  },
-];
-
-function DataSearchContainer() {
-  const combinedConfig = useNextRouting(dataConfig, "<baseUrl>");
-
+  // Show a loading message while redirecting
   return (
-    <SearchContainer
-      config={combinedConfig}
-      sort_options={sort_options}
-      search_facets={search_facets}
-      columns={columns}
-    />
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="60vh"
+    >
+      <CircularProgress size={60} />
+      <Typography variant="h6" sx={{ mt: 3 }}>
+        Redirecting to /datasets...
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        This URL has been moved for better SEO
+      </Typography>
+    </Box>
   );
 }
 
-DataSearchContainer.getLayout = function getLayout(page) {
+/**
+ * getLayout - Still use DashboardLayout for consistent navigation
+ */
+DataSearchRedirect.getLayout = function getLayout(page) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-DataSearchContainer.displayName = "DataSearchContainer";
+DataSearchRedirect.displayName = "DataSearchRedirect";
 
-export default DataSearchContainer;
+export default DataSearchRedirect;
