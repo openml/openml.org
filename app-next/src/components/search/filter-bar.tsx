@@ -134,6 +134,42 @@ export function FilterBar({ facets }: FilterBarProps) {
                     <CommandList>
                       <CommandEmpty>No results found.</CommandEmpty>
                       <CommandGroup>
+                        <CommandItem
+                          onSelect={() => {
+                            // Apply pending selections
+                            const facetPending = pending;
+                            const currentValues = Array.from(selectedValues);
+
+                            // Remove deselected items
+                            currentValues.forEach((v) => {
+                              if (!facetPending.has(v)) {
+                                onRemove(v);
+                              }
+                            });
+
+                            // Add newly selected items
+                            facetPending.forEach((v) => {
+                              if (!selectedValues.has(v)) {
+                                onSelect(v);
+                              }
+                            });
+
+                            // Close popover
+                            setOpenPopover(null);
+                          }}
+                          disabled={
+                            pending.size === selectedValues.size &&
+                            Array.from(pending).every((v) =>
+                              selectedValues.has(v),
+                            )
+                          }
+                          className="bg-primary text-primary-foreground hover:bg-primary/90 justify-center disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Apply Filters
+                        </CommandItem>
+                      </CommandGroup>
+                      <CommandSeparator />
+                      <CommandGroup>
                         {options.map((option) => {
                           const isSelected = pending.has(option.value);
                           const valueStr = String(option.value);
@@ -165,45 +201,15 @@ export function FilterBar({ facets }: FilterBarProps) {
                               >
                                 <Check className={cn("h-4 w-4")} />
                               </div>
-                              <span>
+                              <span className="flex-1">
                                 {formatFacetValue(valueStr, facet.field)}
                               </span>
-                              <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                              <span className="text-muted-foreground ml-2 shrink-0 text-xs tabular-nums">
                                 {option.count.toLocaleString()}
                               </span>
                             </CommandItem>
                           );
                         })}
-                      </CommandGroup>
-                      <CommandSeparator />
-                      <CommandGroup>
-                        <CommandItem
-                          onSelect={() => {
-                            // Apply pending selections
-                            const facetPending = pending;
-                            const currentValues = Array.from(selectedValues);
-
-                            // Remove deselected items
-                            currentValues.forEach((v) => {
-                              if (!facetPending.has(v)) {
-                                onRemove(v);
-                              }
-                            });
-
-                            // Add newly selected items
-                            facetPending.forEach((v) => {
-                              if (!selectedValues.has(v)) {
-                                onSelect(v);
-                              }
-                            });
-
-                            // Close popover
-                            setOpenPopover(null);
-                          }}
-                          className="bg-primary text-primary-foreground hover:bg-primary/90 justify-center"
-                        >
-                          Apply Filters
-                        </CommandItem>
                       </CommandGroup>
                       {hasActiveFilters && (
                         <>

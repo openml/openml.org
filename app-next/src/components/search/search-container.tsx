@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
 import { ResultsTable } from "./results-table";
 import { FilterBar } from "./filter-bar";
@@ -89,7 +90,7 @@ export function SearchContainer() {
                           return (
                             <div
                               key={did || index}
-                              className="hover:bg-accent flex items-start justify-between border-b p-4 transition-colors"
+                              className="hover:bg-accent relative flex items-start justify-between border-b p-4 transition-colors"
                             >
                               <div className="min-w-0 flex-1">
                                 <div className="mb-1 flex items-start gap-3">
@@ -180,12 +181,23 @@ export function SearchContainer() {
                               </div>
                               <Badge
                                 variant="openml"
-                                className="flex items-center gap-0.75 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"
+                                className="relative z-10 flex items-center gap-0.75 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"
                                 title="dataset ID"
                               >
                                 <Hash className="h-3 w-3" />
                                 {did}
                               </Badge>
+
+                              {/* Invisible overlay link for entire row clickability */}
+                              <Link
+                                href={`/datasets/${did}`}
+                                className="absolute inset-0"
+                                aria-label={`View ${result.name?.raw || "dataset"}`}
+                              >
+                                <span className="sr-only">
+                                  View {result.name?.raw || "dataset"}
+                                </span>
+                              </Link>
                             </div>
                           );
                         })
@@ -242,12 +254,16 @@ export function SearchContainer() {
                                 const did =
                                   result.data_id?.raw || result.id?.raw;
                                 return (
-                                  <div
+                                  <Link
                                     key={did || index}
-                                    onClick={() =>
-                                      setSelectedDataset(result as SearchResult)
-                                    }
-                                    className={`hover:bg-accent cursor-pointer border-b p-3 transition-colors ${
+                                    href={`/datasets/${did}`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setSelectedDataset(
+                                        result as SearchResult,
+                                      );
+                                    }}
+                                    className={`hover:bg-accent block cursor-pointer border-b p-3 transition-colors ${
                                       isSelected ? "bg-accent" : ""
                                     }`}
                                   >
@@ -300,7 +316,7 @@ export function SearchContainer() {
                                         {result.nr_of_downloads?.raw || 0}
                                       </span>
                                     </div>
-                                  </div>
+                                  </Link>
                                 );
                               },
                             );
@@ -311,9 +327,9 @@ export function SearchContainer() {
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 p-6">
+                      <div className="flex-1 overflow-y-auto p-6">
                         {selectedDataset ? (
-                          <div>
+                          <div className="mx-auto max-w-4xl">
                             <div className="mb-4 flex items-start gap-3">
                               <svg
                                 viewBox="0 0 448 512"
@@ -346,15 +362,19 @@ export function SearchContainer() {
                                 </Badge>
                               </div>
                             </div>
-                            <p className="text-muted-foreground mb-6 text-sm">
+
+                            {/* Full Description */}
+                            <div className="text-muted-foreground mb-6 text-sm leading-relaxed">
                               {
                                 parseDescription(
                                   selectedDataset.description?.snippet ||
                                     selectedDataset.description?.raw,
                                 ).cleanDescription
                               }
-                            </p>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                            </div>
+
+                            {/* Stats Grid */}
+                            <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
                               <div className="flex items-center gap-2">
                                 <FlaskConical className="h-5 w-5 fill-red-500 text-red-500" />
                                 <div>
@@ -435,6 +455,29 @@ export function SearchContainer() {
                                 </div>
                               </div>
                             </div>
+
+                            {/* See Full Details Button */}
+                            <div className="mt-6 flex justify-center">
+                              <Link
+                                href={`/datasets/${selectedDataset.data_id?.raw || selectedDataset.id?.raw}`}
+                                className="inline-flex items-center gap-2 rounded-md bg-[rgb(102,187,106)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[rgb(92,177,96)]"
+                              >
+                                See Full Details
+                                <svg
+                                  className="h-4 w-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                  />
+                                </svg>
+                              </Link>
+                            </div>
                           </div>
                         ) : (
                           <div className="text-muted-foreground flex h-full items-center justify-center text-center">
@@ -467,10 +510,6 @@ export function SearchContainer() {
                       view={({ current, totalPages, onChange }) => {
                         if (!current || totalPages <= 1) return null;
 
-                        const effectiveTotalPages = Math.min(
-                          totalPages,
-                          MAX_ACCESSIBLE_PAGE,
-                        );
                         const pages = [];
                         const maxVisible = 7;
                         let startPage = Math.max(
@@ -478,7 +517,7 @@ export function SearchContainer() {
                           current - Math.floor(maxVisible / 2),
                         );
                         const endPage = Math.min(
-                          effectiveTotalPages,
+                          totalPages,
                           startPage + maxVisible - 1,
                         );
 
@@ -490,25 +529,22 @@ export function SearchContainer() {
                           pages.push(i);
                         }
 
-                        const isCurrentInvalid = current > MAX_ACCESSIBLE_PAGE;
+                        const isPageAccessible = (page: number) =>
+                          page <= MAX_ACCESSIBLE_PAGE;
+                        const isCurrentBeyondLimit =
+                          current > MAX_ACCESSIBLE_PAGE;
 
                         return (
                           <div className="flex flex-col items-center gap-3">
                             {current >= SHOW_WARNING_FROM && (
-                              <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900">
-                                ⚠️ Only {MAX_ACCESSIBLE_PAGE.toLocaleString()}{" "}
-                                pages ({MAX_RESULT_WINDOW.toLocaleString()}{" "}
-                                results) can be accessed. Showing page{" "}
-                                {Math.min(
-                                  current,
-                                  MAX_ACCESSIBLE_PAGE,
-                                ).toLocaleString()}{" "}
-                                of{" "}
-                                {Math.min(
-                                  totalPages,
-                                  MAX_ACCESSIBLE_PAGE,
-                                ).toLocaleString()}
-                                .
+                              <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                                ⚠️ Elasticsearch limit: Only{" "}
+                                {MAX_ACCESSIBLE_PAGE.toLocaleString()} pages (
+                                {MAX_RESULT_WINDOW.toLocaleString()} results)
+                                can be accessed.{" "}
+                                {isCurrentBeyondLimit
+                                  ? `Page ${current} is not accessible.`
+                                  : `Showing page ${current.toLocaleString()} of ${totalPages.toLocaleString()} total pages.`}
                               </div>
                             )}
                             <div className="flex items-center gap-1">
@@ -533,64 +569,65 @@ export function SearchContainer() {
                                 </>
                               )}
                               {pages.map((page) => {
-                                const isGhost = page > MAX_ACCESSIBLE_PAGE;
+                                const isAccessible = isPageAccessible(page);
                                 const isCurrent = page === current;
-
-                                if (isCurrent && isCurrentInvalid) {
-                                  return (
-                                    <button
-                                      key={page}
-                                      disabled
-                                      className="cursor-not-allowed rounded border border-amber-300 bg-amber-100 px-3 py-1 text-amber-900"
-                                    >
-                                      ✕
-                                    </button>
-                                  );
-                                }
-
                                 return (
                                   <button
                                     key={page}
-                                    onClick={() => !isGhost && onChange(page)}
-                                    disabled={isGhost}
+                                    onClick={() =>
+                                      isAccessible && onChange(page)
+                                    }
+                                    disabled={!isAccessible}
                                     className={`rounded border px-3 py-1 ${
                                       isCurrent
                                         ? "bg-primary text-primary-foreground"
-                                        : isGhost
-                                          ? "cursor-not-allowed border-gray-200 text-gray-400 opacity-50"
-                                          : "hover:bg-muted"
+                                        : isAccessible
+                                          ? "hover:bg-muted"
+                                          : "cursor-not-allowed line-through opacity-30"
                                     }`}
+                                    title={
+                                      !isAccessible
+                                        ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
+                                    }
                                   >
                                     {page}
                                   </button>
                                 );
                               })}
-                              {endPage < effectiveTotalPages && (
+                              {endPage < totalPages && (
                                 <>
-                                  {endPage < effectiveTotalPages - 1 && (
+                                  {endPage < totalPages - 1 && (
                                     <span className="px-2">...</span>
                                   )}
                                   <button
                                     onClick={() =>
-                                      onChange(effectiveTotalPages)
+                                      isPageAccessible(totalPages) &&
+                                      onChange(totalPages)
                                     }
-                                    className={
-                                      effectiveTotalPages > MAX_ACCESSIBLE_PAGE
-                                        ? "cursor-not-allowed rounded border border-gray-200 px-3 py-1 text-gray-400 opacity-50"
-                                        : "hover:bg-muted rounded border px-3 py-1"
-                                    }
-                                    disabled={
-                                      effectiveTotalPages > MAX_ACCESSIBLE_PAGE
+                                    disabled={!isPageAccessible(totalPages)}
+                                    className={`rounded border px-3 py-1 ${
+                                      isPageAccessible(totalPages)
+                                        ? "hover:bg-muted"
+                                        : "cursor-not-allowed line-through opacity-30"
+                                    }`}
+                                    title={
+                                      !isPageAccessible(totalPages)
+                                        ? `Page ${totalPages} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
                                     }
                                   >
-                                    {effectiveTotalPages}
+                                    {totalPages}
                                   </button>
                                 </>
                               )}
                               <button
                                 onClick={() => onChange(current + 1)}
-                                disabled={current >= MAX_ACCESSIBLE_PAGE}
-                                className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                                disabled={
+                                  current >= totalPages ||
+                                  !isPageAccessible(current + 1)
+                                }
+                                className="hover:bg-muted rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
                               >
                                 Next
                               </button>

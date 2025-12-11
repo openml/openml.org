@@ -100,7 +100,7 @@ export function DatasetDescription({ dataset }: DatasetDescriptionProps) {
             )}
 
             {dataset.paper_url && (
-              <diwv>
+              <div>
                 <p className="text-sm font-medium">Related Paper</p>
                 <a
                   href={dataset.paper_url}
@@ -110,7 +110,7 @@ export function DatasetDescription({ dataset }: DatasetDescriptionProps) {
                 >
                   {dataset.paper_url}
                 </a>
-              </diwv>
+              </div>
             )}
 
             {dataset.original_data_url && (

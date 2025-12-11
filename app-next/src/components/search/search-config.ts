@@ -93,7 +93,15 @@ const dataConfig = {
   },
   initialState: {
     resultsPerPage: 20,
-    sortList: [{ field: "runs", direction: "desc" }],
+    sortList: [{ field: "date", direction: "desc" }],
+    // Default filter: only show active datasets
+    filters: [
+      {
+        field: "status.keyword",
+        values: ["active"],
+        type: "any",
+      },
+    ],
   },
 };
 

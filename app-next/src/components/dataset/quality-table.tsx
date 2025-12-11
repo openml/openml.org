@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import React from "react";
 
 interface QualityTableProps {
   qualities: Record<string, number>;
@@ -79,7 +80,17 @@ export function QualityTable({ qualities }: QualityTableProps) {
   };
 
   // Format value for display
-  const formatValue = (value: number): string => {
+  const formatValue = (value: number | undefined | null): string => {
+    // Handle null/undefined values
+    if (value === null || value === undefined || typeof value !== "number") {
+      return "N/A";
+    }
+
+    // Handle NaN
+    if (Number.isNaN(value)) {
+      return "N/A";
+    }
+
     if (Number.isInteger(value)) {
       return value.toLocaleString();
     }
@@ -93,7 +104,7 @@ export function QualityTable({ qualities }: QualityTableProps) {
   const totalQualities = qualityEntries.length;
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle>
           {totalQualities} Quality Metric{totalQualities !== 1 ? "s" : ""}{" "}
@@ -140,12 +151,9 @@ export function QualityTable({ qualities }: QualityTableProps) {
             </TableHeader>
             <TableBody>
               {Object.entries(categorized).map(([category, qualities]) => (
-                <>
+                <React.Fragment key={category}>
                   {/* Category Header */}
-                  <TableRow
-                    key={`category-${category}`}
-                    className="bg-muted/50"
-                  >
+                  <TableRow className="bg-muted/50">
                     <TableCell colSpan={2} className="text-sm font-semibold">
                       {category}
                     </TableCell>
@@ -162,7 +170,7 @@ export function QualityTable({ qualities }: QualityTableProps) {
                       </TableCell>
                     </TableRow>
                   ))}
-                </>
+                </React.Fragment>
               ))}
 
               {filteredQualities.length === 0 && (

@@ -236,4 +236,16 @@
   .dark .three-pillars-background {
     background-image: none;
   }
+
+  /* Logo animation for sidebar */
+  @keyframes logoFadeScale {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }

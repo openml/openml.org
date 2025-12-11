@@ -21,8 +21,10 @@
   "dependencies": {
     "@elastic/react-search-ui": "^1.24.2",
     "@elastic/search-ui-elasticsearch-connector": "^1.24.2",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
-    "@fortawesome/react-fontawesome": "^3.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.11",

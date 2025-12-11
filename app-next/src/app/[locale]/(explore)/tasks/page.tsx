@@ -1,4 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
+import { TasksSearchPage } from "@/components/search/tasks-search-page";
 
 export default async function TasksPage({
   params,
@@ -8,10 +9,5 @@ export default async function TasksPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold">Tasks</h1>
-      <p className="text-muted-foreground mt-4">Tasks page - coming soon</p>
-    </div>
-  );
+  return <TasksSearchPage />;
 }

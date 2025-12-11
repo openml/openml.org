@@ -107,39 +107,58 @@ export function ResultCard({ result }: ResultCardProps) {
       : cleanDescription;
 
   return (
-    <Card className="hover:bg-accent/50 cursor-pointer rounded-none border-0 border-b shadow-none transition-colors">
+    <Card className="group hover:bg-accent/70 relative overflow-hidden rounded-none border-0 border-b shadow-none transition-all hover:shadow-md">
+      <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+      {/* Status Badge - Top Right */}
+      <Badge
+        variant="outline"
+        className={`${statusInfo.className} absolute top-2 right-2 z-20 flex items-center gap-1 px-2 py-0.5 text-xs font-semibold`}
+      >
+        <StatusIcon className="h-3.5 w-3.5" />
+        {statusInfo.label}
+      </Badge>
+
       <CardContent className="p-2">
-        <Link href={`/datasets/${dataId}`} className="block">
-          {/* Title Row */}
-          <div className="mb-2 flex items-start gap-1">
-            <Database className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" />
-            <div className="min-w-0 grow">
-              <div className="flex flex-wrap items-baseline gap-2">
+        {/* Title Row */}
+        <div className="mb-2 flex items-start gap-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="mt-0.5 h-5 w-5 shrink-0"
+            style={{ color: "#66BB6A" }}
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="M448 205.8c-14.8 9.8-31.8 17.7-49.5 24-47 16.8-108.7 26.2-174.5 26.2S96.4 246.5 49.5 229.8c-17.6-6.3-34.7-14.2-49.5-24L0 288c0 44.2 100.3 80 224 80s224-35.8 224-80l0-82.2zm0-77.8l0-48C448 35.8 347.7 0 224 0S0 35.8 0 80l0 48c0 44.2 100.3 80 224 80s224-35.8 224-80zM398.5 389.8C351.6 406.5 289.9 416 224 416S96.4 406.5 49.5 389.8c-17.6-6.3-34.7-14.2-49.5-24L0 432c0 44.2 100.3 80 224 80s224-35.8 224-80l0-66.2c-14.8 9.8-31.8 17.7-49.5 24z"
+            />
+          </svg>
+          <div className="w-full min-w-0">
+            <div className="flex flex-wrap items-baseline gap-2">
+              <Link href={`/datasets/${dataId}`}>
                 <h3 className="inline text-lg font-semibold hover:underline">
                   {name}
                 </h3>
-                <span className="text-muted-foreground text-sm whitespace-nowrap">
-                  v.{version}
-                </span>
-                <Badge
-                  variant="outline"
-                  className={`${statusInfo.className} px-2 py-0.5 text-xs`}
-                >
-                  <StatusIcon className="mr-1 h-3.5 w-3.5" />
-                  {statusInfo.label}
-                </Badge>
-              </div>
+              </Link>
+              <span className="text-muted-foreground text-sm whitespace-nowrap">
+                v.{version}
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* Description */}
-          {truncatedDescription && (
+        {/* Description */}
+        {truncatedDescription && (
+          <Link href={`/datasets/${dataId}`} className="block">
             <p className="text-muted-foreground mb-2 line-clamp-3 text-[15px] leading-relaxed">
               {truncatedDescription}
             </p>
-          )}
+          </Link>
+        )}
 
-          {/* Stats Row */}
+        {/* Stats Row */}
+        <div className="space-y-2">
           <div className="text-muted-foreground flex flex-wrap gap-3 text-sm">
             {result.runs && result.runs.raw > 0 && (
               <span className="flex items-center gap-1.5" title="runs">
@@ -177,19 +196,30 @@ export function ResultCard({ result }: ResultCardProps) {
                 {abbreviateNumber(result.qualities.raw.NumberOfFeatures)}
               </span>
             )}
-            <span className="ml-auto flex items-center gap-1.5">
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
               <Clock className="h-4 w-4" />
               {result.date?.raw ? timeAgo(result.date.raw) : "Unknown"}
             </span>
             <Badge
               variant="openml"
-              className="flex items-center gap-0.75 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"
+              className="flex items-center gap-1 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"
               title="dataset ID"
             >
               <Hash className="h-3.5 w-3.5" />
               {dataId}
             </Badge>
           </div>
+        </div>
+
+        {/* Invisible overlay link for entire card clickability */}
+        <Link
+          href={`/datasets/${dataId}`}
+          className="absolute inset-0"
+          aria-label={`View ${name}`}
+        >
+          <span className="sr-only">View {name}</span>
         </Link>
       </CardContent>
     </Card>

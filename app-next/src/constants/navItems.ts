@@ -197,30 +197,19 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
       titleKey: "extra",
       items: [
         {
-          title: "Auth",
-          titleKey: "auth",
-          href: "/auth",
+          title: "User Profiles",
+          titleKey: "users",
+          href: "/users",
+          icon: faUsers,
+          color: "#42A5F5",
+          index: "user",
+        },
+        {
+          title: "Account",
+          titleKey: "account",
+          href: "/auth/account",
           icon: faUser,
           color: entityColors.auth,
-          children: [
-            { title: "Sign In", titleKey: "signIn", href: "/auth/sign-in" },
-            { title: "Sign Up", titleKey: "signUp", href: "/auth/sign-up" },
-            {
-              title: "Reset Password",
-              titleKey: "resetPassword",
-              href: "/auth/reset-password",
-            },
-            {
-              title: "Page Not Found",
-              titleKey: "pageNotFound",
-              href: "/auth/404",
-            },
-            {
-              title: "Server Error",
-              titleKey: "serverError",
-              href: "/auth/500",
-            },
-          ],
         },
       ],
     },

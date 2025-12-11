@@ -61,6 +61,12 @@ const sortableColumns = [
   { field: "runs", label: "Runs", width: "w-20" },
 ];
 
+// Convert columns to sortOptions format expected by Search UI
+const sortOptions = sortableColumns.map((col) => ({
+  name: col.label,
+  value: [{ field: col.field, direction: "desc" as const }],
+}));
+
 export function ResultsTable({ results }: ResultsTableProps) {
   if (!results || results.length === 0) {
     return (
@@ -72,14 +78,19 @@ export function ResultsTable({ results }: ResultsTableProps) {
 
   return (
     <Sorting
-      sortOptions={[]} // Empty array since we handle sorting via column headers
+      sortOptions={sortOptions}
       view={({ value, onChange }) => {
         // value is an array of sort objects
         const currentSort =
           Array.isArray(value) && value.length > 0 ? value[0] : null;
 
         const handleSort = (field: string) => {
-          if (onChange && typeof onChange === "function") {
+          if (!onChange || typeof onChange !== "function") {
+            console.warn("onChange is not available");
+            return;
+          }
+
+          try {
             if (currentSort?.field === field) {
               // Toggle direction
               const newDirection =
@@ -89,6 +100,8 @@ export function ResultsTable({ results }: ResultsTableProps) {
               // Set new field with desc as default
               onChange([{ field, direction: "desc" }]);
             }
+          } catch (error) {
+            console.error("Error in handleSort:", error);
           }
         };
 
@@ -135,7 +148,7 @@ export function ResultsTable({ results }: ResultsTableProps) {
                     <TableCell>
                       <Link
                         href={`/datasets/${result.data_id?.raw || result.id?.raw}`}
-                        className="text-primary line-clamp-3 hover:underline"
+                        className="line-clamp-3 font-semibold text-green-600 hover:underline dark:text-green-500"
                       >
                         {result.name?.snippet || result.name?.raw || "Untitled"}
                       </Link>

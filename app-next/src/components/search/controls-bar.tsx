@@ -31,8 +31,20 @@ import {
  * - Pagination information display
  */
 
-const sortOptions = [
+export interface SortOption {
+  name: string;
+  value: Array<{ field: string; direction: string }>;
+  id: string;
+}
+
+// Default sort options for datasets
+export const datasetSortOptions: SortOption[] = [
   { name: "Relevance", value: [], id: "relevance" },
+  {
+    name: "Most Recent",
+    value: [{ field: "date", direction: "desc" }],
+    id: "recent",
+  },
   {
     name: "Most Runs",
     value: [{ field: "runs", direction: "desc" }],
@@ -47,11 +59,6 @@ const sortOptions = [
     name: "Most Downloads",
     value: [{ field: "nr_of_downloads", direction: "desc" }],
     id: "downloads",
-  },
-  {
-    name: "Most Recent",
-    value: [{ field: "date", direction: "desc" }],
-    id: "recent",
   },
   {
     name: "Most Instances",
@@ -80,14 +87,42 @@ const sortOptions = [
   },
 ];
 
+// Sort options for tasks
+export const taskSortOptions: SortOption[] = [
+  { name: "Relevance", value: [], id: "relevance" },
+  {
+    name: "Most Recent",
+    value: [{ field: "date", direction: "desc" }],
+    id: "recent",
+  },
+  {
+    name: "Most Runs",
+    value: [{ field: "runs", direction: "desc" }],
+    id: "runs",
+  },
+  {
+    name: "Most Likes",
+    value: [{ field: "nr_of_likes", direction: "desc" }],
+    id: "likes",
+  },
+  {
+    name: "Most Downloads",
+    value: [{ field: "nr_of_downloads", direction: "desc" }],
+    id: "downloads",
+  },
+];
+
 interface ControlsBarProps {
   view?: string;
   onViewChange?: (view: string) => void;
+  /** Custom sort options for the entity type. Defaults to dataset sort options. */
+  sortOptions?: SortOption[];
 }
 
 export function ControlsBar({
   view = "table",
   onViewChange,
+  sortOptions = datasetSortOptions,
 }: ControlsBarProps) {
   return (
     <div className="bg-background flex items-center justify-around gap-6 border-b p-4">
@@ -107,7 +142,7 @@ export function ControlsBar({
               }
               const currentField = sortList[0]?.field;
               const matchedOption = sortOptions.find(
-                (opt) => opt.value[0]?.field === currentField,
+                (opt) => opt.value?.[0]?.field === currentField,
               );
               return matchedOption?.id || "relevance";
             })();
@@ -124,7 +159,8 @@ export function ControlsBar({
                       return;
                     }
                     if (setSort) {
-                      setSort(option.value);
+                      // Cast to any to avoid type issues with elastic search-ui
+                      (setSort as (value: unknown) => void)(option.value);
                     }
                   }}
                 >

@@ -6,6 +6,7 @@ import { BenchmarkingSection } from "@/components/home/benchmarking-section";
 import { WorkflowLoopSection } from "@/components/home/workflow-loop-section";
 import { AcademicImpactSection } from "@/components/home/academic-impact-section";
 import FAQSection from "@/components/home/faq-section";
+import { HomePageWrapper } from "@/components/home/home-page-wrapper";
 
 export default async function HomePage({
   params,
@@ -16,7 +17,7 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   return (
-    <>
+    <HomePageWrapper>
       <HeroHome />
       <ThreePillarsSection />
       <AccessibilitySection />
@@ -24,6 +25,6 @@ export default async function HomePage({
       <WorkflowLoopSection />
       <AcademicImpactSection />
       <FAQSection />
-    </>
+    </HomePageWrapper>
   );
 }

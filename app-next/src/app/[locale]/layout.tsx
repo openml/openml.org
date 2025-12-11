@@ -8,7 +8,7 @@ import "../globals.css";
 import { QueryProvider } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
 import { SidebarProvider } from "@/contexts/sidebar-context";
@@ -85,7 +85,7 @@ export default async function LocaleLayout({
                   <Sidebar />
                   <MainContent>{children}</MainContent>
                 </div>
-                <Footer />
+                <ConditionalFooter />
               </SidebarProvider>
             </QueryProvider>
           </ThemeProvider>

@@ -64,7 +64,7 @@ export function DatasetMetadataGrid({ dataset }: DatasetMetadataGridProps) {
     <div className="container mx-auto w-full flex-1 px-4 py-6 sm:px-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Identity Card */}
-        <Card>
+        <Card className="border-0 shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Identity</CardTitle>
             <CardDescription>Dataset identification and format</CardDescription>
@@ -123,7 +123,7 @@ export function DatasetMetadataGrid({ dataset }: DatasetMetadataGridProps) {
         </Card>
 
         {/* Provenance Card */}
-        <Card>
+        <Card className="border-0 shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Provenance</CardTitle>
             <CardDescription>Uploader and status information</CardDescription>
@@ -138,7 +138,7 @@ export function DatasetMetadataGrid({ dataset }: DatasetMetadataGridProps) {
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium">Uploader</p>
                 <Link
-                  href={`/u/${dataset.uploader_id}`}
+                  href={`/users/${dataset.uploader_id}`}
                   className="text-sm text-blue-600 hover:underline dark:text-blue-400"
                 >
                   {dataset.uploader}
@@ -191,7 +191,7 @@ export function DatasetMetadataGrid({ dataset }: DatasetMetadataGridProps) {
         </Card>
 
         {/* Statistics Card */}
-        <Card>
+        <Card className="border-0 shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Statistics</CardTitle>
             <CardDescription>Dataset characteristics</CardDescription>

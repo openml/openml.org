@@ -24,9 +24,15 @@ export async function GET() {
   console.log("📦 [Count API] Indices:", indices);
 
   // Build NDJSON body for _msearch - correct format
+  // For datasets (data index), only count active ones per team leader request
   let requestBody = "";
   indices.forEach((index) => {
-    requestBody += `{ "index": "${index}" }\n{ "size": 0 }\n`;
+    if (index === "data") {
+      // Only count active datasets
+      requestBody += `{ "index": "${index}" }\n{ "size": 0, "query": { "term": { "status.keyword": "active" } } }\n`;
+    } else {
+      requestBody += `{ "index": "${index}" }\n{ "size": 0 }\n`;
+    }
   });
 
   const startTime = Date.now();

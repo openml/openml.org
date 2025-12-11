@@ -52,13 +52,13 @@ export default function Integrations({ content }: IntegrationsProps) {
   return (
     <TooltipProvider>
       <section className="py-3 text-center">
-        <div className="mx-auto inline-block text-xl font-medium text-slate-200">
+        <div className="mx-auto inline-block text-xl font-medium text-slate-800 opacity-90 dark:text-slate-200">
           {content.overline}
         </div>
         <h1 className="title-font gradient-text mb-2 text-[clamp(3rem,4.6vw,72px)] leading-[1.2] font-bold tracking-tight">
           {content.heading}
         </h1>
-        <p className="mx-auto mb-6 max-w-2xl text-center text-xl leading-[1.6] font-light text-slate-300">
+        <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-700 dark:text-slate-300">
           {content.subtitle}
         </p>
 
@@ -66,7 +66,7 @@ export default function Integrations({ content }: IntegrationsProps) {
           {integrations.map((integration) => (
             <Tooltip key={integration.name}>
               <TooltipTrigger asChild>
-                <div className="mx-3.5 inline-block rounded-lg bg-slate-100 p-3 shadow-sm transition-shadow hover:shadow-md">
+                <div className="light:border-slate-800 mx-3.5 inline-block rounded-lg border bg-slate-100 p-3 shadow-sm transition-shadow hover:shadow-md">
                   <Image
                     alt={integration.name}
                     src={integration.icon}
@@ -82,7 +82,8 @@ export default function Integrations({ content }: IntegrationsProps) {
               </TooltipTrigger>
               <TooltipContent
                 sideOffset={-3}
-                className="bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 px-2 py-0.5 text-base font-medium text-white shadow-lg"
+                className="border-2 border-slate-300 bg-slate-100 px-2 py-0.5 text-base font-medium text-slate-700 dark:border-0 dark:bg-linear-to-br dark:from-indigo-500 dark:via-purple-500 dark:to-pink-500 dark:text-white"
+                arrowClassName="fill-slate-400 dark:border-0 dark:fill-white border-0"
               >
                 <p>{integration.name}</p>
               </TooltipContent>
@@ -93,11 +94,15 @@ export default function Integrations({ content }: IntegrationsProps) {
         <div>
           <Button
             asChild
-            variant="default"
+            variant="openml"
             size="lg"
-            className="mb-10 px-12 transition hover:scale-105 hover:opacity-90"
+            className="mb-10 border-2 bg-slate-100 from-indigo-500 via-purple-500 to-pink-500 px-12 text-slate-700 transition hover:scale-105 hover:opacity-90 dark:bg-linear-to-br dark:text-white"
           >
-            <Link href="/documentation/welcome" target="_blank">
+            <Link
+              href="/documentation/welcome"
+              target="_blank"
+              className="light:border-slate-300"
+            >
               {content.button}
             </Link>
           </Button>
