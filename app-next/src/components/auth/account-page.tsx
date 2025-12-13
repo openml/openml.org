@@ -141,8 +141,8 @@ export function AccountPage() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Show validation errors
-        if (error.errors && Array.isArray(error.errors)) {
-          error.errors.forEach((err) => {
+        if (error.issues && Array.isArray(error.issues)) {
+          error.issues.forEach((err) => {
             toast({
               title: "Validation Error",
               description: err.message,
@@ -196,8 +196,8 @@ export function AccountPage() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Show validation errors
-        if (error.errors && Array.isArray(error.errors)) {
-          error.errors.forEach((err) => {
+        if (error.issues && Array.isArray(error.issues)) {
+          error.issues.forEach((err) => {
             toast({
               title: "Validation Error",
               description: err.message,
@@ -208,7 +208,7 @@ export function AccountPage() {
       } else {
         toast({
           title: "Error",
-          description: "Sign up failed. Please try again.",
+          description: "Failed to update password. Please try again.",
           variant: "destructive",
         });
       }
