@@ -3,8 +3,8 @@
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
 import taskConfig from "./task-search-config";
-import { ActiveFiltersHeader } from "./active-filters-header";
-import { TaskSearchContainer } from "@/components/search/task-search-container";
+import { ActiveFiltersHeader } from "../shared/active-filters-header";
+import { TaskSearchContainer } from "@/components/search/tasks/task-search-container";
 import { Trophy } from "lucide-react";
 
 export function TasksSearchPage() {

@@ -1,23 +1,9 @@
-/**
- * 📚 LEARNING: Server-Side Data Fetching for Tasks
- *
- * Same pattern as dataset.ts but for task entities.
- * Tasks reference datasets and define ML problem setups.
- */
-
 import { Task } from "@/types/task";
 import { notFound } from "next/navigation";
 
 const ES_URL = "https://www.openml.org/es";
 const ES_INDEX = "task";
 
-/**
- * 🎯 Fetch a single task by ID (Server-Side)
- *
- * @param id - Task ID
- * @returns Task object
- * @throws notFound() if task doesn't exist
- */
 export async function fetchTask(id: string): Promise<Task> {
   try {
     const response = await fetch(`${ES_URL}/${ES_INDEX}/_doc/${id}`, {
@@ -57,12 +43,6 @@ export async function fetchTask(id: string): Promise<Task> {
   }
 }
 
-/**
- * 🎯 Fetch run count for a task
- *
- * @param taskId - Task ID
- * @returns Number of runs on this task
- */
 export async function fetchTaskRunCount(taskId: string): Promise<number> {
   try {
     const response = await fetch(`${ES_URL}/run/_search`, {
@@ -96,12 +76,6 @@ export async function fetchTaskRunCount(taskId: string): Promise<number> {
   }
 }
 
-/**
- * 🎯 Fetch the source dataset for a task
- *
- * @param datasetId - Dataset ID
- * @returns Dataset name
- */
 export async function fetchTaskDatasetName(
   datasetId: number,
 ): Promise<string | null> {
@@ -128,11 +102,6 @@ export async function fetchTaskDatasetName(
   }
 }
 
-/**
- * 🎯 Generate static parameters for ISR
- *
- * @returns Array of task IDs to pre-generate
- */
 interface ElasticsearchHit {
   _source: {
     task_id: number;

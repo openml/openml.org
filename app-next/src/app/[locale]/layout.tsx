@@ -12,6 +12,7 @@ import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
 import { SidebarProvider } from "@/contexts/sidebar-context";
+import { Toaster } from "@/components/ui/toaster";
 import { locales } from "@/i18n";
 
 const inter = Inter({
@@ -88,6 +89,7 @@ export default async function LocaleLayout({
                 <ConditionalFooter />
               </SidebarProvider>
             </QueryProvider>
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

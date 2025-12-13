@@ -26,4 +26,11 @@ class Config(object):
     GITHUB_OAUTH_CLIENT_SECRET = ""
     OAUTHLIB_INSECURE_TRANSPORT = True  # True only for dev not for production
 
-
+    # CORS Configuration for Vercel deployment
+    # Add your Vercel deployment URLs here
+    CORS_ORIGINS = os.environ.get(
+        "CORS_ORIGINS", "http://localhost:3000,http://localhost:8000"
+    ).split(",")
+    CORS_SUPPORTS_CREDENTIALS = True
+    CORS_ALLOW_HEADERS = ["Content-Type", "Authorization"]
+    CORS_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]

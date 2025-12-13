@@ -3,6 +3,30 @@ import OpenMLSearchConnector from "@/services/OpenMLSearchConnector";
 const apiConnector = new OpenMLSearchConnector("user");
 
 /**
+ * Search field configurations for different scopes
+ */
+export const searchFieldConfigs = {
+  all: {
+    username: { weight: 3 },
+    first_name: { weight: 3 },
+    last_name: { weight: 3 },
+    bio: { weight: 2 },
+    affiliation: { weight: 2 },
+    country: { weight: 1 },
+  },
+  names: {
+    username: { weight: 3 },
+    first_name: { weight: 3 },
+    last_name: { weight: 3 },
+  },
+  tags: {
+    bio: { weight: 3 },
+    affiliation: { weight: 2 },
+    country: { weight: 1 },
+  },
+};
+
+/**
  * User Search Configuration
  */
 
@@ -13,14 +37,7 @@ const userConfig = {
   urlPushDebounceLength: 500,
   searchQuery: {
     resultsPerPage: 20,
-    search_fields: {
-      username: { weight: 3 },
-      first_name: { weight: 3 },
-      last_name: { weight: 3 },
-      bio: { weight: 2 },
-      affiliation: { weight: 2 },
-      country: { weight: 1 },
-    },
+    search_fields: searchFieldConfigs.all,
     result_fields: {
       user_id: { raw: {} },
       username: { raw: {} },
@@ -51,5 +68,4 @@ const userConfig = {
     sortList: [{ field: "date", direction: "desc" }],
   },
 };
-
 export default userConfig;

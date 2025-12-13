@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
-import { FilterBar } from "./filter-bar";
-import { ControlsBar } from "./controls-bar";
+import { FilterBar } from "../shared/filter-bar";
+import { ControlsBar } from "../shared/controls-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
   Calendar,
   Search,
 } from "lucide-react";
+import { searchFieldConfigs } from "./user-search-config";
 
 interface UserResult {
   user_id?: { raw: string | number };
@@ -77,24 +78,50 @@ function getCountryFlag(countryCode: string): string {
   return String.fromCodePoint(...codePoints);
 }
 
-export function UsersSearchContainer() {
+interface UsersSearchContainerProps {
+  searchScope: "all" | "names" | "tags";
+  onSearchScopeChange: (scope: "all" | "names" | "tags") => void;
+}
+
+export function UsersSearchContainer({
+  searchScope,
+  onSearchScopeChange,
+}: UsersSearchContainerProps) {
   const [view, setView] = useState("list");
+
+  const handleSearchScopeChange = (scope: string) => {
+    onSearchScopeChange(scope as "all" | "names" | "tags");
+  };
+
+  const searchScopeOptions = [
+    { value: "all", label: "All fields" },
+    { value: "names", label: "Names only" },
+    { value: "tags", label: "Tags only" },
+  ];
 
   return (
     <WithSearch
-      mapContextToProps={({ isLoading, error }) => ({
+      mapContextToProps={({
         isLoading,
         error,
+        searchTerm,
+        totalResults,
+        setSearchTerm,
+      }) => ({
+        isLoading,
+        error,
+        searchTerm,
+        totalResults,
+        setSearchTerm,
       })}
     >
-      {({ isLoading, error }) => (
-        <div className="w-full space-y-0">
+      {({ isLoading, error, searchTerm, totalResults, setSearchTerm }) => (
+        <div className="w-full max-w-full space-y-0 overflow-x-hidden">
           {isLoading && (
             <div className="bg-primary/20 h-1 w-full overflow-hidden">
               <div className="bg-primary h-full w-1/3 animate-pulse" />
             </div>
           )}
-
           {error && (
             <div className="bg-destructive/10 border-destructive/20 m-4 rounded-md border p-4">
               <p className="text-destructive text-sm">
@@ -105,37 +132,59 @@ export function UsersSearchContainer() {
               </p>
             </div>
           )}
-
-          {/* Search Input */}
-          <WithSearch
-            mapContextToProps={({ searchTerm, setSearchTerm }) => ({
-              searchTerm,
-              setSearchTerm,
-            })}
-          >
-            {({ searchTerm, setSearchTerm }) => (
-              <div className="bg-background border-b p-4">
-                <div className="relative max-w-md">
-                  <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                  <Input
-                    type="text"
-                    placeholder="Search users by name..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm?.(e.target.value)}
-                    className="pl-9"
-                  />
+          <FilterBar
+            facets={searchFacets}
+            showSearch={true}
+            searchScopeOptions={searchScopeOptions}
+            onSearchScopeChange={handleSearchScopeChange}
+            defaultSearchScope={searchScope}
+          />{" "}
+          {/* Search Results Summary */}
+          {searchTerm && (
+            <div className="border-b bg-slate-50 px-4 py-3 dark:bg-slate-900">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                      <span className="text-muted-foreground text-sm">
+                        Searching for "{searchTerm}"...
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      {totalResults > 0 ? (
+                        <span className="text-sm">
+                          Found{" "}
+                          <span className="text-primary font-semibold">
+                            {totalResults}
+                          </span>{" "}
+                          {totalResults === 1 ? "user" : "users"} matching "
+                          <span className="font-medium">{searchTerm}</span>"
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Search className="text-muted-foreground h-4 w-4" />
+                          <span className="text-muted-foreground text-sm">
+                            No users found matching "
+                            <span className="text-foreground font-medium">
+                              {searchTerm}
+                            </span>
+                            "
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
-            )}
-          </WithSearch>
-
-          <FilterBar facets={searchFacets} />
+            </div>
+          )}
           <ControlsBar
             view={view}
             onViewChange={setView}
             sortOptions={sortOptions}
           />
-
           <div className="p-4">
             <WithSearch mapContextToProps={({ results }) => ({ results })}>
               {({ results }) => (
@@ -279,10 +328,36 @@ export function UsersSearchContainer() {
                         );
                       })
                     ) : (
-                      <div className="py-12 text-center">
-                        <p className="text-muted-foreground">
-                          No users found. Try adjusting your search or filters.
-                        </p>
+                      <div className="py-16 text-center">
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                          <Search className="text-muted-foreground h-8 w-8" />
+                        </div>
+                        {searchTerm ? (
+                          <>
+                            <h3 className="mb-2 text-lg font-semibold">
+                              No users found
+                            </h3>
+                            <p className="text-muted-foreground mb-4 text-sm">
+                              We couldn't find any users matching "
+                              <span className="text-foreground font-medium">
+                                {searchTerm}
+                              </span>
+                              "
+                            </p>
+                            <p className="text-muted-foreground text-xs">
+                              Try adjusting your search terms or check for typos
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <h3 className="mb-2 text-lg font-semibold">
+                              No users found
+                            </h3>
+                            <p className="text-muted-foreground text-sm">
+                              Try adjusting your filters to see more results
+                            </p>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -325,28 +400,18 @@ export function UsersSearchContainer() {
                         return null;
                       }
 
-                      const totalPages = Math.ceil(
-                        totalResults / resultsPerPage,
+                      const MAX_RESULT_WINDOW = 10000;
+                      const pageSize = resultsPerPage || 20;
+                      const MAX_ACCESSIBLE_PAGE = Math.floor(
+                        MAX_RESULT_WINDOW / pageSize,
                       );
-                      const esLimit = 10000;
-                      const effectiveMaxPage = Math.min(
-                        totalPages,
-                        Math.floor(esLimit / resultsPerPage),
+                      const SHOW_WARNING_FROM = Math.max(
+                        1,
+                        MAX_ACCESSIBLE_PAGE - 1,
                       );
-                      const isNearLimit = current >= effectiveMaxPage - 1;
 
                       return (
                         <div className="mt-6 space-y-4">
-                          {isNearLimit && totalResults > esLimit && (
-                            <div className="rounded-md border border-orange-200 bg-orange-50 p-3 text-sm dark:border-orange-800 dark:bg-orange-950">
-                              <p className="text-orange-800 dark:text-orange-200">
-                                ⚠️ ElasticSearch has a limit of 10,000 results.
-                                Please refine your search or use filters to see
-                                more specific results.
-                              </p>
-                            </div>
-                          )}
-
                           <div className="flex items-center justify-between">
                             <div className="text-muted-foreground text-sm">
                               Showing {pagingStart} - {pagingEnd} of{" "}
@@ -355,40 +420,137 @@ export function UsersSearchContainer() {
                             </div>
 
                             <Paging
-                              view={({
-                                current: currentPage,
-                                totalPages: maxPages,
-                              }) => {
-                                const pageNumbers = [];
-                                for (let i = 1; i <= maxPages; i++) {
-                                  pageNumbers.push(i);
+                              view={({ current, totalPages, onChange }) => {
+                                if (!onChange) {
+                                  return null;
                                 }
 
+                                const PAGES_TO_SHOW = 5;
+                                let startPage = Math.max(
+                                  1,
+                                  current - Math.floor(PAGES_TO_SHOW / 2),
+                                );
+                                let endPage = Math.min(
+                                  totalPages,
+                                  startPage + PAGES_TO_SHOW - 1,
+                                );
+
+                                if (endPage - startPage < PAGES_TO_SHOW - 1) {
+                                  startPage = Math.max(
+                                    1,
+                                    endPage - PAGES_TO_SHOW + 1,
+                                  );
+                                }
+
+                                const pages = [];
+                                for (let i = startPage; i <= endPage; i++) {
+                                  pages.push(i);
+                                }
+
+                                const isPageAccessible = (page: number) =>
+                                  page <= MAX_ACCESSIBLE_PAGE;
+                                const isCurrentBeyondLimit =
+                                  current > MAX_ACCESSIBLE_PAGE;
+
                                 return (
-                                  <div className="flex items-center gap-1">
-                                    {pageNumbers.map((pageNum) => {
-                                      const isDisabled =
-                                        pageNum > effectiveMaxPage;
-                                      return (
-                                        <button
-                                          key={pageNum}
-                                          onClick={() => {
-                                            if (!isDisabled)
-                                              setCurrent?.(pageNum);
-                                          }}
-                                          disabled={isDisabled}
-                                          className={`h-9 min-w-9 rounded px-2 text-sm transition-colors ${
-                                            currentPage === pageNum
-                                              ? "bg-primary text-primary-foreground font-semibold"
-                                              : isDisabled
-                                                ? "text-muted-foreground/30 cursor-not-allowed"
-                                                : "hover:bg-muted"
-                                          }`}
-                                        >
-                                          {pageNum}
-                                        </button>
-                                      );
-                                    })}
+                                  <div className="flex flex-col items-center gap-3">
+                                    {current >= SHOW_WARNING_FROM && (
+                                      <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                                        ⚠️ Elasticsearch limit: Only{" "}
+                                        {MAX_ACCESSIBLE_PAGE.toLocaleString()}{" "}
+                                        pages (
+                                        {MAX_RESULT_WINDOW.toLocaleString()}{" "}
+                                        results) can be accessed.{" "}
+                                        {isCurrentBeyondLimit
+                                          ? `Page ${current} is not accessible.`
+                                          : `Showing page ${current.toLocaleString()} of ${totalPages.toLocaleString()} total pages.`}
+                                      </div>
+                                    )}
+                                    <div className="flex items-center gap-1">
+                                      <button
+                                        onClick={() => onChange(current - 1)}
+                                        disabled={current === 1}
+                                        className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                                      >
+                                        Previous
+                                      </button>
+                                      {startPage > 1 && (
+                                        <>
+                                          <button
+                                            onClick={() => onChange(1)}
+                                            className="hover:bg-muted rounded border px-3 py-1"
+                                          >
+                                            1
+                                          </button>
+                                          {startPage > 2 && (
+                                            <span className="px-2">...</span>
+                                          )}
+                                        </>
+                                      )}
+                                      {pages.map((page) => {
+                                        const isAccessible =
+                                          isPageAccessible(page);
+                                        const isCurrent = page === current;
+                                        return (
+                                          <button
+                                            key={page}
+                                            onClick={() =>
+                                              isAccessible && onChange(page)
+                                            }
+                                            disabled={!isAccessible}
+                                            className={`rounded border px-3 py-1 ${
+                                              isCurrent
+                                                ? "bg-primary text-primary-foreground"
+                                                : isAccessible
+                                                  ? "hover:bg-muted"
+                                                  : "cursor-not-allowed line-through opacity-30"
+                                            }`}
+                                            title={
+                                              !isAccessible
+                                                ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                                : ""
+                                            }
+                                          >
+                                            {page}
+                                          </button>
+                                        );
+                                      })}
+                                      {endPage < totalPages && (
+                                        <>
+                                          {endPage < totalPages - 1 && (
+                                            <span className="px-2">...</span>
+                                          )}
+                                          <button
+                                            onClick={() =>
+                                              isPageAccessible(totalPages) &&
+                                              onChange(totalPages)
+                                            }
+                                            disabled={
+                                              !isPageAccessible(totalPages)
+                                            }
+                                            className={`rounded border px-3 py-1 ${
+                                              isPageAccessible(totalPages)
+                                                ? "hover:bg-muted"
+                                                : "cursor-not-allowed line-through opacity-30"
+                                            }`}
+                                            title={
+                                              !isPageAccessible(totalPages)
+                                                ? `Page ${totalPages} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                                : ""
+                                            }
+                                          >
+                                            {totalPages}
+                                          </button>
+                                        </>
+                                      )}
+                                      <button
+                                        onClick={() => onChange(current + 1)}
+                                        disabled={current === totalPages}
+                                        className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                                      >
+                                        Next
+                                      </button>
+                                    </div>
                                   </div>
                                 );
                               }}

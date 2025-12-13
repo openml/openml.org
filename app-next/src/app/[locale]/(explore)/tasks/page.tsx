@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { TasksSearchPage } from "@/components/search/tasks-search-page";
+import { TasksSearchPage } from "@/components/search/tasks/tasks-search-page";
 
 export default async function TasksPage({
   params,

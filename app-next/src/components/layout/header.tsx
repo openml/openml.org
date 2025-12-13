@@ -9,7 +9,7 @@ import { ThemeToggle } from "@/components/header/theme-toggle";
 import { SearchBar } from "@/components/header/search-bar";
 import { LanguageSwitcher } from "@/components/header/language-switcher";
 import { NotificationsBell } from "@/components/header/notifications-bell";
-import { AccountMenu } from "@/components/header/account-menu";
+import { UserActivitySidebar } from "@/components/layout/user-activity-sidebar";
 import { CreateMenu } from "@/components/header/create-menu";
 import { useSidebar } from "@/contexts/sidebar-context";
 
@@ -87,13 +87,16 @@ export function Header() {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* Account Menu */}
-          <AccountMenu />
+          {/* Notifications Bell */}
+          <NotificationsBell />
 
-          {/* Create Menu - Last item on the right */}
+          {/* Create Menu */}
           <div className="pl-[10px]">
             <CreateMenu />
           </div>
+
+          {/* User Activity Sidebar */}
+          <UserActivitySidebar />
 
           {/* Mobile Menu Button */}
           <Button

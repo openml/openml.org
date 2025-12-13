@@ -45,9 +45,9 @@ export async function GET(
 
     const flows = hits.map((hit) => hit._source);
 
-    console.log(
-      `✅ [User Flows API] Found ${flows.length} flows (${total} total)`,
-    );
+    // console.log(
+    //   `✅ [User Flows API] Found ${flows.length} flows (${total} total)`,
+    // );
 
     return NextResponse.json({
       flows,

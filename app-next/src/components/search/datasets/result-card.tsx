@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { parseDescription } from "./teaser";
+import { parseDescription } from "../teaser";
 import {
   Database,
   Heart,

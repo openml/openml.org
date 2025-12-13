@@ -75,7 +75,7 @@ export function Sidebar() {
         {/* Overlay when menu is open */}
         {homeMenuOpen && !homeMenuIconOnly && (
           <div
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
+            className="fixed inset-0 z-40 bg-slate-700/20"
             onClick={() => setHomeMenuIconOnly(true)}
           />
         )}
@@ -83,12 +83,12 @@ export function Sidebar() {
         {/* Homepage Sidebar */}
         <div
           className={cn(
-            "fixed top-0 left-0 z-50 h-screen bg-[#233044] transition-all duration-300 ease-in-out",
+            "fixed top-0 left-0 z-50 flex h-screen flex-col bg-[#233044] transition-all duration-300 ease-in-out",
             homeMenuIconOnly ? "w-12" : "w-64",
           )}
         >
           {/* Logo Header */}
-          <div className="relative flex min-h-40 items-start justify-center bg-[#233044] py-6">
+          <div className="relative flex min-h-40 shrink-0 items-start justify-center bg-[#233044] py-6">
             {!homeMenuIconOnly && (
               <Link
                 href="/"
@@ -135,9 +135,12 @@ export function Sidebar() {
           </div>
 
           {/* Navigation */}
-          <ScrollArea className="-mt-4 flex-1 pb-4">
+          <ScrollArea className="-mt-4 flex-1 overflow-auto pb-4">
             <div
-              className={cn("space-y-6", homeMenuIconOnly ? "px-1" : "px-3")}
+              className={cn(
+                "space-y-6 pb-8",
+                homeMenuIconOnly ? "px-1" : "px-3",
+              )}
             >
               {navItems.map((section) => (
                 <div key={section.title}>
@@ -227,8 +230,8 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <ScrollArea className="-mt-4 flex-1 pb-4">
-          <div className={cn("space-y-6", isCollapsed ? "px-1" : "px-3")}>
+        <ScrollArea className="-mt-4 flex-1 overflow-auto">
+          <div className={cn("space-y-6 pb-8", isCollapsed ? "px-1" : "px-3")}>
             {navItems.map((section) => (
               <div key={section.title}>
                 {!isCollapsed && (

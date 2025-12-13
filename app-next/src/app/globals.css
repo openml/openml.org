@@ -140,27 +140,27 @@
   }
 }
 
+/* Gradient utilities */
+@utility gradient-bg {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+}
+
+@utility gradient-text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glow-effect {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+@utility card-gradient {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+}
+
 @layer utilities {
-  /* Gradient utilities */
-  .gradient-bg {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-  }
-
-  .gradient-text {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .glow-effect {
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-  }
-
-  .card-gradient {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-  }
-
   @keyframes float {
     0%,
     100% {

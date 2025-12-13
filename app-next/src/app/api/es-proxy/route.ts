@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { indexName, esQuery } = body;
 
-    console.log("🔍 [ES Proxy] Request for index:", indexName);
+    // console.log("🔍 [ES Proxy] Request for index:", indexName);
 
     if (!indexName || !esQuery) {
       return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const url = `${ELASTICSEARCH_SERVER}${indexName}/_search`;
-    console.log("⏳ [ES Proxy] Sending to:", url);
+    // console.log("⏳ [ES Proxy] Sending to:", url);
 
     const response = await axios.post(url, esQuery, {
       headers: { "Content-Type": "application/json" },
@@ -29,9 +29,9 @@ export async function POST(req: NextRequest) {
     });
 
     const duration = Date.now() - startTime;
-    console.log(
-      `✅ [ES Proxy] Success in ${duration}ms - ${response.data.hits?.total?.value || 0} results`,
-    );
+    // console.log(
+    //   `✅ [ES Proxy] Success in ${duration}ms - ${response.data.hits?.total?.value || 0} results`,
+    // );
 
     return NextResponse.json(response.data);
   } catch (error: unknown) {

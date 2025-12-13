@@ -10,7 +10,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    console.log("🔍 [User API] Fetching user:", id);
+    // console.log("🔍 [User API] Fetching user:", id);
 
     // Query ElasticSearch for user by ID
     const esQuery = {
@@ -31,12 +31,12 @@ export async function GET(
     const hits = response.data.hits?.hits || [];
 
     if (hits.length === 0) {
-      console.log("❌ [User API] User not found:", id);
+      // console.log("❌ [User API] User not found:", id);
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const user = hits[0]._source;
-    console.log("✅ [User API] User found:", user.username);
+    // console.log("✅ [User API] User found:", user.username);
 
     return NextResponse.json(user);
   } catch (error) {

@@ -1,12 +1,28 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
-import userConfig from "./user-search-config";
-import { ActiveFiltersHeader } from "./active-filters-header";
+import userConfig, { searchFieldConfigs } from "./user-search-config";
+import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { UsersSearchContainer } from "./users-search-container";
 
 export function UsersSearchPage() {
+  const [searchScope, setSearchScope] = useState<"all" | "names" | "tags">(
+    "all",
+  );
+
+  // Create dynamic config based on search scope
+  const config = useMemo(() => {
+    return {
+      ...userConfig,
+      searchQuery: {
+        ...userConfig.searchQuery,
+        search_fields: searchFieldConfigs[searchScope],
+      },
+    };
+  }, [searchScope]);
+
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     "country.keyword": "Country",
@@ -14,7 +30,7 @@ export function UsersSearchPage() {
   };
 
   return (
-    <SearchProvider config={userConfig as SearchDriverOptions}>
+    <SearchProvider config={config as SearchDriverOptions}>
       <div className="flex min-h-screen flex-col">
         {/* Page Header */}
         <div className="bg-muted/40 border-b">
@@ -46,7 +62,10 @@ export function UsersSearchPage() {
 
         {/* Search Container */}
         <div className="container mx-auto flex-1 px-4 py-6 sm:px-6">
-          <UsersSearchContainer />
+          <UsersSearchContainer
+            searchScope={searchScope}
+            onSearchScopeChange={setSearchScope}
+          />
         </div>
       </div>
     </SearchProvider>

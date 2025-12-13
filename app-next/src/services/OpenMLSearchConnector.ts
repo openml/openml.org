@@ -59,13 +59,59 @@ class OpenMLSearchConnector implements APIConnector {
 
     // Add search term if provided
     if (searchTerm) {
+      const searchFields = Object.keys(queryConfig.search_fields || {});
+
+      // Use bool query with should clauses for better partial matching
       query.bool.must.push({
-        multi_match: {
-          query: searchTerm,
-          fields: Object.keys(queryConfig.search_fields || {}).map(
-            (field) =>
-              `${field}^${queryConfig.search_fields?.[field]?.weight || 1}`,
-          ),
+        bool: {
+          should: [
+            // Exact phrase match (highest priority)
+            {
+              multi_match: {
+                query: searchTerm,
+                fields: searchFields.map(
+                  (field) =>
+                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 3}`,
+                ),
+                type: "phrase",
+              },
+            },
+            // Prefix match (word beginning)
+            {
+              multi_match: {
+                query: searchTerm,
+                fields: searchFields.map(
+                  (field) =>
+                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 2}`,
+                ),
+                type: "phrase_prefix",
+              },
+            },
+            // Query string with wildcards for substring matching
+            {
+              query_string: {
+                query: `*${searchTerm}*`,
+                fields: searchFields.map(
+                  (field) =>
+                    `${field}^${queryConfig.search_fields?.[field]?.weight || 1}`,
+                ),
+                analyze_wildcard: true,
+              },
+            },
+            // Fuzzy match (typo tolerance)
+            {
+              multi_match: {
+                query: searchTerm,
+                fields: searchFields.map(
+                  (field) =>
+                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 0.5}`,
+                ),
+                type: "best_fields",
+                fuzziness: "AUTO",
+              },
+            },
+          ],
+          minimum_should_match: 1,
         },
       });
     } else {
@@ -295,13 +341,13 @@ class OpenMLSearchConnector implements APIConnector {
     requestState: RequestState,
     queryConfig: QueryConfig,
   ): Promise<ResponseState> {
-    // console.log("[OpenMLSearchConnector] onSearch Request:", requestState);
+    console.log("[OpenMLSearchConnector] onSearch Request:", requestState);
     try {
       const esQuery = this.buildQuery(requestState, queryConfig);
 
       // Use local proxy to avoid CORS
       const url = "/api/es-proxy";
-      // console.log("[OpenMLSearchConnector] Fetching via proxy:", url);
+      console.log("[OpenMLSearchConnector] Fetching via proxy:", url);
 
       const response = await fetch(url, {
         method: "POST",

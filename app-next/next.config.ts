@@ -4,6 +4,16 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.openml.org",
+        port: "",
+        pathname: "/data/**", // Optional: restrict  if needed
+      },
+    ],
+  },
   // Built-in 301 redirects for backward compatibility
   // Academic papers and external links often cite OpenML entities using short URLs
   async redirects() {
@@ -67,29 +77,6 @@ const nextConfig: NextConfig = {
         destination: "/runs",
         permanent: true,
       },
-
-      // ========================================
-      // QUERY-BASED REDIRECTS (❌ Cannot be done here)
-      // ========================================
-      // These URLs require middleware because they have query parameters
-      // that need to be parsed and transformed:
-      //
-      // /search?type=data&id=1464 → /datasets/1464 (English)
-      // /search?type=task → /tasks
-      // /search?type=flow → /flows
-      // /search?type=run → /runs
-      // /search?type=study&id=123 → /collections/123
-      // /search?type=study&study_type=task → /collections/tasks
-      // /search?type=study&study_type=run → /collections/runs
-      // /search?type=benchmark&id=383 → /benchmarks/383
-      // /search?type=benchmark&study_type=task → /benchmarks/tasks
-      // /search?type=benchmark&study_type=run → /benchmarks/runs
-      // /search?type=task_type → /task-types
-      // /search?type=measure&measure_type=data_quality → /measures/data-qualities
-      // /search?type=measure&measure_type=evaluation_measure → /measures/evaluation-measures
-      // /search?type=measure&measure_type=estimation_procedure → /measures/estimation-procedures
-      //
-      // Solution: Create src/middleware.ts (see implementation)
     ];
   },
 };

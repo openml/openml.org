@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDebounce } from "@/hooks/use-debounce";
 
 /**
  * Enhanced Search Bar Component - Integrated Design
@@ -44,6 +45,7 @@ export function SearchBar() {
   const pathname = usePathname();
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   // Update selected index based on current route
   useEffect(() => {
@@ -54,6 +56,18 @@ export function SearchBar() {
       setSelectedIndex(currentIndex.key);
     }
   }, [pathname]);
+
+  // Auto-search when debounced query changes
+  useEffect(() => {
+    if (debouncedSearchQuery.trim()) {
+      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+      if (currentIndex) {
+        router.push(
+          `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
+        );
+      }
+    }
+  }, [debouncedSearchQuery, selectedIndex, router]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

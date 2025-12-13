@@ -20,8 +20,8 @@ export async function GET() {
   const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}_msearch`;
   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
-  console.log("🔍 [Count API] Starting request to:", elasticsearchEndpoint);
-  console.log("📦 [Count API] Indices:", indices);
+  // console.log("🔍 [Count API] Starting request to:", elasticsearchEndpoint);
+  // console.log("📦 [Count API] Indices:", indices);
 
   // Build NDJSON body for _msearch - correct format
   // For datasets (data index), only count active ones per team leader request
@@ -38,7 +38,7 @@ export async function GET() {
   const startTime = Date.now();
 
   try {
-    console.log("⏳ [Count API] Sending request...");
+    // console.log("⏳ [Count API] Sending request...");
 
     const response = await axios.post(elasticsearchEndpoint, requestBody, {
       headers: { "Content-Type": "application/x-ndjson" },
@@ -46,7 +46,7 @@ export async function GET() {
     });
 
     const duration = Date.now() - startTime;
-    console.log(`✅ [Count API] Success in ${duration}ms`);
+    // console.log(`✅ [Count API] Success in ${duration}ms`);
 
     // Extract counts safely
     const counts = response.data.responses.map(
@@ -57,7 +57,7 @@ export async function GET() {
       }),
     );
 
-    console.log("📊 [Count API] Counts:", counts);
+    // console.log("📊 [Count API] Counts:", counts);
     return NextResponse.json(counts);
   } catch (error) {
     const duration = Date.now() - startTime;

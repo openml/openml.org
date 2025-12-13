@@ -1,18 +1,3 @@
-/**
- * 📚 LEARNING: Presentational Component Pattern
- *
- * This is a "dumb" component - it receives data and displays it.
- * - No data fetching
- * - No business logic
- * - Easy to test
- * - Reusable
- *
- * It's a Server Component (default in Next.js 15 app directory)
- * - Rendered once on server
- * - Sent as HTML to browser
- * - No JavaScript overhead
- */
-
 import { Database, Download, Heart, Play, Calendar, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,22 +9,12 @@ interface DatasetHeaderProps {
   runCount?: number;
 }
 
-/**
- * DatasetHeader Component
- *
- * Inspired by HuggingFace's clean design:
- * - Icon + Title (prominent)
- * - Status badges (inline)
- * - Key stats (scannable)
- * - Action buttons (accessible)
- * - Metadata (creator, date)
- */
 export function DatasetHeader({
   dataset,
   taskCount = 0,
   runCount = 0,
 }: DatasetHeaderProps) {
-  // Determine status badge styling
+  // status badge styling
   const getStatusConfig = (status: Dataset["status"]) => {
     switch (status) {
       case "active":
@@ -68,7 +43,7 @@ export function DatasetHeader({
 
   const statusConfig = getStatusConfig(dataset.status);
 
-  // Format date nicely
+  // Date formatting
   const uploadDate = new Date(dataset.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -140,7 +115,6 @@ export function DatasetHeader({
         </div>
       </div>
 
-      {/* Stats Row - Inspired by HuggingFace */}
       <div className="bg-muted/30 flex flex-wrap items-center gap-6 rounded-lg p-4">
         {/* Instances */}
         {dataset.qualities?.NumberOfInstances !== undefined && (
@@ -221,14 +195,6 @@ export function DatasetHeader({
   );
 }
 
-/**
- * 📚 LEARNING: Micro Component Pattern
- *
- * Small, reusable components for consistent UI
- * - DRY (Don't Repeat Yourself)
- * - Easy to style consistently
- * - Can be extracted to shared components later
- */
 function Stat({
   label,
   value,

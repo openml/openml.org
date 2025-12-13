@@ -3,22 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { routing } from "./config/routing";
 
-/**
- * Middleware for backward-compatible query-based URL redirects + i18n
- *
- * Handles complex legacy URLs that cannot be redirected in next.config.ts
- * because they use query parameters that need to be transformed into paths.
- * Also handles locale detection and routing with localized pathnames.
- *
- * Examples:
- * - /search?type=data&id=1464 → /datasets/1464 (English, no prefix)
- * - /search?type=task → /nl/taken (Dutch with localized path)
- * - /datasets → /datasets (English, no prefix)
- * - /nl/datasets → /nl/datasets (Dutch with prefix)
- * - /fr/ensembles-de-donnees → /fr/ensembles-de-donnees (French localized)
- */
-
-// Create next-intl middleware with routing config
+// next-intl middleware with routing config
 const intlMiddleware = createMiddleware(routing);
 
 export function middleware(request: NextRequest) {

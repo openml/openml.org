@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { DatasetsSearchPage } from "@/components/search/datasets-search-page";
+import { DatasetsSearchPage } from "@/components/search/datasets/datasets-search-page";
 
 export default async function DatasetsPage({
   params,

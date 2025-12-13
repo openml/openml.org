@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
-import { ResultsTable } from "./results-table";
-import { FilterBar } from "./filter-bar";
-import { ControlsBar } from "./controls-bar";
+import { ResultsTable } from "../results-table";
+import { FilterBar } from "../shared/filter-bar";
+import { ControlsBar } from "../shared/controls-bar";
 import { ResultCard } from "./result-card";
-import { parseDescription } from "./teaser";
+import { parseDescription } from "../teaser";
 import { Badge } from "@/components/ui/badge";
 import {
   FlaskConical,

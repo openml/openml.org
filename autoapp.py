@@ -16,7 +16,16 @@ app = Flask(
 )
 app.config.from_object(Config)
 app.add_url_rule("/", "root", lambda: app.send_static_file("index.html"))
-CORS(app)
+
+# Configure CORS with production-ready settings
+CORS(
+    app,
+    origins=app.config.get("CORS_ORIGINS"),
+    supports_credentials=app.config.get("CORS_SUPPORTS_CREDENTIALS"),
+    allow_headers=app.config.get("CORS_ALLOW_HEADERS"),
+    methods=app.config.get("CORS_METHODS"),
+)
+
 register_extensions(app)
 register_blueprints(app)
 app.secret_key = os.environ.get("APP_SECRET_KEY")
@@ -25,7 +34,7 @@ app.secret_key = os.environ.get("APP_SECRET_KEY")
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve_static(path):
-    """ Never ever reached! """
+    """Never ever reached!"""
     print("static folder serve")
     if path != "" and os.path.exists(app.static_folder + "/" + path):
         print(path)

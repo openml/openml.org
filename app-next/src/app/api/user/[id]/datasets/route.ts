@@ -44,9 +44,9 @@ export async function GET(
     const total = response.data.hits?.total?.value || 0;
 
     const datasets = hits.map((hit) => hit._source);
-    console.log(
-      `✅ [User Datasets API] Found ${datasets.length} datasets (${total} total)`,
-    );
+    // console.log(
+    //   `✅ [User Datasets API] Found ${datasets.length} datasets (${total} total)`,
+    // );
 
     return NextResponse.json({
       datasets,

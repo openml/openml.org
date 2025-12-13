@@ -12,9 +12,9 @@ export function MainContent({ children }: { children: React.ReactNode }) {
   return (
     <main
       className={cn(
-        "w-full flex-1 transition-all duration-300",
+        "w-full flex-1 overflow-x-hidden transition-all duration-300",
         !isHomePage && "lg:ml-64",
-        !isHomePage && isCollapsed && "lg:ml-0",
+        !isHomePage && isCollapsed && "lg:ml-12",
       )}
     >
       {children}
