@@ -1,6 +1,5 @@
 import {
   Calendar,
-  User,
   FileType,
   Shield,
   Heart,
@@ -19,10 +18,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
-import { Link } from "@/config/routing";
+import Link from "next/link";
 
 interface DatasetMetadataGridProps {
   dataset: Dataset;
