@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
-import Link from "next/link";
 
 interface DatasetMetadataGridProps {
   dataset: Dataset;
@@ -135,12 +134,9 @@ export function DatasetMetadataGrid({ dataset }: DatasetMetadataGridProps) {
               </Avatar>
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium">Uploader</p>
-                <Link
-                  href={`/users/${dataset.uploader_id}`}
-                  className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                >
+                <p className="text-sm text-blue-600 dark:text-blue-400">
                   {dataset.uploader}
-                </Link>
+                </p>
               </div>
             </div>
 
