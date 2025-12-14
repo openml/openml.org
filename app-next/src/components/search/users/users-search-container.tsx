@@ -8,6 +8,7 @@ import { ControlsBar } from "../shared/controls-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { entityColors } from "@/constants/entityColors";
 import {
   Database,
   Cog,
@@ -153,7 +154,7 @@ export function UsersSearchContainer({
                     </div>
                   ) : (
                     <>
-                      {totalResults > 0 ? (
+                      {(totalResults ?? 0) > 0 ? (
                         <span className="text-sm">
                           Found{" "}
                           <span className="text-primary font-semibold">
@@ -216,7 +217,7 @@ export function UsersSearchContainer({
                                 src={result.image?.raw}
                                 alt={fullName}
                               />
-                              <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-lg font-bold text-white">
+                              <AvatarFallback className="gradient-bg text-lg font-bold text-white">
                                 {initials}
                               </AvatarFallback>
                             </Avatar>
@@ -421,7 +422,7 @@ export function UsersSearchContainer({
 
                             <Paging
                               view={({ current, totalPages, onChange }) => {
-                                if (!onChange) {
+                                if (!onChange || !current) {
                                   return null;
                                 }
 
@@ -500,11 +501,19 @@ export function UsersSearchContainer({
                                             disabled={!isAccessible}
                                             className={`rounded border px-3 py-1 ${
                                               isCurrent
-                                                ? "bg-primary text-primary-foreground"
+                                                ? "text-white"
                                                 : isAccessible
-                                                  ? "hover:bg-muted"
+                                                  ? "hover:bg-muted dark:hover:bg-slate-700"
                                                   : "cursor-not-allowed line-through opacity-30"
                                             }`}
+                                            style={
+                                              isCurrent
+                                                ? {
+                                                    backgroundColor:
+                                                      entityColors.auth,
+                                                  }
+                                                : undefined
+                                            }
                                             title={
                                               !isAccessible
                                                 ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`

@@ -66,7 +66,7 @@
     "java": "Java",
     "community": "Communauté",
     "aboutUs": "À propos",
-    "contributing": "Contribuer",
+    "contribute": "Contribuer",
     "team": "Équipe",
     "publications": "Publications",
     "blog": "Blog",
@@ -155,5 +155,220 @@
     "loading": "Chargement...",
     "error": "Erreur",
     "noResults": "Aucun résultat trouvé"
+  },
+  "home": {
+    "hero": {
+      "version": "Version 3.0 : Construite pour une science reproductible",
+      "title": "Le laboratoire mondial pour la recherche en apprentissage automatique",
+      "description": "L'apprentissage automatique prospère grâce à la transparantie. OpenML est l'environnement ouvert et collaboratif où les scientifiques partagent des données FAIR, organisent des expériences et s'appuient sur des algorithmes de pointe.",
+      "startTracking": "Commencez à suivre et partager !",
+      "readManifesto": "Lire le Manifeste",
+      "trustedWorldwide": "Utilisé dans le monde entier pour évaluer objectivement les algorithmes.",
+      "stats": "+99,99 % de reproductibilité Plus de 500 000 jeux de données Plus de 10 millions d'exécutions",
+      "joinCommunity": "Rejoignez la communauté !"
+    },
+    "ecosystem": {
+      "overline": "L'Écosystème",
+      "heading": "Intégration sans friction",
+      "subtitle": "Importez des données et exportez des expériences de manière fluide depuis votre environnement scientifique habituel.",
+      "button": "Voir la documentation API"
+    },
+    "threePillars": {
+      "title": "Les trois piliers d'OpenML",
+      "subtitle": "Plateforme ouverte pour partager jeux de données, algorithmes et expériences afin de construire un dépôt mondial d'apprentissage automatique",
+      "fairData": {
+        "title": "Données FAIR à grande échelle",
+        "description": "Accédez à des milliers de jeux de données au format uniforme. Chaque jeu de données est versionné, méta-étiqueté et prêt à être chargé immédiatement dans votre pipeline d'analyse.",
+        "button": "Explorer les jeux de données"
+      },
+      "objectiveEvaluation": {
+        "title": "Évaluation objective",
+        "description": "Arrêtez de deviner. Exécutez vos algorithmes sur des tâches standardisées avec des divisions train/test prédéfinies pour garantir que vos résultats sont comparables et prêts pour l'évaluation par les pairs.",
+        "button": "Voir les tâches de benchmark"
+      },
+      "frictionlessFlows": {
+        "title": "Flux ML sans friction",
+        "description": "Traitez les expériences comme des objets. Partagez automatiquement vos pipelines de modèles (flows) et résultats (runs) pour créer un registre scientifique transparent.",
+        "button": "Explorer les flows"
+      }
+    },
+    "accessibility": {
+      "title": "Accessibilité et intégration",
+      "subtitle": "Utilisez OpenML depuis l'interface web, les notebooks ou la ligne de commande — là où vous travaillez déjà.",
+      "webInterface": {
+        "title": "L'interface web",
+        "description": "Découvrez OpenML via un tableau de bord web interactif pour explorer jeux de données et expériences.",
+        "features": [
+          "Recherchez, filtrez et mettez en signet les jeux de données par type de tâche, taille et domaine.",
+          "Inspectez les métadonnées, variables cibles et distributions avant même d'écrire du code.",
+          "Comparez les versions, suivez la provenance et passez directement aux tâches, flows et runs associés."
+        ],
+        "summary": "Naviguez, visualisez et organisez tout au même endroit — idéal pour l'analyse exploratoire, l'enseignement et les démos rapides.",
+        "button": "Parcourir les jeux de données"
+      },
+      "codeApis": {
+        "title": "Le code (API)",
+        "description": "Intégrez directement dans votre code. Utilisez nos bibliothèques clientes pour télécharger programmatiquement des jeux de données, exécuter des tâches et uploader des résultats sans quitter votre IDE.",
+        "viewGithub": "Voir sur GitHub",
+        "downloadZip": "Télécharger ZIP",
+        "button": "Voir la doc API"
+      }
+    },
+    "benchmarking": {
+      "title": "Suites de benchmarking",
+      "subtitle": "La méthode scientifique pour une évaluation rigoureuse",
+      "description": "Validez vos modèles sur des suites de benchmarking curatées couvrant des domaines comme la santé, la finance et la vision par ordinateur. Assurez-vous que votre algorithme est robuste sur de nombreux jeux de données, pas seulement un seul benchmark.",
+      "tasks": {
+        "title": "Tâches",
+        "subtitle": "Le problème",
+        "description": "Défis d'apprentissage automatique standardisés avec des métriques d'évaluation fixes (AUC, RMSE, Accuracy). Chaque tâche fournit des divisions train/test prédéfinies pour garantir que vos résultats sont comparables et prêts pour l'évaluation par les pairs.",
+        "button": "Voir les tâches"
+      },
+      "suites": {
+        "title": "Suites",
+        "subtitle": "La collection",
+        "description": "Collections curatées de tâches (ex. « AutoML Benchmark », « Medical Diagnosis Suite ») pour des tests de résistance complets des algorithmes sur plusieurs jeux de données et domaines problématiques.",
+        "button": "Parcourir les suites"
+      }
+    },
+    "workflowLoop": {
+      "title": "La boucle de workflow OpenML",
+      "subtitle": "Intégrez OpenML à chaque étape de votre workflow ML.",
+      "import": {
+        "title": "Importer",
+        "description": "Chargez des jeux de données OpenML en une seule ligne de code, compatible avec scikit-learn, PyTorch, TensorFlow, XGBoost et plus.",
+        "button": "Guide de démarrage"
+      },
+      "buildRun": {
+        "title": "Construire et exécuter",
+        "description": "Entraînez et évaluez des modèles sur ces tâches en utilisant vos bibliothèques ML préférées. Testez différents pipelines et hyperparamètres jusqu'à obtenir des résultats satisfaisants."
+      },
+      "export": {
+        "title": "Exporter et publier",
+        "description": "Publiez automatiquement : uploadez vos workflows (flows), expériences (runs) et métriques d'évaluation sur OpenML pour que d'autres puissent les comparer et les réutiliser.",
+        "flows": "Flows",
+        "flowsLabel": "workflows",
+        "runs": "Runs",
+        "runsLabel": "expériences",
+        "metrics": "Metrics",
+        "metricsLabel": "évaluation"
+      },
+      "knowledgeBase": {
+        "title": "Base de connaissances",
+        "subtitle": "Contribuez à la base de connaissances mondiale",
+        "description": "Générez des identifiants persistants (DOI) pour vos jeux de données, workflows et expériences — assurant la conformité FAIR et permettant une science reproductible.",
+        "citationTitle": "Le cycle de vie des citations",
+        "citationDescription": "Ne laissez pas votre recherche mourir sur un disque dur. Uploader sur OpenML crée des artefacts citables, versionnés avec suivi de provenance. Votre travail fait partie du corpus mondial de benchmarks ML, cité par les pairs et alimentant la méta-recherche."
+      }
+    },
+    "academicImpact": {
+      "title": "Contribuez à la base de connaissances mondiale",
+      "intro": "Générez des identifiants persistants (DOI) pour vos jeux de données, workflows et expériences — assurant la conformité FAIR et permettant une science reproductible.",
+      "subtitle": "Le cycle de vie des citations",
+      "text": "Ne laissez pas votre recherche mourir sur un disque dur. Uploader sur OpenML crée des artefacts citables, versionnés avec suivi de provenance. Votre travail fait partie du corpus mondial de benchmarks ML, cité par les pairs et alimentant la méta-recherche."
+    },
+    "faq": {
+      "title": "FAQ OpenML",
+      "heading": "Réponses claires aux questions les plus importantes",
+      "description": "Que vous entraîniez votre premier modèle ou exécutiez des benchmarks à grande échelle, OpenML simplifie chaque étape de votre workflow. Cette FAQ met en évidence ce qui rend OpenML unique et comment il peut simplifier votre travail ML quotidien.",
+      "questions": [
+        {
+          "question": "Pourquoi OpenML est-il idéal pour la recherche en ML ?",
+          "answer": "OpenML rend vos expériences pleinement reproductibles.",
+          "details": [
+            "algorithmes",
+            "hyperparamètres",
+            "versions de jeux de données",
+            "métriques",
+            "matériel"
+          ],
+          "footer": "N'importe qui peut reproduire vos résultats exactement."
+        },
+        {
+          "question": "Comment OpenML rend-il les résultats comparables ?",
+          "answer": "Tous les jeux de données et tâches sont standardisés. Vous pouvez comparer :",
+          "details": ["algorithmes", "pipelines", "hyperparamètres"],
+          "footer": "sur des protocoles d'évaluation identiques — essentiel pour le benchmarking."
+        },
+        {
+          "question": "Puis-je rechercher des expériences précédentes ?",
+          "answer": "Oui. Chaque expérience est enregistrée avec des métadonnées riches et lisibles par machine. Vous pouvez interroger des choses comme :",
+          "details": [
+            "\"Quels modèles fonctionnent le mieux sur de petits jeux de données tabulaires ?\""
+          ],
+          "footer": "Cela rend OpenML puissant pour le meta-learning."
+        },
+        {
+          "question": "Qu'est-ce qui rend OpenML scientifiquement rigoureux ?",
+          "answer": "OpenML impose :",
+          "details": [
+            "jeux de données curatés",
+            "tâches standardisées",
+            "divisions train/test cohérentes",
+            "métadonnées documentées"
+          ],
+          "footer": "Idéal pour les articles académiques, la recherche reproductible et les compétitions ML."
+        },
+        {
+          "question": "Comment OpenML rend-il les résultats comparables ?",
+          "answer": "Tous les résultats suivent des protocoles d'évaluation standardisés :",
+          "details": [
+            "formats de jeux de données uniformes",
+            "tâches partagées avec splits fixes",
+            "métriques cohérentes",
+            "conditions de benchmarking identiques"
+          ],
+          "footer": "Vous pouvez comparer directement algorithmes, pipelines et hyperparamètres à grande échelle."
+        },
+        {
+          "question": "Puis-je rechercher des expériences précédentes ?",
+          "answer": "Oui. Chaque expérience est stockée avec des métadonnées lisibles par machine :",
+          "details": [
+            "propriétés des jeux de données",
+            "paramètres d'algorithmes",
+            "métriques de performance",
+            "type de tâche et structure"
+          ],
+          "footer": "Vous pouvez interroger des milliers d'exécutions pour découvrir ce qui fonctionne le mieux pour votre problème."
+        }
+      ]
+    },
+    "about": {
+      "meta": {
+        "title": "À propos d'OpenML - Plateforme d'Apprentissage Automatique Ouverte",
+        "description": "Découvrez la mission d'OpenML de rendre l'apprentissage automatique simple, accessible et collaboratif. Rejoignez notre communauté de chercheurs et de praticiens construisant un écosystème ouvert de données ML, modèles et benchmarks."
+      },
+      "hero": {
+        "title": "À propos d'OpenML",
+        "subtitle": "Construire un écosystème ouvert et fluide de données, modèles et benchmarks d'apprentissage automatique — faire progresser l'IA de manière ouverte pour le bénéfice de toute l'humanité."
+      },
+      "toc": {
+        "onThisPage": "Sur Cette Page"
+      }
+    },
+    "contribute": {
+      "meta": {
+        "title": "Contribuer à OpenML - Rejoignez Notre Communauté",
+        "description": "Aidez à construire l'avenir de l'apprentissage automatique ouvert. Contribuez du code, partagez des jeux de données, améliorez la documentation ou engagez-vous avec notre communauté. Chaque contribution fait la différence."
+      },
+      "hero": {
+        "title": "Contribuer à OpenML",
+        "subtitle": "Aidez-nous à construire l'avenir de l'apprentissage automatique ouvert. Que vous soyez développeur, chercheur ou passionné, il existe de nombreuses façons de vous impliquer et d'avoir un impact."
+      }
+    },
+    "documentation": {
+      "meta": {
+        "title": "Documentation OpenML - Guide de Démarrage",
+        "description": "Apprenez à utiliser la plateforme OpenML. Explorez les jeux de données, exécutez des expériences, partagez votre travail et collaborez avec la communauté mondiale d'apprentissage automatique. Guides complets pour Python, R et Java."
+      },
+      "hero": {
+        "title": "Documentation",
+        "subtitle": "Tout ce dont vous avez besoin pour commencer avec OpenML. Apprenez à explorer des jeux de données, à exécuter des expériences et à collaborer avec la communauté ML mondiale."
+      },
+      "alert": {
+        "title": "Documentation Complète",
+        "description": "Pour des références API complètes, des tutoriels et des guides avancés, visitez notre documentation complète sur"
+      }
+    }
   }
 }

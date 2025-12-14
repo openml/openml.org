@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Link, usePathname } from "@/config/routing";
-import { BookOpen, Menu } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/header/theme-toggle";
@@ -17,21 +17,8 @@ export function Header() {
   const t = useTranslations("header");
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const {
-    homeMenuOpen,
-    setHomeMenuOpen,
-    setHomeMenuIconOnly,
-    burgerClicked,
-    setBurgerClicked,
-  } = useSidebar();
-
-  const handleMenuClick = () => {
-    if (isHomePage) {
-      setHomeMenuOpen(true);
-      setHomeMenuIconOnly(false); // Open full menu
-      setBurgerClicked(true); // Mark as clicked, will hide burger
-    }
-  };
+  const { setHomeMenuOpen, setHomeMenuIconOnly, setBurgerClicked } =
+    useSidebar();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#eaeff5]/95 text-slate-800 shadow-sm">
@@ -68,15 +55,10 @@ export function Header() {
             asChild
             className="hidden size-10 cursor-pointer text-slate-700 hover:bg-slate-300 hover:text-slate-900 lg:inline-flex"
           >
-            <a
-              href="https://docs.openml.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              title={t("documentation")}
-            >
+            <Link href="/documentation" title={t("documentation")}>
               <BookOpen className="size-6" />
               <span className="sr-only">{t("documentation")}</span>
-            </a>
+            </Link>
           </Button>
 
           {/* Language Switcher */}
@@ -91,12 +73,12 @@ export function Header() {
           <NotificationsBell />
 
           {/* Create Menu */}
-          <div className="pl-[10px]">
-            <CreateMenu />
-          </div>
+          <CreateMenu />
 
           {/* User Activity Sidebar */}
-          <UserActivitySidebar />
+          <div className="pl-[10px]">
+            <UserActivitySidebar />
+          </div>
 
           {/* Mobile Menu Button */}
           <Button

@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Integrations from "./Integrations";
 import { CornerRightUp, MoveUpRight, Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const HeroHome: React.FC = () => {
   const [showHint, setShowHint] = useState(true);
+  const t = useTranslations("home.hero");
+  const tEco = useTranslations("home.ecosystem");
 
   useEffect(() => {
     // Hide hint after 8 seconds
@@ -26,23 +29,15 @@ export const HeroHome: React.FC = () => {
           {/* Left Column - Text */}
           <div className="text-center lg:text-left">
             <div className="mb-3 inline-block rounded-sm bg-slate-100 px-4 py-1 text-xs font-medium dark:bg-slate-800">
-              <span className="gradient-text">
-                Version 3.0: Built for Reproducible Science
-              </span>
+              <span className="gradient-text">{t("version")}</span>
             </div>
 
             <h1 className="title-font gradient-text my-4 text-[clamp(3rem,4.6vw,72px)] leading-[1.15] font-bold tracking-tight">
-              <span className="block text-xl tracking-normal text-slate-800 opacity-90 dark:text-white">
-                The Global Lab
-              </span>
-              for Machine Learning Research
+              {t("title")}
             </h1>
 
             <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-700 lg:mr-auto lg:ml-0 lg:text-left dark:text-slate-300">
-              Machine learning thrives on <b>transparency</b>. OpenML is the
-              open, collaborative environment where scientists{" "}
-              <b>share FAIR data</b>, <b>organize experiments</b>, and{" "}
-              <b>build upon</b> state-of-the-art algorithms.
+              {t("description")}
             </p>
 
             <div className="flex flex-col gap-6 sm:flex-row sm:justify-center lg:justify-start">
@@ -59,10 +54,10 @@ export const HeroHome: React.FC = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Start Tracking and Sharing!</span>
+                <span>{t("startTracking")}</span>
               </button>
               <button className="text-bold flex items-center justify-start space-x-2 rounded-lg bg-white px-4 py-2 text-sm text-slate-900 shadow-sm outline -outline-offset-1 outline-slate-200 transition hover:scale-105 hover:opacity-90 dark:bg-slate-800 dark:text-white dark:outline-white/10">
-                <span>Read the Manifesto</span>
+                <span>{t("readManifesto")}</span>
                 <MoveUpRight className="h-5 w-5" />
               </button>
             </div>
@@ -118,21 +113,10 @@ export const HeroHome: React.FC = () => {
                     </div>
                     <div>
                       <p className="gradient-text text-sm font-bold tracking-wide">
-                        Trusted worldwide to benchmark algorithms objectively.
+                        {t("trustedWorldwide")}
                       </p>
                       <p className="text-[0.9rem] font-bold text-slate-900 dark:text-white">
-                        +99.99%{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Reproducibility{" "}
-                        </span>
-                        500k+{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Datasets{" "}
-                        </span>
-                        10M+{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Runs+
-                        </span>
+                        {t("stats")}
                       </p>
                     </div>
                   </div>
@@ -150,7 +134,7 @@ export const HeroHome: React.FC = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span>Join the Community!</span>
+                      <span>{t("joinCommunity")}</span>
                     </button>
                   </div>
                 </div>
@@ -163,13 +147,12 @@ export const HeroHome: React.FC = () => {
       <section className="flex flex-wrap justify-center gap-8">
         <Integrations
           content={{
-            overline: "The Ecosystem",
-            heading: "Frictionless Integration",
-            subtitle:
-              "Seamlessly import data and export experiments from your native scientific environment.",
+            overline: tEco("overline"),
+            heading: tEco("heading"),
+            subtitle: tEco("subtitle"),
             button: (
               <>
-                View API Documentation{" "}
+                {tEco("button")}{" "}
                 <CornerRightUp className="inline-block h-4 w-4" />
               </>
             ),

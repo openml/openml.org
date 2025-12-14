@@ -66,7 +66,7 @@
     "java": "Java",
     "community": "Gemeenschap",
     "aboutUs": "Over ons",
-    "contributing": "Bijdragen",
+    "contribute": "Bijdragen",
     "team": "Team",
     "publications": "Publicaties",
     "blog": "Blog",
@@ -155,5 +155,220 @@
     "loading": "Laden...",
     "error": "Fout",
     "noResults": "Geen resultaten gevonden"
+  },
+  "home": {
+    "hero": {
+      "version": "Versie 3.0: Gebouwd voor reproduceerbare wetenschap",
+      "title": "Het wereldwijde lab voor machine learning onderzoek",
+      "description": "Machine learning gedijt bij transparantie. OpenML is de open, samenwerkende omgeving waar wetenschappers FAIR-data delen, experimenten organiseren en bouwen op state-of-the-art algoritmen.",
+      "startTracking": "Begin met bijhouden en delen!",
+      "readManifesto": "Lees het Manifest",
+      "trustedWorldwide": "Wereldwijd vertrouwd voor objectieve benchmarking van algoritmen.",
+      "stats": "+99,99% Reproduceerbaarheid 500k+ Datasets 10M+ Runs+",
+      "joinCommunity": "Sluit je aan bij de community!"
+    },
+    "ecosystem": {
+      "overline": "Het Ecosysteem",
+      "heading": "Naadloze integratie",
+      "subtitle": "Importeer naadloos data en exporteer experimenten vanuit je eigen wetenschappelijke omgeving.",
+      "button": "Bekijk API-documentatie"
+    },
+    "threePillars": {
+      "title": "De drie pijlers van OpenML",
+      "subtitle": "Open platform voor het delen van datasets, algoritmen en experimenten om een wereldwijde machine learning repository op te bouwen",
+      "fairData": {
+        "title": "FAIR-data op schaal",
+        "description": "Toegang tot duizenden uniform geformatteerde datasets. Elk dataset is geversioneerd, voorzien van metadata en direct klaar voor laden in je analysepipeline.",
+        "button": "Datasets verkennen"
+      },
+      "objectiveEvaluation": {
+        "title": "Objectieve evaluatie",
+        "description": "Stop met gokken. Voer je algoritmen uit op gestandaardiseerde taken met vooraf gedefinieerde train/test-splits om te zorgen dat je resultaten vergelijkbaar en peer-review-klaar zijn.",
+        "button": "Bekijk benchmarktaken"
+      },
+      "frictionlessFlows": {
+        "title": "Frictieloze ML-flows",
+        "description": "Behandel experimenten als objecten. Deel automatisch je model-pipelines (flows) en resultaten (runs) om een transparant wetenschappelijk record te creëren.",
+        "button": "Flows verkennen"
+      }
+    },
+    "accessibility": {
+      "title": "Toegankelijkheid & integratie",
+      "subtitle": "Gebruik OpenML vanuit de webinterface, notebooks of de command line — waar je al werkt.",
+      "webInterface": {
+        "title": "De webinterface",
+        "description": "Ontdek OpenML via een interactief webdashboard voor het verkennen van datasets en experimenten.",
+        "features": [
+          "Zoek, filter en bookmark datasets op taaktype, grootte en domein.",
+          "Bekijk metadata, doelvariabelen en distributies voordat je code schrijft.",
+          "Vergelijk versies, volg herkomst en spring direct naar gerelateerde taken, flows en runs."
+        ],
+        "summary": "Browse, visualiseer en organiseer alles op één plek — ideaal voor exploratieve analyse, onderwijs en snelle demo's.",
+        "button": "Datasets browsen"
+      },
+      "codeApis": {
+        "title": "De code (API's)",
+        "description": "Integreer direct in je code. Gebruik onze client libraries om programmatisch datasets te downloaden, taken uit te voeren en resultaten te uploaden zonder je IDE te verlaten.",
+        "viewGithub": "Bekijk op GitHub",
+        "downloadZip": "ZIP downloaden",
+        "button": "API-docs bekijken"
+      }
+    },
+    "benchmarking": {
+      "title": "Benchmarking-suites",
+      "subtitle": "De wetenschappelijke methode voor rigoureuze evaluatie",
+      "description": "Valideer je modellen op samengestelde benchmarking-suites over domeinen zoals gezondheidszorg, financiën en computer vision. Zorg dat je algoritme robuust is over veel datasets, niet slechts één benchmark.",
+      "tasks": {
+        "title": "Taken",
+        "subtitle": "Het probleem",
+        "description": "Gestandaardiseerde machine learning uitdagingen met vaste evaluatiemetrics (AUC, RMSE, Accuracy). Elke taak biedt vooraf gedefinieerde train/test-splits om te zorgen dat je resultaten vergelijkbaar en peer-review-klaar zijn.",
+        "button": "Taken bekijken"
+      },
+      "suites": {
+        "title": "Suites",
+        "subtitle": "De collectie",
+        "description": "Samengestelde collecties van taken (bijv. \"AutoML Benchmark\", \"Medical Diagnosis Suite\") voor uitgebreide stresstests van algoritmen over meerdere datasets en probleemgebieden.",
+        "button": "Suites browsen"
+      }
+    },
+    "workflowLoop": {
+      "title": "De OpenML-workflowloop",
+      "subtitle": "Integreer OpenML in elke stap van je ML-workflow.",
+      "import": {
+        "title": "Importeren",
+        "description": "Laad OpenML-datasets in één regel code, compatibel met scikit-learn, PyTorch, TensorFlow, XGBoost en meer.",
+        "button": "Startgids"
+      },
+      "buildRun": {
+        "title": "Bouwen & uitvoeren",
+        "description": "Train en evalueer modellen op die taken met je favoriete ML-bibliotheken. Probeer verschillende pipelines en hyperparameters tot je tevreden bent met de resultaten."
+      },
+      "export": {
+        "title": "Exporteren & publiceren",
+        "description": "Publiceer automatisch: Upload je workflows (flows), experimenten (runs) en evaluatiemetrics naar OpenML zodat anderen ze kunnen vergelijken en hergebruiken.",
+        "flows": "Flows",
+        "flowsLabel": "workflows",
+        "runs": "Runs",
+        "runsLabel": "experimenten",
+        "metrics": "Metrics",
+        "metricsLabel": "evaluatie"
+      },
+      "knowledgeBase": {
+        "title": "Kennisbasis",
+        "subtitle": "Draag bij aan de globale kennisbasis",
+        "description": "Genereer persistente identifiers (DOI's) voor je datasets, workflows en experimenten — voor FAIR-compliance en reproduceerbare wetenschap.",
+        "citationTitle": "De citatie-levenscyclus",
+        "citationDescription": "Laat je onderzoek niet sterven op een harde schijf. Uploaden naar OpenML creërt citeerbare, geversioneerde artefacten met herkomsttracking. Je werk wordt deel van het globale ML-benchmarkcorpus, geciteerd door peers en voedend meta-onderzoek."
+      }
+    },
+    "academicImpact": {
+      "title": "Draag bij aan de globale kennisbasis",
+      "intro": "Genereer persistente identifiers (DOI's) voor je datasets, workflows en experimenten — voor FAIR-compliance en reproduceerbare wetenschap.",
+      "subtitle": "De citatie-levenscyclus",
+      "text": "Laat je onderzoek niet sterven op een harde schijf. Uploaden naar OpenML creëert citeerbare, geversioneerde artefacten met herkomsttracking. Je werk wordt deel van het globale ML-benchmarkcorpus, geciteerd door peers en voedend meta-onderzoek."
+    },
+    "faq": {
+      "title": "OpenML FAQ",
+      "heading": "Duidelijke antwoorden op de belangrijkste vragen",
+      "description": "Of je nu je eerste model traint of grootschalige benchmarks uitvoert, OpenML stroomlijnt elke stap van je workflow. Deze Q&A benadrukt wat OpenML uniek maakt en hoe het je dagelijkse ML-werk kan vereenvoudigen.",
+      "questions": [
+        {
+          "question": "Waarom is OpenML ideaal voor ML-onderzoek?",
+          "answer": "OpenML maakt je experimenten volledig reproduceerbaar.",
+          "details": [
+            "algoritmen",
+            "hyperparameters",
+            "datasetversies",
+            "metrics",
+            "hardware"
+          ],
+          "footer": "Iedereen kan je resultaten exact herhalen."
+        },
+        {
+          "question": "Hoe maakt OpenML resultaten vergelijkbaar?",
+          "answer": "Alle datasets en taken zijn gestandaardiseerd. Je kunt vergelijken:",
+          "details": ["algoritmen", "pipelines", "hyperparameters"],
+          "footer": "over identieke evaluatieprotocollen — essentieel voor benchmarking."
+        },
+        {
+          "question": "Kan ik eerdere experimenten doorzoeken?",
+          "answer": "Ja. Elk experiment wordt gelogd met rijke, machineleesbare metadata. Je kunt dingen opvragen zoals:",
+          "details": [
+            "\"Welke modellen werken het beste op kleine tabulaire datasets?\""
+          ],
+          "footer": "Dit maakt OpenML krachtig voor meta-learning."
+        },
+        {
+          "question": "Wat maakt OpenML wetenschappelijk rigoureus?",
+          "answer": "OpenML handhaaft:",
+          "details": [
+            "gecureerde datasets",
+            "gestandaardiseerde taken",
+            "consistente train/test-splits",
+            "gedocumenteerde metadata"
+          ],
+          "footer": "Ideaal voor academische papers, reproduceerbaar onderzoek en ML-competities."
+        },
+        {
+          "question": "Hoe maakt OpenML resultaten vergelijkbaar?",
+          "answer": "Alle resultaten volgen gestandaardiseerde evaluatieprotocollen:",
+          "details": [
+            "uniforme datasetformaten",
+            "gedeelde taken met vaste splits",
+            "consistente metrics",
+            "identieke benchmarkingcondities"
+          ],
+          "footer": "Je kunt algoritmen, pipelines en hyperparameters direct vergelijken op schaal."
+        },
+        {
+          "question": "Kan ik eerdere experimenten doorzoeken?",
+          "answer": "Ja. Elk experiment wordt opgeslagen met machineleesbare metadata:",
+          "details": [
+            "dataseteigenschappen",
+            "algoritme-instellingen",
+            "prestatiemetrics",
+            "taaktype en -structuur"
+          ],
+          "footer": "Je kunt duizenden runs doorzoeken om te ontdekken wat het beste werkt voor jouw probleem."
+        }
+      ]
+    },
+    "about": {
+      "meta": {
+        "title": "Over OpenML - Open Machine Learning Platform",
+        "description": "Leer meer over de missie van OpenML om machine learning eenvoudig, toegankelijk en collaboratief te maken. Sluit je aan bij onze gemeenschap van onderzoekers en practitioners die een open ecosysteem bouwen van ML-data, modellen en benchmarks."
+      },
+      "hero": {
+        "title": "Over OpenML",
+        "subtitle": "Het bouwen van een naadloos, open ecosysteem van machine learning data, modellen en benchmarks — openlijk AI bevorderen ten voordele van de hele mensheid."
+      },
+      "toc": {
+        "onThisPage": "Op Deze Pagina"
+      }
+    },
+    "contribute": {
+      "meta": {
+        "title": "Bijdragen aan OpenML - Sluit Je Aan Bij Onze Gemeenschap",
+        "description": "Help mee de toekomst van open machine learning te bouwen. Draag code bij, deel datasets, verbeter documentatie, of ga in gesprek met onze gemeenschap. Elke bijdrage maakt verschil."
+      },
+      "hero": {
+        "title": "Bijdragen aan OpenML",
+        "subtitle": "Help ons de toekomst van open machine learning te bouwen. Of je nu ontwikkelaar, onderzoeker of enthousiast bent, er zijn vele manieren om betrokken te raken en impact te maken."
+      }
+    },
+    "documentation": {
+      "meta": {
+        "title": "OpenML Documentatie - Aan de Slag Gids",
+        "description": "Leer hoe je het OpenML-platform gebruikt. Verken datasets, voer experimenten uit, deel je werk en werk samen met de wereldwijde machine learning gemeenschap. Volledige gidsen voor Python, R en Java."
+      },
+      "hero": {
+        "title": "Documentatie",
+        "subtitle": "Alles wat je nodig hebt om aan de slag te gaan met OpenML. Leer hoe je datasets verkent, experimenten uitvoert en samenwerkt met de wereldwijde ML-gemeenschap."
+      },
+      "alert": {
+        "title": "Volledige Documentatie",
+        "description": "Voor uitgebreide API-referenties, tutorials en geavanceerde gidsen, bezoek onze volledige documentatie op"
+      }
+    }
   }
 }

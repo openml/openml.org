@@ -154,12 +154,12 @@ function MetadataItemRow({ item }: { item: MetadataItem }) {
           <Icon className="text-muted-foreground mt-0.5 h-4 w-4" />
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium">{item.label}</p>
-            <Link
+            <a
               href={item.href || "#"}
               className="text-sm text-blue-600 hover:underline dark:text-blue-400"
             >
               {value}
-            </Link>
+            </a>
           </div>
         </div>
       );
@@ -175,12 +175,12 @@ function MetadataItemRow({ item }: { item: MetadataItem }) {
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium">{item.label}</p>
             {item.href ? (
-              <Link
+              <a
                 href={item.href}
                 className="text-sm text-blue-600 hover:underline dark:text-blue-400"
               >
                 {value}
-              </Link>
+              </a>
             ) : (
               <p className="text-muted-foreground text-sm">{value}</p>
             )}

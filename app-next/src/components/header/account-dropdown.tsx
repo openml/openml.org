@@ -88,7 +88,7 @@ export function AccountDropdown() {
         >
           <Avatar className="size-10 border-2 border-slate-200">
             <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="bg-slate-700 text-sm font-semibold text-white">
+            <AvatarFallback className="gradient-bg text-sm font-semibold text-white">
               {user.initials}
             </AvatarFallback>
           </Avatar>
@@ -100,7 +100,7 @@ export function AccountDropdown() {
           <div className="flex items-center gap-3">
             <Avatar className="size-12 border-2 border-slate-200">
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="bg-slate-700 text-white">
+              <AvatarFallback className="gradient-bg text-white">
                 {user.initials}
               </AvatarFallback>
             </Avatar>

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Card,
@@ -14,24 +15,25 @@ import {
   CornerRightUp,
 } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function BenchmarkingSection() {
+  const t = useTranslations("home.benchmarking");
+
   return (
     <SectionContainer id="benchmarking-suites" className="bg-muted/30">
       <div className="mb-10 text-center">
         <h1 className="gradient-text mb-6 text-4xl font-bold tracking-tight md:text-5xl">
-          Benchmarking Suites
+          {t("title")}
           <span className="mt-2 block text-3xl font-normal text-slate-800 dark:text-slate-300">
-            The Scientific Method for Rigorous Evaluation
+            {t("subtitle")}
           </span>
         </h1>
         <p className="text-muted-foreground mx-auto max-w-4xl text-xl leading-relaxed">
           <span className="text-foreground font-semibold">
             Validate your models{" "}
           </span>
-          on curated benchmarking suites spanning domains such as healthcare,
-          finance, and computer vision. Ensure your algorithm is robust across
-          many datasets, not just a single benchmark.
+          {t("description").replace("Validate your models ", "")}
         </p>
       </div>
 
@@ -53,18 +55,17 @@ export function BenchmarkingSection() {
                 />
               </div>
               <div className="flex-1 pb-2 text-white">
-                <CardTitle className="mb-0 text-4xl font-bold">Tasks</CardTitle>
+                <CardTitle className="mb-0 text-4xl font-bold">
+                  {t("tasks.title")}
+                </CardTitle>
                 <p className="text-muted-foreground dark:text-accent text-lg font-medium">
-                  The Problem
+                  {t("tasks.subtitle")}
                 </p>
               </div>
             </div>
 
             <CardDescription className="text-base leading-relaxed">
-              Standardized machine learning challenges with fixed evaluation
-              metrics (AUC, RMSE, Accuracy). Each task provides predefined
-              train/test splits to ensure your results are comparable and
-              peer-review ready.
+              {t("tasks.description")}
             </CardDescription>
 
             <Link href="/tasks" className="flex border-t-2 border-slate-400">
@@ -72,7 +73,7 @@ export function BenchmarkingSection() {
                 variant="outline"
                 className="group/btn mr-2 w-full justify-end shadow-none transition-all duration-300 hover:translate-x-1 hover:scale-105 hover:bg-transparent dark:hover:bg-transparent dark:hover:text-white"
               >
-                View Tasks
+                {t("tasks.button")}
                 <CornerRightUp className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
               </Button>
             </Link>
@@ -96,17 +97,17 @@ export function BenchmarkingSection() {
                 />
               </div>
               <div className="flex-1 pb-2 text-white">
-                <CardTitle className="mb-0 text-4xl font-bold">Suits</CardTitle>
+                <CardTitle className="mb-0 text-4xl font-bold">
+                  {t("suites.title")}
+                </CardTitle>
                 <p className="text-muted-foreground dark:text-accent text-lg font-medium">
-                  The Collection
+                  {t("suites.subtitle")}
                 </p>
               </div>
             </div>
 
             <CardDescription className="text-base leading-relaxed">
-              Curated collections of tasks (e.g., "AutoML Benchmark," "Medical
-              Diagnosis Suite") for comprehensive algorithm stress-testing
-              across multiple datasets and problem domains.
+              {t("suites.description")}
             </CardDescription>
 
             <Link
@@ -117,7 +118,7 @@ export function BenchmarkingSection() {
                 variant="outline"
                 className="group/btn mr-2 w-full justify-end shadow-none transition-all duration-300 hover:translate-x-1 hover:scale-105 hover:bg-transparent dark:hover:bg-transparent dark:hover:text-white"
               >
-                Browse Suites
+                {t("suites.button")}
                 <CornerRightUp className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
               </Button>
             </Link>

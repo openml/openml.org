@@ -19,7 +19,7 @@ interface BenchmarkResult {
   [key: string]: unknown;
 }
 
-const searchFacets = [
+const searchFacets: { label: string; field: string }[] = [
   // TODO: Add benchmark-specific facets
 ];
 
@@ -211,38 +211,34 @@ export function BenchmarksSearchContainer() {
               }) => {
                 if (!totalResults || totalResults === 0) return null;
 
-                const maxResults = 10000;
-                const effectiveTotal = Math.min(totalResults, maxResults);
-                const totalPages = Math.ceil(effectiveTotal / resultsPerPage);
-
                 return (
                   <div className="mt-6">
                     <Paging
-                      current={current}
-                      resultsPerPage={resultsPerPage}
-                      totalPages={totalPages}
-                      onChange={(page) => setCurrent?.(page)}
-                      view={({ currentPage, totalPages }) => (
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => setCurrent?.(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="rounded border px-4 py-2 disabled:opacity-50"
-                          >
-                            Previous
-                          </button>
-                          <span className="text-muted-foreground text-sm">
-                            Page {currentPage} of {totalPages}
-                          </span>
-                          <button
-                            onClick={() => setCurrent?.(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="rounded border px-4 py-2 disabled:opacity-50"
-                          >
-                            Next
-                          </button>
-                        </div>
-                      )}
+                      view={({ current, totalPages, onChange }) => {
+                        if (!current || totalPages <= 1) return null;
+
+                        return (
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => onChange?.(current - 1)}
+                              disabled={current === 1}
+                              className="rounded border px-4 py-2 disabled:opacity-50"
+                            >
+                              Previous
+                            </button>
+                            <span className="text-muted-foreground text-sm">
+                              Page {current} of {totalPages}
+                            </span>
+                            <button
+                              onClick={() => onChange?.(current + 1)}
+                              disabled={current >= totalPages}
+                              className="rounded border px-4 py-2 disabled:opacity-50"
+                            >
+                              Next
+                            </button>
+                          </div>
+                        );
+                      }}
                     />
                   </div>
                 );

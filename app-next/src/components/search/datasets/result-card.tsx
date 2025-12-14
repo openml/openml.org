@@ -107,7 +107,7 @@ export function ResultCard({ result }: ResultCardProps) {
       : cleanDescription;
 
   return (
-    <Card className="group hover:bg-accent/70 relative overflow-hidden rounded-none border-0 border-b shadow-none transition-all hover:shadow-md">
+    <Card className="group hover:bg-accent relative overflow-hidden rounded-none border-0 border-b shadow-none transition-all hover:shadow-md dark:hover:bg-slate-700">
       <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
       {/* Status Badge - Top Right */}
@@ -137,7 +137,7 @@ export function ResultCard({ result }: ResultCardProps) {
           <div className="w-full min-w-0">
             <div className="flex flex-wrap items-baseline gap-2">
               <Link href={`/datasets/${dataId}`}>
-                <h3 className="inline text-lg font-semibold hover:underline">
+                <h3 className="inline text-lg font-semibold break-words hyphens-auto hover:underline">
                   {name}
                 </h3>
               </Link>

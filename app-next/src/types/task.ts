@@ -20,7 +20,7 @@ export interface Task {
   target_feature?: string;
   estimation_procedure?: {
     type: string;
-    parameters: Record<string, any>;
+    parameters: Record<string, string>;
   };
   evaluation_measures?: string[];
   cost_matrix?: number[][];
@@ -45,7 +45,7 @@ export interface Task {
     estimation_procedure: {
       type: string;
       data_splits_url: string;
-      parameters: Record<string, any>;
+      parameters: Record<string, string>;
     };
     evaluation_measures: {
       evaluation_measure: string[];
@@ -56,7 +56,7 @@ export interface Task {
   tag?: string[];
 
   // Quality metrics
-  quality?: Record<string, any>;
+  quality?: Record<string, string>;
 
   // Dates
   upload_date?: string;

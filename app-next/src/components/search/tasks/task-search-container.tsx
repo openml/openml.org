@@ -6,6 +6,7 @@ import { WithSearch, Paging } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, taskSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
+import { entityColors } from "@/constants/entityColors";
 import {
   FlaskConical,
   Heart,
@@ -187,11 +188,16 @@ export function TaskSearchContainer() {
                                   disabled={!isAccessible}
                                   className={`rounded border px-3 py-1 ${
                                     isCurrent
-                                      ? "bg-primary text-primary-foreground"
+                                      ? "text-white"
                                       : isAccessible
-                                        ? "hover:bg-muted"
+                                        ? "hover:bg-muted dark:hover:bg-slate-700"
                                         : "cursor-not-allowed line-through opacity-30"
                                   }`}
+                                  style={
+                                    isCurrent
+                                      ? { backgroundColor: entityColors.task }
+                                      : undefined
+                                  }
                                   title={
                                     !isAccessible
                                       ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`

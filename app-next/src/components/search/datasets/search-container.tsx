@@ -9,6 +9,7 @@ import { ControlsBar } from "../shared/controls-bar";
 import { ResultCard } from "./result-card";
 import { parseDescription } from "../teaser";
 import { Badge } from "@/components/ui/badge";
+import { entityColors } from "@/constants/entityColors";
 import {
   FlaskConical,
   Heart,
@@ -263,8 +264,10 @@ export function SearchContainer() {
                                         result as SearchResult,
                                       );
                                     }}
-                                    className={`hover:bg-accent block cursor-pointer border-b p-3 transition-colors ${
-                                      isSelected ? "bg-accent" : ""
+                                    className={`hover:bg-accent block cursor-pointer border-b p-3 transition-colors dark:hover:bg-slate-700 ${
+                                      isSelected
+                                        ? "bg-accent dark:bg-slate-700"
+                                        : ""
                                     }`}
                                   >
                                     <div className="mb-1 flex items-start gap-2">
@@ -580,11 +583,16 @@ export function SearchContainer() {
                                     disabled={!isAccessible}
                                     className={`rounded border px-3 py-1 ${
                                       isCurrent
-                                        ? "bg-primary text-primary-foreground"
+                                        ? "text-white"
                                         : isAccessible
-                                          ? "hover:bg-muted"
+                                          ? "hover:bg-muted dark:hover:bg-slate-700"
                                           : "cursor-not-allowed line-through opacity-30"
                                     }`}
+                                    style={
+                                      isCurrent
+                                        ? { backgroundColor: entityColors.data }
+                                        : undefined
+                                    }
                                     title={
                                       !isAccessible
                                         ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`

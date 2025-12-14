@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Card,
@@ -22,16 +24,18 @@ import {
   WorkflowRunIcon,
   WorkflowExportIcon,
 } from "@/components/home/workflowLoopIcons";
+import { useTranslations } from "next-intl";
 
 export function WorkflowLoopSection() {
+  const t = useTranslations("home.workflowLoop");
   return (
     <SectionContainer className="bg-muted/30 overflow-hidden">
       <div className="relative container mx-auto max-w-7xl px-4 py-18 md:px-6 md:py-12">
         <div className="mb-8 text-center">
           <h1 className="text-muted-foreground mb-10 text-4xl font-bold tracking-tight md:text-5xl">
-            The OpenML Workflow Loop
+            {t("title")}
             <span className="my-3 block text-2xl font-normal text-slate-800 dark:text-slate-300">
-              Integrate OpenML into every step of your ML workflow.
+              {t("subtitle")}
             </span>
           </h1>
         </div>
@@ -52,13 +56,12 @@ export function WorkflowLoopSection() {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="-mb-2 text-2xl font-bold">
-                    Import
+                    {t("import.title")}
                   </CardTitle>
                 </div>
               </div>
               <CardDescription className="my-1 text-base leading-relaxed">
-                Load OpenML datasets in a single line of code, compatible with
-                scikit-learn, PyTorch, TensorFlow, XGBoost, and more.
+                {t("import.description")}
               </CardDescription>
               {/* logos placeholder */}
               <Step1Visuals />
@@ -72,7 +75,7 @@ export function WorkflowLoopSection() {
                   variant="outline"
                   className="group/btn mr-2 w-full justify-end transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 dark:hover:bg-transparent dark:hover:text-white"
                 >
-                  Get Started Guide
+                  {t("import.button")}
                   <CornerRightUp className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
                 </Button>
               </Link>
@@ -93,14 +96,12 @@ export function WorkflowLoopSection() {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="-mb-2 text-2xl font-bold">
-                    Build & Run
+                    {t("buildRun.title")}
                   </CardTitle>
                 </div>
               </div>
               <CardDescription className="my-1 text-base leading-relaxed">
-                Train and evaluate models on those tasks using your favorite ML
-                libraries. Try different pipelines and hyperparameters until you
-                get results you are happy with.
+                {t("buildRun.description")}
               </CardDescription>
               {/* Visual Emphasis */}
               <Step2Diagram
@@ -125,15 +126,15 @@ export function WorkflowLoopSection() {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="mb-2 text-2xl font-bold">
-                    Export & Publish
+                    {t("export.title")}
                   </CardTitle>
                 </div>
               </div>
               <CardDescription className="my-1 text-base leading-relaxed">
-                <span className="font-semibold">Automatically publish</span>:{" "}
-                Upload your workflows (flows), experiments (runs), and
-                evaluation metrics back to OpenML so others can compare and
-                reuse them.
+                <span className="font-semibold">
+                  {t("export.description").split(":")[0]}
+                </span>
+                : {t("export.description").split(":").slice(1).join(":")}
               </CardDescription>
               {/* Flow Tags */}
               <div className="ml-3 space-y-2">
@@ -141,27 +142,27 @@ export function WorkflowLoopSection() {
                   href="/flows"
                   className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
                 >
-                  → Flows
+                  → {t("export.flows")}
                   <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
-                    workflows
+                    {t("export.flowsLabel")}
                   </span>
                 </Link>
                 <Link
                   href="/runs"
                   className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
                 >
-                  → Runs
+                  → {t("export.runs")}
                   <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
-                    experiments
+                    {t("export.runsLabel")}
                   </span>
                 </Link>
                 <Link
                   href="/measures"
                   className="text-primary text-md flex items-center gap-2 font-medium transition group-hover:no-underline hover:scale-105 hover:opacity-90"
                 >
-                  → Metrics
+                  → {t("export.metrics")}
                   <span className="border-text-primary light:text-primary dark:border-text-slate-200 rounded-sm border-2 px-4 py-1 text-xs font-bold uppercase opacity-70">
-                    evaluation
+                    {t("export.metricsLabel")}
                   </span>
                 </Link>
               </div>
@@ -269,4 +270,3 @@ const WorkflowVerticalArrow: React.FC<{ className?: string }> = ({
     <ArrowBigRight className="text-primary/70 h-8 w-8" />
   </div>
 );
-

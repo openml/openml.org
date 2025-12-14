@@ -80,7 +80,7 @@ export function DatasetNavigationMenu({
                     <a
                       href="#description"
                       onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       <Database className="h-4 w-4" />
                       Description
@@ -88,7 +88,7 @@ export function DatasetNavigationMenu({
                     <a
                       href="#information"
                       onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       <Info className="h-4 w-4" />
                       Information
@@ -97,7 +97,7 @@ export function DatasetNavigationMenu({
                       <a
                         href="#features"
                         onClick={() => setIsOpen(false)}
-                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       >
                         <BarChart3 className="h-4 w-4 rotate-90" />
                         Features ({featuresCount})
@@ -107,7 +107,7 @@ export function DatasetNavigationMenu({
                       <a
                         href="#qualities"
                         onClick={() => setIsOpen(false)}
-                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       >
                         <BarChart3 className="h-4 w-4" />
                         Qualities
@@ -125,7 +125,7 @@ export function DatasetNavigationMenu({
                     <Link
                       href="/datasets"
                       onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       <ArrowLeft className="h-4 w-4" />
                       Back to Search
@@ -133,7 +133,7 @@ export function DatasetNavigationMenu({
                     <Link
                       href="/datasets"
                       onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       <Grid3x3 className="h-4 w-4" />
                       All Datasets
@@ -190,14 +190,14 @@ export function DatasetNavigationMenu({
               <nav className="space-y-1">
                 <a
                   href="#description"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <Database className="h-4 w-4" />
                   Description
                 </a>
                 <a
                   href="#information"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <Info className="h-4 w-4" />
                   Information
@@ -205,7 +205,7 @@ export function DatasetNavigationMenu({
                 {hasFeatures && (
                   <a
                     href="#features"
-                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                   >
                     <BarChart3 className="h-4 w-4 rotate-90" />
                     Features ({featuresCount})
@@ -214,7 +214,7 @@ export function DatasetNavigationMenu({
                 {hasQualities && (
                   <a
                     href="#qualities"
-                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                   >
                     <BarChart3 className="h-4 w-4" />
                     Qualities
@@ -231,14 +231,14 @@ export function DatasetNavigationMenu({
               <nav className="space-y-1">
                 <Link
                   href="/datasets"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back to Search
                 </Link>
                 <Link
                   href="/datasets"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <Grid3x3 className="h-4 w-4" />
                   All Datasets

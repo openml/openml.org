@@ -138,7 +138,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
         {
           title: "Documentation",
           titleKey: "documentation",
-          href: "https://docs.openml.org",
+          href: "/documentation",
           icon: faBookOpenReader,
           color: entityColors.docs,
         },

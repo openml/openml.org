@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Card,
@@ -14,17 +15,19 @@ import {
   InteractiveCodeSnippet,
   CodeExample,
 } from "@/components/interactive-code-snippet";
+import { useTranslations } from "next-intl";
 
 export function AccessibilitySection() {
+  const t = useTranslations("home.accessibility");
+
   return (
     <SectionContainer id="explore" className="bg-muted/30">
       <div className="mb-8 text-center">
         <h1 className="from-foreground to-foreground/70 light:text-slate-950 mb-6 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight md:text-6xl dark:bg-[linear-gradient(15deg,#ec4899,#6366f1,#ec4899,#8b5cf6,#ec4899)] dark:bg-clip-text dark:text-transparent">
-          Accessibility & Integration
+          {t("title")}
         </h1>
         <p className="text-muted-foreground mx-auto max-w-3xl text-center text-3xl md:text-2xl md:text-pretty">
-          Use OpenML from the web UI, notebooks, or the command line—wherever
-          you already work.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -33,31 +36,17 @@ export function AccessibilitySection() {
         <div className="w-full min-w-full flex-1 md:col-span-1">
           <Card className="h-full transition-shadow hover:shadow-lg">
             <CardHeader>
-              <CardTitle className="mb-4 text-2xl">The Web Interface</CardTitle>
+              <CardTitle className="mb-4 text-2xl">
+                {t("webInterface.title")}
+              </CardTitle>
               <CardDescription className="space-y-1.5 text-lg/7">
-                <p>
-                  Discover OpenML through an interactive web dashboard for
-                  exploring datasets and experiments.
-                </p>
+                <p>{t("webInterface.description")}</p>
                 <ul className="mx-3 list-disc space-y-[0.2rem] pl-4 leading-7">
-                  <li>
-                    Search, filter, and bookmark datasets by task type, size,
-                    and domain.
-                  </li>
-                  <li>
-                    Inspect metadata, target variables, and distributions before
-                    you ever write code.
-                  </li>
-                  <li>
-                    Compare versions, track provenance, and jump directly into
-                    related tasks, flows, and runs.
-                  </li>
+                  <li>{t("webInterface.features.0")}</li>
+                  <li>{t("webInterface.features.1")}</li>
+                  <li>{t("webInterface.features.2")}</li>
                 </ul>
-                <p>
-                  Browse, visualize, and organize everything from one
-                  place—ideal for exploratory analysis, teaching, and quick
-                  demos.
-                </p>
+                <p>{t("webInterface.summary")}</p>
               </CardDescription>
             </CardHeader>
             <CardContent className="relative -mt-6 h-82">
@@ -74,7 +63,7 @@ export function AccessibilitySection() {
                 href="/datasets"
                 className="text-primary flex items-center font-medium hover:underline"
               >
-                Browse Datasets <ArrowRight className="ml-2" />
+                {t("webInterface.button")} <ArrowRight className="ml-2" />
               </Link>
             </CardFooter>
           </Card>
@@ -85,14 +74,10 @@ export function AccessibilitySection() {
           <Card className="h-full transition-shadow hover:shadow-lg">
             <CardHeader>
               <CardTitle className="mb-4 text-2xl md:text-3xl">
-                The Code (APIs)
+                {t("codeApis.title")}
               </CardTitle>
               <CardDescription className="space-y-2 text-lg/7">
-                <p className="mb-1">
-                  Integrate directly into your code. Use our client libraries to
-                  programmatically download datasets, run tasks, and upload
-                  results without leaving your IDE.
-                </p>
+                <p className="mb-1">{t("codeApis.description")}</p>
               </CardDescription>
             </CardHeader>
             <CardContent className="h-auto">
@@ -107,7 +92,7 @@ export function AccessibilitySection() {
                 href="/datasets"
                 className="text-primary flex items-center font-medium hover:underline"
               >
-                View API Docs <ArrowRight className="ml-2" />
+                {t("codeApis.button")} <ArrowRight className="ml-2" />
               </Link>
             </CardFooter>
           </Card>

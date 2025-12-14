@@ -1,6 +1,4 @@
-/**
- * Feature information for a dataset
- */
+// Feature information for a dataset
 export interface DatasetFeature {
   index: number;
   name: string;
@@ -12,22 +10,17 @@ export interface DatasetFeature {
   max?: string;
   mean?: string;
   stdev?: string;
-  distr?: any[]; // Distribution data for charts
+  distr?: Array<[string, number]>;
 }
 
-/**
- * Tag information
- */
+// Tag information
 export interface DatasetTag {
   tag: string;
   uploader?: number;
   window?: number;
 }
 
-/**
- * OpenML Dataset Entity
- * Represents a dataset in the OpenML platform
- */
+// OpenML Dataset Entity
 export interface Dataset {
   // Core identifiers
   data_id: number;
@@ -97,9 +90,7 @@ export interface Dataset {
   creator?: string;
 }
 
-/**
- * Dataset search result (includes Elasticsearch metadata)
- */
+// Dataset search result (includes Elasticsearch metadata)
 export interface DatasetSearchResult extends Dataset {
   _meta?: {
     score: number;

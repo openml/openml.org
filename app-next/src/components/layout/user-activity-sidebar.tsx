@@ -32,11 +32,7 @@ interface UserActivitySidebarProps {
   className?: string;
 }
 
-/**
- * User Activity Sidebar - Kaggle-inspired collapsible sidebar
- * Shows user profile quick links and recent notifications
- * Triggered by avatar button in header
- */
+// User Activity Sidebar - Kaggle-inspired collapsible sidebar
 export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [user, setUser] = React.useState<{
@@ -83,6 +79,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("openml_token");
     setUser(null);
     setIsOpen(false);
     window.location.href = "/";
@@ -111,10 +108,10 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     },
   ];
 
-  // Avatar component - shows favicon for non-logged users, initials/image for logged users
+  // Avatar component - shows User icon for non-logged users, user image or User icon for logged users
   const AvatarButton = () => {
     if (!user) {
-      // Not logged in - show OpenML mini logo in round avatar
+      // Not logged in - show User icon with gradient background
       return (
         <Button
           variant="ghost"
@@ -123,21 +120,15 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           asChild
         >
           <Link href="/auth/account">
-            <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-slate-300 bg-slate-700 transition-colors hover:bg-slate-500 dark:border-slate-600 dark:bg-slate-200 dark:hover:bg-slate-300">
-              <Image
-                src="/openML_logo_mini-sidebar.png"
-                alt="OpenML"
-                width={28}
-                height={28}
-                className="object-contain"
-              />
+            <div className="gradient-bg flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
+              <UserIcon className="h-6 w-6 text-white" />
             </div>
           </Link>
         </Button>
       );
     }
 
-    // Logged in - show avatar with image or initials
+    // Logged in - show user image if available, otherwise User icon with gradient background
     return (
       <Button
         variant="ghost"
@@ -145,7 +136,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         className="relative size-10 cursor-pointer rounded-full p-0 hover:bg-transparent"
         onClick={() => setIsOpen(true)}
       >
-        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-colors dark:border-blue-400">
+        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
           {user.avatar ? (
             <Image
               src={user.avatar}
@@ -155,8 +146,8 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex size-full items-center justify-center bg-slate-700 text-sm font-bold text-white transition-colors hover:bg-slate-500 hover:text-slate-300 dark:bg-slate-200 dark:text-slate-700 dark:hover:bg-slate-300 dark:hover:text-slate-700">
-              {user.initials}
+            <div className="gradient-bg flex size-full items-center justify-center">
+              <UserIcon className="h-6 w-6 text-white" />
             </div>
           )}
         </div>
@@ -198,8 +189,8 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex size-full items-center justify-center bg-slate-700 text-xl font-bold text-white dark:bg-slate-200 dark:text-slate-700">
-                  {user?.initials}
+                <div className="gradient-bg flex size-full items-center justify-center">
+                  <UserIcon className="h-8 w-8 text-white" />
                 </div>
               )}
             </div>

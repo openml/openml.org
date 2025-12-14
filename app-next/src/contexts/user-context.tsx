@@ -49,6 +49,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem("user");
+    localStorage.removeItem("openml_token");
   }, []);
 
   const updateUser = React.useCallback((updates: Partial<UserProfile>) => {

@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardDescription,
@@ -8,19 +9,21 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { MoveRight } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function ThreePillarsSection() {
+  const t = useTranslations("home.threePillars");
+
   return (
     <div className="three-pillars-background relative overflow-hidden">
       <div className="py-18md:px-6 relative container mx-auto max-w-7xl px-4 md:py-24">
         {/* Heading */}
         <div className="mb-8 text-center">
           <h1 className="from-foreground to-foreground/70 light:text-slate-950 mb-6 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight md:text-6xl dark:bg-[linear-gradient(15deg,#ec4899,#6366f1,#ec4899,#8b5cf6,#ec4899)] dark:bg-clip-text dark:text-transparent">
-            The Three Pillars of OpenML
+            {t("title")}
           </h1>
           <p className="text-muted-foreground mx-auto max-w-3xl text-xl md:text-2xl">
-            Open platform for sharing datasets, algorithms, and experiments to
-            build a global machine learning repository
+            {t("subtitle")}
           </p>
         </div>
 
@@ -44,16 +47,14 @@ export function ThreePillarsSection() {
                 className="border-primary/20 mx-auto mb-0 hidden items-center justify-center rounded-2xl border dark:block"
               />
               <CardTitle className="mb-2 text-2xl">
-                FAIR Data at Scale
+                {t("fairData.title")}
               </CardTitle>
               <CardDescription className="text-base">
-                Access thousands of uniformly formatted datasets. Every dataset
-                is versioned, meta-tagged, and ready for immediate loading into
-                your analysis pipeline.
+                {t("fairData.description")}
               </CardDescription>
               <Link href="/datasets" className="mt-4 block">
                 <Button className="w-full transition hover:scale-105 dark:bg-[linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899)] dark:text-white">
-                  Explore Datasets <MoveRight />
+                  {t("fairData.button")} <MoveRight />
                 </Button>
               </Link>
             </CardHeader>
@@ -78,16 +79,14 @@ export function ThreePillarsSection() {
                 className="border-primary/20 mx-auto mb-0 hidden items-center justify-center rounded-2xl border dark:block"
               />
               <CardTitle className="mb-2 text-2xl">
-                Objective Evaluation
+                {t("objectiveEvaluation.title")}
               </CardTitle>
               <CardDescription className="text-base">
-                Stop guessing. Run your algorithms on standardized tasks with
-                predefined train/test splits to ensure your results are
-                comparable and peer-review ready.
+                {t("objectiveEvaluation.description")}
               </CardDescription>
               <Link href="/tasks" className="mt-4 block">
                 <Button className="w-full transition hover:scale-105 dark:bg-[linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899)] dark:text-white">
-                  View Benchmark Tasks <MoveRight />
+                  {t("objectiveEvaluation.button")} <MoveRight />
                 </Button>
               </Link>
             </CardHeader>
@@ -112,16 +111,14 @@ export function ThreePillarsSection() {
                 className="border-primary/20 mx-auto mb-0 hidden items-center justify-center rounded-2xl border dark:block"
               />
               <CardTitle className="mb-2 text-2xl">
-                Frictionless ML Flows
+                {t("frictionlessFlows.title")}
               </CardTitle>
               <CardDescription className="text-base">
-                Treat experiments as objects. Share your model pipelines (flows)
-                and results (runs) automatically to create a transparent
-                scientific record.
+                {t("frictionlessFlows.description")}
               </CardDescription>
               <Link href="/flows" className="mt-4 block">
                 <Button className="w-full transition hover:scale-105 dark:bg-[linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899)] dark:text-white">
-                  Explore Flows <MoveRight />
+                  {t("frictionlessFlows.button")} <MoveRight />
                 </Button>
               </Link>
             </CardHeader>

@@ -14,21 +14,6 @@ import {
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
 
-/**
- * Enhanced Search Bar Component - Integrated Design
- *
- * TERMINOLOGY:
- * - "Integrated design": Dropdown is embedded INSIDE the search bar (single visual unit)
- * - "Composite component": Multiple UI elements (dropdown + input) working as one
- * - "Absolute positioning": Dropdown positioned within the search bar container
- *
- * Features:
- * - Index selector dropdown embedded in search bar
- * - Dynamic search with URL integration
- * - Responsive design
- * - Full i18n support
- */
-
 const searchIndices = [
   { key: "data", labelKey: "datasets", route: "/datasets" },
   { key: "task", labelKey: "tasks", route: "/tasks" },
@@ -92,19 +77,9 @@ export function SearchBar() {
     }
   };
 
-  const currentIndexLabel =
-    searchIndices.find((i) => i.key === selectedIndex)?.label || "Datasets";
-
   return (
     <form onSubmit={handleSearch} className="max-w-2xl flex-1">
-      {/* 
-        INTEGRATED SEARCH BAR DESIGN:
-        - Single container with rounded border
-        - Dropdown on the left (embedded)
-        - Search icon in the middle
-        - Input field on the right
-      */}
-      <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 !bg-slate-100 !text-slate-900">
+      <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 bg-slate-100! text-slate-900!">
         {/* Index Selector - Embedded on the left */}
         <Select value={selectedIndex} onValueChange={handleIndexChange}>
           <SelectTrigger className="h-10 w-[130px] border-none bg-transparent! text-slate-900! shadow-none focus:ring-0">
@@ -131,7 +106,7 @@ export function SearchBar() {
           placeholder={t("search")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-none !bg-transparent pl-2 !text-slate-900 shadow-none placeholder:!text-slate-500 focus-visible:ring-0"
+          className="border-none bg-transparent! pl-2 text-slate-900! shadow-none placeholder:text-slate-500! focus-visible:ring-0"
         />
       </div>
     </form>

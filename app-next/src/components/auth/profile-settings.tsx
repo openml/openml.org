@@ -229,7 +229,7 @@ export function ProfileSettings() {
               <div className="flex items-center gap-6">
                 <Avatar className="size-32 border-4 border-slate-200">
                   <AvatarImage src={profile.image} alt="Profile" />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-3xl font-bold text-white">
+                  <AvatarFallback className="gradient-bg text-3xl font-bold text-white">
                     {profile.firstName[0]}
                     {profile.lastName[0]}
                   </AvatarFallback>

@@ -94,7 +94,7 @@
     "java": "Java",
     "community": "Community",
     "aboutUs": "About Us",
-    "contributing": "Contributing",
+    "contribute": "contribute",
     "team": "Team",
     "publications": "Publications",
     "blog": "Blog",
@@ -140,5 +140,218 @@
     "loading": "Loading...",
     "error": "Error",
     "noResults": "No results found"
+  },
+  "home": {
+    "hero": {
+      "version": "Version 3.0: Built for Reproducible Science",
+      "title": "The Global Lab for Machine Learning Research",
+      "description": "Machine learning thrives on transparency. OpenML is the open, collaborative environment where scientists share FAIR data, organize experiments, and build upon state-of-the-art algorithms.",
+      "startTracking": "Start Tracking and Sharing!",
+      "readManifesto": "Read the Manifesto",
+      "trustedWorldwide": "Trusted worldwide to benchmark algorithms objectively.",
+      "stats": "+99.99% Reproducibility 500k+ Datasets 10M+ Runs+",
+      "joinCommunity": "Join the Community!"
+    },
+    "ecosystem": {
+      "overline": "The Ecosystem",
+      "heading": "Frictionless Integration",
+      "subtitle": "Seamlessly import data and export experiments from your native scientific environment.",
+      "button": "View API Documentation"
+    },
+    "threePillars": {
+      "title": "The Three Pillars of OpenML",
+      "subtitle": "Open platform for sharing datasets, algorithms, and experiments to build a global machine learning repository",
+      "fairData": {
+        "title": "FAIR Data at Scale",
+        "description": "Access thousands of uniformly formatted datasets. Every dataset is versioned, meta-tagged, and ready for immediate loading into your analysis pipeline.",
+        "button": "Explore Datasets"
+      },
+      "objectiveEvaluation": {
+        "title": "Objective Evaluation",
+        "description": "Stop guessing. Run your algorithms on standardized tasks with predefined train/test splits to ensure your results are comparable and peer-review ready.",
+        "button": "View Benchmark Tasks"
+      },
+      "frictionlessFlows": {
+        "title": "Frictionless ML Flows",
+        "description": "Treat experiments as objects. Share your model pipelines (flows) and results (runs) automatically to create a transparent scientific record.",
+        "button": "Explore Flows"
+      }
+    },
+    "accessibility": {
+      "title": "Accessibility & Integration",
+      "subtitle": "Use OpenML from the web UI, notebooks, or the command line—wherever you already work.",
+      "webInterface": {
+        "title": "The Web Interface",
+        "description": "Discover OpenML through an interactive web dashboard for exploring datasets and experiments.",
+        "features": [
+          "Search, filter, and bookmark datasets by task type, size, and domain.",
+          "Inspect metadata, target variables, and distributions before you ever write code.",
+          "Compare versions, track provenance, and jump directly into related tasks, flows, and runs."
+        ],
+        "summary": "Browse, visualize, and organize everything from one place—ideal for exploratory analysis, teaching, and quick demos.",
+        "button": "Browse Datasets"
+      },
+      "codeApis": {
+        "title": "The Code (APIs)",
+        "description": "Integrate directly into your code. Use our client libraries to programmatically download datasets, run tasks, and upload results without leaving your IDE.",
+        "viewGithub": "View on GitHub",
+        "downloadZip": "Download ZIP",
+        "button": "View API Docs"
+      }
+    },
+    "benchmarking": {
+      "title": "Benchmarking Suites",
+      "subtitle": "The Scientific Method for Rigorous Evaluation",
+      "description": "Validate your models on curated benchmarking suites spanning domains such as healthcare, finance, and computer vision. Ensure your algorithm is robust across many datasets, not just a single benchmark.",
+      "tasks": {
+        "title": "Tasks",
+        "subtitle": "The Problem",
+        "description": "Standardized machine learning challenges with fixed evaluation metrics (AUC, RMSE, Accuracy). Each task provides predefined train/test splits to ensure your results are comparable and peer-review ready.",
+        "button": "View Tasks"
+      },
+      "suites": {
+        "title": "Suits (or Suites)",
+        "subtitle": "The Collection",
+        "description": "Curated collections of tasks (e.g., \"AutoML Benchmark,\" \"Medical Diagnosis Suite\") for comprehensive algorithm stress-testing across multiple datasets and problem domains.",
+        "button": "Browse Suites"
+      }
+    },
+    "workflowLoop": {
+      "title": "The OpenML Workflow Loop",
+      "subtitle": "Integrate OpenML into every step of your ML workflow.",
+      "import": {
+        "title": "Import",
+        "description": "Load OpenML datasets in a single line of code, compatible with scikit-learn, PyTorch, TensorFlow, XGBoost, and more.",
+        "button": "Get Started Guide"
+      },
+      "buildRun": {
+        "title": "Build & Run",
+        "description": "Train and evaluate models on those tasks using your favorite ML libraries. Try different pipelines and hyperparameters until you get results you are happy with."
+      },
+      "export": {
+        "title": "Export & Publish",
+        "description": "Automatically publish: Upload your workflows (flows), experiments (runs), and evaluation metrics back to OpenML so others can compare and reuse them.",
+        "flows": "Flows",
+        "flowsLabel": "workflows",
+        "runs": "Runs",
+        "runsLabel": "experiments",
+        "metrics": "Metrics",
+        "metricsLabel": "evaluation"
+      },
+      "knowledgeBase": {
+        "title": "Knowledge Base",
+        "subtitle": "Contribute to the Global Knowledge Base",
+        "description": "Generate persistent identifiers (DOIs) for your datasets, workflows, and experiments—ensuring FAIR compliance and enabling reproducible science.",
+        "citationTitle": "The Citation Lifecycle",
+        "citationDescription": "Don't let your research die on a hard drive. Uploading to OpenML creates citable, versioned artifacts with provenance tracking. Your work becomes part of the global ML benchmark corpus, cited by peers and powering meta-research."
+      }
+    },
+    "academicImpact": {
+      "title": "Contribute to the Global Knowledge Base",
+      "intro": "Generate persistent identifiers (DOIs) for your datasets, workflows, and experiments—ensuring FAIR compliance and enabling reproducible science.",
+      "subtitle": "The Citation Lifecycle",
+      "text": "Don't let your research die on a hard drive. Uploading to OpenML creates citable, versioned artifacts with provenance tracking. Your work becomes part of the global ML benchmark corpus, cited by peers and powering meta-research."
+    },
+    "faq": {
+      "title": "OpenML FAQ",
+      "heading": "Clear answers to the most important questions",
+      "description": "Whether you're training your first model or running large-scale benchmarks, OpenML streamlines every step of your workflow. This Q&A highlights what makes OpenML unique and how it can simplify your daily ML work.",
+      "questions": [
+        {
+          "question": "Why is OpenML ideal for ML research?",
+          "answer": "OpenML makes your experiments fully reproducible.",
+          "details": [
+            "algorithms",
+            "hyperparameters",
+            "dataset versions",
+            "metrics",
+            "hardware"
+          ],
+          "footer": "Anyone can repeat your results exactly."
+        },
+        {
+          "question": "How does OpenML make results comparable?",
+          "answer": "All datasets and tasks are standardized. You can compare:",
+          "details": ["algorithms", "pipelines", "hyperparameters"],
+          "footer": "across identical evaluation protocols — essential for benchmarking."
+        },
+        {
+          "question": "Can I search previous experiments?",
+          "answer": "Yes. Every experiment is logged with rich, machine-readable metadata. You can query things like:",
+          "details": ["\"Which models work best on small tabular datasets?\""],
+          "footer": "This makes OpenML powerful for meta-learning."
+        },
+        {
+          "question": "What makes OpenML scientifically rigorous?",
+          "answer": "OpenML enforces:",
+          "details": [
+            "curated datasets",
+            "standardized tasks",
+            "consistent train/test splits",
+            "documented metadata"
+          ],
+          "footer": "Ideal for academic papers, reproducible research, and ML competitions."
+        },
+        {
+          "question": "How does OpenML make results comparable?",
+          "answer": "All results follow standardized evaluation protocols:",
+          "details": [
+            "uniform dataset formats",
+            "shared tasks with fixed splits",
+            "consistent metrics",
+            "identical benchmarking conditions"
+          ],
+          "footer": "You can directly compare algorithms, pipelines, and hyperparameters at scale."
+        },
+        {
+          "question": "Can I search previous experiments?",
+          "answer": "Yes. Every experiment is stored with machine-readable metadata:",
+          "details": [
+            "dataset properties",
+            "algorithm settings",
+            "performance metrics",
+            "task type and structure"
+          ],
+          "footer": "You can query thousands of runs to discover what works best for your problem."
+        }
+      ]
+    },
+    "about": {
+      "meta": {
+        "title": "About OpenML - Open Machine Learning Platform",
+        "description": "Learn about OpenML's mission to make machine learning simple, accessible, and collaborative. Join our community of researchers and practitioners building an open ecosystem of ML data, models, and benchmarks."
+      },
+      "hero": {
+        "title": "About OpenML",
+        "subtitle": "Building a seamless, open ecosystem of machine learning data, models, and benchmarks — advancing AI openly for the benefit of all humanity."
+      },
+      "toc": {
+        "onThisPage": "On This Page"
+      }
+    },
+    "contribute": {
+      "meta": {
+        "title": "Contribute to OpenML - Join Our Community",
+        "description": "Help build the future of open machine learning. Contribute code, share datasets, improve documentation, or engage with our community. Every contribution makes a difference."
+      },
+      "hero": {
+        "title": "Contribute to OpenML",
+        "subtitle": "Help us build the future of open machine learning. Whether you're a developer, researcher, or enthusiast, there are many ways to get involved and make an impact."
+      }
+    },
+    "documentation": {
+      "meta": {
+        "title": "OpenML Documentation - Getting Started Guide",
+        "description": "Learn how to use OpenML platform. Explore datasets, run experiments, share your work, and collaborate with the global machine learning community. Complete guides for Python, R, and Java."
+      },
+      "hero": {
+        "title": "Documentation",
+        "subtitle": "Everything you need to get started with OpenML. Learn how to explore datasets, run experiments, and collaborate with the global ML community."
+      },
+      "alert": {
+        "title": "Complete Documentation",
+        "description": "For comprehensive API references, tutorials, and advanced guides, visit our complete documentation at"
+      }
+    }
   }
 }

@@ -16,12 +16,21 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { User, LogOut, Settings, Eye, EyeOff } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { User, LogOut, Settings, Eye, EyeOff, Sparkles } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { loginToOpenML } from "@/services/openml-api";
 
 interface UserProfile {
   username: string;
@@ -37,19 +46,12 @@ const signInSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const signUpSchema = z
-  .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+const signUpSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 export function AccountPage() {
   const router = useRouter();
@@ -57,7 +59,6 @@ export function AccountPage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const t = useTranslations("sidebar");
   const { toast } = useToast();
@@ -71,10 +72,8 @@ export function AccountPage() {
   const [signUpForm, setSignUpForm] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -98,6 +97,7 @@ export function AccountPage() {
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("openml_token");
     setUser(null);
     setIsAuthenticated(false);
     toast({
@@ -114,21 +114,40 @@ export function AccountPage() {
       // Validate with Zod
       const validated = signInSchema.parse(signInForm);
 
-      // TODO: Replace with actual API call
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Call real OpenML API
+      const result = await loginToOpenML(
+        validated.emailOrUsername,
+        validated.password,
+      );
 
-      // Mock successful login
-      const mockUser: UserProfile = {
-        username: validated.emailOrUsername,
-        email: "user@example.com",
-        firstName: "John",
-        lastName: "Doe",
-      };
+      if (!result.success) {
+        toast({
+          title: "Sign in failed",
+          description: result.error || "Invalid credentials",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
-      setIsAuthenticated(true);
+      // Store JWT token and user data
+      if (result.token) {
+        localStorage.setItem("openml_token", result.token);
+      }
+
+      if (result.user) {
+        const userProfile: UserProfile = {
+          username: result.user.username,
+          email: result.user.email,
+          firstName: result.user.firstName || "",
+          lastName: result.user.lastName || "",
+          image: result.user.image,
+        };
+
+        localStorage.setItem("user", JSON.stringify(userProfile));
+        setUser(userProfile);
+        setIsAuthenticated(true);
+      }
+
       toast({
         title: "Success!",
         description: "Signed in successfully",
@@ -170,12 +189,12 @@ export function AccountPage() {
       // Validate with Zod
       const validated = signUpSchema.parse(signUpForm);
 
-      // TODO: Replace with actual API call
+      // TODO: Replace with actual API call to Flask /signup endpoint
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Mock successful signup
       const newUser: UserProfile = {
-        username: validated.username,
+        username: validated.email.split("@")[0], // Generate username from email
         email: validated.email,
         firstName: validated.firstName,
         lastName: validated.lastName,
@@ -186,7 +205,8 @@ export function AccountPage() {
       setIsAuthenticated(true);
       toast({
         title: "Account created!",
-        description: "Your account has been created successfully",
+        description:
+          "You will receive an email to confirm your account. If you don't receive it, please check your spam folder.",
       });
 
       // Redirect to dashboard
@@ -296,7 +316,226 @@ export function AccountPage() {
 
   // If not authenticated, show sign-in/sign-up tabs
   return (
-    <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-8">
+    <div className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-8">
+      {/* Preview OAuth Design Button - Centered above form */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="mb-6 gap-2 shadow-lg" size="lg" variant="default">
+            <Sparkles className="h-5 w-5" />
+            Preview OAuth Design
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">
+              Sign In/Up with OAuth
+            </DialogTitle>
+            <DialogDescription>
+              Preview of the enhanced form with GitHub and Google authentication
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* New Simplified Form */}
+          <div className="mt-4">
+            <Tabs defaultValue="signup" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+
+              {/* Sign In Tab */}
+              <TabsContent value="signin" className="mt-6 space-y-4">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-signin-email">
+                      Email or Username
+                    </Label>
+                    <Input
+                      id="preview-signin-email"
+                      type="text"
+                      placeholder="cmhelder@xs4all.nl"
+                      disabled
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-signin-password">Password</Label>
+                    <Input
+                      id="preview-signin-password"
+                      type="password"
+                      placeholder="••••••••"
+                      disabled
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-primary cursor-pointer hover:underline">
+                      Forgot password?
+                    </span>
+                  </div>
+                  <Button className="w-full" size="lg" disabled>
+                    Sign In
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background text-muted-foreground px-2">
+                        OR CONTINUE WITH
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" type="button" disabled>
+                      <FontAwesomeIcon
+                        icon={faGithub}
+                        className="mr-2 h-4 w-4"
+                      />
+                      GitHub
+                    </Button>
+                    <Button variant="outline" type="button" disabled>
+                      <FontAwesomeIcon
+                        icon={faGoogle}
+                        className="mr-2 h-4 w-4"
+                      />
+                      Google
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Sign Up Tab - New Simplified Design */}
+              <TabsContent value="signup" className="mt-6 space-y-4">
+                <div className="mb-4 text-center">
+                  <h3 className="text-xl font-semibold">Almost there</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-firstname">First name *</Label>
+                    <Input
+                      id="preview-firstname"
+                      type="text"
+                      placeholder=""
+                      disabled
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-lastname">Last name *</Label>
+                    <Input
+                      id="preview-lastname"
+                      type="text"
+                      placeholder=""
+                      disabled
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-email">
+                      Email Address (we never share your email) *
+                    </Label>
+                    <Input
+                      id="preview-email"
+                      type="email"
+                      placeholder=""
+                      disabled
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="preview-password">
+                      Password (min 8 characters) *
+                    </Label>
+                    <Input
+                      id="preview-password"
+                      type="password"
+                      placeholder=""
+                      disabled
+                    />
+                  </div>
+
+                  <Button className="w-full" size="lg" disabled>
+                    Sign up for OpenML
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background text-muted-foreground px-2">
+                        OR CONTINUE WITH
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" type="button" disabled>
+                      <FontAwesomeIcon
+                        icon={faGithub}
+                        className="mr-2 h-4 w-4"
+                      />
+                      GitHub
+                    </Button>
+                    <Button variant="outline" type="button" disabled>
+                      <FontAwesomeIcon
+                        icon={faGoogle}
+                        className="mr-2 h-4 w-4"
+                      />
+                      Google
+                    </Button>
+                  </div>
+
+                  <p className="text-muted-foreground text-sm">
+                    You will receive an email to confirm your account. If you
+                    don't receive it, please check your spam folder.
+                  </p>
+
+                  <div className="bg-muted/50 flex items-start gap-2 rounded-lg border p-3">
+                    <svg
+                      className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <p className="text-sm">
+                      By joining, you agree to the{" "}
+                      <span className="text-primary font-medium">
+                        Honor Code and Terms of Use
+                      </span>
+                      .
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+              <h4 className="mb-2 text-sm font-semibold">
+                What's new in this design:
+              </h4>
+              <ul className="text-muted-foreground list-inside list-disc space-y-1 text-sm">
+                <li>OAuth authentication with GitHub and Google</li>
+                <li>No username field (auto-generated from email)</li>
+                <li>
+                  Simplified sign-up: First name, Last name, Email, Password
+                </li>
+                <li>Password minimum: 8 characters</li>
+                <li>Honor Code acceptance notice</li>
+                <li>Email confirmation message</li>
+              </ul>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Welcome to OpenML</CardTitle>
@@ -374,95 +613,69 @@ export function AccountPage() {
                   {isSubmitting ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background text-muted-foreground px-2">
-                    OR CONTINUE WITH
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" type="button">
-                  <FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
-                  GitHub
-                </Button>
-                <Button variant="outline" type="button">
-                  <FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
-                  Google
-                </Button>
-              </div>
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-4">
+              <CardDescription className="text-center text-base">
+                Almost there
+              </CardDescription>
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-firstname">First name</Label>
-                    <Input
-                      id="signup-firstname"
-                      type="text"
-                      placeholder="John"
-                      value={signUpForm.firstName}
-                      onChange={(e) =>
-                        setSignUpForm({
-                          ...signUpForm,
-                          firstName: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-lastname">Last name</Label>
-                    <Input
-                      id="signup-lastname"
-                      type="text"
-                      placeholder="Doe"
-                      value={signUpForm.lastName}
-                      onChange={(e) =>
-                        setSignUpForm({
-                          ...signUpForm,
-                          lastName: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-username">Username</Label>
+                  <Label htmlFor="signup-firstname">First name *</Label>
                   <Input
-                    id="signup-username"
+                    id="signup-firstname"
                     type="text"
-                    placeholder="johndoe"
-                    value={signUpForm.username}
+                    placeholder=""
+                    value={signUpForm.firstName}
                     onChange={(e) =>
-                      setSignUpForm({ ...signUpForm, username: e.target.value })
+                      setSignUpForm({
+                        ...signUpForm,
+                        firstName: e.target.value,
+                      })
                     }
+                    required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-lastname">Last name *</Label>
+                  <Input
+                    id="signup-lastname"
+                    type="text"
+                    placeholder=""
+                    value={signUpForm.lastName}
+                    onChange={(e) =>
+                      setSignUpForm({
+                        ...signUpForm,
+                        lastName: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email">
+                    Email Address (we never share your email) *
+                  </Label>
                   <Input
                     id="signup-email"
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder=""
                     value={signUpForm.email}
                     onChange={(e) =>
                       setSignUpForm({ ...signUpForm, email: e.target.value })
                     }
+                    required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password">
+                    Password (min 8 characters) *
+                  </Label>
                   <div className="relative">
                     <Input
                       id="signup-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder=""
                       value={signUpForm.password}
                       onChange={(e) =>
                         setSignUpForm({
@@ -471,6 +684,8 @@ export function AccountPage() {
                         })
                       }
                       className="pr-10"
+                      required
+                      minLength={8}
                     />
                     <button
                       type="button"
@@ -485,68 +700,44 @@ export function AccountPage() {
                     </button>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-confirm">Confirm Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="signup-confirm"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={signUpForm.confirmPassword}
-                      onChange={(e) =>
-                        setSignUpForm({
-                          ...signUpForm,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
                 <Button
                   className="w-full"
                   size="lg"
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Creating account..." : "Create Account"}
+                  {isSubmitting ? "Creating account..." : "Sign up for OpenML"}
                 </Button>
+
+                <p className="text-muted-foreground text-sm">
+                  You will receive an email to confirm your account. If you
+                  don't receive it, please check your spam folder.
+                </p>
+
+                <div className="bg-muted/50 flex items-start gap-2 rounded-lg border p-3">
+                  <svg
+                    className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <p className="text-sm">
+                    By joining, you agree to the{" "}
+                    <a
+                      href="/terms"
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Honor Code and Terms of Use
+                    </a>
+                    .
+                  </p>
+                </div>
               </form>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background text-muted-foreground px-2">
-                    OR CONTINUE WITH
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" type="button">
-                  <FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
-                  GitHub
-                </Button>
-                <Button variant="outline" type="button">
-                  <FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
-                  Google
-                </Button>
-              </div>
             </TabsContent>
           </Tabs>
         </CardContent>

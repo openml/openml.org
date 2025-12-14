@@ -161,6 +161,15 @@
 }
 
 @layer utilities {
+  /* Dark mode card hover state */
+  .dark .hover\:bg-accent:hover {
+    background-color: rgb(51 65 85) !important; /* slate-700 */
+  }
+
+  .dark .hover\:bg-muted:hover {
+    background-color: rgb(51 65 85) !important; /* slate-700 */
+  }
+
   @keyframes float {
     0%,
     100% {

@@ -24,17 +24,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-/**
- * Filter Bar Component - Dropdown Style
- *
- * Features:
- * - Dropdown menus for each facet (Status, License, etc.)
- * - Multi-select support with checkboxes
- * - Searchable options within dropdowns
- * - Active filter indicators
- * - Smart label formatting
- */
-
 interface FilterBarProps {
   facets: Array<{
     label: string;
@@ -49,9 +38,6 @@ interface FilterBarProps {
   defaultSearchScope?: string;
 }
 
-/**
- * Format facet value for display
- */
 function formatFacetValue(value: string, field: string): string {
   if (field === "status.keyword") {
     switch (value) {
@@ -66,6 +52,144 @@ function formatFacetValue(value: string, field: string): string {
     }
   }
   return value;
+}
+
+// Search Input Component (extracted to avoid hook rules violations)
+function SearchInput({
+  searchTerm,
+  setSearchTerm,
+  isLoading,
+  searchScope,
+  setSearchScope,
+  searchScopeOptions,
+  onSearchScopeChange,
+  openPopover,
+  setOpenPopover,
+}: {
+  searchTerm: string;
+  setSearchTerm?: (term: string) => void;
+  isLoading: boolean;
+  searchScope: string;
+  setSearchScope: (scope: string) => void;
+  searchScopeOptions?: Array<{ value: string; label: string }>;
+  onSearchScopeChange?: (scope: string) => void;
+  openPopover: string | null;
+  setOpenPopover: (value: string | null) => void;
+}) {
+  const [localSearchTerm, setLocalSearchTerm] = React.useState(
+    searchTerm || "",
+  );
+  const [isSearching, setIsSearching] = React.useState(false);
+
+  // Sync local state with external searchTerm when it changes externally
+  React.useEffect(() => {
+    setLocalSearchTerm(searchTerm || "");
+  }, [searchTerm]);
+
+  // Track when we're waiting for debounce
+  React.useEffect(() => {
+    if (localSearchTerm !== searchTerm) {
+      setIsSearching(true);
+    } else {
+      setIsSearching(false);
+    }
+  }, [localSearchTerm, searchTerm]);
+
+  // Create debounced search handler
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    if (setSearchTerm) {
+      setSearchTerm(value);
+    }
+  }, 500);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchTerm(value);
+    debouncedSetSearch(value);
+  };
+
+  const handleClear = () => {
+    setLocalSearchTerm("");
+    if (setSearchTerm) {
+      setSearchTerm("");
+    }
+  };
+
+  const showLoading = isSearching || (isLoading && localSearchTerm);
+
+  return (
+    <div className="flex items-center gap-2">
+      {/* Search Scope Dropdown */}
+      {searchScopeOptions && searchScopeOptions.length > 0 && (
+        <Popover
+          open={openPopover === "search-scope"}
+          onOpenChange={(open) => setOpenPopover(open ? "search-scope" : null)}
+        >
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="h-9 border-dashed">
+              {searchScopeOptions.find((o) => o.value === searchScope)?.label ||
+                "Search in"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-0" align="start">
+            <Command>
+              <CommandList>
+                <CommandGroup>
+                  {searchScopeOptions.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => {
+                        setSearchScope(option.value);
+                        onSearchScopeChange?.(option.value);
+                        setOpenPopover(null);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          searchScope === option.value
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={localSearchTerm}
+          onChange={handleSearchChange}
+          className="h-9 w-64 pr-8 pl-9"
+        />
+        {localSearchTerm && (
+          <button
+            onClick={handleClear}
+            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1 transition-colors"
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
+        {showLoading && (
+          <div className="absolute top-1/2 right-8 -translate-y-1/2">
+            <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export function FilterBar({
@@ -97,135 +221,19 @@ export function FilterBar({
             isLoading,
           })}
         >
-          {({ searchTerm, setSearchTerm, isLoading }) => {
-            const [localSearchTerm, setLocalSearchTerm] = React.useState(
-              searchTerm || "",
-            );
-            const [isSearching, setIsSearching] = React.useState(false);
-
-            // Sync local state with external searchTerm when it changes externally
-            React.useEffect(() => {
-              setLocalSearchTerm(searchTerm || "");
-            }, [searchTerm]);
-
-            // Track when we're waiting for debounce
-            React.useEffect(() => {
-              if (localSearchTerm !== searchTerm) {
-                setIsSearching(true);
-              } else {
-                setIsSearching(false);
-              }
-            }, [localSearchTerm, searchTerm]);
-
-            // Create debounced search handler
-            const debouncedSetSearch = useDebouncedCallback((value: string) => {
-              if (setSearchTerm) {
-                setSearchTerm(value);
-              }
-            }, 500);
-
-            const handleSearchChange = (
-              e: React.ChangeEvent<HTMLInputElement>,
-            ) => {
-              const value = e.target.value;
-              setLocalSearchTerm(value);
-              debouncedSetSearch(value);
-            };
-
-            const handleClear = () => {
-              setLocalSearchTerm("");
-              if (setSearchTerm) {
-                setSearchTerm("");
-              }
-            };
-
-            const showLoading = isSearching || (isLoading && localSearchTerm);
-
-            return (
-              <div className="flex items-center gap-2">
-                {/* Search Scope Dropdown */}
-                {searchScopeOptions && searchScopeOptions.length > 0 && (
-                  <Popover
-                    open={openPopover === "search-scope"}
-                    onOpenChange={(open) =>
-                      setOpenPopover(open ? "search-scope" : null)
-                    }
-                  >
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-9 border-dashed"
-                      >
-                        {searchScopeOptions.find((o) => o.value === searchScope)
-                          ?.label || "Search in"}
-                        <ChevronDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-48 p-0" align="start">
-                      <Command>
-                        <CommandList>
-                          <CommandGroup>
-                            {searchScopeOptions.map((option) => (
-                              <CommandItem
-                                key={option.value}
-                                onSelect={() => {
-                                  setSearchScope(option.value);
-                                  onSearchScopeChange?.(option.value);
-                                  setOpenPopover(null);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    searchScope === option.value
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                                {option.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                )}
-
-                {/* Search Input */}
-                <div className="relative">
-                  <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                  <Input
-                    type="text"
-                    placeholder="Search..."
-                    value={localSearchTerm}
-                    onChange={handleSearchChange}
-                    className="h-9 w-64 pr-9 pl-9"
-                  />
-                  {localSearchTerm && (
-                    <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
-                      {showLoading && (
-                        <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-                      )}
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0 hover:bg-transparent"
-                        onClick={handleClear}
-                        aria-label="Clear search"
-                      >
-                        <span className="text-muted-foreground hover:text-foreground text-lg leading-none">
-                          ×
-                        </span>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }}
+          {({ searchTerm, setSearchTerm, isLoading }) => (
+            <SearchInput
+              searchTerm={searchTerm || ""}
+              setSearchTerm={setSearchTerm}
+              isLoading={isLoading || false}
+              searchScope={searchScope}
+              setSearchScope={setSearchScope}
+              searchScopeOptions={searchScopeOptions}
+              onSearchScopeChange={onSearchScopeChange}
+              openPopover={openPopover}
+              setOpenPopover={setOpenPopover}
+            />
+          )}
         </WithSearch>
       )}
 
@@ -237,12 +245,13 @@ export function FilterBar({
           filterType="any"
           show={100} // Show more options in dropdown
           view={({ options, onSelect, onRemove, values }) => {
-            const selectedValues = new Set(values);
+            const selectedValues = new Set(values as string[]);
             const hasActiveFilters = selectedValues.size > 0;
             const isOpen = openPopover === facet.field;
 
             // Get pending selections for this facet
-            const pending = pendingSelections.get(facet.field) || new Set();
+            const pending =
+              pendingSelections.get(facet.field) || new Set<string>();
 
             return (
               <Popover
@@ -330,8 +339,8 @@ export function FilterBar({
                       <CommandSeparator />
                       <CommandGroup>
                         {options.map((option) => {
-                          const isSelected = pending.has(option.value);
                           const valueStr = String(option.value);
+                          const isSelected = pending.has(valueStr);
                           return (
                             <CommandItem
                               key={valueStr}
@@ -340,11 +349,12 @@ export function FilterBar({
                                 // Toggle in pending selections
                                 const newPending = new Map(pendingSelections);
                                 const facetPending =
-                                  newPending.get(facet.field) || new Set();
-                                if (facetPending.has(option.value)) {
-                                  facetPending.delete(option.value);
+                                  newPending.get(facet.field) ||
+                                  new Set<string>();
+                                if (facetPending.has(valueStr)) {
+                                  facetPending.delete(valueStr);
                                 } else {
-                                  facetPending.add(option.value);
+                                  facetPending.add(valueStr);
                                 }
                                 newPending.set(facet.field, facetPending);
                                 setPendingSelections(newPending);
@@ -376,9 +386,8 @@ export function FilterBar({
                           <CommandGroup>
                             <CommandItem
                               onSelect={() => {
-                                values.forEach(
-                                  (v: string | number | { name: string }) =>
-                                    onRemove(v),
+                                (values as string[]).forEach((v) =>
+                                  onRemove(v as string),
                                 );
                               }}
                               className="justify-center text-center"

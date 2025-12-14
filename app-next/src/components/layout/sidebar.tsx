@@ -281,9 +281,41 @@ function SidebarItem({
   const hasChildren = item.children && item.children.length > 0;
   const count = item.index && counts ? counts[item.index] : null;
   const countText = count ? abbreviateNumber(count) : "";
+  const isExternal =
+    item.href.startsWith("http://") || item.href.startsWith("https://");
 
   if (iconOnly) {
     // Icon-only mode
+    if (isExternal) {
+      return (
+        <Button
+          asChild
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "w-full text-gray-200 hover:bg-[#1E2A38] hover:text-white",
+            isActive && "bg-[#1E2A38] font-medium text-white",
+          )}
+          title={t(item.titleKey)}
+        >
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onItemClick}
+          >
+            {item.icon && (
+              <FontAwesomeIcon
+                icon={item.icon}
+                className="h-7 w-7"
+                style={{ color: item.color }}
+              />
+            )}
+          </a>
+        </Button>
+      );
+    }
+
     return (
       <Button
         asChild
@@ -355,6 +387,41 @@ function SidebarItem({
           </div>
         )}
       </div>
+    );
+  }
+
+  if (isExternal) {
+    return (
+      <Button
+        asChild
+        variant="ghost"
+        className={cn(
+          "w-full justify-start px-3 text-gray-200 hover:bg-[#1E2A38] hover:text-white",
+          isActive && "bg-[#1E2A38] font-medium text-white",
+        )}
+      >
+        <a
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between"
+          onClick={onItemClick}
+        >
+          <span className="flex items-center">
+            {item.icon && (
+              <FontAwesomeIcon
+                icon={item.icon}
+                className="mr-2 h-5 w-5"
+                style={{ color: item.color, width: "20px" }}
+              />
+            )}
+            <span className="text-sm">{t(item.titleKey)}</span>
+          </span>
+          {countText && (
+            <span className="ml-auto text-xs text-gray-400">{countText}</span>
+          )}
+        </a>
+      </Button>
     );
   }
 

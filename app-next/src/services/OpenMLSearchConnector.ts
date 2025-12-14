@@ -5,21 +5,28 @@ import {
   AutocompleteResponseState,
   AutocompleteQueryConfig,
   APIConnector,
+  FilterValue as SearchUIFilterValue,
 } from "@elastic/search-ui";
 
-interface FilterValue {
-  type: "any" | "all";
-  value: string;
-  from?: number;
-  to?: number;
-  name?: string;
-}
+import type {
+  ElasticsearchQueryBody,
+  ElasticsearchResponse,
+} from "@/types/elasticsearch";
 
 interface FacetConfig {
   type: "value" | "range";
   size?: number;
   ranges?: { from?: number; to?: number; name: string }[];
 }
+
+interface ElasticsearchAggregation {
+  buckets?: Array<{
+    key: string;
+    doc_count: number;
+  }>;
+}
+
+type SourceDocument = Record<string, unknown>;
 
 class OpenMLSearchConnector implements APIConnector {
   indexName: string;
@@ -36,10 +43,11 @@ class OpenMLSearchConnector implements APIConnector {
     // No-op
   }
 
-  /**
-   * Build Elasticsearch query from Search UI request state
-   */
-  buildQuery(requestState: RequestState, queryConfig: QueryConfig) {
+  // Build Elasticsearch query from Search UI request state
+  private buildQuery(
+    requestState: RequestState,
+    queryConfig: QueryConfig,
+  ): ElasticsearchQueryBody {
     const {
       searchTerm,
       filters,
@@ -50,7 +58,7 @@ class OpenMLSearchConnector implements APIConnector {
       sortList,
     } = requestState;
 
-    const query: any = {
+    const query: ElasticsearchQueryBody["query"] = {
       bool: {
         must: [],
         filter: [],
@@ -61,109 +69,122 @@ class OpenMLSearchConnector implements APIConnector {
     if (searchTerm) {
       const searchFields = Object.keys(queryConfig.search_fields || {});
 
-      // Use bool query with should clauses for better partial matching
-      query.bool.must.push({
-        bool: {
-          should: [
-            // Exact phrase match (highest priority)
-            {
-              multi_match: {
-                query: searchTerm,
-                fields: searchFields.map(
-                  (field) =>
-                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 3}`,
-                ),
-                type: "phrase",
+      if (searchFields.length === 0) {
+        query.bool?.must?.push({ match_all: {} });
+      } else {
+        query.bool?.must?.push({
+          bool: {
+            should: [
+              // Exact phrase
+              {
+                multi_match: {
+                  query: searchTerm,
+                  fields: searchFields.map(
+                    (f) =>
+                      `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 3}`,
+                  ),
+                  type: "phrase",
+                },
               },
-            },
-            // Prefix match (word beginning)
-            {
-              multi_match: {
-                query: searchTerm,
-                fields: searchFields.map(
-                  (field) =>
-                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 2}`,
-                ),
-                type: "phrase_prefix",
+              // Phrase prefix
+              {
+                multi_match: {
+                  query: searchTerm,
+                  fields: searchFields.map(
+                    (f) =>
+                      `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 2}`,
+                  ),
+                  type: "phrase_prefix",
+                },
               },
-            },
-            // Query string with wildcards for substring matching
-            {
-              query_string: {
-                query: `*${searchTerm}*`,
-                fields: searchFields.map(
-                  (field) =>
-                    `${field}^${queryConfig.search_fields?.[field]?.weight || 1}`,
-                ),
-                analyze_wildcard: true,
+              // Wildcard substring
+              {
+                query_string: {
+                  query: `*${searchTerm}*`,
+                  fields: searchFields.map(
+                    (f) =>
+                      `${f}^${queryConfig.search_fields?.[f]?.weight || 1}`,
+                  ),
+                  analyze_wildcard: true,
+                },
               },
-            },
-            // Fuzzy match (typo tolerance)
-            {
-              multi_match: {
-                query: searchTerm,
-                fields: searchFields.map(
-                  (field) =>
-                    `${field}^${(queryConfig.search_fields?.[field]?.weight || 1) * 0.5}`,
-                ),
-                type: "best_fields",
-                fuzziness: "AUTO",
+              // Fuzzy
+              {
+                multi_match: {
+                  query: searchTerm,
+                  fields: searchFields.map(
+                    (f) =>
+                      `${f}^${
+                        (queryConfig.search_fields?.[f]?.weight || 1) * 0.5
+                      }`,
+                  ),
+                  type: "best_fields",
+                  fuzziness: "AUTO",
+                },
               },
-            },
-          ],
-          minimum_should_match: 1,
-        },
-      });
+            ],
+            minimum_should_match: 1,
+          },
+        });
+      }
     } else {
-      // Match all if no search term
-      query.bool.must.push({ match_all: {} });
+      query.bool?.must?.push({ match_all: {} });
     }
 
     // Add filters
-    if (filters) {
-      // Group filters by field for multi-select support
-      const filtersByField = new Map<string, any[]>();
+    if (filters && filters.length > 0) {
+      const filtersByField = new Map<string, unknown[]>();
 
       filters.forEach((filter) => {
-        filter.values.forEach((filterValue: any) => {
-          // Handle range filters (from facets)
+        filter.values.forEach((filterValue: SearchUIFilterValue) => {
+          // Range filter (from facet sliders)
           if (
             typeof filterValue === "object" &&
-            (filterValue.from !== undefined || filterValue.to !== undefined)
+            !Array.isArray(filterValue) &&
+            ("from" in filterValue || "to" in filterValue)
           ) {
-            const range: any = {};
-            if (filterValue.from !== undefined)
-              range.gte = Number(filterValue.from);
-            if (filterValue.to !== undefined)
-              range.lte = Number(filterValue.to);
-            query.bool.filter.push({
+            const range: Record<string, number> = {};
+            if (
+              "from" in filterValue &&
+              filterValue.from !== undefined &&
+              typeof filterValue.from === "number"
+            )
+              range.gte = filterValue.from;
+            if (
+              "to" in filterValue &&
+              filterValue.to !== undefined &&
+              typeof filterValue.to === "number"
+            )
+              range.lte = filterValue.to;
+
+            query.bool?.filter?.push({
               range: { [filter.field]: range },
             });
           }
-          // Handle string values that might be range names like "1000.0-9999.0"
+          // Predefined range bucket selected by name (e.g., "0-1000")
           else if (
             typeof filterValue === "string" &&
             filterValue.includes("-")
           ) {
-            // This is a range name from facet config - look it up
-            const facetConfig = queryConfig.facets?.[filter.field] as any;
+            const facetConfig = queryConfig.facets?.[filter.field] as
+              | FacetConfig
+              | undefined;
             if (facetConfig?.type === "range" && facetConfig.ranges) {
               const rangeConfig = facetConfig.ranges.find(
-                (r: any) => r.name === filterValue,
+                (r) => r.name === filterValue,
               );
               if (rangeConfig) {
-                const range: any = {};
+                const range: Record<string, number> = {};
                 if (rangeConfig.from !== undefined)
-                  range.gte = Number(rangeConfig.from);
-                if (rangeConfig.to !== undefined)
-                  range.lte = Number(rangeConfig.to);
-                query.bool.filter.push({
+                  range.gte = rangeConfig.from;
+                if (rangeConfig.to !== undefined) range.lte = rangeConfig.to;
+                query.bool?.filter?.push({
                   range: { [filter.field]: range },
                 });
               }
             }
           }
-          // Handle exact term matches - collect for multi-select
+          // Regular value filter (term/terms)
           else {
             if (!filtersByField.has(filter.field)) {
               filtersByField.set(filter.field, []);
@@ -173,51 +194,53 @@ class OpenMLSearchConnector implements APIConnector {
         });
       });
 
-      // Add term/terms queries for collected values
+      // Add term/terms queries
       filtersByField.forEach((values, field) => {
-        if (values.length > 0) {
-          if (values.length === 1) {
-            // Single value: use term query
-            query.bool.filter.push({
-              term: { [field]: values[0] },
-            });
-          } else {
-            // Multiple values: use terms query for OR logic
-            query.bool.filter.push({
-              terms: { [field]: values },
-            });
-          }
+        if (values.length === 1) {
+          query.bool?.filter?.push({ term: { [field]: values[0] } });
+        } else if (values.length > 1) {
+          query.bool?.filter?.push({ terms: { [field]: values } });
         }
       });
     }
 
     // Build aggregations for facets
-    const aggs: any = {};
+    const aggs: Record<
+      string,
+      {
+        terms?: { field: string; size: number };
+        range?: {
+          field: string;
+          ranges: Array<{ from?: number; to?: number }>;
+        };
+      }
+    > = {};
     if (queryConfig.facets) {
-      Object.entries(queryConfig.facets).forEach(
-        ([fieldName, facetConfig]: [string, any]) => {
-          if (facetConfig.type === "value") {
-            aggs[fieldName] = {
-              terms: {
-                field: fieldName,
-                size: facetConfig.size || 10,
-              },
-            };
-          } else if (facetConfig.type === "range") {
-            // Strip out 'name' field from ranges - ES doesn't accept it
-            const esRanges = facetConfig.ranges.map((range: any) => {
+      Object.entries(queryConfig.facets).forEach(([fieldName, facetConfig]) => {
+        const typedConfig = facetConfig as FacetConfig;
+        if (typedConfig.type === "value") {
+          aggs[fieldName] = {
+            terms: {
+              field: fieldName,
+              size: typedConfig.size || 10,
+            },
+          };
+        } else if (typedConfig.type === "range") {
+          // Strip out 'name' field from ranges - ES doesn't accept it
+          const esRanges =
+            typedConfig.ranges?.map((range) => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { name, ...esRange } = range;
               return esRange;
-            });
-            aggs[fieldName] = {
-              range: {
-                field: fieldName,
-                ranges: esRanges,
-              },
-            };
-          }
-        },
-      );
+            }) || [];
+          aggs[fieldName] = {
+            range: {
+              field: fieldName,
+              ranges: esRanges,
+            },
+          };
+        }
+      });
     }
 
     // Sanitize resultsPerPage (handle legacy formats like "n_20_n")
@@ -246,7 +269,7 @@ class OpenMLSearchConnector implements APIConnector {
         ? Math.max(0, MAX_RESULT_WINDOW - size)
         : from;
 
-    const esQuery: any = {
+    const esQuery: ElasticsearchQueryBody = {
       query,
       from: actualFrom,
       size,
@@ -256,11 +279,11 @@ class OpenMLSearchConnector implements APIConnector {
     // Add sorting - Search UI uses sortList array format
     if (sortList && sortList.length > 0) {
       esQuery.sort = sortList.map((sortItem) => ({
-        [sortItem.field]: { order: sortItem.direction },
+        [sortItem.field]: sortItem.direction as "asc" | "desc",
       }));
     } else if (sortField && sortDirection) {
       // Fallback for direct sortField/sortDirection
-      esQuery.sort = [{ [sortField]: { order: sortDirection } }];
+      esQuery.sort = [{ [sortField]: sortDirection as "asc" | "desc" }];
     }
 
     return esQuery;
@@ -270,11 +293,15 @@ class OpenMLSearchConnector implements APIConnector {
    * Format Elasticsearch response to Search UI format
    * Search UI expects fields in { raw: value } format
    */
-  formatResponse(esResponse: any, requestState: RequestState): ResponseState {
+  formatResponse(
+    esResponse: ElasticsearchResponse<SourceDocument>,
+    requestState: RequestState,
+  ): ResponseState {
     const { hits, aggregations } = esResponse;
 
-    const results = hits.hits.map((hit: any) => {
-      const formattedResult: any = {
+    const results = hits.hits.map((hit) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const formattedResult: Record<string, any> = {
         id: { raw: hit._id },
         _meta: {
           id: hit._id,
@@ -293,25 +320,28 @@ class OpenMLSearchConnector implements APIConnector {
       return formattedResult;
     });
 
-    const totalResults = hits.total.value || hits.total;
+    const totalResults =
+      typeof hits.total === "number" ? hits.total : hits.total.value;
 
-    const facets: any = {};
+    const facets: Record<
+      string,
+      Array<{ type: string; data: Array<{ value: string; count: number }> }>
+    > = {};
     if (aggregations) {
-      Object.entries(aggregations).forEach(
-        ([fieldName, agg]: [string, any]) => {
-          if (agg.buckets) {
-            facets[fieldName] = [
-              {
-                type: "value",
-                data: agg.buckets.map((bucket: any) => ({
-                  value: bucket.key,
-                  count: bucket.doc_count,
-                })),
-              },
-            ];
-          }
-        },
-      );
+      Object.entries(aggregations).forEach(([fieldName, agg]) => {
+        const typedAgg = agg as ElasticsearchAggregation;
+        if (typedAgg.buckets) {
+          facets[fieldName] = [
+            {
+              type: "value",
+              data: typedAgg.buckets.map((bucket) => ({
+                value: bucket.key,
+                count: bucket.doc_count,
+              })),
+            },
+          ];
+        }
+      });
     }
 
     return {
@@ -380,8 +410,10 @@ class OpenMLSearchConnector implements APIConnector {
    * Autocomplete method (optional, called by Search UI for suggestions)
    */
   async onAutocomplete(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     requestState: RequestState,
-    _queryConfig: AutocompleteQueryConfig,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    queryConfig: AutocompleteQueryConfig,
   ): Promise<AutocompleteResponseState> {
     return {
       autocompletedResults: [],

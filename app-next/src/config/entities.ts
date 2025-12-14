@@ -1,10 +1,3 @@
-/**
- * 🎯 Entity Configuration System
- *
- * Central configuration for all OpenML entities (datasets, tasks, flows, runs, etc.)
- * This prevents code duplication and makes it easy to add new entity types.
- */
-
 import {
   FlaskConical,
   Heart,
@@ -15,7 +8,9 @@ import {
   Trophy,
   Cog,
   Play,
+  type LucideIcon,
 } from "lucide-react";
+// import { Icon } from "next/dist/lib/metadata/types/metadata-types";
 
 export type EntityType =
   | "dataset"
@@ -37,7 +32,7 @@ export interface EntityConfig {
   idField: string;
 
   // Display
-  icon: any; // Lucide icon component
+  icon: LucideIcon; // Lucide icon component
   color: string;
 
   // Routes
@@ -52,7 +47,7 @@ export interface EntityConfig {
   stats: Array<{
     field: string;
     label: string;
-    icon: any;
+    icon: LucideIcon;
     color: string;
   }>;
 
@@ -67,7 +62,7 @@ export interface EntityConfig {
   sections: Array<{
     id: string;
     label: string;
-    icon: any;
+    icon: LucideIcon;
     component?: string; // Optional override component
   }>;
 }
@@ -358,15 +353,15 @@ export const getEntityPath = (type: EntityType, id?: string): string => {
 };
 
 /**
- * 🌍 Translation keys for i18n
+ * Translation keys for i18n
  *
- * These should be translated:
+ * To be translated:
  * - Entity names (singular/plural)
  * - Section labels
  * - Stat labels
  * - Facet labels
  *
- * These should NOT be translated:
+ *  NOT translated:
  * - Field names (API keys)
  * - Filter values (these come from API)
  * - IDs
