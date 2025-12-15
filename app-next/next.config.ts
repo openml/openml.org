@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",wd
+        protocol: "https",
         hostname: "www.openml.org",
         port: "",
         pathname: "/data/**", // Optional: restrict  if needed

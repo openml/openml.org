@@ -370,5 +370,28 @@
         "description": "Voor uitgebreide API-referenties, tutorials en geavanceerde gidsen, bezoek onze volledige documentatie op"
       }
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Inloggen - OpenML",
+      "description": "Log in op uw OpenML-account",
+      "welcome": "Welkom bij OpenML",
+      "subtitle": "Log in op uw account of maak een nieuwe aan",
+      "continueWithGithub": "Doorgaan met GitHub",
+      "continueWithGoogle": "Doorgaan met Google",
+      "orContinueWith": "Of ga verder met",
+      "emailLabel": "E-mail of gebruikersnaam",
+      "emailPlaceholder": "Voer uw e-mail of gebruikersnaam in",
+      "passwordLabel": "Wachtwoord",
+      "passwordPlaceholder": "Voer uw wachtwoord in",
+      "signInButton": "Inloggen",
+      "signingIn": "Inloggen...",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Heeft u geen account?",
+      "signUpLink": "Registreren",
+      "invalidCredentials": "Ongeldige e-mail of wachtwoord",
+      "error": "Er is een fout opgetreden. Probeer het opnieuw.",
+      "oauthError": "Authenticatie mislukt. Probeer het opnieuw."
+    }
   }
 }

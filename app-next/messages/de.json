@@ -370,5 +370,28 @@
         "description": "Für umfassende API-Referenzen, Tutorials und erweiterte Anleitungen besuche unsere vollständige Dokumentation auf"
       }
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Anmelden - OpenML",
+      "description": "Melden Sie sich bei Ihrem OpenML-Konto an",
+      "welcome": "Willkommen bei OpenML",
+      "subtitle": "Melden Sie sich bei Ihrem Konto an oder erstellen Sie ein neues",
+      "continueWithGithub": "Mit GitHub fortfahren",
+      "continueWithGoogle": "Mit Google fortfahren",
+      "orContinueWith": "Oder fortfahren mit",
+      "emailLabel": "E-Mail oder Benutzername",
+      "emailPlaceholder": "Geben Sie Ihre E-Mail oder Ihren Benutzernamen ein",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
+      "signInButton": "Anmelden",
+      "signingIn": "Anmelden...",
+      "forgotPassword": "Passwort vergessen?",
+      "noAccount": "Sie haben noch kein Konto?",
+      "signUpLink": "Registrieren",
+      "invalidCredentials": "Ungültige E-Mail oder Passwort",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "oauthError": "Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+    }
   }
 }

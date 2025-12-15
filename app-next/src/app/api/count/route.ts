@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 const ELASTICSEARCH_SERVER =
-  process.env.ELASTICSEARCH_SERVER || "https://www.openml.org/es/";
+  process.env.ELASTICSEARCH_SERVER ||
+  process.env.NEXT_PUBLIC_ELASTICSEARCH_SERVER ||
+  "https://www.openml.org/es";
 
 interface ElasticsearchHits {
   total: number | { value: number; relation?: string };
@@ -17,10 +19,14 @@ interface MultiSearchResponse {
 }
 
 export async function GET() {
-  const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}_msearch`;
+  // Ensure URL ends with /
+  const baseUrl = ELASTICSEARCH_SERVER.endsWith("/")
+    ? ELASTICSEARCH_SERVER
+    : `${ELASTICSEARCH_SERVER}/`;
+  const elasticsearchEndpoint = `${baseUrl}_msearch`;
   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
-  // console.log("🔍 [Count API] Starting request to:", elasticsearchEndpoint);
+  console.log("🔍 [Count API] Elasticsearch URL:", elasticsearchEndpoint);
   // console.log("📦 [Count API] Indices:", indices);
 
   // Build NDJSON body for _msearch - correct format
