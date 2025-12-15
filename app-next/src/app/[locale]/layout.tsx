@@ -5,7 +5,7 @@ import { getMessages } from "next-intl/server";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import { QueryProvider } from "@/components/providers";
+import { QueryProvider, AuthProvider } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { ConditionalFooter } from "@/components/layout/conditional-footer";
@@ -79,16 +79,18 @@ export default async function LocaleLayout({
             enableSystem
             disableTransitionOnChange={false}
           >
-            <QueryProvider>
-              <SidebarProvider>
-                <Header />
-                <div className="flex flex-1">
-                  <Sidebar />
-                  <MainContent>{children}</MainContent>
-                </div>
-                <ConditionalFooter />
-              </SidebarProvider>
-            </QueryProvider>
+            <AuthProvider>
+              <QueryProvider>
+                <SidebarProvider>
+                  <Header />
+                  <div className="flex flex-1">
+                    <Sidebar />
+                    <MainContent>{children}</MainContent>
+                  </div>
+                  <ConditionalFooter />
+                </SidebarProvider>
+              </QueryProvider>
+            </AuthProvider>
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>

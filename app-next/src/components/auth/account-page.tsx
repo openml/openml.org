@@ -76,6 +76,9 @@ export function AccountPage() {
         if (storedUser) {
           setUser(JSON.parse(storedUser));
           setIsAuthenticated(true);
+        } else {
+          // Redirect to sign-in if not authenticated
+          router.push("/auth/signin");
         }
       } catch (error) {
         console.error("Error checking authentication:", error);
@@ -85,7 +88,7 @@ export function AccountPage() {
     };
 
     checkAuth();
-  }, []);
+  }, [router]);
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
@@ -306,9 +309,8 @@ export function AccountPage() {
     );
   }
 
-  // If not authenticated, redirect to new sign-in page with OAuth
-  if (!isAuthenticated && !loading) {
-    router.push("/auth/signin");
+  // Show loading or nothing while checking auth
+  if (loading || !isAuthenticated) {
     return null;
   }
 

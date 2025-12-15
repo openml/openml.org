@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSession, signOut } from "next-auth/react";
 import {
   ChevronRight,
   X,
@@ -34,6 +35,7 @@ interface UserActivitySidebarProps {
 
 // User Activity Sidebar - Kaggle-inspired collapsible sidebar
 export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
   const [user, setUser] = React.useState<{
     name: string;
@@ -42,29 +44,50 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     initials: string;
   } | null>(null);
 
-  // Load user from localStorage
+  // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        const firstName = userData.firstName || "";
-        const lastName = userData.lastName || "";
-        const initials =
-          `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "OP";
+    if (status === "authenticated" && session?.user) {
+      const name = session.user.name || session.user.username || "User";
+      const email = session.user.email || "";
+      const avatar = session.user.image || "";
+      const initials =
+        name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2) || "OP";
 
-        setUser({
-          name:
-            `${firstName} ${lastName}`.trim() || userData.username || "User",
-          email: userData.email || "",
-          avatar: userData.image || "",
-          initials: initials,
-        });
-      } catch (error) {
-        console.error("Error parsing user data:", error);
+      setUser({
+        name,
+        email,
+        avatar,
+        initials,
+      });
+    } else {
+      // Fallback to localStorage for backward compatibility
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const firstName = userData.firstName || "";
+          const lastName = userData.lastName || "";
+          const initials =
+            `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "OP";
+
+          setUser({
+            name:
+              `${firstName} ${lastName}`.trim() || userData.username || "User",
+            email: userData.email || "",
+            avatar: userData.image || "",
+            initials: initials,
+          });
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
       }
     }
-  }, []);
+  }, [session, status]);
 
   const [notifications] = React.useState<UserActivityItem[]>([
     {
@@ -78,11 +101,13 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   ]);
 
   const handleSignOut = () => {
+    // Clear localStorage for backward compatibility
     localStorage.removeItem("user");
     localStorage.removeItem("openml_token");
     setUser(null);
     setIsOpen(false);
-    window.location.href = "/";
+    // Use NextAuth signOut
+    signOut({ callbackUrl: "/auth/signin" });
   };
 
   const menuItems = [
@@ -108,11 +133,11 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     },
   ];
 
-  // Avatar component - shows User icon for non-logged users, user image or User icon for logged users
-  const AvatarButton = () => {
-    if (!user) {
-      // Not logged in - show User icon with gradient background
-      return (
+  return (
+    <>
+      {/* Avatar Button */}
+      {!user ? (
+        // Not logged in - show User icon with gradient background
         <Button
           variant="ghost"
           size="icon"
@@ -125,40 +150,31 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
             </div>
           </Link>
         </Button>
-      );
-    }
-
-    // Logged in - show user image if available, otherwise User icon with gradient background
-    return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="relative size-10 cursor-pointer rounded-full p-0 hover:bg-transparent"
-        onClick={() => setIsOpen(true)}
-      >
-        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
-          {user.avatar ? (
-            <Image
-              src={user.avatar}
-              alt={user.name}
-              width={40}
-              height={40}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="gradient-bg flex size-full items-center justify-center">
-              <UserIcon className="h-6 w-6 text-white" />
-            </div>
-          )}
-        </div>
-      </Button>
-    );
-  };
-
-  return (
-    <>
-      {/* Avatar Button */}
-      <AvatarButton />
+      ) : (
+        // Logged in - show user image if available, otherwise User icon with gradient background
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative size-10 cursor-pointer rounded-full p-0 hover:bg-transparent"
+          onClick={() => setIsOpen(true)}
+        >
+          <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.name}
+                width={40}
+                height={40}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="gradient-bg flex size-full items-center justify-center">
+                <UserIcon className="h-6 w-6 text-white" />
+              </div>
+            )}
+          </div>
+        </Button>
+      )}
 
       {/* Overlay */}
       {isOpen && (
@@ -215,12 +231,12 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           </div>
 
           {/* Menu Items */}
-          <nav className="border-b px-4 py-2">
+          <nav className="border-b px-2 py-2">
             {menuItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-base text-slate-900 transition-colors hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
+                className="flex items-center gap-3 rounded-lg px-6 py-3 text-base text-slate-900 transition-colors hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
                 onClick={() => setIsOpen(false)}
               >
                 {item.icon}
@@ -233,7 +249,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
 
             <button
               onClick={handleSignOut}
-              className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+              className="flex w-full items-center gap-3 rounded-lg px-6 py-3 text-base text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
             >
               <LogOut className="h-5 w-5" />
               <span>Sign Out</span>
@@ -255,7 +271,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
             </div>
 
             <ScrollArea className="h-[calc(100vh-400px)]">
-              <div className="space-y-1 px-4 pb-4">
+              <div className="space-y-1 px-0 pb-4">
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}

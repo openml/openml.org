@@ -15,6 +15,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/data/**", // Optional: restrict  if needed
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**", // Google user avatars
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**", // GitHub user avatars
+      },
     ],
     // Vercel automatically optimizes images
     formats: ["image/avif", "image/webp"],

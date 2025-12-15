@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ import {
   MessageSquare,
   Flame,
   TrendingUp,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -39,6 +42,8 @@ interface FocusCard {
 }
 
 export function UserDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [user, setUser] = useState<{
     name: string;
     username: string;
@@ -56,26 +61,41 @@ export function UserDashboard() {
   });
 
   useEffect(() => {
-    // Load user from localStorage
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        const firstName = userData.firstName || "";
-        const lastName = userData.lastName || "";
-        setUser({
-          name:
-            `${firstName} ${lastName}`.trim() || userData.username || "User",
-          username: userData.username || "user",
-        });
-      } catch (error) {
-        console.error("Error parsing user data:", error);
+    // Redirect to sign-in if not authenticated
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
+      return;
+    }
+
+    // Load user from NextAuth session or localStorage fallback
+    if (status === "authenticated" && session?.user) {
+      setUser({
+        name: session.user.name || session.user.username || "User",
+        username:
+          session.user.username || session.user.email?.split("@")[0] || "user",
+      });
+    } else {
+      // Fallback to localStorage for backward compatibility
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const firstName = userData.firstName || "";
+          const lastName = userData.lastName || "";
+          setUser({
+            name:
+              `${firstName} ${lastName}`.trim() || userData.username || "User",
+            username: userData.username || "user",
+          });
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
       }
     }
 
     // TODO: Fetch real stats from API
     // For now using mock data
-  }, []);
+  }, [session, status, router]);
 
   const focusCards: FocusCard[] = [
     {
@@ -106,6 +126,15 @@ export function UserDashboard() {
 
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
 
+  // Show loading state
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-lg text-slate-600 dark:text-slate-400">Loading...</p>
+      </div>
+    );
+  }
+
   if (!user) {
     return null;
   }
@@ -114,13 +143,23 @@ export function UserDashboard() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8 sm:px-6">
         {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Welcome, {user.name}!
-          </h1>
-          <p className="text-muted-foreground mt-2 text-lg">
-            OpenML is the place to learn data science and build a portfolio.
-          </p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Welcome, {user.name}!
+            </h1>
+            <p className="text-muted-foreground mt-2 text-lg">
+              OpenML is the place to learn data science and build a portfolio.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+            className="gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </Button>
         </div>
 
         {/* Stats Cards Row */}
@@ -187,7 +226,7 @@ export function UserDashboard() {
             <CardContent>
               <div className="flex items-center justify-between">
                 {weekDays.map((day, index) => (
-                  <div key={day} className="text-center">
+                  <div key={`day-${index}`} className="text-center">
                     <div className="mb-2 text-xs font-medium text-slate-600 dark:text-slate-300">
                       {day}
                     </div>
