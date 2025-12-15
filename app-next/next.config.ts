@@ -4,15 +4,20 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const nextConfig: NextConfig = {
+  // Vercel-specific optimizations
+  output: "standalone", // Optimize for Vercel deployment
+
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: "https",wd
         hostname: "www.openml.org",
         port: "",
         pathname: "/data/**", // Optional: restrict  if needed
       },
     ],
+    // Vercel automatically optimizes images
+    formats: ["image/avif", "image/webp"],
   },
   // Built-in 301 redirects for backward compatibility
   // Academic papers and external links often cite OpenML entities using short URLs
