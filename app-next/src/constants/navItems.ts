@@ -27,6 +27,7 @@ export interface NavItem {
   color?: string;
   index?: string;
   children?: NavItem[];
+  isExternal?: boolean; // Flag for external links
 }
 
 export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
@@ -189,6 +190,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           href: "https://github.com/orgs/openml/discussions",
           icon: faComments,
           color: entityColors.discussions,
+          isExternal: true, // Mark as external link
         },
       ],
     },

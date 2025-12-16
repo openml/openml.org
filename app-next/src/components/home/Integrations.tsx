@@ -51,28 +51,28 @@ export default function Integrations({ content }: IntegrationsProps) {
 
   return (
     <TooltipProvider>
-      <section className="py-3 text-center">
+      <section className="px-3 py-3 text-center md:px-0">
         <div className="mx-auto inline-block text-xl font-medium text-slate-800 opacity-90 dark:text-slate-200">
           {content.overline}
         </div>
-        <h1 className="title-font gradient-text mb-2 text-[clamp(3rem,4.6vw,72px)] leading-[1.2] font-bold tracking-tight">
+        <h1 className="title-font gradient-text mb-2 text-[clamp(2.5rem,4.6vw,72px)] leading-[1.2] font-bold tracking-tight">
           {content.heading}
         </h1>
         <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-700 dark:text-slate-300">
           {content.subtitle}
         </p>
 
-        <div className="my-6 flex flex-wrap justify-center gap-4 pt-3">
+        <div className="my-6 flex flex-wrap justify-center gap-3 pt-3 lg:gap-10">
           {integrations.map((integration) => (
             <Tooltip key={integration.name}>
               <TooltipTrigger asChild>
-                <div className="light:border-slate-800 mx-3.5 inline-block rounded-lg border bg-slate-100 p-3 shadow-sm transition-shadow hover:shadow-md">
+                <div className="light:border-slate-800 inline-block rounded-lg border bg-slate-100 p-1.5 shadow-sm transition-shadow hover:shadow-md md:p-3">
                   <Image
                     alt={integration.name}
                     src={integration.icon}
-                    width={40}
-                    height={40}
-                    className="h-auto align-middle"
+                    width={32}
+                    height={32}
+                    className="h-auto align-middle md:h-10 md:w-10"
                     style={{
                       height: integration.height,
                       margin: integration.margin,

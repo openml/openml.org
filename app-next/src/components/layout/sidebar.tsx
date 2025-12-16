@@ -2,6 +2,7 @@
 
 import { usePathname } from "@/config/routing"; // Use localized usePathname
 import { Link } from "@/config/routing"; // Use localized Link
+import NextLink from "next/link"; // For routes outside localized config
 import { useTranslations } from "next-intl";
 import { cn, abbreviateNumber } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +11,12 @@ import {
   ChevronRight,
   ArrowRightFromLine,
   ArrowLeftFromLine,
+  ExternalLink,
+  User as UserIcon,
+  Settings,
+  LogOut,
 } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,15 +27,46 @@ import { useSidebar } from "@/contexts/sidebar-context";
 export function Sidebar() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const {
-    isCollapsed,
-    setIsCollapsed,
-    homeMenuOpen,
-    homeMenuIconOnly,
-    setHomeMenuIconOnly,
-  } = useSidebar();
+  const { isCollapsed, setIsCollapsed, homeMenuOpen, setHomeMenuOpen } =
+    useSidebar();
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    avatar: string;
+    initials: string;
+  } | null>(null);
   const t = useTranslations("sidebar");
+
+  // Load user from NextAuth session
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const firstName =
+        (session.user as { firstName?: string }).firstName || "";
+      const lastName = (session.user as { lastName?: string }).lastName || "";
+      const name =
+        session.user.name ||
+        `${firstName} ${lastName}`.trim() ||
+        session.user.username ||
+        "User";
+      const email = session.user.email || "";
+      const avatar = session.user.image || "";
+      const initials =
+        `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() ||
+        name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2) ||
+        "OP";
+      // Use queueMicrotask to avoid cascading render warning
+      queueMicrotask(() => {
+        setUser({ name, email, avatar, initials });
+      });
+    }
+  }, [status, session]);
 
   // Fetch entity counts on mount
   useEffect(() => {
@@ -68,87 +105,112 @@ export function Sidebar() {
       });
   }, []);
 
-  // Homepage: Different behavior
-  if (isHomePage) {
-    return (
-      <>
-        {/* Overlay when menu is open */}
-        {homeMenuOpen && !homeMenuIconOnly && (
-          <div
-            className="fixed inset-0 z-40 bg-slate-700/20"
-            onClick={() => setHomeMenuIconOnly(true)}
-          />
+  // Render mobile/tablet unified menu (< 1024px for all pages, all sizes for homepage)
+  const renderUnifiedMenu = () => (
+    <>
+      {/* Overlay when menu is open */}
+      {homeMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-700/20"
+          onClick={() => setHomeMenuOpen(false)}
+        />
+      )}
+
+      {/* Unified Sidebar - Mobile/Tablet */}
+      <div
+        className={cn(
+          "fixed top-0 left-0 z-50 flex h-screen flex-col bg-[#233044] transition-all duration-300 ease-in-out",
+          isHomePage
+            ? homeMenuOpen
+              ? "w-64"
+              : "w-0"
+            : homeMenuOpen
+              ? "w-64 lg:hidden"
+              : "w-0 lg:hidden",
+        )}
+      >
+        {/* Logo Header - Only show when menu is open */}
+        {homeMenuOpen && (
+          <div className="relative flex min-h-40 shrink-0 items-start justify-center bg-[#233044] py-6">
+            <Link
+              href="/"
+              className="group flex w-64 items-center justify-center"
+              onClick={() => setHomeMenuOpen(false)}
+            >
+              <Image
+                src="/logo_openML_dark-bkg.png"
+                alt="OpenML Logo"
+                width={140}
+                height={70}
+                className="object-contain transition-transform duration-300 ease-out group-hover:scale-110"
+                style={{
+                  animation: "logoFadeScale 0.4s ease-out 0.2s both",
+                }}
+              />
+            </Link>
+          </div>
         )}
 
-        {/* Homepage Sidebar */}
-        <div
-          className={cn(
-            "fixed top-0 left-0 z-50 flex h-screen flex-col bg-[#233044] transition-all duration-300 ease-in-out",
-            homeMenuIconOnly ? "w-12" : "w-64",
-          )}
-        >
-          {/* Logo Header */}
-          <div className="relative flex min-h-40 shrink-0 items-start justify-center bg-[#233044] py-6">
-            {!homeMenuIconOnly && (
-              <Link
-                href="/"
-                className="group flex w-64 items-center justify-center"
-              >
-                <Image
-                  src="/logo_openML_dark-bkg.png"
-                  alt="OpenML Logo"
-                  width={140}
-                  height={70}
-                  className="object-contain transition-transform duration-300 ease-out group-hover:scale-110"
-                  style={{
-                    animation: "logoFadeScale 0.4s ease-out 0.2s both",
-                  }}
-                />
-              </Link>
-            )}
-
-            {homeMenuIconOnly && (
-              <div className="flex h-12 w-12 items-center justify-center">
-                <Image
-                  src="/openML_logo_mini-sidebar.png"
-                  alt="OpenML Logo"
-                  width={32}
-                  height={32}
-                  className="object-contain"
-                />
-              </div>
-            )}
-
-            {/* Toggle Button - Arrow to open/close */}
-            <Button
-              variant="openml"
-              size="icon"
-              onClick={() => setHomeMenuIconOnly(!homeMenuIconOnly)}
-              className="border-tr-2 border-br-2 hover:border[#233044] hover:text-[#233044 absolute top-24 -right-4.5 size-9 -translate-y-1/2 rounded-full border-slate-300 bg-[#233044] text-slate-300 hover:bg-slate-300 hover:text-[#1E2A38]"
-            >
-              {!homeMenuIconOnly ? (
-                <ArrowLeftFromLine className="size-6" />
-              ) : (
-                <ArrowRightFromLine className="size-6" />
-              )}
-            </Button>
-          </div>
-
-          {/* Navigation */}
+        {/* Navigation - Only show when menu is open */}
+        {homeMenuOpen && (
           <ScrollArea className="-mt-4 flex-1 overflow-auto pb-4">
-            <div
-              className={cn(
-                "space-y-6 pb-8",
-                homeMenuIconOnly ? "px-1" : "px-3",
-              )}
-            >
+            <div className="space-y-6 px-3 pb-8">
+              {/* User Profile Section - Mobile Only */}
+              <div className="border-b border-slate-600 pb-4 lg:hidden">
+                {user ? (
+                  <div className="flex items-center gap-3 rounded-lg bg-slate-700/30 p-3">
+                    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500">
+                      {user.avatar ? (
+                        <Image
+                          src={user.avatar}
+                          alt={user.name}
+                          width={48}
+                          height={48}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="gradient-bg flex size-full items-center justify-center">
+                          <span className="text-base font-semibold text-white">
+                            {user.initials}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="truncate text-sm font-semibold text-white">
+                        {user.name}
+                      </p>
+                      <p className="truncate text-xs text-gray-400">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <NextLink
+                    href="/auth/account"
+                    onClick={() => setHomeMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-lg bg-slate-700/30 p-3 transition-colors hover:bg-slate-700/50"
+                  >
+                    <div className="gradient-bg flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-blue-500">
+                      <UserIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-white">
+                        Sign In
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Access your account
+                      </p>
+                    </div>
+                  </NextLink>
+                )}
+              </div>
+
               {navItems.map((section) => (
                 <div key={section.title}>
-                  {!homeMenuIconOnly && (
-                    <h4 className="mb-1.5 px-3 text-sm font-semibold tracking-tight text-gray-400 uppercase">
-                      {t(section.titleKey)}
-                    </h4>
-                  )}
+                  <h4 className="mb-1.5 px-3 text-sm font-semibold tracking-tight text-gray-400 uppercase">
+                    {t(section.titleKey)}
+                  </h4>
                   <div className="space-y-1">
                     {section.items.map((item) => (
                       <SidebarItem
@@ -157,28 +219,69 @@ export function Sidebar() {
                         pathname={pathname}
                         counts={counts}
                         t={t}
-                        iconOnly={homeMenuIconOnly}
-                        onItemClick={() => {
-                          if (!homeMenuIconOnly) {
-                            setHomeMenuIconOnly(true);
-                          }
-                        }}
+                        iconOnly={false}
+                        onItemClick={() => setHomeMenuOpen(false)}
                       />
                     ))}
                   </div>
                 </div>
               ))}
+
+              {/* User Menu Items - Mobile Only */}
+              {user && (
+                <div className="border-t border-slate-600 pt-4 lg:hidden">
+                  <h4 className="mb-1.5 px-3 text-sm font-semibold tracking-tight text-gray-400 uppercase">
+                    Account
+                  </h4>
+                  <div className="space-y-1">
+                    <NextLink
+                      href="/profile"
+                      onClick={() => setHomeMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-slate-700/50 hover:text-white"
+                    >
+                      <UserIcon className="h-5 w-5" />
+                      <span>My Profile</span>
+                    </NextLink>
+                    <NextLink
+                      href="/settings"
+                      onClick={() => setHomeMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-slate-700/50 hover:text-white"
+                    >
+                      <Settings className="h-5 w-5" />
+                      <span>Settings</span>
+                    </NextLink>
+                    <button
+                      onClick={() => {
+                        setHomeMenuOpen(false);
+                        signOut({ callbackUrl: "/" });
+                      }}
+                      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-slate-700/50 hover:text-white"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
-        </div>
-      </>
-    );
+        )}
+      </div>
+    </>
+  );
+
+  // Homepage: Always show unified menu
+  if (isHomePage) {
+    return renderUnifiedMenu();
   }
 
-  // Regular pages: Normal sidebar
+  // Other pages: Show unified menu on mobile (< 1024px) + desktop sidebar
   return (
     <>
-      {/* Full sidebar */}
+      {/* Mobile/Tablet Unified Menu (< 1024px) */}
+      <div className="lg:hidden">{renderUnifiedMenu()}</div>
+
+      {/* Desktop Sidebar (>= 1024px) */}
       <div
         className={cn(
           "fixed top-0 left-0 z-100 hidden h-screen border-r-0 bg-[#233044] transition-all duration-300 ease-in-out lg:flex lg:shrink-0 lg:flex-col",
@@ -200,18 +303,6 @@ export function Sidebar() {
                 }}
               />
             </Link>
-          )}
-
-          {isCollapsed && (
-            <div className="-mt-12 flex h-12 w-12 items-start justify-center">
-              <Image
-                src="/openML_logo_mini-sidebar.png"
-                alt="OpenML Logo"
-                width={32}
-                height={32}
-                className="object-contain"
-              />
-            </div>
           )}
 
           {/* Collapse Button */}
@@ -327,6 +418,7 @@ function SidebarItem({
         )}
         title={t(item.titleKey)}
       >
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <Link href={item.href as any} onClick={onItemClick}>
           {item.icon && (
             <FontAwesomeIcon
@@ -417,9 +509,12 @@ function SidebarItem({
             )}
             <span className="text-sm">{t(item.titleKey)}</span>
           </span>
-          {countText && (
-            <span className="ml-auto text-xs text-gray-400">{countText}</span>
-          )}
+          <span className="ml-auto flex items-center gap-1.5">
+            {countText && (
+              <span className="text-xs text-gray-400">{countText}</span>
+            )}
+            <ExternalLink className="h-3.5 w-3.5 text-gray-400" />
+          </span>
         </a>
       </Button>
     );

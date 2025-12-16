@@ -12,22 +12,95 @@ import { NotificationsBell } from "@/components/header/notifications-bell";
 import { UserActivitySidebar } from "@/components/layout/user-activity-sidebar";
 import { CreateMenu } from "@/components/header/create-menu";
 import { useSidebar } from "@/contexts/sidebar-context";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const t = useTranslations("header");
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const { setHomeMenuOpen, setHomeMenuIconOnly, setBurgerClicked } =
-    useSidebar();
+  const { homeMenuOpen, setHomeMenuOpen } = useSidebar();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#eaeff5]/95 text-slate-800 shadow-sm">
-      <div className="flex h-24 items-center gap-8 pr-4 md:pr-6">
-        {/* Logo - Left aligned with sidebar, centered within 256px */}
-        <div className="flex w-64 shrink-0 items-center justify-center">
+      <div className="flex h-24 items-center justify-between gap-2 px-3 md:gap-4 md:px-0">
+        {/* Sidebar-width Container - Desktop only */}
+        <div className="hidden shrink-0 items-center justify-center gap-2 md:flex lg:w-64">
+          {/* Burger Menu */}
+          {(isHomePage || true) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setHomeMenuOpen(!homeMenuOpen)}
+              className={cn(
+                "size-12 hover:bg-slate-700 hover:text-slate-300",
+                !isHomePage && "lg:hidden",
+              )}
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="size-9"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </Button>
+          )}
+
+          {/* Logo */}
+          {!(isHomePage && homeMenuOpen) && (
+            <Link
+              href="/"
+              className="flex items-center transition-transform hover:scale-107"
+              title="OpenML Home"
+            >
+              <Image
+                src="/logo_openML_light-bkg.png"
+                alt="OpenML"
+                width={140}
+                height={70}
+                className="object-contain"
+                priority
+              />
+            </Link>
+          )}
+        </div>
+
+        {/* Mobile Burger Menu */}
+        {(isHomePage || true) && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setHomeMenuOpen(!homeMenuOpen)}
+            className={cn(
+              "size-12 hover:bg-slate-700 hover:text-slate-300 md:hidden",
+              !isHomePage && "lg:hidden",
+            )}
+            aria-label="Toggle menu"
+          >
+            <svg
+              className="size-9"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </Button>
+        )}
+
+        {/* Mobile Logo - Centered */}
+        {!(isHomePage && homeMenuOpen) && (
           <Link
             href="/"
-            className="flex items-center transition-transform hover:scale-107"
+            className="flex items-center transition-transform hover:scale-107 md:hidden"
             title="OpenML Home"
           >
             <Image
@@ -39,15 +112,15 @@ export function Header() {
               priority
             />
           </Link>
-        </div>
+        )}
 
-        {/* Search Bar - Middle (flexible) */}
-        <div className="hidden flex-1 md:flex">
+        {/* Search Bar - Desktop, starts after sidebar */}
+        <div className="hidden flex-1 md:flex md:pr-6">
           <SearchBar />
         </div>
 
         {/* Action Icons - Right */}
-        <div className="mr-[1%] flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4 md:pr-6">
           {/* Documentation */}
           <Button
             variant="ghost"
@@ -62,7 +135,8 @@ export function Header() {
           </Button>
 
           {/* Language Switcher */}
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block"> */}
+          <div className="">
             <LanguageSwitcher />
           </div>
 
@@ -75,25 +149,15 @@ export function Header() {
           {/* Create Menu */}
           <CreateMenu />
 
-          {/* User Activity Sidebar */}
-          <div className="pl-[10px]">
+          {/* User Activity Sidebar - Desktop Only */}
+          <div className="hidden pl-[10px] lg:block">
             <UserActivitySidebar />
           </div>
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-slate-700 hover:bg-slate-100 hover:text-slate-900 md:hidden"
-          >
-            <span className="text-sm">☰</span>
-            <span className="sr-only">{t("menu")}</span>
-          </Button>
         </div>
       </div>
 
       {/* Mobile Search - Below header on small screens */}
-      <div className="pb-3 md:hidden">
+      <div className="px-3 pb-3 md:hidden">
         <SearchBar />
       </div>
     </header>

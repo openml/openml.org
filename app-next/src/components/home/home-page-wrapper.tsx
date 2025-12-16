@@ -3,11 +3,11 @@
 import { useSidebar } from "@/contexts/sidebar-context";
 
 export function HomePageWrapper({ children }: { children: React.ReactNode }) {
-  const { homeMenuIconOnly, setHomeMenuIconOnly } = useSidebar();
+  const { homeMenuOpen, setHomeMenuOpen } = useSidebar();
 
   const handleClick = () => {
-    if (!homeMenuIconOnly) {
-      setHomeMenuIconOnly(true);
+    if (homeMenuOpen) {
+      setHomeMenuOpen(false);
     }
   };
 

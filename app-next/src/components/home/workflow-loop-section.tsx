@@ -8,16 +8,9 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SectionContainer } from "@/components/layout/section-container";
-import {
-  Download,
-  Cog,
-  Upload,
-  ArrowBigRight,
-  CornerRightUp,
-} from "lucide-react";
+import { ArrowBigRight, CornerRightUp } from "lucide-react";
 import Image from "next/image";
 import {
   WorkflowImportIcon,
@@ -39,7 +32,7 @@ export function WorkflowLoopSection() {
             </span>
           </h1>
         </div>
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-1 lg:grid-cols-3">
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-8 px-0 md:grid-cols-1 md:px-[15%] lg:grid-cols-3 lg:px-0">
           <WorkflowConnectorArrow className="left-[calc(33.33%-0.5rem)]" />
           <WorkflowConnectorArrow className="left-[calc(66.66%+0.3rem)]" />
           {/* Step 1: Import */}
@@ -81,7 +74,9 @@ export function WorkflowLoopSection() {
               </Link>
             </CardFooter>
           </Card>
-          <WorkflowVerticalArrow className="left-[calc(50%)] -mt-3 block rotate-90" />
+
+          {/* <WorkflowVerticalArrowA className="left-[calc(50%)] mt-1 block rotate-90" /> */}
+          <WorkflowVerticalArrow className="-m-6 block rotate-90" />
           {/* Step 2: Build & Run */}
           <Card className="group hover:border-primary relative mb-0 overflow-hidden border-2 pb-6 transition-all duration-300 hover:shadow-xl">
             <div className="absolute inset-0 flex flex-col bg-linear-to-br from-[#8b5cf6]/5 to-[#ec4899]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -111,8 +106,11 @@ export function WorkflowLoopSection() {
               />
             </CardHeader>
           </Card>
-          <WorkflowVerticalArrow className="left-[calc(50%)] -mt-3 block rotate-90" />
 
+          {/* <WorkflowVerticalArrowB className="left-[calc(50%)] mt-6 block rotate-90" /> */}
+          <WorkflowVerticalArrow className="-m-6 block rotate-90" />
+
+          {/* Step 3: Export */}
           <Card className="group hover:border-primary relative mb-0 overflow-hidden border-2 pb-6 transition-all duration-300 hover:shadow-xl">
             <div className="absolute inset-0 bg-linear-to-br from-[#ec4899]/5 to-[#6366f1]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             {/* Step Number Badge */}
@@ -261,11 +259,31 @@ const WorkflowConnectorArrow: React.FC<{ className?: string }> = ({
   </div>
 );
 
+// const WorkflowVerticalArrowA: React.FC<{ className?: string }> = ({
+//   className,
+// }) => (
+//   <div
+//     className={`absolute top-3/10 z-10 flex h-9 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-white/70 shadow-md lg:hidden ${className}`}
+//   >
+//     <ArrowBigRight className="text-primary/70 h-8 w-8" />
+//   </div>
+// );
+
+// const WorkflowVerticalArrowB: React.FC<{ className?: string }> = ({
+//   className,
+// }) => (
+//   <div
+//     className={`absolute top-7/10 z-10 flex h-9 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-white/70 shadow-md lg:hidden ${className}`}
+//   >
+//     <ArrowBigRight className="text-primary/70 h-8 w-8" />
+//   </div>
+// );
+
 const WorkflowVerticalArrow: React.FC<{ className?: string }> = ({
   className,
 }) => (
   <div
-    className={`absolute top-3/10 z-10 flex h-9 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-white/70 shadow-md lg:hidden ${className}`}
+    className={`-z-10 -m-4 flex items-center justify-center rounded-lg bg-white/70 shadow-md lg:hidden ${className}`}
   >
     <ArrowBigRight className="text-primary/70 h-8 w-8" />
   </div>

@@ -7,19 +7,13 @@ interface SidebarContextType {
   setIsCollapsed: (collapsed: boolean) => void;
   homeMenuOpen: boolean;
   setHomeMenuOpen: (open: boolean) => void;
-  homeMenuIconOnly: boolean;
-  setHomeMenuIconOnly: (iconOnly: boolean) => void;
-  burgerClicked: boolean;
-  setBurgerClicked: (clicked: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [homeMenuOpen, setHomeMenuOpen] = useState(true);
-  const [homeMenuIconOnly, setHomeMenuIconOnly] = useState(true);
-  const [burgerClicked, setBurgerClicked] = useState(false);
+  const [homeMenuOpen, setHomeMenuOpen] = useState(false);
 
   return (
     <SidebarContext.Provider
@@ -28,10 +22,6 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         setIsCollapsed,
         homeMenuOpen,
         setHomeMenuOpen,
-        homeMenuIconOnly,
-        setHomeMenuIconOnly,
-        burgerClicked,
-        setBurgerClicked,
       }}
     >
       {children}

@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Integrations from "./Integrations";
-import { CornerRightUp, MoveUpRight, Menu, X } from "lucide-react";
+import { CornerRightUp, MoveUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 export const HeroHome: React.FC = () => {
   const [showHint, setShowHint] = useState(true);
+  const { setHomeMenuOpen } = useSidebar();
   const t = useTranslations("home.hero");
   const tEco = useTranslations("home.ecosystem");
 
@@ -18,7 +20,10 @@ export const HeroHome: React.FC = () => {
 
   return (
     // <div className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg_lightMode_4_heroSection.png')] bg-cover bg-center dark:bg-none">
-    <div className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top mix-blend-plus-darker dark:bg-none">
+    <div
+      className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top mix-blend-plus-darker dark:bg-none"
+      onClick={() => setHomeMenuOpen(false)}
+    >
       {/* Hamburger Menu Hint - Fixed position */}
       {showHint && (
         <div className="animate-in fade-in slide-in-from-left-5 fixed top-28 left-4 z-50 duration-500 lg:top-32"></div>
@@ -28,7 +33,7 @@ export const HeroHome: React.FC = () => {
         <div className="grid max-w-7xl grid-cols-1 items-center gap-8 lg:mx-6 lg:grid-cols-2 lg:gap-10 2xl:mx-16">
           {/* Left Column - Text */}
           <div className="text-center lg:text-left">
-            <div className="mb-3 inline-block rounded-sm bg-slate-100 px-4 py-1 text-xs font-medium dark:bg-slate-800">
+            <div className="mb-2 inline-block rounded-sm bg-slate-100 px-4 py-1 text-sm font-medium dark:bg-slate-800">
               <span className="gradient-text">{t("version")}</span>
             </div>
 
@@ -144,7 +149,7 @@ export const HeroHome: React.FC = () => {
         </div>
       </section>
 
-      <section className="flex flex-wrap justify-center gap-8">
+      <section className="mt-22 flex flex-wrap justify-center gap-8">
         <Integrations
           content={{
             overline: tEco("overline"),

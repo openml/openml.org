@@ -25,12 +25,12 @@ export function CreateMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="default"
+          variant="openml"
           size="sm"
-          className="hidden cursor-pointer gap-2 border-2 border-slate-700 bg-transparent py-3 font-semibold text-slate-700 hover:bg-slate-700 hover:text-white md:inline-flex"
+          className="mr-0 cursor-pointer border-2 border-slate-700 bg-transparent py-3 font-semibold text-slate-700 hover:bg-slate-700 hover:text-white md:mr-2"
         >
           <Plus className="size-6" />
-          <span>{t("addNew")}</span>
+          <span className="hidden md:inline-flex">{t("addNew")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

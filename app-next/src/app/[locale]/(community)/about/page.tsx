@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { TableOfContents } from "@/components/about/table-of-contents";
+import { TeamSection } from "@/components/about/team-section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -299,31 +300,7 @@ export default async function AboutPage({
 
           {/* Core Team */}
           <section id="team" className="mb-16 scroll-mt-20">
-            <h2 className="mb-6 text-3xl font-bold">Core Team</h2>
-            <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
-              OpenML is maintained by a dedicated team of researchers and
-              developers from institutions worldwide, including TU Eindhoven,
-              LMU Munich, and collaborators across Europe and beyond.
-            </p>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card>
-                <CardContent className="pt-6">
-                  <h3 className="mb-2 font-semibold">Project Lead</h3>
-                  <p className="text-muted-foreground">
-                    <strong>Joaquin Vanschoren</strong> — TU Eindhoven
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <h3 className="mb-2 font-semibold">Core Contributors</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Pieter Gijsbers, Jan van Rijn, Bernd Bischl, and many
-                    community contributors
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+            <TeamSection />
           </section>
 
           {/* Get Involved */}

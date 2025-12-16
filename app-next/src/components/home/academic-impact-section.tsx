@@ -32,14 +32,14 @@ export function AcademicImpactSection() {
           {t("intro")}
         </p>
       </div>
-      <div className="mx-auto flex max-w-5xl gap-12 md:flex-row md:items-center">
-        <div className="flex-2 items-center text-end">
+      <div className="fr mx-auto flex max-w-5xl flex-col justify-center gap-12 px-2 md:px-10 lg:flex-row lg:items-center lg:px-2">
+        <div className="flex-2 items-center text-center lg:text-end">
           <h2 className="text-foreground mb-5 text-2xl font-bold md:text-3xl">
             {t("subtitle")}
           </h2>
-          <p className="text-muted-foreground text-base/8">{t("text")}</p>
+          <p className="text-muted-foreground text-lg leading-8">{t("text")}</p>
         </div>
-        <div className="flex-3 items-center justify-center">
+        <div className="flex-3 items-center justify-center px-16 md:px-32 lg:px-0">
           <div className="relative mt-2 pb-12">
             <Image
               src={getImagePath("light")}
