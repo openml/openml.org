@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
             process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
 
           // Call Flask login endpoint
-          const res = await fetch(`${apiUrl}/api/v1/user/login`, {
+          const res = await fetch(`${apiUrl}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

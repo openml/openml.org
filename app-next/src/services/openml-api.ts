@@ -4,7 +4,7 @@
  */
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+  process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
 
 interface LoginResponse {
   access_token: string;
@@ -49,7 +49,7 @@ export async function loginToOpenML(
   error?: string;
 }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/login`, {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export async function getUserProfile(
   token: string,
 ): Promise<{ success: boolean; user?: OpenMLUser; error?: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+    const response = await fetch(`${API_BASE_URL}/profile`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
