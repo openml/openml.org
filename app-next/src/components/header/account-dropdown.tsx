@@ -3,6 +3,7 @@
 import * as React from "react";
 import { User, LogOut, FileText, Bell } from "lucide-react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ import { useTranslations } from "next-intl";
  */
 export function AccountDropdown() {
   const t = useTranslations("sidebar");
+  const { data: session, status } = useSession();
   const [user, setUser] = React.useState<{
     name: string;
     email: string;
@@ -29,29 +31,75 @@ export function AccountDropdown() {
     initials: string;
   } | null>(null);
 
-  // Load user from localStorage
+  // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        const firstName = userData.firstName || "";
-        const lastName = userData.lastName || "";
-        const initials =
-          `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "U";
+    console.log("🔍 [AccountDropdown] Session status:", status);
+    console.log("🔍 [AccountDropdown] Session data:", session);
 
-        setUser({
-          name:
-            `${firstName} ${lastName}`.trim() || userData.username || "User",
-          email: userData.email || "",
-          avatar: userData.image || "",
-          initials: initials,
-        });
-      } catch (error) {
-        console.error("Error parsing user data:", error);
+    if (session?.user) {
+      // Use NextAuth session
+      const firstName = (session.user as any).firstName || "";
+      const lastName = (session.user as any).lastName || "";
+      console.log(
+        "👤 [AccountDropdown] firstName:",
+        firstName,
+        "lastName:",
+        lastName,
+      );
+
+      const name =
+        session.user.name || `${firstName} ${lastName}`.trim() || "User";
+      const initials =
+        `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() ||
+        name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase() ||
+        "U";
+
+      console.log("✅ [AccountDropdown] Setting user with initials:", initials);
+      setUser({
+        name,
+        email: session.user.email || "",
+        avatar: session.user.image || "",
+        initials,
+      });
+    } else {
+      // Fallback to localStorage for legacy login
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const firstName = userData.firstName || "";
+          const lastName = userData.lastName || "";
+          const initials =
+            `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "U";
+
+          // Treat "0000" or invalid images as no image
+          const hasValidImage =
+            userData.image &&
+            userData.image !== "0000" &&
+            (userData.image.startsWith("http") ||
+              userData.image.startsWith("/"));
+
+          setUser({
+            name:
+              `${firstName} ${lastName}`.trim() || userData.username || "User",
+            email: userData.email || "",
+            avatar: hasValidImage ? userData.image : "",
+            initials: initials,
+          });
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
       }
     }
-  }, []);
+  }, [session]);
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/auth/signin" });
+  };
 
   const [notifications] = React.useState([
     {
@@ -63,12 +111,6 @@ export function AccountDropdown() {
       isNew: true,
     },
   ]);
-
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    window.location.href = "/";
-  };
 
   // If not logged in, show sign-in button
   if (!user) {

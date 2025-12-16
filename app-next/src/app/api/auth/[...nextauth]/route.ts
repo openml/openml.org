@@ -47,11 +47,26 @@ export const authOptions: NextAuthOptions = {
           const data = await res.json();
 
           if (res.ok && data.access_token) {
-            // Return user object with JWT token
+            // Fetch user profile
+            const profileRes = await fetch(`${apiUrl}/profile`, {
+              headers: { Authorization: `Bearer ${data.access_token}` },
+            });
+            const profile = profileRes.ok ? await profileRes.json() : {};
+
+            // Return user object with JWT token and profile
             return {
               id: credentials.email,
               email: credentials.email,
+              name:
+                `${profile.first_name || ""} ${profile.last_name || ""}`.trim() ||
+                credentials.email,
+              image:
+                profile.image && profile.image !== "0000"
+                  ? profile.image
+                  : null,
               accessToken: data.access_token,
+              firstName: profile.first_name,
+              lastName: profile.last_name,
             };
           }
 
@@ -102,8 +117,16 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Handle credentials provider
-        if (account.provider === "credentials" && (user as any).accessToken) {
-          token.accessToken = (user as any).accessToken;
+        if (account.provider === "credentials") {
+          if ((user as any).accessToken) {
+            token.accessToken = (user as any).accessToken;
+          }
+          if ((user as any).firstName) {
+            token.firstName = (user as any).firstName;
+          }
+          if ((user as any).lastName) {
+            token.lastName = (user as any).lastName;
+          }
         }
       }
 
@@ -116,6 +139,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.userId as string;
         session.user.username = token.username as string;
         session.accessToken = token.accessToken as string;
+        (session.user as any).firstName = token.firstName as string;
+        (session.user as any).lastName = token.lastName as string;
       }
       return session;
     },

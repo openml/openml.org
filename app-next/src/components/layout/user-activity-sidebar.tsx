@@ -46,18 +46,42 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
 
   // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
+    console.log("🔍 [UserActivitySidebar] Session status:", status);
+    console.log("🔍 [UserActivitySidebar] Session:", session);
+
     if (status === "authenticated" && session?.user) {
-      const name = session.user.name || session.user.username || "User";
+      const firstName = (session.user as any).firstName || "";
+      const lastName = (session.user as any).lastName || "";
+      console.log(
+        "👤 [UserActivitySidebar] firstName:",
+        firstName,
+        "lastName:",
+        lastName,
+      );
+
+      const name =
+        session.user.name ||
+        `${firstName} ${lastName}`.trim() ||
+        session.user.username ||
+        "User";
       const email = session.user.email || "";
       const avatar = session.user.image || "";
+
+      // Calculate initials from firstName/lastName first, then fallback to name
       const initials =
+        `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() ||
         name
           .split(" ")
           .map((n) => n[0])
           .join("")
           .toUpperCase()
-          .slice(0, 2) || "OP";
+          .slice(0, 2) ||
+        "OP";
 
+      console.log(
+        "✅ [UserActivitySidebar] Setting user with initials:",
+        initials,
+      );
       setUser({
         name,
         email,
@@ -169,7 +193,9 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
               />
             ) : (
               <div className="gradient-bg flex size-full items-center justify-center">
-                <UserIcon className="h-6 w-6 text-white" />
+                <span className="text-sm font-semibold text-white">
+                  {user.initials}
+                </span>
               </div>
             )}
           </div>
@@ -206,7 +232,9 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
                 />
               ) : (
                 <div className="gradient-bg flex size-full items-center justify-center">
-                  <UserIcon className="h-8 w-8 text-white" />
+                  <span className="text-xl font-semibold text-white">
+                    {user?.initials}
+                  </span>
                 </div>
               )}
             </div>

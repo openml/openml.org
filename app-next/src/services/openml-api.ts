@@ -15,8 +15,10 @@ interface UserProfile {
   username: string;
   email: string;
   bio?: string;
-  firstName?: string;
-  lastName?: string;
+  first_name?: string; // Flask returns snake_case
+  last_name?: string; // Flask returns snake_case
+  firstName?: string; // Also support camelCase
+  lastName?: string; // Also support camelCase
   image?: string;
   company?: string;
   country?: string;
@@ -132,8 +134,8 @@ export async function getUserProfile(
     const user: OpenMLUser = {
       username: profile.username,
       email: profile.email,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
+      firstName: profile.firstName || profile.first_name, // Support both formats
+      lastName: profile.lastName || profile.last_name, // Support both formats
       bio: profile.bio,
       image: profile.image,
       company: profile.company,

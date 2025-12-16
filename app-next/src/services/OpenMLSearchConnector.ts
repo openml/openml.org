@@ -75,7 +75,7 @@ class OpenMLSearchConnector implements APIConnector {
         query.bool?.must?.push({
           bool: {
             should: [
-              // Exact phrase
+              // Exact phrase match (highest priority)
               {
                 multi_match: {
                   query: searchTerm,
@@ -86,7 +86,7 @@ class OpenMLSearchConnector implements APIConnector {
                   type: "phrase",
                 },
               },
-              // Phrase prefix
+              // Phrase prefix match (for partial word completion)
               {
                 multi_match: {
                   query: searchTerm,
@@ -97,29 +97,16 @@ class OpenMLSearchConnector implements APIConnector {
                   type: "phrase_prefix",
                 },
               },
-              // Wildcard substring
-              {
-                query_string: {
-                  query: `*${searchTerm}*`,
-                  fields: searchFields.map(
-                    (f) =>
-                      `${f}^${queryConfig.search_fields?.[f]?.weight || 1}`,
-                  ),
-                  analyze_wildcard: true,
-                },
-              },
-              // Fuzzy
+              // Exact term match
               {
                 multi_match: {
                   query: searchTerm,
                   fields: searchFields.map(
                     (f) =>
-                      `${f}^${
-                        (queryConfig.search_fields?.[f]?.weight || 1) * 0.5
-                      }`,
+                      `${f}^${queryConfig.search_fields?.[f]?.weight || 1}`,
                   ),
                   type: "best_fields",
-                  fuzziness: "AUTO",
+                  operator: "and",
                 },
               },
             ],
