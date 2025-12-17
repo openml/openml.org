@@ -164,7 +164,7 @@ export function Sidebar() {
             <div className="space-y-6 px-3 pb-8">
               {/* User Profile Section - Mobile Only */}
               <div className="border-b border-slate-600 pb-4 lg:hidden">
-                {user ? (
+                {user && (
                   <div className="flex items-center gap-3 rounded-lg bg-slate-700/30 p-3">
                     <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500">
                       {user.avatar ? (
@@ -192,24 +192,6 @@ export function Sidebar() {
                       </p>
                     </div>
                   </div>
-                ) : (
-                  <NextLink
-                    href="/auth/account"
-                    onClick={() => setHomeMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-lg bg-slate-700/30 p-3 transition-colors hover:bg-slate-700/50"
-                  >
-                    <div className="gradient-bg flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-blue-500">
-                      <UserIcon className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-white">
-                        Sign In
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Access your account
-                      </p>
-                    </div>
-                  </NextLink>
                 )}
               </div>
 

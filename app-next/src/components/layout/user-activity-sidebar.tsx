@@ -165,16 +165,6 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
       href: "/auth/profile",
       icon: <UserIcon className="h-5 w-5" />,
     },
-    {
-      label: "Your Groups",
-      href: "/groups",
-      icon: <Users className="h-5 w-5" />,
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-      icon: <Settings className="h-5 w-5" />,
-    },
   ];
 
   return (

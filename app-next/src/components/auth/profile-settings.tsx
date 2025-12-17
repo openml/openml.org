@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
   Card,
@@ -27,10 +28,12 @@ import { useToast } from "@/hooks/use-toast";
 export function ProfileSettings() {
   const t = useTranslations("sidebar");
   const { toast } = useToast();
+  const { data: session } = useSession();
   const [showApiKey, setShowApiKey] = useState(false);
-  const [apiKey] = useState("sk_openml_1234567890abcdefghijklmnop");
+  const [apiKey, setApiKey] = useState("sk_openml_1234567890abcdefghijklmnop");
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   const [profile, setProfile] = useState({
     firstName: "Helder",
@@ -50,13 +53,68 @@ export function ProfileSettings() {
     });
   };
 
-  const handleRegenerateApiKey = () => {
-    // TODO: Implement API key regeneration with backend
-    toast({
-      title: "Regenerate API Key",
-      description: "This feature will be available soon.",
-      variant: "default",
-    });
+  const handleRegenerateApiKey = async () => {
+    // Confirm action with user
+    if (
+      !window.confirm(
+        "Are you sure you want to regenerate your API key? This will invalidate your current key and you'll need to update it in all your applications.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setIsRegenerating(true);
+
+      // Get JWT token from NextAuth session or localStorage fallback
+      const token =
+        (session as any)?.accessToken || localStorage.getItem("access_token");
+
+      if (!token) {
+        throw new Error("Not authenticated. Please log in again.");
+      }
+
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
+
+      const response = await fetch(`${apiUrl}/api-key/regenerate`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response
+          .json()
+          .catch(() => ({ msg: "Failed to regenerate API key" }));
+        throw new Error(error.msg || "Regeneration failed");
+      }
+
+      const data = await response.json();
+
+      // Update API key in state
+      setApiKey(data.api_key || data.apiKey || "");
+
+      toast({
+        title: "API Key Regenerated",
+        description:
+          "Your API key has been successfully regenerated. Make sure to update it in your applications.",
+      });
+    } catch (error) {
+      console.error("API key regeneration error:", error);
+      toast({
+        title: "Regeneration Failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to regenerate API key. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRegenerating(false);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,8 +148,10 @@ export function ProfileSettings() {
     try {
       setIsUploading(true);
 
-      // Get JWT token from localStorage
-      const token = localStorage.getItem("access_token");
+      // Get JWT token from NextAuth session or localStorage fallback
+      const token =
+        (session as any)?.accessToken || localStorage.getItem("access_token");
+
       if (!token) {
         throw new Error("Not authenticated. Please log in again.");
       }
@@ -99,7 +159,8 @@ export function ProfileSettings() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("/api/upload-avatar", {
+      // const response = await fetch("/api/upload-avatar", {
+      const response = await fetch("/api/upload-avatar-vercel", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -146,8 +207,9 @@ export function ProfileSettings() {
     try {
       setIsSaving(true);
 
-      // Get JWT token
-      const token = localStorage.getItem("access_token");
+      // Get JWT token from NextAuth session or localStorage fallback
+      const token =
+        (session as any)?.accessToken || localStorage.getItem("access_token");
       if (!token) {
         throw new Error("Not authenticated. Please log in again.");
       }
@@ -428,10 +490,15 @@ export function ProfileSettings() {
                 <Button
                   variant="destructive"
                   onClick={handleRegenerateApiKey}
+                  disabled={isRegenerating}
                   className="gap-2"
                 >
-                  <RefreshCw className="h-4 w-4" />
-                  Regenerate API Key
+                  {isRegenerating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-4 w-4" />
+                  )}
+                  {isRegenerating ? "Regenerating..." : "Regenerate API Key"}
                 </Button>
               </div>
 

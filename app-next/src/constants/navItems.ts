@@ -180,7 +180,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
         {
           title: "Meet Up",
           titleKey: "meetUp",
-          href: "/meet",
+          href: "/meet-us",
           icon: faCampground,
           color: entityColors.meet,
         },

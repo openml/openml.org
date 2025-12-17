@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Plus, Database, Target, FolderPlus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -35,7 +34,7 @@ export function CreateMenu() {
         <Button
           variant="openml"
           size="sm"
-          className="group mr-0 cursor-pointer gap-2 border-0 bg-gradient-to-r from-slate-600 to-slate-700 px-4 py-2.5 font-semibold text-white shadow-lg shadow-slate-500/30 transition-all duration-300 hover:scale-105 hover:from-slate-700 hover:to-slate-800 hover:shadow-xl hover:shadow-slate-600/40 md:mr-2"
+          className="group mr-0 cursor-pointer gap-2 border-0 bg-linear-to-r from-slate-600 to-slate-700 px-4 py-2.5 font-semibold text-white shadow-lg shadow-slate-500/30 transition-all duration-300 hover:scale-105 hover:from-slate-700 hover:to-slate-800 hover:shadow-xl hover:shadow-slate-600/40 md:mr-2"
         >
           <Plus className="size-5 transition-transform duration-300 group-hover:rotate-90" />
           <span className="hidden md:inline-flex">{t("addNew")}</span>

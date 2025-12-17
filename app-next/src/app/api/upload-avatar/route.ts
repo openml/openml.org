@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 /**
  * Avatar Upload API Route
- * Proxies avatar uploads to the Flask backend on TU Eindhoven servers
+ * - Development: Proxies to Flask backend at localhost:5000
+ * - Vercel Production: Returns helpful error until backend implements /image endpoint
+ * Alternative: Use /api/upload-avatar-vercel for Vercel Blob Storage
  */
 export async function POST(request: Request) {
   try {
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get JWT token from localStorage (passed in request)
+    // Get JWT token from request
     const token = request.headers.get("Authorization");
     if (!token) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -43,32 +45,59 @@ export async function POST(request: Request) {
     const uploadFormData = new FormData();
     uploadFormData.append("file", file);
 
-    const response = await fetch(`${backendUrl}/image`, {
-      method: "POST",
-      headers: {
-        Authorization: token,
-      },
-      body: uploadFormData,
-    });
+    try {
+      const response = await fetch(`${backendUrl}/image`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+        body: uploadFormData,
+      });
 
-    if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ msg: "Upload failed" }));
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ msg: "Upload failed" }));
+
+        // If we're in production and backend isn't ready, provide helpful message
+        if (response.status === 404 || response.status === 401) {
+          return NextResponse.json(
+            {
+              error:
+                "Image upload backend not ready yet. Contact the OpenML team or use profile image from OAuth provider.",
+              suggestion:
+                "For now, sign in with GitHub/Google to use your OAuth profile picture.",
+            },
+            { status: 503 }, // Service Unavailable
+          );
+        }
+
+        return NextResponse.json(
+          { error: errorData.msg || "Upload failed" },
+          { status: response.status },
+        );
+      }
+
+      const data = await response.json();
+
+      return NextResponse.json({
+        success: true,
+        message: data.msg || "Avatar uploaded successfully",
+        imagePath: data.path,
+      });
+    } catch (fetchError) {
+      // Network error - backend not reachable
+      console.error("Backend connection error:", fetchError);
       return NextResponse.json(
-        { error: errorData.msg || "Upload failed" },
-        { status: response.status },
+        {
+          error:
+            "Cannot connect to backend server. Image upload temporarily unavailable.",
+          suggestion:
+            "Sign in with GitHub/Google to use your OAuth profile picture.",
+        },
+        { status: 503 },
       );
     }
-
-    const data = await response.json();
-
-    // Return the image path from backend
-    return NextResponse.json({
-      success: true,
-      message: data.msg || "Avatar uploaded successfully",
-      imagePath: data.path, // The path returned by Flask backend
-    });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(

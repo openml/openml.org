@@ -146,14 +146,16 @@ export function Header() {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* Notifications Bell */}
-          <NotificationsBell />
+          {/* Notifications Bell - Hidden on mobile */}
+          <div className="hidden md:block">
+            <NotificationsBell />
+          </div>
 
           {/* Create Menu */}
           <CreateMenu />
 
-          {/* User Activity Sidebar - Desktop Only */}
-          <div className="hidden pl-[10px] lg:block">
+          {/* User Activity Sidebar (Sign In / Profile) - Always visible */}
+          <div className="pl-[10px]">
             <UserActivitySidebar />
           </div>
         </div>
