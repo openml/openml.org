@@ -70,49 +70,52 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile Burger Menu */}
-        {(isHomePage || true) && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setHomeMenuOpen(!homeMenuOpen)}
-            className={cn(
-              "size-12 hover:bg-slate-700 hover:text-slate-300 md:hidden",
-              !isHomePage && "lg:hidden",
-            )}
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="size-9"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {/* Mobile Container - Hamburger + Logo (left-aligned) */}
+        <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile Burger Menu */}
+          {(isHomePage || true) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setHomeMenuOpen(!homeMenuOpen)}
+              className={cn(
+                "size-12 hover:bg-slate-700 hover:text-slate-300",
+                !isHomePage && "lg:hidden",
+              )}
+              aria-label="Toggle menu"
             >
-              <path d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </Button>
-        )}
+              <svg
+                className="size-9"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </Button>
+          )}
 
-        {/* Mobile Logo - Centered */}
-        {!(isHomePage && homeMenuOpen) && (
-          <Link
-            href="/"
-            className="flex items-center transition-transform hover:scale-107 md:hidden"
-            title="OpenML Home"
-          >
-            <Image
-              src="/logo_openML_light-bkg.png"
-              alt="OpenML"
-              width={140}
-              height={70}
-              className="object-contain"
-              priority
-            />
-          </Link>
-        )}
+          {/* Mobile Logo - Left-aligned next to hamburger */}
+          {!(isHomePage && homeMenuOpen) && (
+            <Link
+              href="/"
+              className="flex items-center transition-transform hover:scale-107"
+              title="OpenML Home"
+            >
+              <Image
+                src="/logo_openML_light-bkg.png"
+                alt="OpenML"
+                width={140}
+                height={70}
+                className="object-contain"
+                priority
+              />
+            </Link>
+          )}
+        </div>
 
         {/* Search Bar - Desktop, starts after sidebar */}
         <div className="hidden flex-1 md:flex md:pr-6">

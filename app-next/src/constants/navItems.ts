@@ -194,25 +194,4 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
         },
       ],
     },
-    {
-      title: "Extra",
-      titleKey: "extra",
-      items: [
-        {
-          title: "User Profiles",
-          titleKey: "users",
-          href: "/users",
-          icon: faUsers,
-          color: "#42A5F5",
-          index: "user",
-        },
-        {
-          title: "Account",
-          titleKey: "account",
-          href: "/auth/account",
-          icon: faUser,
-          color: entityColors.auth,
-        },
-      ],
-    },
   ];

@@ -181,17 +181,16 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     <>
       {/* Avatar Button */}
       {!user ? (
-        // Not logged in - show User icon with gradient background
+        // Not logged in - show 'Sign In' button with Google-inspired design
         <Button
           variant="ghost"
-          size="icon"
-          className="relative size-10 cursor-pointer rounded-full p-0 hover:bg-transparent"
+          size="sm"
           asChild
+          className="group cursor-pointer gap-2.5 rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:border-blue-600 hover:bg-slate-50 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-blue-500 dark:hover:bg-slate-700"
         >
-          <Link href="/auth/account">
-            <div className="gradient-bg flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
-              <UserIcon className="h-6 w-6 text-white" />
-            </div>
+          <Link href="/auth/signin" title="Sign In">
+            <UserIcon className="size-5 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+            <span>Sign In</span>
           </Link>
         </Button>
       ) : (

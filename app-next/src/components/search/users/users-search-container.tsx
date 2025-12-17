@@ -200,8 +200,34 @@ export function UsersSearchContainer({
                         const firstName = result.first_name?.raw || "";
                         const lastName = result.last_name?.raw || "";
                         const fullName = `${firstName} ${lastName}`.trim();
-                        const initials =
-                          `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
+
+                        // Calculate initials safely
+                        let initials = "OP";
+                        if (firstName && lastName) {
+                          initials =
+                            `${firstName[0]}${lastName[0]}`.toUpperCase();
+                        } else if (fullName && fullName.length > 0) {
+                          const nameParts = fullName
+                            .split(" ")
+                            .filter((n: string) => n.length > 0);
+                          if (nameParts.length >= 2) {
+                            initials =
+                              `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+                          } else if (
+                            nameParts.length === 1 &&
+                            nameParts[0].length >= 2
+                          ) {
+                            initials = nameParts[0]
+                              .substring(0, 2)
+                              .toUpperCase();
+                          } else if (
+                            nameParts.length === 1 &&
+                            nameParts[0].length === 1
+                          ) {
+                            initials = nameParts[0][0].toUpperCase();
+                          }
+                        }
+
                         const username = result.username?.raw;
                         const bio = result.bio?.snippet || result.bio?.raw;
                         const totalUploads =
@@ -220,7 +246,13 @@ export function UsersSearchContainer({
                             >
                               <Avatar className="h-20 w-20">
                                 <AvatarImage
-                                  src={result.image?.raw}
+                                  src={
+                                    result.image?.raw &&
+                                    (result.image.raw.startsWith("http://") ||
+                                      result.image.raw.startsWith("https://"))
+                                      ? result.image.raw
+                                      : undefined
+                                  }
                                   alt={fullName}
                                 />
                                 <AvatarFallback className="gradient-bg text-2xl font-bold text-white">
@@ -286,7 +318,13 @@ export function UsersSearchContainer({
                           >
                             <Avatar className="h-16 w-16 shrink-0">
                               <AvatarImage
-                                src={result.image?.raw}
+                                src={
+                                  result.image?.raw &&
+                                  (result.image.raw.startsWith("http://") ||
+                                    result.image.raw.startsWith("https://"))
+                                    ? result.image.raw
+                                    : undefined
+                                }
                                 alt={fullName}
                               />
                               <AvatarFallback className="gradient-bg text-lg font-bold text-white">
