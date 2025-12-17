@@ -85,6 +85,9 @@ export const authOptions: NextAuthOptions = {
       if (account && user) {
         // Handle OAuth providers (GitHub, Google)
         if (account.provider === "github" || account.provider === "google") {
+          // Store OAuth user image
+          token.picture = user.image || "";
+
           try {
             const apiUrl =
               process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
@@ -127,6 +130,10 @@ export const authOptions: NextAuthOptions = {
           if ((user as any).lastName) {
             token.lastName = (user as any).lastName;
           }
+          // Store OpenML profile image
+          if (user.image) {
+            token.picture = user.image;
+          }
         }
       }
 
@@ -141,6 +148,10 @@ export const authOptions: NextAuthOptions = {
         session.accessToken = token.accessToken as string;
         (session.user as any).firstName = token.firstName as string;
         (session.user as any).lastName = token.lastName as string;
+        // Add profile image to session
+        if (token.picture) {
+          session.user.image = token.picture as string;
+        }
       }
       return session;
     },
