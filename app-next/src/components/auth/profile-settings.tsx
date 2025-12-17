@@ -235,27 +235,26 @@ export function ProfileSettings() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <Label htmlFor="image-upload" className="cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        className="gap-2"
-                        disabled={isUploading}
-                      >
-                        {isUploading ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Uploading...
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="h-4 w-4" />
-                            Upload
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </Label>
+                  <Button
+                    type="button"
+                    className="gap-2"
+                    disabled={isUploading}
+                    onClick={() =>
+                      document.getElementById("image-upload")?.click()
+                    }
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4" />
+                        Upload Image
+                      </>
+                    )}
+                  </Button>
                   <input
                     id="image-upload"
                     type="file"

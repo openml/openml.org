@@ -106,7 +106,7 @@ export function AccountDropdown() {
       id: 1,
       title: "New Badge Received",
       description:
-        "Congratulations, you've received Kaggle Community Member badge",
+        "Congratulations, you're a member of openML Community Member badge",
       time: "2d",
       isNew: true,
     },

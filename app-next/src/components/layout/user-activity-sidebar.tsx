@@ -62,21 +62,26 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
       const name =
         session.user.name ||
         `${firstName} ${lastName}`.trim() ||
-        session.user.username ||
+        (session.user as any).username ||
+        session.user.email?.split("@")[0] ||
         "User";
       const email = session.user.email || "";
       const avatar = session.user.image || "";
 
       // Calculate initials from firstName/lastName first, then fallback to name
-      const initials =
-        `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() ||
-        name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2) ||
-        "OP";
+      let initials = "OP";
+      if (firstName && lastName) {
+        initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+      } else if (name && name.length > 0) {
+        const nameParts = name.split(" ").filter((n: string) => n.length > 0);
+        if (nameParts.length >= 2) {
+          initials = `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length >= 2) {
+          initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length === 1) {
+          initials = nameParts[0][0].toUpperCase();
+        }
+      }
 
       console.log(
         "✅ [UserActivitySidebar] Setting user with initials:",
@@ -96,12 +101,28 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           const userData = JSON.parse(storedUser);
           const firstName = userData.firstName || "";
           const lastName = userData.lastName || "";
-          const initials =
-            `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "OP";
+          const userName =
+            `${firstName} ${lastName}`.trim() || userData.username || "User";
+
+          // Calculate initials safely
+          let initials = "OP";
+          if (firstName && lastName) {
+            initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+          } else if (userName && userName.length > 0) {
+            const nameParts = userName
+              .split(" ")
+              .filter((n: string) => n.length > 0);
+            if (nameParts.length >= 2) {
+              initials = `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+            } else if (nameParts.length === 1 && nameParts[0].length >= 2) {
+              initials = nameParts[0].substring(0, 2).toUpperCase();
+            } else if (nameParts.length === 1 && nameParts[0].length === 1) {
+              initials = nameParts[0][0].toUpperCase();
+            }
+          }
 
           setUser({
-            name:
-              `${firstName} ${lastName}`.trim() || userData.username || "User",
+            name: userName,
             email: userData.email || "",
             avatar: userData.image || "",
             initials: initials,
@@ -117,8 +138,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     {
       id: 1,
       title: "New Badge Received",
-      description:
-        "Congratulations, you've received Kaggle Community Member badge",
+      description: "Congratulations, you're a member of opemML Community",
       time: "2d",
       isNew: true,
     },
@@ -142,7 +162,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     },
     {
       label: "Your Profile",
-      href: "/profile",
+      href: "/auth/profile",
       icon: <UserIcon className="h-5 w-5" />,
     },
     {
@@ -183,7 +203,9 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           onClick={() => setIsOpen(true)}
         >
           <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
-            {user.avatar ? (
+            {user.avatar &&
+            (user.avatar.startsWith("http://") ||
+              user.avatar.startsWith("https://")) ? (
               <Image
                 src={user.avatar}
                 alt={user.name}
@@ -219,10 +241,22 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         )}
       >
         <div className="flex h-full flex-col">
+          {/* Close Button - Top Right */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-4 right-4 z-10"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+
           {/* Header with Avatar and Name */}
           <div className="flex items-center gap-4 border-b p-6">
             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-blue-500 dark:border-blue-400">
-              {user?.avatar ? (
+              {user?.avatar &&
+              (user.avatar.startsWith("http://") ||
+                user.avatar.startsWith("https://")) ? (
                 <Image
                   src={user.avatar}
                   alt={user.name}
@@ -238,7 +272,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
                 </div>
               )}
             </div>
-            <div className="flex-1">
+            <div className="flex-1 pr-8">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                 {user?.name}
               </h2>
@@ -248,14 +282,6 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
                 </p>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="shrink-0"
-            >
-              <X className="h-5 w-5" />
-            </Button>
           </div>
 
           {/* Menu Items */}

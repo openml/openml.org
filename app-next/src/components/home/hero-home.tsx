@@ -149,7 +149,7 @@ export const HeroHome: React.FC = () => {
         </div>
       </section>
 
-      <section className="mt-22 flex flex-wrap justify-center gap-8">
+      <section className="mt-22 flex flex-wrap justify-center gap-8 lg:mt-10">
         <Integrations
           content={{
             overline: tEco("overline"),

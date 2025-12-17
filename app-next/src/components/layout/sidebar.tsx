@@ -48,19 +48,26 @@ export function Sidebar() {
       const name =
         session.user.name ||
         `${firstName} ${lastName}`.trim() ||
-        session.user.username ||
+        (session.user as any).username ||
+        session.user.email?.split("@")[0] ||
         "User";
       const email = session.user.email || "";
       const avatar = session.user.image || "";
-      const initials =
-        `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() ||
-        name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2) ||
-        "OP";
+
+      // Calculate initials safely
+      let initials = "OP";
+      if (firstName && lastName) {
+        initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+      } else if (name && name.length > 0) {
+        const nameParts = name.split(" ").filter((n: string) => n.length > 0);
+        if (nameParts.length >= 2) {
+          initials = `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length >= 2) {
+          initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length === 1) {
+          initials = nameParts[0][0].toUpperCase();
+        }
+      }
       // Use queueMicrotask to avoid cascading render warning
       queueMicrotask(() => {
         setUser({ name, email, avatar, initials });
