@@ -80,7 +80,13 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account, profile, trigger, session }) {
+      // Handle session updates (e.g., profile picture upload)
+      if (trigger === "update" && session?.user?.image) {
+        token.picture = session.user.image;
+        return token;
+      }
+
       // Initial sign in
       if (account && user) {
         // Handle OAuth providers (GitHub, Google)

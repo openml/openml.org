@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 export function ProfileSettings() {
   const t = useTranslations("sidebar");
   const { toast } = useToast();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [showApiKey, setShowApiKey] = useState(false);
   const [apiKey, setApiKey] = useState("sk_openml_1234567890abcdefghijklmnop");
   const [isUploading, setIsUploading] = useState(false);
@@ -186,9 +186,21 @@ export function ProfileSettings() {
         localStorage.setItem("user", JSON.stringify(userData));
       }
 
+      // ✅ CRITICAL: Update NextAuth session with new image
+      if (update) {
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            image: data.imagePath,
+          },
+        });
+      }
+
       toast({
         title: "Success",
-        description: "Avatar uploaded successfully!",
+        description:
+          "Avatar uploaded successfully! Your profile picture will update shortly.",
       });
     } catch (error) {
       console.error("Upload error:", error);
