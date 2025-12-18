@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
@@ -44,6 +44,25 @@ export function ProfileSettings() {
     country: "Netherlands",
     image: "",
   });
+
+  // Load profile from session
+  useEffect(() => {
+    if (session?.user) {
+      setProfile((prev) => ({
+        ...prev,
+        firstName:
+          (session.user as any).firstName ||
+          session.user.name?.split(" ")[0] ||
+          prev.firstName,
+        lastName:
+          (session.user as any).lastName ||
+          session.user.name?.split(" ")[1] ||
+          prev.lastName,
+        email: session.user.email || prev.email,
+        image: session.user.image || prev.image,
+      }));
+    }
+  }, [session]);
 
   const handleCopyApiKey = () => {
     navigator.clipboard.writeText(apiKey);
@@ -159,8 +178,13 @@ export function ProfileSettings() {
       const formData = new FormData();
       formData.append("file", file);
 
-      // const response = await fetch("/api/upload-avatar", {
-      const response = await fetch("/api/upload-avatar-vercel", {
+      // Use Vercel Blob in production, Flask backend in development
+      const isDevelopment = process.env.NODE_ENV === "development";
+      const uploadEndpoint = isDevelopment
+        ? "/api/upload-avatar"
+        : "/api/upload-avatar-vercel";
+
+      const response = await fetch(uploadEndpoint, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -204,10 +228,29 @@ export function ProfileSettings() {
       });
     } catch (error) {
       console.error("Upload error:", error);
+
+      // Provide specific error messages
+      let errorMessage = "Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        // Check for common development issues
+        if (
+          errorMessage.includes("BLOB_READ_WRITE_TOKEN") ||
+          errorMessage.includes("zod")
+        ) {
+          errorMessage =
+            "⚠️ Development: Vercel Blob token not configured. This will work in production deployment.";
+        } else if (
+          errorMessage.includes("fetch") ||
+          errorMessage.includes("network")
+        ) {
+          errorMessage = "Network error. Check if the backend is running.";
+        }
+      }
+
       toast({
         title: "Upload Failed",
-        description:
-          error instanceof Error ? error.message : "Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
