@@ -32,6 +32,7 @@ export function SearchBar() {
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const urlQueryRef = useRef("");
 
   // Update selected index based on current route
   useEffect(() => {
@@ -43,18 +44,17 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter on mount and route changes
+  // Sync search input with URL query parameter
   useEffect(() => {
     const urlQuery = searchParams.get("q") || "";
+    urlQueryRef.current = urlQuery;
     setSearchQuery(urlQuery);
-  }, [pathname]); // Only sync on pathname change, not every searchParams change
+  }, [searchParams]); // Sync whenever URL changes
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    const urlQuery = searchParams.get("q") || "";
-
     // Navigate if debounced query is different from current URL
-    if (debouncedSearchQuery && debouncedSearchQuery !== urlQuery) {
+    if (debouncedSearchQuery && debouncedSearchQuery !== urlQueryRef.current) {
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
@@ -62,7 +62,7 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
+  }, [debouncedSearchQuery, selectedIndex, router]); // NO searchParams here!
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
