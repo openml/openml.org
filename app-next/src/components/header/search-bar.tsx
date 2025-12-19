@@ -33,6 +33,7 @@ export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const isSearchingRef = useRef(false);
+  const lastNavigatedQueryRef = useRef("");
 
   // Update selected index based on current route
   useEffect(() => {
@@ -50,18 +51,21 @@ export function SearchBar() {
       const urlQuery = searchParams.get("q") || "";
       if (urlQuery !== searchQuery) {
         setSearchQuery(urlQuery);
+        lastNavigatedQueryRef.current = urlQuery;
       }
     }
     isSearchingRef.current = false;
-  }, [searchParams]); // Sync whenever URL params change
+  }, [searchParams]);
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    const urlQuery = searchParams.get("q") || "";
-
-    // Only navigate if the debounced query is different from URL
-    if (debouncedSearchQuery.trim() && debouncedSearchQuery !== urlQuery) {
+    // Only navigate if the debounced query is different from last navigation
+    if (
+      debouncedSearchQuery.trim() &&
+      debouncedSearchQuery !== lastNavigatedQueryRef.current
+    ) {
       isSearchingRef.current = true;
+      lastNavigatedQueryRef.current = debouncedSearchQuery;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
@@ -69,15 +73,15 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router]); // Don't include searchParams to avoid loops
+  }, [debouncedSearchQuery, selectedIndex, router]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       isSearchingRef.current = true;
+      lastNavigatedQueryRef.current = searchQuery;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
-        // Force navigation with router.push (always navigates even if URL is same)
         router.push(
           `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
         );
