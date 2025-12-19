@@ -32,6 +32,7 @@ export function SearchBar() {
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const lastUrlQueryRef = useRef("");
 
   // Update selected index based on current route
   useEffect(() => {
@@ -43,30 +44,34 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter
+  // Sync search input with URL query parameter on mount/route change
   useEffect(() => {
     const urlQuery = searchParams.get("q") || "";
+    lastUrlQueryRef.current = urlQuery;
     setSearchQuery(urlQuery);
-  }, [searchParams]);
+  }, [pathname]); // Only on pathname change, not every searchParams change
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    if (debouncedSearchQuery) {
-      const urlQuery = searchParams.get("q") || "";
-      if (debouncedSearchQuery !== urlQuery) {
-        const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
-        if (currentIndex) {
-          router.push(
-            `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
-          );
-        }
+    // Only navigate if different from last known URL query
+    if (
+      debouncedSearchQuery &&
+      debouncedSearchQuery !== lastUrlQueryRef.current
+    ) {
+      lastUrlQueryRef.current = debouncedSearchQuery;
+      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+      if (currentIndex) {
+        router.push(
+          `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
+        );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
+  }, [debouncedSearchQuery, selectedIndex, router]); // NO searchParams!
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      lastUrlQueryRef.current = searchQuery;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
