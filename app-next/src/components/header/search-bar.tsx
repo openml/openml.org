@@ -32,8 +32,6 @@ export function SearchBar() {
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const isSearchingRef = useRef(false);
-  const lastNavigatedQueryRef = useRef("");
 
   // Update selected index based on current route
   useEffect(() => {
@@ -45,27 +43,18 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter (only when not actively searching)
+  // Sync search input with URL query parameter on mount and route changes
   useEffect(() => {
-    if (!isSearchingRef.current) {
-      const urlQuery = searchParams.get("q") || "";
-      if (urlQuery !== searchQuery) {
-        setSearchQuery(urlQuery);
-        lastNavigatedQueryRef.current = urlQuery;
-      }
-    }
-    isSearchingRef.current = false;
-  }, [searchParams]);
+    const urlQuery = searchParams.get("q") || "";
+    setSearchQuery(urlQuery);
+  }, [pathname]); // Only sync on pathname change, not every searchParams change
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    // Only navigate if the debounced query is different from last navigation
-    if (
-      debouncedSearchQuery.trim() &&
-      debouncedSearchQuery !== lastNavigatedQueryRef.current
-    ) {
-      isSearchingRef.current = true;
-      lastNavigatedQueryRef.current = debouncedSearchQuery;
+    const urlQuery = searchParams.get("q") || "";
+
+    // Navigate if debounced query is different from current URL
+    if (debouncedSearchQuery && debouncedSearchQuery !== urlQuery) {
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
@@ -73,13 +62,11 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router]);
+  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      isSearchingRef.current = true;
-      lastNavigatedQueryRef.current = searchQuery;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
