@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ export function SearchBar() {
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const isSearchingRef = useRef(false);
 
   // Update selected index based on current route
   useEffect(() => {
@@ -43,18 +44,24 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter (only on initial load or route change)
+  // Sync search input with URL query parameter (only when not actively searching)
   useEffect(() => {
-    const urlQuery = searchParams.get("q") || "";
-    setSearchQuery(urlQuery);
-  }, [pathname]); // Only sync when pathname changes, not on every searchParams change
+    if (!isSearchingRef.current) {
+      const urlQuery = searchParams.get("q") || "";
+      if (urlQuery !== searchQuery) {
+        setSearchQuery(urlQuery);
+      }
+    }
+    isSearchingRef.current = false;
+  }, [pathname, searchParams]);
 
   // Auto-search when debounced query changes
   useEffect(() => {
     const urlQuery = searchParams.get("q") || "";
-    
+
     // Only navigate if the debounced query is different from URL
     if (debouncedSearchQuery.trim() && debouncedSearchQuery !== urlQuery) {
+      isSearchingRef.current = true;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
@@ -62,7 +69,7 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
+  }, [debouncedSearchQuery, selectedIndex, router]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
