@@ -74,8 +74,10 @@ export function SearchBar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      isSearchingRef.current = true;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
+        // Force navigation with router.push (always navigates even if URL is same)
         router.push(
           `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
         );
