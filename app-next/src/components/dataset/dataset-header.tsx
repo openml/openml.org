@@ -117,26 +117,26 @@ export function DatasetHeader({
 
       <div className="bg-muted/30 flex flex-wrap items-center gap-6 rounded-lg p-4">
         {/* Instances */}
-        {dataset.qualities?.NumberOfInstances !== undefined && (
+        {dataset.qualities?.NumberOfInstances != null && (
           <Stat
             label="Instances"
-            value={dataset.qualities.NumberOfInstances.toLocaleString()}
+            value={(dataset.qualities.NumberOfInstances || 0).toLocaleString()}
           />
         )}
 
         {/* Features */}
-        {dataset.qualities?.NumberOfFeatures !== undefined && (
+        {dataset.qualities?.NumberOfFeatures != null && (
           <Stat
             label="Features"
-            value={dataset.qualities.NumberOfFeatures.toLocaleString()}
+            value={(dataset.qualities.NumberOfFeatures || 0).toLocaleString()}
           />
         )}
 
         {/* Classes */}
-        {dataset.qualities?.NumberOfClasses !== undefined && (
+        {dataset.qualities?.NumberOfClasses != null && (
           <Stat
             label="Classes"
-            value={dataset.qualities.NumberOfClasses.toLocaleString()}
+            value={(dataset.qualities.NumberOfClasses || 0).toLocaleString()}
           />
         )}
 
