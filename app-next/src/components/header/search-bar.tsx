@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,6 +28,7 @@ export function SearchBar() {
   const t = useTranslations("header");
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -41,6 +42,14 @@ export function SearchBar() {
       setSelectedIndex(currentIndex.key);
     }
   }, [pathname]);
+
+  // Sync search input with URL query parameter
+  useEffect(() => {
+    const urlQuery = searchParams.get("q");
+    if (urlQuery && urlQuery !== searchQuery) {
+      setSearchQuery(urlQuery);
+    }
+  }, [searchParams]);
 
   // Auto-search when debounced query changes
   useEffect(() => {

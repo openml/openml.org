@@ -64,12 +64,14 @@ export function FlowsSearchContainer() {
 
   return (
     <WithSearch
-      mapContextToProps={({ isLoading, error }) => ({
+      mapContextToProps={({ isLoading, error, searchTerm, totalResults }) => ({
         isLoading,
         error,
+        searchTerm,
+        totalResults,
       })}
     >
-      {({ isLoading, error }) => (
+      {({ isLoading, error, searchTerm, totalResults }) => (
         <div className="w-full space-y-0">
           {isLoading && (
             <div className="bg-primary/20 h-1 w-full overflow-hidden">
@@ -85,6 +87,25 @@ export function FlowsSearchContainer() {
                   ? error
                   : (error as Error).message || "Unknown error"}
               </p>
+            </div>
+          )}
+
+          {/* Search Results Header */}
+          {searchTerm && (
+            <div className="bg-muted/30 border-b px-4 py-3">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">
+                  Search results for
+                </span>
+                <span className="font-semibold">"{searchTerm}"</span>
+                <span className="text-muted-foreground">—</span>
+                <span className="text-primary font-semibold">
+                  {totalResults?.toLocaleString() || 0}
+                </span>
+                <span className="text-muted-foreground">
+                  {totalResults === 1 ? "result" : "results"} found
+                </span>
+              </div>
             </div>
           )}
 
