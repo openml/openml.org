@@ -32,8 +32,6 @@ export function SearchBar() {
   const [selectedIndex, setSelectedIndex] = useState("data");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const urlQueryRef = useRef("");
-  const justNavigatedRef = useRef(false);
 
   // Update selected index based on current route
   useEffect(() => {
@@ -45,53 +43,35 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter (but not after we just navigated)
+  // Sync search input with URL query parameter
   useEffect(() => {
     const urlQuery = searchParams.get("q") || "";
-    urlQueryRef.current = urlQuery;
-
-    // Only sync if we didn't just navigate (prevents overwriting user input)
-    if (!justNavigatedRef.current) {
-      setSearchQuery(urlQuery);
-    } else {
-      // Reset flag after a brief delay to allow navigation to complete
-      setTimeout(() => {
-        justNavigatedRef.current = false;
-      }, 100);
-    }
+    setSearchQuery(urlQuery);
   }, [searchParams]);
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    // Navigate if debounced query is different from current URL
-    if (debouncedSearchQuery && debouncedSearchQuery !== urlQueryRef.current) {
-      justNavigatedRef.current = true;
-      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
-      if (currentIndex) {
-        const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`;
-        // Use replace if we're on the same page to force re-render
-        if (pathname.startsWith(currentIndex.route)) {
-          router.replace(targetUrl);
-        } else {
-          router.push(targetUrl);
+    if (debouncedSearchQuery) {
+      const urlQuery = searchParams.get("q") || "";
+      if (debouncedSearchQuery !== urlQuery) {
+        const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+        if (currentIndex) {
+          router.push(
+            `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
+          );
         }
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router, pathname]);
+  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      justNavigatedRef.current = true;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
-        const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`;
-        // Use replace if we're on the same page
-        if (pathname.startsWith(currentIndex.route)) {
-          router.replace(targetUrl);
-        } else {
-          router.push(targetUrl);
-        }
+        router.push(
+          `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
+        );
       }
     }
   };
