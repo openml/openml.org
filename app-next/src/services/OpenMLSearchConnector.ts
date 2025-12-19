@@ -69,47 +69,73 @@ class OpenMLSearchConnector implements APIConnector {
     if (searchTerm) {
       const searchFields = Object.keys(queryConfig.search_fields || {});
 
+      // Detect numeric ID search for datasets, tasks, flows, runs
+      const isNumericId = /^\d+$/.test(searchTerm.trim());
+      const idField =
+        this.indexName === "data"
+          ? "data_id"
+          : this.indexName === "task"
+            ? "task_id"
+            : this.indexName === "flow"
+              ? "flow_id"
+              : this.indexName === "run"
+                ? "run_id"
+                : null;
+
       if (searchFields.length === 0) {
         query.bool?.must?.push({ match_all: {} });
       } else {
+        const shouldClauses: unknown[] = [
+          // Exact phrase match (highest priority)
+          {
+            multi_match: {
+              query: searchTerm,
+              fields: searchFields.map(
+                (f) =>
+                  `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 3}`,
+              ),
+              type: "phrase",
+            },
+          },
+          // Phrase prefix match (for partial word completion)
+          {
+            multi_match: {
+              query: searchTerm,
+              fields: searchFields.map(
+                (f) =>
+                  `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 2}`,
+              ),
+              type: "phrase_prefix",
+            },
+          },
+          // Exact term match
+          {
+            multi_match: {
+              query: searchTerm,
+              fields: searchFields.map(
+                (f) => `${f}^${queryConfig.search_fields?.[f]?.weight || 1}`,
+              ),
+              type: "best_fields",
+              operator: "and",
+            },
+          },
+        ];
+
+        // Add exact ID match if searching for a number
+        if (isNumericId && idField) {
+          shouldClauses.unshift({
+            term: {
+              [idField]: {
+                value: parseInt(searchTerm.trim(), 10),
+                boost: 100, // Highest boost for exact ID match
+              },
+            },
+          });
+        }
+
         query.bool?.must?.push({
           bool: {
-            should: [
-              // Exact phrase match (highest priority)
-              {
-                multi_match: {
-                  query: searchTerm,
-                  fields: searchFields.map(
-                    (f) =>
-                      `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 3}`,
-                  ),
-                  type: "phrase",
-                },
-              },
-              // Phrase prefix match (for partial word completion)
-              {
-                multi_match: {
-                  query: searchTerm,
-                  fields: searchFields.map(
-                    (f) =>
-                      `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 2}`,
-                  ),
-                  type: "phrase_prefix",
-                },
-              },
-              // Exact term match
-              {
-                multi_match: {
-                  query: searchTerm,
-                  fields: searchFields.map(
-                    (f) =>
-                      `${f}^${queryConfig.search_fields?.[f]?.weight || 1}`,
-                  ),
-                  type: "best_fields",
-                  operator: "and",
-                },
-              },
-            ],
+            should: shouldClauses,
             minimum_should_match: 1,
           },
         });

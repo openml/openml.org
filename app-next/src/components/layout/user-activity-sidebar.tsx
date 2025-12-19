@@ -66,7 +66,20 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         session.user.email?.split("@")[0] ||
         "User";
       const email = session.user.email || "";
-      const avatar = session.user.image || "";
+
+      // Check localStorage for updated avatar (in case of upload)
+      let avatar = session.user.image || "";
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          if (userData.image) {
+            avatar = userData.image;
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
+      }
 
       // Calculate initials from firstName/lastName first, then fallback to name
       let initials = "OP";
@@ -133,6 +146,28 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
       }
     }
   }, [session, status]);
+
+  // Poll localStorage for avatar updates (e.g., after upload)
+  React.useEffect(() => {
+    const checkForAvatarUpdate = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser && user) {
+        try {
+          const userData = JSON.parse(storedUser);
+          if (userData.image && userData.image !== user.avatar) {
+            // Avatar changed - update state
+            setUser({ ...user, avatar: userData.image });
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
+      }
+    };
+
+    // Check every 2 seconds for avatar updates
+    const interval = setInterval(checkForAvatarUpdate, 2000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const [notifications] = React.useState<UserActivityItem[]>([
     {

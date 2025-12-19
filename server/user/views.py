@@ -377,7 +377,8 @@ def oauth_github():
                 active="1",  # Auto-activate OAuth users
                 bio="",
                 company="",
-                country="",                ip_address=request.remote_addr or "0.0.0.0",
+                country="",
+                ip_address=request.remote_addr or "0.0.0.0",
                 created_on=datetime.now(),
                 password=argon2.generate_password_hash(
                     secrets.token_hex(32)
@@ -472,7 +473,8 @@ def oauth_google():
                 active="1",  # Auto-activate OAuth users
                 bio="",
                 company="",
-                country="",                ip_address=request.remote_addr or "0.0.0.0",
+                country="",
+                ip_address=request.remote_addr or "0.0.0.0",
                 created_on=datetime.now(),
                 password=argon2.generate_password_hash(
                     secrets.token_hex(32)
