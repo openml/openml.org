@@ -33,6 +33,7 @@ export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const urlQueryRef = useRef("");
+  const justNavigatedRef = useRef(false);
 
   // Update selected index based on current route
   useEffect(() => {
@@ -44,17 +45,23 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter
+  // Sync search input with URL query parameter (but not after we just navigated)
   useEffect(() => {
     const urlQuery = searchParams.get("q") || "";
     urlQueryRef.current = urlQuery;
-    setSearchQuery(urlQuery);
-  }, [searchParams]); // Sync whenever URL changes
+
+    // Only sync if we didn't just navigate (prevents overwriting user input)
+    if (!justNavigatedRef.current) {
+      setSearchQuery(urlQuery);
+    }
+    justNavigatedRef.current = false;
+  }, [searchParams]);
 
   // Auto-search when debounced query changes
   useEffect(() => {
     // Navigate if debounced query is different from current URL
     if (debouncedSearchQuery && debouncedSearchQuery !== urlQueryRef.current) {
+      justNavigatedRef.current = true;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`;
@@ -71,6 +78,7 @@ export function SearchBar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      justNavigatedRef.current = true;
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`;
