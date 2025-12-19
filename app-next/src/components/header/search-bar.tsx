@@ -53,7 +53,7 @@ export function SearchBar() {
       }
     }
     isSearchingRef.current = false;
-  }, [pathname, searchParams]);
+  }, [searchParams]); // Sync whenever URL params change
 
   // Auto-search when debounced query changes
   useEffect(() => {
@@ -69,7 +69,7 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router]);
+  }, [debouncedSearchQuery, selectedIndex, router]); // Don't include searchParams to avoid loops
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
