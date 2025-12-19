@@ -57,21 +57,29 @@ export function SearchBar() {
     if (debouncedSearchQuery && debouncedSearchQuery !== urlQueryRef.current) {
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
-        router.push(
-          `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
-        );
+        const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`;
+        // Use replace if we're on the same page to force re-render
+        if (pathname.startsWith(currentIndex.route)) {
+          router.replace(targetUrl);
+        } else {
+          router.push(targetUrl);
+        }
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router]); // NO searchParams here!
+  }, [debouncedSearchQuery, selectedIndex, router, pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
-        router.push(
-          `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
-        );
+        const targetUrl = `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`;
+        // Use replace if we're on the same page
+        if (pathname.startsWith(currentIndex.route)) {
+          router.replace(targetUrl);
+        } else {
+          router.push(targetUrl);
+        }
       }
     }
   };
