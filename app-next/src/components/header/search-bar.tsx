@@ -53,8 +53,12 @@ export function SearchBar() {
     // Only sync if we didn't just navigate (prevents overwriting user input)
     if (!justNavigatedRef.current) {
       setSearchQuery(urlQuery);
+    } else {
+      // Reset flag after a brief delay to allow navigation to complete
+      setTimeout(() => {
+        justNavigatedRef.current = false;
+      }, 100);
     }
-    justNavigatedRef.current = false;
   }, [searchParams]);
 
   // Auto-search when debounced query changes
