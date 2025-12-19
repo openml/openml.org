@@ -22,7 +22,7 @@ const dataConfig = {
   searchQuery: {
     resultsPerPage: 20,
     search_fields: {
-      data_id: { weight: 5 },          // Highest weight for exact ID matches
+      data_id: { weight: 5 }, // Highest weight for exact ID matches
       name: { weight: 3 },
       exact_name: { weight: 3 },
       description: { weight: 3 },
