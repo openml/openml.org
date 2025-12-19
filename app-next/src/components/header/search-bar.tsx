@@ -43,17 +43,18 @@ export function SearchBar() {
     }
   }, [pathname]);
 
-  // Sync search input with URL query parameter
+  // Sync search input with URL query parameter (only on initial load or route change)
   useEffect(() => {
-    const urlQuery = searchParams.get("q");
-    if (urlQuery && urlQuery !== searchQuery) {
-      setSearchQuery(urlQuery);
-    }
-  }, [searchParams]);
+    const urlQuery = searchParams.get("q") || "";
+    setSearchQuery(urlQuery);
+  }, [pathname]); // Only sync when pathname changes, not on every searchParams change
 
   // Auto-search when debounced query changes
   useEffect(() => {
-    if (debouncedSearchQuery.trim()) {
+    const urlQuery = searchParams.get("q") || "";
+    
+    // Only navigate if the debounced query is different from URL
+    if (debouncedSearchQuery.trim() && debouncedSearchQuery !== urlQuery) {
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
       if (currentIndex) {
         router.push(
@@ -61,7 +62,7 @@ export function SearchBar() {
         );
       }
     }
-  }, [debouncedSearchQuery, selectedIndex, router]);
+  }, [debouncedSearchQuery, selectedIndex, router, searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
