@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useDebouncedCallback } from "@/hooks/use-debounce";
 
 const searchIndices = [
   { key: "data", labelKey: "datasets", route: "/datasets" },
@@ -29,68 +29,90 @@ export function SearchBar() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [selectedIndex, setSelectedIndex] = useState("data");
-  const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const lastUrlQueryRef = useRef("");
 
-  // Update selected index based on current route
-  useEffect(() => {
-    const currentIndex = searchIndices.find((index) =>
-      pathname.startsWith(index.route),
-    );
-    if (currentIndex) {
-      setSelectedIndex(currentIndex.key);
-    }
+  // Strip locale prefix for route matching (handles /en/datasets, /nl/tasks, etc.)
+  const effectivePath = useMemo(() => {
+    return pathname.replace(/^\/[a-z]{2}\//, "/");
   }, [pathname]);
 
-  // Sync search input with URL query parameter on mount/route change
+  // Derive selected index from URL pathname
+  const selectedIndex = useMemo(() => {
+    const currentIndex = searchIndices.find((index) =>
+      effectivePath.startsWith(index.route),
+    );
+    return currentIndex?.key ?? "data";
+  }, [effectivePath]);
+
+  // Get the query from URL - this is the source of truth
+  const urlQuery = searchParams.get("q") || "";
+
+  // Local input state for responsive typing
+  const [inputValue, setInputValue] = useState(urlQuery);
+
+  // Sync input with URL when it changes externally (back/forward navigation, direct link)
   useEffect(() => {
-    const urlQuery = searchParams.get("q") || "";
-    lastUrlQueryRef.current = urlQuery;
-    setSearchQuery(urlQuery);
-  }, [pathname]); // Only on pathname change, not every searchParams change
-
-  // Auto-search when debounced query changes
-  useEffect(() => {
-    // Only navigate if different from last known URL query
-    if (
-      debouncedSearchQuery &&
-      debouncedSearchQuery !== lastUrlQueryRef.current
-    ) {
-      lastUrlQueryRef.current = debouncedSearchQuery;
-      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
-      if (currentIndex) {
-        router.push(
-          `${currentIndex.route}?q=${encodeURIComponent(debouncedSearchQuery)}`,
-        );
-      }
+    if (urlQuery !== inputValue) {
+      setInputValue(urlQuery);
     }
-  }, [debouncedSearchQuery, selectedIndex, router]); // NO searchParams!
+    // Only run when urlQuery changes, not inputValue (prevents loop)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQuery]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      lastUrlQueryRef.current = searchQuery;
+  // Debounced navigation - centralized and predictable
+  const debouncedNavigate = useDebouncedCallback(
+    (value: string, route: string) => {
+      if (!value.trim()) return;
+      // Use replace to avoid polluting history while typing
+      router.replace(`${route}?q=${encodeURIComponent(value)}`);
+    },
+    300,
+  );
+
+  // Handle input change - update local state immediately, navigate after debounce
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setInputValue(newValue);
+
+      // Get current route for navigation
       const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
-      if (currentIndex) {
-        router.push(
-          `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
-        );
+      if (currentIndex && newValue.trim()) {
+        debouncedNavigate(newValue, currentIndex.route);
       }
-    }
-  };
+    },
+    [selectedIndex, debouncedNavigate],
+  );
 
-  const handleIndexChange = (value: string) => {
-    setSelectedIndex(value);
-    // If there's an active search, navigate to the new index with the same query
-    if (searchQuery.trim()) {
+  // Handle form submit (Enter key) - navigate immediately
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (inputValue.trim()) {
+        const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+        if (currentIndex) {
+          router.push(
+            `${currentIndex.route}?q=${encodeURIComponent(inputValue)}`,
+          );
+        }
+      }
+    },
+    [inputValue, selectedIndex, router],
+  );
+
+  // Handle index (entity type) change
+  const handleIndexChange = useCallback(
+    (value: string) => {
       const newIndex = searchIndices.find((i) => i.key === value);
       if (newIndex) {
-        router.push(`${newIndex.route}?q=${encodeURIComponent(searchQuery)}`);
+        if (inputValue.trim()) {
+          router.push(`${newIndex.route}?q=${encodeURIComponent(inputValue)}`);
+        } else {
+          router.push(newIndex.route);
+        }
       }
-    }
-  };
+    },
+    [inputValue, router],
+  );
 
   return (
     <form onSubmit={handleSearch} className="max-w-2xl flex-1">
@@ -119,8 +141,8 @@ export function SearchBar() {
         <Input
           type="search"
           placeholder={t("search")}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={inputValue}
+          onChange={handleInputChange}
           className="border-none bg-transparent! pl-2 text-slate-900! shadow-none placeholder:text-slate-500! focus-visible:ring-0"
         />
       </div>

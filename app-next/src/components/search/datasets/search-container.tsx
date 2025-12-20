@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useSearchParams } from "next/navigation";
+import { SearchContext } from "@elastic/react-search-ui";
 import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
 import { ResultsTable } from "../results-table";
@@ -49,6 +51,35 @@ export function SearchContainer() {
   const [selectedDataset, setSelectedDataset] = useState<SearchResult | null>(
     null,
   );
+  const searchParams = useSearchParams();
+  const context = useContext(SearchContext);
+  const driver = context?.driver;
+  const query = searchParams.get("q") || "";
+
+  // 👇 Sync URL query → Search UI driver (Next.js is source of truth for URL)
+  useEffect(() => {
+    if (!driver) return;
+
+    // Type assertion - these methods exist at runtime but types are incomplete
+    const driverAny = driver as unknown as {
+      getState: () => { searchTerm?: string };
+      getActions: () => {
+        setSearchTerm: (
+          term: string,
+          options?: { shouldClearFilters?: boolean },
+        ) => void;
+      };
+    };
+
+    const currentTerm = driverAny.getState().searchTerm || "";
+
+    // Only update if the term actually changed (prevents loops)
+    if (currentTerm === query) return;
+
+    // setSearchTerm from actions triggers search automatically
+    driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
+  }, [query, driver]);
+
   return (
     <WithSearch
       mapContextToProps={({ isLoading, error, searchTerm, totalResults }) => ({
@@ -58,7 +89,17 @@ export function SearchContainer() {
         totalResults,
       })}
     >
-      {({ isLoading, error, searchTerm, totalResults }) => (
+      {({
+        isLoading,
+        error,
+        searchTerm,
+        totalResults,
+      }: {
+        isLoading: boolean;
+        error: unknown;
+        searchTerm: string;
+        totalResults: number;
+      }) => (
         <div className="space-y-0">
           {isLoading && (
             <div className="bg-primary/20 h-1 w-full overflow-hidden">
@@ -84,7 +125,7 @@ export function SearchContainer() {
                 <span className="text-muted-foreground">
                   Search results for
                 </span>
-                <span className="font-semibold">"{searchTerm}"</span>
+                <span className="font-semibold">&quot;{searchTerm}&quot;</span>
                 <span className="text-muted-foreground">—</span>
                 <span className="text-primary font-semibold">
                   {totalResults?.toLocaleString() || 0}

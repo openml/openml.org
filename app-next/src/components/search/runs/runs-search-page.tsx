@@ -2,18 +2,32 @@
 
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
+import { useSearchParams } from "next/navigation";
 import runConfig from "./run-search-config";
 import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { RunsSearchContainer } from "./runs-search-container";
 
 export function RunsSearchPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     // TODO: Add facet labels based on your run facets
   };
 
   return (
-    <SearchProvider config={runConfig as SearchDriverOptions}>
+    <SearchProvider
+      config={
+        {
+          ...runConfig,
+          initialState: {
+            ...runConfig.initialState,
+            searchTerm: initialQuery,
+          },
+        } as SearchDriverOptions
+      }
+    >
       <div className="flex min-h-screen flex-col">
         {/* Page Header */}
         <div className="bg-muted/40 border-b">

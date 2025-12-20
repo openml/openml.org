@@ -2,11 +2,15 @@
 
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
+import { useSearchParams } from "next/navigation";
 import dataConfig from "./search-config";
 import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { SearchContainer } from "./search-container";
 
 export function DatasetsSearchPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     "status.keyword": "Status",
@@ -18,7 +22,17 @@ export function DatasetsSearchPage() {
   };
 
   return (
-    <SearchProvider config={dataConfig as SearchDriverOptions}>
+    <SearchProvider
+      config={
+        {
+          ...dataConfig,
+          initialState: {
+            ...dataConfig.initialState,
+            searchTerm: initialQuery,
+          },
+        } as SearchDriverOptions
+      }
+    >
       <div className="flex min-h-screen flex-col">
         {/* Page Header */}
         <div className="bg-muted/40 border-b">

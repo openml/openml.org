@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { WithSearch, Paging } from "@elastic/react-search-ui";
+import { WithSearch, Paging, SearchContext } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, taskSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +44,34 @@ export function TaskSearchContainer() {
   const [selectedTask, setSelectedTask] = useState<TaskSearchResult | null>(
     null,
   );
+  const searchParams = useSearchParams();
+  const context = useContext(SearchContext);
+  const driver = context?.driver;
+  const query = searchParams.get("q") || "";
+
+  // 👇 Sync URL query → Search UI driver (Next.js is source of truth for URL)
+  useEffect(() => {
+    if (!driver) return;
+
+    // Type assertion - these methods exist at runtime but types are incomplete
+    const driverAny = driver as unknown as {
+      getState: () => { searchTerm?: string };
+      getActions: () => {
+        setSearchTerm: (
+          term: string,
+          options?: { shouldClearFilters?: boolean },
+        ) => void;
+      };
+    };
+
+    const currentTerm = driverAny.getState().searchTerm || "";
+
+    // Only update if the term actually changed (prevents loops)
+    if (currentTerm === query) return;
+
+    // setSearchTerm from actions triggers search automatically
+    driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
+  }, [query, driver]);
 
   return (
     <WithSearch

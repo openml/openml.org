@@ -2,11 +2,15 @@
 
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
+import { useSearchParams } from "next/navigation";
 import flowConfig from "./flow-search-config";
 import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { FlowsSearchContainer } from "./flows-search-container";
 
 export function FlowsSearchPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     // TODO: Add facet labels based on your flow facets
@@ -16,7 +20,17 @@ export function FlowsSearchPage() {
   };
 
   return (
-    <SearchProvider config={flowConfig as SearchDriverOptions}>
+    <SearchProvider
+      config={
+        {
+          ...flowConfig,
+          initialState: {
+            ...flowConfig.initialState,
+            searchTerm: initialQuery,
+          },
+        } as SearchDriverOptions
+      }
+    >
       <div className="flex min-h-screen flex-col">
         {/* Page Header */}
         <div className="bg-muted/40 border-b">

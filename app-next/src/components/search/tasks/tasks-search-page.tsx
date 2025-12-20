@@ -2,12 +2,16 @@
 
 import { SearchProvider } from "@elastic/react-search-ui";
 import type { SearchDriverOptions } from "@elastic/search-ui";
+import { useSearchParams } from "next/navigation";
 import taskConfig from "./task-search-config";
 import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { TaskSearchContainer } from "@/components/search/tasks/task-search-container";
 import { Trophy } from "lucide-react";
 
 export function TasksSearchPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     "tasktype.name.keyword": "Task Type",
@@ -16,7 +20,17 @@ export function TasksSearchPage() {
   };
 
   return (
-    <SearchProvider config={taskConfig as SearchDriverOptions}>
+    <SearchProvider
+      config={
+        {
+          ...taskConfig,
+          initialState: {
+            ...taskConfig.initialState,
+            searchTerm: initialQuery,
+          },
+        } as SearchDriverOptions
+      }
+    >
       <div className="flex min-h-screen flex-col">
         {/* Page Header */}
         <div className="bg-muted/40 border-b">

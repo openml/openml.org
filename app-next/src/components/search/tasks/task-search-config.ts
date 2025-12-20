@@ -15,8 +15,8 @@ const apiConnector = new OpenMLSearchConnector("task");
 const taskConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
-  trackUrlState: true,
-  urlPushDebounceLength: 500,
+  trackUrlState: false, // Next.js owns the URL via SearchBar
+  // urlPushDebounceLength: 500, // Not needed when trackUrlState is false
   searchQuery: {
     resultsPerPage: 20,
     search_fields: {
