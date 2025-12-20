@@ -95,10 +95,10 @@ export function SearchContainer() {
         searchTerm,
         totalResults,
       }: {
-        isLoading: boolean;
-        error: unknown;
-        searchTerm: string;
-        totalResults: number;
+        isLoading?: boolean;
+        error?: unknown;
+        searchTerm?: string;
+        totalResults?: number;
       }) => (
         <div className="space-y-0">
           {isLoading && (
@@ -107,7 +107,7 @@ export function SearchContainer() {
             </div>
           )}
 
-          {error && (
+          {!!error && (
             <div className="bg-destructive/10 border-destructive/20 m-4 rounded-md border p-4">
               <p className="text-destructive text-sm">
                 Error:{" "}

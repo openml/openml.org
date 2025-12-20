@@ -55,9 +55,6 @@ export function RunsSearchContainer() {
     // Type assertion - these methods exist at runtime but types are incomplete
     const driverAny = driver as unknown as {
       getState: () => { searchTerm?: string };
-      setSearchTerm: (
-        term: string,
-      };
       getActions: () => {
         setSearchTerm: (
           term: string,
