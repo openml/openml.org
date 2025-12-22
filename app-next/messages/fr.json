@@ -369,6 +369,88 @@
         "title": "Documentation Complète",
         "description": "Pour des références API complètes, des tutoriels et des guides avancés, visitez notre documentation complète sur"
       }
+    },
+    "api": {
+      "meta": {
+        "title": "APIs OpenML - Python, R, Java & REST",
+        "description": "Accédez à des milliers de jeux de données, tâches et expériences ML par programmation. Construisez des pipelines d'apprentissage automatique reproductibles avec Python, R, Java ou notre API REST."
+      }
+    },
+    "terms": {
+      "meta": {
+        "title": "Conditions & Citation - OpenML",
+        "description": "Découvrez les licences OpenML, comment citer OpenML dans vos recherches, ainsi que nos conditions d'utilisation et politique de confidentialité."
+      },
+      "title": "Conditions & Citation",
+      "subtitle": "Licences, citations et conditions d'utilisation d'OpenML dans vos recherches et projets.",
+      "licenses": {
+        "title": "Licences",
+        "description": "OpenML prend en charge plusieurs licences ouvertes pour maximiser l'accessibilité et la réutilisation. Chaque jeu de données et ressource sur OpenML est étiqueté avec sa licence spécifique.",
+        "ccby": "Attribution requise. Partagez et adaptez librement avec mention appropriée.",
+        "cc0": "Aucun droit réservé. Utilisez librement sans aucune restriction.",
+        "bsd": "Pour le code source. Licence permissive avec restrictions minimales."
+      },
+      "citation": {
+        "title": "Comment Citer",
+        "subtitle": "Veuillez citer OpenML si vous l'utilisez dans vos recherches. Cela nous aide à démontrer l'impact et à poursuivre le développement.",
+        "openml": {
+          "title": "Citer la Plateforme OpenML",
+          "description": "Vanschoren et al., SIGKDD Explorations 2013"
+        },
+        "python": {
+          "title": "Citer l'API Python",
+          "description": "Feurer et al., JMLR 2021"
+        },
+        "r": {
+          "title": "Citer l'API R",
+          "description": "Casalicchio et al., Computational Statistics 2017"
+        },
+        "benchmark": {
+          "title": "Citer les Suites de Benchmarking",
+          "description": "Bischl et al., NeurIPS 2021"
+        }
+      },
+      "termsOfUse": {
+        "title": "Conditions d'Utilisation",
+        "honorCode": {
+          "title": "Code d'Honneur",
+          "subtitle": "Directives pour une utilisation éthique d'OpenML",
+          "items": {
+            "cite": "Donnez une attribution appropriée et citez les auteurs originaux des jeux de données et articles",
+            "share": "Partagez vos contributions ouvertement pour que d'autres puissent construire sur votre travail",
+            "respect": "Respectez les licences des jeux de données et suivez leurs conditions",
+            "quality": "Téléchargez des données et expériences de haute qualité, bien documentées",
+            "feedback": "Fournissez des commentaires constructifs pour améliorer la plateforme"
+          }
+        },
+        "usageTerms": {
+          "title": "Règles d'Utilisation",
+          "subtitle": "Règles régissant l'utilisation des services OpenML",
+          "intro": "En utilisant OpenML, vous acceptez les conditions suivantes:",
+          "items": {
+            "free": "OpenML est gratuit pour la recherche, l'éducation et les fins non commerciales",
+            "api": "L'utilisation de l'API doit respecter des limites de débit raisonnables pour garantir un accès équitable à tous",
+            "abuse": "Le scraping automatisé ou l'abus des services peut entraîner des restrictions d'accès",
+            "warranty": "Les données et services sont fournis \"tels quels\" sans aucune garantie"
+          }
+        },
+        "privacy": {
+          "title": "Politique de Confidentialité",
+          "subtitle": "Comment nous gérons vos données",
+          "intro": "Nous prenons votre vie privée au sérieux. Voici comment nous traitons vos informations:",
+          "items": {
+            "collect": "Nous collectons un minimum d'informations personnelles nécessaires pour fournir nos services",
+            "usage": "Les données d'utilisation nous aident à améliorer OpenML et comprendre comment il est utilisé",
+            "share": "Nous ne vendons ni ne partageons vos informations personnelles avec des tiers",
+            "cookies": "Nous utilisons des cookies pour l'authentification et améliorer votre expérience"
+          }
+        }
+      },
+      "contact": {
+        "title": "Questions?",
+        "description": "Si vous avez des questions sur les licences, la citation ou les conditions d'utilisation, contactez-nous.",
+        "button": "Contacter l'Équipe OpenML"
+      }
     }
   },
   "auth": {

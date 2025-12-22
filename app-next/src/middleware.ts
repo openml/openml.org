@@ -131,8 +131,8 @@ export function middleware(request: NextRequest) {
  */
 export const config = {
   matcher: [
-    // Match all routes except static files and API routes
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    // Match all routes except static files and API routes (but allow /apis page)
+    "/((?!api/|_next|_vercel|.*\\..*).*)",
     // Legacy redirect patterns
     "/search",
     "/b/:path*",

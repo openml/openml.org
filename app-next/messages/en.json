@@ -352,6 +352,88 @@
         "title": "Complete Documentation",
         "description": "For comprehensive API references, tutorials, and advanced guides, visit our complete documentation at"
       }
+    },
+    "api": {
+      "meta": {
+        "title": "OpenML APIs - Python, R, Java & REST",
+        "description": "Access thousands of ML datasets, tasks, and experiments programmatically. Build reproducible machine learning pipelines with Python, R, Java, or our REST API."
+      }
+    },
+    "terms": {
+      "meta": {
+        "title": "Terms & Citation - OpenML",
+        "description": "Learn about OpenML's licenses, how to cite OpenML in your research, and our terms of use and privacy policy."
+      },
+      "title": "Terms & Citation",
+      "subtitle": "Licenses, citations, and terms for using OpenML in your research and projects.",
+      "licenses": {
+        "title": "Licenses",
+        "description": "OpenML supports multiple open licenses to maximize accessibility and reuse. Each dataset and resource on OpenML is tagged with its specific license.",
+        "ccby": "Attribution required. Share and adapt freely with proper credit.",
+        "cc0": "No rights reserved. Use freely without any restrictions.",
+        "bsd": "For source code. Permissive license with minimal restrictions."
+      },
+      "citation": {
+        "title": "How to Cite",
+        "subtitle": "Please cite OpenML if you use it in your research. It helps us demonstrate impact and continue development.",
+        "openml": {
+          "title": "Cite OpenML Platform",
+          "description": "Vanschoren et al., SIGKDD Explorations 2013"
+        },
+        "python": {
+          "title": "Cite Python API",
+          "description": "Feurer et al., JMLR 2021"
+        },
+        "r": {
+          "title": "Cite R API",
+          "description": "Casalicchio et al., Computational Statistics 2017"
+        },
+        "benchmark": {
+          "title": "Cite Benchmarking Suites",
+          "description": "Bischl et al., NeurIPS 2021"
+        }
+      },
+      "termsOfUse": {
+        "title": "Terms of Use",
+        "honorCode": {
+          "title": "Honor Code",
+          "subtitle": "Guidelines for ethical use of OpenML",
+          "items": {
+            "cite": "Give proper attribution and cite the original authors of datasets and papers",
+            "share": "Share your contributions openly so others can build upon your work",
+            "respect": "Respect dataset licenses and follow their terms",
+            "quality": "Upload high-quality, well-documented data and experiments",
+            "feedback": "Provide constructive feedback to help improve the platform"
+          }
+        },
+        "usageTerms": {
+          "title": "Usage Terms",
+          "subtitle": "Rules governing the use of OpenML services",
+          "intro": "By using OpenML, you agree to the following terms:",
+          "items": {
+            "free": "OpenML is free to use for research, education, and non-commercial purposes",
+            "api": "API usage should follow reasonable rate limits to ensure fair access for all users",
+            "abuse": "Automated scraping or abuse of services may result in access restrictions",
+            "warranty": "Data and services are provided \"as is\" without warranty of any kind"
+          }
+        },
+        "privacy": {
+          "title": "Privacy Policy",
+          "subtitle": "How we handle your data",
+          "intro": "We take your privacy seriously. Here's how we handle your information:",
+          "items": {
+            "collect": "We collect minimal personal information necessary to provide our services",
+            "usage": "Usage data helps us improve OpenML and understand how it's being used",
+            "share": "We do not sell or share your personal information with third parties",
+            "cookies": "We use cookies for authentication and to improve your experience"
+          }
+        }
+      },
+      "contact": {
+        "title": "Questions?",
+        "description": "If you have questions about licenses, citation, or terms of use, please contact us.",
+        "button": "Contact OpenML Team"
+      }
     }
   },
   "auth": {

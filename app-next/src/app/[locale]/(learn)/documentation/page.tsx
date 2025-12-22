@@ -146,11 +146,10 @@ export default async function DocumentationPage({
                       Java clients
                     </p>
                     <Link
-                      href="https://docs.openml.org/intro/"
+                      href="/apis"
                       className="text-primary mt-auto text-sm hover:underline"
-                      target="_blank"
                     >
-                      Install Library →
+                      View APIs →
                     </Link>
                   </div>
 
@@ -163,9 +162,8 @@ export default async function DocumentationPage({
                       Understand datasets, tasks, flows, runs, and benchmarking
                     </p>
                     <Link
-                      href="https://docs.openml.org/concepts/"
+                      href="#concepts"
                       className="text-primary mt-auto text-sm hover:underline"
-                      target="_blank"
                     >
                       Read Concepts →
                     </Link>
@@ -284,15 +282,23 @@ run.publish()`}</code>
                       <span>Data quality metrics and preprocessing status</span>
                     </li>
                   </ul>
-                  <Link
-                    href="https://docs.openml.org/concepts/data/"
-                    target="_blank"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <ExternalLink className="h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </Link>
+                  <div className="flex flex-wrap gap-3">
+                    <Link href="/datasets">
+                      <Button size="sm" className="gap-2">
+                        <Database className="h-4 w-4" />
+                        Browse Datasets
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://docs.openml.org/concepts/data/"
+                      target="_blank"
+                    >
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Technical Docs
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -339,15 +345,23 @@ run.publish()`}</code>
                       </span>
                     </li>
                   </ul>
-                  <Link
-                    href="https://docs.openml.org/concepts/tasks/"
-                    target="_blank"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <ExternalLink className="h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </Link>
+                  <div className="flex flex-wrap gap-3">
+                    <Link href="/tasks">
+                      <Button size="sm" className="gap-2">
+                        <Award className="h-4 w-4" />
+                        Browse Tasks
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://docs.openml.org/concepts/tasks/"
+                      target="_blank"
+                    >
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Technical Docs
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -390,15 +404,23 @@ run.publish()`}</code>
                       <span>Easily reusable and comparable</span>
                     </li>
                   </ul>
-                  <Link
-                    href="https://docs.openml.org/concepts/flows/"
-                    target="_blank"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <ExternalLink className="h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </Link>
+                  <div className="flex flex-wrap gap-3">
+                    <Link href="/flows">
+                      <Button size="sm" className="gap-2">
+                        <GitBranch className="h-4 w-4" />
+                        Browse Flows
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://docs.openml.org/concepts/flows/"
+                      target="_blank"
+                    >
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Technical Docs
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -441,15 +463,23 @@ run.publish()`}</code>
                       <span>Hardware and runtime tracking</span>
                     </li>
                   </ul>
-                  <Link
-                    href="https://docs.openml.org/concepts/runs/"
-                    target="_blank"
-                  >
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <ExternalLink className="h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </Link>
+                  <div className="flex flex-wrap gap-3">
+                    <Link href="/runs">
+                      <Button size="sm" className="gap-2">
+                        <Zap className="h-4 w-4" />
+                        Browse Runs
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://docs.openml.org/concepts/runs/"
+                      target="_blank"
+                    >
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Technical Docs
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -457,7 +487,15 @@ run.publish()`}</code>
 
           {/* APIs & Integrations */}
           <section id="apis" className="mb-16 scroll-mt-20">
-            <h2 className="mb-6 text-3xl font-bold">APIs & Integrations</h2>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-3xl font-bold">APIs & Integrations</h2>
+              <Link href="/apis">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Code className="h-4 w-4" />
+                  Full API Guide
+                </Button>
+              </Link>
+            </div>
 
             {/* Python */}
             <div id="python" className="mb-6 scroll-mt-20">
@@ -632,21 +670,20 @@ run.publish()`}</code>
 
               <Card className="hover:border-primary/50 transition-colors">
                 <CardHeader>
-                  <CardTitle className="text-lg">Sharing & Licenses</CardTitle>
-                  <CardDescription>Publishing guidelines</CardDescription>
+                  <CardTitle className="text-lg">Terms & Licenses</CardTitle>
+                  <CardDescription>
+                    Licenses, citations, terms of use
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Link
-                    href="https://docs.openml.org/concepts/sharing/"
-                    target="_blank"
-                  >
+                  <Link href="/terms">
                     <Button
                       variant="outline"
                       size="sm"
                       className="w-full gap-2"
                     >
-                      <ExternalLink className="h-4 w-4" />
-                      Read More
+                      <ChevronRight className="h-4 w-4" />
+                      View Terms
                     </Button>
                   </Link>
                 </CardContent>
@@ -658,16 +695,13 @@ run.publish()`}</code>
                   <CardDescription>Direct HTTP access</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Link
-                    href="https://docs.openml.org/ecosystem/Rest/"
-                    target="_blank"
-                  >
+                  <Link href="/apis#rest">
                     <Button
                       variant="outline"
                       size="sm"
                       className="w-full gap-2"
                     >
-                      <ExternalLink className="h-4 w-4" />
+                      <Code className="h-4 w-4" />
                       API Reference
                     </Button>
                   </Link>

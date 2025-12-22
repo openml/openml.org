@@ -144,7 +144,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           color: entityColors.docs,
         },
         {
-          title: "APIs",
+          title: "API's",
           titleKey: "apis",
           href: "/apis",
           icon: faRocket,

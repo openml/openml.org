@@ -13,13 +13,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.openml.org",
         port: "",
-        pathname: "/data/**", // Optional: restrict  if needed
+        pathname: "/**", // Allow all paths for profile images
       },
       {
-        protocol: "https",
+        protocol: "http",
         hostname: "www.openml.org",
         port: "",
-        pathname: "/**", // Allow all paths for profile images
+        pathname: "/**", // Some avatar URLs use http (legacy)
       },
       {
         protocol: "https",

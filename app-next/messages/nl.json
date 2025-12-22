@@ -369,6 +369,88 @@
         "title": "Volledige Documentatie",
         "description": "Voor uitgebreide API-referenties, tutorials en geavanceerde gidsen, bezoek onze volledige documentatie op"
       }
+    },
+    "api": {
+      "meta": {
+        "title": "OpenML APIs - Python, R, Java & REST",
+        "description": "Krijg programmatische toegang tot duizenden ML datasets, taken en experimenten. Bouw reproduceerbare machine learning pipelines met Python, R, Java of onze REST API."
+      }
+    },
+    "terms": {
+      "meta": {
+        "title": "Voorwaarden & Citatie - OpenML",
+        "description": "Meer informatie over OpenML-licenties, hoe u OpenML in uw onderzoek kunt citeren, en onze gebruiksvoorwaarden en privacybeleid."
+      },
+      "title": "Voorwaarden & Citatie",
+      "subtitle": "Licenties, citaties en voorwaarden voor het gebruik van OpenML in uw onderzoek en projecten.",
+      "licenses": {
+        "title": "Licenties",
+        "description": "OpenML ondersteunt meerdere open licenties om toegankelijkheid en hergebruik te maximaliseren. Elke dataset en bron op OpenML is getagd met de specifieke licentie.",
+        "ccby": "Naamsvermelding vereist. Vrij delen en aanpassen met juiste vermelding.",
+        "cc0": "Geen rechten voorbehouden. Vrij te gebruiken zonder beperkingen.",
+        "bsd": "Voor broncode. Permissieve licentie met minimale beperkingen."
+      },
+      "citation": {
+        "title": "Hoe te Citeren",
+        "subtitle": "Citeer OpenML als u het in uw onderzoek gebruikt. Het helpt ons impact aan te tonen en ontwikkeling voort te zetten.",
+        "openml": {
+          "title": "Citeer OpenML Platform",
+          "description": "Vanschoren et al., SIGKDD Explorations 2013"
+        },
+        "python": {
+          "title": "Citeer Python API",
+          "description": "Feurer et al., JMLR 2021"
+        },
+        "r": {
+          "title": "Citeer R API",
+          "description": "Casalicchio et al., Computational Statistics 2017"
+        },
+        "benchmark": {
+          "title": "Citeer Benchmarking Suites",
+          "description": "Bischl et al., NeurIPS 2021"
+        }
+      },
+      "termsOfUse": {
+        "title": "Gebruiksvoorwaarden",
+        "honorCode": {
+          "title": "Erecode",
+          "subtitle": "Richtlijnen voor ethisch gebruik van OpenML",
+          "items": {
+            "cite": "Geef juiste naamsvermelding en citeer de oorspronkelijke auteurs van datasets en papers",
+            "share": "Deel uw bijdragen openlijk zodat anderen op uw werk kunnen voortbouwen",
+            "respect": "Respecteer dataset-licenties en volg hun voorwaarden",
+            "quality": "Upload hoogwaardige, goed gedocumenteerde data en experimenten",
+            "feedback": "Geef constructieve feedback om het platform te helpen verbeteren"
+          }
+        },
+        "usageTerms": {
+          "title": "Gebruiksregels",
+          "subtitle": "Regels voor het gebruik van OpenML-diensten",
+          "intro": "Door OpenML te gebruiken, gaat u akkoord met de volgende voorwaarden:",
+          "items": {
+            "free": "OpenML is gratis te gebruiken voor onderzoek, onderwijs en niet-commerciële doeleinden",
+            "api": "API-gebruik moet redelijke snelheidslimieten volgen om eerlijke toegang voor alle gebruikers te garanderen",
+            "abuse": "Geautomatiseerd scrapen of misbruik van diensten kan leiden tot toegangsbeperkingen",
+            "warranty": "Data en diensten worden geleverd \"zoals ze zijn\" zonder enige garantie"
+          }
+        },
+        "privacy": {
+          "title": "Privacybeleid",
+          "subtitle": "Hoe wij met uw gegevens omgaan",
+          "intro": "Wij nemen uw privacy serieus. Zo gaan wij om met uw informatie:",
+          "items": {
+            "collect": "We verzamelen minimale persoonlijke informatie die nodig is om onze diensten te leveren",
+            "usage": "Gebruiksgegevens helpen ons OpenML te verbeteren en te begrijpen hoe het wordt gebruikt",
+            "share": "Wij verkopen of delen uw persoonlijke informatie niet met derden",
+            "cookies": "Wij gebruiken cookies voor authenticatie en om uw ervaring te verbeteren"
+          }
+        }
+      },
+      "contact": {
+        "title": "Vragen?",
+        "description": "Als u vragen heeft over licenties, citatie of gebruiksvoorwaarden, neem dan contact met ons op.",
+        "button": "Contact OpenML Team"
+      }
     }
   },
   "auth": {
