@@ -40,6 +40,8 @@ export function DatasetNavigationMenu({
   // Navigation items for "On This Page"
   const pageNavItems = [
     { id: "description", label: "Description", icon: FileText },
+    { id: "visualizations", label: "Visualizations", icon: LineChart },
+    { id: "experiments", label: "Experiments", icon: Play },
     ...(hasFeatures
       ? [
           {

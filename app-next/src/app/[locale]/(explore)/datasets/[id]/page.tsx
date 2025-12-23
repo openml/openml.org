@@ -23,6 +23,9 @@ import { DatasetMetadataGrid } from "@/components/dataset/dataset-metadata-grid"
 import { FeatureTable } from "@/components/dataset/feature-table";
 import { QualityTable } from "@/components/dataset/quality-table";
 import { DatasetNavigationMenu } from "@/components/dataset/dataset-navigation-menu";
+import { CollapsibleSection } from "@/components/dataset/collapsible-section";
+import { DataVisualizationSection } from "@/components/dataset/data-visualization-section";
+import { RelatedRunsSection } from "@/components/dataset/related-runs-section";
 
 export async function generateMetadata({
   params,
@@ -170,45 +173,49 @@ export default async function DatasetDetailPage({
         {/* Content with Sidebar - Below Header */}
         <div className="relative flex min-h-screen gap-8">
           {/* Left: Main Content */}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 space-y-6">
             {/* Description: Primary content */}
-            <section id="description" className="mt-8 scroll-mt-20">
+            <section id="description" className="scroll-mt-20">
               <DatasetDescription dataset={dataset} />
             </section>
 
-            {/* <section id="information" className="mt-8 scroll-mt-20">
-              <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-                <Info className="h-5 w-5 text-green-600 dark:text-green-500" />
-                Dataset Information
-              </h2>
-              <DatasetMetadataGrid dataset={dataset} />
-            </section> */}
+            {/* Data Visualization Section */}
+            <DataVisualizationSection dataset={dataset} />
+
+            {/* Experiments & Runs Section */}
+            <RelatedRunsSection
+              dataset={dataset}
+              runCount={runCount}
+              taskCount={taskCount}
+            />
 
             {/* Features: Technical details */}
             {dataset.features && dataset.features.length > 0 && (
-              <section id="features" className="mt-8 scroll-mt-20">
-                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-                  <BarChart3 className="h-5 w-5 rotate-90 text-gray-500" />
-                  Features ({dataset.features.length})
-                </h2>
+              <CollapsibleSection
+                id="features"
+                title="Features"
+                description="Detailed information about each attribute in the dataset"
+                icon={<Grid3x3 className="h-4 w-4 rotate-90 text-gray-500" />}
+                badge={dataset.features.length}
+                defaultOpen={true}
+              >
                 <FeatureTable features={dataset.features} />
-              </section>
+              </CollapsibleSection>
             )}
 
             {/* Qualities: Meta-features */}
             {dataset.qualities && Object.keys(dataset.qualities).length > 0 && (
-              <section id="qualities" className="mt-8 scroll-mt-20">
-                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-                  <BarChart3 className="h-5 w-5 text-gray-500" />
-                  Dataset Qualities
-                </h2>
+              <CollapsibleSection
+                id="qualities"
+                title="Dataset Qualities"
+                description="Computed meta-features and statistics"
+                icon={<BarChart3 className="h-4 w-4 text-gray-500" />}
+                badge={Object.keys(dataset.qualities).length}
+                defaultOpen={false}
+              >
                 <QualityTable qualities={dataset.qualities} />
-              </section>
+              </CollapsibleSection>
             )}
-
-            {/* TODO: Related Tasks section */}
-            {/* TODO: Recent Runs section */}
-            {/* TODO: Visualizations section */}
           </div>
 
           {/* Right: Navigation Menu - Responsive */}
