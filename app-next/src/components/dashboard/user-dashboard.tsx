@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Database,
@@ -22,6 +21,7 @@ import {
   Users,
   Star,
   Award,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -75,34 +75,123 @@ export function UserDashboard() {
   const [user, setUser] = useState<{
     name: string;
     username: string;
+    id?: string;
   } | null>(null);
   const [showFocusCards, setShowFocusCards] = useState(true);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [stats, setStats] = useState<UserStats>({
-    // Contribution counts
-    datasetsCreated: 3,
-    flowsCreated: 2,
-    runsCreated: 15,
-    discussionsPosted: 8,
+    // Contribution counts - start at 0
+    datasetsCreated: 0,
+    flowsCreated: 0,
+    runsCreated: 0,
+    discussionsPosted: 0,
 
-    // Impact metrics (mock data - will be fetched from API)
-    totalDownloads: 2847,
-    totalViews: 5432,
-    totalCitations: 12,
-    flowReuses: 45,
+    // Impact metrics - start at 0
+    totalDownloads: 0,
+    totalViews: 0,
+    totalCitations: 0,
+    flowReuses: 0,
 
-    // Top contributions (mock data)
-    topDataset: {
-      name: "Credit Risk Dataset",
-      downloads: 1523,
-    },
-    topFlow: {
-      name: "AutoML Pipeline",
-      reuses: 28,
-    },
+    // Top contributions
+    topDataset: undefined,
+    topFlow: undefined,
 
     // Activity
-    weeklyActivity: [1, 0, 2, 1, 0, 0, 1], // M T W T F S S
+    weeklyActivity: [0, 0, 0, 0, 0, 0, 0],
   });
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
+
+  // Fetch user stats from OpenML API
+  const fetchUserStats = useCallback(
+    async (userId: string) => {
+      setIsLoadingStats(true);
+      try {
+        // Fetch datasets, flows, and runs in parallel
+        const [datasetsRes, flowsRes, runsRes] = await Promise.all([
+          fetch(`${API_URL}/api/v1/json/data/list?uploader=${userId}`).catch(
+            () => null,
+          ),
+          fetch(`${API_URL}/api/v1/json/flow/list?uploader=${userId}`).catch(
+            () => null,
+          ),
+          fetch(
+            `${API_URL}/api/v1/json/run/list?uploader=${userId}&limit=1000`,
+          ).catch(() => null),
+        ]);
+
+        let datasetsCreated = 0;
+        let flowsCreated = 0;
+        let runsCreated = 0;
+        let topDataset: { name: string; downloads: number } | undefined;
+        let topFlow: { name: string; reuses: number } | undefined;
+        const totalDownloads = 0;
+
+        // Parse datasets
+        if (datasetsRes?.ok) {
+          const data = await datasetsRes.json();
+          if (data?.data?.dataset) {
+            const datasets = Array.isArray(data.data.dataset)
+              ? data.data.dataset
+              : [data.data.dataset];
+            datasetsCreated = datasets.length;
+
+            // Find top dataset (by name for now, downloads not in list response)
+            if (datasets.length > 0) {
+              topDataset = {
+                name: datasets[0].name || "Unknown",
+                downloads: 0, // Would need separate API call per dataset
+              };
+            }
+          }
+        }
+
+        // Parse flows
+        if (flowsRes?.ok) {
+          const data = await flowsRes.json();
+          if (data?.flows?.flow) {
+            const flows = Array.isArray(data.flows.flow)
+              ? data.flows.flow
+              : [data.flows.flow];
+            flowsCreated = flows.length;
+
+            if (flows.length > 0) {
+              topFlow = {
+                name: flows[0].name || "Unknown",
+                reuses: 0,
+              };
+            }
+          }
+        }
+
+        // Parse runs
+        if (runsRes?.ok) {
+          const data = await runsRes.json();
+          if (data?.runs?.run) {
+            const runs = Array.isArray(data.runs.run)
+              ? data.runs.run
+              : [data.runs.run];
+            runsCreated = runs.length;
+          }
+        }
+
+        setStats((prev) => ({
+          ...prev,
+          datasetsCreated,
+          flowsCreated,
+          runsCreated,
+          topDataset,
+          topFlow,
+          totalDownloads,
+        }));
+      } catch (error) {
+        console.error("Error fetching user stats:", error);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    },
+    [API_URL],
+  );
 
   // Calculate reputation score (StackOverflow style)
   const calculateReputation = (): ReputationBreakdown => {
@@ -123,6 +212,11 @@ export function UserDashboard() {
   const reputation = calculateReputation();
 
   useEffect(() => {
+    // Wait for session to load before checking auth
+    if (status === "loading") {
+      return;
+    }
+
     // Redirect to sign-in if not authenticated
     if (status === "unauthenticated") {
       router.push("/auth/signin");
@@ -131,11 +225,20 @@ export function UserDashboard() {
 
     // Load user from NextAuth session or localStorage fallback
     if (status === "authenticated" && session?.user) {
+      const userId = session.user.id;
       setUser({
         name: session.user.name || session.user.username || "User",
         username:
           session.user.username || session.user.email?.split("@")[0] || "user",
+        id: userId,
       });
+
+      // Fetch real stats if we have user ID
+      if (userId) {
+        fetchUserStats(userId);
+      } else {
+        setIsLoadingStats(false);
+      }
     } else {
       // Fallback to localStorage for backward compatibility
       const storedUser = localStorage.getItem("user");
@@ -148,16 +251,23 @@ export function UserDashboard() {
             name:
               `${firstName} ${lastName}`.trim() || userData.username || "User",
             username: userData.username || "user",
+            id: userData.id,
           });
+
+          if (userData.id) {
+            fetchUserStats(userData.id);
+          } else {
+            setIsLoadingStats(false);
+          }
         } catch (error) {
           console.error("Error parsing user data:", error);
+          setIsLoadingStats(false);
         }
+      } else {
+        setIsLoadingStats(false);
       }
     }
-
-    // TODO: Fetch real stats from API
-    // For now using mock data
-  }, [session, status, router]);
+  }, [session, status, router, fetchUserStats]);
 
   const focusCards: FocusCard[] = [
     {
@@ -234,12 +344,16 @@ export function UserDashboard() {
                 <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   REPUTATION
                 </CardTitle>
-                <Award className="h-5 w-5 text-amber-500" />
+                {isLoadingStats ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-amber-500" />
+                ) : (
+                  <Award className="h-5 w-5 text-amber-500" />
+                )}
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-bold text-slate-900 dark:text-white">
-                {reputation.total.toLocaleString()}
+                {isLoadingStats ? "..." : reputation.total.toLocaleString()}
               </div>
               <p className="mt-2 text-sm font-medium text-amber-600 dark:text-amber-400">
                 research impact score
@@ -247,19 +361,27 @@ export function UserDashboard() {
               <div className="mt-3 space-y-1 text-xs text-slate-600 dark:text-slate-400">
                 <div className="flex justify-between">
                   <span>Downloads</span>
-                  <span className="font-medium">{reputation.downloads}</span>
+                  <span className="font-medium">
+                    {isLoadingStats ? "-" : reputation.downloads}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Citations</span>
-                  <span className="font-medium">{reputation.citations}</span>
+                  <span className="font-medium">
+                    {isLoadingStats ? "-" : reputation.citations}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Flow Reuses</span>
-                  <span className="font-medium">{reputation.flowReuses}</span>
+                  <span className="font-medium">
+                    {isLoadingStats ? "-" : reputation.flowReuses}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Discussions</span>
-                  <span className="font-medium">{reputation.discussions}</span>
+                  <span className="font-medium">
+                    {isLoadingStats ? "-" : reputation.discussions}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -306,15 +428,21 @@ export function UserDashboard() {
                 <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   TOTAL CONTRIBUTIONS
                 </CardTitle>
-                <TrendingUp className="h-5 w-5 text-blue-500" />
+                {isLoadingStats ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                ) : (
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                )}
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-bold text-slate-900 dark:text-white">
-                {stats.datasetsCreated +
-                  stats.flowsCreated +
-                  stats.runsCreated +
-                  stats.discussionsPosted}
+                {isLoadingStats
+                  ? "..."
+                  : stats.datasetsCreated +
+                    stats.flowsCreated +
+                    stats.runsCreated +
+                    stats.discussionsPosted}
               </div>
               <p className="mt-2 text-sm font-medium text-blue-600 dark:text-blue-400">
                 total contributions
@@ -337,7 +465,7 @@ export function UserDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-slate-900 dark:text-white">
-                {stats.datasetsCreated}
+                {isLoadingStats ? "..." : stats.datasetsCreated}
               </div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 created
@@ -345,11 +473,17 @@ export function UserDashboard() {
               <div className="mt-3 flex items-center gap-3 text-xs">
                 <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
                   <Download className="h-3 w-3" />
-                  <span>{stats.totalDownloads.toLocaleString()}</span>
+                  <span>
+                    {isLoadingStats
+                      ? "-"
+                      : stats.totalDownloads.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
                   <Eye className="h-3 w-3" />
-                  <span>{stats.totalViews.toLocaleString()}</span>
+                  <span>
+                    {isLoadingStats ? "-" : stats.totalViews.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -367,14 +501,16 @@ export function UserDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-slate-900 dark:text-white">
-                {stats.flowsCreated}
+                {isLoadingStats ? "..." : stats.flowsCreated}
               </div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 created
               </p>
               <div className="mt-3 flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400">
                 <Users className="h-3 w-3" />
-                <span>{stats.flowReuses} reuses by others</span>
+                <span>
+                  {isLoadingStats ? "-" : stats.flowReuses} reuses by others
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -391,7 +527,7 @@ export function UserDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-slate-900 dark:text-white">
-                {stats.runsCreated}
+                {isLoadingStats ? "..." : stats.runsCreated}
               </div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 experiments
@@ -411,21 +547,23 @@ export function UserDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-slate-900 dark:text-white">
-                {stats.totalCitations}
+                {isLoadingStats ? "..." : stats.totalCitations}
               </div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 in publications
               </p>
               <div className="mt-3 flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400">
                 <MessageSquare className="h-3 w-3" />
-                <span>{stats.discussionsPosted} discussions</span>
+                <span>
+                  {isLoadingStats ? "-" : stats.discussionsPosted} discussions
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Top Contributions */}
-        {(stats.topDataset || stats.topFlow) && (
+        {!isLoadingStats && (stats.topDataset || stats.topFlow) && (
           <div className="mb-8">
             <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-white">
               Your Top Contributions

@@ -374,6 +374,201 @@
       "meta": {
         "title": "APIs OpenML - Python, R, Java & REST",
         "description": "Accédez à des milliers de jeux de données, tâches et expériences ML par programmation. Construisez des pipelines d'apprentissage automatique reproductibles avec Python, R, Java ou notre API REST."
+      },
+      "version": "v1.0",
+      "title": "APIs OpenML",
+      "subtitle": "Accédez à des milliers de jeux de données, tâches et expériences ML par programmation. Construisez des pipelines d'apprentissage automatique reproductibles avec Python, R, Java ou notre API REST.",
+      "quickLinks": {
+        "python": "Python",
+        "rPackage": "Package R",
+        "java": "Java",
+        "restApi": "API REST"
+      },
+      "toc": {
+        "onThisPage": "Sur cette page",
+        "overview": "Aperçu",
+        "gettingStarted": "Commencer",
+        "installation": "Installation",
+        "authentication": "Authentification",
+        "workingWith": "Travailler avec",
+        "datasets": "Jeux de données",
+        "tasks": "Tâches",
+        "flows": "Flows",
+        "runs": "Exécutions",
+        "apiReference": "Référence API",
+        "endpoints": "Points de terminaison",
+        "rateLimits": "Limites de débit",
+        "resources": "Ressources"
+      },
+      "overview": {
+        "title": "Aperçu",
+        "description": "OpenML fournit une interface unifiée pour accéder aux ressources d'apprentissage automatique dans plusieurs langages de programmation. Que vous exploriez des jeux de données, exécutiez des expériences ou compariez des algorithmes, nos APIs facilitent l'intégration d'OpenML dans votre workflow.",
+        "datasets": {
+          "title": "10 000+ Jeux de données",
+          "description": "Accès à des jeux de données ML avec des métadonnées riches"
+        },
+        "tasks": {
+          "title": "50 000+ Tâches",
+          "description": "Tâches ML prédéfinies avec évaluation standardisée"
+        },
+        "runs": {
+          "title": "10M+ Exécutions",
+          "description": "Expériences et benchmarks reproductibles"
+        }
+      },
+      "gettingStarted": {
+        "title": "Commencer",
+        "installation": "Installation",
+        "authentication": {
+          "title": "Authentification",
+          "alertTitle": "Clé API requise pour les téléversements",
+          "alertDescription": "La lecture des données publiques ne nécessite pas d'authentification. Cependant, pour téléverser des jeux de données, des exécutions ou accéder à des ressources privées, vous aurez besoin d'une clé API.",
+          "howToGet": "Comment obtenir votre clé API:",
+          "step1": "Créez un compte ou connectez-vous à OpenML",
+          "step2": "Allez dans les Paramètres de votre compte",
+          "step3": "Trouvez votre clé API dans la section API",
+          "getApiKey": "Obtenir Votre Clé API"
+        }
+      },
+      "workingWith": {
+        "title": "Travailler avec",
+        "datasets": {
+          "title": "Jeux de données",
+          "description": "Les jeux de données sont le fondement d'OpenML. Ils contiennent les données réelles utilisées pour les expériences d'apprentissage automatique."
+        },
+        "tasks": {
+          "title": "Tâches",
+          "description": "Les tâches définissent un problème d'apprentissage automatique spécifique: quel jeu de données utiliser, quelle cible prédire et comment évaluer."
+        },
+        "flows": {
+          "title": "Flows",
+          "description": "Les flows représentent des pipelines ou algorithmes d'apprentissage automatique. Ils décrivent les étapes exactes et les paramètres utilisés."
+        },
+        "runs": {
+          "title": "Exécutions",
+          "description": "Les exécutions sont les résultats de l'application d'un flow à une tâche. Elles contiennent des prédictions, des évaluations et des informations d'exécution."
+        }
+      },
+      "apiReference": {
+        "title": "Référence API",
+        "endpoints": {
+          "title": "Points de terminaison",
+          "data": {
+            "title": "API Data",
+            "description": "Opérations sur les jeux de données",
+            "list": "Lister les jeux de données",
+            "get": "Obtenir les détails du jeu de données",
+            "features": "Obtenir les caractéristiques du jeu de données"
+          },
+          "task": {
+            "title": "API Tâche",
+            "description": "Opérations sur les tâches",
+            "list": "Lister les tâches",
+            "get": "Obtenir les détails de la tâche"
+          },
+          "flow": {
+            "title": "API Flow",
+            "description": "Opérations sur les flows",
+            "list": "Lister les flows",
+            "get": "Obtenir les détails du flow"
+          },
+          "run": {
+            "title": "API Exécution",
+            "description": "Opérations sur les exécutions",
+            "list": "Lister les exécutions",
+            "get": "Obtenir les détails de l'exécution"
+          }
+        },
+        "rateLimits": {
+          "title": "Limites de débit",
+          "description": "Pour garantir une utilisation équitable, l'API a des limites de débit:",
+          "anonymous": "Anonyme: 100 requêtes/minute",
+          "authenticated": "Authentifié: 1000 requêtes/minute",
+          "note": "Si vous avez besoin de limites plus élevées à des fins de recherche, veuillez nous contacter."
+        }
+      },
+      "resources": {
+        "title": "Ressources",
+        "documentation": {
+          "title": "Documentation",
+          "python": "Docs API Python",
+          "r": "Docs Package R",
+          "rest": "Référence API REST"
+        },
+        "community": {
+          "title": "Communauté",
+          "github": "Dépôt GitHub",
+          "slack": "Communauté Slack",
+          "discussions": "Discussions"
+        }
+      },
+      "languages": {
+        "python": {
+          "name": "Python",
+          "description": "L'API Python fournit l'accès le plus complet aux fonctionnalités OpenML, avec un support complet pour scikit-learn, PyTorch et TensorFlow."
+        },
+        "r": {
+          "name": "R",
+          "description": "Le package R s'intègre parfaitement avec mlr3 et fournit un accès à toutes les ressources OpenML."
+        },
+        "java": {
+          "name": "Java",
+          "description": "Le connecteur API Java fournit un accès programmatique à OpenML pour les applications basées sur JVM."
+        },
+        "julia": {
+          "name": "Julia",
+          "description": "Le package Julia fournit un accès haute performance aux jeux de données et tâches OpenML."
+        },
+        "rest": {
+          "name": "API REST",
+          "description": "Accédez directement à OpenML via notre API REST pour n'importe quel langage de programmation ou environnement."
+        }
+      }
+    },
+    "meetUs": {
+      "meta": {
+        "title": "Rencontrez-Nous - Hackathons & Événements OpenML",
+        "description": "Rejoignez les hackathons et événements communautaires OpenML. Rencontrez l'équipe, collaborez sur des projets de science ouverte et aidez à démocratiser l'apprentissage automatique."
+      },
+      "hero": {
+        "title": "Rencontrons-Nous !",
+        "subtitle": "Rejoignez l'un de nos hackathons et aidez à façonner l'avenir de l'apprentissage automatique ouvert"
+      },
+      "why": {
+        "title": "Changer le monde nécessite un travail concentré et approfondi",
+        "description": "Lors d'événements de type hackathon, nous sortons de la routine et travaillons pendant des semaines entières sur de nouvelles idées qui font avancer la communauté scientifique. De la création d'extensions cool d'OpenML à la résolution de problèmes data-driven de manière innovante, nous croyons en la science ouverte et à la démocratisation de l'apprentissage automatique pour tous.",
+        "bringLaptop": "Apportez juste votre ordinateur",
+        "drinksSnacks": "Nous fournissons boissons & snacks",
+        "greatCompany": "Bonne compagnie garantie"
+      },
+      "upcoming": {
+        "title": "Événements à Venir",
+        "featured": "En Vedette",
+        "register": "S'inscrire (Gratuit)",
+        "schedule": "Programme & Plus",
+        "howToPrepare": "Comment se Préparer",
+        "viewVenue": "Voir les détails du lieu",
+        "slackAlert": "Rejoignez notre canal Slack pour rester informé et participer à la discussion !"
+      },
+      "sponsor": {
+        "title": "Sponsoriser un Événement",
+        "subtitle": "Le sponsoring peut transformer un super hackathon en quelque chose d'incroyable !",
+        "description": "Nous sommes toujours très heureux de recevoir du sponsoring pour rendre le prochain hackathon encore meilleur. Sponsoriser un événement peut se faire via la Fondation OpenML et sera utilisé directement au profit des participants : snacks, activités sociales, cadeaux (ex: t-shirts)...",
+        "acknowledgment": "Nous serons heureux de reconnaître votre soutien sur le site OpenML et de vous inviter à faire une présentation lors de l'événement.",
+        "contactUs": "Contactez-Nous pour Sponsoriser"
+      },
+      "memories": {
+        "title": "Souvenirs",
+        "pastEvents": "Événements Passés",
+        "photoGallery": "Galerie Photo",
+        "photoDescription": "Découvrez les photos des événements précédents",
+        "viewPhotos": "Voir les Photos sur Flickr"
+      },
+      "cta": {
+        "title": "Prêt à Nous Rejoindre ?",
+        "description": "Que vous soyez un expert ML chevronné ou débutant, nos hackathons sont l'endroit idéal pour apprendre, collaborer et avoir un impact.",
+        "registerNext": "S'inscrire au Prochain Événement",
+        "joinSlack": "Rejoindre la Communauté Slack"
       }
     },
     "terms": {
@@ -453,6 +648,61 @@
       }
     }
   },
+  "dashboard": {
+    "meta": {
+      "title": "Tableau de Bord - OpenML",
+      "description": "Votre tableau de bord OpenML personnel. Suivez vos contributions, votre réputation et votre impact sur la recherche en apprentissage automatique."
+    },
+    "welcome": "Bienvenue, {name} !",
+    "subtitle": "OpenML est l'endroit pour partager des jeux de données, des workflows et collaborer sur la recherche en apprentissage automatique.",
+    "signOut": "Se déconnecter",
+    "loading": "Chargement...",
+    "stats": {
+      "reputation": "RÉPUTATION",
+      "researchImpact": "score d'impact recherche",
+      "downloads": "Téléchargements",
+      "citations": "Citations",
+      "flowReuses": "Réutilisations Flow",
+      "discussions": "Discussions",
+      "publicActivity": "ACTIVITÉ PUBLIQUE",
+      "activeDays": "{count} jours actifs cette semaine",
+      "totalContributions": "CONTRIBUTIONS TOTALES",
+      "total": "contributions totales"
+    },
+    "contributions": {
+      "datasets": "Jeux de Données",
+      "flows": "Flows",
+      "runs": "Exécutions",
+      "created": "créé",
+      "experiments": "expériences",
+      "inPublications": "dans les publications",
+      "reusesByOthers": "{count} réutilisations par d'autres"
+    },
+    "topContributions": {
+      "title": "Vos Meilleures Contributions",
+      "mostDownloaded": "Jeu de Données le Plus Téléchargé",
+      "mostReused": "Flow le Plus Réutilisé",
+      "downloads": "téléchargements",
+      "reuses": "réutilisations"
+    },
+    "focus": {
+      "title": "Comment commencer : Choisissez un focus pour aujourd'hui",
+      "subtitle": "Aidez-nous à faire des suggestions pertinentes pour vous",
+      "datasets": {
+        "title": "Jeux de Données",
+        "description": "Explorez et partagez des jeux de données"
+      },
+      "tasks": {
+        "title": "Tâches",
+        "description": "Définissez des problèmes ML et des benchmarks"
+      },
+      "flows": {
+        "title": "Flows",
+        "description": "Partagez des workflows et modèles ML"
+      }
+    },
+    "hideStats": "Masquer les statistiques"
+  },
   "auth": {
     "signIn": {
       "title": "Se connecter - OpenML",
@@ -474,6 +724,176 @@
       "invalidCredentials": "E-mail ou mot de passe invalide",
       "error": "Une erreur s'est produite. Veuillez réessayer.",
       "oauthError": "L'authentification a échoué. Veuillez réessayer."
+    }
+  },
+  "dataset": {
+    "header": {
+      "uploadedOn": "Téléchargé le {date}",
+      "by": "par",
+      "active": "Actif",
+      "deactivated": "Désactivé",
+      "inPreparation": "En Préparation"
+    },
+    "stats": {
+      "instances": "Instances",
+      "features": "Caractéristiques",
+      "classes": "Classes",
+      "missing": "Manquant",
+      "tasks": "Tâches",
+      "runs": "Exécutions",
+      "downloads": "Téléchargements",
+      "likes": "J'aime"
+    },
+    "actions": {
+      "download": "Télécharger",
+      "downloadDataset": "Télécharger le Dataset",
+      "originalFile": "Fichier ARFF/CSV original",
+      "showCode": "Afficher le Code",
+      "codeSnippets": "Python, R, Julia, cURL",
+      "quickCopy": "Copie Rapide",
+      "like": "J'aime",
+      "bookmark": "Favoris",
+      "bookmarked": "En Favoris",
+      "addToCollection": "Ajouter à une Collection",
+      "share": "Partager",
+      "copyLink": "Copier le Lien",
+      "linkCopied": "Lien Copié!",
+      "openNotebook": "Ouvrir dans un Notebook",
+      "reportIssue": "Signaler un Problème"
+    },
+    "codeDialog": {
+      "title": "Charger le Dataset: {name}",
+      "description": "Utilisez ces extraits de code pour charger ce dataset dans votre langage préféré",
+      "copy": "Copier",
+      "copied": "Copié!",
+      "installation": "Installation"
+    },
+    "tabs": {
+      "dataDetail": "Détails des Données",
+      "analysis": "Analyse",
+      "tasks": "Tâches",
+      "runs": "Exécutions"
+    },
+    "description": {
+      "showMore": "Afficher Plus",
+      "showLess": "Afficher Moins",
+      "originalSource": "Source Originale",
+      "relatedPaper": "Article Associé"
+    },
+    "features": {
+      "title": "Caractéristiques",
+      "description": "Informations détaillées sur chaque attribut du dataset",
+      "searchPlaceholder": "Rechercher des caractéristiques...",
+      "filterTypes": "Filtrer par Types",
+      "showAll": "Afficher les {count} Caractéristiques",
+      "showLess": "Afficher Moins",
+      "noMatch": "Aucune caractéristique correspondante",
+      "target": "Cible",
+      "distinct": "Distincts",
+      "missing": "Manquants",
+      "statistics": "Statistiques",
+      "type": "Type",
+      "featureName": "Nom de la Caractéristique",
+      "types": {
+        "numeric": "Numérique",
+        "nominal": "Nominal",
+        "string": "Chaîne",
+        "date": "Date"
+      },
+      "stats": {
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "mean": "Moyenne",
+        "stdDev": "Écart Type",
+        "distinctValues": "Valeurs Distinctes",
+        "missingValues": "Valeurs Manquantes"
+      },
+      "valueDistribution": "Distribution des Valeurs"
+    },
+    "information": {
+      "title": "Informations sur le Dataset",
+      "description": "Détails techniques et métadonnées"
+    },
+    "citation": {
+      "title": "Citation",
+      "description": "Comment citer ce dataset dans les travaux académiques",
+      "copy": "Copier la Citation"
+    },
+    "analysis": {
+      "title": "Visualisations des Données",
+      "description": "Exploration visuelle du dataset",
+      "comingSoon": "Visualisations Bientôt Disponibles",
+      "comingSoonDesc": "Les distributions de caractéristiques, corrélations et métriques de qualité des données seront affichées ici.",
+      "classBalance": "Équilibre des Classes",
+      "classBalanceDesc": "Distribution des classes cibles",
+      "missingValues": "Valeurs Manquantes",
+      "missingValuesDesc": "Complétude des données",
+      "dimensionality": "Dimensionnalité",
+      "dimensionalityDesc": "Caractéristiques par instance"
+    },
+    "tasks": {
+      "title": "Tâches Associées",
+      "description": "Tâches de machine learning définies sur ce dataset",
+      "available": "{count} tâche(s) disponible(s) sur ce dataset",
+      "viewAll": "Voir toutes les tâches",
+      "noTasks": "Aucune tâche n'a encore été définie",
+      "createTask": "Créer une Tâche"
+    },
+    "runs": {
+      "title": "Exécutions ML",
+      "description": "Expériences de machine learning sur ce dataset",
+      "recorded": "{count} exécution(s) enregistrée(s) sur ce dataset",
+      "viewAll": "Voir toutes les exécutions",
+      "noRuns": "Aucune exécution n'a encore été enregistrée",
+      "runExperiment": "Lancer une Expérience",
+      "bestAccuracy": "Meilleure Précision",
+      "topFlows": "Meilleurs Flows",
+      "leaderboardComingSoon": "Classement bientôt disponible...",
+      "bestAlgorithms": "Algorithmes les plus performants..."
+    },
+    "collection": {
+      "dialogTitle": "Ajouter à une Collection",
+      "dialogDescription": "Ajoutez \"{name}\" à l'une de vos collections ou créez-en une nouvelle.",
+      "signInPrompt": "Connectez-vous pour ajouter des datasets à vos collections",
+      "createNew": "Créer une Nouvelle Collection",
+      "cancel": "Annuler"
+    },
+    "report": {
+      "dialogTitle": "Signaler un Problème",
+      "dialogDescription": "Aidez-nous à améliorer OpenML en signalant des problèmes avec ce dataset.",
+      "issueType": "Type de Problème",
+      "selectType": "Sélectionnez un type de problème...",
+      "types": {
+        "incorrectData": "Données incorrectes ou corrompues",
+        "missingMetadata": "Métadonnées manquantes ou incorrectes",
+        "duplicate": "Dataset en double",
+        "license": "Violation de licence",
+        "privacy": "Problème de confidentialité",
+        "other": "Autre"
+      },
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Veuillez décrire le problème en détail...",
+      "emailLabel": "Votre E-mail (optionnel)",
+      "emailPlaceholder": "email@exemple.com",
+      "emailHint": "Nous l'utiliserons pour vous recontacter si nécessaire",
+      "cancel": "Annuler",
+      "submit": "Soumettre le Rapport"
+    },
+    "qualities": {
+      "title": "Qualités du Dataset",
+      "description": "Méta-caractéristiques et mesures statistiques",
+      "searchPlaceholder": "Rechercher des qualités...",
+      "categories": {
+        "counts": "Comptages",
+        "statistics": "Statistiques",
+        "informationTheory": "Théorie de l'Information",
+        "ratios": "Ratios",
+        "other": "Autre"
+      }
+    },
+    "deactivated": {
+      "title": "Dataset Désactivé",
+      "message": "Ce dataset a été désactivé et n'est plus disponible."
     }
   }
 }

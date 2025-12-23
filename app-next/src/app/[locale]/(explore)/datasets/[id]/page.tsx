@@ -17,7 +17,7 @@ import {
   fetchDatasetTaskCount,
   fetchDatasetRunCount,
 } from "@/lib/api/dataset";
-import { DatasetHeader } from "@/components/dataset/dataset-header";
+import { DatasetHeader } from "@/components/dataset/dataset-header-new";
 import { DatasetDescription } from "@/components/dataset/dataset-description";
 import { DatasetMetadataGrid } from "@/components/dataset/dataset-metadata-grid";
 import { FeatureTable } from "@/components/dataset/feature-table";
@@ -176,13 +176,13 @@ export default async function DatasetDetailPage({
               <DatasetDescription dataset={dataset} />
             </section>
 
-            <section id="information" className="mt-8 scroll-mt-20">
+            {/* <section id="information" className="mt-8 scroll-mt-20">
               <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
                 <Info className="h-5 w-5 text-green-600 dark:text-green-500" />
                 Dataset Information
               </h2>
               <DatasetMetadataGrid dataset={dataset} />
-            </section>
+            </section> */}
 
             {/* Features: Technical details */}
             {dataset.features && dataset.features.length > 0 && (

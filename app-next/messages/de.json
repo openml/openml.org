@@ -374,6 +374,201 @@
       "meta": {
         "title": "OpenML APIs - Python, R, Java & REST",
         "description": "Programmatischer Zugriff auf Tausende von ML-Datensätzen, Aufgaben und Experimenten. Baue reproduzierbare Machine Learning Pipelines mit Python, R, Java oder unserer REST-API."
+      },
+      "version": "v1.0",
+      "title": "OpenML APIs",
+      "subtitle": "Programmatischer Zugriff auf Tausende von ML-Datensätzen, Aufgaben und Experimenten. Baue reproduzierbare Machine Learning Pipelines mit Python, R, Java oder unserer REST-API.",
+      "quickLinks": {
+        "python": "Python",
+        "rPackage": "R-Paket",
+        "java": "Java",
+        "restApi": "REST-API"
+      },
+      "toc": {
+        "onThisPage": "Auf dieser Seite",
+        "overview": "Übersicht",
+        "gettingStarted": "Erste Schritte",
+        "installation": "Installation",
+        "authentication": "Authentifizierung",
+        "workingWith": "Arbeiten mit",
+        "datasets": "Datensätze",
+        "tasks": "Aufgaben",
+        "flows": "Flows",
+        "runs": "Läufe",
+        "apiReference": "API-Referenz",
+        "endpoints": "Endpunkte",
+        "rateLimits": "Rate-Limits",
+        "resources": "Ressourcen"
+      },
+      "overview": {
+        "title": "Übersicht",
+        "description": "OpenML bietet eine einheitliche Schnittstelle für den Zugriff auf Machine Learning-Ressourcen in mehreren Programmiersprachen. Ob du Datensätze erkunden, Experimente durchführen oder Algorithmen vergleichen möchtest – unsere APIs machen es einfach, OpenML in deinen Workflow zu integrieren.",
+        "datasets": {
+          "title": "10.000+ Datensätze",
+          "description": "Zugriff auf ML-Datensätze mit umfangreichen Metadaten"
+        },
+        "tasks": {
+          "title": "50.000+ Aufgaben",
+          "description": "Vordefinierte ML-Aufgaben mit standardisierter Evaluation"
+        },
+        "runs": {
+          "title": "10M+ Läufe",
+          "description": "Reproduzierbare Experimente und Benchmarks"
+        }
+      },
+      "gettingStarted": {
+        "title": "Erste Schritte",
+        "installation": "Installation",
+        "authentication": {
+          "title": "Authentifizierung",
+          "alertTitle": "API-Schlüssel für Uploads erforderlich",
+          "alertDescription": "Das Lesen öffentlicher Daten erfordert keine Authentifizierung. Um jedoch Datensätze, Läufe hochzuladen oder auf private Ressourcen zuzugreifen, benötigst du einen API-Schlüssel.",
+          "howToGet": "So erhältst du deinen API-Schlüssel:",
+          "step1": "Erstelle ein Konto oder melde dich bei OpenML an",
+          "step2": "Gehe zu deinen Kontoeinstellungen",
+          "step3": "Finde deinen API-Schlüssel im API-Bereich",
+          "getApiKey": "API-Schlüssel erhalten"
+        }
+      },
+      "workingWith": {
+        "title": "Arbeiten mit",
+        "datasets": {
+          "title": "Datensätze",
+          "description": "Datensätze sind das Fundament von OpenML. Sie enthalten die tatsächlichen Daten, die für Machine Learning-Experimente verwendet werden."
+        },
+        "tasks": {
+          "title": "Aufgaben",
+          "description": "Aufgaben definieren ein spezifisches Machine Learning-Problem: welcher Datensatz verwendet werden soll, welches Ziel vorhergesagt werden soll und wie evaluiert werden soll."
+        },
+        "flows": {
+          "title": "Flows",
+          "description": "Flows repräsentieren Machine Learning-Pipelines oder Algorithmen. Sie beschreiben die genauen Schritte und Parameter, die verwendet wurden."
+        },
+        "runs": {
+          "title": "Läufe",
+          "description": "Läufe sind die Ergebnisse der Anwendung eines Flows auf eine Aufgabe. Sie enthalten Vorhersagen, Evaluationen und Laufzeitinformationen."
+        }
+      },
+      "apiReference": {
+        "title": "API-Referenz",
+        "endpoints": {
+          "title": "Endpunkte",
+          "data": {
+            "title": "Daten-API",
+            "description": "Datensatz-Operationen",
+            "list": "Datensätze auflisten",
+            "get": "Datensatz-Details abrufen",
+            "features": "Datensatz-Features abrufen"
+          },
+          "task": {
+            "title": "Aufgaben-API",
+            "description": "Aufgaben-Operationen",
+            "list": "Aufgaben auflisten",
+            "get": "Aufgaben-Details abrufen"
+          },
+          "flow": {
+            "title": "Flow-API",
+            "description": "Flow-Operationen",
+            "list": "Flows auflisten",
+            "get": "Flow-Details abrufen"
+          },
+          "run": {
+            "title": "Lauf-API",
+            "description": "Lauf-Operationen",
+            "list": "Läufe auflisten",
+            "get": "Lauf-Details abrufen"
+          }
+        },
+        "rateLimits": {
+          "title": "Rate-Limits",
+          "description": "Um eine faire Nutzung zu gewährleisten, hat die API Rate-Limits:",
+          "anonymous": "Anonym: 100 Anfragen/Minute",
+          "authenticated": "Authentifiziert: 1000 Anfragen/Minute",
+          "note": "Wenn du höhere Limits für Forschungszwecke benötigst, kontaktiere uns bitte."
+        }
+      },
+      "resources": {
+        "title": "Ressourcen",
+        "documentation": {
+          "title": "Dokumentation",
+          "python": "Python API-Docs",
+          "r": "R-Paket-Docs",
+          "rest": "REST-API-Referenz"
+        },
+        "community": {
+          "title": "Community",
+          "github": "GitHub-Repository",
+          "slack": "Slack-Community",
+          "discussions": "Diskussionen"
+        }
+      },
+      "languages": {
+        "python": {
+          "name": "Python",
+          "description": "Die Python-API bietet den umfassendsten Zugang zu OpenML-Funktionen mit voller Unterstützung für scikit-learn, PyTorch und TensorFlow."
+        },
+        "r": {
+          "name": "R",
+          "description": "Das R-Paket integriert sich nahtlos mit mlr3 und bietet Zugang zu allen OpenML-Ressourcen."
+        },
+        "java": {
+          "name": "Java",
+          "description": "Der Java-API-Connector bietet programmatischen Zugang zu OpenML für JVM-basierte Anwendungen."
+        },
+        "julia": {
+          "name": "Julia",
+          "description": "Das Julia-Paket bietet Hochleistungszugang zu OpenML-Datensätzen und -Aufgaben."
+        },
+        "rest": {
+          "name": "REST-API",
+          "description": "Greife direkt über unsere REST-API auf OpenML zu – für jede Programmiersprache oder Umgebung."
+        }
+      }
+    },
+    "meetUs": {
+      "meta": {
+        "title": "Triff Uns - OpenML Hackathons & Events",
+        "description": "Nimm an OpenML Hackathons und Community-Events teil. Triff das Team, arbeite an Open-Science-Projekten und hilf Machine Learning zu demokratisieren."
+      },
+      "hero": {
+        "title": "Lass uns Treffen!",
+        "subtitle": "Nimm an einem unserer Hackathons teil und hilf die Zukunft des offenen Machine Learnings zu gestalten"
+      },
+      "why": {
+        "title": "Die Welt zu verändern erfordert fokussierte, tiefgreifende Arbeit",
+        "description": "Bei Hackathon-Events brechen wir aus der Routine aus und arbeiten wochenlang an neuen Ideen, die die wissenschaftliche Gemeinschaft voranbringen. Vom Bauen cooler OpenML-Erweiterungen bis zum Lösen datengetriebener Probleme auf neue Weise – wir glauben an offene Wissenschaft und die Demokratisierung von Machine Learning für alle.",
+        "bringLaptop": "Bring einfach deinen Laptop mit",
+        "drinksSnacks": "Wir stellen Getränke & Snacks",
+        "greatCompany": "Tolle Gesellschaft garantiert"
+      },
+      "upcoming": {
+        "title": "Kommende Events",
+        "featured": "Empfohlen",
+        "register": "Registrieren (Kostenlos)",
+        "schedule": "Zeitplan & Mehr",
+        "howToPrepare": "Wie man sich Vorbereitet",
+        "viewVenue": "Veranstaltungsort ansehen",
+        "slackAlert": "Tritt unserem Slack-Kanal bei, um auf dem Laufenden zu bleiben und an der Diskussion teilzunehmen!"
+      },
+      "sponsor": {
+        "title": "Ein Event Sponsern",
+        "subtitle": "Sponsoring kann einen tollen Hackathon noch besser machen!",
+        "description": "Wir freuen uns immer über Sponsoring, um den nächsten Hackathon noch besser zu machen. Sponsoring erfolgt über die OpenML Foundation und wird direkt zum Nutzen der Teilnehmer verwendet: Snacks, soziale Aktivitäten, Geschenke (z.B. T-Shirts)...",
+        "acknowledgment": "Wir würden deinen Support gerne auf der OpenML-Website würdigen und dich einladen, eine Präsentation beim Event zu halten.",
+        "contactUs": "Kontaktiere Uns für Sponsoring"
+      },
+      "memories": {
+        "title": "Erinnerungen",
+        "pastEvents": "Vergangene Events",
+        "photoGallery": "Fotogalerie",
+        "photoDescription": "Sieh dir Bilder von früheren Events an",
+        "viewPhotos": "Fotos auf Flickr ansehen"
+      },
+      "cta": {
+        "title": "Bereit Mitzumachen?",
+        "description": "Egal ob erfahrener ML-Experte oder Anfänger – unsere Hackathons sind der perfekte Ort zum Lernen, Zusammenarbeiten und Etwas Bewirken.",
+        "registerNext": "Für Nächstes Event Registrieren",
+        "joinSlack": "Slack-Community Beitreten"
       }
     },
     "terms": {
@@ -453,6 +648,61 @@
       }
     }
   },
+  "dashboard": {
+    "meta": {
+      "title": "Dashboard - OpenML",
+      "description": "Dein persönliches OpenML Dashboard. Verfolge deine Beiträge, Reputation und Einfluss auf die Machine Learning Forschung."
+    },
+    "welcome": "Willkommen, {name}!",
+    "subtitle": "OpenML ist der Ort, um Datensätze, Workflows zu teilen und an Machine Learning Forschung zusammenzuarbeiten.",
+    "signOut": "Abmelden",
+    "loading": "Laden...",
+    "stats": {
+      "reputation": "REPUTATION",
+      "researchImpact": "Forschungseinfluss-Score",
+      "downloads": "Downloads",
+      "citations": "Zitationen",
+      "flowReuses": "Flow-Wiederverwendungen",
+      "discussions": "Diskussionen",
+      "publicActivity": "ÖFFENTLICHE AKTIVITÄT",
+      "activeDays": "{count} aktive Tage diese Woche",
+      "totalContributions": "GESAMTBEITRÄGE",
+      "total": "Gesamtbeiträge"
+    },
+    "contributions": {
+      "datasets": "Datensätze",
+      "flows": "Flows",
+      "runs": "Läufe",
+      "created": "erstellt",
+      "experiments": "Experimente",
+      "inPublications": "in Publikationen",
+      "reusesByOthers": "{count} Wiederverwendungen durch andere"
+    },
+    "topContributions": {
+      "title": "Deine Top-Beiträge",
+      "mostDownloaded": "Meistgeladener Datensatz",
+      "mostReused": "Meistgenutzter Flow",
+      "downloads": "Downloads",
+      "reuses": "Wiederverwendungen"
+    },
+    "focus": {
+      "title": "Wie beginnen: Wähle einen Fokus für heute",
+      "subtitle": "Hilf uns, relevante Vorschläge für dich zu machen",
+      "datasets": {
+        "title": "Datensätze",
+        "description": "Erkunde und teile Datensätze"
+      },
+      "tasks": {
+        "title": "Aufgaben",
+        "description": "Definiere ML-Probleme und Benchmarks"
+      },
+      "flows": {
+        "title": "Flows",
+        "description": "Teile ML-Workflows und Modelle"
+      }
+    },
+    "hideStats": "Statistiken ausblenden"
+  },
   "auth": {
     "signIn": {
       "title": "Anmelden - OpenML",
@@ -474,6 +724,176 @@
       "invalidCredentials": "Ungültige E-Mail oder Passwort",
       "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
       "oauthError": "Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "dataset": {
+    "header": {
+      "uploadedOn": "Hochgeladen am {date}",
+      "by": "von",
+      "active": "Aktiv",
+      "deactivated": "Deaktiviert",
+      "inPreparation": "In Vorbereitung"
+    },
+    "stats": {
+      "instances": "Instanzen",
+      "features": "Merkmale",
+      "classes": "Klassen",
+      "missing": "Fehlend",
+      "tasks": "Aufgaben",
+      "runs": "Ausführungen",
+      "downloads": "Downloads",
+      "likes": "Likes"
+    },
+    "actions": {
+      "download": "Herunterladen",
+      "downloadDataset": "Datensatz Herunterladen",
+      "originalFile": "Original ARFF/CSV Datei",
+      "showCode": "Code Anzeigen",
+      "codeSnippets": "Python, R, Julia, cURL",
+      "quickCopy": "Schnell Kopieren",
+      "like": "Like",
+      "bookmark": "Lesezeichen",
+      "bookmarked": "Gespeichert",
+      "addToCollection": "Zur Sammlung Hinzufügen",
+      "share": "Teilen",
+      "copyLink": "Link Kopieren",
+      "linkCopied": "Link Kopiert!",
+      "openNotebook": "In Notebook Öffnen",
+      "reportIssue": "Problem Melden"
+    },
+    "codeDialog": {
+      "title": "Datensatz Laden: {name}",
+      "description": "Verwenden Sie diese Code-Snippets, um diesen Datensatz in Ihrer bevorzugten Programmiersprache zu laden",
+      "copy": "Kopieren",
+      "copied": "Kopiert!",
+      "installation": "Installation"
+    },
+    "tabs": {
+      "dataDetail": "Datendetails",
+      "analysis": "Analyse",
+      "tasks": "Aufgaben",
+      "runs": "Ausführungen"
+    },
+    "description": {
+      "showMore": "Mehr Anzeigen",
+      "showLess": "Weniger Anzeigen",
+      "originalSource": "Originalquelle",
+      "relatedPaper": "Zugehöriges Paper"
+    },
+    "features": {
+      "title": "Merkmale",
+      "description": "Detaillierte Informationen zu jedem Attribut im Datensatz",
+      "searchPlaceholder": "Merkmale suchen...",
+      "filterTypes": "Typen Filtern",
+      "showAll": "Alle {count} Merkmale Anzeigen",
+      "showLess": "Weniger Anzeigen",
+      "noMatch": "Keine passenden Merkmale gefunden",
+      "target": "Ziel",
+      "distinct": "Eindeutig",
+      "missing": "Fehlend",
+      "statistics": "Statistiken",
+      "type": "Typ",
+      "featureName": "Merkmalname",
+      "types": {
+        "numeric": "Numerisch",
+        "nominal": "Nominal",
+        "string": "String",
+        "date": "Datum"
+      },
+      "stats": {
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "mean": "Mittelwert",
+        "stdDev": "Std Abweichung",
+        "distinctValues": "Eindeutige Werte",
+        "missingValues": "Fehlende Werte"
+      },
+      "valueDistribution": "Werteverteilung"
+    },
+    "information": {
+      "title": "Datensatz-Informationen",
+      "description": "Technische Details und Metadaten"
+    },
+    "citation": {
+      "title": "Zitation",
+      "description": "Wie Sie diesen Datensatz in akademischen Arbeiten zitieren",
+      "copy": "Zitation Kopieren"
+    },
+    "analysis": {
+      "title": "Datenvisualisierungen",
+      "description": "Visuelle Erkundung des Datensatzes",
+      "comingSoon": "Visualisierungen Demnächst Verfügbar",
+      "comingSoonDesc": "Merkmalsverteilungen, Korrelationen und Datenqualitätsmetriken werden hier angezeigt.",
+      "classBalance": "Klassenbalance",
+      "classBalanceDesc": "Verteilung der Zielklassen",
+      "missingValues": "Fehlende Werte",
+      "missingValuesDesc": "Datenvollständigkeit",
+      "dimensionality": "Dimensionalität",
+      "dimensionalityDesc": "Merkmale pro Instanz"
+    },
+    "tasks": {
+      "title": "Verwandte Aufgaben",
+      "description": "Auf diesem Datensatz definierte Machine-Learning-Aufgaben",
+      "available": "{count} Aufgabe(n) auf diesem Datensatz verfügbar",
+      "viewAll": "Alle Aufgaben anzeigen",
+      "noTasks": "Noch keine Aufgaben definiert",
+      "createTask": "Aufgabe Erstellen"
+    },
+    "runs": {
+      "title": "ML Ausführungen",
+      "description": "Machine-Learning-Experimente auf diesem Datensatz",
+      "recorded": "{count} Ausführung(en) auf diesem Datensatz aufgezeichnet",
+      "viewAll": "Alle Ausführungen anzeigen",
+      "noRuns": "Noch keine Ausführungen aufgezeichnet",
+      "runExperiment": "Experiment Ausführen",
+      "bestAccuracy": "Beste Genauigkeit",
+      "topFlows": "Top Flows",
+      "leaderboardComingSoon": "Bestenliste demnächst verfügbar...",
+      "bestAlgorithms": "Leistungsstärkste Algorithmen..."
+    },
+    "collection": {
+      "dialogTitle": "Zur Sammlung Hinzufügen",
+      "dialogDescription": "Fügen Sie \"{name}\" zu einer Ihrer Sammlungen hinzu oder erstellen Sie eine neue.",
+      "signInPrompt": "Melden Sie sich an, um Datensätze zu Ihren Sammlungen hinzuzufügen",
+      "createNew": "Neue Sammlung Erstellen",
+      "cancel": "Abbrechen"
+    },
+    "report": {
+      "dialogTitle": "Problem Melden",
+      "dialogDescription": "Helfen Sie uns, OpenML zu verbessern, indem Sie Probleme mit diesem Datensatz melden.",
+      "issueType": "Problemtyp",
+      "selectType": "Problemtyp auswählen...",
+      "types": {
+        "incorrectData": "Falsche oder beschädigte Daten",
+        "missingMetadata": "Fehlende oder falsche Metadaten",
+        "duplicate": "Doppelter Datensatz",
+        "license": "Lizenzverletzung",
+        "privacy": "Datenschutzbedenken",
+        "other": "Andere"
+      },
+      "descriptionLabel": "Beschreibung",
+      "descriptionPlaceholder": "Bitte beschreiben Sie das Problem im Detail...",
+      "emailLabel": "Ihre E-Mail (optional)",
+      "emailPlaceholder": "email@beispiel.de",
+      "emailHint": "Wir verwenden diese für Rückfragen bei Bedarf",
+      "cancel": "Abbrechen",
+      "submit": "Bericht Senden"
+    },
+    "qualities": {
+      "title": "Datensatz-Qualitäten",
+      "description": "Meta-Merkmale und statistische Maße",
+      "searchPlaceholder": "Qualitäten suchen...",
+      "categories": {
+        "counts": "Anzahlen",
+        "statistics": "Statistiken",
+        "informationTheory": "Informationstheorie",
+        "ratios": "Verhältnisse",
+        "other": "Andere"
+      }
+    },
+    "deactivated": {
+      "title": "Datensatz Deaktiviert",
+      "message": "Dieser Datensatz wurde deaktiviert und ist nicht mehr verfügbar."
     }
   }
 }

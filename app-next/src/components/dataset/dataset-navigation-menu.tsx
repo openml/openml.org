@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   BarChart3,
-  Info,
   Database,
   ArrowLeft,
   Grid3x3,
@@ -12,22 +11,67 @@ import {
   X,
   ChevronRight,
   ChevronLeft,
+  FileText,
+  LineChart,
+  ListTodo,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface DatasetNavigationMenuProps {
   hasFeatures: boolean;
   hasQualities: boolean;
   featuresCount?: number;
+  taskCount?: number;
+  runCount?: number;
 }
 
 export function DatasetNavigationMenu({
   hasFeatures,
   hasQualities,
   featuresCount = 0,
+  taskCount = 0,
+  runCount = 0,
 }: DatasetNavigationMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Navigation items for "On This Page"
+  const pageNavItems = [
+    { id: "description", label: "Description", icon: FileText },
+    ...(hasFeatures
+      ? [
+          {
+            id: "features",
+            label: `Features (${featuresCount})`,
+            icon: BarChart3,
+            iconRotate: true,
+          },
+        ]
+      : []),
+    ...(hasQualities
+      ? [{ id: "qualities", label: "Qualities", icon: BarChart3 }]
+      : []),
+  ];
+
+  // Additional sections
+  const sectionNavItems = [
+    { id: "data-detail", label: "Data Detail", icon: Database },
+    { id: "analysis", label: "Analysis", icon: LineChart },
+    {
+      id: "tasks",
+      label: "Tasks",
+      icon: ListTodo,
+      count: taskCount,
+    },
+    {
+      id: "runs",
+      label: "Runs",
+      icon: Play,
+      count: runCount,
+    },
+  ];
 
   return (
     <>
@@ -77,42 +121,44 @@ export function DatasetNavigationMenu({
                     On This Page
                   </h3>
                   <nav className="space-y-1">
-                    <a
-                      href="#description"
-                      onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                    >
-                      <Database className="h-4 w-4" />
-                      Description
-                    </a>
-                    <a
-                      href="#information"
-                      onClick={() => setIsOpen(false)}
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                    >
-                      <Info className="h-4 w-4" />
-                      Information
-                    </a>
-                    {hasFeatures && (
+                    {pageNavItems.map((item) => (
                       <a
-                        href="#features"
+                        key={item.id}
+                        href={`#${item.id}`}
                         onClick={() => setIsOpen(false)}
                         className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       >
-                        <BarChart3 className="h-4 w-4 rotate-90" />
-                        Features ({featuresCount})
+                        <item.icon
+                          className={`h-4 w-4 ${item.iconRotate ? "rotate-90" : ""}`}
+                        />
+                        {item.label}
                       </a>
-                    )}
-                    {hasQualities && (
+                    ))}
+                  </nav>
+
+                  {/* Section divider */}
+                  <div className="border-border my-3 border-t" />
+
+                  {/* Additional Sections */}
+                  <nav className="space-y-1">
+                    {sectionNavItems.map((item) => (
                       <a
-                        href="#qualities"
+                        key={item.id}
+                        href={`#${item.id}`}
                         onClick={() => setIsOpen(false)}
-                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       >
-                        <BarChart3 className="h-4 w-4" />
-                        Qualities
+                        <span className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4" />
+                          {item.label}
+                        </span>
+                        {item.count !== undefined && item.count > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {item.count.toLocaleString()}
+                          </Badge>
+                        )}
                       </a>
-                    )}
+                    ))}
                   </nav>
                 </div>
 
@@ -188,38 +234,42 @@ export function DatasetNavigationMenu({
                 On This Page
               </h3>
               <nav className="space-y-1">
-                <a
-                  href="#description"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                >
-                  <Database className="h-4 w-4" />
-                  Description
-                </a>
-                <a
-                  href="#information"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                >
-                  <Info className="h-4 w-4" />
-                  Information
-                </a>
-                {hasFeatures && (
+                {pageNavItems.map((item) => (
                   <a
-                    href="#features"
+                    key={item.id}
+                    href={`#${item.id}`}
                     className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                   >
-                    <BarChart3 className="h-4 w-4 rotate-90" />
-                    Features ({featuresCount})
+                    <item.icon
+                      className={`h-4 w-4 ${item.iconRotate ? "rotate-90" : ""}`}
+                    />
+                    {item.label}
                   </a>
-                )}
-                {hasQualities && (
+                ))}
+              </nav>
+
+              {/* Section divider */}
+              <div className="border-border my-3 border-t" />
+
+              {/* Additional Sections */}
+              <nav className="space-y-1">
+                {sectionNavItems.map((item) => (
                   <a
-                    href="#qualities"
-                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                   >
-                    <BarChart3 className="h-4 w-4" />
-                    Qualities
+                    <span className="flex items-center gap-2">
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </span>
+                    {item.count !== undefined && item.count > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {item.count.toLocaleString()}
+                      </Badge>
+                    )}
                   </a>
-                )}
+                ))}
               </nav>
             </div>
 
