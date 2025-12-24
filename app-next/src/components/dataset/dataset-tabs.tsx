@@ -38,7 +38,7 @@ interface DatasetTabsProps {
 }
 
 /**
- * DatasetTabs - Kaggle-style tabbed interface for dataset details
+ * DatasetTabs - kggl-style tabbed interface for dataset details
  *
  * Tabs:
  * 1. Data Detail - Features, qualities, metadata

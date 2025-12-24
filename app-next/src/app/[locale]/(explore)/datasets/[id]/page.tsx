@@ -1,17 +1,7 @@
 import { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import {
-  FlaskConical,
-  Heart,
-  CloudDownload,
-  BarChart3,
-  Info,
-  Database,
-  ArrowLeft,
-  Grid3x3,
-} from "lucide-react";
+import { BarChart3, Grid3x3 } from "lucide-react";
 import {
   fetchDataset,
   fetchDatasetTaskCount,
@@ -19,13 +9,14 @@ import {
 } from "@/lib/api/dataset";
 import { DatasetHeader } from "@/components/dataset/dataset-header-new";
 import { DatasetDescription } from "@/components/dataset/dataset-description";
-import { DatasetMetadataGrid } from "@/components/dataset/dataset-metadata-grid";
-import { FeatureTable } from "@/components/dataset/feature-table";
 import { QualityTable } from "@/components/dataset/quality-table";
 import { DatasetNavigationMenu } from "@/components/dataset/dataset-navigation-menu";
 import { CollapsibleSection } from "@/components/dataset/collapsible-section";
-import { DataVisualizationSection } from "@/components/dataset/data-visualization-section";
+import { DataExplorer } from "@/components/dataset/data-explorer";
+import { MetadataSection } from "@/components/dataset/metadata-section";
+import { ActivityOverview } from "@/components/dataset/activity-overview";
 import { RelatedRunsSection } from "@/components/dataset/related-runs-section";
+import { DatasetAnalysisSection } from "@/components/dataset/dataset-analysis-section";
 
 export async function generateMetadata({
   params,
@@ -179,8 +170,21 @@ export default async function DatasetDetailPage({
               <DatasetDescription dataset={dataset} />
             </section>
 
-            {/* Data Visualization Section */}
-            <DataVisualizationSection dataset={dataset} />
+            {/* Data Explorer - kggl style feature exploration */}
+            {dataset.features && dataset.features.length > 0 && (
+              <DataExplorer dataset={dataset} />
+            )}
+
+            {/* Analysis Section - Interactive Plotly visualizations */}
+            {dataset.features && dataset.features.length > 0 && (
+              <DatasetAnalysisSection dataset={dataset} />
+            )}
+
+            {/* Metadata Section - kggl style expandable metadata */}
+            <MetadataSection dataset={dataset} />
+
+            {/* Activity Overview - kggl style activity stats */}
+            <ActivityOverview dataset={dataset} />
 
             {/* Experiments & Runs Section */}
             <RelatedRunsSection
@@ -189,21 +193,7 @@ export default async function DatasetDetailPage({
               taskCount={taskCount}
             />
 
-            {/* Features: Technical details */}
-            {dataset.features && dataset.features.length > 0 && (
-              <CollapsibleSection
-                id="features"
-                title="Features"
-                description="Detailed information about each attribute in the dataset"
-                icon={<Grid3x3 className="h-4 w-4 rotate-90 text-gray-500" />}
-                badge={dataset.features.length}
-                defaultOpen={true}
-              >
-                <FeatureTable features={dataset.features} />
-              </CollapsibleSection>
-            )}
-
-            {/* Qualities: Meta-features */}
+            {/* Qualities: Meta-features (collapsed by default) */}
             {dataset.qualities && Object.keys(dataset.qualities).length > 0 && (
               <CollapsibleSection
                 id="qualities"

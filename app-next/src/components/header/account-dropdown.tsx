@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
 
 /**
- * Account Dropdown - Kaggle-inspired design
+ * Account Dropdown - kggl-inspired design
  * Shows user info with Profile, API Key, notifications, and Sign Out
  */
 export function AccountDropdown() {

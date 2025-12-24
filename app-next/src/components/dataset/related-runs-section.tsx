@@ -81,6 +81,11 @@ export function RelatedRunsSection({
 
   const hasExperiments = runCount > 0 || taskCount > 0;
 
+  // Don't render the section if there are no experiments
+  if (!hasExperiments) {
+    return null;
+  }
+
   return (
     <CollapsibleSection
       id="experiments"

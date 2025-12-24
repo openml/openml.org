@@ -15,6 +15,9 @@ import {
   LineChart,
   ListTodo,
   Play,
+  Activity,
+  Tag,
+  FlaskConical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,21 +40,30 @@ export function DatasetNavigationMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Navigation items for "On This Page"
+  // Navigation items for "On This Page" - kggl style
   const pageNavItems = [
     { id: "description", label: "Description", icon: FileText },
-    { id: "visualizations", label: "Visualizations", icon: LineChart },
-    { id: "experiments", label: "Experiments", icon: Play },
     ...(hasFeatures
       ? [
           {
-            id: "features",
-            label: `Features (${featuresCount})`,
-            icon: BarChart3,
-            iconRotate: true,
+            id: "data-explorer",
+            label: `Data Explorer (${featuresCount})`,
+            icon: Database,
           },
         ]
       : []),
+    ...(hasFeatures
+      ? [
+          {
+            id: "analysis",
+            label: "Analysis",
+            icon: LineChart,
+          },
+        ]
+      : []),
+    { id: "metadata", label: "Metadata", icon: Tag },
+    { id: "activity", label: "Activity", icon: Activity },
+    { id: "experiments", label: "Experiments", icon: FlaskConical },
     ...(hasQualities
       ? [{ id: "qualities", label: "Qualities", icon: BarChart3 }]
       : []),
@@ -60,7 +72,6 @@ export function DatasetNavigationMenu({
   // Additional sections
   const sectionNavItems = [
     { id: "data-detail", label: "Data Detail", icon: Database },
-    { id: "analysis", label: "Analysis", icon: LineChart },
     {
       id: "tasks",
       label: "Tasks",
@@ -130,9 +141,7 @@ export function DatasetNavigationMenu({
                         onClick={() => setIsOpen(false)}
                         className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       >
-                        <item.icon
-                          className={`h-4 w-4 ${item.iconRotate ? "rotate-90" : ""}`}
-                        />
+                        <item.icon className="h-4 w-4" />
                         {item.label}
                       </a>
                     ))}
@@ -242,9 +251,7 @@ export function DatasetNavigationMenu({
                     href={`#${item.id}`}
                     className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                   >
-                    <item.icon
-                      className={`h-4 w-4 ${item.iconRotate ? "rotate-90" : ""}`}
-                    />
+                    <item.icon className="h-4 w-4" />
                     {item.label}
                   </a>
                 ))}

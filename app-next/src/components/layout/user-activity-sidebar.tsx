@@ -33,7 +33,7 @@ interface UserActivitySidebarProps {
   className?: string;
 }
 
-// User Activity Sidebar - Kaggle-inspired collapsible sidebar
+// User Activity Sidebar - kggl-inspired collapsible sidebar
 export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -256,7 +256,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         />
       )}
 
-      {/* Sidebar - Kaggle Style */}
+      {/* Sidebar - kggl Style */}
       <div
         className={cn(
           "fixed top-0 right-0 z-50 h-full w-72 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-slate-800",

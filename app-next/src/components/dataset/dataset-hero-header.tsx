@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Dataset } from "@/types/dataset";
-import { DatasetCodeMenuKaggle } from "./dataset-code-menu-kaggle";
+import { DatasetCodeMenukggl } from "./dataset-code-menu-kggl";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
 import { DatasetActionsMenu } from "./dataset-actions-menu";
 import ReactMarkdown from "react-markdown";
@@ -35,7 +35,7 @@ interface DatasetHeroHeaderProps {
  * - Large title with badges
  * - Prominent description with light background (collapsible)
  * - Stats bar
- * - Kaggle-style download menu
+ * - kggl-style download menu
  * - 3-dot actions menu
  * - Tags section
  */
@@ -178,13 +178,13 @@ export function DatasetHeroHeader({
 
         {/* Right: Action Buttons */}
         <div className="flex shrink-0 items-center gap-3">
-          {/* Kaggle-style Code Menu */}
-          <DatasetCodeMenuKaggle
+          {/* kggl-style Code Menu */}
+          <DatasetCodeMenukggl
             datasetId={dataset.data_id}
             datasetName={dataset.name}
           />
 
-          {/* Kaggle-style Download Menu */}
+          {/* kggl-style Download Menu */}
           <DatasetDownloadMenu
             datasetId={dataset.data_id}
             datasetName={dataset.name}
@@ -293,7 +293,7 @@ export function DatasetHeroHeader({
       )}
 
       {/* Stats Bar */}
-      <div className="bg-muted/30 flex flex-wrap items-center gap-4 rounded-lg p-4 sm:gap-6">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
         {/* Instances */}
         {dataset.qualities?.NumberOfInstances != null && (
           <StatItem

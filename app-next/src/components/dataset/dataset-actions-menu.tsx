@@ -57,7 +57,7 @@ interface DatasetActionsMenuProps {
  * - Add to collection
  * - Bookmark/Save
  * - Social share (Twitter, LinkedIn, Facebook, Copy link)
- * - Create notebook (Colab, Kaggle)
+ * - Create notebook (Colab, kggl)
  * - Report issue
  */
 export function DatasetActionsMenu({
@@ -110,11 +110,11 @@ export function DatasetActionsMenu({
     }
   };
 
-  const handleOpenNotebook = (platform: "colab" | "kaggle") => {
+  const handleOpenNotebook = (platform: "colab" | "kggl") => {
     // TODO: Generate notebook URL based on platform
     const notebookUrls: Record<string, string> = {
       colab: `https://colab.research.google.com/github/openml/openml-colab/blob/main/notebooks/openml_dataset_template.ipynb?datasetId=${datasetId}`,
-      kaggle: `https://www.kaggle.com/code?scriptUrl=https://raw.githubusercontent.com/openml/openml-python/main/notebooks/dataset_template.py&datasetId=${datasetId}`,
+      kggl: `https://www.kggl.com/code?scriptUrl=https://raw.githubusercontent.com/openml/openml-python/main/notebooks/dataset_template.py&datasetId=${datasetId}`,
     };
 
     window.open(notebookUrls[platform], "_blank");
@@ -230,7 +230,7 @@ export function DatasetActionsMenu({
                   <span>Google Colab</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => handleOpenNotebook("kaggle")}
+                  onClick={() => handleOpenNotebook("kggl")}
                   className="cursor-pointer"
                 >
                   <KaggleIcon className="mr-2 h-4 w-4" />

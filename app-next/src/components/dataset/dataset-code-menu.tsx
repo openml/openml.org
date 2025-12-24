@@ -47,7 +47,7 @@ interface CodeSnippet {
 }
 
 /**
- * DatasetCodeMenu - Kaggle-style dropdown for downloading data and code snippets
+ * DatasetCodeMenu - kggl-style dropdown for downloading data and code snippets
  *
  * Provides multiple options:
  * - Download raw dataset

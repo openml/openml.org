@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
-import { DatasetCodeMenuKaggle } from "./dataset-code-menu-kaggle";
+import { DatasetCodeMenukggl } from "./dataset-code-menu-kggl";
 import { DatasetActionsMenu } from "./dataset-actions-menu";
 
 interface DatasetHeaderProps {
@@ -215,10 +215,10 @@ export function DatasetHeader({
         </div>
       </div>
       {/* LINE 4: Tags Row + Stats + Actions */}
-      <div className="-mt-2 mb-5 flex flex-col gap-4 pl-6 sm:flex-row sm:items-center sm:justify-between">
-        {/* Tags Row (if tags exist) */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
+      {tags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="-mt-2 mb-5 flex flex-col gap-4 pl-6 sm:flex-row sm:items-center sm:justify-between">
+            {/* Tags Row (if tags exist) */}
             {/* Tag icon always visible */}
             <Tag className="text-muted-foreground h-4 w-4" />
 
@@ -281,8 +281,8 @@ export function DatasetHeader({
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Divider - only show if we have stats to display */}
       {(dataset.qualities?.NumberOfInstances != null ||
@@ -363,8 +363,8 @@ export function DatasetHeader({
           datasetUrl={dataset.url}
         />
 
-        {/* Code Button (Kaggle-style) */}
-        <DatasetCodeMenuKaggle
+        {/* Code Button (kggl-style) */}
+        <DatasetCodeMenukggl
           datasetId={dataset.data_id}
           datasetName={dataset.name}
         />
