@@ -2,6 +2,7 @@ import { Database, Download, Heart, Play, Calendar, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Dataset } from "@/types/dataset";
+import { LikeButton } from "@/components/ui/like-button";
 
 interface DatasetHeaderProps {
   dataset: Dataset;
@@ -186,10 +187,13 @@ export function DatasetHeader({
           Run Experiment
         </Button>
 
-        <Button variant="outline" size="lg" disabled>
-          <Heart className="mr-2 h-4 w-4" />
-          Like ({dataset.nr_of_likes})
-        </Button>
+        <LikeButton
+          entityType="dataset"
+          entityId={dataset.data_id}
+          initialLikes={dataset.nr_of_likes || 0}
+          showCount={true}
+          size="lg"
+        />
       </div>
     </header>
   );

@@ -7,6 +7,39 @@ const nextConfig: NextConfig = {
   // Vercel-specific optimizations
   output: "standalone", // Optimize for Vercel deployment
 
+  // Enable WebAssembly support for parquet-wasm
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
+
+  // Configure webpack to handle WASM files
+  webpack: (config, { isServer }) => {
+    // Enable WebAssembly
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+
+    // Add rule for WASM files
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: "webassembly/async",
+    });
+
+    // Fix for WASM file resolution
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      };
+    }
+
+    return config;
+  },
+
   images: {
     remotePatterns: [
       {

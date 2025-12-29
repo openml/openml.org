@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
 import {
   ChevronRight,
   X,
@@ -36,6 +37,7 @@ interface UserActivitySidebarProps {
 // User Activity Sidebar - kggl-inspired collapsible sidebar
 export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   const { data: session, status } = useSession();
+  const { resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = React.useState(false);
   const [user, setUser] = React.useState<{
     name: string;
@@ -43,6 +45,9 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
     avatar: string;
     initials: string;
   } | null>(null);
+
+  // Determine background color based on theme
+  const bgColor = resolvedTheme === "dark" ? "#0f172a" : "#ffffff"; // slate-900 or white
 
   // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
@@ -256,15 +261,20 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         />
       )}
 
-      {/* Sidebar - kggl Style */}
+      {/* Sidebar - kggl Style - solid background */}
       <div
         className={cn(
-          "fixed top-0 right-0 z-50 h-full w-72 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-slate-800",
+          "fixed top-0 right-0 z-50 h-full w-72 transform shadow-2xl transition-transform duration-300 ease-in-out",
+          "border-l border-slate-200 dark:border-slate-700",
           isOpen ? "translate-x-0" : "translate-x-full",
           className,
         )}
+        style={{ backgroundColor: bgColor }}
       >
-        <div className="flex h-full flex-col">
+        <div
+          className="flex h-full flex-col"
+          style={{ backgroundColor: bgColor }}
+        >
           {/* Close Button - Top Right */}
           <Button
             variant="ghost"
@@ -276,7 +286,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           </Button>
 
           {/* Header with Avatar and Name */}
-          <div className="flex items-center gap-4 border-b p-6">
+          <div className="flex items-center gap-4 border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-800/50">
             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-blue-500 dark:border-blue-400">
               {user?.avatar &&
               (user.avatar.startsWith("http://") ||
@@ -309,7 +319,10 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           </div>
 
           {/* Menu Items */}
-          <nav className="border-b px-2 py-2">
+          <nav
+            className="border-b border-slate-200 px-2 py-2 dark:border-slate-700"
+            style={{ backgroundColor: bgColor }}
+          >
             {menuItems.map((item) => (
               <Link
                 key={item.label}
@@ -335,7 +348,10 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           </nav>
 
           {/* Notifications Section */}
-          <div className="flex-1 overflow-hidden">
+          <div
+            className="flex-1 overflow-hidden"
+            style={{ backgroundColor: bgColor }}
+          >
             <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-slate-700 dark:text-slate-300" />

@@ -21,7 +21,7 @@ export const HeroHome: React.FC = () => {
   return (
     // <div className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg_lightMode_4_heroSection.png')] bg-cover bg-center dark:bg-none">
     <div
-      className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top mix-blend-plus-darker dark:bg-none"
+      className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top dark:bg-none"
       onClick={() => setHomeMenuOpen(false)}
     >
       {/* Hamburger Menu Hint - Fixed position */}

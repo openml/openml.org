@@ -349,12 +349,14 @@ export function DataExplorer({ dataset }: DataExplorerProps) {
 function FeatureDetailRow({
   feature,
   index,
+  rowIdAttribute,
 }: {
   feature: DatasetFeature;
   index: number;
+  rowIdAttribute?: string;
 }) {
   const isTarget = feature.target;
-  const isRowId = feature.index;
+  const isRowId = rowIdAttribute && feature.name === rowIdAttribute;
 
   return (
     <div

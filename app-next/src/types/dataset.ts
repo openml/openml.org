@@ -71,6 +71,7 @@ export interface Dataset {
   file_id?: number;
   md5_checksum?: string;
   url: string;
+  parquet_url?: string;
 
   // Social metrics
   nr_of_likes: number;

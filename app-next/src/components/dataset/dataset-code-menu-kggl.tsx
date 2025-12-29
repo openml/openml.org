@@ -217,7 +217,10 @@ record_set_df.head()`,
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={cn("gap-2", className)}>
+        <Button
+          variant="outline"
+          className={cn("gap-2 dark:border-slate-400", className)}
+        >
           <Code2 className="h-4 w-4" />
           Code
           <ChevronDown className="h-4 w-4 opacity-60" />
@@ -302,16 +305,92 @@ record_set_df.head()`,
             variant="ghost"
             size="sm"
             className="w-full justify-start gap-2"
-            asChild
+            onClick={() => {
+              // Create notebook content
+              const notebookContent = {
+                cells: [
+                  {
+                    cell_type: "markdown",
+                    metadata: {},
+                    source: [
+                      `# OpenML Dataset: ${datasetName}\n`,
+                      `\n`,
+                      `Explore dataset **${datasetName}** (ID: ${datasetId}) from [OpenML.org](https://www.openml.org/d/${datasetId})`,
+                    ],
+                  },
+                  {
+                    cell_type: "code",
+                    execution_count: null,
+                    metadata: {},
+                    outputs: [],
+                    source: [
+                      "# Install OpenML (run once)\n",
+                      "!pip install -q openml",
+                    ],
+                  },
+                  {
+                    cell_type: "code",
+                    execution_count: null,
+                    metadata: {},
+                    outputs: [],
+                    source: [
+                      "import openml\n",
+                      "import pandas as pd\n",
+                      "\n",
+                      `# Load dataset ${datasetId}: ${datasetName}\n`,
+                      `dataset = openml.datasets.get_dataset(${datasetId})\n`,
+                      "X, y, categorical_indicator, attribute_names = dataset.get_data(\n",
+                      "    dataset_format='dataframe',\n",
+                      "    target=dataset.default_target_attribute\n",
+                      ")\n",
+                      "\n",
+                      "# Display dataset info\n",
+                      "print(f'Dataset: {dataset.name}')\n",
+                      "print(f'Instances: {X.shape[0]}')\n",
+                      "print(f'Features: {X.shape[1]}')\n",
+                      "print(f'Target: {dataset.default_target_attribute}')",
+                    ],
+                  },
+                  {
+                    cell_type: "code",
+                    execution_count: null,
+                    metadata: {},
+                    outputs: [],
+                    source: ["# Preview the data\n", "X.head(10)"],
+                  },
+                ],
+                metadata: {
+                  kernelspec: {
+                    display_name: "Python 3",
+                    language: "python",
+                    name: "python3",
+                  },
+                  language_info: {
+                    name: "python",
+                    version: "3.10.0",
+                  },
+                },
+                nbformat: 4,
+                nbformat_minor: 5,
+              };
+
+              // Download as .ipynb file - user can then upload to Colab
+              const notebookJson = JSON.stringify(notebookContent, null, 2);
+              const blob = new Blob([notebookJson], {
+                type: "application/json",
+              });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `openml_dataset_${datasetId}.ipynb`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            }}
           >
-            <a
-              href={`https://colab.research.google.com/github/openml/openml-colab/blob/main/notebooks/openml_dataset_template.ipynb?datasetId=${datasetId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Create a notebook
-            </a>
+            <ExternalLink className="h-4 w-4" />
+            Download notebook
           </Button>
         </div>
       </DropdownMenuContent>

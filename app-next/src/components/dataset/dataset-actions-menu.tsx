@@ -124,7 +124,11 @@ export function DatasetActionsMenu({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className={cn(className)}>
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn("dark:border-slate-400", className)}
+          >
             <MoreHorizontal className="h-4 w-4" />
             <span className="sr-only">More options</span>
           </Button>

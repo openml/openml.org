@@ -23,6 +23,7 @@ import type { Dataset } from "@/types/dataset";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
 import { DatasetCodeMenukggl } from "./dataset-code-menu-kggl";
 import { DatasetActionsMenu } from "./dataset-actions-menu";
+import { LikeButton } from "@/components/ui/like-button";
 
 interface DatasetHeaderProps {
   dataset: Dataset;
@@ -150,11 +151,15 @@ export function DatasetHeader({
               </div>
             )}
 
-            {/* Version */}
-            <div className="text-muted-foreground flex items-center gap-1">
+            {/* Version with link to all versions */}
+            <Link
+              href={`/datasets?search=${encodeURIComponent(dataset.name)}`}
+              className="text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+              title="View all versions of this dataset"
+            >
               <GitBranch className="h-4 w-4" />
               <span>v.{dataset.version}</span>
-            </div>
+            </Link>
           </div>
 
           {/* LINE 3: Uploader Info - Avatar, Name, Date, Creator, Likes, Issues, Downloads */}
@@ -230,13 +235,17 @@ export function DatasetHeader({
             {/* md only: 3 tags + more */}
             <div className="hidden flex-wrap gap-2 sm:flex md:hidden">
               {tags.slice(0, 3).map((tagObj, idx) => (
-                <Badge
+                <a
                   key={`${tagObj.tag}-${idx}`}
-                  variant="secondary"
-                  className="border-accent border text-xs"
+                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
                 >
-                  {tagObj.tag}
-                </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
+                  >
+                    {tagObj.tag}
+                  </Badge>
+                </a>
               ))}
               {tags.length > 3 && (
                 <span className="text-muted-foreground text-xs">
@@ -248,13 +257,17 @@ export function DatasetHeader({
             {/* lg only: 7 tags + more */}
             <div className="hidden flex-wrap gap-2 md:flex lg:hidden">
               {tags.slice(0, 7).map((tagObj, idx) => (
-                <Badge
+                <a
                   key={`${tagObj.tag}-${idx}`}
-                  variant="secondary"
-                  className="border-accent border text-xs"
+                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
                 >
-                  {tagObj.tag}
-                </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
+                  >
+                    {tagObj.tag}
+                  </Badge>
+                </a>
               ))}
               {tags.length > 7 && (
                 <span className="text-muted-foreground text-xs">
@@ -266,13 +279,17 @@ export function DatasetHeader({
             {/* xl and up: 10 tags + more */}
             <div className="hidden flex-wrap gap-2 lg:flex">
               {tags.slice(0, 10).map((tagObj, idx) => (
-                <Badge
+                <a
                   key={`${tagObj.tag}-${idx}`}
-                  variant="secondary"
-                  className="border-accent border text-xs"
+                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
                 >
-                  {tagObj.tag}
-                </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
+                  >
+                    {tagObj.tag}
+                  </Badge>
+                </a>
               ))}
               {tags.length > 10 && (
                 <span className="text-muted-foreground text-xs">
@@ -370,16 +387,19 @@ export function DatasetHeader({
         />
 
         {/* Run Experiment */}
-        <Button variant="outline" disabled>
+        <Button variant="outline" className="dark:border-slate-400" disabled>
           <Play className="mr-2 h-4 w-4" />
           Run Experiment
         </Button>
 
         {/* Like Button */}
-        <Button variant="outline" disabled>
-          <Heart className="mr-2 h-4 w-4" />
-          Like ({dataset.nr_of_likes || 0})
-        </Button>
+        <LikeButton
+          entityType="dataset"
+          entityId={dataset.data_id}
+          initialLikes={dataset.nr_of_likes || 0}
+          showCount={true}
+          size="md"
+        />
 
         {/* 3-dot Menu */}
         <DatasetActionsMenu

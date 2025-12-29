@@ -12,11 +12,12 @@ import { DatasetDescription } from "@/components/dataset/dataset-description";
 import { QualityTable } from "@/components/dataset/quality-table";
 import { DatasetNavigationMenu } from "@/components/dataset/dataset-navigation-menu";
 import { CollapsibleSection } from "@/components/dataset/collapsible-section";
-import { DataExplorer } from "@/components/dataset/data-explorer";
+// import { DataExplorer } from "@/components/dataset/data-explorer";  // Replaced by merged component
+import { DataAnalysisSection } from "@/components/dataset/data-analysis-section"; // NEW: Merged Data Explorer + Analysis
 import { MetadataSection } from "@/components/dataset/metadata-section";
 import { ActivityOverview } from "@/components/dataset/activity-overview";
 import { RelatedRunsSection } from "@/components/dataset/related-runs-section";
-import { DatasetAnalysisSection } from "@/components/dataset/dataset-analysis-section";
+// import { DatasetAnalysisSection } from "@/components/dataset/dataset-analysis-section";  // Replaced by merged component
 
 export async function generateMetadata({
   params,
@@ -170,14 +171,9 @@ export default async function DatasetDetailPage({
               <DatasetDescription dataset={dataset} />
             </section>
 
-            {/* Data Explorer - kggl style feature exploration */}
+            {/* Data & Analysis Section - MERGED: Features table + Distribution + Correlation */}
             {dataset.features && dataset.features.length > 0 && (
-              <DataExplorer dataset={dataset} />
-            )}
-
-            {/* Analysis Section - Interactive Plotly visualizations */}
-            {dataset.features && dataset.features.length > 0 && (
-              <DatasetAnalysisSection dataset={dataset} />
+              <DataAnalysisSection dataset={dataset} />
             )}
 
             {/* Metadata Section - kggl style expandable metadata */}

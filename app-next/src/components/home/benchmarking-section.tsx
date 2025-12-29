@@ -44,7 +44,7 @@ export function BenchmarkingSection() {
 
           <CardHeader className="relative space-y-4 px-8 py-3">
             <div className="gradient-bg p2 flex items-end gap-2 rounded-tl-xl rounded-tr-xl">
-              <div className="justify-centerbg-white flex h-[100px] w-[100px] shrink-0 items-center p-2 mix-blend-multiply transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center bg-white p-2 mix-blend-multiply transition-transform duration-300 group-hover:scale-110">
                 <Image
                   src="/icons/Benchmarking-tasks01.png"
                   alt="Task"
@@ -86,7 +86,7 @@ export function BenchmarkingSection() {
 
           <CardHeader className="relative space-y-4 px-8 py-3">
             <div className="gradient-bg p2 flex items-end gap-2 rounded-tl-xl rounded-tr-xl">
-              <div className="justify-centerbg-white flex h-[100px] w-[100px] shrink-0 items-center p-2 mix-blend-multiply transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center bg-white p-2 mix-blend-multiply transition-transform duration-300 group-hover:scale-110">
                 <Image
                   src="/icons/Benchmarking-suits.png"
                   alt="Task"

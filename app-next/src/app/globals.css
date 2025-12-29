@@ -88,23 +88,24 @@
 }
 
 .dark {
-  --background: oklch(0.12 0.02 250);
-  --foreground: oklch(0.98 0.005 250);
+  /* Softer dark mode - less harsh contrast */
+  --background: oklch(0.18 0.015 250);
+  --foreground: oklch(0.88 0.01 250);
 
-  --card: oklch(0.16 0.03 250);
-  --card-foreground: oklch(0.98 0.005 250);
+  --card: oklch(0.2 0.02 250);
+  --card-foreground: oklch(0.88 0.01 250);
 
-  --popover: oklch(0.16 0.03 250);
-  --popover-foreground: oklch(0.98 0.005 250);
+  --popover: oklch(0.2 0.02 250);
+  --popover-foreground: oklch(0.88 0.01 250);
 
   --primary: oklch(66.565% 0.13239 268.569);
-  --primary-foreground: oklch(0.12 0.02 250);
+  --primary-foreground: oklch(0.15 0.02 250);
 
-  --secondary: oklch(0.2 0.03 250);
-  --secondary-foreground: oklch(0.98 0.005 250);
+  --secondary: oklch(0.24 0.025 250);
+  --secondary-foreground: oklch(0.88 0.01 250);
 
-  --muted: oklch(0.2 0.03 250);
-  --muted-foreground: oklch(0.65 0.03 250);
+  --muted: oklch(0.22 0.025 250);
+  --muted-foreground: oklch(0.6 0.025 250);
 
   --destructive: oklch(0.65 0.18 25);
   --border: oklch(0.25 0.04 250);
@@ -117,14 +118,14 @@
   --chart-4: oklch(0.78 0.16 80);
   --chart-5: oklch(0.68 0.14 30);
 
-  /* Sidebar */
-  --sidebar: oklch(0.14 0.025 250);
-  --sidebar-foreground: oklch(0.98 0.005 250);
+  /* Sidebar - softer dark */
+  --sidebar: oklch(0.16 0.02 250);
+  --sidebar-foreground: oklch(0.88 0.01 250);
   --sidebar-primary: oklch(66.565% 0.13239 268.569);
   --sidebar-primary-foreground: oklch(0.12 0.02 250);
-  --sidebar-accent: oklch(0.2 0.03 250);
-  --sidebar-accent-foreground: oklch(0.98 0.005 250);
-  --sidebar-border: oklch(0.25 0.04 250);
+  --sidebar-accent: oklch(0.22 0.025 250);
+  --sidebar-accent-foreground: oklch(0.88 0.01 250);
+  --sidebar-border: oklch(0.28 0.03 250);
   --sidebar-ring: oklch(66.565% 0.13239 268.569);
 }
 
@@ -235,7 +236,6 @@
     background-image:
       linear-gradient(to top, var(--overlay-color), var(--overlay-color)),
       var(--light-bg-image);
-    /* background-blend-mode: saturation; */
     background-blend-mode: hard-light;
     background-position: center bottom;
     background-size: cover;

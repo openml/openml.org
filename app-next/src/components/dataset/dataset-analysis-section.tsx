@@ -12,6 +12,13 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Dataset, DatasetFeature } from "@/types/dataset";
 import type { Layout } from "plotly.js";
+import {
+  useParquetData,
+  computeDistribution,
+  computeDistributionByTarget,
+  type DistributionData,
+} from "@/hooks/useParquetData";
+import { Loader2, AlertCircle } from "lucide-react";
 
 // Dynamic import for Plotly (required for SSR compatibility)
 const Plot = dynamic(() => import("react-plotly.js"), {
@@ -64,10 +71,55 @@ interface DatasetAnalysisSectionProps {
 }
 
 /**
+ * Compute Pearson correlation coefficient between two arrays
+ */
+function computePearsonCorrelation(
+  xValues: (string | number | null)[],
+  yValues: (string | number | null)[],
+): number {
+  // Filter to pairs where both values are valid numbers
+  const pairs: [number, number][] = [];
+  for (let i = 0; i < Math.min(xValues.length, yValues.length); i++) {
+    const x = xValues[i];
+    const y = yValues[i];
+    if (
+      x !== null &&
+      y !== null &&
+      typeof x === "number" &&
+      typeof y === "number" &&
+      !isNaN(x) &&
+      !isNaN(y)
+    ) {
+      pairs.push([x, y]);
+    }
+  }
+
+  if (pairs.length < 2) return 0;
+
+  const n = pairs.length;
+  const sumX = pairs.reduce((sum, p) => sum + p[0], 0);
+  const sumY = pairs.reduce((sum, p) => sum + p[1], 0);
+  const sumXY = pairs.reduce((sum, p) => sum + p[0] * p[1], 0);
+  const sumX2 = pairs.reduce((sum, p) => sum + p[0] * p[0], 0);
+  const sumY2 = pairs.reduce((sum, p) => sum + p[1] * p[1], 0);
+
+  const numerator = n * sumXY - sumX * sumY;
+  const denominator = Math.sqrt(
+    (n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY),
+  );
+
+  if (denominator === 0) return 0;
+
+  const correlation = numerator / denominator;
+  return Math.round(correlation * 100) / 100; // Round to 2 decimal places
+}
+
+/**
  * DatasetAnalysisSection Component
  *
  * Comprehensive data analysis with interactive Plotly visualizations.
  * Similar to production OpenML's Analysis tab.
+ * Now with real data from parquet files!
  */
 export function DatasetAnalysisSection({
   dataset,
@@ -80,6 +132,9 @@ export function DatasetAnalysisSection({
 
   const numericFeatures = features.filter((f) => f.type === "numeric");
   const nominalFeatures = features.filter((f) => f.type === "nominal");
+
+  // Load parquet data for real distributions, fall back to ARFF if needed
+  const parquetState = useParquetData(dataset.data_id, dataset.url);
 
   return (
     <section id="analysis" className={cn("scroll-mt-20", className)}>
@@ -94,9 +149,30 @@ export function DatasetAnalysisSection({
                 <Badge variant="secondary" className="text-xs">
                   Interactive
                 </Badge>
+                {parquetState.isLoading && (
+                  <Badge variant="outline" className="text-xs">
+                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    Loading data...
+                  </Badge>
+                )}
+                {parquetState.data && (
+                  <Badge variant="default" className="bg-green-500 text-xs">
+                    Real data
+                  </Badge>
+                )}
+                {parquetState.isTooLarge && (
+                  <Badge variant="outline" className="text-xs text-amber-600">
+                    <AlertCircle className="mr-1 h-3 w-3" />
+                    Large dataset
+                  </Badge>
+                )}
               </CardTitle>
               <p className="text-muted-foreground mt-1 text-sm">
-                Explore data distributions and relationships
+                {parquetState.data
+                  ? `Analyzing ${parquetState.rowCount.toLocaleString()} rows`
+                  : parquetState.isTooLarge
+                    ? "Dataset too large for browser visualization (showing metadata only)"
+                    : "Explore data distributions and relationships"}
               </p>
             </div>
           </div>
@@ -115,6 +191,8 @@ export function DatasetAnalysisSection({
               <FeatureDistributionPlots
                 numericFeatures={numericFeatures}
                 nominalFeatures={nominalFeatures}
+                parquetData={parquetState.data}
+                isLoadingParquet={parquetState.isLoading}
               />
             </TabsContent>
 
@@ -123,6 +201,7 @@ export function DatasetAnalysisSection({
               <CorrelationHeatmap
                 numericFeatures={numericFeatures}
                 nominalFeatures={nominalFeatures}
+                parquetData={parquetState.data}
               />
             </TabsContent>
 
@@ -144,23 +223,44 @@ export function DatasetAnalysisSection({
 
 /**
  * Feature Distribution Plots - Interactive like production OpenML
+ * Now with real data from parquet files!
  */
 function FeatureDistributionPlots({
   numericFeatures,
   nominalFeatures,
+  parquetData,
+  isLoadingParquet,
 }: {
   numericFeatures: Dataset["features"];
   nominalFeatures: Dataset["features"];
+  parquetData: Record<string, (string | number | null)[]> | null;
+  isLoadingParquet: boolean;
 }) {
   const allFeatures = [...(numericFeatures || []), ...(nominalFeatures || [])];
 
+  // Limit features display for performance (show first 100)
+  const MAX_DISPLAYED_FEATURES = 100;
+  const displayedFeatures = allFeatures.slice(0, MAX_DISPLAYED_FEATURES);
+  const hasMoreFeatures = allFeatures.length > MAX_DISPLAYED_FEATURES;
+
   // State for feature selection
   const [selectedFeatures, setSelectedFeatures] = useState<Set<number>>(() => {
-    // Default: select first feature (or target if exists)
-    const targetFeature = allFeatures.find((f) => f.target === "1");
-    if (targetFeature) return new Set([targetFeature.index]);
-    if (allFeatures.length > 0) return new Set([allFeatures[0].index]);
-    return new Set();
+    // Default: select first 10 numeric features (or up to 10)
+    const initialSelection = new Set<number>();
+    const featuresToSelect = displayedFeatures
+      .filter((f) => f.type === "numeric" && f.target !== "1")
+      .slice(0, 10);
+
+    if (featuresToSelect.length === 0) {
+      // If no numeric features, select first 10 features
+      displayedFeatures
+        .slice(0, 10)
+        .forEach((f) => initialSelection.add(f.index));
+    } else {
+      featuresToSelect.forEach((f) => initialSelection.add(f.index));
+    }
+
+    return initialSelection;
   });
 
   // State for plot options
@@ -173,11 +273,11 @@ function FeatureDistributionPlots({
 
   // Filter features based on search
   const filteredFeatures = useMemo(() => {
-    if (!filterText) return allFeatures;
-    return allFeatures.filter((f) =>
+    if (!filterText) return displayedFeatures;
+    return displayedFeatures.filter((f) =>
       f.name.toLowerCase().includes(filterText.toLowerCase()),
     );
-  }, [allFeatures, filterText]);
+  }, [displayedFeatures, filterText]);
 
   // Get selected feature objects
   const selectedFeatureObjects = allFeatures.filter((f) =>
@@ -242,9 +342,12 @@ function FeatureDistributionPlots({
         <div className="bg-muted/50 border-b px-4 py-3">
           <h4 className="text-sm font-medium">
             Choose one or more attributes for distribution plot
-            <span className="text-muted-foreground ml-2 font-normal">
-              (first 1k attributes listed)
-            </span>
+            {hasMoreFeatures && (
+              <span className="text-muted-foreground ml-2 font-normal">
+                (showing first {MAX_DISPLAYED_FEATURES} of {allFeatures.length}{" "}
+                attributes)
+              </span>
+            )}
           </h4>
         </div>
 
@@ -258,70 +361,89 @@ function FeatureDistributionPlots({
           />
         </div>
 
-        {/* Feature table */}
+        {/* Feature table - Mobile responsive with horizontal scroll */}
         <div className="max-h-[300px] overflow-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/30 sticky top-0">
-              <tr className="border-b">
-                <th className="w-8 px-2 py-2"></th>
-                <th className="px-3 py-2 text-left font-medium">Attribute</th>
-                <th className="px-3 py-2 text-left font-medium">DataType</th>
-                <th className="px-3 py-2 text-right font-medium">Missing</th>
-                <th className="px-3 py-2 text-right font-medium">
-                  # categories
-                </th>
-                <th className="px-3 py-2 text-center font-medium">Target</th>
-                <th className="px-3 py-2 text-right font-medium">Entropy</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredFeatures.map((feature) => (
-                <tr
-                  key={feature.index}
-                  className={cn(
-                    "hover:bg-muted/50 cursor-pointer border-b transition-colors",
-                    selectedFeatures.has(feature.index) && "bg-primary/5",
-                  )}
-                  onClick={() => toggleFeature(feature.index)}
-                >
-                  <td className="px-2 py-2">
-                    <Checkbox
-                      checked={selectedFeatures.has(feature.index)}
-                      onCheckedChange={() => toggleFeature(feature.index)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </td>
-                  <td className="px-3 py-2 font-medium">{feature.name}</td>
-                  <td className="px-3 py-2">
-                    <Badge variant="outline" className="text-xs">
-                      {feature.type}
-                    </Badge>
-                  </td>
-                  <td className="text-muted-foreground px-3 py-2 text-right">
-                    {feature.missing || 0}
-                  </td>
-                  <td className="text-muted-foreground px-3 py-2 text-right">
-                    {feature.distinct || "—"}
-                  </td>
-                  <td className="px-3 py-2 text-center">
-                    {feature.target === "1" && (
-                      <Badge className="bg-green-500 text-xs">true</Badge>
-                    )}
-                  </td>
-                  <td className="text-muted-foreground px-3 py-2 text-right">
-                    {calculateEntropy(feature)}
-                  </td>
+          <div className="min-w-full overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/30 sticky top-0">
+                <tr className="border-b">
+                  <th className="w-8 px-2 py-2"></th>
+                  <th className="min-w-[120px] px-3 py-2 text-left font-medium">
+                    Attribute
+                  </th>
+                  <th className="min-w-[100px] px-3 py-2 text-left font-medium">
+                    DataType
+                  </th>
+                  <th className="min-w-[80px] px-3 py-2 text-right font-medium">
+                    Missing
+                  </th>
+                  <th className="min-w-[100px] px-3 py-2 text-right font-medium">
+                    # categories
+                  </th>
+                  <th className="min-w-[80px] px-3 py-2 text-center font-medium">
+                    Target
+                  </th>
+                  <th className="min-w-[80px] px-3 py-2 text-right font-medium">
+                    Entropy
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredFeatures.map((feature) => (
+                  <tr
+                    key={feature.index}
+                    className={cn(
+                      "hover:bg-muted/50 cursor-pointer border-b transition-colors",
+                      selectedFeatures.has(feature.index) && "bg-primary/5",
+                    )}
+                    onClick={() => toggleFeature(feature.index)}
+                  >
+                    <td className="px-2 py-2">
+                      <Checkbox
+                        checked={selectedFeatures.has(feature.index)}
+                        onCheckedChange={() => toggleFeature(feature.index)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </td>
+                    <td className="px-3 py-2 font-medium">{feature.name}</td>
+                    <td className="px-3 py-2">
+                      <Badge variant="outline" className="text-xs">
+                        {feature.type}
+                      </Badge>
+                    </td>
+                    <td className="text-muted-foreground px-3 py-2 text-right">
+                      {feature.missing || 0}
+                    </td>
+                    <td className="text-muted-foreground px-3 py-2 text-right">
+                      {feature.distinct || "—"}
+                    </td>
+                    <td className="px-3 py-2 text-center">
+                      {feature.target === "1" && (
+                        <Badge className="bg-green-500 text-xs">true</Badge>
+                      )}
+                    </td>
+                    <td className="text-muted-foreground px-3 py-2 text-right">
+                      {calculateEntropy(feature)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Distribution Plot Section */}
       {selectedFeatureObjects.length > 0 && (
         <div className="rounded-lg border p-4">
-          <h4 className="mb-4 font-medium">Distribution Plot</h4>
+          <h4 className="mb-2 font-medium">Distribution Plot</h4>
+          {!parquetData && !isLoadingParquet && (
+            <p className="text-muted-foreground mb-3 text-xs italic">
+              Note: Distribution plots for numeric features require loading the
+              dataset file. Only nominal feature distributions are available
+              from metadata.
+            </p>
+          )}
 
           {/* Plot Controls */}
           <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -379,62 +501,229 @@ function FeatureDistributionPlots({
           {/* Plot for each selected feature */}
           <div className="space-y-6">
             {selectedFeatureObjects.map((feature) => {
-              const distr = feature.distr || [];
-              const hasData = distr.length > 0;
+              // Check if we have real parquet data for this feature
+              const hasParquetData = parquetData && parquetData[feature.name];
+              const featureValues = hasParquetData
+                ? parquetData[feature.name]
+                : null;
+              const targetName = targetFeature?.name;
+              const targetValues =
+                targetName && parquetData ? parquetData[targetName] : null;
 
-              // Generate plot data based on mode
+              // Compute distribution from real data if available
+              let distribution: DistributionData | null = null;
+              let distributionByTarget: Record<
+                string,
+                DistributionData
+              > | null = null;
+
+              if (featureValues) {
+                if (
+                  colorMode === "target" &&
+                  targetValues &&
+                  targetFeature &&
+                  feature.name !== targetName
+                ) {
+                  distributionByTarget = computeDistributionByTarget(
+                    featureValues,
+                    targetValues,
+                    feature.type as "numeric" | "nominal",
+                  );
+                } else {
+                  distribution = computeDistribution(
+                    featureValues,
+                    feature.type as "numeric" | "nominal",
+                  );
+                }
+              }
+
+              // Fall back to metadata distr if no parquet data
+              const metaDistr = feature.distr || [];
+              const hasMetaData = metaDistr.length > 0;
+              const hasData = hasParquetData || hasMetaData;
+
+              // Generate plot data
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              let plotData: any[];
+              let plotData: any[] = [];
 
               if (
-                colorMode === "target" &&
-                targetFeature &&
-                targetFeature.index !== feature.index
+                distributionByTarget &&
+                Object.keys(distributionByTarget).length > 0
               ) {
-                // Target-based coloring - create separate trace for each target class
-                const targetDistr = targetFeature.distr || [];
-                const totalTargetCount = targetDistr.reduce(
-                  (sum, d) => sum + d[1],
-                  0,
-                );
+                // Target-based distribution from real data
+                const targetVals = Object.keys(distributionByTarget);
 
-                // Create a trace for each target value
-                plotData = targetDistr.map(([targetVal, targetCount], idx) => {
-                  // Calculate proportion of this target class
-                  const proportion =
-                    totalTargetCount > 0
-                      ? targetCount / totalTargetCount
-                      : 1 / targetDistr.length;
+                if (feature.type === "numeric") {
+                  // Histogram per target class
+                  plotData = targetVals.map((targetVal, idx) => {
+                    const dist = distributionByTarget![targetVal];
+                    const bins = dist.bins || [];
+                    return {
+                      type: "bar",
+                      name: String(targetVal),
+                      x: bins.map((b) => ((b.min + b.max) / 2).toFixed(2)),
+                      y: bins.map((b) => b.count),
+                      marker: {
+                        color: targetColors[idx % targetColors.length],
+                      },
+                      opacity: 0.85,
+                    };
+                  });
+                } else {
+                  // Bar chart per target class for nominal
+                  const allCategories = new Set<string>();
+                  targetVals.forEach((tv) => {
+                    distributionByTarget![tv].categories?.forEach((c) =>
+                      allCategories.add(c.value),
+                    );
+                  });
 
-                  return {
-                    type: "bar",
-                    name: String(targetVal),
-                    x: distr.map((d) => d[0]), // category/value names
-                    y: distr.map((d) => Math.round(d[1] * proportion)), // Split count by target proportion
-                    marker: { color: targetColors[idx % targetColors.length] },
-                    opacity: 0.85,
-                  };
-                });
-              } else {
-                // Individual distribution
-                plotData = [
-                  {
-                    type: "bar",
-                    name: feature.name,
-                    x: distr.map((d) => d[0]),
-                    y: distr.map((d) => d[1]),
-                    marker: { color: "#3b82f6" },
-                    opacity: 0.85,
-                  },
-                ];
+                  plotData = targetVals.map((targetVal, idx) => {
+                    const dist = distributionByTarget![targetVal];
+                    const catMap = new Map(
+                      dist.categories?.map((c) => [c.value, c.count]) || [],
+                    );
+                    return {
+                      type: "bar",
+                      name: String(targetVal),
+                      x: Array.from(allCategories),
+                      y: Array.from(allCategories).map(
+                        (c) => catMap.get(c) || 0,
+                      ),
+                      marker: {
+                        color: targetColors[idx % targetColors.length],
+                      },
+                      opacity: 0.85,
+                    };
+                  });
+                }
+              } else if (distribution) {
+                // Individual distribution from real data
+                if (feature.type === "numeric" && colorMode === "individual") {
+                  // Violin plot for numeric individual distribution
+                  if (distribution.values && distribution.values.length > 0) {
+                    plotData = [
+                      {
+                        type: "violin",
+                        y: distribution.values,
+                        name: feature.name,
+                        box: { visible: true },
+                        meanline: { visible: true },
+                        fillcolor: "steelblue",
+                        line: { color: "black" },
+                        opacity: 0.6,
+                      },
+                    ];
+                  } else if (distribution.bins) {
+                    // Fallback to histogram if no raw values
+                    plotData = [
+                      {
+                        type: "bar",
+                        name: feature.name,
+                        x: distribution.bins.map((b) =>
+                          ((b.min + b.max) / 2).toFixed(2),
+                        ),
+                        y: distribution.bins.map((b) => b.count),
+                        marker: { color: "#3b82f6" },
+                        opacity: 0.85,
+                      },
+                    ];
+                  }
+                } else if (feature.type === "numeric") {
+                  // Histogram for numeric target-based (but no target)
+                  const bins = distribution.bins || [];
+                  plotData = [
+                    {
+                      type: "bar",
+                      name: feature.name,
+                      x: bins.map((b) => ((b.min + b.max) / 2).toFixed(2)),
+                      y: bins.map((b) => b.count),
+                      marker: { color: "#3b82f6" },
+                      opacity: 0.85,
+                    },
+                  ];
+                } else {
+                  // Bar chart for nominal
+                  const categories = distribution.categories || [];
+                  plotData = [
+                    {
+                      type: "bar",
+                      name: feature.name,
+                      x: categories.map((c) => c.value),
+                      y: categories.map((c) => c.count),
+                      marker: { color: "#3b82f6" },
+                      opacity: 0.85,
+                    },
+                  ];
+                }
+              } else if (hasMetaData) {
+                // Fallback to metadata distribution
+                if (
+                  colorMode === "target" &&
+                  targetFeature &&
+                  targetFeature.index !== feature.index
+                ) {
+                  const targetDistr = targetFeature.distr || [];
+                  const totalTargetCount = targetDistr.reduce(
+                    (sum, d) => sum + d[1],
+                    0,
+                  );
+
+                  plotData = targetDistr.map(
+                    ([targetVal, targetCount], idx) => {
+                      const proportion =
+                        totalTargetCount > 0
+                          ? targetCount / totalTargetCount
+                          : 1 / targetDistr.length;
+
+                      return {
+                        type: "bar",
+                        name: String(targetVal),
+                        x: metaDistr.map((d) => d[0]),
+                        y: metaDistr.map((d) => Math.round(d[1] * proportion)),
+                        marker: {
+                          color: targetColors[idx % targetColors.length],
+                        },
+                        opacity: 0.85,
+                      };
+                    },
+                  );
+                } else {
+                  plotData = [
+                    {
+                      type: "bar",
+                      name: feature.name,
+                      x: metaDistr.map((d) => d[0]),
+                      y: metaDistr.map((d) => d[1]),
+                      marker: { color: "#3b82f6" },
+                      opacity: 0.85,
+                    },
+                  ];
+                }
               }
+
+              // Determine if this is a violin plot
+              const isViolin =
+                plotData.length > 0 && plotData[0].type === "violin";
 
               return (
                 <div key={feature.index}>
                   <h5 className="text-muted-foreground mb-2 text-sm font-medium">
                     {feature.name}
+                    {hasParquetData && (
+                      <Badge
+                        variant="outline"
+                        className="ml-2 text-xs text-green-600"
+                      >
+                        Real data
+                      </Badge>
+                    )}
                   </h5>
-                  {hasData ? (
+                  {isLoadingParquet ? (
+                    <div className="bg-muted/50 flex h-[200px] items-center justify-center rounded">
+                      <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                    </div>
+                  ) : hasData && plotData.length > 0 ? (
                     <Plot
                       data={plotData}
                       layout={
@@ -446,23 +735,34 @@ function FeatureDistributionPlots({
                           plot_bgcolor: "transparent",
                           barmode: stackMode === "stack" ? "stack" : "group",
                           dragmode: "zoom",
-                          xaxis: {
-                            title: feature.name,
-                            tickangle: feature.type === "nominal" ? -45 : 0,
-                            fixedrange: false,
-                            autorange: true,
-                          },
-                          yaxis: {
-                            title: "Count",
-                            fixedrange: false,
-                            autorange: true,
-                          },
+                          xaxis: isViolin
+                            ? {
+                                fixedrange: false,
+                                autorange: true,
+                              }
+                            : {
+                                title: feature.name,
+                                tickangle: feature.type === "nominal" ? -45 : 0,
+                                fixedrange: false,
+                                autorange: true,
+                              },
+                          yaxis: isViolin
+                            ? {
+                                title: feature.name,
+                                fixedrange: false,
+                                autorange: true,
+                              }
+                            : {
+                                title: "Count",
+                                fixedrange: false,
+                                autorange: true,
+                              },
                           legend: {
                             orientation: "h",
                             y: 1.1,
                           },
                           showlegend: colorMode === "target" && !!targetFeature,
-                        } as Layout
+                        } as unknown as Layout
                       }
                       config={{
                         responsive: true,
@@ -475,10 +775,17 @@ function FeatureDistributionPlots({
                       useResizeHandler
                     />
                   ) : (
-                    <div className="bg-muted/50 flex h-[200px] items-center justify-center rounded">
+                    <div className="bg-muted/50 flex h-[200px] flex-col items-center justify-center rounded p-4 text-center">
                       <p className="text-muted-foreground text-sm">
                         No distribution data available
                       </p>
+                      {feature.type === "numeric" && !parquetData && (
+                        <p className="text-muted-foreground mt-2 text-xs">
+                          Note: Metadata only includes distributions for nominal
+                          features. For numeric features, the dataset file needs
+                          to be loaded.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -501,14 +808,16 @@ function FeatureDistributionPlots({
 }
 
 /**
- * Correlation Heatmap
+ * Correlation Heatmap - Now with real correlation from parquet data!
  */
 function CorrelationHeatmap({
   numericFeatures,
   nominalFeatures,
+  parquetData,
 }: {
   numericFeatures: Dataset["features"];
   nominalFeatures: Dataset["features"];
+  parquetData: Record<string, (string | number | null)[]> | null;
 }) {
   const numericCount = numericFeatures?.length || 0;
   const nominalCount = nominalFeatures?.length || 0;
@@ -536,29 +845,58 @@ function CorrelationHeatmap({
     );
   }
 
-  // Generate a mock correlation matrix (real implementation would compute from data)
+  // Use up to 8 numeric features
   const featureNames = numericFeatures.slice(0, 8).map((f) => f.name);
   const n = featureNames.length;
-  const correlationMatrix: number[][] = [];
 
-  for (let i = 0; i < n; i++) {
-    correlationMatrix[i] = [];
-    for (let j = 0; j < n; j++) {
-      if (i === j) {
-        correlationMatrix[i][j] = 1;
-      } else {
-        // Generate random correlation for demo (-1 to 1)
-        correlationMatrix[i][j] =
-          Math.round((Math.random() * 2 - 1) * 100) / 100;
+  // Compute correlation matrix
+  const correlationMatrix = useMemo(() => {
+    const matrix: number[][] = [];
+
+    // If we have parquet data, compute real correlations
+    if (parquetData) {
+      for (let i = 0; i < n; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < n; j++) {
+          if (i === j) {
+            matrix[i][j] = 1;
+          } else {
+            // Compute Pearson correlation
+            const xValues = parquetData[featureNames[i]] || [];
+            const yValues = parquetData[featureNames[j]] || [];
+            matrix[i][j] = computePearsonCorrelation(xValues, yValues);
+          }
+        }
+      }
+    } else {
+      // Generate placeholder matrix
+      for (let i = 0; i < n; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < n; j++) {
+          if (i === j) {
+            matrix[i][j] = 1;
+          } else {
+            matrix[i][j] = 0; // Unknown
+          }
+        }
       }
     }
-  }
+
+    return matrix;
+  }, [parquetData, featureNames, n]);
 
   return (
     <div className="space-y-4">
-      <p className="text-muted-foreground text-sm">
-        Correlation matrix between numeric features
-      </p>
+      <div className="flex items-center gap-2">
+        <p className="text-muted-foreground text-sm">
+          Correlation matrix between numeric features
+        </p>
+        {parquetData && (
+          <Badge variant="default" className="bg-green-500 text-xs">
+            Real correlations
+          </Badge>
+        )}
+      </div>
       <Plot
         data={[
           {
@@ -589,7 +927,7 @@ function CorrelationHeatmap({
               fixedrange: false,
               autorange: true,
             },
-          } as Layout
+          } as unknown as Layout
         }
         config={{
           responsive: true,
@@ -687,7 +1025,7 @@ function MissingValuesPlot({
               fixedrange: false,
               autorange: true,
             },
-          } as Layout
+          } as unknown as Layout
         }
         config={{
           responsive: true,

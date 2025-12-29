@@ -46,18 +46,9 @@ export function DatasetNavigationMenu({
     ...(hasFeatures
       ? [
           {
-            id: "data-explorer",
-            label: `Data Explorer (${featuresCount})`,
+            id: "data-analysis",
+            label: `Data & Analysis (${featuresCount})`,
             icon: Database,
-          },
-        ]
-      : []),
-    ...(hasFeatures
-      ? [
-          {
-            id: "analysis",
-            label: "Analysis",
-            icon: LineChart,
           },
         ]
       : []),

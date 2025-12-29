@@ -56,9 +56,6 @@ export function DatasetDescription({
         <Card>
           <CardHeader>
             <CardTitle>Description</CardTitle>
-            <CardDescription>
-              And many more Detailed information about this dataset
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -66,34 +63,6 @@ export function DatasetDescription({
             </div>
           </CardContent>
         </Card>
-
-        {/* Tags */}
-        {dataset.tags && dataset.tags.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TagIcon className="h-5 w-5" />
-                Tags
-              </CardTitle>
-              <CardDescription>
-                Keywords and categories for this dataset
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {dataset.tags.map((tagObj, index) => (
-                  <Badge
-                    key={`${tagObj.tag}-${index}`}
-                    variant="secondary"
-                    className="hover:bg-secondary/80 cursor-pointer"
-                  >
-                    {tagObj.tag}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Citation (if available) */}
         {dataset.citation && (

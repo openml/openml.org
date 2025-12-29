@@ -253,6 +253,8 @@ def apikey():
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter(User.username == current_user).first()
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
         if request.method == "GET":
             api_key = user.session_hash
             return jsonify({"apikey": api_key}), 200

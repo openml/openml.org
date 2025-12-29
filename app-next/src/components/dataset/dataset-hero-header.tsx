@@ -19,6 +19,7 @@ import type { Dataset } from "@/types/dataset";
 import { DatasetCodeMenukggl } from "./dataset-code-menu-kggl";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
 import { DatasetActionsMenu } from "./dataset-actions-menu";
+import { LikeButton } from "@/components/ui/like-button";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
@@ -192,10 +193,13 @@ export function DatasetHeroHeader({
           />
 
           {/* Like Button */}
-          <Button variant="outline" size="lg" className="gap-2">
-            <Heart className="h-4 w-4" />
-            <span>{dataset.nr_of_likes}</span>
-          </Button>
+          <LikeButton
+            entityType="dataset"
+            entityId={dataset.data_id}
+            initialLikes={dataset.nr_of_likes || 0}
+            showCount={true}
+            size="lg"
+          />
 
           {/* 3-dot Actions Menu */}
           <DatasetActionsMenu
@@ -276,13 +280,17 @@ export function DatasetHeroHeader({
         <div className="flex flex-wrap items-center gap-2">
           <TagIcon className="text-muted-foreground h-4 w-4" />
           {dataset.tags.slice(0, 10).map((tagObj, index) => (
-            <Badge
+            <Link
               key={`${tagObj.tag}-${index}`}
-              variant="secondary"
-              className="hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors"
+              href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
             >
-              {tagObj.tag}
-            </Badge>
+              <Badge
+                variant="secondary"
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors"
+              >
+                {tagObj.tag}
+              </Badge>
+            </Link>
           ))}
           {dataset.tags.length > 10 && (
             <Badge variant="outline" className="text-muted-foreground">

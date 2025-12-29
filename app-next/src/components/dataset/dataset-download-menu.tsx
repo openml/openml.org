@@ -64,7 +64,7 @@ export function DatasetDownloadMenu({
         <Button
           variant="openml"
           className={cn(
-            "border-accent gap-2 bg-slate-600 text-white",
+            "border-accent gap-2 bg-slate-600 text-white dark:border-slate-400",
             className,
           )}
         >
