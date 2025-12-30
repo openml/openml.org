@@ -30,6 +30,12 @@ export interface UserLikeStatus {
 /**
  * Get the user's OpenML API key from the Flask backend
  * Uses Next.js API route to avoid CORS issues
+ *
+ * @deprecated The API key is now returned during OAuth login and stored in session.
+ * Use `session.apikey` instead of calling this function.
+ *
+ * Note: This requires the local Flask backend to be running with your user.
+ * If using production OpenML, the user must exist locally for likes to work.
  */
 export async function getOpenMLApiKey(
   jwtToken: string,
@@ -45,14 +51,15 @@ export async function getOpenMLApiKey(
     });
 
     if (!response.ok) {
-      console.error("Failed to get API key:", response.status);
+      // Silently fail - likes just won't be available
+      // This is expected when using production OpenML but local Flask backend
       return null;
     }
 
     const data = await response.json();
     return data.apikey || null;
   } catch (error) {
-    console.error("Error fetching API key:", error);
+    // Silently fail - likes just won't be available
     return null;
   }
 }

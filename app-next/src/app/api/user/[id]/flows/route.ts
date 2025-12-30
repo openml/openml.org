@@ -18,9 +18,9 @@ export async function GET(
     const page = parseInt(searchParams.get("page") || "1");
     const size = parseInt(searchParams.get("size") || "10");
 
-    console.log(
-      `🔍 [User Flows API] Fetching flows for user ${id}, page ${page}`,
-    );
+    // console.log(
+    //   `🔍 [User Flows API] Fetching flows for user ${id}, page ${page}`,
+    // );
 
     // Query ElasticSearch for flows by uploader_id
     const esQuery = {

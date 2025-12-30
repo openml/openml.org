@@ -21,7 +21,6 @@ import {
   unlikeTask,
   likeRun,
   unlikeRun,
-  getOpenMLApiKey,
 } from "@/services/likes";
 
 type EntityType = "dataset" | "flow" | "task" | "run";
@@ -57,36 +56,9 @@ export function LikeButton({
   const [isLiked, setIsLiked] = React.useState(initialIsLiked);
   const [likesCount, setLikesCount] = React.useState(initialLikes);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [apiKey, setApiKey] = React.useState<string | null>(null);
 
-  // Get API key when user is authenticated
-  React.useEffect(() => {
-    async function fetchApiKey() {
-      console.log(
-        "[LikeButton] Status:",
-        status,
-        "Session:",
-        session?.user?.email,
-        "AccessToken exists:",
-        !!session?.accessToken,
-      );
-
-      if (status === "authenticated" && session?.accessToken) {
-        try {
-          const key = await getOpenMLApiKey(session.accessToken);
-          console.log(
-            "[LikeButton] API Key fetched:",
-            key ? "success" : "null",
-          );
-          setApiKey(key);
-        } catch (error) {
-          // Silently fail - user can still view the page, just can't like
-          console.warn("Could not fetch API key for likes:", error);
-        }
-      }
-    }
-    fetchApiKey();
-  }, [status, session?.accessToken]);
+  // Get API key directly from session (set during OAuth login)
+  const apiKey = session?.apikey;
 
   const handleLike = async () => {
     // Wait for session to load
@@ -107,25 +79,12 @@ export function LikeButton({
       return;
     }
 
-    // If API key is not ready yet, try to fetch it now
-    let currentApiKey = apiKey;
-    if (!currentApiKey && session?.accessToken) {
-      try {
-        currentApiKey = await getOpenMLApiKey(session.accessToken);
-        if (currentApiKey) {
-          setApiKey(currentApiKey);
-        }
-      } catch (error) {
-        console.warn("Could not fetch API key:", error);
-      }
-    }
-
-    if (!currentApiKey) {
+    if (!apiKey) {
       toast({
-        title: "Likes temporarily unavailable",
+        title: "Likes coming soon",
         description:
-          "The backend server is not running. Start the Flask backend to enable likes.",
-        variant: "destructive",
+          "This feature will be available once the backend is updated.",
+        variant: "default",
       });
       return;
     }
@@ -134,7 +93,7 @@ export function LikeButton({
 
     const { like, unlike } = likeFunctions[entityType];
     const action = isLiked ? unlike : like;
-    const result = await action(entityId, currentApiKey);
+    const result = await action(entityId, apiKey);
 
     if (result.success) {
       setIsLiked(!isLiked);
@@ -147,8 +106,8 @@ export function LikeButton({
       });
     } else {
       toast({
-        title: "Error",
-        description: result.error || "Something went wrong",
+        title: "Could not save like",
+        description: result.error || "Please try again later",
         variant: "destructive",
       });
     }

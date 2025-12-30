@@ -78,7 +78,7 @@ export function UserProfilePage({ userId }: { userId: string }) {
 
         if (!response.ok) {
           if (response.status === 404) {
-            console.log("User not found:", userId);
+            // console.log("User not found:", userId);
             setUser(null);
             setLoading(false);
             return;

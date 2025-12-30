@@ -39,6 +39,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   const { data: session, status } = useSession();
   const { resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = React.useState(false);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
   const [user, setUser] = React.useState<{
     name: string;
     email: string;
@@ -49,20 +50,48 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
   // Determine background color based on theme
   const bgColor = resolvedTheme === "dark" ? "#0f172a" : "#ffffff"; // slate-900 or white
 
+  // Close sidebar when clicking outside
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        isOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    // Close on escape key
+    function handleEscapeKey(event: KeyboardEvent) {
+      if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [isOpen]);
+
   // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
-    console.log("🔍 [UserActivitySidebar] Session status:", status);
-    console.log("🔍 [UserActivitySidebar] Session:", session);
+    // console.log("🔍 [UserActivitySidebar] Session status:", status);
+    // console.log("🔍 [UserActivitySidebar] Session:", session);
 
     if (status === "authenticated" && session?.user) {
       const firstName = (session.user as any).firstName || "";
       const lastName = (session.user as any).lastName || "";
-      console.log(
-        "👤 [UserActivitySidebar] firstName:",
-        firstName,
-        "lastName:",
-        lastName,
-      );
+      // console.log(
+      //   "👤 [UserActivitySidebar] firstName:",
+      //   firstName,
+      //   "lastName:",
+      //   lastName,
+      // );
 
       const name =
         session.user.name ||
@@ -101,10 +130,10 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         }
       }
 
-      console.log(
-        "✅ [UserActivitySidebar] Setting user with initials:",
-        initials,
-      );
+      // console.log(
+      //   "✅ [UserActivitySidebar] Setting user with initials:",
+      //   initials,
+      // );
       setUser({
         name,
         email,
@@ -263,6 +292,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
 
       {/* Sidebar - kggl Style - solid background */}
       <div
+        ref={sidebarRef}
         className={cn(
           "fixed top-0 right-0 z-50 h-full w-72 transform shadow-2xl transition-transform duration-300 ease-in-out",
           "border-l border-slate-200 dark:border-slate-700",

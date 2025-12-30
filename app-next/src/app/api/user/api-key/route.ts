@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Try local Flask backend first (for development)
-    const localApiUrl = "http://localhost:8000";
+    // Use 127.0.0.1 instead of localhost for more reliable resolution
+    const localApiUrl = "http://127.0.0.1:8000";
     const prodApiUrl =
       process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
 
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
 
-        console.log(`[api-key] Trying ${apiUrl}/api-key`);
+        // console.log(`[api-key] Trying ${apiUrl}/api-key`);
 
         const response = await fetch(`${apiUrl}/api-key`, {
           method: "GET",
@@ -46,16 +47,16 @@ export async function GET(request: NextRequest) {
 
         clearTimeout(timeoutId);
 
-        console.log(`[api-key] Response from ${apiUrl}: ${response.status}`);
+        // console.log(`[api-key] Response from ${apiUrl}: ${response.status}`);
 
         if (response.ok) {
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const data = await response.json();
-            console.log(
-              `[api-key] Got data:`,
-              data.apikey ? "has apikey" : "no apikey",
-            );
+            // console.log(
+            //   `[api-key] Got data:`,
+            //   data.apikey ? "has apikey" : "no apikey",
+            // );
             if (data.apikey) {
               return NextResponse.json(data);
             }
@@ -63,14 +64,14 @@ export async function GET(request: NextRequest) {
         } else {
           // Log the error response
           const text = await response.text();
-          console.log(
-            `[api-key] Error response from ${apiUrl}:`,
-            text.substring(0, 200),
-          );
+          // console.log(
+          //   `[api-key] Error response from ${apiUrl}:`,
+          //   text.substring(0, 200),
+          // );
         }
       } catch (fetchError) {
         // Continue to next URL
-        console.log(`[api-key] Fetch failed for ${apiUrl}:`, fetchError);
+        // console.log(`[api-key] Fetch failed for ${apiUrl}:`, fetchError);
       }
     }
 

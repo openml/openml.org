@@ -26,7 +26,7 @@ export async function GET() {
   const elasticsearchEndpoint = `${baseUrl}_msearch`;
   const indices = ["data", "task", "flow", "run", "study", "measure"];
 
-  console.log("🔍 [Count API] Elasticsearch URL:", elasticsearchEndpoint);
+  // console.log("🔍 [Count API] Elasticsearch URL:", elasticsearchEndpoint);
   // console.log("📦 [Count API] Indices:", indices);
 
   // Build NDJSON body for _msearch - correct format

@@ -7,6 +7,7 @@ declare module "next-auth" {
       username: string;
     } & DefaultSession["user"];
     accessToken: string;
+    apikey?: string;
   }
 
   interface User {
@@ -19,5 +20,6 @@ declare module "next-auth/jwt" {
     accessToken?: string;
     userId?: string;
     username?: string;
+    apikey?: string;
   }
 }

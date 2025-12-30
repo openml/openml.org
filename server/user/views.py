@@ -347,6 +347,11 @@ def oauth_github():
             # You could store provider_id in a new column or table for OAuth linking
             # For now, just return access token
             access_token = create_access_token(identity=user.username)
+            # Ensure user has an API key (session_hash)
+            if not user.session_hash:
+                user.set_session_hash()
+                session.merge(user)
+                session.commit()
             return (
                 jsonify(
                     access_token=access_token,
@@ -354,6 +359,7 @@ def oauth_github():
                     username=user.username,
                     email=user.email,
                     image=user.image or image,
+                    apikey=user.session_hash,
                 ),
                 200,
             )
@@ -396,6 +402,11 @@ def oauth_github():
             session.add(user_group)
             session.commit()
 
+            # Generate API key for new user
+            new_user.set_session_hash()
+            session.merge(new_user)
+            session.commit()
+
             # Create access token
             access_token = create_access_token(identity=new_user.username)
 
@@ -406,6 +417,7 @@ def oauth_github():
                     username=new_user.username,
                     email=new_user.email,
                     image=new_user.image,
+                    apikey=new_user.session_hash,
                 ),
                 201,
             )
@@ -444,6 +456,11 @@ def oauth_google():
         if user:
             # Existing user - return access token
             access_token = create_access_token(identity=user.username)
+            # Ensure user has an API key (session_hash)
+            if not user.session_hash:
+                user.set_session_hash()
+                session.merge(user)
+                session.commit()
             return (
                 jsonify(
                     access_token=access_token,
@@ -451,6 +468,7 @@ def oauth_google():
                     username=user.username,
                     email=user.email,
                     image=user.image or image,
+                    apikey=user.session_hash,
                 ),
                 200,
             )
@@ -492,6 +510,11 @@ def oauth_google():
             session.add(user_group)
             session.commit()
 
+            # Generate API key for new user
+            new_user.set_session_hash()
+            session.merge(new_user)
+            session.commit()
+
             # Create access token
             access_token = create_access_token(identity=new_user.username)
 
@@ -502,6 +525,7 @@ def oauth_google():
                     username=new_user.username,
                     email=new_user.email,
                     image=new_user.image,
+                    apikey=new_user.session_hash,
                 ),
                 201,
             )

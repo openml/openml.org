@@ -18,9 +18,9 @@ export async function GET(
     const page = parseInt(searchParams.get("page") || "1");
     const size = parseInt(searchParams.get("size") || "10");
 
-    console.log(
-      `🔍 [User Datasets API] Fetching datasets for user ${id}, page ${page}`,
-    );
+    // console.log(
+    //   `🔍 [User Datasets API] Fetching datasets for user ${id}, page ${page}`,
+    // );
 
     // Query ElasticSearch for datasets by uploader_id
     const esQuery = {

@@ -119,6 +119,10 @@ export const authOptions: NextAuthOptions = {
               token.accessToken = data.access_token;
               token.userId = data.id;
               token.username = data.username;
+              // Store API key from OAuth response
+              if (data.apikey) {
+                token.apikey = data.apikey;
+              }
             }
           } catch (error) {
             console.error("OAuth backend error:", error);
@@ -154,6 +158,10 @@ export const authOptions: NextAuthOptions = {
         session.accessToken = token.accessToken as string;
         (session.user as any).firstName = token.firstName as string;
         (session.user as any).lastName = token.lastName as string;
+        // Add API key to session for likes/votes
+        if (token.apikey) {
+          session.apikey = token.apikey as string;
+        }
         // Add profile image to session
         if (token.picture) {
           session.user.image = token.picture as string;

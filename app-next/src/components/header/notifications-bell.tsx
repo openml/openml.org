@@ -12,12 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 /**
  * Notifications Bell - Client Component
  * Dropdown with notification items
  */
 export function NotificationsBell() {
+  const { toast } = useToast();
   const [hasUnread, setHasUnread] = React.useState(true);
   const [notifications] = React.useState([
     {
@@ -88,7 +90,15 @@ export function NotificationsBell() {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-primary cursor-pointer justify-center text-center">
+        <DropdownMenuItem
+          className="text-primary cursor-pointer justify-center text-center"
+          onClick={() => {
+            toast({
+              title: "Coming soon",
+              description: "Notifications page is under development.",
+            });
+          }}
+        >
           View all notifications
         </DropdownMenuItem>
       </DropdownMenuContent>

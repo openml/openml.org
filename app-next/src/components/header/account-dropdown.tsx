@@ -33,19 +33,19 @@ export function AccountDropdown() {
 
   // Load user from NextAuth session or localStorage fallback
   React.useEffect(() => {
-    console.log("🔍 [AccountDropdown] Session status:", status);
-    console.log("🔍 [AccountDropdown] Session data:", session);
+    // console.log("🔍 [AccountDropdown] Session status:", status);
+    // console.log("🔍 [AccountDropdown] Session data:", session);
 
     if (session?.user) {
       // Use NextAuth session
       const firstName = (session.user as any).firstName || "";
       const lastName = (session.user as any).lastName || "";
-      console.log(
-        "👤 [AccountDropdown] firstName:",
-        firstName,
-        "lastName:",
-        lastName,
-      );
+      // console.log(
+      //   "👤 [AccountDropdown] firstName:",
+      //   firstName,
+      //   "lastName:",
+      //   lastName,
+      // );
 
       const name =
         session.user.name || `${firstName} ${lastName}`.trim() || "User";
@@ -58,7 +58,7 @@ export function AccountDropdown() {
           .toUpperCase() ||
         "U";
 
-      console.log("✅ [AccountDropdown] Setting user with initials:", initials);
+      // console.log("✅ [AccountDropdown] Setting user with initials:", initials);
       setUser({
         name,
         email: session.user.email || "",
