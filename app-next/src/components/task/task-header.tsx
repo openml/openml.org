@@ -207,23 +207,6 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
         </div>
       )}
 
-      {/* LINE 6: Action Buttons */}
-      <div className="mt-2 mb-4 flex flex-wrap items-center justify-end gap-2 sm:gap-3 md:gap-5">
-        {/* Run Experiment */}
-        <Button variant="outline" className="dark:border-slate-400" disabled>
-          <Play className="mr-2 h-4 w-4" />
-          Run Experiment
-        </Button>
-
-        {/* Like Button */}
-        <LikeButton
-          entityType="task"
-          entityId={task.task_id}
-          initialLikes={likes}
-          showCount={true}
-          size="md"
-        />
-      </div>
     </header>
   );
 }

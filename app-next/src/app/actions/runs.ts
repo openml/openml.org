@@ -22,3 +22,26 @@ export async function searchRuns(body: any) {
     throw new Error("Failed to search runs");
   }
 }
+export async function fetchTopRuns(
+  taskId: string,
+  metric: string,
+  limit: number = 20,
+  order: "asc" | "desc" = "desc",
+) {
+  try {
+    // OpenML REST API supports sorting by metric (function) efficiently
+    const url = `https://www.openml.org/api/v1/json/evaluation/list/task/${taskId}/function/${metric}/limit/${limit}/sort_order/${order}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      if (response.status === 404) return { evaluations: { evaluation: [] } };
+      throw new Error(`REST API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("fetchTopRuns error:", error);
+    return { evaluations: { evaluation: [] } };
+  }
+}
