@@ -290,29 +290,26 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         />
       )}
 
-      {/* Sidebar - kggl Style - solid background */}
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed top-0 right-0 z-50 h-full w-72 transform shadow-2xl transition-transform duration-300 ease-in-out",
-          "border-l border-slate-200 dark:border-slate-700",
-          isOpen ? "translate-x-0" : "translate-x-full",
+          "fixed top-0 right-0 z-50 h-full w-72 transform border-l border-slate-200 bg-white shadow-2xl transition-all duration-300 ease-in-out dark:border-slate-700 dark:bg-[#0f172a]",
+          isOpen
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none invisible translate-x-full opacity-0",
           className,
         )}
-        style={{ backgroundColor: bgColor }}
       >
-        <div
-          className="flex h-full flex-col"
-          style={{ backgroundColor: bgColor }}
-        >
-          {/* Close Button - Top Right */}
+        <div className="flex h-full flex-col">
+          {/* Close Button - Top Right - Ensure it's clickable and visible */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 z-10"
+            className="absolute top-4 right-4 z-60 size-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"
+            aria-label="Close menu"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6 text-slate-900 dark:text-white" />
           </Button>
 
           {/* Header with Avatar and Name */}
@@ -341,7 +338,7 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
                 {user?.name}
               </h2>
               {user?.email && (
-                <p className="text-sm text-slate-600 dark:text-slate-300">
+                <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap text-slate-600 dark:text-slate-300">
                   {user.email}
                 </p>
               )}

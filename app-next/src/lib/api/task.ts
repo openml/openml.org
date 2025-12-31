@@ -17,6 +17,9 @@ export async function fetchTask(id: string): Promise<Task> {
     });
 
     if (response.status === 404) {
+      console.error(
+        `[TaskAPI] 404 Not Found for ID: "${id}". URL: ${ES_URL}/${ES_INDEX}/_doc/${id}`,
+      );
       notFound();
     }
 

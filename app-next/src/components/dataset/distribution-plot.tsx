@@ -18,40 +18,7 @@ const Plot = dynamic(() => import("react-plotly.js"), {
   ),
 });
 
-// Custom styles for Plotly modebar - OpenML themed
-const plotlyModebarStyles = `
-  .modebar {
-    background: white !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-    padding: 6px 10px !important;
-    border: 1px solid #e5e7eb !important;
-    margin-bottom: 12px !important;
-  }
-  .modebar-container {
-    position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
-  }
-  .modebar-group {
-    background: transparent !important;
-  }
-  .modebar-btn {
-    opacity: 0.6 !important;
-  }
-  .modebar-btn:hover {
-    opacity: 1 !important;
-  }
-  .modebar-btn path {
-    fill: #6b7280 !important;
-  }
-  .modebar-btn:hover path {
-    fill: #22c55e !important;
-  }
-  .modebar-btn.active path {
-    fill: #22c55e !important;
-  }
-`;
+// Custom styles moved to globals.css
 
 interface DistributionPlotProps {
   dataset: Dataset;
@@ -94,8 +61,7 @@ export function DistributionPlot({
 
   return (
     <Card className={cn("", className)}>
-      {/* Inject custom Plotly modebar styles */}
-      <style dangerouslySetInnerHTML={{ __html: plotlyModebarStyles }} />
+      {/* Plotly modebar styles are now in globals.css */}
       <CardHeader>
         <CardTitle className="text-lg font-semibold">
           Distribution Plot
@@ -169,38 +135,40 @@ export function DistributionPlot({
           {plotData.map(({ feature, traces }) => (
             <div key={feature.index} className="space-y-2">
               <Label className="text-sm font-medium">{feature.name}</Label>
-              <Plot
-                data={traces}
-                layout={{
-                  autosize: true,
-                  height: 200,
-                  margin: { l: 50, r: 50, t: 20, b: 40 },
-                  barmode: stackMode === "stack" ? "stack" : "group",
-                  bargap: 0.1,
-                  showlegend: true,
-                  legend: {
-                    orientation: "v",
-                    x: 1.02,
-                    y: 1,
-                  },
-                  xaxis: {
-                    title: feature.name,
-                  },
-                  yaxis: {
-                    title: "Frequency",
-                  },
-                  paper_bgcolor: "transparent",
-                  plot_bgcolor: "transparent",
-                }}
-                config={{
-                  responsive: true,
-                  displayModeBar: true,
-                  modeBarButtonsToRemove: ["lasso2d", "select2d"],
-                  displaylogo: false,
-                }}
-                style={{ width: "100%" }}
-                useResizeHandler
-              />
+              <div className="plotly-chart-container">
+                <Plot
+                  data={traces}
+                  layout={{
+                    autosize: true,
+                    height: 200,
+                    margin: { l: 50, r: 50, t: 10, b: 40 },
+                    barmode: stackMode === "stack" ? "stack" : "group",
+                    bargap: 0.1,
+                    showlegend: true,
+                    legend: {
+                      orientation: "v",
+                      x: 1.02,
+                      y: 1,
+                    },
+                    xaxis: {
+                      title: feature.name,
+                    },
+                    yaxis: {
+                      title: "Frequency",
+                    },
+                    paper_bgcolor: "transparent",
+                    plot_bgcolor: "transparent",
+                  }}
+                  config={{
+                    responsive: true,
+                    displayModeBar: true,
+                    modeBarButtonsToRemove: ["lasso2d", "select2d"],
+                    displaylogo: false,
+                  }}
+                  style={{ width: "100%" }}
+                  useResizeHandler
+                />
+              </div>
             </div>
           ))}
         </div>

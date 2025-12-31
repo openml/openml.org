@@ -13,6 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Task } from "@/types/task";
+import { searchRuns } from "@/app/actions/runs";
 
 // Dynamic import for Plotly (required for SSR compatibility)
 const Plot = dynamic(() => import("react-plotly.js"), {
@@ -66,6 +67,12 @@ const EVALUATION_MEASURES = [
   { value: "weighted_area_under_roc_curve", label: "Weighted AUC ROC" },
 ];
 
+// Helper to get metric value from array
+function getMetric(evaluations: any[] = [], name: string): number | undefined {
+  const metric = evaluations.find((e) => e.evaluation_measure === name);
+  return metric ? metric.value : undefined;
+}
+
 interface EvaluationRun {
   run_id: number;
   flow_name: string;
@@ -105,7 +112,9 @@ export function TaskAnalysisSection({
   // Fetch evaluation data when metric changes
   useEffect(() => {
     async function fetchEvaluations() {
-      if (runCount === 0) {
+      // Use task.runs metadata if available
+      const totalRuns = task.runs || runCount;
+      if (totalRuns === 0) {
         setLoading(false);
         return;
       }
@@ -114,55 +123,36 @@ export function TaskAnalysisSection({
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`https://www.openml.org/es/run/_search`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: {
-              bool: {
-                must: [
-                  { term: { task_id: task.task_id } },
-                  { exists: { field: `evaluations.${selectedMetric}` } },
-                ],
-              },
+        // Use searchRuns server action to avoid CORS issues
+        const data = await searchRuns({
+          query: {
+            bool: {
+              must: [{ term: { "run_task.task_id": task.task_id } }],
             },
-            sort: [
-              {
-                [`evaluations.${selectedMetric}`]: {
-                  order: "desc",
-                  unmapped_type: "double",
-                },
-              },
-            ],
-            size: 1000, // Top 1000 runs shown
-            _source: [
-              "run_id",
-              "flow_name",
-              "flow_id",
-              "uploader",
-              `evaluations.${selectedMetric}`,
-            ],
-          }),
+          },
+          size: 500, // Fetch ample runs to find ones with this metric
+          _source: ["run_id", "run_flow", "uploader", "evaluations"],
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch evaluations");
-        }
+        const fetchedRuns: EvaluationRun[] = [];
 
-        const data = await response.json();
-        const fetchedRuns: EvaluationRun[] = data.hits.hits.map(
-          (hit: { _source: Record<string, unknown> }) => ({
-            run_id: hit._source.run_id,
-            flow_name: hit._source.flow_name || "Unknown Flow",
-            flow_id: hit._source.flow_id,
-            uploader: hit._source.uploader || "Unknown",
-            value: (hit._source.evaluations as Record<string, number>)?.[
-              selectedMetric
-            ],
-          }),
-        );
+        data.hits.hits.forEach((hit: any) => {
+          const source = hit._source;
+          const val = getMetric(source.evaluations, selectedMetric);
+
+          if (val !== undefined) {
+            fetchedRuns.push({
+              run_id: source.run_id,
+              flow_name: source.run_flow?.name || "Unknown Flow",
+              flow_id: source.run_flow?.flow_id,
+              uploader: source.uploader || "Unknown",
+              value: val,
+            });
+          }
+        });
+
+        // Client-side sort by value (descending)
+        fetchedRuns.sort((a, b) => b.value - a.value);
 
         setRuns(fetchedRuns);
       } catch (err) {
@@ -174,7 +164,7 @@ export function TaskAnalysisSection({
     }
 
     fetchEvaluations();
-  }, [task.task_id, selectedMetric, runCount]);
+  }, [task.task_id, selectedMetric, task.runs, runCount]);
 
   // Group runs by flow for the scatter plot
   const chartData = useMemo(() => {
@@ -185,11 +175,13 @@ export function TaskAnalysisSection({
     >();
 
     runs.forEach((run) => {
-      const existing = flowGroups.get(run.flow_name);
+      // Clean flow name (remove params)
+      const cleanName = run.flow_name.split("(")[0];
+      const existing = flowGroups.get(cleanName);
       if (existing) {
         existing.runs.push(run);
       } else {
-        flowGroups.set(run.flow_name, {
+        flowGroups.set(cleanName, {
           flowId: run.flow_id,
           runs: [run],
         });
@@ -288,60 +280,63 @@ export function TaskAnalysisSection({
           </Alert>
         ) : (
           <div className="rounded-lg border bg-white p-4 dark:bg-slate-900">
-            <Plot
-              data={chartData.map((flow, idx) => ({
-                type: "scatter",
-                mode: "markers",
-                name: flow.name,
-                y: Array(flow.runs.length).fill(flow.name),
-                x: flow.runs.map((r) => r.value),
-                text: flow.runs.map(
-                  (r) =>
-                    `Run ${r.run_id}<br>Score: ${r.value.toFixed(4)}<br>Uploader: ${r.uploader}`,
-                ),
-                hoverinfo: "text",
-                marker: {
-                  color: colors[idx % colors.length],
-                  size: 8,
-                  opacity: 0.7,
-                },
-                customdata: flow.runs.map((r) => r.run_id),
-              }))}
-              layout={{
-                height: Math.max(400, chartData.length * 30),
-                margin: { l: 350, r: 50, t: 20, b: 50 },
-                showlegend: false,
-                xaxis: {
-                  title: selectedMetric.replace(/_/g, " "),
-                  gridcolor: "#e5e7eb",
-                },
-                yaxis: {
-                  automargin: true,
-                },
-                hovermode: "closest",
-                paper_bgcolor: "transparent",
-                plot_bgcolor: "transparent",
-              }}
-              config={{
-                displayModeBar: true,
-                responsive: true,
-                modeBarButtonsToRemove: ["lasso2d", "select2d"],
-              }}
-              style={{ width: "100%" }}
-              onClick={(event) => {
-                if (
-                  event.points &&
-                  event.points[0] &&
-                  (event.points[0] as unknown as { customdata: number })
-                    .customdata
-                ) {
-                  const runId = (
-                    event.points[0] as unknown as { customdata: number }
-                  ).customdata;
-                  window.open(`/runs/${runId}`, "_blank");
-                }
-              }}
-            />
+            <div className="plotly-chart-container">
+              <Plot
+                data={chartData.map((flow, idx) => ({
+                  type: "scatter",
+                  mode: "markers",
+                  name: flow.name,
+                  y: Array(flow.runs.length).fill(flow.name),
+                  x: flow.runs.map((r) => r.value),
+                  text: flow.runs.map(
+                    (r) =>
+                      `Run ${r.run_id}<br>Score: ${r.value.toFixed(4)}<br>Uploader: ${r.uploader}`,
+                  ),
+                  hoverinfo: "text",
+                  marker: {
+                    color: colors[idx % colors.length],
+                    size: 8,
+                    opacity: 0.7,
+                  },
+                  customdata: flow.runs.map((r) => r.run_id),
+                }))}
+                layout={{
+                  height: Math.max(400, chartData.length * 30),
+                  margin: { l: 350, r: 50, t: 30, b: 50 },
+                  showlegend: false,
+                  xaxis: {
+                    title: selectedMetric.replace(/_/g, " "),
+                    gridcolor: "#e5e7eb",
+                  },
+                  yaxis: {
+                    automargin: true,
+                  },
+                  hovermode: "closest",
+                  paper_bgcolor: "transparent",
+                  plot_bgcolor: "transparent",
+                }}
+                config={{
+                  displayModeBar: true,
+                  responsive: true,
+                  modeBarButtonsToRemove: ["lasso2d", "select2d"],
+                  displaylogo: false,
+                }}
+                style={{ width: "100%" }}
+                onClick={(event) => {
+                  if (
+                    event.points &&
+                    event.points[0] &&
+                    (event.points[0] as unknown as { customdata: number })
+                      .customdata
+                  ) {
+                    const runId = (
+                      event.points[0] as unknown as { customdata: number }
+                    ).customdata;
+                    window.open(`/runs/${runId}`, "_blank");
+                  }
+                }}
+              />
+            </div>
           </div>
         )}
       </div>

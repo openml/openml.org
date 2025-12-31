@@ -135,7 +135,17 @@ export function UserProfilePage({ userId }: { userId: string }) {
           );
           if (response.ok) {
             const data = await response.json();
-            setDatasets(data.datasets || []);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mappedDatasets = (data.datasets || []).map((d: any) => ({
+              id: d.data_id,
+              name: d.name,
+              description: d.description,
+              date: d.date,
+              runs: d.runs || 0,
+              likes: d.nr_of_likes || 0,
+              downloads: d.nr_of_downloads || 0,
+            }));
+            setDatasets(mappedDatasets);
           }
         } else if (activeTab === "flows" && flows.length === 0) {
           const response = await fetch(
@@ -143,7 +153,36 @@ export function UserProfilePage({ userId }: { userId: string }) {
           );
           if (response.ok) {
             const data = await response.json();
-            setFlows(data.flows || []);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mappedFlows = (data.flows || []).map((f: any) => ({
+              id: f.flow_id,
+              name: f.name,
+              description: f.description,
+              date: f.date || f.upload_date,
+              runs: f.runs || 0,
+              likes: f.nr_of_likes || 0,
+              downloads: f.nr_of_downloads || 0,
+            }));
+            setFlows(mappedFlows);
+          }
+        } else if (activeTab === "tasks" && tasks.length === 0) {
+          const response = await fetch(
+            `/api/user/${userId}/tasks?page=1&size=10`,
+          );
+          if (response.ok) {
+            const data = await response.json();
+            // Map raw task data to Upload interface
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mappedTasks = (data.tasks || []).map((t: any) => ({
+              id: t.task_id,
+              name: `${t.tasktype?.name || t.task_type || "Task"} on ${t.source_data?.name || "Unknown Dataset"}`,
+              description: `Task ID: ${t.task_id} • Target: ${t.target_feature || "N/A"}`,
+              date: t.date || t.upload_date || new Date().toISOString(),
+              runs: t.runs || 0,
+              likes: t.nr_of_likes || 0,
+              downloads: t.nr_of_downloads || 0,
+            }));
+            setTasks(mappedTasks);
           }
         }
       } catch (error) {
@@ -152,7 +191,8 @@ export function UserProfilePage({ userId }: { userId: string }) {
     };
 
     fetchContent();
-  }, [activeTab, user, userId, datasets.length, flows.length]);
+  }, [activeTab, user, userId, datasets.length, flows.length, tasks.length]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -211,7 +251,7 @@ export function UserProfilePage({ userId }: { userId: string }) {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-5xl font-bold text-white">
+                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-500 to-purple-600 text-5xl font-bold text-white">
                       {user.first_name[0]}
                       {user.last_name[0]}
                     </div>
@@ -623,13 +663,50 @@ export function UserProfilePage({ userId }: { userId: string }) {
                     <CardTitle>Tasks</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-muted-foreground py-12 text-center">
-                      <Trophy className="mx-auto mb-4 h-12 w-12" />
-                      <p>User's tasks will be listed here</p>
-                      <p className="mt-2 text-sm">
-                        Fetched from ElasticSearch with uploader_id filter
-                      </p>
-                    </div>
+                    {tasks.length > 0 ? (
+                      <div className="space-y-4">
+                        {tasks.map((task) => (
+                          <Link
+                            key={task.id}
+                            href={`/tasks/${task.id}`}
+                            className="hover:bg-muted/50 block rounded-lg border p-4 transition-colors"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <Trophy className="h-4 w-4 text-[#ffa726]" />
+                                  <h3 className="hover:text-primary font-semibold">
+                                    {task.name}
+                                  </h3>
+                                </div>
+                                {task.description && (
+                                  <p className="text-muted-foreground mt-1 ml-6 line-clamp-2 text-sm">
+                                    {task.description}
+                                  </p>
+                                )}
+                                <div className="text-muted-foreground mt-2 ml-6 flex flex-wrap gap-3 text-xs">
+                                  {task.runs !== undefined && (
+                                    <span className="flex items-center gap-1">
+                                      <FlaskConical className="h-3 w-3" />
+                                      {task.runs} runs
+                                    </span>
+                                  )}
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {new Date(task.date).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-muted-foreground py-12 text-center">
+                        <Trophy className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
+                        <p>No tasks found</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>

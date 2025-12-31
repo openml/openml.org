@@ -30,6 +30,7 @@ const flowConfig = {
       runs: { raw: {} },
       nr_of_likes: { raw: {} },
       nr_of_downloads: { raw: {} },
+      status: { raw: {} },
       // Add other fields you want to display
     },
     disjunctiveFacets: [

@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CollapsibleSection } from "./collapsible-section";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import type { Dataset } from "@/types/dataset";
 
 interface Run {

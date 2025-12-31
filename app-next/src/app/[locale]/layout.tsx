@@ -14,6 +14,7 @@ import { MainContent } from "@/components/layout/main-content";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import { Toaster } from "@/components/ui/toaster";
 import { locales } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -67,9 +68,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={inter.variable} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={cn(inter.variable, "overflow-x-hidden")}
+      suppressHydrationWarning
+    >
       <body
-        className="flex min-h-screen flex-col antialiased"
+        className="flex min-h-screen flex-col overflow-x-hidden antialiased"
         suppressHydrationWarning
       >
         <NextIntlClientProvider messages={messages}>

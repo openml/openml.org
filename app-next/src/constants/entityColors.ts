@@ -3,7 +3,7 @@
  */
 export const entityColors = {
   data: "#66bb6a", // green-400 - Datasets
-  task: "#f97316", // orange-500 - Tasks (aligned with Tailwind)
+  task: "#ffa726", // User specified task color
   flow: "#2f65cb", // blue-600 - Flows
   run: "#ef5350", // red-400 - Runs
   collections: "#ec407a", // pink-400 - Collections

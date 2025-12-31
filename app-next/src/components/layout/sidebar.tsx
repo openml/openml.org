@@ -140,11 +140,11 @@ export function Sidebar() {
           "fixed top-0 left-0 z-50 flex h-screen flex-col bg-[#233044] transition-all duration-300 ease-in-out",
           isHomePage
             ? homeMenuOpen
-              ? "w-64"
-              : "w-0"
+              ? "w-64 translate-x-0 opacity-100"
+              : "pointer-events-none invisible w-0 -translate-x-full opacity-0"
             : homeMenuOpen
-              ? "w-64 lg:hidden"
-              : "w-0 lg:hidden",
+              ? "w-64 translate-x-0 opacity-100 lg:hidden"
+              : "pointer-events-none invisible w-0 -translate-x-full opacity-0 lg:hidden",
         )}
       >
         {/* Logo Header - Only show when menu is open */}

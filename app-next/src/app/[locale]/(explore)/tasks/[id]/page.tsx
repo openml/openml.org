@@ -1,19 +1,14 @@
-/**
- * 📚 Task Detail Page
- *
- * Server Component that displays task information.
- * Uses tab-based navigation matching the original OpenML design:
- * - Task Detail tab: Configuration, dataset info, metadata
- * - Analysis tab: Evaluation chart with metric selector
- * - Runs tab: Paginated list of runs
- */
-
 import { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { BarChart3, List, FileText } from "lucide-react";
 import { fetchTask, fetchTaskRunCount } from "@/lib/api/task";
 import { TaskHeader } from "@/components/task/task-header";
-import { TaskDetailAccordion } from "@/components/task/task-detail-accordion";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { TaskDefinitionSection } from "@/components/task/task-definition-section";
+import { TaskAnalysisSection } from "@/components/task/task-analysis-section";
+import { TaskRunsList } from "@/components/task/task-runs-list";
+import { TaskNavigationMenu } from "@/components/task/task-navigation-menu";
 
 /**
  * Generate SEO Metadata for Task
@@ -59,7 +54,7 @@ export default async function TaskDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  // Parallel data fetching
+  // Parallel data fetching for Task details
   const [task, runCount] = await Promise.all([
     fetchTask(id),
     fetchTaskRunCount(id),
@@ -72,9 +67,47 @@ export default async function TaskDetailPage({
         {/* Header: Full Width - Name, stats, actions (Kaggle-style) */}
         <TaskHeader task={task} runCount={runCount} />
 
-        {/* Collapsible content (DID datasets style) */}
-        <div className="mt-6">
-          <TaskDetailAccordion task={task} runCount={runCount} />
+        {/* Content with Sidebar - Below Header */}
+        <div className="relative mt-6 flex min-h-screen gap-8">
+          {/* Left: Main Content - Single Column for now to match requested clean look */}
+          <div className="min-w-0 flex-1 space-y-6">
+            {/* 1. Task Definition (Target, Splits, Metrics) */}
+            <CollapsibleSection
+              id="definition"
+              title="Task Definition"
+              description="Target feature, estimation procedure, and metrics"
+              icon={<FileText className="h-4 w-4 text-gray-500" />}
+              defaultOpen={true}
+            >
+              <TaskDefinitionSection task={task} />
+            </CollapsibleSection>
+
+            {/* 2. Task Analysis / Evaluation */}
+            <CollapsibleSection
+              id="task-analysis"
+              title="Task Analysis"
+              description="Performance evaluations and metrics"
+              icon={<BarChart3 className="h-4 w-4 text-gray-500" />}
+              defaultOpen={true}
+            >
+              <TaskAnalysisSection task={task} runCount={runCount} />
+            </CollapsibleSection>
+
+            {/* 3. Runs List */}
+            <CollapsibleSection
+              id="runs"
+              title="Runs"
+              description="List of experimental runs on this task"
+              icon={<List className="h-4 w-4 text-gray-500" />}
+              badge={runCount}
+              defaultOpen={false}
+            >
+              <TaskRunsList task={task} runCount={runCount} />
+            </CollapsibleSection>
+          </div>
+
+          {/* Right: Navigation Menu - Responsive */}
+          <TaskNavigationMenu runCount={runCount} />
         </div>
       </div>
     </div>

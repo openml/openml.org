@@ -37,11 +37,11 @@ export function FlowsSearchPage() {
           <div className="container mx-auto px-4 py-8 sm:px-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
-                {/* Flow Icon - Orange color (#FF9800) */}
+                {/* Flow Icon - Blue color (#3b82f6) */}
                 <svg
                   viewBox="0 0 512 512"
                   className="h-8 w-8"
-                  style={{ color: "#FF9800" }}
+                  style={{ color: "#3b82f6" }}
                   aria-hidden="true"
                 >
                   <path

@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import type { Task } from "@/types/task";
-import { searchRuns } from "@/app/actions/runs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Flow } from "@/types/flow";
+import { searchFlowRuns } from "@/app/actions/flows";
 
 // Helper to get metric value from array
 function getMetric(evaluations: any[] = [], name: string): number | undefined {
@@ -21,14 +22,14 @@ function getMetric(evaluations: any[] = [], name: string): number | undefined {
   return metric ? metric.value : undefined;
 }
 
-interface TaskRun {
+interface FlowRun {
   run_id: number;
-  run_flow: {
-    name: string;
-    flow_id: number;
-  };
   run_task: {
     task_id: number;
+    source_data?: {
+      name: string;
+      data_id: number;
+    };
   };
   uploader: string;
   uploader_id: number;
@@ -39,12 +40,12 @@ interface TaskRun {
   }>;
 }
 
-interface TaskRunsListProps {
-  task: Task;
+interface FlowRunsListProps {
+  flow: Flow;
   runCount: number;
 }
 
-// Format relative time like "12 years ago"
+// Format relative time
 function formatRelativeTime(dateStr: string): string {
   const date = new Date(dateStr);
   const now = new Date();
@@ -69,23 +70,14 @@ function formatRelativeTime(dateStr: string): string {
   return "Today";
 }
 
-/**
- * TaskRunsList Component
- *
- * Runs tab content matching the original OpenML design:
- * - List of runs with flow name, dataset, uploader, metrics, date
- * - Pagination
- * - Clickable links to run details
- */
-export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
-  const [runs, setRuns] = useState<TaskRun[]>([]);
+export function FlowRunsList({ flow, runCount }: FlowRunsListProps) {
+  const [runs, setRuns] = useState<FlowRun[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
-  // Use metadata count if available, else computed count
-  const totalItems = task.runs || runCount;
+  const totalItems = flow.runs || runCount;
   const totalPages = Math.ceil(totalItems / pageSize);
 
   useEffect(() => {
@@ -99,16 +91,13 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
         setLoading(true);
         setError(null);
 
-        const data = await searchRuns({
-          query: {
-            term: { "run_task.task_id": task.task_id },
-          },
+        const data = await searchFlowRuns(flow.flow_id, {
+          query: {},
           sort: [{ date: { order: "desc" } }],
           from: page * pageSize,
           size: pageSize,
           _source: [
             "run_id",
-            "run_flow",
             "run_task",
             "uploader",
             "uploader_id",
@@ -116,8 +105,9 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
             "evaluations",
           ],
         });
-        const fetchedRuns: TaskRun[] = data.hits.hits.map(
-          (hit: { _source: TaskRun }) => hit._source,
+
+        const fetchedRuns: FlowRun[] = data.hits.hits.map(
+          (hit: { _source: FlowRun }) => hit._source,
         );
 
         setRuns(fetchedRuns);
@@ -130,43 +120,23 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
     }
 
     fetchRuns();
-  }, [task.task_id, totalItems, page]);
+  }, [flow.flow_id, totalItems, page]);
 
   if (totalItems === 0) {
     return (
       <div className="py-12 text-center">
-        <FlaskConical className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+        <FlaskConical className="text-muted-foreground mx-auto mb-4 h-12 w-12 opacity-50" />
         <h3 className="text-lg font-semibold">No Runs Yet</h3>
-        <p className="text-muted-foreground mt-2">
-          This task has no runs.{" "}
-          <Link href="#" className="text-primary hover:underline">
-            Learn more
-          </Link>{" "}
-          about creating runs.
-        </p>
+        <p className="text-muted-foreground mt-2">This flow has no runs.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold">Runs</h2>
-        <p className="text-muted-foreground mt-2">
-          Runs are evaluations of machine learning models (flows) trained on
-          this task. They can be created and shared automatically from supported
-          machine learning libraries. They contain the exact hyperparameters
-          used, all detailed results, and potentially the trained models.{" "}
-          <Link href="#" className="text-primary hover:underline">
-            Learn more.
-          </Link>
-        </p>
-      </div>
-
+    <div className="space-y-4">
       {loading ? (
         <div className="flex h-40 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : error ? (
         <Alert variant="destructive">
@@ -182,15 +152,15 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
                 key={run.run_id}
                 run={run}
                 rank={page * pageSize + index + 1}
-                datasetName={task.source_data?.name || "Unknown"}
+                flowName={flow.name}
               />
             ))}
           </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-sm">
+            <div className="flex items-center justify-between pt-2">
+              <p className="text-muted-foreground text-xs">
                 Showing {page * pageSize + 1} to{" "}
                 {Math.min((page + 1) * pageSize, totalItems)} of{" "}
                 {totalItems.toLocaleString()} runs
@@ -201,11 +171,12 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
                   size="sm"
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
+                  className="h-8 text-xs"
                 >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
+                  <ChevronLeft className="mr-1 h-3 w-3" />
                   Previous
                 </Button>
-                <span className="text-muted-foreground px-2 text-sm">
+                <span className="text-muted-foreground px-2 text-xs">
                   Page {page + 1} of {totalPages}
                 </span>
                 <Button
@@ -215,9 +186,10 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
                     setPage((p) => Math.min(totalPages - 1, p + 1))
                   }
                   disabled={page >= totalPages - 1}
+                  className="h-8 text-xs"
                 >
                   Next
-                  <ChevronRight className="ml-1 h-4 w-4" />
+                  <ChevronRight className="ml-1 h-3 w-3" />
                 </Button>
               </div>
             </div>
@@ -232,17 +204,18 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
 function RunListItem({
   run,
   rank,
-  datasetName,
+  flowName,
 }: {
-  run: TaskRun;
+  run: FlowRun;
   rank: number;
-  datasetName: string;
+  flowName: string;
 }) {
   const acc = getMetric(run.evaluations, "predictive_accuracy");
   const auc = getMetric(run.evaluations, "area_under_roc_curve");
   const rmse = getMetric(run.evaluations, "root_mean_squared_error");
 
-  const flowName = run.run_flow?.name || "Unknown Flow";
+  const datasetName = run.run_task?.source_data?.name || "Unknown Dataset";
+  const taskId = run.run_task?.task_id;
 
   return (
     <Link
@@ -251,13 +224,14 @@ function RunListItem({
     >
       {/* Flow Name + Dataset */}
       <div className="flex items-start gap-2">
-        <FlaskConical className="mt-1 h-4 w-4 shrink-0 text-[#ffa726]" />
+        <FlaskConical className="mt-1 h-4 w-4 shrink-0 text-[#3b82f6]" />
         <div className="min-w-0 flex-1">
           <h3 className="truncate font-semibold text-slate-900 dark:text-slate-100">
-            {flowName.split("(")[0]} on {datasetName}
+            {flowName} on {datasetName}
           </h3>
           <p className="text-muted-foreground truncate text-sm">
-            {flowName} on {datasetName} by {run.uploader || "Unknown"}
+            {taskId && <>Task #{taskId} • </>}
+            by {run.uploader || "Unknown"}
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
+import { FlowsSearchPage } from "@/components/search/flows/flows-search-page";
 
 export const metadata: Metadata = {
   title: "Flows - OpenML Machine Learning Pipelines",
@@ -40,10 +41,5 @@ export default async function FlowsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold">Flows</h1>
-      <p className="text-muted-foreground mt-4">Flows page - coming soon</p>
-    </div>
-  );
+  return <FlowsSearchPage />;
 }

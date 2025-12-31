@@ -7,6 +7,7 @@ import { WithSearch, Paging, SearchContext } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
+import { entityColors } from "@/constants/entityColors";
 import {
   Cog,
   Heart,
@@ -14,7 +15,15 @@ import {
   FlaskConical,
   Calendar,
   User,
+  Hash,
+  List,
+  LayoutGrid,
+  Columns,
+  Clock,
 } from "lucide-react";
+import { FlowResultCard } from "./result-card";
+import { FlowsResultsTable } from "./flows-results-table";
+import { parseDescription } from "../teaser";
 
 interface FlowResult {
   flow_id?: { raw: string | number };
@@ -27,6 +36,7 @@ interface FlowResult {
   runs?: { raw: number };
   nr_of_likes?: { raw: number };
   nr_of_downloads?: { raw: number };
+  status?: { raw: string };
   [key: string]: unknown;
 }
 
@@ -62,6 +72,7 @@ const sortOptions = [
 
 export function FlowsSearchContainer() {
   const [view, setView] = useState("list");
+  const [selectedFlow, setSelectedFlow] = useState<FlowResult | null>(null);
   const searchParams = useSearchParams();
   const context = useContext(SearchContext);
   const driver = context?.driver;
@@ -149,6 +160,9 @@ export function FlowsSearchContainer() {
             <WithSearch mapContextToProps={({ results }) => ({ results })}>
               {({ results }) => (
                 <>
+                  {view === "table" && (
+                    <FlowsResultsTable results={results as any} />
+                  )}
                   {view === "list" && (
                     <div className="space-y-0">
                       {results && results.length > 0 ? (
@@ -163,36 +177,36 @@ export function FlowsSearchContainer() {
                           return (
                             <div
                               key={flowId || index}
-                              className="hover:bg-accent relative flex items-start justify-between border-b p-4 transition-colors"
+                              className="hover:bg-muted/40 relative flex items-start justify-between border-b px-4 py-1.5 transition-colors"
                             >
                               <div className="min-w-0 flex-1">
-                                <div className="mb-2 flex items-start gap-3">
-                                  <Cog className="mt-1 h-5 w-5 shrink-0 text-orange-600" />
-                                  <div className="min-w-0 flex-1">
-                                    <h3 className="mb-1 text-lg font-semibold">
-                                      {name}
-                                    </h3>
-                                    {result.version?.raw && (
-                                      <Badge
-                                        variant="outline"
-                                        className="mb-2 text-xs"
-                                      >
-                                        v{result.version.raw}
-                                      </Badge>
-                                    )}
+                                {/* Line 1: Icon, Name, Version, ID Badge */}
+                                <div className="mb-1 flex items-start justify-between gap-3">
+                                  <div className="flex items-start gap-3">
+                                    <Cog className="mt-1 h-5 w-5 shrink-0 text-[#3b82f6]" />
+                                    <div className="flex items-baseline gap-2">
+                                      <h3 className="text-base font-semibold">
+                                        {name}
+                                      </h3>
+                                      {result.version?.raw && (
+                                        <span className="text-primary text-xs">
+                                          v.{result.version.raw}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
+                                  <Badge
+                                    variant="openml"
+                                    className="relative z-10 flex items-center gap-0.75 bg-[#3b82f6] px-2 py-0.5 text-xs font-semibold text-white"
+                                    title="flow ID"
+                                  >
+                                    <Hash className="h-3 w-3" />
+                                    {flowId}
+                                  </Badge>
                                 </div>
 
-                                {description && (
-                                  <p
-                                    className="text-muted-foreground mb-2 line-clamp-2 text-sm"
-                                    dangerouslySetInnerHTML={{
-                                      __html: description,
-                                    }}
-                                  />
-                                )}
-
-                                <div className="text-muted-foreground mb-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                                {/* Line 2: Author, Date, Status */}
+                                <div className="text-muted-foreground mb-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                                   {result.uploader?.raw && (
                                     <Link
                                       href={`/users/${result.uploader_id?.raw}`}
@@ -214,43 +228,53 @@ export function FlowsSearchContainer() {
                                       })}
                                     </span>
                                   )}
+                                  {result.status?.raw && (
+                                    <Badge
+                                      variant="outline"
+                                      className={`h-4 px-1.5 text-[10px] font-medium tracking-wider uppercase ${
+                                        result.status.raw === "active"
+                                          ? "border-green-500 bg-green-50/50 text-green-600"
+                                          : "border-amber-500 bg-amber-50/50 text-amber-600"
+                                      }`}
+                                    >
+                                      {result.status.raw}
+                                    </Badge>
+                                  )}
                                 </div>
 
-                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                                  {result.runs?.raw !== undefined && (
-                                    <span className="flex items-center gap-1.5">
-                                      <FlaskConical className="h-3 w-3 text-red-600" />
-                                      <span className="font-medium">
-                                        {result.runs.raw.toLocaleString()}
-                                      </span>
-                                      <span className="text-muted-foreground">
-                                        runs
-                                      </span>
-                                    </span>
-                                  )}
-                                  {result.nr_of_likes?.raw !== undefined && (
-                                    <span className="flex items-center gap-1.5">
-                                      <Heart className="h-3 w-3 text-pink-600" />
-                                      <span className="font-medium">
-                                        {result.nr_of_likes.raw.toLocaleString()}
-                                      </span>
-                                      <span className="text-muted-foreground">
-                                        likes
-                                      </span>
-                                    </span>
-                                  )}
-                                  {result.nr_of_downloads?.raw !==
-                                    undefined && (
-                                    <span className="flex items-center gap-1.5">
-                                      <CloudDownload className="h-3 w-3 text-blue-600" />
-                                      <span className="font-medium">
-                                        {result.nr_of_downloads.raw.toLocaleString()}
-                                      </span>
-                                      <span className="text-muted-foreground">
-                                        downloads
-                                      </span>
-                                    </span>
-                                  )}
+                                {/* Line 3: Description */}
+                                {description && (
+                                  <p
+                                    className="text-muted-foreground mb-1.5 line-clamp-2 text-sm"
+                                    dangerouslySetInnerHTML={{
+                                      __html: description,
+                                    }}
+                                  />
+                                )}
+
+                                {/* Line 4: Stats */}
+                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                                  <span
+                                    className="flex items-center gap-1.5"
+                                    title="runs"
+                                  >
+                                    <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                                    {result.runs?.raw?.toLocaleString() || 0}
+                                  </span>
+                                  <span
+                                    className="flex items-center gap-1.5"
+                                    title="likes"
+                                  >
+                                    <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
+                                    {result.nr_of_likes?.raw || 0}
+                                  </span>
+                                  <span
+                                    className="flex items-center gap-1.5"
+                                    title="downloads"
+                                  >
+                                    <CloudDownload className="h-4 w-4 text-[#3b82f6]" />
+                                    {result.nr_of_downloads?.raw || 0}
+                                  </span>
                                 </div>
                               </div>
 
@@ -278,12 +302,237 @@ export function FlowsSearchContainer() {
                     </div>
                   )}
 
-                  {/* TODO: Add table and grid views if needed */}
+                  {view === "grid" && (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {results && results.length > 0 ? (
+                        results.map((result: FlowResult, index: number) => (
+                          <FlowResultCard
+                            key={result.flow_id?.raw || index}
+                            result={result}
+                          />
+                        ))
+                      ) : (
+                        <div className="text-muted-foreground col-span-full py-12 text-center">
+                          No flows found.
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {view === "compact" && (
+                    <div className="divide-y rounded-md border text-sm">
+                      {results && results.length > 0 ? (
+                        results.map((result: FlowResult, index: number) => (
+                          <Link
+                            key={result.flow_id?.raw || index}
+                            href={`/flows/${result.flow_id?.raw}`}
+                            className="hover:bg-muted/50 flex items-center justify-between p-3"
+                          >
+                            <div className="flex items-center gap-3">
+                              <Cog className="h-4 w-4 text-[#3b82f6]" />
+                              <span className="font-medium whitespace-nowrap">
+                                {result.name?.raw}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4 text-xs">
+                              <span className="text-muted-foreground">
+                                v.{result.version?.raw}
+                              </span>
+                              <Badge className="bg-[#3b82f6] text-white">
+                                #{result.flow_id?.raw}
+                              </Badge>
+                            </div>
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="text-muted-foreground py-8 text-center">
+                          No flows found.
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {view === "split" && (
+                    <div className="flex min-h-[600px] gap-0 overflow-hidden rounded-md border">
+                      <div className="bg-muted/10 w-[380px] shrink-0 space-y-0 overflow-y-auto border-r">
+                        {results && results.length > 0 ? (
+                          (() => {
+                            // Auto-select first flow if none selected
+                            const selectedId = selectedFlow?.flow_id?.raw;
+                            const isSelectedInResults = results.some(
+                              (r: FlowResult) => r.flow_id?.raw === selectedId,
+                            );
+
+                            if (!selectedFlow || !isSelectedInResults) {
+                              setTimeout(() => setSelectedFlow(results[0]), 0);
+                            }
+
+                            return results.map(
+                              (result: FlowResult, index: number) => {
+                                const isSelected =
+                                  result.flow_id?.raw === selectedId;
+                                return (
+                                  <div
+                                    key={result.flow_id?.raw || index}
+                                    onClick={() => setSelectedFlow(result)}
+                                    className={`cursor-pointer border-b px-4 py-1.5 transition-colors ${
+                                      isSelected
+                                        ? "bg-muted/50 ring-muted-foreground/20 ring-1 ring-inset dark:bg-slate-800"
+                                        : "hover:bg-muted/30"
+                                    }`}
+                                  >
+                                    <div className="mb-1 flex items-start gap-2">
+                                      <Cog className="mt-0.5 h-4 w-4 shrink-0 text-[#3b82f6]" />
+                                      <h3 className="line-clamp-1 leading-tight font-semibold">
+                                        {result.name?.raw}
+                                      </h3>
+                                    </div>
+                                    <p className="text-muted-foreground line-clamp-2 text-xs">
+                                      {
+                                        parseDescription(
+                                          result.description?.snippet ||
+                                            result.description?.raw,
+                                        ).cleanDescription
+                                      }
+                                    </p>
+                                    <div className="mt-2 flex items-center gap-3 text-[10px] font-medium uppercase">
+                                      <span className="text-[#3b82f6]">
+                                        #{result.flow_id?.raw}
+                                      </span>
+                                      <span className="text-muted-foreground">
+                                        v.{result.version?.raw}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              },
+                            );
+                          })()
+                        ) : (
+                          <div className="text-muted-foreground p-8 text-center text-sm">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                      <div className="bg-card flex-1 overflow-y-auto p-6">
+                        {selectedFlow ? (
+                          <div className="mx-auto max-w-4xl">
+                            <div className="mb-6 flex items-start gap-4">
+                              <Cog
+                                className="mt-1 h-10 w-10 shrink-0 text-[#3b82f6]"
+                                strokeWidth={1.5}
+                              />
+                              <div className="flex-1">
+                                <div className="mb-1 flex items-baseline gap-2">
+                                  <h2 className="text-2xl font-bold">
+                                    {selectedFlow.name?.raw || "Untitled"}
+                                  </h2>
+                                  <span className="text-primary text-sm">
+                                    v.{selectedFlow.version?.raw || 1}
+                                  </span>
+                                </div>
+
+                                <Badge
+                                  variant="outline"
+                                  className="border-[#3b82f6] bg-[#3b82f6]/5 text-[#3b82f6]"
+                                >
+                                  <Hash className="mr-1 h-3 w-3" />
+                                  {selectedFlow.flow_id?.raw}
+                                </Badge>
+                              </div>
+                              <Link
+                                href={`/flows/${selectedFlow.flow_id?.raw}`}
+                                className="rounded bg-[#3b82f6] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#3b82f6]/90"
+                              >
+                                View Details
+                              </Link>
+                            </div>
+
+                            {/* Full Description */}
+                            <div className="text-muted-foreground mb-8 text-sm leading-relaxed">
+                              {
+                                parseDescription(
+                                  selectedFlow.description?.snippet ||
+                                    selectedFlow.description?.raw,
+                                ).cleanDescription
+                              }
+                            </div>
+
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-3 gap-6">
+                              <div className="rounded-lg border p-4">
+                                <FlaskConical className="mb-2 h-5 w-5 fill-red-500 text-red-500" />
+                                <div className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                                  Runs
+                                </div>
+                                <div className="text-xl font-bold">
+                                  {selectedFlow.runs?.raw?.toLocaleString() ||
+                                    0}
+                                </div>
+                              </div>
+                              <div className="rounded-lg border p-4">
+                                <Heart className="mb-2 h-5 w-5 fill-purple-500 text-purple-500" />
+                                <div className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                                  Likes
+                                </div>
+                                <div className="text-xl font-bold">
+                                  {selectedFlow.nr_of_likes?.raw || 0}
+                                </div>
+                              </div>
+                              <div className="rounded-lg border p-4">
+                                <CloudDownload className="mb-2 h-5 w-5 text-[#3b82f6]" />
+                                <div className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                                  Downloads
+                                </div>
+                                <div className="text-xl font-bold">
+                                  {selectedFlow.nr_of_downloads?.raw || 0}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Metadata */}
+                            <div className="mt-8 space-y-4 border-t pt-8">
+                              <div className="text-muted-foreground flex items-center gap-4 text-sm">
+                                <Clock className="h-4 w-4" />
+                                <span>
+                                  Uploaded on{" "}
+                                  {selectedFlow.date?.raw
+                                    ? new Date(
+                                        selectedFlow.date.raw,
+                                      ).toLocaleDateString()
+                                    : "N/A"}
+                                </span>
+                              </div>
+                              {selectedFlow.uploader?.raw && (
+                                <div className="text-muted-foreground flex items-center gap-4 text-sm">
+                                  <User className="h-4 w-4" />
+                                  <span>
+                                    Uploaded by{" "}
+                                    <Link
+                                      href={`/users/${selectedFlow.uploader_id?.raw}`}
+                                      className="font-medium text-[#3b82f6] hover:underline"
+                                    >
+                                      {selectedFlow.uploader.raw}
+                                    </Link>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-muted-foreground flex h-full items-center justify-center">
+                            Select a flow to view details
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
-            </WithSearch>
-
-            {/* Pagination */}
+            </WithSearch>;
+            {
+              /* Pagination */
+            }
             <WithSearch
               mapContextToProps={({
                 pagingStart,
@@ -315,30 +564,148 @@ export function FlowsSearchContainer() {
                 if (!totalResults || totalResults === 0) return null;
 
                 return (
-                  <div className="mt-6">
+                  <div className="mt-6 flex flex-col items-center gap-3">
                     <Paging
                       view={({ current, totalPages, onChange }) => {
                         if (!current || totalPages <= 1) return null;
 
+                        const MAX_RESULT_WINDOW = 10000;
+                        const pageSize = resultsPerPage || 20;
+                        const MAX_ACCESSIBLE_PAGE = Math.floor(
+                          MAX_RESULT_WINDOW / pageSize,
+                        );
+                        const SHOW_WARNING_FROM = Math.max(
+                          1,
+                          MAX_ACCESSIBLE_PAGE - 1,
+                        );
+
+                        const pages = [];
+                        const maxVisible = 7;
+                        let startPage = Math.max(
+                          1,
+                          current - Math.floor(maxVisible / 2),
+                        );
+                        let endPage = Math.min(
+                          totalPages,
+                          startPage + maxVisible - 1,
+                        );
+
+                        if (endPage - startPage < maxVisible - 1) {
+                          startPage = Math.max(1, endPage - maxVisible + 1);
+                        }
+
+                        for (let i = startPage; i <= endPage; i++) {
+                          pages.push(i);
+                        }
+
+                        const isPageAccessible = (page: number) =>
+                          page <= MAX_ACCESSIBLE_PAGE;
+                        const isCurrentBeyondLimit =
+                          current > MAX_ACCESSIBLE_PAGE;
+
                         return (
-                          <div className="flex items-center justify-center gap-2">
-                            <button
-                              onClick={() => onChange?.(current - 1)}
-                              disabled={current === 1}
-                              className="rounded border px-4 py-2 disabled:opacity-50"
-                            >
-                              Previous
-                            </button>
-                            <span className="text-muted-foreground text-sm">
-                              Page {current} of {totalPages}
-                            </span>
-                            <button
-                              onClick={() => onChange?.(current + 1)}
-                              disabled={current >= totalPages}
-                              className="rounded border px-4 py-2 disabled:opacity-50"
-                            >
-                              Next
-                            </button>
+                          <div className="flex flex-col items-center gap-3">
+                            {current >= SHOW_WARNING_FROM && (
+                              <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                                ⚠️ Elasticsearch limit: Only{" "}
+                                {MAX_ACCESSIBLE_PAGE.toLocaleString()} pages (
+                                {MAX_RESULT_WINDOW.toLocaleString()} results)
+                                can be accessed.{" "}
+                                {isCurrentBeyondLimit
+                                  ? `Page ${current} is not accessible.`
+                                  : `Showing page ${current.toLocaleString()} of ${totalPages.toLocaleString()} total pages.`}
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => onChange(current - 1)}
+                                disabled={current === 1}
+                                className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                              >
+                                Previous
+                              </button>
+                              {startPage > 1 && (
+                                <>
+                                  <button
+                                    onClick={() => onChange(1)}
+                                    className="hover:bg-muted rounded border px-3 py-1"
+                                  >
+                                    1
+                                  </button>
+                                  {startPage > 2 && (
+                                    <span className="px-2">...</span>
+                                  )}
+                                </>
+                              )}
+                              {pages.map((page) => {
+                                const isAccessible = isPageAccessible(page);
+                                const isCurrent = page === current;
+                                return (
+                                  <button
+                                    key={page}
+                                    onClick={() =>
+                                      isAccessible && onChange(page)
+                                    }
+                                    disabled={!isAccessible}
+                                    className={`rounded border px-3 py-1 ${
+                                      isCurrent
+                                        ? "text-white"
+                                        : isAccessible
+                                          ? "hover:bg-muted dark:hover:bg-slate-700"
+                                          : "cursor-not-allowed line-through opacity-30"
+                                    }`}
+                                    style={
+                                      isCurrent
+                                        ? { backgroundColor: entityColors.flow }
+                                        : undefined
+                                    }
+                                    title={
+                                      !isAccessible
+                                        ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
+                                    }
+                                  >
+                                    {page}
+                                  </button>
+                                );
+                              })}
+                              {endPage < totalPages && (
+                                <>
+                                  {endPage < totalPages - 1 && (
+                                    <span className="px-2">...</span>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      isPageAccessible(totalPages) &&
+                                      onChange(totalPages)
+                                    }
+                                    disabled={!isPageAccessible(totalPages)}
+                                    className={`rounded border px-3 py-1 ${
+                                      isPageAccessible(totalPages)
+                                        ? "hover:bg-muted"
+                                        : "cursor-not-allowed line-through opacity-30"
+                                    }`}
+                                    title={
+                                      !isPageAccessible(totalPages)
+                                        ? `Page ${totalPages} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
+                                    }
+                                  >
+                                    {totalPages}
+                                  </button>
+                                </>
+                              )}
+                              <button
+                                onClick={() => onChange(current + 1)}
+                                disabled={
+                                  current >= totalPages ||
+                                  !isPageAccessible(current + 1)
+                                }
+                                className="hover:bg-muted rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
                           </div>
                         );
                       }}
@@ -346,7 +713,8 @@ export function FlowsSearchContainer() {
                   </div>
                 );
               }}
-            </WithSearch>
+            </WithSearch>;
+            {/* Pagination */}
           </div>
         </div>
       )}

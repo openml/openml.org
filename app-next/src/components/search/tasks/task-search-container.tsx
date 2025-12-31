@@ -331,7 +331,7 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
         return (
           <div
             key={tid || index}
-            className="hover:bg-accent relative flex items-start justify-between border-b p-4 transition-colors"
+            className="relative flex items-start justify-between border-b p-4 transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/20"
           >
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-start gap-3">

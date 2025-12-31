@@ -46,40 +46,7 @@ const Plot = dynamic(() => import("react-plotly.js"), {
   ),
 });
 
-// Custom styles for Plotly modebar - OpenML themed
-const plotlyModebarStyles = `
-  .modebar {
-    background: white !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-    padding: 6px 10px !important;
-    border: 1px solid #e5e7eb !important;
-    margin-bottom: 12px !important;
-  }
-  .modebar-container {
-    position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
-  }
-  .modebar-group {
-    background: transparent !important;
-  }
-  .modebar-btn {
-    opacity: 0.6 !important;
-  }
-  .modebar-btn:hover {
-    opacity: 1 !important;
-  }
-  .modebar-btn path {
-    fill: #6b7280 !important;
-  }
-  .modebar-btn:hover path {
-    fill: #22c55e !important;
-  }
-  .modebar-btn.active path {
-    fill: #22c55e !important;
-  }
-`;
+// Custom styles moved to globals.css
 
 interface DataAnalysisSectionProps {
   dataset: Dataset;
@@ -164,8 +131,7 @@ export function DataAnalysisSection({
         className,
       )}
     >
-      {/* Inject custom Plotly modebar styles */}
-      <style dangerouslySetInnerHTML={{ __html: plotlyModebarStyles }} />
+      {/* Plotly modebar styles are now in globals.css */}
 
       <Card>
         <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
@@ -731,40 +697,43 @@ function DistributionPlot({
         )}
         {feature.name}
       </h5>
-      <Plot
-        data={[
-          isNumeric
-            ? {
-                type: "histogram" as const,
-                x: cleanData,
-                marker: { color: "#22c55e" },
-                opacity: 0.75,
-              }
-            : {
-                type: "bar" as const,
-                x: barLabels,
-                y: barValues,
-                marker: { color: "#22c55e" },
-              },
-        ]}
-        layout={{
-          height: 200,
-          margin: { l: 40, r: 20, t: 10, b: 40 },
-          xaxis: {
-            tickangle: isNumeric ? 0 : -45,
-            automargin: true,
-          },
-          yaxis: { title: "Count" },
-          bargap: 0.1,
-          paper_bgcolor: "transparent",
-          plot_bgcolor: "transparent",
-        }}
-        config={{
-          displayModeBar: false,
-          responsive: true,
-        }}
-        style={{ width: "100%", height: "200px" }}
-      />
+      <div className="plotly-chart-container">
+        <Plot
+          data={[
+            isNumeric
+              ? {
+                  type: "histogram" as const,
+                  x: cleanData,
+                  marker: { color: "#22c55e" },
+                  opacity: 0.75,
+                }
+              : {
+                  type: "bar" as const,
+                  x: barLabels,
+                  y: barValues,
+                  marker: { color: "#22c55e" },
+                },
+          ]}
+          layout={{
+            height: 200,
+            margin: { l: 40, r: 20, t: 10, b: 40 },
+            xaxis: {
+              tickangle: isNumeric ? 0 : -45,
+              automargin: true,
+            },
+            yaxis: { title: "Count" },
+            bargap: 0.1,
+            paper_bgcolor: "transparent",
+            plot_bgcolor: "transparent",
+          }}
+          config={{
+            displayModeBar: true,
+            responsive: true,
+            displaylogo: false,
+          }}
+          style={{ width: "100%", height: "200px" }}
+        />
+      </div>
     </div>
   );
 }

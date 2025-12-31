@@ -30,40 +30,7 @@ const Plot = dynamic(() => import("react-plotly.js"), {
   ),
 });
 
-// Custom styles for Plotly modebar - OpenML themed
-const plotlyModebarStyles = `
-  .modebar {
-    background: white !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-    padding: 6px 10px !important;
-    border: 1px solid #e5e7eb !important;
-    margin-bottom: 12px !important;
-  }
-  .modebar-container {
-    position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
-  }
-  .modebar-group {
-    background: transparent !important;
-  }
-  .modebar-btn {
-    opacity: 0.6 !important;
-  }
-  .modebar-btn:hover {
-    opacity: 1 !important;
-  }
-  .modebar-btn path {
-    fill: #6b7280 !important;
-  }
-  .modebar-btn:hover path {
-    fill: #22c55e !important;
-  }
-  .modebar-btn.active path {
-    fill: #22c55e !important;
-  }
-`;
+// Custom styles moved to globals.css
 
 interface DatasetAnalysisSectionProps {
   dataset: Dataset;
@@ -138,8 +105,7 @@ export function DatasetAnalysisSection({
 
   return (
     <section id="analysis" className={cn("scroll-mt-20", className)}>
-      {/* Inject custom Plotly modebar styles */}
-      <style dangerouslySetInnerHTML={{ __html: plotlyModebarStyles }} />
+      {/* Plotly modebar styles are now in globals.css */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -724,56 +690,60 @@ function FeatureDistributionPlots({
                       <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
                     </div>
                   ) : hasData && plotData.length > 0 ? (
-                    <Plot
-                      data={plotData}
-                      layout={
-                        {
-                          autosize: true,
-                          height: 350,
-                          margin: { l: 50, r: 30, t: 60, b: 60 },
-                          paper_bgcolor: "transparent",
-                          plot_bgcolor: "transparent",
-                          barmode: stackMode === "stack" ? "stack" : "group",
-                          dragmode: "zoom",
-                          xaxis: isViolin
-                            ? {
-                                fixedrange: false,
-                                autorange: true,
-                              }
-                            : {
-                                title: feature.name,
-                                tickangle: feature.type === "nominal" ? -45 : 0,
-                                fixedrange: false,
-                                autorange: true,
-                              },
-                          yaxis: isViolin
-                            ? {
-                                title: feature.name,
-                                fixedrange: false,
-                                autorange: true,
-                              }
-                            : {
-                                title: "Count",
-                                fixedrange: false,
-                                autorange: true,
-                              },
-                          legend: {
-                            orientation: "h",
-                            y: 1.1,
-                          },
-                          showlegend: colorMode === "target" && !!targetFeature,
-                        } as unknown as Layout
-                      }
-                      config={{
-                        responsive: true,
-                        displayModeBar: true,
-                        scrollZoom: true,
-                        modeBarButtonsToRemove: ["lasso2d", "select2d"],
-                        displaylogo: false,
-                      }}
-                      style={{ width: "100%" }}
-                      useResizeHandler
-                    />
+                    <div className="plotly-chart-container">
+                      <Plot
+                        data={plotData}
+                        layout={
+                          {
+                            autosize: true,
+                            height: 350,
+                            margin: { l: 50, r: 30, t: 30, b: 60 },
+                            paper_bgcolor: "transparent",
+                            plot_bgcolor: "transparent",
+                            barmode: stackMode === "stack" ? "stack" : "group",
+                            dragmode: "zoom",
+                            xaxis: isViolin
+                              ? {
+                                  fixedrange: false,
+                                  autorange: true,
+                                }
+                              : {
+                                  title: feature.name,
+                                  tickangle:
+                                    feature.type === "nominal" ? -45 : 0,
+                                  fixedrange: false,
+                                  autorange: true,
+                                },
+                            yaxis: isViolin
+                              ? {
+                                  title: feature.name,
+                                  fixedrange: false,
+                                  autorange: true,
+                                }
+                              : {
+                                  title: "Count",
+                                  fixedrange: false,
+                                  autorange: true,
+                                },
+                            legend: {
+                              orientation: "h",
+                              y: 1.1,
+                            },
+                            showlegend:
+                              colorMode === "target" && !!targetFeature,
+                          } as unknown as Layout
+                        }
+                        config={{
+                          responsive: true,
+                          displayModeBar: true,
+                          scrollZoom: true,
+                          modeBarButtonsToRemove: ["lasso2d", "select2d"],
+                          displaylogo: false,
+                        }}
+                        style={{ width: "100%" }}
+                        useResizeHandler
+                      />
+                    </div>
                   ) : (
                     <div className="bg-muted/50 flex h-[200px] flex-col items-center justify-center rounded p-4 text-center">
                       <p className="text-muted-foreground text-sm">

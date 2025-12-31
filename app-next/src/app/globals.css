@@ -228,6 +228,72 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  /* Standardized Plotly modebar - Relocated outside chart */
+  .plotly-chart-container {
+    position: relative;
+    padding-top: 45px; /* Space for the external modebar */
+  }
+
+  .js-plotly-plot .plotly .modebar-container {
+    position: absolute !important;
+    top: -45px !important;
+    right: 0px !important;
+    left: auto !important;
+    width: auto !important;
+    background: transparent !important;
+  }
+
+  .js-plotly-plot .plotly .modebar {
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    padding: 6px 12px !important;
+    border: 1px solid oklch(0.88 0.015 250) !important; /* var(--border) */
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-group {
+    background: transparent !important;
+  }
+
+  .dark .js-plotly-plot .plotly .modebar {
+    background: oklch(0.2 0.02 250) !important; /* var(--card) */
+    border-color: oklch(0.25 0.04 250) !important; /* var(--border) */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn {
+    opacity: 0.8 !important;
+    padding: 4px !important;
+    background: transparent !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn:hover {
+    opacity: 1 !important;
+    background: oklch(0.71 0.02 260) !important; /* slate-400 */
+  }
+
+  .dark .js-plotly-plot .plotly .modebar-btn:hover {
+    background: oklch(0.45 0.02 250) !important; /* darker slate for dark mode */
+  }
+
+  .js-plotly-plot .plotly .modebar-btn path {
+    fill: oklch(0.45 0.02 250) !important; /* muted foreground */
+  }
+
+  .dark .js-plotly-plot .plotly .modebar-btn path {
+    fill: oklch(0.7 0.02 250) !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn:hover path,
+  .js-plotly-plot .plotly .modebar-btn.active path {
+    fill: #22c55e !important; /* Success green */
+  }
 }
 
 @layer components {

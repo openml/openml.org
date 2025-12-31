@@ -8,6 +8,12 @@ export interface Task {
   task_type_id: number;
   task_type: string;
 
+  // Stats
+  nr_of_likes?: number;
+  nr_of_downvotes?: number;
+  nr_of_issues?: number;
+  nr_of_downloads?: number;
+
   // Metadata
   name?: string;
   source_data: {
@@ -20,6 +26,7 @@ export interface Task {
   target_feature?: string;
   estimation_procedure?: {
     type: string;
+    name?: string;
     parameters: Record<string, string>;
   };
   evaluation_measures?: string[];
@@ -59,7 +66,9 @@ export interface Task {
   quality?: Record<string, string>;
 
   // Dates
+  // Dates
   upload_date?: string;
+  date?: string;
 }
 
 /**

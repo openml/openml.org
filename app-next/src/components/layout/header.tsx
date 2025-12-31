@@ -21,7 +21,7 @@ export function Header() {
   const { homeMenuOpen, setHomeMenuOpen } = useSidebar();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#eaeff5]/95 text-slate-800 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-[#eaeff5]/85 dark:border-slate-800 dark:bg-slate-950/95 dark:text-slate-100 dark:supports-[backdrop-filter]:bg-slate-950/85">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#eaeff5]/95 text-slate-800 shadow-sm backdrop-blur supports-backdrop-filter:bg-[#eaeff5]/85 dark:border-slate-800 dark:bg-slate-950/95 dark:text-slate-100 dark:supports-backdrop-filter:bg-slate-950/85">
       <div className="flex h-24 items-center justify-between gap-2 px-3 md:gap-4 md:px-0">
         {/* Sidebar-width Container - Desktop only */}
         <div className="hidden shrink-0 items-center justify-center gap-2 md:flex lg:w-64">
@@ -32,10 +32,10 @@ export function Header() {
               size="icon"
               onClick={() => setHomeMenuOpen(!homeMenuOpen)}
               className={cn(
-                "size-12 hover:bg-slate-700 hover:text-slate-300",
+                "z-10 size-12 hover:bg-slate-700 hover:text-slate-300",
                 !isHomePage && "lg:hidden",
               )}
-              aria-label="Toggle menu"
+              aria-label="Toggle main menu"
             >
               <svg
                 className="size-9"
@@ -79,10 +79,10 @@ export function Header() {
               size="icon"
               onClick={() => setHomeMenuOpen(!homeMenuOpen)}
               className={cn(
-                "size-12 hover:bg-slate-700 hover:text-slate-300",
+                "z-10 size-12 hover:bg-slate-700 hover:text-slate-300",
                 !isHomePage && "lg:hidden",
               )}
-              aria-label="Toggle menu"
+              aria-label="Toggle main menu"
             >
               <svg
                 className="size-9"

@@ -3,37 +3,102 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
+  Cog,
   ArrowLeft,
   Grid3x3,
   Menu,
   X,
   ChevronRight,
   ChevronLeft,
-  Trophy,
-  List,
-  BarChart3,
   FileText,
+  Activity,
+  Tag,
+  FlaskConical,
+  BarChart3,
+  Settings2,
+  History,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-interface TaskNavigationMenuProps {
-  runCount: number;
+interface FlowNavigationMenuProps {
+  runCount?: number;
+  parametersCount?: number;
+  componentsCount?: number;
+  versionsCount?: number;
+  hasDependencies?: boolean;
 }
 
-export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
+export function FlowNavigationMenu({
+  runCount = 0,
+  parametersCount = 0,
+  componentsCount = 0,
+  versionsCount = 0,
+  hasDependencies = false,
+}: FlowNavigationMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Navigation items for "On This Page"
   const pageNavItems = [
-    { id: "definition", label: "Task Definition", icon: FileText },
-    { id: "task-analysis", label: "Task Analysis", icon: Trophy },
+    { id: "description", label: "Description", icon: FileText },
+    ...(runCount > 0
+      ? [
+          {
+            id: "analysis",
+            label: "Analyse",
+            icon: BarChart3,
+          },
+        ]
+      : []),
+    ...(hasDependencies
+      ? [
+          {
+            id: "dependencies",
+            label: "Dependencies",
+            icon: Cog,
+          },
+        ]
+      : []),
+    ...(parametersCount > 0
+      ? [
+          {
+            id: "parameters",
+            label: `Parameters (${parametersCount})`,
+            icon: Settings2,
+          },
+        ]
+      : []),
+    ...(componentsCount > 0
+      ? [
+          {
+            id: "components",
+            label: `Components (${componentsCount})`,
+            icon: Cog,
+          },
+        ]
+      : []),
+    ...(versionsCount > 1
+      ? [
+          {
+            id: "versions",
+            label: `Versions (${versionsCount})`,
+            icon: History,
+          },
+        ]
+      : []),
+    { id: "runs", label: "Runs", icon: Play },
+  ];
+
+  // Additional sections
+  const sectionNavItems = [
     {
-      id: "runs",
-      label: "Runs",
-      icon: List,
+      id: "all-runs",
+      label: "All Runs",
+      icon: FlaskConical,
       count: runCount,
+      href: "#runs",
     },
   ];
 
@@ -44,7 +109,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
         <Button
           onClick={() => setIsOpen(!isOpen)}
           size="lg"
-          className="bg-[#ffa726] text-white shadow-lg hover:bg-[#fb8c00] dark:bg-[#ffa726] dark:hover:bg-[#fb8c00]"
+          className="bg-blue-600 text-white shadow-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
         >
           {isOpen ? (
             <X className="mr-2 h-5 w-5" />
@@ -64,7 +129,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Panel */}
+          {/* Slide-out Panel */}
           <div className="bg-background fixed top-0 right-0 bottom-0 z-50 w-80 shadow-2xl xl:hidden">
             <div className="flex h-full flex-col overflow-y-auto p-6">
               <div className="mb-6 flex items-center justify-between">
@@ -81,7 +146,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
               <div className="space-y-4">
                 {/* Table of Contents */}
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
-                  <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
+                  <h3 className="mb-3 text-sm font-semibold text-blue-600 dark:text-blue-400">
                     On This Page
                   </h3>
                   <nav className="space-y-1">
@@ -94,11 +159,28 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                       >
                         <item.icon className="h-4 w-4" />
                         {item.label}
+                      </a>
+                    ))}
+                  </nav>
+
+                  {/* Section divider */}
+                  <div className="border-border my-3 border-t" />
+
+                  {/* Additional Sections */}
+                  <nav className="space-y-1">
+                    {sectionNavItems.map((item) => (
+                      <a
+                        key={item.id}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                      >
+                        <span className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4" />
+                          {item.label}
+                        </span>
                         {item.count !== undefined && item.count > 0 && (
-                          <Badge
-                            variant="secondary"
-                            className="ml-auto text-xs"
-                          >
+                          <Badge variant="secondary" className="text-xs">
                             {item.count.toLocaleString()}
                           </Badge>
                         )}
@@ -114,20 +196,20 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                   </h3>
                   <nav className="space-y-1">
                     <Link
-                      href="/search?type=task"
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                      href="/flows"
                       onClick={() => setIsOpen(false)}
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       <ArrowLeft className="h-4 w-4" />
                       Back to Search
                     </Link>
                     <Link
-                      href="/search?type=task"
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                      href="/flows"
                       onClick={() => setIsOpen(false)}
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                     >
-                      <Grid3x3 className="h-4 w-4" />
-                      All Tasks
+                      <Cog className="h-4 w-4" />
+                      All Flows
                     </Link>
                   </nav>
                 </div>
@@ -175,7 +257,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
 
             {/* Table of Contents */}
             <div className="bg-card rounded-lg border p-4 shadow-sm">
-              <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
+              <h3 className="mb-3 text-sm font-semibold text-blue-600 dark:text-blue-400">
                 On This Page
               </h3>
               <nav className="space-y-1">
@@ -187,8 +269,27 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                   >
                     <item.icon className="h-4 w-4" />
                     {item.label}
+                  </a>
+                ))}
+              </nav>
+
+              {/* Section divider */}
+              <div className="border-border my-3 border-t" />
+
+              {/* Additional Sections */}
+              <nav className="space-y-1">
+                {sectionNavItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                  >
+                    <span className="flex items-center gap-2">
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </span>
                     {item.count !== undefined && item.count > 0 && (
-                      <Badge variant="secondary" className="ml-auto text-xs">
+                      <Badge variant="secondary" className="text-xs">
                         {item.count.toLocaleString()}
                       </Badge>
                     )}
@@ -200,22 +301,22 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
             {/* Navigation Links */}
             <div className="bg-card rounded-lg border p-4 shadow-sm">
               <h3 className="text-foreground mb-3 text-sm font-semibold">
-                Quick Links
+                Navigation
               </h3>
               <nav className="space-y-1">
                 <Link
-                  href="/search?type=task"
+                  href="/flows"
                   className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back to Search
                 </Link>
                 <Link
-                  href="/search?type=task"
+                  href="/flows"
                   className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
-                  <Grid3x3 className="h-4 w-4" />
-                  All Tasks
+                  <Cog className="h-4 w-4" />
+                  All Flows
                 </Link>
               </nav>
             </div>

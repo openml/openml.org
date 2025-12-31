@@ -11,7 +11,7 @@ import { DatasetHeader } from "@/components/dataset/dataset-header-new";
 import { DatasetDescription } from "@/components/dataset/dataset-description";
 import { QualityTable } from "@/components/dataset/quality-table";
 import { DatasetNavigationMenu } from "@/components/dataset/dataset-navigation-menu";
-import { CollapsibleSection } from "@/components/dataset/collapsible-section";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 // import { DataExplorer } from "@/components/dataset/data-explorer";  // Replaced by merged component
 import { DataAnalysisSection } from "@/components/dataset/data-analysis-section"; // NEW: Merged Data Explorer + Analysis
 import { MetadataSection } from "@/components/dataset/metadata-section";
@@ -163,7 +163,7 @@ export default async function DatasetDetailPage({
         />
 
         {/* Content with Sidebar - Below Header */}
-        <div className="relative flex min-h-screen gap-8">
+        <div className="relative mt-6 flex min-h-screen gap-8">
           {/* Left: Main Content */}
           <div className="min-w-0 flex-1 space-y-6">
             {/* Description: Primary content */}
