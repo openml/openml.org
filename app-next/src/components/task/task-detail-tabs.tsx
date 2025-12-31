@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TaskConfigSection } from "./task-config-section";
-import { TaskDatasetSection } from "./task-dataset-section";
-import { TaskInfoSection } from "./task-info-section";
+import { TaskDefinitionSection } from "./task-definition-section";
+import { TaskAnalysisSection } from "./task-analysis-section";
 import { TaskRunsList } from "./task-runs-list";
 import type { Task } from "@/types/task";
 
@@ -50,14 +49,12 @@ export function TaskDetailTabs({ task, runCount }: TaskDetailTabsProps) {
 
       {/* Task Detail Tab */}
       <TabsContent value="detail" className="mt-0 space-y-6">
-        <TaskConfigSection task={task} />
-        <TaskDatasetSection task={task} />
-        <TaskInfoSection task={task} />
+        <TaskDefinitionSection task={task} />
       </TabsContent>
 
       {/* Analysis Tab */}
       <TabsContent value="analysis" className="mt-0">
-        <div className="p-6">Analysis section coming soon...</div>
+        <TaskAnalysisSection task={task} runCount={runCount} />
       </TabsContent>
 
       {/* Runs Tab */}

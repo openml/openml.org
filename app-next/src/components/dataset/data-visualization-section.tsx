@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CollapsibleSection } from "./collapsible-section";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import type { Dataset } from "@/types/dataset";
 
 interface DataVisualizationSectionProps {
