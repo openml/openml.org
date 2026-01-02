@@ -13,10 +13,7 @@ export function FlowsSearchPage() {
 
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
-    // TODO: Add facet labels based on your flow facets
-    // Example:
-    // "language.keyword": "Language",
-    // "framework.keyword": "Framework",
+    "dependencies.keyword": "Libraries",
   };
 
   return (
@@ -62,10 +59,12 @@ export function FlowsSearchPage() {
         </div>
 
         {/* Search Container */}
-        <div className="container mx-auto flex-1 px-4 py-6 sm:px-6">
+        <div className="mx-auto w-full flex-1 px-1.5 py-6">
           <FlowsSearchContainer />
         </div>
       </div>
     </SearchProvider>
   );
 }
+
+// wip

@@ -21,7 +21,7 @@ export default function FAQSection() {
   }));
 
   return (
-    <section className="bg-muted/30 pb-32">
+    <section className="bg-muted/20 pb-32">
       {/* Header */}
       <div className="mx-auto mb-6 max-w-7xl px-4 py-2 text-center md:px-8">
         <div className="mx-auto inline-block rounded-sm px-6 text-2xl font-medium text-slate-700 uppercase dark:text-white">

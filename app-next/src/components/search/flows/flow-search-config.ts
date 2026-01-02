@@ -33,15 +33,9 @@ const flowConfig = {
       status: { raw: {} },
       // Add other fields you want to display
     },
-    disjunctiveFacets: [
-      // TODO: Add flow-specific facets
-      // e.g., "language.keyword", "framework.keyword"
-    ],
+    disjunctiveFacets: ["dependencies.keyword"],
     facets: {
-      // TODO: Define facets based on your flow index structure
-      // Example:
-      // "language.keyword": { type: "value", size: 30 },
-      // "framework.keyword": { type: "value", size: 30 },
+      "dependencies.keyword": { type: "value", size: 50 },
     },
   },
   initialState: {

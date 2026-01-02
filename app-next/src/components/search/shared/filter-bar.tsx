@@ -207,7 +207,8 @@ export function FilterBar({
     React.useState<string>(defaultSearchScope);
 
   return (
-    <div className="bg-background flex flex-wrap items-center gap-2 border-b p-4">
+    // <div className="bg-background flex flex-wrap items-center gap-2 border-b p-4">
+    <div className="bg-background flex items-center justify-center gap-6 border-b px-4 pb-4">
       <span className="text-muted-foreground mr-2 text-sm font-medium">
         Filters:
       </span>
@@ -273,9 +274,9 @@ export function FilterBar({
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "h-8 border-dashed dark:hover:text-slate-100",
+                      "h-8 border-dashed dark:border-slate-700 dark:hover:text-slate-100",
                       hasActiveFilters &&
-                        "bg-accent text-accent-foreground border-solid dark:text-slate-300",
+                        "bg-accent text-accent-foreground border-solid dark:border-slate-700 dark:text-slate-300",
                     )}
                   >
                     {facet.label}

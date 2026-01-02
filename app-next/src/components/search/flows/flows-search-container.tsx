@@ -41,6 +41,7 @@ interface FlowResult {
 }
 
 const searchFacets: { label: string; field: string }[] = [
+  { label: "Libraries", field: "dependencies.keyword" },
   // TODO: Add flow-specific facets
   // Example:
   // { label: "Language", field: "language.keyword" },
@@ -137,7 +138,7 @@ export function FlowsSearchContainer() {
                 <span className="text-muted-foreground">
                   Search results for
                 </span>
-                <span className="font-semibold">"{searchTerm}"</span>
+                <span className="font-semibold">&quot;{searchTerm}&quot;</span>
                 <span className="text-muted-foreground">—</span>
                 <span className="text-primary font-semibold">
                   {totalResults?.toLocaleString() || 0}
@@ -161,7 +162,7 @@ export function FlowsSearchContainer() {
               {({ results }) => (
                 <>
                   {view === "table" && (
-                    <FlowsResultsTable results={results as any} />
+                    <FlowsResultsTable results={results as FlowResult[]} />
                   )}
                   {view === "list" && (
                     <div className="space-y-0">
@@ -529,10 +530,8 @@ export function FlowsSearchContainer() {
                   )}
                 </>
               )}
-            </WithSearch>;
-            {
-              /* Pagination */
-            }
+            </WithSearch>
+            ;{/* Pagination */}
             <WithSearch
               mapContextToProps={({
                 pagingStart,
@@ -585,7 +584,7 @@ export function FlowsSearchContainer() {
                           1,
                           current - Math.floor(maxVisible / 2),
                         );
-                        let endPage = Math.min(
+                        const endPage = Math.min(
                           totalPages,
                           startPage + maxVisible - 1,
                         );
@@ -713,8 +712,8 @@ export function FlowsSearchContainer() {
                   </div>
                 );
               }}
-            </WithSearch>;
-            {/* Pagination */}
+            </WithSearch>
+            ;{/* Pagination */}
           </div>
         </div>
       )}

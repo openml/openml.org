@@ -1,44 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  FlaskConical,
   Play,
   Clock,
-  Trophy,
+  Zap,
   ExternalLink,
   ChevronRight,
+  AlertCircle,
+  SortDesc,
+  FlaskConical,
+  Trophy,
   Loader2,
-  Zap,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { cn } from "@/lib/utils";
 import type { Dataset } from "@/types/dataset";
-
-interface Run {
-  run_id: number;
-  flow_name: string;
-  flow_id: number;
-  task_id: number;
-  uploader: string;
-  uploader_id: number;
-  date: string;
-  evaluations?: {
-    accuracy?: number;
-    predictive_accuracy?: number;
-    area_under_roc_curve?: number;
-    f_measure?: number;
-    [key: string]: number | undefined;
-  };
-}
 
 interface RelatedRunsSectionProps {
   dataset: Dataset;
   runCount: number;
   taskCount: number;
+}
+
+interface Run {
+  run_id: number;
+  flow_id: number;
+  flow_name: string;
+  task_id: number;
+  uploader: string;
+  uploader_id: number;
+  date: string;
+  error_message?: string;
+  evaluations?: {
+    measure: string[];
+    value: number[];
+  };
 }
 
 /**
@@ -56,28 +74,37 @@ export function RelatedRunsSection({
   runCount,
   taskCount,
 }: RelatedRunsSectionProps) {
-  const [recentRuns] = useState<Run[]>([]);
-  const [loading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [runs, setRuns] = useState<Run[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
 
-  // Placeholder: In the future, fetch recent runs from API
-  // useEffect(() => {
-  //   async function fetchRecentRuns() {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch(`/api/datasets/${dataset.data_id}/runs?limit=5`);
-  //       const data = await response.json();
-  //       setRecentRuns(data.runs || []);
-  //     } catch (err) {
-  //       setError("Failed to load recent runs");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   if (runCount > 0) {
-  //     fetchRecentRuns();
-  //   }
-  // }, [dataset.data_id, runCount]);
+  useEffect(() => {
+    async function loadRuns() {
+      setLoading(true);
+      try {
+        // TODO: Replace with actual API call filtered by dataset
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/json/run/list/data_id/${dataset.data_id}/limit/${pageSize}/offset/${(page - 1) * pageSize}`,
+        );
+        const data = await response.json();
+
+        if (data?.runs?.run) {
+          setRuns(
+            Array.isArray(data.runs.run) ? data.runs.run : [data.runs.run],
+          );
+        }
+      } catch (error) {
+        console.error("Failed to load runs:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (runCount > 0) {
+      loadRuns();
+    }
+  }, [dataset.data_id, runCount, page]);
 
   const hasExperiments = runCount > 0 || taskCount > 0;
 
@@ -185,9 +212,9 @@ export function RelatedRunsSection({
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
               </div>
-            ) : recentRuns.length > 0 ? (
+            ) : runs.length > 0 ? (
               <div className="divide-y rounded-lg border">
-                {recentRuns.map((run) => (
+                {runs.map((run) => (
                   <RunRow key={run.run_id} run={run} />
                 ))}
               </div>
@@ -272,7 +299,9 @@ function StatCard({
 }) {
   return (
     <div
-      className={`bg-muted/50 rounded-lg border p-4 ${placeholder ? "opacity-50" : ""}`}
+      className={`bg-muted/50 rounded-lg border p-4 ${
+        placeholder ? "opacity-50" : ""
+      }`}
     >
       <div className="text-muted-foreground mb-1 flex items-center gap-2">
         <Icon className={`h-4 w-4 ${color}`} />
@@ -309,6 +338,17 @@ function LeaderboardRow({
     );
   }
 
+  // Extract predictive accuracy from evaluations array
+  let accuracy: number | undefined;
+  if (run?.evaluations?.measure && run?.evaluations?.value) {
+    const accuracyIndex = run.evaluations.measure.findIndex(
+      (m) => m === "predictive_accuracy",
+    );
+    if (accuracyIndex !== -1) {
+      accuracy = run.evaluations.value[accuracyIndex];
+    }
+  }
+
   return (
     <Link
       href={`/runs/${run?.run_id}`}
@@ -333,9 +373,7 @@ function LeaderboardRow({
       </div>
       <div className="text-right">
         <p className="text-sm font-bold text-green-600">
-          {run?.evaluations?.predictive_accuracy
-            ? `${(run.evaluations.predictive_accuracy * 100).toFixed(2)}%`
-            : "—"}
+          {accuracy !== undefined ? `${(accuracy * 100).toFixed(2)}%` : "—"}
         </p>
         <p className="text-muted-foreground text-xs">accuracy</p>
       </div>

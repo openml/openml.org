@@ -12,7 +12,7 @@ export function HomePageWrapper({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div onClick={handleClick} className="min-h-screen">
+    <div onClick={handleClick} className="homepage-bg min-h-screen">
       {children}
     </div>
   );

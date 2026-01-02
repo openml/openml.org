@@ -55,10 +55,12 @@ export function TasksSearchPage() {
         </div>
 
         {/* Search Container */}
-        <div className="container mx-auto flex-1 px-4 py-6 sm:px-6">
+        <div className="mx-auto w-full flex-1 px-1.5 py-6">
           <TaskSearchContainer />
         </div>
       </div>
     </SearchProvider>
   );
 }
+
+// wip

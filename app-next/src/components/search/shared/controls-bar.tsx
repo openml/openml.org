@@ -125,7 +125,7 @@ export function ControlsBar({
   sortOptions = datasetSortOptions,
 }: ControlsBarProps) {
   return (
-    <div className="bg-background flex items-center justify-around gap-6 border-b p-4">
+    <div className="bg-background flex items-center justify-between gap-6 border-b px-4">
       {/* Left side: Sort and View Toggle */}
       <div className="flex items-center gap-4">
         {/* Sort Dropdown */}
@@ -148,7 +148,7 @@ export function ControlsBar({
             })();
 
             return (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 p-4">
                 <span className="text-muted-foreground text-sm">Sort by:</span>
                 <Select
                   value={currentSortId}
@@ -248,7 +248,7 @@ export function ControlsBar({
         {/* Pagination Info */}
         <PagingInfo
           view={({ start, end, totalResults }) => (
-            <div className="text-muted-foreground text-sm">
+            <div className="text-muted-foreground pr-4 text-sm dark:border-slate-400">
               Showing{" "}
               <span className="text-foreground font-medium">{start}</span> -{" "}
               <span className="text-foreground font-medium">{end}</span> of{" "}

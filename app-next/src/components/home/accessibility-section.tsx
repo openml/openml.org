@@ -21,7 +21,7 @@ export function AccessibilitySection() {
   const t = useTranslations("home.accessibility");
 
   return (
-    <SectionContainer id="explore" className="bg-muted/30">
+    <SectionContainer id="explore" className="bg-muted/20">
       <div className="mb-8 text-center">
         <h1 className="from-foreground to-foreground/70 light:text-slate-950 mb-6 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight md:text-6xl dark:bg-[linear-gradient(15deg,#ec4899,#6366f1,#ec4899,#8b5cf6,#ec4899)] dark:bg-clip-text dark:text-transparent">
           {t("title")}

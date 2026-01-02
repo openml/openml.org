@@ -217,6 +217,13 @@ export function UserProfilePage({ userId }: { userId: string }) {
     );
   }
 
+  // Construct proper avatar URL
+  const avatarUrl = user.image
+    ? user.image.startsWith("http")
+      ? user.image
+      : `https://www.openml.org/img/${user.image}`
+    : null;
+
   const fullName = `${user.first_name} ${user.last_name}`;
   const memberSince = new Date(user.date).toLocaleDateString("en-US", {
     month: "long",
@@ -242,18 +249,18 @@ export function UserProfilePage({ userId }: { userId: string }) {
             <div className="flex justify-center lg:justify-start">
               <div className="relative">
                 <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-white shadow-xl sm:h-40 sm:w-40 dark:border-slate-700">
-                  {user.image ? (
+                  {avatarUrl ? (
                     <Image
-                      src={user.image}
+                      src={avatarUrl}
                       alt={fullName}
                       width={160}
                       height={160}
                       className="h-full w-full object-cover"
+                      unoptimized
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-500 to-purple-600 text-5xl font-bold text-white">
-                      {user.first_name[0]}
-                      {user.last_name[0]}
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500 text-4xl font-bold text-white sm:text-5xl">
+                      {user.first_name?.charAt(0).toUpperCase() || "?"}
                     </div>
                   )}
                 </div>
