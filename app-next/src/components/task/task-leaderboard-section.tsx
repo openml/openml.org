@@ -434,5 +434,3 @@ export function TaskLeaderboardSection({
     </section>
   );
 }
-
-// wip

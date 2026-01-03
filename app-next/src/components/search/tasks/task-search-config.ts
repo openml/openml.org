@@ -56,5 +56,3 @@ const taskConfig = {
 };
 
 export default taskConfig;
-
-// wip

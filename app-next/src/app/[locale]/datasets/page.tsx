@@ -44,5 +44,3 @@ export default async function DatasetsPage({
 
   return <DatasetsSearchPage />;
 }
-
-// wip

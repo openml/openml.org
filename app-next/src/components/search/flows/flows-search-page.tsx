@@ -66,5 +66,3 @@ export function FlowsSearchPage() {
     </SearchProvider>
   );
 }
-
-// wip

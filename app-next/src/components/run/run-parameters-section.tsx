@@ -1,5 +1,14 @@
+interface ParameterSetting {
+  name: string;
+  value: string | number | boolean | null;
+}
+
+interface Run {
+  parameter_setting?: ParameterSetting[];
+}
+
 interface RunParametersSectionProps {
-  run: any;
+  run: Run;
 }
 
 export function RunParametersSection({ run }: RunParametersSectionProps) {

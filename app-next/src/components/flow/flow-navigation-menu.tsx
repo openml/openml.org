@@ -326,5 +326,3 @@ export function FlowNavigationMenu({
     </>
   );
 }
-
-// wip

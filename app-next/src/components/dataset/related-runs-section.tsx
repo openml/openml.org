@@ -3,37 +3,20 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  Play,
   Clock,
-  Zap,
   ExternalLink,
   ChevronRight,
-  AlertCircle,
-  SortDesc,
-  FlaskConical,
   Trophy,
   Loader2,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { entityTailwindColors } from "@/constants/entityColors";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { cn } from "@/lib/utils";
 import type { Dataset } from "@/types/dataset";
@@ -44,15 +27,23 @@ interface RelatedRunsSectionProps {
   taskCount: number;
 }
 
-interface Run {
+// API response structure (what we actually get)
+interface RunAPIResponse {
   run_id: number;
-  flow_id: number;
-  flow_name: string;
   task_id: number;
-  uploader: string;
-  uploader_id: number;
-  date: string;
+  setup_id: number;
+  flow_id: number;
+  uploader: number; // This is actually uploader_id
+  upload_time: string;
   error_message?: string;
+  run_details?: string;
+}
+
+// Enhanced run with fetched details
+interface Run extends RunAPIResponse {
+  flow_name?: string;
+  uploader_name?: string;
+  dataset_name?: string;
   evaluations?: {
     measure: string[];
     value: number[];
@@ -83,16 +74,42 @@ export function RelatedRunsSection({
     async function loadRuns() {
       setLoading(true);
       try {
-        // TODO: Replace with actual API call filtered by dataset
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/v1/json/run/list/data_id/${dataset.data_id}/limit/${pageSize}/offset/${(page - 1) * pageSize}`,
         );
         const data = await response.json();
 
         if (data?.runs?.run) {
-          setRuns(
-            Array.isArray(data.runs.run) ? data.runs.run : [data.runs.run],
+          const runsArray: RunAPIResponse[] = Array.isArray(data.runs.run)
+            ? data.runs.run
+            : [data.runs.run];
+
+          // Enhance runs with flow names (fetch in parallel)
+          const enhancedRuns = await Promise.all(
+            runsArray.map(async (run) => {
+              try {
+                // Fetch flow details
+                const flowResponse = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/json/flow/${run.flow_id}`,
+                );
+                const flowData = await flowResponse.json();
+
+                return {
+                  ...run,
+                  flow_name: flowData?.flow?.name || `Flow #${run.flow_id}`,
+                  uploader_name: undefined, // Could fetch user data if needed
+                } as Run;
+              } catch (error) {
+                console.error(`Failed to fetch flow ${run.flow_id}:`, error);
+                return {
+                  ...run,
+                  flow_name: `Flow #${run.flow_id}`,
+                } as Run;
+              }
+            }),
           );
+
+          setRuns(enhancedRuns);
         }
       } catch (error) {
         console.error("Failed to load runs:", error);
@@ -118,7 +135,12 @@ export function RelatedRunsSection({
       id="experiments"
       title="Experiments & Runs"
       description="Machine learning experiments performed on this dataset"
-      icon={<FlaskConical className="h-4 w-4 text-red-500" />}
+      icon={
+        <FontAwesomeIcon
+          icon={ENTITY_ICONS.run}
+          className={cn("h-4 w-4", entityTailwindColors.run.text)}
+        />
+      }
       badge={runCount > 0 ? runCount : undefined}
       defaultOpen={true}
       headerExtra={
@@ -141,20 +163,20 @@ export function RelatedRunsSection({
             <StatCard
               label="Total Tasks"
               value={taskCount.toLocaleString()}
-              icon={Play}
-              color="text-blue-500"
+              icon={ENTITY_ICONS.task}
+              color={entityTailwindColors.task.text}
             />
             <StatCard
               label="Total Runs"
               value={runCount.toLocaleString()}
-              icon={FlaskConical}
-              color="text-red-500"
+              icon={ENTITY_ICONS.run}
+              color={entityTailwindColors.run.text}
             />
             <StatCard
               label="Unique Flows"
               value="—"
-              icon={Zap}
-              color="text-purple-500"
+              icon={ENTITY_ICONS.flow}
+              color={entityTailwindColors.flow.text}
               placeholder
             />
             <StatCard
@@ -231,13 +253,19 @@ export function RelatedRunsSection({
           <div className="mt-6 flex flex-wrap gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link href={`/tasks?data_id=${dataset.data_id}`}>
-                <Play className="mr-2 h-4 w-4" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.task}
+                  className="mr-2 h-4 w-4"
+                />
                 Browse Tasks
               </Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
               <Link href={`/runs?data_id=${dataset.data_id}`}>
-                <FlaskConical className="mr-2 h-4 w-4" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="mr-2 h-4 w-4"
+                />
                 Browse Runs
               </Link>
             </Button>
@@ -255,7 +283,10 @@ export function RelatedRunsSection({
         </div>
       ) : (
         <div className="py-8 text-center">
-          <FlaskConical className="text-muted-foreground/50 mx-auto h-12 w-12" />
+          <FontAwesomeIcon
+            icon={ENTITY_ICONS.run}
+            className="text-muted-foreground/50 mx-auto h-12 w-12"
+          />
           <h3 className="mt-4 text-lg font-medium">No experiments yet</h3>
           <p className="text-muted-foreground mt-1">
             Be the first to run machine learning experiments on this dataset!
@@ -263,7 +294,10 @@ export function RelatedRunsSection({
           <div className="mt-4 flex justify-center gap-2">
             <Button size="sm" asChild>
               <Link href={`/tasks/new?data_id=${dataset.data_id}`}>
-                <Play className="mr-2 h-4 w-4" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.task}
+                  className="mr-2 h-4 w-4"
+                />
                 Create Task
               </Link>
             </Button>
@@ -287,16 +321,19 @@ export function RelatedRunsSection({
 function StatCard({
   label,
   value,
-  icon: Icon,
+  icon,
   color = "text-gray-500",
   placeholder = false,
 }: {
   label: string;
   value: string;
-  icon: React.ElementType;
+  icon: any; // Can be either FontAwesome IconDefinition or Lucide React.ElementType
   color?: string;
   placeholder?: boolean;
 }) {
+  const isLucideIcon = typeof icon === "function";
+  const Icon = isLucideIcon ? icon : null;
+
   return (
     <div
       className={`bg-muted/50 rounded-lg border p-4 ${
@@ -304,7 +341,11 @@ function StatCard({
       }`}
     >
       <div className="text-muted-foreground mb-1 flex items-center gap-2">
-        <Icon className={`h-4 w-4 ${color}`} />
+        {isLucideIcon ? (
+          <Icon className={`h-4 w-4 ${color}`} />
+        ) : (
+          <FontAwesomeIcon icon={icon} className={`h-4 w-4 ${color}`} />
+        )}
         <span className="text-xs font-medium">{label}</span>
       </div>
       <p className="text-xl font-bold">{value}</p>
@@ -368,8 +409,12 @@ function LeaderboardRow({
         <span className="text-sm font-bold">#{rank}</span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{run?.flow_name}</p>
-        <p className="text-muted-foreground text-xs">by {run?.uploader}</p>
+        <p className="truncate text-sm font-medium">
+          {run?.flow_name || `Flow #${run?.flow_id}`}
+        </p>
+        <p className="text-muted-foreground text-xs">
+          by {run?.uploader_name || `User #${run?.uploader}`}
+        </p>
       </div>
       <div className="text-right">
         <p className="text-sm font-bold text-green-600">
@@ -388,16 +433,31 @@ function RunRow({ run }: { run: Run }) {
       className="hover:bg-muted/50 flex items-center gap-4 p-3 transition-colors"
     >
       <Avatar className="h-8 w-8">
-        <AvatarImage src={`https://www.openml.org/img/${run.uploader_id}`} />
+        <AvatarImage src={`https://www.openml.org/img/${run.uploader}`} />
         <AvatarFallback className="text-xs">
-          {run.uploader?.charAt(0)?.toUpperCase() || "?"}
+          {run.uploader_name?.charAt(0)?.toUpperCase() ||
+            `U${run.uploader}`.slice(0, 2)}
         </AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{run.flow_name}</p>
-        <p className="text-muted-foreground text-xs">
-          {new Date(run.date).toLocaleDateString()}
-        </p>
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon
+            icon={ENTITY_ICONS.flow}
+            className={cn("h-3 w-3", entityTailwindColors.flow.text)}
+          />
+          <p className="truncate text-sm font-medium">
+            {run.flow_name || `Flow #${run.flow_id}`}
+          </p>
+        </div>
+        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+          <FontAwesomeIcon
+            icon={ENTITY_ICONS.task}
+            className={cn("h-3 w-3", entityTailwindColors.task.text)}
+          />
+          <span>Task #{run.task_id}</span>
+          <span>•</span>
+          <span>{new Date(run.upload_time).toLocaleDateString()}</span>
+        </div>
       </div>
       <Badge variant="secondary" className="text-xs">
         Run #{run.run_id}

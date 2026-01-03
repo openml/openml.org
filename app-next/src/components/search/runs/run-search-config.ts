@@ -4,17 +4,20 @@ const apiConnector = new OpenMLSearchConnector("run");
 
 /**
  * Run Search Configuration
+ *
+ * Runs are experiment executions that link flows and tasks
  */
 
 const runConfig = {
   apiConnector: apiConnector,
   alwaysSearchOnInitialLoad: true,
-  trackUrlState: false, // Next.js owns the URL via SearchBar
+  trackUrlState: false,
   searchQuery: {
     resultsPerPage: 20,
     search_fields: {
-      uploader: { weight: 2 },
-      flow_name: { weight: 3 },
+      "run_flow.name": { weight: 3 },
+      "run_task.source_data.name": { weight: 2 },
+      uploader: { weight: 1 },
     },
     result_fields: {
       run_id: { raw: {} },
@@ -23,19 +26,16 @@ const runConfig = {
       date: { raw: {} },
       error_message: { raw: {} },
       error: { raw: {} },
-
-      // Use NESTED fields (these are what actually exist in ES)
       "run_flow.flow_id": { raw: {} },
       "run_flow.name": { raw: {} },
+      flow_id: { raw: {} },
+      flow_name: { raw: {} },
       "run_task.task_id": { raw: {} },
       "run_task.tasktype.name": { raw: {} },
+      task_id: { raw: {} },
       "run_task.source_data.data_id": { raw: {} },
       "run_task.source_data.name": { raw: {} },
-
-      // Evaluation metrics
       evaluations: { raw: {} },
-
-      // Engagement metrics
       nr_of_likes: { raw: {} },
       nr_of_downloads: { raw: {} },
       nr_of_issues: { raw: {} },
@@ -43,15 +43,13 @@ const runConfig = {
     },
     disjunctiveFacets: ["uploader.keyword"],
     facets: {
-      "uploader.keyword": { type: "value", size: 50 },
+      "uploader.keyword": { type: "value", size: 30 },
     },
   },
   initialState: {
     resultsPerPage: 20,
-    sortList: [{ field: "date", direction: "desc" }], // Default: Most Recent
+    sortList: [{ field: "date", direction: "desc" }],
   },
 };
 
 export default runConfig;
-
-// wip

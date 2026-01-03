@@ -96,6 +96,103 @@ const sortOptions = [
   },
 ];
 
+// Cache for flow and dataset names to avoid repeated API calls
+const flowNameCache = new Map<number, string>();
+const datasetNameCache = new Map<number, string>();
+
+// Helper function to fetch flow name from API (like detail page does)
+async function fetchFlowName(flowId: number): Promise<string> {
+  if (flowNameCache.has(flowId)) {
+    return flowNameCache.get(flowId)!;
+  }
+
+  try {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+    const response = await fetch(`${apiUrl}/json/flow/${flowId}`, {
+      headers: { Accept: "application/json" },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const name = data?.flow?.name || `Flow #${flowId}`;
+      flowNameCache.set(flowId, name);
+      return name;
+    }
+  } catch (error) {
+    console.error(`Failed to fetch flow ${flowId}:`, error);
+  }
+
+  return `Flow #${flowId}`;
+}
+
+// Helper function to fetch dataset name from API
+async function fetchDatasetName(dataId: number): Promise<string> {
+  if (datasetNameCache.has(dataId)) {
+    return datasetNameCache.get(dataId)!;
+  }
+
+  try {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+    const response = await fetch(`${apiUrl}/json/data/${dataId}`, {
+      headers: { Accept: "application/json" },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const name = data?.data_set_description?.name || `Dataset #${dataId}`;
+      datasetNameCache.set(dataId, name);
+      return name;
+    }
+  } catch (error) {
+    console.error(`Failed to fetch dataset ${dataId}:`, error);
+  }
+
+  return `Dataset #${dataId}`;
+}
+
+// Enhanced result type with fetched names
+interface EnhancedRunResult extends RunResult {
+  _flowName?: string;
+  _datasetName?: string;
+  _loading?: boolean;
+}
+
+// Helper functions to safely extract values with fallbacks
+function getFlowName(result: RunResult): string {
+  return (
+    result["run_flow.name"]?.raw ||
+    result.flow_name?.raw ||
+    (result["run_flow.flow_id"]?.raw
+      ? `Flow #${result["run_flow.flow_id"].raw}`
+      : result.flow_id?.raw
+        ? `Flow #${result.flow_id.raw}`
+        : "Unknown Flow")
+  );
+}
+
+function getFlowId(result: RunResult): string | number | undefined {
+  return result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+}
+
+function getDatasetName(result: RunResult): string {
+  return (
+    result["run_task.source_data.name"]?.raw ||
+    (result["run_task.source_data.data_id"]?.raw
+      ? `Dataset #${result["run_task.source_data.data_id"].raw}`
+      : "Unknown Dataset")
+  );
+}
+
+function getDatasetId(result: RunResult): string | number | undefined {
+  return result["run_task.source_data.data_id"]?.raw;
+}
+
+function getTaskId(result: RunResult): string | number | undefined {
+  return result["run_task.task_id"]?.raw || result.task_id?.raw;
+}
+
 function extractMetrics(
   evaluations: Evaluation[] | undefined,
 ): { label: string; value: string }[] {
@@ -125,9 +222,96 @@ function extractMetrics(
   return metrics;
 }
 
+// Separate component to handle enrichment without infinite loops
+function EnrichedRunsView({
+  view,
+  results,
+  selectedRun,
+  onSelectRun,
+}: {
+  view: string;
+  results: RunResult[];
+  selectedRun: EnhancedRunResult | null;
+  onSelectRun: (run: EnhancedRunResult) => void;
+}) {
+  const [enrichedResults, setEnrichedResults] = useState<EnhancedRunResult[]>(
+    [],
+  );
+  const [lastResultsKey, setLastResultsKey] = useState<string>("");
+
+  useEffect(() => {
+    if (!results || results.length === 0) {
+      setEnrichedResults([]);
+      setLastResultsKey("");
+      return;
+    }
+
+    // Create a unique key for this result set
+    const resultsKey = results.map((r) => r.run_id?.raw).join(",");
+
+    // Don't re-fetch if we already have these results
+    if (resultsKey === lastResultsKey) {
+      return;
+    }
+
+    setLastResultsKey(resultsKey);
+
+    // Set initial results immediately (with IDs as fallback)
+    const initialEnriched: EnhancedRunResult[] = results.map((r) => ({ ...r }));
+    setEnrichedResults(initialEnriched);
+
+    // Fetch names in background
+    Promise.all(
+      results.map(async (result) => {
+        const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+        const dataId = result["run_task.source_data.data_id"]?.raw;
+
+        // Check cache first before fetching
+        const [flowName, datasetName] = await Promise.all([
+          flowId ? fetchFlowName(Number(flowId)) : Promise.resolve(undefined),
+          dataId
+            ? fetchDatasetName(Number(dataId))
+            : Promise.resolve(undefined),
+        ]);
+
+        return { flowName, datasetName };
+      }),
+    )
+      .then((enrichments) => {
+        setEnrichedResults(
+          results.map((run, index) => ({
+            ...run,
+            _flowName: enrichments[index].flowName,
+            _datasetName: enrichments[index].datasetName,
+          })),
+        );
+      })
+      .catch((error) => {
+        console.error("Failed to enrich runs:", error);
+      });
+  }, [results, lastResultsKey]); // Depend on results and lastResultsKey
+
+  return (
+    <>
+      {view === "list" && <RunListView results={enrichedResults} />}
+      {view === "grid" && <RunGridView results={enrichedResults} />}
+      {view === "table" && <RunTableView results={enrichedResults} />}
+      {view === "split" && (
+        <RunSplitView
+          results={enrichedResults}
+          selectedRun={selectedRun}
+          onSelectRun={onSelectRun}
+        />
+      )}
+    </>
+  );
+}
+
 export function RunsSearchContainer() {
   const [view, setView] = useState("list");
-  const [selectedRun, setSelectedRun] = useState<RunResult | null>(null);
+  const [selectedRun, setSelectedRun] = useState<EnhancedRunResult | null>(
+    null,
+  );
   const searchParams = useSearchParams();
   const context = useContext(SearchContext);
   const driver = context?.driver;
@@ -135,7 +319,6 @@ export function RunsSearchContainer() {
 
   useEffect(() => {
     if (!driver) return;
-    // Use the correct type for driver from @elastic/react-search-ui
     const currentTerm = driver.getState().searchTerm || "";
     if (currentTerm === query) return;
     driver.getActions().setSearchTerm(query, { shouldClearFilters: false });
@@ -190,151 +373,122 @@ export function RunsSearchContainer() {
             onViewChange={setView}
             sortOptions={sortOptions}
           />
+
           <div className="p-4">
             <WithSearch mapContextToProps={({ results }) => ({ results })}>
               {({ results }) => (
-                <>
-                  {view === "list" && (
-                    <RunListView results={results as RunResult[]} />
-                  )}
-                  {view === "grid" && (
-                    <RunGridView results={results as RunResult[]} />
-                  )}
-                  {view === "table" && (
-                    <RunTableView results={results as RunResult[]} />
-                  )}
-                  {view === "split" && (
-                    <RunSplitView
-                      results={results as RunResult[]}
-                      selectedRun={selectedRun}
-                      onSelectRun={setSelectedRun}
-                    />
-                  )}
-                </>
+                <EnrichedRunsView
+                  view={view}
+                  results={(results || []) as RunResult[]}
+                  selectedRun={selectedRun}
+                  onSelectRun={setSelectedRun}
+                />
               )}
             </WithSearch>
-            <WithSearch
-              mapContextToProps={({ resultsPerPage, totalResults }) => ({
-                resultsPerPage,
-                totalResults,
-              })}
-            >
-              {({ resultsPerPage, totalResults }) => {
-                if (!totalResults || totalResults === 0) return null;
-                const MAX_RESULT_WINDOW = 10000;
-                const pageSize = resultsPerPage || 20;
-                const MAX_ACCESSIBLE_PAGE = Math.floor(
-                  MAX_RESULT_WINDOW / pageSize,
-                );
-                return (
-                  <div className="mt-6 flex flex-col items-center gap-3">
-                    <Paging
-                      view={({ current, totalPages, onChange }) => {
-                        if (!current || totalPages <= 1) return null;
-                        return (
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => onChange(current - 1)}
-                              disabled={current === 1}
-                              className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
-                            >
-                              Previous
-                            </button>
-                            {Array.from(
-                              { length: Math.min(totalPages, 7) },
-                              (_, i) => i + 1,
-                            ).map((page) => (
-                              <button
-                                key={page}
-                                onClick={() => onChange(page)}
-                                disabled={page > MAX_ACCESSIBLE_PAGE}
-                                className={`rounded border px-3 py-1 ${page === current ? "text-white" : "hover:bg-muted"}`}
-                                style={
-                                  page === current
-                                    ? { backgroundColor: entityColors.run }
-                                    : undefined
-                                }
-                              >
-                                {page}
-                              </button>
-                            ))}
-                            <button
-                              onClick={() => onChange(current + 1)}
-                              disabled={current >= totalPages}
-                              className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
-                            >
-                              Next
-                            </button>
-                          </div>
-                        );
-                      }}
-                    />
-                  </div>
-                );
-              }}
-            </WithSearch>
           </div>
+
+          <WithSearch
+            mapContextToProps={({ resultsPerPage, totalResults }) => ({
+              resultsPerPage,
+              totalResults,
+            })}
+          >
+            {({ resultsPerPage, totalResults }) => {
+              if (!totalResults || totalResults === 0) return null;
+              const MAX_RESULT_WINDOW = 10000;
+              const pageSize = resultsPerPage || 20;
+              const MAX_ACCESSIBLE_PAGE = Math.floor(
+                MAX_RESULT_WINDOW / pageSize,
+              );
+              return (
+                <div className="mt-6 flex flex-col items-center gap-3">
+                  <Paging
+                    view={({ current, totalPages, onChange }) => {
+                      if (!current || totalPages <= 1) return null;
+                      return (
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => onChange(current - 1)}
+                            disabled={current === 1}
+                            className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                          >
+                            Previous
+                          </button>
+                          {Array.from(
+                            { length: Math.min(totalPages, 7) },
+                            (_, i) => i + 1,
+                          ).map((page) => (
+                            <button
+                              key={page}
+                              onClick={() => onChange(page)}
+                              disabled={page > MAX_ACCESSIBLE_PAGE}
+                              className={`rounded border px-3 py-1 ${
+                                page === current
+                                  ? "text-white"
+                                  : "hover:bg-muted"
+                              }`}
+                              style={
+                                page === current
+                                  ? { backgroundColor: entityColors.run }
+                                  : undefined
+                              }
+                            >
+                              {page}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => onChange(current + 1)}
+                            disabled={current >= totalPages}
+                            className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                          >
+                            Next
+                          </button>
+                        </div>
+                      );
+                    }}
+                  />
+                </div>
+              );
+            }}
+          </WithSearch>
         </div>
       )}
     </WithSearch>
   );
 }
 
-function RunListView({ results }: { results: RunResult[] }) {
+function RunListView({ results }: { results: EnhancedRunResult[] }) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
     );
+
   return (
     <div className="space-y-0">
       {results.map((result, index) => {
         const runId = result.run_id?.raw;
         const hasError = !!(result.error_message?.raw || result.error?.raw);
 
-        // Extract nested fields
-        const flowName = result["run_flow.name"]?.raw;
-        const flowId = result["run_flow.flow_id"]?.raw;
-        const datasetName = result["run_task.source_data.name"]?.raw;
+        const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+        const flowName =
+          result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
+
         const dataId = result["run_task.source_data.data_id"]?.raw;
-        const taskId = result["run_task.task_id"]?.raw;
-        const taskType = result["run_task.tasktype.name"]?.raw;
+        const datasetName =
+          result._datasetName ||
+          (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
+
+        const taskId = result["run_task.task_id"]?.raw || result.task_id?.raw;
 
         const metrics = extractMetrics(result.evaluations?.raw);
 
-        // Debug logging for troubleshooting
-        if (!flowName || !datasetName) {
-          console.log("🔍 DEBUG - Missing data for run:", runId);
-          console.log("Available keys:", Object.keys(result));
-          console.log("Flow name (nested):", result["run_flow.name"]?.raw);
-          console.log("Flow name (direct):", result.flow_name?.raw);
-          console.log(
-            "Dataset name (nested):",
-            result["run_task.source_data.name"]?.raw,
-          );
-          console.log("Full run_flow object:", result["run_flow"]);
-          console.log("Full run_task object:", result["run_task"]);
-          console.log("Full result object:", result);
-        }
-
-        // Build display text
-        const displayParts = [];
-        if (flowName) {
-          displayParts.push(`Flow: ${flowName}`);
-        } else {
-          displayParts.push("Flow: Unknown");
-        }
-
-        if (taskId) {
-          displayParts.push(`Task: #${taskId}`);
-        }
-
-        if (datasetName) {
-          displayParts.push(`Dataset: ${datasetName}`);
-        } else {
-          displayParts.push("Dataset: Unknown");
-        }
-
-        const displayText = displayParts.join(" • ");
+        const displayText = [
+          `Flow: ${flowName}`,
+          taskId ? `Task: #${taskId}` : null,
+          `Dataset: ${datasetName}`,
+        ]
+          .filter(Boolean)
+          .join(" • ");
 
         return (
           <div
@@ -347,9 +501,7 @@ function RunListView({ results }: { results: RunResult[] }) {
                   <FlaskConical className="mt-1 h-5 w-5 shrink-0 fill-red-500 text-red-500" />
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-semibold">
-                        {flowName || "Unknown Flow"}
-                      </h3>
+                      <h3 className="text-base font-semibold">{flowName}</h3>
                       {hasError && <XCircle className="h-4 w-4 text-red-500" />}
                     </div>
                     <p className="text-muted-foreground text-sm">
@@ -466,7 +618,7 @@ function RunListView({ results }: { results: RunResult[] }) {
   );
 }
 
-function RunGridView({ results }: { results: RunResult[] }) {
+function RunGridView({ results }: { results: EnhancedRunResult[] }) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
@@ -476,21 +628,22 @@ function RunGridView({ results }: { results: RunResult[] }) {
       {results.map((result, index) => {
         const runId = result.run_id?.raw;
         const hasError = !!(result.error_message?.raw || result.error?.raw);
-        const flowName = result["run_flow.name"]?.raw;
-        const datasetName = result["run_task.source_data.name"]?.raw;
-        const taskId = result["run_task.task_id"]?.raw;
+
+        const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+        const flowName =
+          result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
+
+        const dataId = result["run_task.source_data.data_id"]?.raw;
+        const datasetName =
+          result._datasetName ||
+          (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
+        const taskId = result["run_task.task_id"]?.raw || result.task_id?.raw;
         const metrics = extractMetrics(result.evaluations?.raw);
 
-        // Debug logging
-        if (!flowName || !datasetName) {
-          console.log("🔍 GRID DEBUG - Missing data for run:", runId);
-          console.log("Flow:", flowName, "Dataset:", datasetName);
-        }
-
         const displayText = [
-          flowName ? `Flow: ${flowName}` : "Flow: Unknown",
+          `Flow: ${flowName}`,
           taskId ? `Task: #${taskId}` : null,
-          datasetName ? `Dataset: ${datasetName}` : "Dataset: Unknown",
+          `Dataset: ${datasetName}`,
         ]
           .filter(Boolean)
           .join(" • ");
@@ -556,7 +709,7 @@ function RunGridView({ results }: { results: RunResult[] }) {
   );
 }
 
-function RunTableView({ results }: { results: RunResult[] }) {
+function RunTableView({ results }: { results: EnhancedRunResult[] }) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
@@ -578,23 +731,19 @@ function RunTableView({ results }: { results: RunResult[] }) {
           {results.map((result, index) => {
             const runId = result.run_id?.raw;
             const hasError = !!(result.error_message?.raw || result.error?.raw);
-            const flowName = result["run_flow.name"]?.raw || "Unknown";
-            const datasetName =
-              result["run_task.source_data.name"]?.raw || "Unknown";
-            const taskId = result["run_task.task_id"]?.raw;
-            const metrics = extractMetrics(result.evaluations?.raw);
 
-            // Debug logging
-            if (flowName === "Unknown" || datasetName === "Unknown") {
-              console.log(
-                "🔍 TABLE DEBUG - Run:",
-                runId,
-                "Flow:",
-                flowName,
-                "Dataset:",
-                datasetName,
-              );
-            }
+            const flowId =
+              result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+            const flowName =
+              result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
+
+            const dataId = result["run_task.source_data.data_id"]?.raw;
+            const datasetName =
+              result._datasetName ||
+              (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
+            const taskId =
+              result["run_task.task_id"]?.raw || result.task_id?.raw;
+            const metrics = extractMetrics(result.evaluations?.raw);
 
             return (
               <tr key={runId || index} className="hover:bg-accent border-b">
@@ -639,9 +788,9 @@ function RunSplitView({
   selectedRun,
   onSelectRun,
 }: {
-  results: RunResult[];
-  selectedRun: RunResult | null;
-  onSelectRun: (run: RunResult) => void;
+  results: EnhancedRunResult[];
+  selectedRun: EnhancedRunResult | null;
+  onSelectRun: (run: EnhancedRunResult) => void;
 }) {
   if (!results || results.length === 0)
     return (
@@ -649,39 +798,46 @@ function RunSplitView({
     );
   if (!selectedRun && results.length > 0)
     setTimeout(() => onSelectRun(results[0]), 0);
+
   const selected = selectedRun || results[0];
   const runId = selected?.run_id?.raw;
-  const flowName = selected?.["run_flow.name"]?.raw;
-  const datasetName = selected?.["run_task.source_data.name"]?.raw;
-  const taskId = selected?.["run_task.task_id"]?.raw;
-  const metrics = extractMetrics(selected?.evaluations?.raw);
 
-  // Debug logging
-  if (!flowName || !datasetName) {
-    console.log("🔍 SPLIT DEBUG - Selected run:", runId);
-    console.log("Flow:", flowName, "Dataset:", datasetName, "Task:", taskId);
-    console.log("Selected result:", selected);
-  }
+  const flowId = selected?.["run_flow.flow_id"]?.raw || selected?.flow_id?.raw;
+  const flowName =
+    selected?._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
+
+  const dataId = selected?.["run_task.source_data.data_id"]?.raw;
+  const datasetName =
+    selected?._datasetName ||
+    (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
+
+  const taskId = selected?.["run_task.task_id"]?.raw || selected?.task_id?.raw;
+  const metrics = extractMetrics(selected?.evaluations?.raw);
 
   return (
     <div className="flex min-h-[600px] gap-0 overflow-hidden rounded-md border">
       <div className="w-[380px] space-y-0 overflow-y-auto border-r">
         {results.map((result, index) => {
           const isSelected = result.run_id?.raw === runId;
-          const resultFlowName = result["run_flow.name"]?.raw || "Unknown";
+
+          const resultFlowId =
+            result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+          const resultFlowName =
+            result._flowName ||
+            (resultFlowId ? `Flow #${resultFlowId}` : "Unknown Flow");
+
+          const resultDataId = result["run_task.source_data.data_id"]?.raw;
           const resultDatasetName =
-            result["run_task.source_data.name"]?.raw || "Unknown";
-          const resultTaskId = result["run_task.task_id"]?.raw;
-          const resultMetrics = extractMetrics(result.evaluations?.raw);
+            result._datasetName ||
+            (resultDataId ? `Dataset #${resultDataId}` : "Unknown Dataset");
+
+          const resultTaskId =
+            result["run_task.task_id"]?.raw || result.task_id?.raw;
 
           const displayText = [
-            resultFlowName !== "Unknown"
-              ? `Flow: ${resultFlowName}`
-              : "Flow: Unknown",
+            `Flow: ${resultFlowName}`,
             resultTaskId ? `Task: #${resultTaskId}` : null,
-            resultDatasetName !== "Unknown"
-              ? `Dataset: ${resultDatasetName}`
-              : "Dataset: Unknown",
+            `Dataset: ${resultDatasetName}`,
           ]
             .filter(Boolean)
             .join(" • ");
@@ -700,13 +856,15 @@ function RunSplitView({
               <p className="text-muted-foreground line-clamp-2 text-xs">
                 {displayText}
               </p>
-              {resultMetrics.length > 0 && (
+              {result.evaluations?.raw && (
                 <div className="mt-1 flex gap-2 font-mono text-xs">
-                  {resultMetrics.slice(0, 2).map((m, i) => (
-                    <span key={i}>
-                      {m.label}: {m.value}
-                    </span>
-                  ))}
+                  {extractMetrics(result.evaluations.raw)
+                    .slice(0, 2)
+                    .map((m, i) => (
+                      <span key={i}>
+                        {m.label}: {m.value}
+                      </span>
+                    ))}
                 </div>
               )}
             </button>

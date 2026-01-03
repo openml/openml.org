@@ -64,5 +64,3 @@ export function TaskDetailTabs({ task, runCount }: TaskDetailTabsProps) {
     </Tabs>
   );
 }
-
-// wip

@@ -173,5 +173,3 @@ export function TaskDefinitionSection({ task }: TaskDefinitionSectionProps) {
     </div>
   );
 }
-
-// wip

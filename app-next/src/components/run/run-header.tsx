@@ -15,8 +15,32 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+interface RunTaskSourceData {
+  data_id?: number;
+  name?: string;
+}
+
+interface RunTask {
+  source_data?: RunTaskSourceData;
+}
+
+interface Run {
+  run_id: number;
+  flow_id?: number;
+  flow_name?: string;
+  task_id?: number;
+  task?: RunTask;
+  uploader?: string;
+  uploader_date?: string;
+  error_message?: string;
+  nr_of_likes?: number;
+  nr_of_downloads?: number;
+  nr_of_issues?: number;
+  nr_of_downvotes?: number;
+}
+
 interface RunHeaderProps {
-  run: any; // TODO: Add proper type
+  run: Run;
 }
 
 export function RunHeader({ run }: RunHeaderProps) {

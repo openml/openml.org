@@ -3,19 +3,15 @@ import {
   Calendar,
   Hash,
   Target,
-  Trophy,
   Tag,
   Heart,
   CloudDownload,
-  Play,
   Settings,
   ThumbsDown,
   AlertCircle,
   FlaskConical,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { LikeButton } from "@/components/ui/like-button";
 import type { Task } from "@/types/task";
 
 interface TaskHeaderProps {
@@ -222,5 +218,3 @@ function Stat({ value, label }: { value: string; label: string }) {
     </div>
   );
 }
-
-// wip

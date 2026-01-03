@@ -1,5 +1,17 @@
+interface Evaluation {
+  name: string;
+  value: string | number;
+  array_data?: Record<string, string | number>;
+}
+
+interface Run {
+  output_data?: {
+    evaluation?: Evaluation[];
+  };
+}
+
 interface RunMetricsSectionProps {
-  run: any;
+  run: Run;
 }
 
 export function RunMetricsSection({ run }: RunMetricsSectionProps) {
@@ -35,8 +47,8 @@ export function RunMetricsSection({ run }: RunMetricsSectionProps) {
 
   return (
     <div className="space-y-4">
-      {evaluations.map((evaluation: any, index: number) => {
-        const value = parseFloat(evaluation.value);
+      {evaluations.map((evaluation: Evaluation, index: number) => {
+        const value = parseFloat(evaluation.value as string);
         const arrayData = evaluation.array_data;
 
         return (
@@ -53,14 +65,18 @@ export function RunMetricsSection({ run }: RunMetricsSectionProps) {
             {/* Per-class metrics (if available) */}
             {arrayData && (
               <div className="mt-2 space-y-1 border-t pt-2 text-xs">
-                {Object.entries(arrayData).map(([key, val]: [string, any]) => (
-                  <div key={key} className="flex justify-between">
-                    <span className="text-muted-foreground">{key}:</span>
-                    <span className="font-mono">
-                      {parseFloat(val).toFixed(4)}
-                    </span>
-                  </div>
-                ))}
+                {Object.entries(arrayData).map(
+                  ([key, val]: [string, string | number]) => (
+                    <div key={key} className="flex justify-between">
+                      <span className="text-muted-foreground">{key}:</span>
+                      <span className="font-mono">
+                        {typeof val === "number"
+                          ? val.toFixed(4)
+                          : parseFloat(val).toFixed(4)}
+                      </span>
+                    </div>
+                  ),
+                )}
               </div>
             )}
           </div>
