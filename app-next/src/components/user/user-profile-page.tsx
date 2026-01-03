@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Database,
   Trophy,
@@ -16,6 +17,9 @@ import {
   Download,
   FlaskConical,
   TrendingUp,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -61,12 +65,35 @@ interface Upload {
   downloads?: number;
 }
 
+interface PaginatedData<T> {
+  items: T[];
+  total: number;
+  page: number;
+  loading: boolean;
+}
+
+const PAGE_SIZE = 10;
+
 export function UserProfilePage({ userId }: { userId: string }) {
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [datasets, setDatasets] = useState<Upload[]>([]);
-  const [flows, setFlows] = useState<Upload[]>([]);
-  const [tasks, setTasks] = useState<Upload[]>([]);
-  const [runs, setRuns] = useState<Upload[]>([]);
+  const [datasets, setDatasets] = useState<PaginatedData<Upload>>({
+    items: [],
+    total: 0,
+    page: 1,
+    loading: false,
+  });
+  const [flows, setFlows] = useState<PaginatedData<Upload>>({
+    items: [],
+    total: 0,
+    page: 1,
+    loading: false,
+  });
+  const [tasks, setTasks] = useState<PaginatedData<Upload>>({
+    items: [],
+    total: 0,
+    page: 1,
+    loading: false,
+  });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -123,75 +150,115 @@ export function UserProfilePage({ userId }: { userId: string }) {
     fetchUserData();
   }, [userId]);
 
+  // Fetch datasets with pagination
+  const fetchDatasets = async (page: number) => {
+    setDatasets((prev) => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch(
+        `/api/user/${userId}/datasets?page=${page}&size=${PAGE_SIZE}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mappedDatasets = (data.datasets || []).map((d: any) => ({
+          id: d.data_id,
+          name: d.name,
+          description: d.description,
+          date: d.date,
+          runs: d.runs || 0,
+          likes: d.nr_of_likes || 0,
+          downloads: d.nr_of_downloads || 0,
+        }));
+        setDatasets({
+          items: mappedDatasets,
+          total: data.total || mappedDatasets.length,
+          page,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching datasets:", error);
+      setDatasets((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Fetch flows with pagination
+  const fetchFlows = async (page: number) => {
+    setFlows((prev) => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch(
+        `/api/user/${userId}/flows?page=${page}&size=${PAGE_SIZE}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mappedFlows = (data.flows || []).map((f: any) => ({
+          id: f.flow_id,
+          name: f.name,
+          description: f.description,
+          date: f.date || f.upload_date,
+          runs: f.runs || 0,
+          likes: f.nr_of_likes || 0,
+          downloads: f.nr_of_downloads || 0,
+        }));
+        setFlows({
+          items: mappedFlows,
+          total: data.total || mappedFlows.length,
+          page,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching flows:", error);
+      setFlows((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Fetch tasks with pagination
+  const fetchTasks = async (page: number) => {
+    setTasks((prev) => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch(
+        `/api/user/${userId}/tasks?page=${page}&size=${PAGE_SIZE}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mappedTasks = (data.tasks || []).map((t: any) => ({
+          id: t.task_id,
+          name: `${t.tasktype?.name || t.task_type || "Task"} on ${t.source_data?.name || "Unknown Dataset"}`,
+          description: `Task ID: ${t.task_id} • Target: ${t.target_feature || "N/A"}`,
+          date: t.date || t.upload_date || new Date().toISOString(),
+          runs: t.runs || 0,
+          likes: t.nr_of_likes || 0,
+          downloads: t.nr_of_downloads || 0,
+        }));
+        setTasks({
+          items: mappedTasks,
+          total: data.total || mappedTasks.length,
+          page,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      setTasks((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
   // Fetch user's content when tab changes
   useEffect(() => {
     if (!user) return;
 
-    const fetchContent = async () => {
-      try {
-        if (activeTab === "datasets" && datasets.length === 0) {
-          const response = await fetch(
-            `/api/user/${userId}/datasets?page=1&size=10`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mappedDatasets = (data.datasets || []).map((d: any) => ({
-              id: d.data_id,
-              name: d.name,
-              description: d.description,
-              date: d.date,
-              runs: d.runs || 0,
-              likes: d.nr_of_likes || 0,
-              downloads: d.nr_of_downloads || 0,
-            }));
-            setDatasets(mappedDatasets);
-          }
-        } else if (activeTab === "flows" && flows.length === 0) {
-          const response = await fetch(
-            `/api/user/${userId}/flows?page=1&size=10`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mappedFlows = (data.flows || []).map((f: any) => ({
-              id: f.flow_id,
-              name: f.name,
-              description: f.description,
-              date: f.date || f.upload_date,
-              runs: f.runs || 0,
-              likes: f.nr_of_likes || 0,
-              downloads: f.nr_of_downloads || 0,
-            }));
-            setFlows(mappedFlows);
-          }
-        } else if (activeTab === "tasks" && tasks.length === 0) {
-          const response = await fetch(
-            `/api/user/${userId}/tasks?page=1&size=10`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            // Map raw task data to Upload interface
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mappedTasks = (data.tasks || []).map((t: any) => ({
-              id: t.task_id,
-              name: `${t.tasktype?.name || t.task_type || "Task"} on ${t.source_data?.name || "Unknown Dataset"}`,
-              description: `Task ID: ${t.task_id} • Target: ${t.target_feature || "N/A"}`,
-              date: t.date || t.upload_date || new Date().toISOString(),
-              runs: t.runs || 0,
-              likes: t.nr_of_likes || 0,
-              downloads: t.nr_of_downloads || 0,
-            }));
-            setTasks(mappedTasks);
-          }
-        }
-      } catch (error) {
-        console.error(`Error fetching ${activeTab}:`, error);
-      }
-    };
-
-    fetchContent();
-  }, [activeTab, user, userId, datasets.length, flows.length, tasks.length]);
+    if (activeTab === "datasets" && datasets.items.length === 0) {
+      fetchDatasets(1);
+    } else if (activeTab === "flows" && flows.items.length === 0) {
+      fetchFlows(1);
+    } else if (activeTab === "tasks" && tasks.items.length === 0) {
+      fetchTasks(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, user, userId]);
 
   if (loading) {
     return (
@@ -535,12 +602,25 @@ export function UserProfilePage({ userId }: { userId: string }) {
               <TabsContent value="datasets" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Datasets</CardTitle>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Datasets</span>
+                      {datasets.total > 0 && (
+                        <span className="text-muted-foreground text-sm font-normal">
+                          Showing {(datasets.page - 1) * PAGE_SIZE + 1}-
+                          {Math.min(datasets.page * PAGE_SIZE, datasets.total)}{" "}
+                          of {datasets.total}
+                        </span>
+                      )}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {datasets.length > 0 ? (
+                    {datasets.loading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+                      </div>
+                    ) : datasets.items.length > 0 ? (
                       <div className="space-y-4">
-                        {datasets.map((dataset) => (
+                        {datasets.items.map((dataset) => (
                           <Link
                             key={dataset.id}
                             href={`/datasets/${dataset.id}`}
@@ -557,24 +637,27 @@ export function UserProfilePage({ userId }: { userId: string }) {
                                   </p>
                                 )}
                                 <div className="text-muted-foreground mt-2 flex flex-wrap gap-3 text-xs">
-                                  {dataset.runs && (
-                                    <span className="flex items-center gap-1">
-                                      <FlaskConical className="h-3 w-3" />
-                                      {dataset.runs} runs
-                                    </span>
-                                  )}
-                                  {dataset.likes && (
-                                    <span className="flex items-center gap-1">
-                                      <Heart className="h-3 w-3" />
-                                      {dataset.likes}
-                                    </span>
-                                  )}
-                                  {dataset.downloads && (
-                                    <span className="flex items-center gap-1">
-                                      <Download className="h-3 w-3" />
-                                      {dataset.downloads.toLocaleString()}
-                                    </span>
-                                  )}
+                                  {dataset.runs !== undefined &&
+                                    dataset.runs > 0 && (
+                                      <span className="flex items-center gap-1">
+                                        <FlaskConical className="h-3 w-3" />
+                                        {dataset.runs} runs
+                                      </span>
+                                    )}
+                                  {dataset.likes !== undefined &&
+                                    dataset.likes > 0 && (
+                                      <span className="flex items-center gap-1">
+                                        <Heart className="h-3 w-3" />
+                                        {dataset.likes}
+                                      </span>
+                                    )}
+                                  {dataset.downloads !== undefined &&
+                                    dataset.downloads > 0 && (
+                                      <span className="flex items-center gap-1">
+                                        <Download className="h-3 w-3" />
+                                        {dataset.downloads.toLocaleString()}
+                                      </span>
+                                    )}
                                   {dataset.date && (
                                     <span className="flex items-center gap-1">
                                       <Calendar className="h-3 w-3" />
@@ -588,6 +671,37 @@ export function UserProfilePage({ userId }: { userId: string }) {
                             </div>
                           </Link>
                         ))}
+                        {/* Pagination */}
+                        {datasets.total > PAGE_SIZE && (
+                          <div className="flex items-center justify-between border-t pt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchDatasets(datasets.page - 1)}
+                              disabled={datasets.page === 1 || datasets.loading}
+                            >
+                              <ChevronLeft className="mr-1 h-4 w-4" />
+                              Previous
+                            </Button>
+                            <span className="text-muted-foreground text-sm">
+                              Page {datasets.page} of{" "}
+                              {Math.ceil(datasets.total / PAGE_SIZE)}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchDatasets(datasets.page + 1)}
+                              disabled={
+                                datasets.page >=
+                                  Math.ceil(datasets.total / PAGE_SIZE) ||
+                                datasets.loading
+                              }
+                            >
+                              Next
+                              <ChevronRight className="ml-1 h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="text-muted-foreground py-12 text-center">
@@ -602,12 +716,25 @@ export function UserProfilePage({ userId }: { userId: string }) {
               <TabsContent value="flows" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Flows</CardTitle>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Flows</span>
+                      {flows.total > 0 && (
+                        <span className="text-muted-foreground text-sm font-normal">
+                          Showing {(flows.page - 1) * PAGE_SIZE + 1}-
+                          {Math.min(flows.page * PAGE_SIZE, flows.total)} of{" "}
+                          {flows.total}
+                        </span>
+                      )}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {flows.length > 0 ? (
+                    {flows.loading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+                      </div>
+                    ) : flows.items.length > 0 ? (
                       <div className="space-y-4">
-                        {flows.map((flow) => (
+                        {flows.items.map((flow) => (
                           <Link
                             key={flow.id}
                             href={`/flows/${flow.id}`}
@@ -624,24 +751,26 @@ export function UserProfilePage({ userId }: { userId: string }) {
                                   </p>
                                 )}
                                 <div className="text-muted-foreground mt-2 flex flex-wrap gap-3 text-xs">
-                                  {flow.runs && (
+                                  {flow.runs !== undefined && flow.runs > 0 && (
                                     <span className="flex items-center gap-1">
                                       <FlaskConical className="h-3 w-3" />
                                       {flow.runs} runs
                                     </span>
                                   )}
-                                  {flow.likes && (
-                                    <span className="flex items-center gap-1">
-                                      <Heart className="h-3 w-3" />
-                                      {flow.likes}
-                                    </span>
-                                  )}
-                                  {flow.downloads && (
-                                    <span className="flex items-center gap-1">
-                                      <Download className="h-3 w-3" />
-                                      {flow.downloads.toLocaleString()}
-                                    </span>
-                                  )}
+                                  {flow.likes !== undefined &&
+                                    flow.likes > 0 && (
+                                      <span className="flex items-center gap-1">
+                                        <Heart className="h-3 w-3" />
+                                        {flow.likes}
+                                      </span>
+                                    )}
+                                  {flow.downloads !== undefined &&
+                                    flow.downloads > 0 && (
+                                      <span className="flex items-center gap-1">
+                                        <Download className="h-3 w-3" />
+                                        {flow.downloads.toLocaleString()}
+                                      </span>
+                                    )}
                                   {flow.date && (
                                     <span className="flex items-center gap-1">
                                       <Calendar className="h-3 w-3" />
@@ -653,6 +782,37 @@ export function UserProfilePage({ userId }: { userId: string }) {
                             </div>
                           </Link>
                         ))}
+                        {/* Pagination */}
+                        {flows.total > PAGE_SIZE && (
+                          <div className="flex items-center justify-between border-t pt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchFlows(flows.page - 1)}
+                              disabled={flows.page === 1 || flows.loading}
+                            >
+                              <ChevronLeft className="mr-1 h-4 w-4" />
+                              Previous
+                            </Button>
+                            <span className="text-muted-foreground text-sm">
+                              Page {flows.page} of{" "}
+                              {Math.ceil(flows.total / PAGE_SIZE)}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchFlows(flows.page + 1)}
+                              disabled={
+                                flows.page >=
+                                  Math.ceil(flows.total / PAGE_SIZE) ||
+                                flows.loading
+                              }
+                            >
+                              Next
+                              <ChevronRight className="ml-1 h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="text-muted-foreground py-12 text-center">
@@ -667,12 +827,25 @@ export function UserProfilePage({ userId }: { userId: string }) {
               <TabsContent value="tasks" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Tasks</CardTitle>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Tasks</span>
+                      {tasks.total > 0 && (
+                        <span className="text-muted-foreground text-sm font-normal">
+                          Showing {(tasks.page - 1) * PAGE_SIZE + 1}-
+                          {Math.min(tasks.page * PAGE_SIZE, tasks.total)} of{" "}
+                          {tasks.total}
+                        </span>
+                      )}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {tasks.length > 0 ? (
+                    {tasks.loading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+                      </div>
+                    ) : tasks.items.length > 0 ? (
                       <div className="space-y-4">
-                        {tasks.map((task) => (
+                        {tasks.items.map((task) => (
                           <Link
                             key={task.id}
                             href={`/tasks/${task.id}`}
@@ -692,7 +865,7 @@ export function UserProfilePage({ userId }: { userId: string }) {
                                   </p>
                                 )}
                                 <div className="text-muted-foreground mt-2 ml-6 flex flex-wrap gap-3 text-xs">
-                                  {task.runs !== undefined && (
+                                  {task.runs !== undefined && task.runs > 0 && (
                                     <span className="flex items-center gap-1">
                                       <FlaskConical className="h-3 w-3" />
                                       {task.runs} runs
@@ -707,6 +880,37 @@ export function UserProfilePage({ userId }: { userId: string }) {
                             </div>
                           </Link>
                         ))}
+                        {/* Pagination */}
+                        {tasks.total > PAGE_SIZE && (
+                          <div className="flex items-center justify-between border-t pt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchTasks(tasks.page - 1)}
+                              disabled={tasks.page === 1 || tasks.loading}
+                            >
+                              <ChevronLeft className="mr-1 h-4 w-4" />
+                              Previous
+                            </Button>
+                            <span className="text-muted-foreground text-sm">
+                              Page {tasks.page} of{" "}
+                              {Math.ceil(tasks.total / PAGE_SIZE)}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchTasks(tasks.page + 1)}
+                              disabled={
+                                tasks.page >=
+                                  Math.ceil(tasks.total / PAGE_SIZE) ||
+                                tasks.loading
+                              }
+                            >
+                              Next
+                              <ChevronRight className="ml-1 h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="text-muted-foreground py-12 text-center">

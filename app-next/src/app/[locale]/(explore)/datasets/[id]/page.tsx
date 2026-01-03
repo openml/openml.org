@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { BarChart3, Grid3x3 } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import {
   fetchDataset,
   fetchDatasetTaskCount,
@@ -12,12 +11,12 @@ import { DatasetDescription } from "@/components/dataset/dataset-description";
 import { QualityTable } from "@/components/dataset/quality-table";
 import { DatasetNavigationMenu } from "@/components/dataset/dataset-navigation-menu";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
-// import { DataExplorer } from "@/components/dataset/data-explorer";  // Replaced by merged component
-import { DataAnalysisSection } from "@/components/dataset/data-analysis-section"; // NEW: Merged Data Explorer + Analysis
+import { DataAnalysisSection } from "@/components/dataset/data-analysis-section";
 import { MetadataSection } from "@/components/dataset/metadata-section";
 import { ActivityOverview } from "@/components/dataset/activity-overview";
-import { RelatedRunsSection } from "@/components/dataset/related-runs-section";
-// import { DatasetAnalysisSection } from "@/components/dataset/dataset-analysis-section";  // Replaced by merged component
+import { DataDetailSection } from "@/components/dataset/data-detail-section";
+import { TasksSection } from "@/components/dataset/tasks-section";
+import { RunsSection } from "@/components/dataset/runs-section";
 
 export async function generateMetadata({
   params,
@@ -182,12 +181,14 @@ export default async function DatasetDetailPage({
             {/* Activity Overview - kggl style activity stats */}
             <ActivityOverview dataset={dataset} />
 
-            {/* Experiments & Runs Section */}
-            <RelatedRunsSection
-              dataset={dataset}
-              runCount={runCount}
-              taskCount={taskCount}
-            />
+            {/* Data Detail Section - Download links, API, code snippets */}
+            <DataDetailSection dataset={dataset} />
+
+            {/* Tasks Section - Tasks defined on this dataset */}
+            <TasksSection dataset={dataset} taskCount={taskCount} />
+
+            {/* Runs Section - Experiments performed on this dataset */}
+            <RunsSection dataset={dataset} runCount={runCount} />
 
             {/* Qualities: Meta-features (collapsed by default) */}
             {dataset.qualities && Object.keys(dataset.qualities).length > 0 && (
@@ -211,6 +212,9 @@ export default async function DatasetDetailPage({
               dataset.qualities && Object.keys(dataset.qualities).length > 0
             }
             featuresCount={dataset.features?.length || 0}
+            taskCount={taskCount}
+            runCount={runCount}
+            dataId={dataset.data_id}
           />
         </div>
       </div>

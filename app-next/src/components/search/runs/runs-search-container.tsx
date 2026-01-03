@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { WithSearch, Paging, SearchContext } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
-import { ControlsBar } from "../shared/controls-bar";
+import { ControlsBar, runSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
 import {
@@ -16,7 +16,6 @@ import {
   Database,
   Cog,
   Trophy,
-  CheckCircle2,
   XCircle,
   Heart,
   CloudDownload,
@@ -30,6 +29,27 @@ interface Evaluation {
   [key: string]: unknown;
 }
 
+// Nested object types from ES
+interface RunFlow {
+  flow_id?: string | number;
+  name?: string;
+}
+
+interface RunTaskSourceData {
+  data_id?: string | number;
+  name?: string;
+}
+
+interface RunTaskType {
+  name?: string;
+}
+
+interface RunTask {
+  task_id?: string | number;
+  tasktype?: RunTaskType;
+  source_data?: RunTaskSourceData;
+}
+
 interface RunResult {
   run_id?: { raw: string | number };
   uploader?: { raw: string };
@@ -37,9 +57,14 @@ interface RunResult {
   date?: { raw: string };
   error_message?: { raw: string };
   error?: { raw: string };
+  // Flat fields (some ES responses)
   flow_id?: { raw: string | number };
   flow_name?: { raw: string };
   task_id?: { raw: string | number };
+  // Nested objects from ES (wrapped in raw)
+  run_flow?: { raw: RunFlow };
+  run_task?: { raw: RunTask };
+  // Dot-notation fields (Search UI sometimes flattens)
   "run_flow.flow_id"?: { raw: string | number };
   "run_flow.name"?: { raw: string };
   "run_task.task_id"?: { raw: string | number };
@@ -54,46 +79,12 @@ interface RunResult {
   [key: string]: unknown;
 }
 
+// Facets matching the old app - Dataset, Task Type, Flow, Uploader
 const searchFacets: { label: string; field: string }[] = [
+  { label: "Dataset", field: "run_task.source_data.name.keyword" },
+  { label: "Task Type", field: "run_task.tasktype.name.keyword" },
+  { label: "Flow", field: "run_flow.name.keyword" },
   { label: "Uploader", field: "uploader.keyword" },
-];
-
-const sortOptions = [
-  {
-    name: "Most Recent",
-    value: [{ field: "date", direction: "desc" }],
-    id: "recent",
-  },
-  {
-    name: "Oldest First",
-    value: [{ field: "date", direction: "asc" }],
-    id: "oldest",
-  },
-  {
-    name: "Most Popular Dataset",
-    value: [{ field: "data_id", direction: "desc" }],
-    id: "dataset-popular",
-  },
-  {
-    name: "Most Popular Task",
-    value: [{ field: "task_id", direction: "desc" }],
-    id: "task-popular",
-  },
-  {
-    name: "Most Popular Flow",
-    value: [{ field: "flow_id", direction: "desc" }],
-    id: "flow-popular",
-  },
-  {
-    name: "Uploader (A-Z)",
-    value: [{ field: "uploader.keyword", direction: "asc" }],
-    id: "uploader-asc",
-  },
-  {
-    name: "Uploader (Z-A)",
-    value: [{ field: "uploader.keyword", direction: "desc" }],
-    id: "uploader-desc",
-  },
 ];
 
 // Cache for flow and dataset names to avoid repeated API calls
@@ -160,37 +151,80 @@ interface EnhancedRunResult extends RunResult {
 }
 
 // Helper functions to safely extract values with fallbacks
+// Handles both nested ES objects and flattened dot-notation fields
 function getFlowName(result: RunResult): string {
-  return (
-    result["run_flow.name"]?.raw ||
-    result.flow_name?.raw ||
-    (result["run_flow.flow_id"]?.raw
-      ? `Flow #${result["run_flow.flow_id"].raw}`
-      : result.flow_id?.raw
-        ? `Flow #${result.flow_id.raw}`
-        : "Unknown Flow")
-  );
+  // Try nested object first
+  const nestedName = result.run_flow?.raw?.name;
+  if (nestedName) return nestedName;
+
+  // Try dot-notation flattened field
+  const flatName = result["run_flow.name"]?.raw;
+  if (flatName) return flatName;
+
+  // Try direct field
+  if (result.flow_name?.raw) return result.flow_name.raw;
+
+  // Fall back to flow ID
+  const flowId = getFlowId(result);
+  return flowId ? `Flow #${flowId}` : "Unknown Flow";
 }
 
 function getFlowId(result: RunResult): string | number | undefined {
-  return result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
+  // Try nested object first
+  const nestedId = result.run_flow?.raw?.flow_id;
+  if (nestedId) return nestedId;
+
+  // Try dot-notation flattened field
+  const flatId = result["run_flow.flow_id"]?.raw;
+  if (flatId) return flatId;
+
+  // Try direct field
+  return result.flow_id?.raw;
 }
 
 function getDatasetName(result: RunResult): string {
-  return (
-    result["run_task.source_data.name"]?.raw ||
-    (result["run_task.source_data.data_id"]?.raw
-      ? `Dataset #${result["run_task.source_data.data_id"].raw}`
-      : "Unknown Dataset")
-  );
+  // Try nested object first
+  const nestedName = result.run_task?.raw?.source_data?.name;
+  if (nestedName) return nestedName;
+
+  // Try dot-notation flattened field
+  const flatName = result["run_task.source_data.name"]?.raw;
+  if (flatName) return flatName;
+
+  // Fall back to dataset ID
+  const dataId = getDatasetId(result);
+  return dataId ? `Dataset #${dataId}` : "Unknown Dataset";
 }
 
 function getDatasetId(result: RunResult): string | number | undefined {
+  // Try nested object first
+  const nestedId = result.run_task?.raw?.source_data?.data_id;
+  if (nestedId) return nestedId;
+
+  // Try dot-notation flattened field
   return result["run_task.source_data.data_id"]?.raw;
 }
 
 function getTaskId(result: RunResult): string | number | undefined {
-  return result["run_task.task_id"]?.raw || result.task_id?.raw;
+  // Try nested object first
+  const nestedId = result.run_task?.raw?.task_id;
+  if (nestedId) return nestedId;
+
+  // Try dot-notation flattened field
+  const flatId = result["run_task.task_id"]?.raw;
+  if (flatId) return flatId;
+
+  // Try direct field
+  return result.task_id?.raw;
+}
+
+function getTaskTypeName(result: RunResult): string | undefined {
+  // Try nested object first
+  const nestedName = result.run_task?.raw?.tasktype?.name;
+  if (nestedName) return nestedName;
+
+  // Try dot-notation flattened field
+  return result["run_task.tasktype.name"]?.raw;
 }
 
 function extractMetrics(
@@ -371,7 +405,7 @@ export function RunsSearchContainer() {
           <ControlsBar
             view={view}
             onViewChange={setView}
-            sortOptions={sortOptions}
+            sortOptions={runSortOptions}
           />
 
           <div className="p-4">
@@ -400,54 +434,148 @@ export function RunsSearchContainer() {
               const MAX_ACCESSIBLE_PAGE = Math.floor(
                 MAX_RESULT_WINDOW / pageSize,
               );
+              const SHOW_WARNING_FROM = Math.max(1, MAX_ACCESSIBLE_PAGE - 1);
+
               return (
-                <div className="mt-6 flex flex-col items-center gap-3">
-                  <Paging
-                    view={({ current, totalPages, onChange }) => {
-                      if (!current || totalPages <= 1) return null;
-                      return (
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => onChange(current - 1)}
-                            disabled={current === 1}
-                            className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
-                          >
-                            Previous
-                          </button>
-                          {Array.from(
-                            { length: Math.min(totalPages, 7) },
-                            (_, i) => i + 1,
-                          ).map((page) => (
-                            <button
-                              key={page}
-                              onClick={() => onChange(page)}
-                              disabled={page > MAX_ACCESSIBLE_PAGE}
-                              className={`rounded border px-3 py-1 ${
-                                page === current
-                                  ? "text-white"
-                                  : "hover:bg-muted"
-                              }`}
-                              style={
-                                page === current
-                                  ? { backgroundColor: entityColors.run }
-                                  : undefined
-                              }
-                            >
-                              {page}
-                            </button>
-                          ))}
-                          <button
-                            onClick={() => onChange(current + 1)}
-                            disabled={current >= totalPages}
-                            className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
-                          >
-                            Next
-                          </button>
-                        </div>
-                      );
-                    }}
-                  />
-                </div>
+                <>
+                  <div className="flex justify-center border-t p-4">
+                    <Paging
+                      view={({ current, totalPages, onChange }) => {
+                        if (!current || totalPages <= 1) return null;
+
+                        const pages = [];
+                        const maxVisible = 7;
+                        let startPage = Math.max(
+                          1,
+                          current - Math.floor(maxVisible / 2),
+                        );
+                        const endPage = Math.min(
+                          totalPages,
+                          startPage + maxVisible - 1,
+                        );
+
+                        if (endPage - startPage < maxVisible - 1) {
+                          startPage = Math.max(1, endPage - maxVisible + 1);
+                        }
+
+                        for (let i = startPage; i <= endPage; i++) {
+                          pages.push(i);
+                        }
+
+                        const isPageAccessible = (page: number) =>
+                          page <= MAX_ACCESSIBLE_PAGE;
+                        const isCurrentBeyondLimit =
+                          current > MAX_ACCESSIBLE_PAGE;
+
+                        return (
+                          <div className="flex flex-col items-center gap-3">
+                            {current >= SHOW_WARNING_FROM && (
+                              <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                                ⚠️ Elasticsearch limit: Only{" "}
+                                {MAX_ACCESSIBLE_PAGE.toLocaleString()} pages (
+                                {MAX_RESULT_WINDOW.toLocaleString()} results)
+                                can be accessed.{" "}
+                                {isCurrentBeyondLimit
+                                  ? `Page ${current} is not accessible.`
+                                  : `Showing page ${current.toLocaleString()} of ${totalPages.toLocaleString()} total pages.`}
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => onChange(current - 1)}
+                                disabled={current === 1}
+                                className="hover:bg-muted rounded border px-3 py-1 disabled:opacity-50"
+                              >
+                                Previous
+                              </button>
+                              {startPage > 1 && (
+                                <>
+                                  <button
+                                    onClick={() => onChange(1)}
+                                    className="hover:bg-muted rounded border px-3 py-1"
+                                  >
+                                    1
+                                  </button>
+                                  {startPage > 2 && (
+                                    <span className="px-2">...</span>
+                                  )}
+                                </>
+                              )}
+                              {pages.map((page) => {
+                                const isAccessible = isPageAccessible(page);
+                                const isCurrent = page === current;
+                                return (
+                                  <button
+                                    key={page}
+                                    onClick={() =>
+                                      isAccessible && onChange(page)
+                                    }
+                                    disabled={!isAccessible}
+                                    className={`rounded border px-3 py-1 ${
+                                      isCurrent
+                                        ? "text-white"
+                                        : isAccessible
+                                          ? "hover:bg-muted dark:hover:bg-slate-700"
+                                          : "cursor-not-allowed line-through opacity-30"
+                                    }`}
+                                    style={
+                                      isCurrent
+                                        ? { backgroundColor: entityColors.run }
+                                        : undefined
+                                    }
+                                    title={
+                                      !isAccessible
+                                        ? `Page ${page} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
+                                    }
+                                  >
+                                    {page}
+                                  </button>
+                                );
+                              })}
+                              {endPage < totalPages && (
+                                <>
+                                  {endPage < totalPages - 1 && (
+                                    <span className="px-2">...</span>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      isPageAccessible(totalPages) &&
+                                      onChange(totalPages)
+                                    }
+                                    disabled={!isPageAccessible(totalPages)}
+                                    className={`rounded border px-3 py-1 ${
+                                      isPageAccessible(totalPages)
+                                        ? "hover:bg-muted"
+                                        : "cursor-not-allowed line-through opacity-30"
+                                    }`}
+                                    title={
+                                      !isPageAccessible(totalPages)
+                                        ? `Page ${totalPages} exceeds ES limit (max: ${MAX_ACCESSIBLE_PAGE})`
+                                        : ""
+                                    }
+                                  >
+                                    {totalPages}
+                                  </button>
+                                </>
+                              )}
+                              <button
+                                onClick={() => onChange(current + 1)}
+                                disabled={
+                                  current >= totalPages ||
+                                  !isPageAccessible(current + 1)
+                                }
+                                className="hover:bg-muted rounded border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+                </>
               );
             }}
           </WithSearch>
@@ -469,23 +597,21 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
         const runId = result.run_id?.raw;
         const hasError = !!(result.error_message?.raw || result.error?.raw);
 
-        const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
-        const flowName =
-          result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
-
-        const dataId = result["run_task.source_data.data_id"]?.raw;
-        const datasetName =
-          result._datasetName ||
-          (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
-
-        const taskId = result["run_task.task_id"]?.raw || result.task_id?.raw;
+        // Use helper functions to extract data from ES response
+        const flowId = getFlowId(result);
+        const flowName = result._flowName || getFlowName(result);
+        const dataId = getDatasetId(result);
+        const datasetName = result._datasetName || getDatasetName(result);
+        const taskId = getTaskId(result);
+        const taskTypeName = getTaskTypeName(result);
 
         const metrics = extractMetrics(result.evaluations?.raw);
 
+        // Build display text with task type if available
         const displayText = [
-          `Flow: ${flowName}`,
-          taskId ? `Task: #${taskId}` : null,
-          `Dataset: ${datasetName}`,
+          taskTypeName ? `${taskTypeName}` : null,
+          taskId ? `Task #${taskId}` : null,
+          datasetName ? `on ${datasetName}` : null,
         ]
           .filter(Boolean)
           .join(" • ");
@@ -514,22 +640,8 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
                   {runId}
                 </Badge>
               </div>
-              {metrics.length > 0 && (
-                <div className="mb-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                  {metrics.map((metric, idx) => (
-                    <span
-                      key={idx}
-                      className="flex items-center gap-1 font-mono"
-                    >
-                      <span className="text-muted-foreground">
-                        {metric.label}:
-                      </span>
-                      <span className="font-semibold">{metric.value}</span>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="text-muted-foreground flex flex-wrap gap-x-4 text-xs">
+              {/* Line 3: User, Date, Links, Metrics, Engagement - all in one line */}
+              <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 text-xs">
                 {result.uploader?.raw && (
                   <Link
                     href={`/users/${result.uploader_id?.raw}`}
@@ -580,9 +692,14 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
                     Task #{taskId}
                   </Link>
                 )}
-              </div>
-
-              <div className="mt-1 flex flex-wrap gap-x-4 text-xs">
+                {/* Metrics inline */}
+                {metrics.map((metric, idx) => (
+                  <span key={idx} className="flex items-center gap-1 font-mono">
+                    <span>{metric.label}:</span>
+                    <span className="font-semibold">{metric.value}</span>
+                  </span>
+                ))}
+                {/* Engagement inline */}
                 <span className="flex items-center gap-1">
                   <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
                   {result.nr_of_likes?.raw || 0}
@@ -629,21 +746,19 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
         const runId = result.run_id?.raw;
         const hasError = !!(result.error_message?.raw || result.error?.raw);
 
-        const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
-        const flowName =
-          result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
-
-        const dataId = result["run_task.source_data.data_id"]?.raw;
-        const datasetName =
-          result._datasetName ||
-          (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
-        const taskId = result["run_task.task_id"]?.raw || result.task_id?.raw;
+        // Use helper functions to extract data from ES response
+        const flowId = getFlowId(result);
+        const flowName = result._flowName || getFlowName(result);
+        const dataId = getDatasetId(result);
+        const datasetName = result._datasetName || getDatasetName(result);
+        const taskId = getTaskId(result);
+        const taskTypeName = getTaskTypeName(result);
         const metrics = extractMetrics(result.evaluations?.raw);
 
         const displayText = [
-          `Flow: ${flowName}`,
-          taskId ? `Task: #${taskId}` : null,
-          `Dataset: ${datasetName}`,
+          taskTypeName ? `${taskTypeName}` : null,
+          taskId ? `Task #${taskId}` : null,
+          datasetName ? `on ${datasetName}` : null,
         ]
           .filter(Boolean)
           .join(" • ");
@@ -732,17 +847,10 @@ function RunTableView({ results }: { results: EnhancedRunResult[] }) {
             const runId = result.run_id?.raw;
             const hasError = !!(result.error_message?.raw || result.error?.raw);
 
-            const flowId =
-              result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
-            const flowName =
-              result._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
-
-            const dataId = result["run_task.source_data.data_id"]?.raw;
-            const datasetName =
-              result._datasetName ||
-              (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
-            const taskId =
-              result["run_task.task_id"]?.raw || result.task_id?.raw;
+            // Use helper functions to extract data from ES response
+            const flowName = result._flowName || getFlowName(result);
+            const datasetName = result._datasetName || getDatasetName(result);
+            const taskId = getTaskId(result);
             const metrics = extractMetrics(result.evaluations?.raw);
 
             return (
@@ -802,16 +910,17 @@ function RunSplitView({
   const selected = selectedRun || results[0];
   const runId = selected?.run_id?.raw;
 
-  const flowId = selected?.["run_flow.flow_id"]?.raw || selected?.flow_id?.raw;
-  const flowName =
-    selected?._flowName || (flowId ? `Flow #${flowId}` : "Unknown Flow");
-
-  const dataId = selected?.["run_task.source_data.data_id"]?.raw;
-  const datasetName =
-    selected?._datasetName ||
-    (dataId ? `Dataset #${dataId}` : "Unknown Dataset");
-
-  const taskId = selected?.["run_task.task_id"]?.raw || selected?.task_id?.raw;
+  // Use helper functions for selected run details
+  const flowId = selected ? getFlowId(selected) : undefined;
+  const flowName = selected
+    ? selected._flowName || getFlowName(selected)
+    : "Unknown Flow";
+  const dataId = selected ? getDatasetId(selected) : undefined;
+  const datasetName = selected
+    ? selected._datasetName || getDatasetName(selected)
+    : "Unknown Dataset";
+  const taskId = selected ? getTaskId(selected) : undefined;
+  const taskTypeName = selected ? getTaskTypeName(selected) : undefined;
   const metrics = extractMetrics(selected?.evaluations?.raw);
 
   return (
@@ -820,24 +929,17 @@ function RunSplitView({
         {results.map((result, index) => {
           const isSelected = result.run_id?.raw === runId;
 
-          const resultFlowId =
-            result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
-          const resultFlowName =
-            result._flowName ||
-            (resultFlowId ? `Flow #${resultFlowId}` : "Unknown Flow");
-
-          const resultDataId = result["run_task.source_data.data_id"]?.raw;
+          // Use helper functions for list item
+          const resultFlowName = result._flowName || getFlowName(result);
           const resultDatasetName =
-            result._datasetName ||
-            (resultDataId ? `Dataset #${resultDataId}` : "Unknown Dataset");
-
-          const resultTaskId =
-            result["run_task.task_id"]?.raw || result.task_id?.raw;
+            result._datasetName || getDatasetName(result);
+          const resultTaskId = getTaskId(result);
+          const resultTaskTypeName = getTaskTypeName(result);
 
           const displayText = [
-            `Flow: ${resultFlowName}`,
-            resultTaskId ? `Task: #${resultTaskId}` : null,
-            `Dataset: ${resultDatasetName}`,
+            resultTaskTypeName ? `${resultTaskTypeName}` : null,
+            resultTaskId ? `Task #${resultTaskId}` : null,
+            resultDatasetName ? `on ${resultDatasetName}` : null,
           ]
             .filter(Boolean)
             .join(" • ");

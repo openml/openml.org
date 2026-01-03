@@ -60,7 +60,7 @@ export async function fetchTaskRunCount(taskId: string): Promise<number> {
       body: JSON.stringify({
         query: {
           term: {
-            "run_task.task_id": taskId,
+            "run_task.task_id": parseInt(taskId, 10),
           },
         },
         size: 0,

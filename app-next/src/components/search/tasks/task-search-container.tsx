@@ -15,21 +15,26 @@ import {
   Hash,
   Trophy,
   Database,
+  Target,
+  Gauge,
+  ChevronRight,
 } from "lucide-react";
 
 interface TaskSearchResult {
   id?: { raw: string | number };
   task_id?: { raw: string | number };
-  "source_data.name"?: { raw: string };
-  "source_data.data_id"?: { raw: number };
-  "tasktype.name"?: { raw: string };
-  "estimation_procedure.type"?: { raw: string };
+  // Nested objects from ES - connector wraps whole object in { raw: ... }
+  source_data?: { raw?: { name?: string; data_id?: number } };
+  tasktype?: { raw?: { name?: string } };
+  estimation_procedure?: { raw?: { type?: string; name?: string } };
+  // Direct fields
+  task_type?: { raw: string };
   target_feature?: { raw: string };
   evaluation_measures?: { raw: string[] };
   runs?: { raw: number };
   nr_of_likes?: { raw: number };
   nr_of_downloads?: { raw: number };
-  [key: string]: unknown;
+  date?: { raw: string };
 }
 
 // Facet configuration for tasks
@@ -108,7 +113,9 @@ export function TaskSearchContainer() {
                 <span className="text-muted-foreground">
                   Search results for
                 </span>
-                <span className="font-semibold">"{searchTerm}"</span>
+                <span className="font-semibold">
+                  &ldquo;{searchTerm}&rdquo;
+                </span>
                 <span className="text-muted-foreground">—</span>
                 <span className="text-primary font-semibold">
                   {totalResults?.toLocaleString() || 0}
@@ -323,70 +330,105 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
     <div className="space-y-0">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName =
-          result["source_data.name"]?.raw || "Unknown Dataset";
-        const taskType = result["tasktype.name"]?.raw || "Unknown Task Type";
-        const estimation = result["estimation_procedure.type"]?.raw;
+        const datasetName = result.source_data?.raw?.name || "Unknown Dataset";
+        const datasetId = result.source_data?.raw?.data_id;
+        const taskType =
+          result.tasktype?.raw?.name ||
+          result.task_type?.raw ||
+          "Unknown Task Type";
+        const estimation = result.estimation_procedure?.raw?.type;
+        const targetFeature = result.target_feature?.raw;
+        const runs = result.runs?.raw || 0;
+        const likes = result.nr_of_likes?.raw || 0;
+        const downloads = result.nr_of_downloads?.raw || 0;
 
         return (
           <div
             key={tid || index}
-            className="relative flex items-start justify-between border-b p-4 transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/20"
+            className="group relative flex items-start justify-between border-b p-4 transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/20"
           >
             <div className="min-w-0 flex-1">
-              <div className="mb-1 flex items-start gap-3">
+              {/* Title row */}
+              <div className="mb-2 flex items-start gap-3">
                 <Trophy
-                  className="mt-1 h-5 w-5 shrink-0"
+                  className="mt-0.5 h-5 w-5 shrink-0"
                   style={{ color: "#FFA726" }}
                   aria-hidden="true"
                 />
-                <div className="flex items-baseline gap-2">
-                  <h3 className="text-base font-semibold">{taskType}</h3>
-                  <span className="text-muted-foreground text-xs">
-                    on {datasetName}
-                  </span>
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-base font-semibold">{taskType}</h3>
+                    <span className="text-muted-foreground text-sm">on</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">
+                      {datasetName}
+                    </span>
+                  </div>
+                  {/* Task details row */}
+                  <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                    {targetFeature && (
+                      <span
+                        className="flex items-center gap-1.5"
+                        title="Target feature"
+                      >
+                        <Target className="h-3.5 w-3.5 text-orange-500" />
+                        <span className="font-mono text-xs">
+                          {targetFeature}
+                        </span>
+                      </span>
+                    )}
+                    {estimation && (
+                      <span
+                        className="flex items-center gap-1.5"
+                        title="Estimation procedure"
+                      >
+                        <Gauge className="h-3.5 w-3.5 text-blue-500" />
+                        {estimation}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-2 text-sm">
-                {estimation && <span>Estimation: {estimation}</span>}
-                {result.target_feature?.raw && (
-                  <span className="ml-3">
-                    Target: {result.target_feature.raw}
-                  </span>
-                )}
-              </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                <span className="flex items-center gap-1.5" title="runs">
+
+              {/* Stats row */}
+              <div className="ml-8 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                <span className="flex items-center gap-1.5" title="Runs">
                   <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                  {result.runs?.raw?.toLocaleString() || 0}
+                  <span className="font-medium">{runs.toLocaleString()}</span>
+                  <span className="text-muted-foreground text-xs">runs</span>
                 </span>
-                <span className="flex items-center gap-1.5" title="likes">
+                <span className="flex items-center gap-1.5" title="Likes">
                   <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-                  {result.nr_of_likes?.raw || 0}
+                  {likes.toLocaleString()}
                 </span>
-                <span className="flex items-center gap-1.5" title="downloads">
+                <span className="flex items-center gap-1.5" title="Downloads">
                   <CloudDownload className="h-4 w-4 text-blue-500" />
-                  {result.nr_of_downloads?.raw || 0}
+                  {downloads.toLocaleString()}
                 </span>
-                {result["source_data.data_id"]?.raw && (
+                {datasetId && (
                   <span
                     className="flex items-center gap-1.5"
-                    title="source dataset"
+                    title="Source dataset"
                   >
                     <Database className="h-4 w-4 text-green-500" />
-                    Dataset #{result["source_data.data_id"].raw}
+                    <span className="text-muted-foreground">Dataset</span>
+                    <span className="font-medium">#{datasetId}</span>
                   </span>
                 )}
               </div>
             </div>
-            <Badge
-              variant="openml"
-              className="relative z-10 flex items-center gap-0.75 bg-[#FFA726] px-2 py-0.5 text-xs font-semibold text-white"
-              title="task ID"
-            >
-              <Hash className="h-3 w-3" />
-              {tid}
-            </Badge>
+
+            {/* Right side: ID badge and arrow */}
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="openml"
+                className="relative z-10 flex items-center gap-0.75 bg-[#FFA726] px-2 py-0.5 text-xs font-semibold text-white"
+                title="Task ID"
+              >
+                <Hash className="h-3 w-3" />
+                {tid}
+              </Badge>
+              <ChevronRight className="text-muted-foreground h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
+            </div>
 
             {/* Invisible overlay link for entire row clickability */}
             <Link
@@ -417,18 +459,26 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName =
-          result["source_data.name"]?.raw || "Unknown Dataset";
-        const taskType = result["tasktype.name"]?.raw || "Unknown Task Type";
+        const datasetName = result.source_data?.raw?.name || "Unknown Dataset";
+        const taskType =
+          result.tasktype?.raw?.name ||
+          result.task_type?.raw ||
+          "Unknown Task Type";
+        const estimation = result.estimation_procedure?.raw?.type;
+        const targetFeature = result.target_feature?.raw;
+        const runs = result.runs?.raw || 0;
+        const likes = result.nr_of_likes?.raw || 0;
+        const downloads = result.nr_of_downloads?.raw || 0;
 
         return (
           <Link
             key={tid || index}
             href={`/tasks/${tid}`}
-            className="bg-card hover:bg-accent block rounded-lg border p-4 transition-colors"
+            className="bg-card group block rounded-lg border p-4 transition-colors hover:border-orange-200 hover:bg-orange-50/50 dark:hover:border-orange-800 dark:hover:bg-orange-900/10"
           >
-            <div className="mb-2 flex items-start justify-between">
-              <Trophy className="h-8 w-8" style={{ color: "#FFA726" }} />
+            {/* Header */}
+            <div className="mb-3 flex items-start justify-between">
+              <Trophy className="h-7 w-7" style={{ color: "#FFA726" }} />
               <Badge
                 variant="openml"
                 className="bg-[#FFA726] text-xs text-white"
@@ -436,22 +486,47 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
                 #{tid}
               </Badge>
             </div>
+
+            {/* Task Type */}
             <h3 className="mb-1 line-clamp-1 font-semibold">{taskType}</h3>
-            <p className="text-muted-foreground mb-3 text-sm">
-              on {datasetName}
+
+            {/* Dataset */}
+            <p className="text-muted-foreground mb-2 flex items-center gap-1.5 text-sm">
+              <Database className="h-3.5 w-3.5 text-green-500" />
+              <span className="line-clamp-1">{datasetName}</span>
             </p>
-            <div className="flex flex-wrap gap-3 text-xs">
-              <span className="flex items-center gap-1">
+
+            {/* Target & Estimation */}
+            <div className="mb-3 space-y-1 text-xs">
+              {targetFeature && (
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <Target className="h-3 w-3 text-orange-500" />
+                  <span className="line-clamp-1 font-mono">
+                    {targetFeature}
+                  </span>
+                </div>
+              )}
+              {estimation && (
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <Gauge className="h-3 w-3 text-blue-500" />
+                  <span className="line-clamp-1">{estimation}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Stats */}
+            <div className="flex flex-wrap gap-3 border-t pt-3 text-xs">
+              <span className="flex items-center gap-1" title="Runs">
                 <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
-                {result.runs?.raw?.toLocaleString() || 0}
+                <span className="font-medium">{runs.toLocaleString()}</span>
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1" title="Likes">
                 <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
-                {result.nr_of_likes?.raw?.toLocaleString() || 0}
+                {likes.toLocaleString()}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1" title="Downloads">
                 <CloudDownload className="h-3 w-3 text-blue-500" />
-                {result.nr_of_downloads?.raw?.toLocaleString() || 0}
+                {downloads.toLocaleString()}
               </span>
             </div>
           </Link>
@@ -475,41 +550,75 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b">
+          <tr className="bg-muted/50 border-b">
             <th className="p-3 text-left text-sm font-medium">ID</th>
             <th className="p-3 text-left text-sm font-medium">Task Type</th>
             <th className="p-3 text-left text-sm font-medium">Dataset</th>
             <th className="p-3 text-left text-sm font-medium">Target</th>
+            <th className="p-3 text-left text-sm font-medium">Estimation</th>
             <th className="p-3 text-right text-sm font-medium">Runs</th>
+            <th className="p-3 text-right text-sm font-medium">Likes</th>
+            <th className="p-3 text-right text-sm font-medium">Downloads</th>
           </tr>
         </thead>
         <tbody>
           {results.map((result, index) => {
             const tid = result.task_id?.raw || result.id?.raw;
+            const datasetId = result.source_data?.raw?.data_id;
+            const datasetName = result.source_data?.raw?.name || "Unknown";
+            const taskType =
+              result.tasktype?.raw?.name || result.task_type?.raw || "Unknown";
+            const estimation = result.estimation_procedure?.raw?.type || "-";
             return (
               <tr
                 key={tid || index}
-                className="hover:bg-accent border-b transition-colors"
+                className="border-b transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/10"
               >
                 <td className="p-3">
                   <Link
                     href={`/tasks/${tid}`}
-                    className="text-primary font-medium hover:underline"
+                    className="inline-flex items-center gap-1.5 font-medium text-orange-600 hover:text-orange-700 hover:underline"
                   >
+                    <Trophy className="h-4 w-4" style={{ color: "#FFA726" }} />
                     {tid}
                   </Link>
                 </td>
+                <td className="p-3 font-medium">{taskType}</td>
                 <td className="p-3">
-                  {result["tasktype.name"]?.raw || "Unknown"}
+                  <Link
+                    href={`/datasets/${datasetId}`}
+                    className="inline-flex items-center gap-1.5 text-green-600 hover:text-green-700 hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Database className="h-3.5 w-3.5" />
+                    {datasetName}
+                  </Link>
                 </td>
                 <td className="p-3">
-                  {result["source_data.name"]?.raw || "Unknown"}
+                  <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
+                    {result.target_feature?.raw || "-"}
+                  </code>
                 </td>
-                <td className="p-3 text-sm">
-                  {result.target_feature?.raw || "-"}
+                <td className="text-muted-foreground p-3 text-sm">
+                  {estimation}
                 </td>
                 <td className="p-3 text-right">
-                  {result.runs?.raw?.toLocaleString() || 0}
+                  <span className="inline-flex items-center gap-1">
+                    <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
+                    {result.runs?.raw?.toLocaleString() || 0}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  <span className="inline-flex items-center gap-1">
+                    <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
+                    {result.nr_of_likes?.raw?.toLocaleString() || 0}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  <span className="inline-flex items-center gap-1">
+                    <CloudDownload className="h-3 w-3 text-blue-500" />
+                    {result.nr_of_downloads?.raw?.toLocaleString() || 0}
+                  </span>
                 </td>
               </tr>
             );
@@ -568,11 +677,13 @@ function TaskSplitView({
                   style={{ color: "#FFA726" }}
                 />
                 <h4 className="line-clamp-1 text-sm font-semibold">
-                  {result["tasktype.name"]?.raw || "Unknown Task"}
+                  {result.tasktype?.raw?.name ||
+                    result.task_type?.raw ||
+                    "Unknown Task"}
                 </h4>
               </div>
               <p className="text-muted-foreground line-clamp-1 text-xs">
-                on {result["source_data.name"]?.raw || "Unknown Dataset"}
+                on {result.source_data?.raw?.name || "Unknown Dataset"}
               </p>
               <div className="mt-2 flex gap-3 text-xs">
                 <span className="flex items-center gap-1">
@@ -602,7 +713,9 @@ function TaskSplitView({
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-xl font-bold">
-                    {selected["tasktype.name"]?.raw || "Unknown Task"}
+                    {selected.tasktype?.raw?.name ||
+                      selected.task_type?.raw ||
+                      "Unknown Task"}
                   </h2>
                   <Badge
                     variant="outline"
@@ -613,80 +726,86 @@ function TaskSplitView({
                   </Badge>
                 </div>
                 <p className="text-muted-foreground">
-                  on {selected["source_data.name"]?.raw || "Unknown Dataset"}
+                  on {selected.source_data?.raw?.name || "Unknown Dataset"}
                 </p>
               </div>
             </div>
 
+            {/* Task Definition */}
+            <div className="bg-muted/30 mb-6 rounded-lg border p-4">
+              <h3 className="mb-3 text-sm font-medium">Task Definition</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <Target className="mt-0.5 h-4 w-4 text-orange-500" />
+                  <div>
+                    <div className="text-muted-foreground text-xs">
+                      Target Feature
+                    </div>
+                    <div className="font-mono text-sm font-medium">
+                      {selected.target_feature?.raw || "-"}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Gauge className="mt-0.5 h-4 w-4 text-blue-500" />
+                  <div>
+                    <div className="text-muted-foreground text-xs">
+                      Estimation Procedure
+                    </div>
+                    <div className="font-medium">
+                      {selected.estimation_procedure?.raw?.type || "-"}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Database className="mt-0.5 h-4 w-4 text-green-500" />
+                  <div>
+                    <div className="text-muted-foreground text-xs">
+                      Source Dataset
+                    </div>
+                    <Link
+                      href={`/datasets/${selected.source_data?.raw?.data_id}`}
+                      className="font-medium text-green-600 hover:underline"
+                    >
+                      {selected.source_data?.raw?.name} (#
+                      {selected.source_data?.raw?.data_id})
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Stats Grid */}
-            <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <FlaskConical className="h-5 w-5 fill-red-500 text-red-500" />
-                <div>
-                  <div className="text-muted-foreground text-xs">Runs</div>
-                  <div className="font-semibold">
-                    {selected.runs?.raw?.toLocaleString() || 0}
-                  </div>
+            <div className="mb-6 grid grid-cols-3 gap-4 text-sm">
+              <div className="rounded-lg border p-3 text-center">
+                <FlaskConical className="mx-auto mb-1 h-5 w-5 fill-red-500 text-red-500" />
+                <div className="text-lg font-bold">
+                  {selected.runs?.raw?.toLocaleString() || 0}
                 </div>
+                <div className="text-muted-foreground text-xs">Runs</div>
               </div>
-              <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 fill-purple-500 text-purple-500" />
-                <div>
-                  <div className="text-muted-foreground text-xs">Likes</div>
-                  <div className="font-semibold">
-                    {selected.nr_of_likes?.raw?.toLocaleString() || 0}
-                  </div>
+              <div className="rounded-lg border p-3 text-center">
+                <Heart className="mx-auto mb-1 h-5 w-5 fill-purple-500 text-purple-500" />
+                <div className="text-lg font-bold">
+                  {selected.nr_of_likes?.raw?.toLocaleString() || 0}
                 </div>
+                <div className="text-muted-foreground text-xs">Likes</div>
               </div>
-              <div className="flex items-center gap-2">
-                <CloudDownload className="h-5 w-5 text-blue-500" />
-                <div>
-                  <div className="text-muted-foreground text-xs">Downloads</div>
-                  <div className="font-semibold">
-                    {selected.nr_of_downloads?.raw?.toLocaleString() || 0}
-                  </div>
+              <div className="rounded-lg border p-3 text-center">
+                <CloudDownload className="mx-auto mb-1 h-5 w-5 text-blue-500" />
+                <div className="text-lg font-bold">
+                  {selected.nr_of_downloads?.raw?.toLocaleString() || 0}
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Database className="h-5 w-5" style={{ color: "#66BB6A" }} />
-                <div>
-                  <div className="text-muted-foreground text-xs">Dataset</div>
-                  <div className="font-semibold">
-                    {selected["source_data.data_id"]?.raw || "-"}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-gray-200 text-xs font-semibold text-gray-600">
-                  T
-                </div>
-                <div>
-                  <div className="text-muted-foreground text-xs">Target</div>
-                  <div className="line-clamp-1 font-semibold">
-                    {selected.target_feature?.raw || "-"}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-gray-200 text-xs font-semibold text-gray-600">
-                  E
-                </div>
-                <div>
-                  <div className="text-muted-foreground text-xs">
-                    Estimation
-                  </div>
-                  <div className="line-clamp-1 font-semibold">
-                    {selected["estimation_procedure.type"]?.raw || "-"}
-                  </div>
-                </div>
+                <div className="text-muted-foreground text-xs">Downloads</div>
               </div>
             </div>
 
             <Link
               href={`/tasks/${tid}`}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium"
+              className="inline-flex items-center gap-2 rounded-md bg-[#FFA726] px-4 py-2 text-sm font-medium text-white transition-colors hover:border hover:border-[#FFA726] hover:bg-white hover:text-[#FFA726]"
             >
               View Full Details
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         )}

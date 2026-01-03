@@ -1,16 +1,72 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { FileText, BarChart3, Settings2 } from "lucide-react";
+import {
+  FileText,
+  BarChart3,
+  Settings2,
+  Tags,
+  AlertCircle,
+  LineChart,
+} from "lucide-react";
 import { RunHeader } from "@/components/run/run-header";
 import { RunMetricsSection } from "@/components/run/run-metrics-section";
 import { RunParametersSection } from "@/components/run/run-parameters-section";
 import { RunNavigationMenu } from "@/components/run/run-navigation-menu";
+import { RunTagsSection } from "@/components/run/run-tags-section";
+import { RunAnalysesSection } from "@/components/run/run-analyses-section";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import Link from "next/link";
 
-// Fetch run data from API
-async function getRun(runId: number) {
+// API response types
+interface RunApiResponse {
+  run?: Run;
+  error?: { code: string; message: string };
+}
+
+interface Run {
+  run_id: number;
+  uploader?: string;
+  uploader_id?: number;
+  upload_time?: string;
+  flow_id?: number;
+  flow_name?: string;
+  task_id?: number;
+  task?: {
+    task_id?: number;
+    task_type?: string;
+    source_data?: {
+      data_id?: number;
+      name?: string;
+    };
+  };
+  visibility?: string;
+  error_message?: string | null;
+  tags?: Array<{ tag: string }>;
+  parameter_setting?: Array<{
+    name: string;
+    value: string | number | boolean | null;
+  }>;
+  output_data?: {
+    evaluation?: Array<{
+      name: string;
+      value: string | number;
+      stdev?: string | number;
+      array_data?: Record<string, string | number>;
+      per_fold?: Array<number | number[]>;
+    }>;
+  };
+  nr_of_likes?: number;
+  nr_of_downloads?: number;
+  nr_of_issues?: number;
+  nr_of_downvotes?: number;
+  setup_string?: string;
+}
+
+// Fetch run data from API - no mock data, proper error handling
+async function getRun(
+  runId: number,
+): Promise<{ run: Run | null; error: string | null }> {
   try {
-    // OpenML API returns XML by default, need to specify JSON format
     const apiUrl =
       process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
     const response = await fetch(`${apiUrl}/json/run/${runId}`, {
@@ -21,79 +77,31 @@ async function getRun(runId: number) {
     });
 
     if (!response.ok) {
-      console.error(`API returned ${response.status} for run ${runId}`);
-      return getMockRun(runId);
+      if (response.status === 404) {
+        return { run: null, error: `Run #${runId} not found` };
+      }
+      return {
+        run: null,
+        error: `Failed to fetch run: HTTP ${response.status}`,
+      };
     }
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      console.error("API returned non-JSON response, using mock data");
-      return getMockRun(runId);
+      return { run: null, error: "Invalid response format from API" };
     }
 
-    const data = await response.json();
-    return data.run || null;
+    const data: RunApiResponse = await response.json();
+
+    if (data.error) {
+      return { run: null, error: data.error.message || "Unknown API error" };
+    }
+
+    return { run: data.run || null, error: null };
   } catch (error) {
     console.error("Failed to fetch run:", error);
-    return getMockRun(runId);
+    return { run: null, error: "Failed to connect to OpenML API" };
   }
-}
-
-// Mock data for development
-function getMockRun(runId: number) {
-  return {
-    run_id: runId,
-    uploader: "Sukmin Yoon",
-    uploader_date: "2025-11-19T09:22:43",
-    flow_id: 56,
-    flow_name: "sklearn.ensemble._forest.RandomForestClassifier",
-    task_id: 59,
-    task: {
-      task_id: 59,
-      task_type: "Supervised Classification",
-      source_data: {
-        data_id: 61,
-        name: "iris",
-      },
-    },
-    error_message: null,
-    parameter_setting: [
-      { name: "bootstrap", value: "true" },
-      { name: "criterion", value: "gini" },
-      { name: "max_depth", value: "null" },
-      { name: "max_features", value: "sqrt" },
-    ],
-    output_data: {
-      evaluation: [
-        {
-          name: "area_under_roc_curve",
-          value: "0.9945",
-          array_data: {
-            "Iris-setosa": "1.0000",
-            "Iris-versicolor": "0.9916",
-            "Iris-virginica": "0.9918",
-          },
-        },
-        {
-          name: "f_measure",
-          value: "0.9533",
-          array_data: {
-            "Iris-setosa": "1.0000",
-            "Iris-versicolor": "0.9293",
-            "Iris-virginica": "0.9307",
-          },
-        },
-        {
-          name: "kappa",
-          value: "0.9300",
-        },
-        {
-          name: "mean_absolute_error",
-          value: "0.0369",
-        },
-      ],
-    },
-  };
 }
 
 export default async function RunDetailPage({
@@ -109,14 +117,34 @@ export default async function RunDetailPage({
     notFound();
   }
 
-  const run = await getRun(runId);
-  if (!run) {
-    notFound();
+  const { run, error } = await getRun(runId);
+
+  // Show error state if run not found or API error
+  if (error || !run) {
+    return (
+      <div className="container mx-auto max-w-[1400px] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-center text-center">
+          <AlertCircle className="mb-4 h-16 w-16 text-red-500" />
+          <h1 className="mb-2 text-2xl font-bold">Run Not Found</h1>
+          <p className="text-muted-foreground mb-6 max-w-md">
+            {error ||
+              `Run #${runId} could not be found. It may have been deleted or the ID is incorrect.`}
+          </p>
+          <Link
+            href="/runs"
+            className="inline-flex items-center gap-2 rounded-md bg-red-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-600"
+          >
+            Browse All Runs
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  // Count parameters and evaluations
+  // Count parameters, evaluations, and tags
   const parametersCount = run.parameter_setting?.length || 0;
   const evaluationsCount = run.output_data?.evaluation?.length || 0;
+  const tagsCount = run.tags?.length || 0;
 
   return (
     <div className="relative min-h-screen">
@@ -142,6 +170,17 @@ export default async function RunDetailPage({
               </CollapsibleSection>
             )}
 
+            {/* Analyses - Predictions, Confusion Matrix */}
+            <CollapsibleSection
+              id="analyses"
+              title="Analyses"
+              description="Predictions, confusion matrix, and class distribution"
+              icon={<LineChart className="h-4 w-4 text-purple-500" />}
+              defaultOpen={false}
+            >
+              <RunAnalysesSection runId={run.run_id} />
+            </CollapsibleSection>
+
             {/* Parameters */}
             {parametersCount > 0 && (
               <CollapsibleSection
@@ -153,6 +192,20 @@ export default async function RunDetailPage({
                 defaultOpen={true}
               >
                 <RunParametersSection run={run} />
+              </CollapsibleSection>
+            )}
+
+            {/* Tags */}
+            {tagsCount > 0 && (
+              <CollapsibleSection
+                id="tags"
+                title="Tags"
+                description="Labels and categories for this run"
+                icon={<Tags className="h-4 w-4 text-purple-500" />}
+                badge={tagsCount}
+                defaultOpen={false}
+              >
+                <RunTagsSection tags={run.tags || []} />
               </CollapsibleSection>
             )}
 
@@ -177,10 +230,13 @@ export default async function RunDetailPage({
           {/* Right: Navigation Menu */}
           <RunNavigationMenu
             hasMetrics={evaluationsCount > 0}
+            hasAnalyses={true}
             hasParameters={parametersCount > 0}
+            hasTags={tagsCount > 0}
             hasSetup={!!run.setup_string}
             metricsCount={evaluationsCount}
             parametersCount={parametersCount}
+            tagsCount={tagsCount}
           />
         </div>
       </div>

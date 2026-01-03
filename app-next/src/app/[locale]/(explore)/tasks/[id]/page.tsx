@@ -60,12 +60,15 @@ export default async function TaskDetailPage({
     fetchTaskRunCount(id),
   ]);
 
+  // Use task.runs from ES metadata if available, else computed runCount
+  const displayRunCount = task.runs || runCount;
+
   return (
     <div className="relative min-h-screen">
       {/* Main Content */}
       <div className="container mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
         {/* Header: Full Width - Name, stats, actions (Kaggle-style) */}
-        <TaskHeader task={task} runCount={runCount} />
+        <TaskHeader task={task} runCount={displayRunCount} />
 
         {/* Content with Sidebar - Below Header */}
         <div className="relative mt-6 flex min-h-screen gap-8">
@@ -90,7 +93,7 @@ export default async function TaskDetailPage({
               icon={<BarChart3 className="h-4 w-4 text-gray-500" />}
               defaultOpen={true}
             >
-              <TaskAnalysisSection task={task} runCount={runCount} />
+              <TaskAnalysisSection task={task} runCount={displayRunCount} />
             </CollapsibleSection>
 
             {/* 3. Runs List */}
@@ -99,15 +102,15 @@ export default async function TaskDetailPage({
               title="Runs"
               description="List of experimental runs on this task"
               icon={<List className="h-4 w-4 text-gray-500" />}
-              badge={runCount}
+              badge={displayRunCount}
               defaultOpen={false}
             >
-              <TaskRunsList task={task} runCount={runCount} />
+              <TaskRunsList task={task} runCount={displayRunCount} />
             </CollapsibleSection>
           </div>
 
           {/* Right: Navigation Menu - Responsive */}
-          <TaskNavigationMenu runCount={runCount} />
+          <TaskNavigationMenu runCount={displayRunCount} />
         </div>
       </div>
     </div>

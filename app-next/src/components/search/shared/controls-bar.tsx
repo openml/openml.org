@@ -112,6 +112,66 @@ export const taskSortOptions: SortOption[] = [
   },
 ];
 
+// Sort options for runs
+export const runSortOptions: SortOption[] = [
+  { name: "Relevance", value: [], id: "relevance" },
+  {
+    name: "Most Recent",
+    value: [{ field: "date", direction: "desc" }],
+    id: "recent",
+  },
+  {
+    name: "Oldest First",
+    value: [{ field: "date", direction: "asc" }],
+    id: "oldest",
+  },
+  {
+    name: "Most Likes",
+    value: [{ field: "nr_of_likes", direction: "desc" }],
+    id: "likes",
+  },
+  {
+    name: "Most Downloads",
+    value: [{ field: "nr_of_downloads", direction: "desc" }],
+    id: "downloads",
+  },
+  {
+    name: "Uploader (A-Z)",
+    value: [{ field: "uploader.keyword", direction: "asc" }],
+    id: "uploader-asc",
+  },
+  {
+    name: "Uploader (Z-A)",
+    value: [{ field: "uploader.keyword", direction: "desc" }],
+    id: "uploader-desc",
+  },
+];
+
+// Sort options for flows
+export const flowSortOptions: SortOption[] = [
+  { name: "Relevance", value: [], id: "relevance" },
+  {
+    name: "Most Recent",
+    value: [{ field: "date", direction: "desc" }],
+    id: "recent",
+  },
+  {
+    name: "Most Runs",
+    value: [{ field: "runs", direction: "desc" }],
+    id: "runs",
+  },
+  {
+    name: "Most Likes",
+    value: [{ field: "nr_of_likes", direction: "desc" }],
+    id: "likes",
+  },
+  {
+    name: "Most Downloads",
+    value: [{ field: "nr_of_downloads", direction: "desc" }],
+    id: "downloads",
+  },
+];
+
 interface ControlsBarProps {
   view?: string;
   onViewChange?: (view: string) => void;

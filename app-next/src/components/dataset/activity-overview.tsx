@@ -8,7 +8,7 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import type { Dataset } from "@/types/dataset";
@@ -48,90 +48,88 @@ export function ActivityOverview({ dataset }: ActivityOverviewProps) {
   }
 
   return (
-    <section id="activity" className="scroll-mt-20">
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm font-medium">
-            <Activity className="h-4 w-4" />
-            Activity Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          {/* Stats Grid */}
-          <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-            <StatItem
-              icon={<Eye className="h-4 w-4" />}
-              label="Views"
-              value={views.toLocaleString()}
-              trend={null}
-            />
-            <StatItem
-              icon={<Download className="h-4 w-4" />}
-              label="Downloads"
-              value={downloads.toLocaleString()}
-              trend={null}
-            />
-            <StatItem
-              icon={<TrendingUp className="h-4 w-4" />}
-              label="Runs"
-              value={runs.toLocaleString()}
-              trend={null}
-            />
-            <StatItem
-              icon={<MessageSquare className="h-4 w-4" />}
-              label="Likes"
-              value={likes.toLocaleString()}
-              trend={null}
-            />
-          </div>
+    <CollapsibleSection
+      id="activity"
+      title="Activity Overview"
+      description="Views, downloads, and engagement metrics"
+      icon={<Activity className="h-4 w-4 text-gray-500" />}
+      defaultOpen={true}
+    >
+      <div className="p-4">
+        {/* Stats Grid */}
+        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <StatItem
+            icon={<Eye className="h-4 w-4" />}
+            label="Views"
+            value={views.toLocaleString()}
+            trend={null}
+          />
+          <StatItem
+            icon={<Download className="h-4 w-4" />}
+            label="Downloads"
+            value={downloads.toLocaleString()}
+            trend={null}
+          />
+          <StatItem
+            icon={<TrendingUp className="h-4 w-4" />}
+            label="Runs"
+            value={runs.toLocaleString()}
+            trend={null}
+          />
+          <StatItem
+            icon={<MessageSquare className="h-4 w-4" />}
+            label="Likes"
+            value={likes.toLocaleString()}
+            trend={null}
+          />
+        </div>
 
-          {/* Engagement metric */}
-          {downloads > 0 && views > 0 && (
-            <div className="mb-4 border-t pt-4">
-              <div className="text-sm">
-                <span className="text-muted-foreground">Engagement: </span>
-                <span className="font-medium">
-                  {((downloads / Math.max(views, 1)) * 100).toFixed(2)}%
-                  downloads per view
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Top Contributors */}
-          <div className="border-t pt-4">
-            <h4 className="mb-3 flex items-center gap-2 text-sm font-medium">
-              <Users className="h-4 w-4" />
-              Top Contributors
-            </h4>
-            <div className="flex flex-wrap gap-3">
-              {uploader.name && (
-                <Link
-                  href={`/users/${uploader.id}`}
-                  className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={uploader.avatar || undefined}
-                      alt={uploader.name}
-                    />
-                    <AvatarFallback className="text-xs">
-                      {uploader.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                        .slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm">{uploader.name}</span>
-                </Link>
-              )}
+        {/* Engagement metric */}
+        {downloads > 0 && views > 0 && (
+          <div className="mb-4 border-t pt-4">
+            <div className="text-sm">
+              <span className="text-muted-foreground">Engagement: </span>
+              <span className="font-medium">
+                {((downloads / Math.max(views, 1)) * 100).toFixed(2)}% downloads
+                per view
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </section>
+        )}
+
+        {/* Top Contributors */}
+        <div className="border-t pt-4">
+          <h4 className="mb-3 flex items-center gap-2 text-sm font-medium">
+            <Users className="h-4 w-4" />
+            Top Contributors
+          </h4>
+          <div className="flex flex-wrap gap-3">
+            {uploader.name && (
+              <Link
+                href={`/users/${uploader.id}`}
+                className="flex items-center gap-2 transition-opacity hover:opacity-80"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={uploader.avatar || undefined}
+                    alt={uploader.name}
+                  />
+                  <AvatarFallback className="text-xs">
+                    {uploader.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm">{uploader.name}</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </CollapsibleSection>
   );
 }
 

@@ -101,7 +101,7 @@ export function TaskRunsList({ task, runCount }: TaskRunsListProps) {
 
         const data = await searchRuns({
           query: {
-            term: { "run_task.task_id": task.task_id },
+            term: { "run_task.task_id": Number(task.task_id) },
           },
           sort: [{ date: { order: "desc" } }],
           from: page * pageSize,

@@ -12,8 +12,11 @@ import {
   CloudDownload,
   MessageCircle,
   ThumbsDown,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { entityColors } from "@/constants/entityColors";
 
 interface RunTaskSourceData {
   data_id?: number;
@@ -22,6 +25,7 @@ interface RunTaskSourceData {
 
 interface RunTask {
   source_data?: RunTaskSourceData;
+  task_type?: string;
 }
 
 interface Run {
@@ -31,8 +35,11 @@ interface Run {
   task_id?: number;
   task?: RunTask;
   uploader?: string;
+  uploader_id?: number;
   uploader_date?: string;
-  error_message?: string;
+  upload_time?: string;
+  visibility?: string;
+  error_message?: string | null;
   nr_of_likes?: number;
   nr_of_downloads?: number;
   nr_of_issues?: number;
@@ -44,20 +51,28 @@ interface RunHeaderProps {
 }
 
 export function RunHeader({ run }: RunHeaderProps) {
-  const uploadDate = run.uploader_date
-    ? new Date(run.uploader_date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
-    : null;
+  const uploadDate =
+    run.uploader_date || run.upload_time
+      ? new Date(run.uploader_date || run.upload_time || "").toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          },
+        )
+      : null;
 
   const hasError = !!run.error_message;
+  const isPublic = run.visibility === "public" || !run.visibility;
 
   return (
     <header className="space-y-6 border-b pb-6">
       <div className="flex items-start gap-3">
-        <FlaskConical className="mt-1 h-9 w-9 shrink-0 fill-red-500 text-red-500" />
+        <FlaskConical
+          className="mt-1 h-9 w-9 shrink-0"
+          style={{ color: entityColors.run, fill: entityColors.run }}
+        />
 
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-3">
@@ -78,6 +93,18 @@ export function RunHeader({ run }: RunHeaderProps) {
                 Success
               </Badge>
             )}
+            {/* Visibility indicator */}
+            <Badge
+              variant="outline"
+              className={`flex items-center gap-1 ${isPublic ? "border-green-500 text-green-600" : "border-orange-500 text-orange-600"}`}
+            >
+              {isPublic ? (
+                <Eye className="h-3 w-3" />
+              ) : (
+                <EyeOff className="h-3 w-3" />
+              )}
+              {isPublic ? "Public" : "Private"}
+            </Badge>
           </div>
 
           {/* Links to related entities */}

@@ -12,7 +12,6 @@ import {
   ChevronRight,
   ChevronLeft,
   FileText,
-  LineChart,
   ListTodo,
   Play,
   Activity,
@@ -28,6 +27,7 @@ interface DatasetNavigationMenuProps {
   featuresCount?: number;
   taskCount?: number;
   runCount?: number;
+  dataId?: number;
 }
 
 export function DatasetNavigationMenu({
@@ -36,6 +36,7 @@ export function DatasetNavigationMenu({
   featuresCount = 0,
   taskCount = 0,
   runCount = 0,
+  dataId,
 }: DatasetNavigationMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -60,7 +61,7 @@ export function DatasetNavigationMenu({
       : []),
   ];
 
-  // Additional sections
+  // Additional sections with optional external links
   const sectionNavItems = [
     { id: "data-detail", label: "Data Detail", icon: Database },
     {
@@ -68,12 +69,14 @@ export function DatasetNavigationMenu({
       label: "Tasks",
       icon: ListTodo,
       count: taskCount,
+      link: dataId ? `/tasks?data_id=${dataId}` : undefined,
     },
     {
       id: "runs",
       label: "Runs",
       icon: Play,
       count: runCount,
+      link: dataId ? `/runs?data_id=${dataId}` : undefined,
     },
   ];
 
@@ -144,22 +147,35 @@ export function DatasetNavigationMenu({
                   {/* Additional Sections */}
                   <nav className="space-y-1">
                     {sectionNavItems.map((item) => (
-                      <a
-                        key={item.id}
-                        href={`#${item.id}`}
-                        onClick={() => setIsOpen(false)}
-                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                      >
-                        <span className="flex items-center gap-2">
-                          <item.icon className="h-4 w-4" />
-                          {item.label}
-                        </span>
-                        {item.count !== undefined && item.count > 0 && (
-                          <Badge variant="secondary" className="text-xs">
-                            {item.count.toLocaleString()}
-                          </Badge>
-                        )}
-                      </a>
+                      <div key={item.id} className="flex items-center gap-1">
+                        <a
+                          href={`#${item.id}`}
+                          onClick={() => setIsOpen(false)}
+                          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex flex-1 items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                        >
+                          <span className="flex items-center gap-2">
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                          </span>
+                          {item.count !== undefined && item.count > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              {item.count.toLocaleString()}
+                            </Badge>
+                          )}
+                        </a>
+                        {item.link &&
+                          item.count !== undefined &&
+                          item.count > 0 && (
+                            <Link
+                              href={item.link}
+                              onClick={() => setIsOpen(false)}
+                              className="text-muted-foreground hover:bg-accent rounded-md p-2 transition-colors hover:text-green-600"
+                              title={`View all ${item.label}`}
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </Link>
+                          )}
+                      </div>
                     ))}
                   </nav>
                 </div>
@@ -254,21 +270,33 @@ export function DatasetNavigationMenu({
               {/* Additional Sections */}
               <nav className="space-y-1">
                 {sectionNavItems.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                  >
-                    <span className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      {item.label}
-                    </span>
-                    {item.count !== undefined && item.count > 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {item.count.toLocaleString()}
-                      </Badge>
-                    )}
-                  </a>
+                  <div key={item.id} className="flex items-center gap-1">
+                    <a
+                      href={`#${item.id}`}
+                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex flex-1 items-center justify-between rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
+                    >
+                      <span className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </span>
+                      {item.count !== undefined && item.count > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          {item.count.toLocaleString()}
+                        </Badge>
+                      )}
+                    </a>
+                    {item.link &&
+                      item.count !== undefined &&
+                      item.count > 0 && (
+                        <Link
+                          href={item.link}
+                          className="text-muted-foreground hover:bg-accent rounded-md p-2 transition-colors hover:text-green-600"
+                          title={`View all ${item.label}`}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
+                      )}
+                  </div>
                 ))}
               </nav>
             </div>

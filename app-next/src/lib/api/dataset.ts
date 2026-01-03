@@ -75,7 +75,9 @@ export async function fetchDatasetTaskCount(
     }
 
     const data = await response.json();
-    return data.hits?.total?.value || 0;
+    // Handle both ES7+ format (total.value) and older format (total as number)
+    const total = data.hits?.total;
+    return typeof total === "number" ? total : total?.value || 0;
   } catch (error) {
     console.error("Error fetching task count:", error);
     return 0;
@@ -95,13 +97,8 @@ export async function fetchDatasetRunCount(datasetId: string): Promise<number> {
       },
       body: JSON.stringify({
         query: {
-          nested: {
-            path: "input_data",
-            query: {
-              term: {
-                "input_data.data.data_id": datasetId,
-              },
-            },
+          term: {
+            "run_task.source_data.data_id": datasetId,
           },
         },
         size: 0,
@@ -113,7 +110,9 @@ export async function fetchDatasetRunCount(datasetId: string): Promise<number> {
     }
 
     const data = await response.json();
-    return data.hits?.total?.value || 0;
+    // Handle both ES7+ format (total.value) and older format (total as number)
+    const total = data.hits?.total;
+    return typeof total === "number" ? total : total?.value || 0;
   } catch (error) {
     console.error("Error fetching run count:", error);
     return 0;

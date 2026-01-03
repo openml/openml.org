@@ -14,9 +14,9 @@ import {
   ExternalLink,
   Tag,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { cn } from "@/lib/utils";
 import type { Dataset } from "@/types/dataset";
 
@@ -77,163 +77,165 @@ export function MetadataSection({ dataset }: MetadataSectionProps) {
   }
 
   return (
-    <section id="metadata" className="scroll-mt-20">
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Metadata</CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={toggleGlobal}
-            >
-              {globalState === true ? "Collapse All" : "Expand All"}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-0 divide-y pt-0">
-          {/* Authors/Creators */}
-          {creator && (
-            <MetadataItem
-              title="Authors"
-              icon={<User className="h-4 w-4" />}
-              defaultOpen={true}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <Badge variant="secondary" className="text-xs">
-                {creator}
-              </Badge>
-            </MetadataItem>
-          )}
+    <CollapsibleSection
+      id="metadata"
+      title="Metadata"
+      description="Authors, license, citation, and tags"
+      icon={<Scroll className="h-4 w-4 text-gray-500" />}
+      defaultOpen={true}
+      headerExtra={
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 text-xs"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleGlobal();
+          }}
+        >
+          {globalState === true ? "Collapse All" : "Expand All"}
+        </Button>
+      }
+    >
+      <div className="space-y-0 divide-y p-4">
+        {/* Authors/Creators */}
+        {creator && (
+          <MetadataItem
+            title="Authors"
+            icon={<User className="h-4 w-4" />}
+            defaultOpen={true}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <Badge variant="secondary" className="text-xs">
+              {creator}
+            </Badge>
+          </MetadataItem>
+        )}
 
-          {/* Target Attribute */}
-          {defaultTargetAttribute && (
-            <MetadataItem
-              title="Default Target"
-              icon={<MapPin className="h-4 w-4" />}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <code className="bg-muted rounded px-2 py-1 text-sm">
-                {defaultTargetAttribute}
-              </code>
-            </MetadataItem>
-          )}
+        {/* Target Attribute */}
+        {defaultTargetAttribute && (
+          <MetadataItem
+            title="Default Target"
+            icon={<MapPin className="h-4 w-4" />}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <code className="bg-muted rounded px-2 py-1 text-sm">
+              {defaultTargetAttribute}
+            </code>
+          </MetadataItem>
+        )}
 
-          {/* Citation */}
-          {citation && (
-            <MetadataItem
-              title="Citation"
-              icon={<Quote className="h-4 w-4" />}
-              defaultOpen={true}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <p className="text-muted-foreground text-sm italic">{citation}</p>
-            </MetadataItem>
-          )}
+        {/* Citation */}
+        {citation && (
+          <MetadataItem
+            title="Citation"
+            icon={<Quote className="h-4 w-4" />}
+            defaultOpen={true}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <p className="text-muted-foreground text-sm italic">{citation}</p>
+          </MetadataItem>
+        )}
 
-          {/* DOI / Paper URL */}
-          {paperUrl && (
-            <MetadataItem
-              title="Paper"
-              icon={<Quote className="h-4 w-4" />}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
+        {/* DOI / Paper URL */}
+        {paperUrl && (
+          <MetadataItem
+            title="Paper"
+            icon={<Quote className="h-4 w-4" />}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <Link
+              href={paperUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary flex items-center gap-1 text-sm hover:underline"
             >
+              {paperUrl.length > 60 ? paperUrl.slice(0, 60) + "..." : paperUrl}
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </MetadataItem>
+        )}
+
+        {/* Provenance / Original Data */}
+        {originalDataUrl && (
+          <MetadataItem
+            title="Provenance"
+            icon={<Scroll className="h-4 w-4" />}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <div className="text-sm">
+              <span className="text-muted-foreground">Original source: </span>
               <Link
-                href={paperUrl}
+                href={originalDataUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary flex items-center gap-1 text-sm hover:underline"
+                className="text-primary inline-flex items-center gap-1 hover:underline"
               >
-                {paperUrl.length > 60
-                  ? paperUrl.slice(0, 60) + "..."
-                  : paperUrl}
+                {originalDataUrl.length > 50
+                  ? originalDataUrl.slice(0, 50) + "..."
+                  : originalDataUrl}
                 <ExternalLink className="h-3 w-3" />
               </Link>
-            </MetadataItem>
-          )}
+            </div>
+          </MetadataItem>
+        )}
 
-          {/* Provenance / Original Data */}
-          {originalDataUrl && (
-            <MetadataItem
-              title="Provenance"
-              icon={<Scroll className="h-4 w-4" />}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <div className="text-sm">
-                <span className="text-muted-foreground">Original source: </span>
+        {/* License */}
+        {licence && (
+          <MetadataItem
+            title="License"
+            icon={<Scale className="h-4 w-4" />}
+            defaultOpen={true}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <Badge variant="outline" className="text-xs">
+              {licence}
+            </Badge>
+          </MetadataItem>
+        )}
+
+        {/* Collection Date */}
+        {collectionDate && (
+          <MetadataItem
+            title="Collection Date"
+            icon={<Calendar className="h-4 w-4" />}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <span className="text-sm">{collectionDate}</span>
+          </MetadataItem>
+        )}
+
+        {/* Tags */}
+        {tags.length > 0 && (
+          <MetadataItem
+            title="Tags"
+            icon={<Tag className="h-4 w-4" />}
+            defaultOpen={true}
+            forceOpen={globalState}
+            onIndividualToggle={() => setGlobalState(null)}
+          >
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag, idx) => (
                 <Link
-                  href={originalDataUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary inline-flex items-center gap-1 hover:underline"
+                  key={idx}
+                  href={`/search?type=data&tags.tag=${encodeURIComponent(tag.tag)}`}
+                  className="bg-muted hover:bg-muted/80 rounded-full px-2 py-1 text-xs transition-colors"
                 >
-                  {originalDataUrl.length > 50
-                    ? originalDataUrl.slice(0, 50) + "..."
-                    : originalDataUrl}
-                  <ExternalLink className="h-3 w-3" />
+                  {tag.tag}
                 </Link>
-              </div>
-            </MetadataItem>
-          )}
-
-          {/* License */}
-          {licence && (
-            <MetadataItem
-              title="License"
-              icon={<Scale className="h-4 w-4" />}
-              defaultOpen={true}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <Badge variant="outline" className="text-xs">
-                {licence}
-              </Badge>
-            </MetadataItem>
-          )}
-
-          {/* Collection Date */}
-          {collectionDate && (
-            <MetadataItem
-              title="Collection Date"
-              icon={<Calendar className="h-4 w-4" />}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <span className="text-sm">{collectionDate}</span>
-            </MetadataItem>
-          )}
-
-          {/* Tags */}
-          {tags.length > 0 && (
-            <MetadataItem
-              title="Tags"
-              icon={<Tag className="h-4 w-4" />}
-              defaultOpen={true}
-              forceOpen={globalState}
-              onIndividualToggle={() => setGlobalState(null)}
-            >
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag, idx) => (
-                  <Link
-                    key={idx}
-                    href={`/search?type=data&tags.tag=${encodeURIComponent(tag.tag)}`}
-                    className="bg-muted hover:bg-muted/80 rounded-full px-2 py-1 text-xs transition-colors"
-                  >
-                    {tag.tag}
-                  </Link>
-                ))}
-              </div>
-            </MetadataItem>
-          )}
-        </CardContent>
-      </Card>
-    </section>
+              ))}
+            </div>
+          </MetadataItem>
+        )}
+      </div>
+    </CollapsibleSection>
   );
 }
 
