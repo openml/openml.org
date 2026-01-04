@@ -1,6 +1,38 @@
 "use server";
 
-export async function searchRuns(body: any) {
+interface OpenMLRunSearchBody {
+  query?: {
+    bool?: {
+      must?: Array<{
+        term?: Record<string, unknown>;
+        match?: Record<string, unknown>;
+        range?: Record<
+          string,
+          { gte?: number | string; lte?: number | string }
+        >;
+      }>;
+      filter?: Array<{
+        term?: Record<string, unknown>;
+        range?: Record<
+          string,
+          { gte?: number | string; lte?: number | string }
+        >;
+      }>;
+    };
+    ids?: { values: string[] };
+    term?: Record<string, unknown>;
+    match?: Record<string, unknown>;
+  };
+  size?: number;
+  from?: number;
+  sort?: Array<{
+    [field: string]: { order: "asc" | "desc" };
+  }>;
+  aggs?: Record<string, unknown>;
+  _source?: string[];
+}
+
+export async function searchRuns(body: OpenMLRunSearchBody) {
   try {
     const response = await fetch("https://www.openml.org/es/run/_search", {
       method: "POST",

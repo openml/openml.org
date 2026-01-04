@@ -326,7 +326,7 @@ export function UserProfilePage({ userId }: { userId: string }) {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500 text-4xl font-bold text-white sm:text-5xl">
+                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-500 to-pink-500 text-4xl font-bold text-white sm:text-5xl">
                       {user.first_name?.charAt(0).toUpperCase() || "?"}
                     </div>
                   )}
@@ -742,7 +742,10 @@ export function UserProfilePage({ userId }: { userId: string }) {
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h3 className="hover:text-primary font-semibold">
+                                <h3
+                                  className="hover:text-primary truncate font-semibold"
+                                  title={flow.name}
+                                >
                                   {flow.name}
                                 </h3>
                                 {flow.description && (

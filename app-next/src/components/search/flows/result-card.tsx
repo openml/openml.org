@@ -102,8 +102,8 @@ export function FlowResultCard({ result }: FlowResultCardProps) {
         <div className="mb-1 flex items-start">
           <div className="w-full min-w-0">
             <div className="mb-2 flex flex-wrap items-baseline">
-              <Link href={`/flows/${flowId}`}>
-                <h3 className="inline text-lg/snug font-semibold wrap-break-word hyphens-auto hover:underline">
+              <Link href={`/flows/${flowId}`} title={name}>
+                <h3 className="line-clamp-2 text-lg/snug font-semibold hover:underline">
                   {name}
                 </h3>
               </Link>

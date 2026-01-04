@@ -256,7 +256,7 @@ export function AccountPage() {
               <CardTitle className="flex items-center gap-3">
                 <Avatar className="h-16 w-16">
                   <AvatarImage src={user.image} alt={user.username} />
-                  {/* <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-xl font-bold text-white"> */}
+                  {/* <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-xl font-bold text-white"> */}
                   <AvatarFallback className="gradient-bg text-xl font-bold text-white">
                     {initials}
                   </AvatarFallback>
@@ -373,12 +373,14 @@ export function AccountPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <a
-                    href="/auth/reset-password"
-                    className="text-primary hover:underline"
-                  >
-                    Forgot password?
-                  </a>
+                  <Link href="/auth/reset-password">
+                    <Button
+                      variant="link"
+                      className="text-primary hover:underline"
+                    >
+                      Forgot password?
+                    </Button>
+                  </Link>
                 </div>
                 <Button
                   className="w-full"
@@ -504,12 +506,14 @@ export function AccountPage() {
                   </svg>
                   <p className="text-sm">
                     By joining, you agree to the{" "}
-                    <a
-                      href="/terms"
-                      className="text-primary font-medium hover:underline"
-                    >
-                      Honor Code and Terms of Use
-                    </a>
+                    <Link href="/terms">
+                      <Button
+                        variant="link"
+                        className="text-primary hover:underline"
+                      >
+                        Honor Code and Terms of Use
+                      </Button>
+                    </Link>
                     .
                   </p>
                 </div>

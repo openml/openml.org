@@ -731,7 +731,7 @@ run.publish()`}</code>
           </section>
 
           {/* Call to Action */}
-          <Card className="from-primary/5 to-primary/10 border-primary/20 bg-gradient-to-br">
+          <Card className="from-primary/5 to-primary/10 border-primary/20 bg-linear-to-br">
             <CardContent className="pt-6 text-center">
               <h3 className="mb-4 text-2xl font-bold">Ready to Dive Deeper?</h3>
               <p className="text-muted-foreground mb-6 text-lg">

@@ -570,7 +570,7 @@ export function UserDashboard() {
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
               {stats.topDataset && (
-                <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-white dark:border-green-800 dark:from-green-950/20 dark:to-slate-800">
+                <Card className="border-2 border-green-200 bg-linear-to-br from-green-50 to-white dark:border-green-800 dark:from-green-950/20 dark:to-slate-800">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -604,7 +604,7 @@ export function UserDashboard() {
               )}
 
               {stats.topFlow && (
-                <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white dark:border-blue-800 dark:from-blue-950/20 dark:to-slate-800">
+                <Card className="border-2 border-blue-200 bg-linear-to-br from-blue-50 to-white dark:border-blue-800 dark:from-blue-950/20 dark:to-slate-800">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -667,7 +667,7 @@ export function UserDashboard() {
                 <Link key={card.id} href={card.href}>
                   <Card className="group relative overflow-hidden border-2 bg-white transition-all hover:scale-105 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800">
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br opacity-10 transition-opacity group-hover:opacity-20 ${card.color}`}
+                      className={`absolute inset-0 bg-linear-to-br opacity-10 transition-opacity group-hover:opacity-20 ${card.color}`}
                     />
                     <CardContent className="relative flex items-center gap-4 p-8">
                       <div className="flex size-16 shrink-0 items-center justify-center rounded-full border-2 border-slate-900 bg-white dark:border-white dark:bg-slate-900">

@@ -163,8 +163,8 @@ export default async function MeetUsPage({
       <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <div className="mb-12 text-center">
-          <div className="bg-primary/10 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
-            <Users className="text-primary h-10 w-10" />
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
+            <Users className="h-10 w-10 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
           </div>
           <h1 className="gradient-text mb-4 text-4xl font-bold tracking-tight md:text-5xl">
             {t("hero.title")}
@@ -176,10 +176,10 @@ export default async function MeetUsPage({
 
         {/* Why Hackathons */}
         <section id="why" className="mb-16">
-          <Card className="border-primary/20 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20">
+          <Card className="border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
-                <PartyPopper className="h-6 w-6 text-orange-500" />
+                <PartyPopper className="h-6 w-6 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
                 {t("why.title")}
               </CardTitle>
             </CardHeader>
@@ -189,15 +189,15 @@ export default async function MeetUsPage({
               </p>
               <div className="flex flex-wrap gap-6 pt-4">
                 <div className="flex items-center gap-2">
-                  <Laptop className="text-primary h-5 w-5" />
+                  <Laptop className="h-5 w-5 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
                   <span>{t("why.bringLaptop")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Coffee className="h-5 w-5 text-amber-600" />
+                  <Coffee className="h-5 w-5 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
                   <span>{t("why.drinksSnacks")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-500" />
+                  <Users className="h-5 w-5 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
                   <span>{t("why.greatCompany")}</span>
                 </div>
               </div>
@@ -274,7 +274,7 @@ export default async function MeetUsPage({
             </Card>
           ))}
 
-          <Alert className="bg-blue-50 dark:bg-blue-950/20">
+          <Alert>
             <Users className="h-4 w-4" />
             <AlertDescription>
               {t("upcoming.slackAlert").split("Slack")[0]}
@@ -292,10 +292,10 @@ export default async function MeetUsPage({
 
         {/* Sponsor Section */}
         <section id="sponsor" className="mb-16">
-          <Card className="border-pink-200 bg-linear-to-br from-pink-50 to-purple-50 dark:border-pink-800 dark:from-pink-950/20 dark:to-purple-950/20">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
-                <Heart className="h-6 w-6 text-pink-500" />
+                <Heart className="h-6 w-6 bg-linear-to-br from-blue-500 to-purple-600 bg-clip-text text-purple-600" />
                 {t("sponsor.title")}
               </CardTitle>
               <CardDescription className="text-base">
@@ -378,7 +378,7 @@ export default async function MeetUsPage({
 
         {/* Call to Action */}
         <section className="text-center">
-          <Card className="bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-950/30 dark:to-yellow-950/30">
+          <Card>
             <CardContent className="py-8">
               <h3 className="mb-4 text-2xl font-bold">{t("cta.title")}</h3>
               <p className="text-muted-foreground mb-6">
