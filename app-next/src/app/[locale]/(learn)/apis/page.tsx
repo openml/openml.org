@@ -28,10 +28,30 @@ export async function generateMetadata({
       "benchmarking",
       "scikit-learn",
     ],
+    alternates: {
+      canonical: `/${locale}/apis`,
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
+      url: `https://www.openml.org/${locale}/apis`,
+      siteName: "OpenML",
+      images: [
+        {
+          url: "https://www.openml.org/images/og/apis.png",
+          width: 1200,
+          height: 630,
+          alt: "OpenML APIs - Python, R, Java, REST",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      site: "@open_ml",
+      images: ["https://www.openml.org/images/og/apis.png"],
     },
   };
 }

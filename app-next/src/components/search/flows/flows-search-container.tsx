@@ -16,9 +16,6 @@ import {
   Calendar,
   User,
   Hash,
-  List,
-  LayoutGrid,
-  Columns,
   Clock,
 } from "lucide-react";
 import { FlowResultCard } from "./result-card";
@@ -178,7 +175,7 @@ export function FlowsSearchContainer() {
                           return (
                             <div
                               key={flowId || index}
-                              className="hover:bg-muted/40 relative flex items-start justify-between border-b px-4 py-1.5 transition-colors"
+                              className="relative flex items-start justify-between border-b p-4 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/15"
                             >
                               <div className="min-w-0 flex-1">
                                 {/* Line 1: Icon, Name, Version, ID Badge */}
@@ -327,7 +324,7 @@ export function FlowsSearchContainer() {
                           <Link
                             key={result.flow_id?.raw || index}
                             href={`/flows/${result.flow_id?.raw}`}
-                            className="hover:bg-muted/50 flex items-center justify-between p-3"
+                            className="flex items-center justify-between p-3 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/15"
                           >
                             <div className="flex items-center gap-3">
                               <Cog className="h-4 w-4 text-[#3b82f6]" />
@@ -378,8 +375,8 @@ export function FlowsSearchContainer() {
                                     onClick={() => setSelectedFlow(result)}
                                     className={`cursor-pointer border-b px-4 py-1.5 transition-colors ${
                                       isSelected
-                                        ? "bg-muted/50 ring-muted-foreground/20 ring-1 ring-inset dark:bg-slate-800"
-                                        : "hover:bg-muted/30"
+                                        ? "bg-blue-100 dark:bg-blue-900/30"
+                                        : "hover:bg-blue-50 dark:hover:bg-blue-900/15"
                                     }`}
                                   >
                                     <div className="mb-1 flex items-start gap-2">

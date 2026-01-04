@@ -160,6 +160,7 @@
     "hero": {
       "version": "Version 3.0: Entwickelt für reproduzierbare Wissenschaft",
       "title": "Das globale Labor für Machine-Learning-Forschung",
+      "subtitle": "Machine Learning lebt von Transparenz. OpenML ist die offene, kollaborative Umgebung, in der Wissenschaftler FAIR-Daten teilen, Experimente organisieren und auf modernsten Algorithmen aufbauen.",
       "description": "Machine Learning lebt von Transparenz. OpenML ist die offene, kollaborative Umgebung, in der Wissenschaftler FAIR-Daten teilen, Experimente organisieren und auf modernsten Algorithmen aufbauen.",
       "startTracking": "Fang an zu tracken und zu teilen!",
       "readManifesto": "Lies das Manifest",

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   Heart,
-  Play,
   Calendar,
   CheckCircle,
   AlertTriangle,
@@ -17,13 +16,13 @@ import {
   Tag,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
 import { DatasetCodeMenukggl } from "./dataset-code-menu-kggl";
 import { DatasetActionsMenu } from "./dataset-actions-menu";
 import { LikeButton } from "@/components/ui/like-button";
+import { ExperimentMenu } from "@/components/ui/experiment-menu";
 
 interface DatasetHeaderProps {
   dataset: Dataset;
@@ -69,14 +68,6 @@ export function DatasetHeader({
   };
 
   const tags = dataset.tags ?? [];
-
-  const visibleMd = tags.slice(0, 3);
-  const visibleLg = tags.slice(0, 7);
-  const visibleXl = tags.slice(0, 10);
-
-  const moreMd = Math.max(tags.length - 3, 0);
-  const moreLg = Math.max(tags.length - 7, 0);
-  const moreXl = Math.max(tags.length - 10, 0);
 
   return (
     <header className="space-y-6 border-b p-0">
@@ -219,158 +210,199 @@ export function DatasetHeader({
           </div>
         </div>
       </div>
-      {/* LINE 4: Tags Row + Stats + Actions */}
+      {/* LINE 4: Tags Row - Responsive display */}
       {tags.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="-mt-2 mb-5 flex flex-col gap-4 pl-6 sm:flex-row sm:items-center sm:justify-between">
-            {/* Tags Row (if tags exist) */}
-            {/* Tag icon always visible */}
-            <Tag className="text-muted-foreground h-4 w-4" />
+        <div className="flex flex-wrap items-center gap-2 pl-12">
+          <Tag className="text-muted-foreground h-4 w-4" />
 
-            {/* < sm: just count */}
-            <span className="text-muted-foreground text-xs sm:hidden">
-              {tags.length} tags
-            </span>
+          {/* xs: count only */}
+          <span className="text-muted-foreground text-xs sm:hidden">
+            {tags.length} tags
+          </span>
 
-            {/* md only: 3 tags + more */}
-            <div className="hidden flex-wrap gap-2 sm:flex md:hidden">
-              {tags.slice(0, 3).map((tagObj, idx) => (
-                <a
-                  key={`${tagObj.tag}-${idx}`}
-                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+          {/* sm: 3 tags */}
+          <div className="hidden gap-2 sm:flex md:hidden">
+            {tags.slice(0, 3).map((tagObj, idx) => (
+              <a
+                key={`sm-${tagObj.tag}-${idx}`}
+                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
                 >
-                  <Badge
-                    variant="secondary"
-                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
-                  >
-                    {tagObj.tag}
-                  </Badge>
-                </a>
-              ))}
-              {tags.length > 3 && (
-                <span className="text-muted-foreground text-xs">
-                  +{tags.length - 3} more
-                </span>
-              )}
-            </div>
+                  {tagObj.tag}
+                </Badge>
+              </a>
+            ))}
+            {tags.length > 3 && (
+              <span className="text-muted-foreground text-xs">
+                +{tags.length - 3} more
+              </span>
+            )}
+          </div>
 
-            {/* lg only: 7 tags + more */}
-            <div className="hidden flex-wrap gap-2 md:flex lg:hidden">
-              {tags.slice(0, 7).map((tagObj, idx) => (
-                <a
-                  key={`${tagObj.tag}-${idx}`}
-                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+          {/* md: 6 tags */}
+          <div className="hidden gap-2 md:flex lg:hidden">
+            {tags.slice(0, 6).map((tagObj, idx) => (
+              <a
+                key={`md-${tagObj.tag}-${idx}`}
+                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
                 >
-                  <Badge
-                    variant="secondary"
-                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
-                  >
-                    {tagObj.tag}
-                  </Badge>
-                </a>
-              ))}
-              {tags.length > 7 && (
-                <span className="text-muted-foreground text-xs">
-                  +{tags.length - 7} more
-                </span>
-              )}
-            </div>
+                  {tagObj.tag}
+                </Badge>
+              </a>
+            ))}
+            {tags.length > 6 && (
+              <span className="text-muted-foreground text-xs">
+                +{tags.length - 6} more
+              </span>
+            )}
+          </div>
 
-            {/* xl and up: 10 tags + more */}
-            <div className="hidden flex-wrap gap-2 lg:flex">
-              {tags.slice(0, 10).map((tagObj, idx) => (
-                <a
-                  key={`${tagObj.tag}-${idx}`}
-                  href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+          {/* lg: 8 tags */}
+          <div className="hidden gap-2 lg:flex xl:hidden">
+            {tags.slice(0, 8).map((tagObj, idx) => (
+              <a
+                key={`lg-${tagObj.tag}-${idx}`}
+                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
                 >
-                  <Badge
-                    variant="secondary"
-                    className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
-                  >
-                    {tagObj.tag}
-                  </Badge>
-                </a>
-              ))}
-              {tags.length > 10 && (
-                <span className="text-muted-foreground text-xs">
-                  +{tags.length - 10} more
-                </span>
-              )}
-            </div>
+                  {tagObj.tag}
+                </Badge>
+              </a>
+            ))}
+            {tags.length > 8 && (
+              <span className="text-muted-foreground text-xs">
+                +{tags.length - 8} more
+              </span>
+            )}
+          </div>
+
+          {/* xl: 10 tags */}
+          <div className="hidden gap-2 xl:flex 2xl:hidden">
+            {tags.slice(0, 10).map((tagObj, idx) => (
+              <a
+                key={`xl-${tagObj.tag}-${idx}`}
+                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                >
+                  {tagObj.tag}
+                </Badge>
+              </a>
+            ))}
+            {tags.length > 10 && (
+              <span className="text-muted-foreground text-xs">
+                +{tags.length - 10} more
+              </span>
+            )}
+          </div>
+
+          {/* 2xl: 12 tags */}
+          <div className="hidden gap-2 2xl:flex">
+            {tags.slice(0, 12).map((tagObj, idx) => (
+              <a
+                key={`2xl-${tagObj.tag}-${idx}`}
+                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                >
+                  {tagObj.tag}
+                </Badge>
+              </a>
+            ))}
+            {tags.length > 12 && (
+              <span className="text-muted-foreground text-xs">
+                +{tags.length - 12} more
+              </span>
+            )}
           </div>
         </div>
       )}
 
       {/* Divider - only show if we have stats to display */}
-      {(dataset.qualities?.NumberOfInstances != null ||
-        dataset.qualities?.NumberOfFeatures != null ||
-        (dataset.qualities?.NumberOfClasses != null &&
-          dataset.qualities.NumberOfClasses > 0) ||
-        dataset.qualities?.NumberOfMissingValues != null ||
-        taskCount > 0 ||
-        runCount > 0 ||
-        dataset.runs) && (
-        <>
-          {/* <div className="border-t bg-gray-200 dark:border-gray-700" /> */}
+      {/* 1. Calculate if we have anything to show (Boolean check) */}
+      {(() => {
+        const hasInstances = dataset.qualities?.NumberOfInstances != null;
+        const hasFeatures = dataset.qualities?.NumberOfFeatures != null;
+        const hasClasses = (dataset.qualities?.NumberOfClasses ?? 0) > 0;
+        const hasMissing = dataset.qualities?.NumberOfMissingValues != null;
+        const hasTasks = taskCount > 0;
+        const hasRuns = runCount > 0 || !!dataset.runs; // Fixed with !!
 
-          {/* LINE 5: Statistics - Dataset Characteristics */}
+        const showStats =
+          hasInstances ||
+          hasFeatures ||
+          hasClasses ||
+          hasMissing ||
+          hasTasks ||
+          hasRuns;
+
+        if (!showStats) return null;
+
+        return (
           <div className="bg-accent flex flex-wrap items-center justify-around gap-6 rounded-lg p-2 dark:bg-slate-700">
             {/* Instances */}
-            {dataset.qualities?.NumberOfInstances != null && (
+            {hasInstances && (
               <Stat
-                value={(
-                  dataset.qualities.NumberOfInstances || 0
-                ).toLocaleString()}
+                value={dataset.qualities.NumberOfInstances.toLocaleString()}
                 label="Instances"
               />
             )}
 
             {/* Features */}
-            {dataset.qualities?.NumberOfFeatures != null && (
+            {hasFeatures && (
               <Stat
-                value={(
-                  dataset.qualities.NumberOfFeatures || 0
-                ).toLocaleString()}
+                value={dataset.qualities.NumberOfFeatures.toLocaleString()}
                 label="Features"
               />
             )}
 
             {/* Classes */}
-            {dataset.qualities?.NumberOfClasses != null &&
-              dataset.qualities.NumberOfClasses > 0 && (
-                <Stat
-                  value={(
-                    dataset.qualities.NumberOfClasses || 0
-                  ).toLocaleString()}
-                  label="Classes"
-                />
-              )}
+            {hasClasses && (
+              <Stat
+                value={dataset.qualities.NumberOfClasses.toLocaleString()}
+                label="Classes"
+              />
+            )}
 
             {/* Missing Values */}
-            {dataset.qualities?.NumberOfMissingValues != null && (
+            {hasMissing && (
               <Stat
-                value={(
-                  dataset.qualities.NumberOfMissingValues || 0
-                ).toLocaleString()}
+                value={dataset.qualities.NumberOfMissingValues.toLocaleString()}
                 label="Missing"
               />
             )}
 
             {/* Tasks */}
-            {taskCount > 0 && (
+            {hasTasks && (
               <Stat value={taskCount.toLocaleString()} label="Tasks" />
             )}
 
-            {/* Runs */}
-            {(runCount > 0 || dataset.runs) && (
+            {/* Runs - Fixed the 0 bug here too */}
+            {hasRuns && (
               <Stat
                 value={(runCount || dataset.runs || 0).toLocaleString()}
                 label="Runs"
               />
             )}
           </div>
-        </>
-      )}
+        );
+      })()}
+      {/* END Divider */}
+
       {/* LINE 5: Action Buttons */}
       <div className="flex-wrap. mt-2 mb-4 flex items-center justify-end sm:gap-2 md:gap-3 lg:gap-5 xl:gap-7">
         {/* Download Dataset Dropdown */}
@@ -387,10 +419,12 @@ export function DatasetHeader({
         />
 
         {/* Run Experiment */}
-        <Button variant="outline" className="dark:border-slate-400" disabled>
-          <Play className="mr-2 h-4 w-4" />
-          Run Experiment
-        </Button>
+        <ExperimentMenu
+          entityType="dataset"
+          entityId={dataset.data_id}
+          entityName={dataset.name}
+          taskCount={taskCount}
+        />
 
         {/* Like Button */}
         <LikeButton

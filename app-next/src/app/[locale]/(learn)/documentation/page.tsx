@@ -47,10 +47,30 @@ export async function generateMetadata({
       "ML benchmarking",
       "scikit-learn integration",
     ],
+    alternates: {
+      canonical: `/${locale}/documentation`,
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
+      url: `https://www.openml.org/${locale}/documentation`,
+      siteName: "OpenML",
+      images: [
+        {
+          url: "https://www.openml.org/images/og/documentation.png",
+          width: 1200,
+          height: 630,
+          alt: "OpenML Documentation - Learn Machine Learning",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      site: "@open_ml",
+      images: ["https://www.openml.org/images/og/documentation.png"],
     },
   };
 }

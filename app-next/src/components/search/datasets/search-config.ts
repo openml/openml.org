@@ -48,6 +48,8 @@ const dataConfig = {
       runs: { raw: {} },
       status: { raw: {} },
       version: { raw: {} },
+      uploader: { raw: {} },
+      original_data_url: { raw: {} },
     },
     disjunctiveFacets: [
       "status.keyword",

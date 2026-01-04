@@ -160,6 +160,7 @@
     "hero": {
       "version": "Version 3.0 : Construite pour une science reproductible",
       "title": "Le laboratoire mondial pour la recherche en apprentissage automatique",
+      "subtitle": "L'apprentissage automatique prospère grâce à la transparantie. OpenML est l'environnement ouvert et collaboratif où les scientifiques partagent des données FAIR, organisent des expériences et s'appuient sur des algorithmes de pointe.",
       "description": "L'apprentissage automatique prospère grâce à la transparantie. OpenML est l'environnement ouvert et collaboratif où les scientifiques partagent des données FAIR, organisent des expériences et s'appuient sur des algorithmes de pointe.",
       "startTracking": "Commencez à suivre et partager !",
       "readManifesto": "Lire le Manifeste",

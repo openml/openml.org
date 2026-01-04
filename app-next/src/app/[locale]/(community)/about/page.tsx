@@ -31,10 +31,30 @@ export async function generateMetadata({
       "collaborative ML",
       "open source AI",
     ],
+    alternates: {
+      canonical: `/${locale}/about`,
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
+      url: `https://www.openml.org/${locale}/about`,
+      siteName: "OpenML",
+      images: [
+        {
+          url: "https://www.openml.org/images/og/about.png",
+          width: 1200,
+          height: 630,
+          alt: "About OpenML - Open Science Machine Learning Platform",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      site: "@open_ml",
+      images: ["https://www.openml.org/images/og/about.png"],
     },
   };
 }

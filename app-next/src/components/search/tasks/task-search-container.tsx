@@ -18,6 +18,9 @@ import {
   Target,
   Gauge,
   ChevronRight,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 interface TaskSearchResult {
@@ -536,6 +539,51 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
   );
 }
 
+// Task table columns configuration
+const taskTableColumns = [
+  { field: "task_id", label: "ID", width: "w-20", sortable: true },
+  {
+    field: "tasktype.name",
+    label: "Task Type",
+    width: "w-40",
+    sortable: false,
+  },
+  {
+    field: "source_data.name",
+    label: "Dataset",
+    width: "w-40",
+    sortable: false,
+  },
+  { field: "target_feature", label: "Target", width: "w-32", sortable: false },
+  {
+    field: "estimation_procedure.type",
+    label: "Estimation",
+    width: "w-40",
+    sortable: false,
+  },
+  {
+    field: "runs",
+    label: "Runs",
+    width: "w-24",
+    sortable: true,
+    align: "right",
+  },
+  {
+    field: "nr_of_likes",
+    label: "Likes",
+    width: "w-24",
+    sortable: true,
+    align: "right",
+  },
+  {
+    field: "nr_of_downloads",
+    label: "Downloads",
+    width: "w-28",
+    sortable: true,
+    align: "right",
+  },
+];
+
 // Task Results Table
 function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
   if (!results || results.length === 0) {
@@ -547,85 +595,142 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="bg-muted/50 border-b">
-            <th className="p-3 text-left text-sm font-medium">ID</th>
-            <th className="p-3 text-left text-sm font-medium">Task Type</th>
-            <th className="p-3 text-left text-sm font-medium">Dataset</th>
-            <th className="p-3 text-left text-sm font-medium">Target</th>
-            <th className="p-3 text-left text-sm font-medium">Estimation</th>
-            <th className="p-3 text-right text-sm font-medium">Runs</th>
-            <th className="p-3 text-right text-sm font-medium">Likes</th>
-            <th className="p-3 text-right text-sm font-medium">Downloads</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map((result, index) => {
-            const tid = result.task_id?.raw || result.id?.raw;
-            const datasetId = result.source_data?.raw?.data_id;
-            const datasetName = result.source_data?.raw?.name || "Unknown";
-            const taskType =
-              result.tasktype?.raw?.name || result.task_type?.raw || "Unknown";
-            const estimation = result.estimation_procedure?.raw?.type || "-";
-            return (
-              <tr
-                key={tid || index}
-                className="border-b transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/10"
-              >
-                <td className="p-3">
-                  <Link
-                    href={`/tasks/${tid}`}
-                    className="inline-flex items-center gap-1.5 font-medium text-orange-600 hover:text-orange-700 hover:underline"
-                  >
-                    <Trophy className="h-4 w-4" style={{ color: "#FFA726" }} />
-                    {tid}
-                  </Link>
-                </td>
-                <td className="p-3 font-medium">{taskType}</td>
-                <td className="p-3">
-                  <Link
-                    href={`/datasets/${datasetId}`}
-                    className="inline-flex items-center gap-1.5 text-green-600 hover:text-green-700 hover:underline"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Database className="h-3.5 w-3.5" />
-                    {datasetName}
-                  </Link>
-                </td>
-                <td className="p-3">
-                  <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
-                    {result.target_feature?.raw || "-"}
-                  </code>
-                </td>
-                <td className="text-muted-foreground p-3 text-sm">
-                  {estimation}
-                </td>
-                <td className="p-3 text-right">
-                  <span className="inline-flex items-center gap-1">
-                    <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
-                    {result.runs?.raw?.toLocaleString() || 0}
-                  </span>
-                </td>
-                <td className="p-3 text-right">
-                  <span className="inline-flex items-center gap-1">
-                    <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
-                    {result.nr_of_likes?.raw?.toLocaleString() || 0}
-                  </span>
-                </td>
-                <td className="p-3 text-right">
-                  <span className="inline-flex items-center gap-1">
-                    <CloudDownload className="h-3 w-3 text-blue-500" />
-                    {result.nr_of_downloads?.raw?.toLocaleString() || 0}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <WithSearch
+      mapContextToProps={({ sortList, setSort }) => ({ sortList, setSort })}
+    >
+      {(props) => {
+        const sortList = props.sortList as
+          | Array<{ field: string; direction: string }>
+          | undefined;
+        const setSort = props.setSort as
+          | ((
+              sort: Array<{ field: string; direction: string }>,
+              dir: string,
+            ) => void)
+          | undefined;
+
+        const currentSort =
+          sortList && sortList.length > 0 ? sortList[0] : null;
+
+        const handleSort = (field: string, sortable: boolean) => {
+          if (!sortable || !setSort) return;
+          if (currentSort?.field === field) {
+            const newDirection =
+              currentSort.direction === "asc" ? "desc" : "asc";
+            setSort([{ field, direction: newDirection }], newDirection);
+          } else {
+            setSort([{ field, direction: "desc" }], "desc");
+          }
+        };
+
+        const getSortIcon = (field: string, sortable: boolean) => {
+          if (!sortable) return null;
+          if (currentSort?.field !== field) {
+            return <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />;
+          }
+          return currentSort.direction === "asc" ? (
+            <ArrowUp className="ml-1 h-3 w-3" />
+          ) : (
+            <ArrowDown className="ml-1 h-3 w-3" />
+          );
+        };
+
+        return (
+          <div className="overflow-x-auto rounded-md border">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-muted/50 border-b">
+                  {taskTableColumns.map((column) => (
+                    <th
+                      key={column.field}
+                      className={`p-3 ${column.align === "right" ? "text-right" : "text-left"} text-sm font-medium ${column.sortable ? "hover:bg-muted/70 cursor-pointer" : ""} select-none`}
+                      onClick={() => handleSort(column.field, column.sortable)}
+                    >
+                      <div
+                        className={`flex items-center ${column.align === "right" ? "justify-end" : ""}`}
+                      >
+                        {column.label}
+                        {getSortIcon(column.field, column.sortable)}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result, index) => {
+                  const tid = result.task_id?.raw || result.id?.raw;
+                  const datasetId = result.source_data?.raw?.data_id;
+                  const datasetName =
+                    result.source_data?.raw?.name || "Unknown";
+                  const taskType =
+                    result.tasktype?.raw?.name ||
+                    result.task_type?.raw ||
+                    "Unknown";
+                  const estimation =
+                    result.estimation_procedure?.raw?.type || "-";
+                  return (
+                    <tr
+                      key={tid || index}
+                      className="border-b transition-colors hover:bg-orange-50/50 dark:hover:bg-orange-900/10"
+                    >
+                      <td className="p-3">
+                        <Link
+                          href={`/tasks/${tid}`}
+                          className="inline-flex items-center gap-1.5 font-medium text-[#FFA726] hover:text-[#a8690a]"
+                        >
+                          <Trophy
+                            className="h-4 w-4"
+                            style={{ color: "#FFA726" }}
+                          />
+                          {tid}
+                        </Link>
+                      </td>
+                      <td className="p-3 font-medium">{taskType}</td>
+                      <td className="p-3">
+                        <Link
+                          href={`/datasets/${datasetId}`}
+                          className="inline-flex items-center gap-1.5 text-green-600 hover:text-green-700 hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Database className="h-3.5 w-3.5" />
+                          {datasetName}
+                        </Link>
+                      </td>
+                      <td className="p-3">
+                        <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
+                          {result.target_feature?.raw || "-"}
+                        </code>
+                      </td>
+                      <td className="text-muted-foreground p-3 text-sm">
+                        {estimation}
+                      </td>
+                      <td className="p-3 text-right">
+                        <span className="inline-flex items-center gap-1">
+                          <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
+                          {result.runs?.raw?.toLocaleString() || 0}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <span className="inline-flex items-center gap-1">
+                          <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
+                          {result.nr_of_likes?.raw?.toLocaleString() || 0}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <span className="inline-flex items-center gap-1">
+                          <CloudDownload className="h-3 w-3 text-blue-500" />
+                          {result.nr_of_downloads?.raw?.toLocaleString() || 0}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+      }}
+    </WithSearch>
   );
 }
 

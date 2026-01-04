@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Loader2,
   ExternalLink,
-  Clock,
+  Calendar,
   FileJson,
   FileCode,
 } from "lucide-react";
@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { cn } from "@/lib/utils";
 import type { Dataset } from "@/types/dataset";
@@ -35,10 +35,21 @@ interface Run {
   run_id: number;
   task_id: number;
   flow_id: number;
-  uploader: number;
+  uploader_id: number;
+  uploader_name: string;
   upload_time: string;
   error_message?: string;
   flow_name?: string;
+}
+
+// Get initials from name (first letter of first and last name)
+function getInitials(name: string): string {
+  if (!name || name === "Unknown") return "?";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 /**
@@ -66,18 +77,20 @@ export function RunsSection({ dataset, runCount }: RunsSectionProps) {
           // Map ES response to Run interface
           const runsArray: Run[] = data.runs.map(
             (run: {
-              run_id: string;
-              run_flow?: { flow_id: string; name?: string };
-              run_task?: { task_id: string };
+              run_id: string | number;
+              run_flow?: { flow_id: string | number; name?: string };
+              run_task?: { task_id: string | number };
               uploader?: string;
+              uploader_id?: number;
               date?: string;
             }) => ({
-              run_id: parseInt(run.run_id),
-              flow_id: parseInt(run.run_flow?.flow_id || "0"),
+              run_id: Number(run.run_id),
+              flow_id: Number(run.run_flow?.flow_id || 0),
               flow_name: run.run_flow?.name || `Flow #${run.run_flow?.flow_id}`,
-              task_id: parseInt(run.run_task?.task_id || "0"),
-              uploader: run.uploader || "Unknown",
-              setup_id: 0,
+              task_id: Number(run.run_task?.task_id || 0),
+              uploader_id: run.uploader_id || 0,
+              uploader_name: run.uploader || "Unknown",
+              upload_time: run.date || "",
             }),
           );
 
@@ -128,9 +141,13 @@ export function RunsSection({ dataset, runCount }: RunsSectionProps) {
                   href={`/runs/${run.run_id}`}
                   className="hover:bg-muted/50 flex items-center gap-3 p-3 transition-colors"
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="text-xs">
-                      U{run.uploader}
+                  <Avatar className="h-8 w-8 border border-gray-600">
+                    <AvatarImage
+                      src={`https://www.openml.org/img/${run.uploader_id}`}
+                      alt={run.uploader_name}
+                    />
+                    <AvatarFallback className="bg-gray-100 text-xs font-medium text-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                      {getInitials(run.uploader_name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
@@ -156,7 +173,7 @@ export function RunsSection({ dataset, runCount }: RunsSectionProps) {
                       />
                       <span>Task #{run.task_id}</span>
                       <span>•</span>
-                      <Clock className="h-3 w-3" />
+                      <Calendar className="h-3 w-3" />
                       <span>
                         {new Date(run.upload_time).toLocaleDateString()}
                       </span>

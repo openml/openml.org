@@ -33,6 +33,12 @@ interface SearchResult {
   "qualities.NumberOfInstances"?: { raw: number };
   "qualities.NumberOfFeatures"?: { raw: number };
   date?: { raw: string };
+  // Additional metadata
+  format?: { raw: string };
+  licence?: { raw: string };
+  uploader?: { raw: string };
+  original_data_url?: { raw: string };
+  creator?: { raw: string };
   [key: string]: unknown;
 }
 
@@ -348,16 +354,8 @@ export function SearchContainer() {
                                         {result.name?.raw || "Untitled"}
                                       </h4>
                                     </div>
-                                    <p className="text-muted-foreground line-clamp-2 text-xs">
-                                      {
-                                        parseDescription(
-                                          result.description?.snippet ||
-                                            result.description?.raw,
-                                          2,
-                                        ).cleanDescription
-                                      }
-                                    </p>
-                                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                                    {/* Stats + Metadata badges on same line */}
+                                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                                       <span
                                         className="flex items-center gap-1"
                                         title="runs"
@@ -380,7 +378,36 @@ export function SearchContainer() {
                                         <CloudDownload className="h-3 w-3 text-blue-500" />
                                         {result.nr_of_downloads?.raw || 0}
                                       </span>
+                                      {result.format?.raw && (
+                                        <Badge
+                                          variant="secondary"
+                                          className="px-1.5 py-0 text-[10px] font-medium"
+                                        >
+                                          {result.format.raw}
+                                        </Badge>
+                                      )}
+                                      {result.licence?.raw && (
+                                        <Badge
+                                          variant="outline"
+                                          className="px-1.5 py-0 text-[10px]"
+                                        >
+                                          {result.licence.raw}
+                                        </Badge>
+                                      )}
+                                      {result.version?.raw && (
+                                        <span className="text-muted-foreground">
+                                          v.{result.version.raw}
+                                        </span>
+                                      )}
                                     </div>
+                                    {/* Author */}
+                                    {(result.uploader?.raw ||
+                                      result.creator?.raw) && (
+                                      <p className="text-muted-foreground mt-1 truncate text-xs">
+                                        {result.creator?.raw ||
+                                          result.uploader?.raw}
+                                      </p>
+                                    )}
                                   </Link>
                                 );
                               },

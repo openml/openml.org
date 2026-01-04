@@ -7,12 +7,14 @@ import {
   Tags,
   AlertCircle,
   LineChart,
+  Download,
 } from "lucide-react";
 import { RunHeader } from "@/components/run/run-header";
 import { RunMetricsSection } from "@/components/run/run-metrics-section";
 import { RunParametersSection } from "@/components/run/run-parameters-section";
 import { RunNavigationMenu } from "@/components/run/run-navigation-menu";
 import { RunTagsSection } from "@/components/run/run-tags-section";
+import { RunOutputFilesSection } from "@/components/run/run-output-files-section";
 import { RunAnalysesSection } from "@/components/run/run-analyses-section";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import Link from "next/link";
@@ -41,7 +43,7 @@ interface Run {
   };
   visibility?: string;
   error_message?: string | null;
-  tags?: Array<{ tag: string }>;
+  tag?: string[];
   parameter_setting?: Array<{
     name: string;
     value: string | number | boolean | null;
@@ -144,7 +146,7 @@ export default async function RunDetailPage({
   // Count parameters, evaluations, and tags
   const parametersCount = run.parameter_setting?.length || 0;
   const evaluationsCount = run.output_data?.evaluation?.length || 0;
-  const tagsCount = run.tags?.length || 0;
+  const tagsCount = run.tag?.length || 0;
 
   return (
     <div className="relative min-h-screen">
@@ -205,9 +207,20 @@ export default async function RunDetailPage({
                 badge={tagsCount}
                 defaultOpen={false}
               >
-                <RunTagsSection tags={run.tags || []} />
+                <RunTagsSection tags={run.tag || []} />
               </CollapsibleSection>
             )}
+
+            {/* Output Files */}
+            <CollapsibleSection
+              id="output-files"
+              title="Output Files"
+              description="Download run description and predictions"
+              icon={<Download className="h-4 w-4 text-blue-500" />}
+              defaultOpen={false}
+            >
+              <RunOutputFilesSection runId={run.run_id} />
+            </CollapsibleSection>
 
             {/* Setup Description (if available) */}
             {run.setup_string && (

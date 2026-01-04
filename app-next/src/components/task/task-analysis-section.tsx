@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Info, AlertCircle, Loader2 } from "lucide-react";
 import {
   Select,
@@ -103,6 +104,7 @@ interface EvaluationRun {
   flow_name: string;
   flow_id: number;
   uploader: string;
+  uploader_id: number;
   value: number;
   date: string;
 }
@@ -176,7 +178,14 @@ export function TaskAnalysisSection({
           },
           from: page * pageSize,
           size: pageSize,
-          _source: ["run_id", "run_flow", "uploader", "evaluations", "date"],
+          _source: [
+            "run_id",
+            "run_flow",
+            "uploader",
+            "uploader_id",
+            "evaluations",
+            "date",
+          ],
         });
 
         const fetchedRuns: EvaluationRun[] = [];
@@ -191,6 +200,7 @@ export function TaskAnalysisSection({
               flow_name: source.run_flow?.name || "Unknown Flow",
               flow_id: source.run_flow?.flow_id,
               uploader: source.uploader || "Unknown",
+              uploader_id: source.uploader_id,
               value: val,
               date: source.date || "",
             });
@@ -240,7 +250,14 @@ export function TaskAnalysisSection({
             ids: { values: runIds.map(String) },
           },
           size: 100,
-          _source: ["run_id", "run_flow", "uploader", "evaluations", "date"],
+          _source: [
+            "run_id",
+            "run_flow",
+            "uploader",
+            "uploader_id",
+            "evaluations",
+            "date",
+          ],
         });
 
         const fetchedTopRuns: EvaluationRun[] = [];
@@ -253,6 +270,7 @@ export function TaskAnalysisSection({
               flow_name: source.run_flow?.name || "Unknown Flow",
               flow_id: source.run_flow?.flow_id,
               uploader: source.uploader || "Unknown",
+              uploader_id: source.uploader_id,
               value: val,
               date: source.date || "",
             });
@@ -348,7 +366,10 @@ export function TaskAnalysisSection({
 
   // 2. Leaderboard calculation (Using leaderboardRuns)
   const leaderboard = useMemo(() => {
-    const uploaderMap = new Map<string, { top: number; count: number }>();
+    const uploaderMap = new Map<
+      string,
+      { top: number; count: number; id: number }
+    >();
 
     leaderboardRuns.forEach((run) => {
       const existing = uploaderMap.get(run.uploader);
@@ -358,13 +379,18 @@ export function TaskAnalysisSection({
           ? Math.min(existing.top, run.value)
           : Math.max(existing.top, run.value);
       } else {
-        uploaderMap.set(run.uploader, { top: run.value, count: 1 });
+        uploaderMap.set(run.uploader, {
+          top: run.value,
+          count: 1,
+          id: run.uploader_id,
+        });
       }
     });
 
     return Array.from(uploaderMap.entries())
       .map(([name, data]) => ({
         uploader: name,
+        uploader_id: data.id,
         topScore: data.top,
         entries: data.count,
       }))
@@ -476,9 +502,12 @@ export function TaskAnalysisSection({
                                 ),
                               }}
                             />
-                            <span className="cursor-pointer font-medium text-blue-600 hover:underline dark:text-blue-400">
+                            <Link
+                              href={`/users/${entry.uploader_id}`}
+                              className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                            >
                               {entry.uploader}
-                            </span>
+                            </Link>
                           </div>
                         </TableCell>
                         <TableCell className="text-right font-mono font-medium">

@@ -15,10 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { User, LogOut, Settings, Eye, EyeOff } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
@@ -184,10 +181,8 @@ export function AccountPage() {
       // Validate with Zod
       const validated = signUpSchema.parse(signUpForm);
 
-      // TODO: Replace with actual API call to Flask /signup endpoint
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Mock successful signup
       const newUser: UserProfile = {
         username: validated.email.split("@")[0], // Generate username from email
         email: validated.email,

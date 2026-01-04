@@ -11,7 +11,7 @@ import {
   CloudDownload,
   FlaskConical,
 } from "lucide-react";
-import { Sorting } from "@elastic/react-search-ui";
+import { WithSearch } from "@elastic/react-search-ui";
 import {
   Table,
   TableBody,
@@ -41,43 +41,42 @@ interface FlowsResultsTableProps {
   results?: FlowResult[];
 }
 
-// Sortable columns configuration for Flows
-const sortableColumns = [
-  { field: "flow_id", label: "ID", width: "w-20" },
-  { field: "name", label: "Name", width: "w-96" }, // Increased width for truncated name
+// Column configuration for Flows
+// sortable: false for text fields that can't be sorted in ES
+const tableColumns = [
+  { field: "flow_id", label: "ID", width: "w-20", sortable: true },
+  { field: "exact_name", label: "Name", width: "w-96", sortable: true },
   {
     field: "version",
     label: <GitBranch className="h-4 w-4" />,
     tooltip: "Version",
     width: "w-16",
+    sortable: true,
   },
-  { field: "uploader", label: "Uploader", width: "w-40" },
-  { field: "date", label: "Date", width: "w-32" },
+  { field: "uploader", label: "Uploader", width: "w-40", sortable: false },
+  { field: "date", label: "Date", width: "w-32", sortable: true },
   {
     field: "nr_of_likes",
     label: <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />,
     tooltip: "Likes",
     width: "w-16",
+    sortable: true,
   },
   {
     field: "nr_of_downloads",
     label: <CloudDownload className="h-4 w-4 text-gray-400" />,
     tooltip: "Downloads",
     width: "w-16",
+    sortable: true,
   },
   {
     field: "runs",
     label: <FlaskConical className="h-4 w-4 text-black dark:text-white" />,
     tooltip: "Runs",
     width: "w-16",
+    sortable: true,
   },
 ];
-
-// Convert columns to sortOptions format expected by Search UI
-const sortOptions = sortableColumns.map((col) => ({
-  name: typeof col.label === "string" ? col.label : col.tooltip || col.field,
-  value: [{ field: col.field, direction: "desc" as const }],
-}));
 
 export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
   if (!results || results.length === 0) {
@@ -88,33 +87,42 @@ export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
     );
   }
 
+  return <SortableFlowsTable results={results} />;
+}
+
+// Separate component to handle sorting with WithSearch
+function SortableFlowsTable({ results }: { results: FlowResult[] }) {
   return (
-    <Sorting
-      sortOptions={sortOptions}
-      view={({ value, onChange }) => {
-        // value is an array of sort objects
+    <WithSearch
+      mapContextToProps={({ sortList, setSort }) => ({ sortList, setSort })}
+    >
+      {(props) => {
+        const sortList = props.sortList as
+          | Array<{ field: string; direction: string }>
+          | undefined;
+        const setSort = props.setSort as
+          | ((
+              sort: Array<{ field: string; direction: string }>,
+              dir: string,
+            ) => void)
+          | undefined;
+
         const currentSort =
-          Array.isArray(value) && value.length > 0 ? value[0] : null;
+          sortList && sortList.length > 0 ? sortList[0] : null;
 
-        const handleSort = (field: string) => {
-          if (!onChange || typeof onChange !== "function") return;
-
-          try {
-            if (currentSort?.field === field) {
-              // Toggle direction
-              const newDirection =
-                currentSort.direction === "asc" ? "desc" : "asc";
-              onChange([{ field, direction: newDirection }]);
-            } else {
-              // Set new field with desc as default
-              onChange([{ field, direction: "desc" }]);
-            }
-          } catch (error) {
-            console.error("Error in handleSort:", error);
+        const handleSort = (field: string, sortable: boolean) => {
+          if (!sortable || !setSort) return;
+          if (currentSort?.field === field) {
+            const newDirection =
+              currentSort.direction === "asc" ? "desc" : "asc";
+            setSort([{ field, direction: newDirection }], newDirection);
+          } else {
+            setSort([{ field, direction: "desc" }], "desc");
           }
         };
 
-        const getSortIcon = (field: string) => {
+        const getSortIcon = (field: string, sortable: boolean) => {
+          if (!sortable) return null;
           if (currentSort?.field !== field) {
             return <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />;
           }
@@ -130,11 +138,11 @@ export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {sortableColumns.map((column) => (
+                  {tableColumns.map((column) => (
                     <TableHead
                       key={column.field}
-                      className={`${column.width} hover:bg-muted/50 cursor-pointer select-none`}
-                      onClick={() => handleSort(column.field)}
+                      className={`${column.width} ${column.sortable ? "hover:bg-muted/50 cursor-pointer" : ""} select-none`}
+                      onClick={() => handleSort(column.field, column.sortable)}
                       title={
                         column.tooltip ||
                         (typeof column.label === "string" ? column.label : "")
@@ -144,7 +152,7 @@ export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
                         <span className="text-xs font-semibold tracking-wider uppercase">
                           {column.label}
                         </span>
-                        {getSortIcon(column.field)}
+                        {getSortIcon(column.field, column.sortable)}
                       </div>
                     </TableHead>
                   ))}
@@ -154,10 +162,11 @@ export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
                 {results.map((result, index) => {
                   const flowId = result.flow_id?.raw;
                   return (
-                    <TableRow key={flowId || `result-${index}`}>
-                      <TableCell className="font-medium text-blue-600">
-                        #{flowId}
-                      </TableCell>
+                    <TableRow
+                      key={flowId || `result-${index}`}
+                      className="transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/15"
+                    >
+                      <TableCell className="font-medium">#{flowId}</TableCell>
                       <TableCell className="min-w-0">
                         <Link
                           href={`/flows/${flowId}`}
@@ -205,6 +214,6 @@ export function FlowsResultsTable({ results }: FlowsResultsTableProps) {
           </div>
         );
       }}
-    />
+    </WithSearch>
   );
 }

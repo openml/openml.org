@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 
 interface RunTagsSectionProps {
-  tags: Array<{ tag: string }>;
+  tags: string[];
 }
 
 export function RunTagsSection({ tags }: RunTagsSectionProps) {
@@ -15,13 +15,13 @@ export function RunTagsSection({ tags }: RunTagsSectionProps) {
 
   return (
     <div className="flex flex-wrap gap-2 p-4">
-      {tags.map((tagObj, index) => (
+      {tags.map((tag, index) => (
         <Badge
-          key={`${tagObj.tag}-${index}`}
+          key={`${tag}-${index}`}
           variant="secondary"
           className="px-3 py-1 text-sm"
         >
-          {tagObj.tag}
+          {tag}
         </Badge>
       ))}
     </div>

@@ -15,6 +15,46 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Flow } from "@/types/flow";
 import { searchRuns } from "@/app/actions/runs";
 
+// ──────────────────────────────────────────────────────────────
+// Types for Elasticsearch response
+// ──────────────────────────────────────────────────────────────
+interface Evaluation {
+  evaluation_measure: string;
+  value: number;
+}
+
+interface RunSource {
+  run_id: number;
+  uploader?: string;
+  run_task?: {
+    task_id?: number;
+    name?: string;
+    task_type_id?: number;
+  };
+  evaluations?: Evaluation[];
+}
+
+interface SearchHit {
+  _source: RunSource;
+}
+
+interface SearchResponse {
+  hits: {
+    hits: SearchHit[];
+  };
+}
+
+interface RunSearchQuery {
+  bool: {
+    must: Array<Record<string, unknown>>;
+  };
+}
+
+interface RunCustomData {
+  runId: number;
+  taskId?: number;
+}
+
 // Dynamic import for Plotly (required for SSR compatibility)
 const Plot = dynamic(() => import("react-plotly.js"), {
   ssr: false,
@@ -49,7 +89,7 @@ const TASK_TYPES = [
 
 interface EvaluationRun {
   run_id: number;
-  task_id: number;
+  task_id?: number;
   task_name: string;
   uploader: string;
   value: number;
@@ -82,9 +122,7 @@ export function FlowAnalysisSection({
         setLoading(true);
         setError(null);
 
-        // Fetch runs for this flow with evaluations
-        // Use searchRuns server action to avoid CORS issues
-        const query: any = {
+        const query: RunSearchQuery = {
           bool: {
             must: [{ term: { "run_flow.flow_id": flow.flow_id } }],
           },
@@ -96,17 +134,18 @@ export function FlowAnalysisSection({
           });
         }
 
-        const data = await searchRuns({
+        const data: SearchResponse = await searchRuns({
           query,
           size: 1000,
           _source: ["run_id", "run_task", "uploader", "evaluations"],
         });
+
         const fetchedRuns: EvaluationRun[] = [];
 
-        data.hits.hits.forEach((hit: any) => {
+        data.hits.hits.forEach((hit: SearchHit) => {
           const source = hit._source;
           const metricData = source.evaluations?.find(
-            (e: any) => e.evaluation_measure === selectedMetric,
+            (e) => e.evaluation_measure === selectedMetric,
           );
 
           if (metricData && metricData.value !== undefined) {
@@ -114,7 +153,8 @@ export function FlowAnalysisSection({
               run_id: source.run_id,
               task_id: source.run_task?.task_id,
               task_name:
-                source.run_task?.name || `Task ${source.run_task?.task_id}`,
+                source.run_task?.name ||
+                `Task ${source.run_task?.task_id ?? ""}`,
               uploader: source.uploader || "Unknown",
               value: metricData.value,
             });
@@ -323,9 +363,12 @@ export function FlowAnalysisSection({
                 }}
                 style={{ width: "100%" }}
                 onClick={(event) => {
-                  if (event.points && event.points[0]) {
-                    const data = (event.points[0] as any).customdata;
-                    if (data) {
+                  if (event.points?.length) {
+                    const point = event.points[0] as {
+                      customdata?: RunCustomData;
+                    };
+                    const data = point.customdata;
+                    if (data?.runId) {
                       window.open(`/runs/${data.runId}`, "_blank");
                     }
                   }

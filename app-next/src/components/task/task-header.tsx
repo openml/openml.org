@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Task } from "@/types/task";
+import { ExperimentMenu } from "@/components/ui/experiment-menu";
 
 interface TaskHeaderProps {
   task: Task;
@@ -178,43 +179,38 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
 
       {/* LINE 4: Tags Row */}
       {tags.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 pl-6">
+        <div className="flex flex-wrap items-center gap-2 pl-12">
           <Tag className="text-muted-foreground h-4 w-4" />
-          <div className="flex flex-wrap gap-2">
-            {tags.slice(0, 10).map((tag, idx) => (
-              <Link
-                key={`${tag}-${idx}`}
-                href={`/search?type=task&tag=${encodeURIComponent(tag)}`}
+          {tags.slice(0, 10).map((tag, idx) => (
+            <Link
+              key={`${tag}-${idx}`}
+              href={`/search?type=task&tag=${encodeURIComponent(tag)}`}
+            >
+              <Badge
+                variant="secondary"
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
               >
-                <Badge
-                  variant="secondary"
-                  className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
-                >
-                  {tag}
-                </Badge>
-              </Link>
-            ))}
-            {tags.length > 10 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 10} more
-              </span>
-            )}
-          </div>
+                {tag}
+              </Badge>
+            </Link>
+          ))}
+          {tags.length > 10 && (
+            <span className="text-muted-foreground text-xs">
+              +{tags.length - 10} more
+            </span>
+          )}
         </div>
       )}
-    </header>
-  );
-}
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="flex items-baseline gap-1.5">
-      <span className="text-foreground font-bold sm:text-[16px] md:text-[14px] lg:text-lg xl:text-xl">
-        {value}
-      </span>
-      <span className="text-muted-foreground text-[12px] lg:text-sm">
-        {label}
-      </span>
-    </div>
+      {/* LINE 5: Action Buttons */}
+      <div className="flex flex-wrap items-center justify-end gap-3 pt-2 pb-4">
+        <ExperimentMenu
+          entityType="task"
+          entityId={task.task_id}
+          entityName={`${taskType} on ${datasetName}`}
+          taskId={task.task_id}
+        />
+      </div>
+    </header>
   );
 }

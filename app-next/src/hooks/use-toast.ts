@@ -1,6 +1,7 @@
 import * as React from "react";
+import { ToastAction } from "@/components/ui/toast";
 
-type ToastActionElement = React.ReactElement<any>;
+type ToastActionElement = React.ReactElement<typeof ToastAction>;
 
 type ToasterToast = {
   id: string;

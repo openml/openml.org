@@ -15,6 +15,7 @@ import {
   FlaskConical,
   LineChart,
   Grid3x3,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ interface RunNavigationMenuProps {
   hasTags?: boolean;
   hasSetup: boolean;
   hasAnalyses?: boolean;
+  hasOutputFiles?: boolean;
   metricsCount: number;
   parametersCount: number;
   tagsCount?: number;
@@ -36,6 +38,7 @@ export function RunNavigationMenu({
   hasTags,
   hasSetup,
   hasAnalyses,
+  hasOutputFiles = true,
   metricsCount,
   parametersCount,
   tagsCount,
@@ -81,6 +84,15 @@ export function RunNavigationMenu({
             label: "Tags",
             icon: Tags,
             count: tagsCount,
+          },
+        ]
+      : []),
+    ...(hasOutputFiles
+      ? [
+          {
+            id: "output-files",
+            label: "Output Files",
+            icon: Download,
           },
         ]
       : []),

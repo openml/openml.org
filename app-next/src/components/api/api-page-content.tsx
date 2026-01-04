@@ -19,8 +19,6 @@ import {
   Key,
   BookOpen,
   ExternalLink,
-  ArrowRight,
-  Globe,
   Cpu,
   FlaskConical,
   BarChart3,
@@ -33,7 +31,6 @@ import {
 } from "@/components/code-language-svg/logo-svg";
 import { APICodeBlock } from "./api-code-block";
 import { LanguageSelector, type LanguageExample } from "./language-selector";
-import { EndpointCard } from "./endpoint-card";
 import { TableOfContents } from "@/components/about/table-of-contents";
 
 // Define code examples for different languages
@@ -326,7 +323,6 @@ for (tid in task_ids[1:5]) {
 
 export function APIPageContent() {
   const tocItems = [
-    { id: "overview", title: "Overview", level: 2 },
     { id: "getting-started", title: "Getting Started", level: 2 },
     { id: "installation", title: "Installation", level: 3 },
     { id: "authentication", title: "Authentication", level: 3 },
@@ -334,14 +330,13 @@ export function APIPageContent() {
     { id: "python", title: "Python", level: 3 },
     { id: "r-lang", title: "R", level: 3 },
     { id: "java", title: "Java", level: 3 },
-    { id: "rest-api", title: "REST API", level: 2 },
-    { id: "endpoints", title: "Core Endpoints", level: 3 },
     { id: "working-with-data", title: "Working with Data", level: 2 },
     { id: "datasets", title: "Datasets", level: 3 },
     { id: "tasks", title: "Tasks", level: 3 },
     { id: "runs", title: "Runs & Experiments", level: 3 },
     { id: "benchmarking", title: "Benchmarking", level: 2 },
     { id: "rate-limits", title: "Rate Limits", level: 2 },
+    { id: "rest-api", title: "REST API", level: 2 },
     { id: "resources", title: "Additional Resources", level: 2 },
   ];
 
@@ -363,111 +358,51 @@ export function APIPageContent() {
             <h1 className="gradient-text mb-4 text-4xl font-bold tracking-tight md:text-5xl">
               OpenML APIs
             </h1>
-            <p className="text-muted-foreground max-w-3xl text-xl">
-              Access thousands of ML datasets, tasks, and experiments
-              programmatically. Build reproducible machine learning pipelines
-              with Python, R, Java, or our REST API.
+            <p className="text-muted-foreground mb-8 max-w-3xl text-xl">
+              OpenML provides a unified interface to access machine learning
+              resources across multiple programming languages. Whether
+              you&apos;re exploring datasets, running experiments, or
+              benchmarking algorithms, our APIs make it easy to integrate OpenML
+              into your workflow.
             </p>
-          </div>
 
-          {/* Quick Links */}
-          <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: PythonIcon,
-                label: "Python",
-                href: "https://openml.github.io/openml-python/",
-                color: "from-yellow-400 to-blue-500",
-              },
-              {
-                icon: RCodeIcon,
-                label: "R Package",
-                href: "https://docs.openml.org/r/",
-                color: "from-blue-400 to-blue-600",
-              },
-              {
-                icon: JavaCodeIcon,
-                label: "Java",
-                href: "https://docs.openml.org/ecosystem/Java/",
-                color: "from-orange-400 to-red-500",
-              },
-              {
-                icon: Globe,
-                label: "REST API",
-                href: "#rest-api",
-                color: "from-green-400 to-emerald-600",
-              },
-            ].map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="group bg-card hover:border-primary/50 flex items-center gap-3 rounded-lg border p-4 transition-all hover:shadow-md"
-              >
+            {/* Stats in Hero */}
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  icon: Database,
+                  title: "10,000+ Datasets",
+                  description: "Access curated ML datasets with rich metadata",
+                },
+                {
+                  icon: FlaskConical,
+                  title: "50,000+ Tasks",
+                  description:
+                    "Pre-defined ML tasks with standardized evaluation",
+                },
+                {
+                  icon: BarChart3,
+                  title: "10M+ Runs",
+                  description: "Reproducible experiments and benchmarks",
+                },
+              ].map((item) => (
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br ${item.color} shadow-sm`}
+                  key={item.title}
+                  className="bg-card flex items-start gap-3 rounded-lg border p-4"
                 >
-                  <item.icon className="h-5 w-5 text-white" />
+                  <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                    <item.icon className="text-primary h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-muted-foreground text-sm">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <span className="font-medium">{item.label}</span>
-                </div>
-                <ArrowRight className="text-muted-foreground h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            ))}
+              ))}
+            </div>
           </div>
-
-          {/* Overview */}
-          <section id="overview" className="mb-16 scroll-mt-20">
-            <h2 className="mb-6 text-3xl font-bold">Overview</h2>
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
-                  OpenML provides a unified interface to access machine learning
-                  resources across multiple programming languages. Whether
-                  you're exploring datasets, running experiments, or
-                  benchmarking algorithms, our APIs make it easy to integrate
-                  OpenML into your workflow.
-                </p>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  {[
-                    {
-                      icon: Database,
-                      title: "10,000+ Datasets",
-                      description:
-                        "Access curated ML datasets with rich metadata",
-                    },
-                    {
-                      icon: FlaskConical,
-                      title: "50,000+ Tasks",
-                      description:
-                        "Pre-defined ML tasks with standardized evaluation",
-                    },
-                    {
-                      icon: BarChart3,
-                      title: "10M+ Runs",
-                      description: "Reproducible experiments and benchmarks",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.title}
-                      className="flex items-start gap-3 rounded-lg border p-4"
-                    >
-                      <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
-                        <item.icon className="text-primary h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{item.title}</h3>
-                        <p className="text-muted-foreground text-sm">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
 
           {/* Getting Started */}
           <section id="getting-started" className="mb-16 scroll-mt-20">
@@ -488,9 +423,9 @@ export function APIPageContent() {
                     <Key className="h-4 w-4" />
                     <AlertTitle>API Key Required for Uploads</AlertTitle>
                     <AlertDescription>
-                      Reading public data doesn't require authentication.
+                      Reading public data doesn&apos;t require authentication.
                       However, to upload datasets, runs, or access private
-                      resources, you'll need an API key.
+                      resources, you&apos;ll need an API key.
                     </AlertDescription>
                   </Alert>
 
@@ -706,145 +641,6 @@ openml.config.apikey = "your_api_key_here"`}
             </div>
           </section>
 
-          {/* REST API */}
-          <section id="rest-api" className="mb-16 scroll-mt-20">
-            <h2 className="mb-6 text-3xl font-bold">REST API</h2>
-
-            <Card className="mb-6">
-              <CardContent className="pt-6">
-                <p className="text-muted-foreground mb-4">
-                  Access OpenML resources directly via HTTP. The REST API is
-                  language-agnostic and can be used from any environment.
-                </p>
-
-                <APICodeBlock
-                  code={`Base URL: https://www.openml.org/api/v1/
-
-# Response formats
-Accept: application/json  # JSON (recommended)
-Accept: application/xml   # XML
-
-# Authentication (for write operations)
-Api-Key: YOUR_API_KEY`}
-                  language="http"
-                  filename="API Configuration"
-                />
-              </CardContent>
-            </Card>
-
-            {/* Core Endpoints */}
-            <div id="endpoints" className="scroll-mt-20">
-              <h3 className="mb-4 text-xl font-semibold">Core Endpoints</h3>
-
-              <div className="space-y-4">
-                <EndpointCard
-                  method="GET"
-                  endpoint="/api/v1/data/{id}"
-                  description="Retrieve metadata for a specific dataset by ID"
-                  parameters={[
-                    {
-                      name: "id",
-                      type: "integer",
-                      required: true,
-                      description: "Dataset ID",
-                    },
-                  ]}
-                  response={`{
-  "data_set_description": {
-    "id": "31",
-    "name": "credit-g",
-    "version": "1",
-    "format": "ARFF",
-    "status": "active"
-  }
-}`}
-                />
-
-                <EndpointCard
-                  method="GET"
-                  endpoint="/api/v1/data/list"
-                  description="List all datasets with optional filters"
-                  parameters={[
-                    {
-                      name: "status",
-                      type: "string",
-                      description: "Filter by status (active, deactivated)",
-                    },
-                    {
-                      name: "limit",
-                      type: "integer",
-                      description: "Maximum results to return",
-                    },
-                    {
-                      name: "offset",
-                      type: "integer",
-                      description: "Pagination offset",
-                    },
-                  ]}
-                />
-
-                <EndpointCard
-                  method="GET"
-                  endpoint="/api/v1/task/{id}"
-                  description="Retrieve a task definition"
-                  parameters={[
-                    {
-                      name: "id",
-                      type: "integer",
-                      required: true,
-                      description: "Task ID",
-                    },
-                  ]}
-                />
-
-                <EndpointCard
-                  method="GET"
-                  endpoint="/api/v1/flow/{id}"
-                  description="Retrieve a flow (algorithm) definition"
-                  parameters={[
-                    {
-                      name: "id",
-                      type: "integer",
-                      required: true,
-                      description: "Flow ID",
-                    },
-                  ]}
-                />
-
-                <EndpointCard
-                  method="POST"
-                  endpoint="/api/v1/run"
-                  description="Upload a new run (experiment result)"
-                  parameters={[
-                    {
-                      name: "description",
-                      type: "file",
-                      required: true,
-                      description: "XML description of the run",
-                    },
-                    {
-                      name: "predictions",
-                      type: "file",
-                      description: "ARFF file with predictions",
-                    },
-                  ]}
-                />
-              </div>
-
-              <div className="mt-6">
-                <Button asChild variant="outline">
-                  <Link
-                    href="https://docs.openml.org/ecosystem/Rest/"
-                    target="_blank"
-                  >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    View Full API Reference
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </section>
-
           {/* Working with Data */}
           <section id="working-with-data" className="mb-16 scroll-mt-20">
             <h2 className="mb-6 text-3xl font-bold">Working with Data</h2>
@@ -852,45 +648,33 @@ Api-Key: YOUR_API_KEY`}
             {/* Datasets */}
             <div id="datasets" className="mb-8 scroll-mt-20">
               <h3 className="mb-4 text-xl font-semibold">Datasets</h3>
-              <Card className="mb-4">
-                <CardContent className="pt-6">
-                  <p className="text-muted-foreground mb-4">
-                    OpenML hosts thousands of curated ML datasets. Each dataset
-                    includes rich metadata, feature descriptions, and quality
-                    metrics.
-                  </p>
-                </CardContent>
-              </Card>
+              <p className="text-muted-foreground mb-4">
+                OpenML hosts thousands of curated ML datasets. Each dataset
+                includes rich metadata, feature descriptions, and quality
+                metrics.
+              </p>
               <LanguageSelector examples={datasetExamples} />
             </div>
 
             {/* Tasks */}
             <div id="tasks" className="mb-8 scroll-mt-20">
               <h3 className="mb-4 text-xl font-semibold">Tasks</h3>
-              <Card className="mb-4">
-                <CardContent className="pt-6">
-                  <p className="text-muted-foreground mb-4">
-                    Tasks combine a dataset with a problem type (classification,
-                    regression, etc.) and evaluation procedure (cross-validation
-                    folds).
-                  </p>
-                </CardContent>
-              </Card>
+              <p className="text-muted-foreground mb-4">
+                Tasks combine a dataset with a problem type (classification,
+                regression, etc.) and evaluation procedure (cross-validation
+                folds).
+              </p>
               <LanguageSelector examples={taskExamples} />
             </div>
 
             {/* Runs */}
             <div id="runs" className="mb-8 scroll-mt-20">
               <h3 className="mb-4 text-xl font-semibold">Runs & Experiments</h3>
-              <Card className="mb-4">
-                <CardContent className="pt-6">
-                  <p className="text-muted-foreground mb-4">
-                    Runs capture the complete record of an ML experiment: the
-                    algorithm used, hyperparameters, predictions, and evaluation
-                    metrics.
-                  </p>
-                </CardContent>
-              </Card>
+              <p className="text-muted-foreground mb-4">
+                Runs capture the complete record of an ML experiment: the
+                algorithm used, hyperparameters, predictions, and evaluation
+                metrics.
+              </p>
               <LanguageSelector examples={runExamples} />
             </div>
           </section>
@@ -976,6 +760,38 @@ Api-Key: YOUR_API_KEY`}
             </Card>
           </section>
 
+          {/* REST API */}
+          <section id="rest-api" className="mb-16 scroll-mt-20">
+            <h2 className="mb-6 text-3xl font-bold">REST API</h2>
+            <p className="text-muted-foreground mb-4">
+              For advanced users who need direct HTTP access, OpenML provides a
+              comprehensive REST API. The API is language-agnostic and can be
+              used from any environment.
+            </p>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="mb-4 space-y-2">
+                  <p className="text-sm">
+                    <strong>Base URL:</strong>{" "}
+                    <code className="bg-muted rounded px-1">
+                      https://www.openml.org/api/v1/
+                    </code>
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    Supports both JSON and XML response formats. Authentication
+                    via API key is required for write operations.
+                  </p>
+                </div>
+                <Button asChild>
+                  <Link href="https://www.openml.org/apis" target="_blank">
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    View Swagger Documentation
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
+
           {/* Additional Resources */}
           <section id="resources" className="mb-16 scroll-mt-20">
             <h2 className="mb-6 text-3xl font-bold">Additional Resources</h2>
@@ -996,9 +812,9 @@ Api-Key: YOUR_API_KEY`}
                 },
                 {
                   icon: Terminal,
-                  title: "API Reference",
-                  description: "Complete endpoint documentation",
-                  href: "https://docs.openml.org/ecosystem/Rest/",
+                  title: "REST API Reference",
+                  description: "Swagger documentation",
+                  href: "https://www.openml.org/apis",
                 },
                 {
                   icon: Database,
@@ -1046,7 +862,7 @@ Api-Key: YOUR_API_KEY`}
         </div>
 
         {/* Table of Contents */}
-        <div className="sticky top-20 hidden h-fit w-64 shrink-0 lg:block">
+        <div className="hidden shrink-0 lg:block">
           <TableOfContents items={tocItems} />
         </div>
       </div>

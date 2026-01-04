@@ -15,6 +15,7 @@ import {
   Linkedin,
   Link2,
   Check,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -110,11 +111,12 @@ export function DatasetActionsMenu({
     }
   };
 
-  const handleOpenNotebook = (platform: "colab" | "kggl") => {
-    // TODO: Generate notebook URL based on platform
+  const handleOpenNotebook = (platform: "python" | "r") => {
+    // Link to OpenML documentation examples
     const notebookUrls: Record<string, string> = {
-      colab: `https://colab.research.google.com/github/openml/openml-colab/blob/main/notebooks/openml_dataset_template.ipynb?datasetId=${datasetId}`,
-      kggl: `https://www.kggl.com/code?scriptUrl=https://raw.githubusercontent.com/openml/openml-python/main/notebooks/dataset_template.py&datasetId=${datasetId}`,
+      python:
+        "https://docs.openml.org/examples/20_basic/simple_datasets_tutorial/",
+      r: "https://docs.openml.org/r/",
     };
 
     window.open(notebookUrls[platform], "_blank");
@@ -227,18 +229,18 @@ export function DatasetActionsMenu({
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
-                  onClick={() => handleOpenNotebook("colab")}
+                  onClick={() => handleOpenNotebook("python")}
                   className="cursor-pointer"
                 >
-                  <ColabIcon className="mr-2 h-4 w-4" />
-                  <span>Google Colab</span>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <span>Python Tutorial</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => handleOpenNotebook("kggl")}
+                  onClick={() => handleOpenNotebook("r")}
                   className="cursor-pointer"
                 >
-                  <KaggleIcon className="mr-2 h-4 w-4" />
-                  <span>Kaggle Notebook</span>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <span>R Tutorial</span>
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -374,23 +376,5 @@ export function DatasetActionsMenu({
         </DialogContent>
       </Dialog>
     </>
-  );
-}
-
-// Platform icons
-function ColabIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M16.941 4.976a7.033 7.033 0 00-4.942 2.047 7.033 7.033 0 00-.873 8.876c.02-.073.037-.146.06-.218l.029-.092a.5.5 0 01.964.261l-.03.093c-.093.345-.175.694-.245 1.046a7.033 7.033 0 005.037-4.083c-.215.026-.43.041-.645.044l-.105.002a.5.5 0 01-.023-1l.106-.001c.367-.003.732-.039 1.093-.107a7.033 7.033 0 00-.426-6.868z" />
-      <path d="M4.353 12.002a7.033 7.033 0 003.707 6.2 7.033 7.033 0 008.14-.987c-.055-.033-.11-.063-.166-.092l-.086-.044a.5.5 0 01.45-.893l.086.045c.303.157.6.328.888.512a7.033 7.033 0 00-.95-6.234c-.008.22-.028.44-.061.66l-.017.104a.5.5 0 01-.988-.164l.017-.105c.05-.3.082-.602.094-.906a7.033 7.033 0 00-4.952 1.858c.068.046.136.095.203.145l.08.06a.5.5 0 01-.603.797l-.08-.06a10.06 10.06 0 00-.897-.614 7.033 7.033 0 00-4.884.718z" />
-    </svg>
-  );
-}
-
-function KaggleIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.281.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.075.339" />
-    </svg>
   );
 }

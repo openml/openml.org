@@ -45,10 +45,30 @@ export async function generateMetadata({
       "documentation",
       "open science collaboration",
     ],
+    alternates: {
+      canonical: `/${locale}/contribute`,
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
+      url: `https://www.openml.org/${locale}/contribute`,
+      siteName: "OpenML",
+      images: [
+        {
+          url: "https://www.openml.org/images/og/contribute.png",
+          width: 1200,
+          height: 630,
+          alt: "Contribute to OpenML - Open Source ML Platform",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      site: "@open_ml",
+      images: ["https://www.openml.org/images/og/contribute.png"],
     },
   };
 }

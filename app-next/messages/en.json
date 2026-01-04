@@ -145,6 +145,7 @@
     "hero": {
       "version": "Version 3.0: Built for Reproducible Science",
       "title": "The Global Lab for Machine Learning Research",
+      "subtitle": "Machine learning thrives on transparency. OpenML is the open, collaborative environment where scientists share FAIR data, organize experiments, and build upon state-of-the-art algorithms.",
       "description": "Machine learning thrives on transparency. OpenML is the open, collaborative environment where scientists share FAIR data, organize experiments, and build upon state-of-the-art algorithms.",
       "startTracking": "Start Tracking and Sharing!",
       "readManifesto": "Read the Manifesto",

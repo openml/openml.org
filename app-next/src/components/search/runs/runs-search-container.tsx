@@ -21,6 +21,9 @@ import {
   CloudDownload,
   MessageCircle,
   ThumbsDown,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 interface Evaluation {
@@ -619,7 +622,7 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
         return (
           <div
             key={runId || index}
-            className="hover:bg-muted/40 relative flex items-start justify-between border-b px-4 py-1.5 transition-colors"
+            className="relative flex items-start justify-between border-b p-4 transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
           >
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-start justify-between gap-3">
@@ -767,7 +770,7 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
           <Link
             key={runId || index}
             href={`/runs/${runId}`}
-            className="bg-card hover:bg-accent block rounded-lg border p-4 transition-colors"
+            className="bg-card block rounded-lg border p-4 transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
           >
             <div className="mb-2 flex items-start justify-between">
               <FlaskConical className="h-8 w-8 fill-red-500 text-red-500" />
@@ -824,70 +827,150 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
   );
 }
 
+// Run table columns configuration
+const runTableColumns = [
+  { field: "run_id", label: "ID", width: "w-24", sortable: true },
+  { field: "run_flow.name", label: "Flow", width: "w-48", sortable: false },
+  { field: "run_task.task_id", label: "Task", width: "w-24", sortable: false },
+  {
+    field: "run_task.source_data.name",
+    label: "Dataset",
+    width: "w-40",
+    sortable: false,
+  },
+  { field: "evaluations", label: "Metrics", width: "w-48", sortable: false },
+  {
+    field: "nr_of_likes",
+    label: "Likes",
+    width: "w-24",
+    sortable: true,
+    align: "center",
+  },
+];
+
 function RunTableView({ results }: { results: EnhancedRunResult[] }) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
     );
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b">
-            <th className="p-3 text-left text-sm font-medium">ID</th>
-            <th className="p-3 text-left text-sm font-medium">Flow</th>
-            <th className="p-3 text-left text-sm font-medium">Task</th>
-            <th className="p-3 text-left text-sm font-medium">Dataset</th>
-            <th className="p-3 text-left text-sm font-medium">Metrics</th>
-            <th className="p-3 text-center text-sm font-medium">Likes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map((result, index) => {
-            const runId = result.run_id?.raw;
-            const hasError = !!(result.error_message?.raw || result.error?.raw);
+    <WithSearch
+      mapContextToProps={({ sortList, setSort }) => ({ sortList, setSort })}
+    >
+      {(props) => {
+        const sortList = props.sortList as
+          | Array<{ field: string; direction: string }>
+          | undefined;
+        const setSort = props.setSort as
+          | ((
+              sort: Array<{ field: string; direction: string }>,
+              dir: string,
+            ) => void)
+          | undefined;
 
-            // Use helper functions to extract data from ES response
-            const flowName = result._flowName || getFlowName(result);
-            const datasetName = result._datasetName || getDatasetName(result);
-            const taskId = getTaskId(result);
-            const metrics = extractMetrics(result.evaluations?.raw);
+        const currentSort =
+          sortList && sortList.length > 0 ? sortList[0] : null;
 
-            return (
-              <tr key={runId || index} className="hover:bg-accent border-b">
-                <td className="p-3">
-                  <Link
-                    href={`/runs/${runId}`}
-                    className="text-primary flex items-center gap-1 hover:underline"
-                  >
-                    {runId}
-                    {hasError && <XCircle className="h-3 w-3 text-red-500" />}
-                  </Link>
-                </td>
-                <td className="p-3">{flowName}</td>
-                <td className="p-3">{taskId ? `#${taskId}` : "-"}</td>
-                <td className="p-3">{datasetName}</td>
-                <td className="p-3">
-                  <div className="flex gap-3 font-mono text-xs">
-                    {metrics.map((m, idx) => (
-                      <span key={idx}>
-                        {m.label}: {m.value}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="p-3 text-center">
-                  <span className="flex items-center justify-center gap-1">
-                    <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
-                    {result.nr_of_likes?.raw || 0}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+        const handleSort = (field: string, sortable: boolean) => {
+          if (!sortable || !setSort) return;
+          if (currentSort?.field === field) {
+            const newDirection =
+              currentSort.direction === "asc" ? "desc" : "asc";
+            setSort([{ field, direction: newDirection }], newDirection);
+          } else {
+            setSort([{ field, direction: "desc" }], "desc");
+          }
+        };
+
+        const getSortIcon = (field: string, sortable: boolean) => {
+          if (!sortable) return null;
+          if (currentSort?.field !== field) {
+            return <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />;
+          }
+          return currentSort.direction === "asc" ? (
+            <ArrowUp className="ml-1 h-3 w-3" />
+          ) : (
+            <ArrowDown className="ml-1 h-3 w-3" />
+          );
+        };
+
+        return (
+          <div className="overflow-x-auto rounded-md border">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-muted/50 border-b">
+                  {runTableColumns.map((column) => (
+                    <th
+                      key={column.field}
+                      className={`p-3 ${column.align === "center" ? "text-center" : "text-left"} text-sm font-medium ${column.sortable ? "hover:bg-muted/70 cursor-pointer" : ""} select-none`}
+                      onClick={() => handleSort(column.field, column.sortable)}
+                    >
+                      <div
+                        className={`flex items-center ${column.align === "center" ? "justify-center" : ""}`}
+                      >
+                        {column.label}
+                        {getSortIcon(column.field, column.sortable)}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result, index) => {
+                  const runId = result.run_id?.raw;
+                  const hasError = !!(
+                    result.error_message?.raw || result.error?.raw
+                  );
+                  const flowName = result._flowName || getFlowName(result);
+                  const datasetName =
+                    result._datasetName || getDatasetName(result);
+                  const taskId = getTaskId(result);
+                  const metrics = extractMetrics(result.evaluations?.raw);
+
+                  return (
+                    <tr
+                      key={runId || index}
+                      className="border-b transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
+                    >
+                      <td className="p-3">
+                        <Link
+                          href={`/runs/${runId}`}
+                          className="flex items-center gap-1 font-medium text-red-600 hover:text-red-700 hover:underline dark:text-red-500"
+                        >
+                          {runId}
+                          {hasError && (
+                            <XCircle className="h-3 w-3 text-red-500" />
+                          )}
+                        </Link>
+                      </td>
+                      <td className="p-3">{flowName}</td>
+                      <td className="p-3">{taskId ? `#${taskId}` : "-"}</td>
+                      <td className="p-3">{datasetName}</td>
+                      <td className="p-3">
+                        <div className="flex gap-3 font-mono text-xs">
+                          {metrics.map((m, idx) => (
+                            <span key={idx}>
+                              {m.label}: {m.value}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="p-3 text-center">
+                        <span className="flex items-center justify-center gap-1">
+                          <Heart className="h-3 w-3 fill-purple-500 text-purple-500" />
+                          {result.nr_of_likes?.raw || 0}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+      }}
+    </WithSearch>
   );
 }
 
@@ -949,7 +1032,9 @@ function RunSplitView({
               key={result.run_id?.raw || index}
               onClick={() => onSelectRun(result)}
               className={`block w-full border-b p-3 text-left transition-colors ${
-                isSelected ? "bg-accent" : "hover:bg-accent"
+                isSelected
+                  ? "bg-red-100 dark:bg-red-900/30"
+                  : "hover:bg-red-50 dark:hover:bg-red-900/15"
               }`}
             >
               <h4 className="line-clamp-1 text-sm font-semibold">
