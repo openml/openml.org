@@ -63,7 +63,7 @@ export function Header() {
                 alt="OpenML"
                 width={140}
                 height={70}
-                className="object-contain"
+                className="h-auto w-auto object-contain"
                 priority
               />
             </Link>
@@ -110,7 +110,7 @@ export function Header() {
                 alt="OpenML"
                 width={140}
                 height={70}
-                className="object-contain"
+                className="h-auto w-auto object-contain"
                 priority
               />
             </Link>

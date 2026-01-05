@@ -15,7 +15,7 @@ export function AcademicImpactSection() {
   // Map locale to image filenames (capitalize first letter for French and German)
   const getImagePath = (theme: "light" | "dark") => {
     if (locale === "en") {
-      return `/img/contribute-citations-${theme}.png`;
+      return `/img/contribute-citations-livecycle-${theme}.png`;
     }
     // Capitalize first letter: en -> En, fr -> Fr, de -> De, nl -> Nl
     const localeCap = locale.charAt(0).toUpperCase() + locale.slice(1);

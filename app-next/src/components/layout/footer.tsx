@@ -24,7 +24,7 @@ export function Footer() {
                 alt="OpenML"
                 width={160}
                 height={53}
-                className="h-auto w-40"
+                className="h-auto w-auto"
                 priority
               />
             </Link>
