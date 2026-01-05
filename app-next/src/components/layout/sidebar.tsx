@@ -160,7 +160,7 @@ export function Sidebar() {
                 alt="OpenML Logo"
                 width={140}
                 height={70}
-                className="object-contain transition-transform duration-300 ease-out group-hover:scale-110"
+                className="h-auto w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                 style={{
                   animation: "logoFadeScale 0.4s ease-out 0.2s both",
                 }}
@@ -297,7 +297,7 @@ export function Sidebar() {
                 alt="OpenML Logo"
                 width={140}
                 height={70}
-                className="object-contain transition-transform duration-300 ease-out group-hover:scale-110"
+                className="h-auto w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                 style={{
                   animation: "logoFadeScale 0.4s ease-out 0.2s both",
                 }}

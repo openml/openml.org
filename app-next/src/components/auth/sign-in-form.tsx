@@ -110,6 +110,7 @@ export default function SignInForm() {
               }
               disabled={isLoading}
               className="h-9 pr-10"
+              autoComplete="current-password"
             />
             <button
               type="button"
