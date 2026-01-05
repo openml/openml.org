@@ -6,7 +6,7 @@ import { routing } from "./config/routing";
 // next-intl middleware with routing config
 const intlMiddleware = createMiddleware(routing);
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   // Handle legacy /search redirects BEFORE locale processing

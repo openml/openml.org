@@ -63,7 +63,15 @@ export function Header() {
                 alt="OpenML"
                 width={140}
                 height={70}
-                className="h-auto w-auto object-contain"
+                className="h-auto w-auto object-contain dark:hidden"
+                priority
+              />
+              <Image
+                src="/logo_openML_dark-bkg.png"
+                alt="OpenML"
+                width={140}
+                height={70}
+                className="hidden h-auto w-auto object-contain dark:block"
                 priority
               />
             </Link>
@@ -110,7 +118,15 @@ export function Header() {
                 alt="OpenML"
                 width={140}
                 height={70}
-                className="h-auto w-auto object-contain"
+                className="h-auto w-auto object-contain dark:hidden"
+                priority
+              />
+              <Image
+                src="/logo_openML_dark-bkg.png"
+                alt="OpenML"
+                width={140}
+                height={70}
+                className="hidden h-auto w-auto object-contain dark:block"
                 priority
               />
             </Link>
