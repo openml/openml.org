@@ -35,6 +35,7 @@ export const authOptions: NextAuthOptions = {
             process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
 
           // Call Flask login endpoint
+          console.log("[Auth] Attempting login to:", `${apiUrl}/login`);
           const res = await fetch(`${apiUrl}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -45,6 +46,12 @@ export const authOptions: NextAuthOptions = {
           });
 
           const data = await res.json();
+          console.log(
+            "[Auth] Response status:",
+            res.status,
+            "Data:",
+            JSON.stringify(data),
+          );
 
           if (res.ok && data.access_token) {
             // Fetch user profile
