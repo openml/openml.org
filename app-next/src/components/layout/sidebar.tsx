@@ -152,14 +152,14 @@ export function Sidebar() {
           <div className="relative flex min-h-40 shrink-0 items-start justify-center bg-[#233044] py-6">
             <Link
               href="/"
-              className="group flex w-64 items-center justify-center"
+              className="group flex w-64 items-start justify-center"
               onClick={() => setHomeMenuOpen(false)}
             >
               <Image
                 src="/logo_openML_dark-bkg.png"
                 alt="OpenML Logo"
-                width={140}
-                height={70}
+                width={100}
+                height={50}
                 className="h-auto w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                 style={{
                   animation: "logoFadeScale 0.4s ease-out 0.2s both",
@@ -289,14 +289,14 @@ export function Sidebar() {
         )}
       >
         {/* Logo Header */}
-        <div className="relative flex min-h-40 items-center justify-center bg-[#233044] pb-6">
+        <div className="relative flex min-h-40 items-start justify-center bg-[#233044] py-6">
           {!isCollapsed && (
-            <Link href="/" className="group flex items-center justify-center">
+            <Link href="/" className="group flex items-start justify-center">
               <Image
                 src="/logo_openML_dark-bkg.png"
                 alt="OpenML Logo"
-                width={140}
-                height={70}
+                width={100}
+                height={50}
                 className="h-auto w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                 style={{
                   animation: "logoFadeScale 0.4s ease-out 0.2s both",

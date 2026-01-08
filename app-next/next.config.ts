@@ -72,19 +72,21 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**", // GitHub user avatars
       },
+      {
+        protocol: "https",
+        hostname: "live.staticflickr.com",
+        pathname: "/**",
+      },
     ],
     // Vercel automatically optimizes images
     formats: ["image/avif", "image/webp"],
   },
+
   // Built-in 301 redirects for backward compatibility
   // Academic papers and external links often cite OpenML entities using short URLs
+  // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
   async redirects() {
     return [
-      // ========================================
-      // SIMPLE PATH-BASED REDIRECTS (✅ Works in next.config.ts)
-      // ========================================
-
-      // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
       {
         source: "/d/:id",
         destination: "/datasets/:id",
@@ -117,7 +119,6 @@ const nextConfig: NextConfig = {
         destination: "/collections/:id",
         permanent: true,
       },
-
       // Search page redirects: /d/search → /datasets
       {
         source: "/d/search",

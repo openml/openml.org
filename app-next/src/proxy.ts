@@ -79,6 +79,11 @@ export function proxy(request: NextRequest) {
         break;
       }
 
+      // Users: /search?type=user&id=1 → /users/1
+      case "user":
+        newPath = id ? `/users/${id}` : "/";
+        break;
+
       // Task Types: /search?type=task_type → /task-types
       case "task_type":
         newPath = "/task-types";
