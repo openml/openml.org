@@ -129,28 +129,31 @@ export function TaskRunsSection({
           ];
         }
 
-        const response = await fetch(`https://www.openml.org/es/run/_search`, {
+        const response = await fetch("/api/search", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            query: {
-              term: { task_id: task.task_id },
+            indexName: "run",
+            esQuery: {
+              query: {
+                term: { task_id: task.task_id },
+              },
+              sort: sortConfig,
+              from: page * pageSize,
+              size: pageSize,
+              _source: [
+                "run_id",
+                "flow_name",
+                "flow_id",
+                "uploader",
+                "uploader_id",
+                "setup_string",
+                "evaluations",
+                "date",
+              ],
             },
-            sort: sortConfig,
-            from: page * pageSize,
-            size: pageSize,
-            _source: [
-              "run_id",
-              "flow_name",
-              "flow_id",
-              "uploader",
-              "uploader_id",
-              "setup_string",
-              "evaluations",
-              "date",
-            ],
           }),
         });
 

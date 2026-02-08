@@ -1,11 +1,32 @@
 "use server";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
+
+interface ElasticsearchBoolQuery {
+  must?: Array<Record<string, unknown>>;
+  should?: Array<Record<string, unknown>>;
+  filter?: Array<Record<string, unknown>>;
+}
+
+interface ElasticsearchSearchBody {
+  query?: {
+    bool?: ElasticsearchBoolQuery;
+    [key: string]: unknown;
+  };
+  size?: number;
+  from?: number;
+  sort?: Array<Record<string, unknown>>;
+  [key: string]: unknown;
+}
 
 /**
  * Server action to search runs by flow ID
  */
-export async function searchFlowRuns(flowId: number, body: any) {
+export async function searchFlowRuns(
+  flowId: number,
+  body: ElasticsearchSearchBody,
+) {
   try {
-    const response = await fetch("https://www.openml.org/es/run/_search", {
+    const response = await fetch(getElasticsearchUrl("run/_search"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

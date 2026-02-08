@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-
-// Direct connection to Elasticsearch - works server-side without CORS issues
-const ELASTICSEARCH_SERVER = "https://es.openml.org/";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
@@ -20,7 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const url = `${ELASTICSEARCH_SERVER}${indexName}/_search`;
+    const url = getElasticsearchUrl(`${indexName}/_search`);
     // console.log("⏳ [ES Proxy] Sending to:", url);
 
     const response = await axios.post(url, esQuery, {

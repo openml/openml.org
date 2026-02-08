@@ -388,8 +388,8 @@ class OpenMLSearchConnector implements APIConnector {
     try {
       const esQuery = this.buildQuery(requestState, queryConfig);
 
-      // Use local proxy to avoid CORS
-      const url = "/api/es-proxy";
+      // Use new unified search API
+      const url = "/api/search";
       // console.log("[OpenMLSearchConnector] Fetching via proxy:", url);
 
       const response = await fetch(url, {

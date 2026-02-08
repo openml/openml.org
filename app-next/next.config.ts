@@ -142,6 +142,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    if (process.env.NODE_ENV === "development") {
+      return [
+        {
+          source: "/api/flask-proxy/:path*",
+          destination: "https://www.openml.org/:path*",
+        },
+      ];
+    }
+    return [];
+  },
 };
 
 export default withNextIntl(nextConfig);

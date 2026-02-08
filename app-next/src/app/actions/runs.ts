@@ -1,5 +1,7 @@
 "use server";
 
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
+
 interface OpenMLRunSearchBody {
   query?: {
     bool?: {
@@ -34,7 +36,7 @@ interface OpenMLRunSearchBody {
 
 export async function searchRuns(body: OpenMLRunSearchBody) {
   try {
-    const response = await fetch("https://www.openml.org/es/run/_search", {
+    const response = await fetch(getElasticsearchUrl("run/_search"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

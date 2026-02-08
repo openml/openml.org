@@ -1,20 +1,23 @@
 import { Dataset } from "@/types/dataset";
 import { notFound } from "next/navigation";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
-const ES_URL = "https://www.openml.org/es";
 const ES_INDEX = "data";
 
 export async function fetchDataset(id: string): Promise<Dataset> {
   try {
-    const response = await fetch(`${ES_URL}/${ES_INDEX}/_doc/${id}`, {
-      next: {
-        revalidate: 3600,
-        tags: [`dataset-${id}`],
+    const response = await fetch(
+      getElasticsearchUrl(`${ES_INDEX}/_doc/${id}`),
+      {
+        next: {
+          revalidate: 3600,
+          tags: [`dataset-${id}`],
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    );
 
     if (response.status === 404) {
       notFound();
@@ -50,7 +53,7 @@ export async function fetchDatasetTaskCount(
   datasetId: string,
 ): Promise<number> {
   try {
-    const response = await fetch(`${ES_URL}/task/_search`, {
+    const response = await fetch(getElasticsearchUrl("task/_search"), {
       method: "POST",
       next: {
         revalidate: 1800, // Cache for 30 minutes
@@ -86,7 +89,7 @@ export async function fetchDatasetTaskCount(
 
 export async function fetchDatasetRunCount(datasetId: string): Promise<number> {
   try {
-    const response = await fetch(`${ES_URL}/run/_search`, {
+    const response = await fetch(getElasticsearchUrl("run/_search"), {
       method: "POST",
       next: {
         revalidate: 1800,
@@ -129,7 +132,7 @@ export async function getPopularDatasetIds(
   limit: number = 100,
 ): Promise<string[]> {
   try {
-    const response = await fetch(`${ES_URL}/${ES_INDEX}/_search`, {
+    const response = await fetch(getElasticsearchUrl(`${ES_INDEX}/_search`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

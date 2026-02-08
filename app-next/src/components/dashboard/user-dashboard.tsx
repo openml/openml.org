@@ -226,6 +226,8 @@ export function UserDashboard() {
     // Load user from NextAuth session or localStorage fallback
     if (status === "authenticated" && session?.user) {
       const userId = session.user.id;
+      const isLocalUser = (session.user as any).isLocalUser;
+
       setUser({
         name: session.user.name || session.user.username || "User",
         username:
@@ -233,10 +235,12 @@ export function UserDashboard() {
         id: userId,
       });
 
-      // Fetch real stats if we have user ID
-      if (userId) {
+      // Only fetch stats from OpenML API if user exists on openml.org
+      // Local-only users (OAuth, local registration) don't have data there
+      if (userId && !isLocalUser) {
         fetchUserStats(userId);
       } else {
+        // Local user - show zeros, don't fetch incorrect data
         setIsLoadingStats(false);
       }
     } else {

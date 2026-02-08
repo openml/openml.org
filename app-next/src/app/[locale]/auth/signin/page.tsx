@@ -23,10 +23,12 @@ export default async function SignInPage() {
 
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-md border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl">{t("signIn.welcome")}</CardTitle>
-          <CardDescription className="text-base">
+          <CardTitle className="text-3xl text-slate-800 dark:text-white">
+            {t("signIn.welcome")}
+          </CardTitle>
+          <CardDescription className="text-base text-slate-500 dark:text-slate-400">
             {t("signIn.subtitle")}
           </CardDescription>
         </CardHeader>

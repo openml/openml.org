@@ -1,10 +1,13 @@
 /**
  * OpenML Likes Service
  * Handles like/unlike operations for datasets, flows, tasks, and runs
- * Uses the existing OpenML API: /api_new/v1/xml/votes/up/{type}/{id}
+ * Uses the OpenML REST API: /api_new/v1/xml/votes/up/{type}/{id}
+ *
+ * API key is obtained from session.apikey (set during OAuth login)
  */
 
-const OPENML_API_BASE = "https://www.openml.org";
+const OPENML_API_BASE =
+  process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
 
 // Entity type mapping for OpenML API
 type EntityType = "dataset" | "flow" | "task" | "run";
@@ -25,43 +28,6 @@ export interface LikeResponse {
 export interface UserLikeStatus {
   isLiked: boolean;
   error?: string;
-}
-
-/**
- * Get the user's OpenML API key from the Flask backend
- * Uses Next.js API route to avoid CORS issues
- *
- * @deprecated The API key is now returned during OAuth login and stored in session.
- * Use `session.apikey` instead of calling this function.
- *
- * Note: This requires the local Flask backend to be running with your user.
- * If using production OpenML, the user must exist locally for likes to work.
- */
-export async function getOpenMLApiKey(
-  jwtToken: string,
-): Promise<string | null> {
-  try {
-    // Use Next.js API route proxy to avoid CORS issues
-    const response = await fetch("/api/user/api-key", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // Silently fail - likes just won't be available
-      // This is expected when using production OpenML but local Flask backend
-      return null;
-    }
-
-    const data = await response.json();
-    return data.apikey || null;
-  } catch (error) {
-    // Silently fail - likes just won't be available
-    return null;
-  }
 }
 
 /**

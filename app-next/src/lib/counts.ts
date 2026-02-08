@@ -1,11 +1,11 @@
 import axios from "axios";
-
-const ELASTICSEARCH_SERVER =
-  process.env.NEXT_PUBLIC_URL_ELASTICSEARCH || "https://openml.org/es/";
+import { getElasticsearchUrl, ELASTICSEARCH_INDICES } from "./elasticsearch";
 
 export async function fetchEntityCounts() {
-  const indices = ["data", "task", "flow", "run", "study", "measure"];
-  const elasticsearchEndpoint = `${ELASTICSEARCH_SERVER}/_msearch`;
+  const indices = ELASTICSEARCH_INDICES.filter(
+    (i) => i !== "user" && i !== "benchmark",
+  );
+  const elasticsearchEndpoint = getElasticsearchUrl("_msearch");
 
   let requestBody = "";
   indices.forEach((index) => {

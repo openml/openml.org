@@ -1,4 +1,5 @@
 import type { Dataset } from "@/types/dataset";
+import { getElasticsearchUrl } from "../elasticsearch";
 
 /**
  * Server-side utility to fetch a dataset from Elasticsearch
@@ -11,11 +12,7 @@ import type { Dataset } from "@/types/dataset";
  * @throws Error if dataset not found or API error
  */
 export async function getDataset(id: number): Promise<Dataset> {
-  const ELASTICSEARCH_SERVER =
-    process.env.NEXT_PUBLIC_ELASTICSEARCH_SERVER ||
-    "https://www.openml.org/es/";
-
-  const url = `${ELASTICSEARCH_SERVER}data/data/${id}`;
+  const url = getElasticsearchUrl(`data/data/${id}`);
 
   try {
     const response = await fetch(url, {
@@ -54,11 +51,7 @@ export async function getDataset(id: number): Promise<Dataset> {
  * Useful for related datasets or version history
  */
 export async function getDatasets(ids: number[]): Promise<Dataset[]> {
-  const ELASTICSEARCH_SERVER =
-    process.env.NEXT_PUBLIC_ELASTICSEARCH_SERVER ||
-    "https://www.openml.org/es/";
-
-  const url = `${ELASTICSEARCH_SERVER}data/_mget`;
+  const url = getElasticsearchUrl("data/_mget");
 
   try {
     const response = await fetch(url, {

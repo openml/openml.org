@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -24,18 +25,11 @@ export default async function ForgotPasswordPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-3xl">Forgot Password</CardTitle>
           <CardDescription className="text-base">
-            Reset your password
+            Enter your email to reset your password
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center">
-            Password reset page coming soon. For now, please contact support or
-            use{" "}
-            <a href="../signin" className="text-primary hover:underline">
-              sign in
-            </a>{" "}
-            with OAuth (GitHub or Google).
-          </p>
+          <ForgotPasswordForm />
         </CardContent>
       </Card>
     </div>

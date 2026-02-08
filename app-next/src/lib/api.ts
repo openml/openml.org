@@ -9,20 +9,24 @@ import type {
 } from "@/types";
 
 /**
- * OpenML API Client - Type-safe wrapper around Flask backend
+ * OpenML API Client - Type-safe wrapper around OpenML REST API
  *
- * This client provides methods to interact with the Flask API backend,
- * with proper TypeScript typing and error handling.
+ * This client provides methods to interact with the OpenML REST API directly,
+ * bypassing Flask backend for improved performance.
+ *
+ * API Documentation: https://www.openml.org/apis
  */
 class OpenMLAPIClient {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
-      timeout: 10000,
+      baseURL:
+        process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org",
+      timeout: 15000,
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -106,7 +110,7 @@ class OpenMLAPIClient {
   async search<T extends SearchableEntity>(
     entityType: EntityType,
     query: string,
-    filters?: Record<string, any>,
+    filters?: Record<string, unknown>,
     page: number = 1,
     pageSize: number = 20,
   ): Promise<{ results: T[]; total: number }> {
@@ -124,7 +128,7 @@ class OpenMLAPIClient {
    */
   async searchDatasets(
     query: string,
-    filters?: Record<string, any>,
+    filters?: Record<string, unknown>,
     page: number = 1,
     pageSize: number = 20,
   ): Promise<{ results: Dataset[]; total: number }> {
@@ -136,7 +140,7 @@ class OpenMLAPIClient {
    */
   async searchTasks(
     query: string,
-    filters?: Record<string, any>,
+    filters?: Record<string, unknown>,
     page: number = 1,
     pageSize: number = 20,
   ): Promise<{ results: Task[]; total: number }> {
@@ -148,7 +152,7 @@ class OpenMLAPIClient {
    */
   async searchFlows(
     query: string,
-    filters?: Record<string, any>,
+    filters?: Record<string, unknown>,
     page: number = 1,
     pageSize: number = 20,
   ): Promise<{ results: Flow[]; total: number }> {
@@ -160,7 +164,7 @@ class OpenMLAPIClient {
    */
   async searchRuns(
     query: string,
-    filters?: Record<string, any>,
+    filters?: Record<string, unknown>,
     page: number = 1,
     pageSize: number = 20,
   ): Promise<{ results: Run[]; total: number }> {
