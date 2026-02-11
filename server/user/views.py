@@ -48,23 +48,24 @@ def login():
     2. Checks password and if user is confirmed
     3. Logs in user next with access token
     """
+     
+    with Session() as session: 
+        jobj = request.get_json()
 
-    jobj = request.get_json()
-    with Session() as session:
         # need to inspect jobj. Is `email` actually username or is there also a `username`?
-        user = session.query(User).filter_by(username=jobj["email"]).first()
-        print(jobj)
+        user = session.query(User).filter_by(email=jobj["email"]).first()
+
         if user is None:
-            print("user does not exist")
-            return jsonify({"msg": "Wrong username or password"}), 200
+            print("User does not exist")
+            return jsonify({"msg": "WrongUsernameOrPassword"}), 200
 
         elif not user.check_password(jobj["password"]):
             print("Wrong password")
-            return jsonify({"msg": "wrong password"}), 200
+            return jsonify({"msg": "WrongUsernameOrPassword"}), 200
 
         elif user.active == 0:
             print("User not confirmed")
-            return jsonify({"msg": "NotConfirmed"}), 200
+            return jsonify({"msg": "UserNotConfirmed"}), 200
 
         else:
             user_g = session.query(UserGroups).filter_by(user_id=user.id).first()
@@ -89,8 +90,10 @@ def profile():
     """
     Function to edit and retrieve user profile information
     """
-    current_user = get_jwt_identity()
+
     with Session() as session:
+        current_user = get_jwt_identity()
+
         user = session.query(User).filter_by(username=current_user).first()
         if request.method == "GET":
             return (
@@ -138,8 +141,9 @@ def verifytoken():
 @jwt_required()
 def image():
     """Function to receive and set user image"""
-    current_user = get_jwt_identity()
+    
     with Session() as session:
+        current_user = get_jwt_identity()
         user = session.query(User).filter_by(username=current_user).first()
         f = request.files["file"]
         Path("dev_data/" + str(user.username)).mkdir(parents=True, exist_ok=True)
@@ -150,7 +154,7 @@ def image():
         user.update_image_address(path)
         session.merge(user)
         session.commit()
-    return jsonify({"msg": "User image changed"}), 200
+        return jsonify({"msg": "User image changed"}), 200
 
 
 @user_blueprint.route("/imgs/<path:path>")
@@ -181,9 +185,10 @@ def logout():
 @jwt_required()
 def apikey():
     """Change and retrieve API-Key"""
-    current_user = get_jwt_identity()
+
     with Session() as session:
-        user = session.query(User).filter(User.username == current_user).first()
+        current_user = get_jwt_identity()
+        user = session.query(User).filter_by(username=current_user).first()
         if request.method == "GET":
             api_key = user.session_hash
             return jsonify({"apikey": api_key}), 200
@@ -191,7 +196,10 @@ def apikey():
             user.set_session_hash()
             session.merge(user)
             session.commit()
-            return jsonify({"msg": "API Key updated"}), 200
+            return jsonify({
+                "msg": "API Key updated",
+                "apikey": user.session_hash
+            }), 200
 
 
 @user_blueprint.route("/delete", methods=["GET", "POST"])
@@ -208,37 +216,45 @@ def delete_user():
 @user_blueprint.route("/forgot-token", methods=["POST"])
 def forgot_token():
     """Check for forgotten_password_code"""
-    data = request.get_json()
+
     with Session() as session:
-        user = user_from_token(session, data, "forgotten_password_code")
-    if user is not None:
-        return jsonify({"msg": "token confirmed"}), 200
-    else:
+        data = request.get_json()
+        try:
+            user = user_from_token(session, data, "forgotten_password_code")
+            if user:
+                # user verified by token
+                return jsonify({"msg": "Token confirmed"}), 200
+        except ValueError as e:
+            print(e)
+
+        # user could not be verified by token
         return jsonify({"msg": "Error"}), 401
 
 
 @user_blueprint.route("/resetpassword", methods=["POST"])
 def reset():
     """Changes user password"""
-    data = request.get_json()
+
     with Session() as session:
+        data = request.get_json()
         user = user_from_token(session, data, "forgotten_password_code")
         user.set_password(data["password"])
         session.merge(user)
         session.commit()
-    return jsonify({"msg": "password changed"}), 200
+        return jsonify({"msg": "Password changed"}), 200
 
 
 @user_blueprint.route("/confirmation", methods=["POST"])
 def confirm_user():
     """Activates user"""
-    data = request.get_json()
+
     with Session() as session:
+        data = request.get_json()
         user = user_from_token(session, data, "activation_code")
         user.update_activation()
         session.merge(user)
         session.commit()
-    return jsonify({"msg": "User confirmed"}), 200
+        return jsonify({"msg": "User confirmed"}), 200
 
 
 def user_from_token(session: Session, data, token_name):

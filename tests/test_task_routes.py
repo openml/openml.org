@@ -1,7 +1,7 @@
 import os
 
 
-def test_upload_task(test_client, init_database):
+def test_upload_task(test_client):
     response = test_client.post(
         "/login", json={"email": "ff@ff.com", "password": "ff"}, follow_redirects=True
     )

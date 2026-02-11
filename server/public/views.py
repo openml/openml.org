@@ -22,8 +22,8 @@ blueprint = Blueprint("public", __name__)
 CORS(blueprint)
 
 
-DO_SEND_EMAIL = strtobool(os.environ.get("SEND_EMAIL", "True"))
-
+def email_enabled():
+    return strtobool(os.getenv("SEND_EMAIL", "True"))
 
 @blueprint.route("/signup", methods=["POST"])
 def signupfunc():
@@ -45,7 +45,7 @@ def signupfunc():
             user.remember_code = "0000"
             user.created_on = "0000"
             user.last_login = "0000"
-            user.active = "0" if DO_SEND_EMAIL else "1"
+            user.active = "0" if email_enabled() else "1"
             user.first_name = register_obj["first_name"]
             user.last_name = register_obj["last_name"]
             user.company = "0000"
@@ -59,7 +59,7 @@ def signupfunc():
             user.password_hash = "0000"
             token = secrets.token_hex()
             user.update_activation_code(token)
-            if DO_SEND_EMAIL:
+            if email_enabled():
                 confirmation_email(user.email, token)
             session.add(user)
             session.commit()
@@ -81,7 +81,7 @@ def password():
         token = secrets.token_hex()
         user.update_forgotten_code(token)
         # user.update_forgotten_time(timestamp)
-        if DO_SEND_EMAIL:
+        if email_enabled():
             forgot_password_email(user.email, token)
         session.merge(user)
         session.commit()
@@ -100,7 +100,7 @@ def confirmation_token():
             return jsonify({"msg": "User confirmation token sent"}), 200
         token = secrets.token_hex()
         user.update_activation_code(token)
-        if DO_SEND_EMAIL:
+        if email_enabled():
             confirmation_email(user.email, token)
         # updating user groups here
         user_group = UserGroups(user_id=user.id, group_id=2)
