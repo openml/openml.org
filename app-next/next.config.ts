@@ -12,6 +12,13 @@ const nextConfig: NextConfig = {
       // SIMPLE PATH-BASED REDIRECTS (✅ Works in next.config.ts)
       // ========================================
 
+      // Legacy /apis route redirect to /api
+      {
+        source: "/apis",
+        destination: "/api",
+        permanent: true, // 301 redirect (preserves SEO and bookmarks)
+      },
+
       // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
       {
         source: "/d/:id",
