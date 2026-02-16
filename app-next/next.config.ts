@@ -142,6 +142,47 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Hybrid proxy: routes not yet migrated to Next.js fall back to Flask
+  async rewrites() {
+    const FLASK_BACKEND =
+      process.env.FLASK_BACKEND_URL || "https://www.openml.org";
+
+    return {
+      // afterFiles: checked after Next.js pages/routes, so Next.js routes
+      // always take priority; only unmatched routes fall through to Flask
+      afterFiles: [
+        // Flask auth pages (password reset flow)
+        {
+          source: "/forgotpassword",
+          destination: `${FLASK_BACKEND}/forgotpassword`,
+        },
+        {
+          source: "/resetpassword",
+          destination: `${FLASK_BACKEND}/resetpassword`,
+        },
+        // API key retrieval (used by likes feature)
+        {
+          source: "/api-key",
+          destination: `${FLASK_BACKEND}/api-key`,
+        },
+        // Likes/votes service
+        {
+          source: "/api_new/:path*",
+          destination: `${FLASK_BACKEND}/api_new/:path*`,
+        },
+        // Legacy REST API (dataset metadata, features, evaluations)
+        {
+          source: "/api/v1/:path*",
+          destination: `${FLASK_BACKEND}/api/v1/:path*`,
+        },
+        // General Flask proxy fallback
+        {
+          source: "/api/flask-proxy/:path*",
+          destination: `${FLASK_BACKEND}/:path*`,
+        },
+      ],
+    };
+  },
 };
 
 export default withNextIntl(nextConfig);
