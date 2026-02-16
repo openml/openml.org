@@ -1,0 +1,73 @@
+services:
+  openml-next:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Build-time variables (NEXT_PUBLIC_* baked into JS bundle)
+        # Override these to point to your own infrastructure
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://www.openml.org}
+        NEXT_PUBLIC_URL_API: ${NEXT_PUBLIC_URL_API:-https://www.openml.org/api/v1}
+        NEXT_PUBLIC_URL_SITE_BACKEND: ${NEXT_PUBLIC_URL_SITE_BACKEND:-https://www.openml.org}
+        NEXT_PUBLIC_OPENML_API_URL: ${NEXT_PUBLIC_OPENML_API_URL:-https://www.openml.org}
+        NEXT_PUBLIC_ELASTICSEARCH_SERVER: ${NEXT_PUBLIC_ELASTICSEARCH_SERVER:-https://www.openml.org/es}
+        NEXT_PUBLIC_URL_ELASTICSEARCH: ${NEXT_PUBLIC_URL_ELASTICSEARCH:-https://www.openml.org/es}
+        NEXT_PUBLIC_ENABLE_ELASTICSEARCH: ${NEXT_PUBLIC_ENABLE_ELASTICSEARCH:-true}
+        NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR: ${NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR:-8}
+        NEXT_PUBLIC_ENABLE_MINIO: ${NEXT_PUBLIC_ENABLE_MINIO:-true}
+        NEXT_PUBLIC_URL_MINIO: ${NEXT_PUBLIC_URL_MINIO:-https://www.openml.org/data}
+    container_name: openml-next
+    restart: unless-stopped
+    ports:
+      - "3050:3050"
+    env_file:
+      - .env.docker
+    environment:
+      # --- Core ---
+      NODE_ENV: production
+      PORT: "3050"
+      HOSTNAME: "0.0.0.0"
+      NEXT_TELEMETRY_DISABLED: "1"
+
+      # --- Database (MySQL) ---
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-openml}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+
+      # --- Elasticsearch (server-side, runtime) ---
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL:-https://es.openml.org/}
+      ELASTICSEARCH_SERVER: ${ELASTICSEARCH_SERVER:-https://www.openml.org/es/}
+
+      # --- Authentication (NextAuth) ---
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3050}
+
+      # --- OAuth ---
+      GITHUB_ID: ${GITHUB_ID}
+      GITHUB_SECRET: ${GITHUB_SECRET}
+      GOOGLE_ID: ${GOOGLE_ID}
+      GOOGLE_SECRET: ${GOOGLE_SECRET}
+
+      # --- Email / SMTP ---
+      SMTP_SERVER: ${SMTP_SERVER:-localhost}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_LOGIN: ${SMTP_LOGIN:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_SERVER: ${EMAIL_SERVER:-localhost:3050}
+      EMAIL_SENDER: ${EMAIL_SENDER:-'"OpenML" <noreply@openml.org>'}
+
+      # --- WebAuthn / Passkeys ---
+      RP_ID: ${RP_ID:-localhost}
+      RP_ORIGIN: ${RP_ORIGIN:-http://localhost:3050}
+
+      # --- Flask Hybrid Proxy ---
+      FLASK_BACKEND_URL: ${FLASK_BACKEND_URL:-https://www.openml.org}
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3050/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

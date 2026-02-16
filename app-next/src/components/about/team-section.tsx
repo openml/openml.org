@@ -84,107 +84,30 @@ export function TeamSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock core team data - in production this would come from the API
+  // Fetch core team data from API (real OpenML data)
   useEffect(() => {
-    const mockCoreTeam: CoreTeamMember[] = [
-      {
-        user_id: 1,
-        first_name: "Joaquin",
-        last_name: "Vanschoren",
-        bio: "Project Lead, Associate Professor at TU Eindhoven. Founded OpenML to democratize machine learning research.",
-        image: "/avatars/joaquin.jpg",
-      },
-      {
-        user_id: 2,
-        first_name: "Pieter",
-        last_name: "Gijsbers",
-        bio: "Core Developer, PhD candidate at TU Eindhoven. Focuses on AutoML and reproducible machine learning workflows.",
-        image: "/avatars/pieter.jpg",
-      },
-      {
-        user_id: 3,
-        first_name: "Jan",
-        last_name: "van Rijn",
-        bio: "Core Contributor, Assistant Professor at LIACS, Leiden University. Expert in meta-learning and algorithm selection.",
-        image: "/avatars/jan.jpg",
-      },
-      {
-        user_id: 4,
-        first_name: "Bernd",
-        last_name: "Bischl",
-        bio: "Core Contributor, Professor at LMU Munich. Leads research in statistical learning, optimization, and AutoML.",
-        image: "/avatars/bernd.jpg",
-      },
-      {
-        user_id: 5,
-        first_name: "Matthias",
-        last_name: "Feurer",
-        bio: "Core Contributor, Senior Researcher at Freiburg University. Develops Auto-sklearn and contributes to AutoML research.",
-        image: "/avatars/matthias.jpg",
-      },
-      {
-        user_id: 6,
-        first_name: "Giuseppe",
-        last_name: "Casalicchio",
-        bio: "Core Contributor, Researcher at LMU Munich. Works on interpretable machine learning and AutoML systems.",
-        image: "/avatars/giuseppe.jpg",
-      },
-    ];
+    const fetchCoreTeam = async () => {
+      try {
+        const response = await fetch("/api/team");
+        if (!response.ok) throw new Error("Failed to fetch team");
+        const data = await response.json();
+        setCoreTeam(data.team || []);
+      } catch (err) {
+        console.error("Error fetching core team:", err);
+      }
+    };
 
-    setCoreTeam(mockCoreTeam);
+    fetchCoreTeam();
   }, []);
 
+  // Fetch contributors from API route (avoids GitHub rate limiting)
   useEffect(() => {
     const fetchContributors = async () => {
       try {
-        const repos = [
-          "OpenML",
-          "openml.org",
-          "openml-python",
-          "openml-r",
-          "openml-java",
-          "openml-data",
-          "blog",
-          "docs",
-          "openml-tensorflow",
-          "openml-pytorch",
-          "benchmark-suites",
-          "automlbenchmark",
-          "server-api",
-        ];
-
-        const responses = await Promise.all(
-          repos.map((repo) =>
-            fetch(
-              `https://api.github.com/repos/openml/${repo}/contributors`,
-            ).then((res) => (res.ok ? res.json() : [])),
-          ),
-        );
-
-        const contributorsMap = new Map<string, Contributor>();
-
-        responses
-          .flat()
-          .filter((c) => c && c.login)
-          .forEach((contributor) => {
-            if (contributorsMap.has(contributor.login)) {
-              const existing = contributorsMap.get(contributor.login)!;
-              existing.contributions += contributor.contributions;
-            } else {
-              contributorsMap.set(contributor.login, {
-                login: contributor.login,
-                avatar_url: contributor.avatar_url,
-                html_url: contributor.html_url,
-                contributions: contributor.contributions,
-              });
-            }
-          });
-
-        const sortedContributors = Array.from(contributorsMap.values()).sort(
-          (a, b) => b.contributions - a.contributions,
-        );
-
-        setContributors(sortedContributors);
+        const response = await fetch("/api/contributors");
+        if (!response.ok) throw new Error("Failed to fetch contributors");
+        const data = await response.json();
+        setContributors(data.contributors || []);
       } catch (err) {
         setError("Failed to load contributors. Please try again later.");
         console.error("Error fetching contributors:", err);
@@ -216,7 +139,7 @@ export function TeamSection() {
 
         <div className="mt-6 text-center">
           <Link
-            href="https://docs.openml.org/Governance/"
+            href="https://docs.openml.org/intro/Governance/"
             target="_blank"
             className="text-primary inline-flex items-center gap-2 text-sm font-medium hover:underline"
           >
