@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { Sorting } from "@elastic/react-search-ui";
+import { WithSearch } from "@elastic/react-search-ui";
 import {
   Table,
   TableBody,
@@ -48,17 +48,28 @@ interface ResultsTableProps {
   results?: Result[]; // Array of results
 }
 
-// Sortable columns configuration
-const sortableColumns = [
-  { field: "data_id", label: "ID", width: "w-20" },
-  { field: "name", label: "Name", width: "w-64" },
-  { field: "status", label: "Status", width: "w-32" },
-  { field: "version", label: "Version", width: "w-24" },
-  { field: "creator", label: "Creator", width: "w-40" },
-  { field: "date", label: "Date", width: "w-32" },
-  { field: "nr_of_likes", label: "Likes", width: "w-20" },
-  { field: "nr_of_downloads", label: "Downloads", width: "w-28" },
-  { field: "runs", label: "Runs", width: "w-20" },
+// Helper to remove surrounding quotes from strings
+const removeQuotes = (str: string | undefined): string => {
+  if (!str) return "-";
+  return str.replace(/^"|"$/g, "").trim() || "-";
+};
+
+// Column configuration
+// sortable: false for text fields that can't be sorted in ES
+const tableColumns = [
+  { field: "data_id", label: "ID", width: "w-20", sortable: true },
+  { field: "exact_name", label: "Name", width: "w-64", sortable: true },
+  { field: "version", label: "Version", width: "w-24", sortable: true },
+  { field: "creator", label: "Creator", width: "w-40", sortable: false },
+  { field: "date", label: "Date", width: "w-32", sortable: true },
+  { field: "nr_of_likes", label: "Likes", width: "w-20", sortable: true },
+  {
+    field: "nr_of_downloads",
+    label: "Downloads",
+    width: "w-28",
+    sortable: true,
+  },
+  { field: "runs", label: "Runs", width: "w-20", sortable: true },
 ];
 
 export function ResultsTable({ results }: ResultsTableProps) {
@@ -70,29 +81,43 @@ export function ResultsTable({ results }: ResultsTableProps) {
     );
   }
 
-  return (
-    <Sorting
-      sortOptions={[]} // Empty array since we handle sorting via column headers
-      view={({ value, onChange }) => {
-        // value is an array of sort objects
-        const currentSort =
-          Array.isArray(value) && value.length > 0 ? value[0] : null;
+  return <SortableTable results={results} />;
+}
 
-        const handleSort = (field: string) => {
-          if (onChange && typeof onChange === "function") {
-            if (currentSort?.field === field) {
-              // Toggle direction
-              const newDirection =
-                currentSort.direction === "asc" ? "desc" : "asc";
-              onChange([{ field, direction: newDirection }]);
-            } else {
-              // Set new field with desc as default
-              onChange([{ field, direction: "desc" }]);
-            }
+// Separate component to handle sorting with WithSearch
+function SortableTable({ results }: { results: Result[] }) {
+  return (
+    <WithSearch
+      mapContextToProps={({ sortList, setSort }) => ({ sortList, setSort })}
+    >
+      {(props) => {
+        // Type assertions for Search UI props
+        const sortList = props.sortList as
+          | Array<{ field: string; direction: string }>
+          | undefined;
+        const setSort = props.setSort as
+          | ((
+              sort: Array<{ field: string; direction: string }>,
+              dir: string,
+            ) => void)
+          | undefined;
+
+        const currentSort =
+          sortList && sortList.length > 0 ? sortList[0] : null;
+
+        const handleSort = (field: string, sortable: boolean) => {
+          if (!sortable || !setSort) return;
+          if (currentSort?.field === field) {
+            const newDirection =
+              currentSort.direction === "asc" ? "desc" : "asc";
+            setSort([{ field, direction: newDirection }], newDirection);
+          } else {
+            setSort([{ field, direction: "desc" }], "desc");
           }
         };
 
-        const getSortIcon = (field: string) => {
+        const getSortIcon = (field: string, sortable: boolean) => {
+          if (!sortable) return null;
           if (currentSort?.field !== field) {
             return <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />;
           }
@@ -108,15 +133,15 @@ export function ResultsTable({ results }: ResultsTableProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {sortableColumns.map((column) => (
+                  {tableColumns.map((column) => (
                     <TableHead
                       key={column.field}
-                      className={`${column.width} hover:bg-muted/50 cursor-pointer select-none`}
-                      onClick={() => handleSort(column.field)}
+                      className={`${column.width} ${column.sortable ? "hover:bg-muted/50 cursor-pointer" : ""} select-none`}
+                      onClick={() => handleSort(column.field, column.sortable)}
                     >
                       <div className="flex items-center">
                         {column.label}
-                        {getSortIcon(column.field)}
+                        {getSortIcon(column.field, column.sortable)}
                       </div>
                     </TableHead>
                   ))}
@@ -134,16 +159,15 @@ export function ResultsTable({ results }: ResultsTableProps) {
                     </TableCell>
                     <TableCell>
                       <Link
-                        href={`/d/${result.data_id?.raw || result.id?.raw}`}
-                        className="text-primary line-clamp-3 hover:underline"
+                        href={`/datasets/${result.data_id?.raw || result.id?.raw}`}
+                        className="line-clamp-3 font-semibold text-green-600 hover:underline dark:text-green-500"
                       >
                         {result.name?.snippet || result.name?.raw || "Untitled"}
                       </Link>
                     </TableCell>
-                    <TableCell>{result.status?.raw || "-"}</TableCell>
                     <TableCell>{result.version?.raw || "-"}</TableCell>
                     <TableCell className="line-clamp-3">
-                      {result.creator?.raw || "-"}
+                      {removeQuotes(result.creator?.raw)}
                     </TableCell>
                     <TableCell>
                       {result.date?.raw
@@ -166,6 +190,6 @@ export function ResultsTable({ results }: ResultsTableProps) {
           </div>
         );
       }}
-    />
+    </WithSearch>
   );
 }

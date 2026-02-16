@@ -5,15 +5,25 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 interface SidebarContextType {
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
+  homeMenuOpen: boolean;
+  setHomeMenuOpen: (open: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [homeMenuOpen, setHomeMenuOpen] = useState(false);
 
   return (
-    <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed }}>
+    <SidebarContext.Provider
+      value={{
+        isCollapsed,
+        setIsCollapsed,
+        homeMenuOpen,
+        setHomeMenuOpen,
+      }}
+    >
       {children}
     </SidebarContext.Provider>
   );

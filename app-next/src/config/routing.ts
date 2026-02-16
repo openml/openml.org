@@ -12,6 +12,9 @@ export const routing = defineRouting({
   // Use 'as-needed' to omit locale prefix for default locale
   localePrefix: "as-needed",
 
+  // Disable automatic locale detection (always use default locale unless explicitly in URL)
+  localeDetection: false,
+
   // Localized pathnames
   pathnames,
 });

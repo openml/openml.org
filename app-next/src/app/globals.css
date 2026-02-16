@@ -88,23 +88,24 @@
 }
 
 .dark {
-  --background: oklch(0.12 0.02 250);
-  --foreground: oklch(0.98 0.005 250);
+  /* Softer dark mode - less harsh contrast */
+  --background: oklch(0.18 0.015 250);
+  --foreground: oklch(0.88 0.01 250);
 
-  --card: oklch(0.16 0.03 250);
-  --card-foreground: oklch(0.98 0.005 250);
+  --card: oklch(0.2 0.02 250);
+  --card-foreground: oklch(0.88 0.01 250);
 
-  --popover: oklch(0.16 0.03 250);
-  --popover-foreground: oklch(0.98 0.005 250);
+  --popover: oklch(0.2 0.02 250);
+  --popover-foreground: oklch(0.88 0.01 250);
 
   --primary: oklch(66.565% 0.13239 268.569);
-  --primary-foreground: oklch(0.12 0.02 250);
+  --primary-foreground: oklch(0.15 0.02 250);
 
-  --secondary: oklch(0.2 0.03 250);
-  --secondary-foreground: oklch(0.98 0.005 250);
+  --secondary: oklch(0.24 0.025 250);
+  --secondary-foreground: oklch(0.88 0.01 250);
 
-  --muted: oklch(0.2 0.03 250);
-  --muted-foreground: oklch(0.65 0.03 250);
+  --muted: oklch(0.22 0.025 250);
+  --muted-foreground: oklch(0.6 0.025 250);
 
   --destructive: oklch(0.65 0.18 25);
   --border: oklch(0.25 0.04 250);
@@ -117,14 +118,14 @@
   --chart-4: oklch(0.78 0.16 80);
   --chart-5: oklch(0.68 0.14 30);
 
-  /* Sidebar */
-  --sidebar: oklch(0.14 0.025 250);
-  --sidebar-foreground: oklch(0.98 0.005 250);
+  /* Sidebar - softer dark */
+  --sidebar: oklch(0.16 0.02 250);
+  --sidebar-foreground: oklch(0.88 0.01 250);
   --sidebar-primary: oklch(66.565% 0.13239 268.569);
   --sidebar-primary-foreground: oklch(0.12 0.02 250);
-  --sidebar-accent: oklch(0.2 0.03 250);
-  --sidebar-accent-foreground: oklch(0.98 0.005 250);
-  --sidebar-border: oklch(0.25 0.04 250);
+  --sidebar-accent: oklch(0.22 0.025 250);
+  --sidebar-accent-foreground: oklch(0.88 0.01 250);
+  --sidebar-border: oklch(0.28 0.03 250);
   --sidebar-ring: oklch(66.565% 0.13239 268.569);
 }
 
@@ -140,25 +141,34 @@
   }
 }
 
+/* Gradient utilities */
+@utility gradient-bg {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+}
+
+@utility gradient-text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glow-effect {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+@utility card-gradient {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+}
+
 @layer utilities {
-  /* Gradient utilities */
-  .gradient-bg {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  /* Dark mode card hover state */
+  .dark .hover\:bg-accent:hover {
+    background-color: rgb(51 65 85) !important; /* slate-700 */
   }
 
-  .gradient-text {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .glow-effect {
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-  }
-
-  .card-gradient {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
+  .dark .hover\:bg-muted:hover {
+    background-color: rgb(51 65 85) !important; /* slate-700 */
   }
 
   @keyframes float {
@@ -218,6 +228,72 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  /* Standardized Plotly modebar - Relocated outside chart */
+  .plotly-chart-container {
+    position: relative;
+    padding-top: 45px; /* Space for the external modebar */
+  }
+
+  .js-plotly-plot .plotly .modebar-container {
+    position: absolute !important;
+    top: -45px !important;
+    right: 0px !important;
+    left: auto !important;
+    width: auto !important;
+    background: transparent !important;
+  }
+
+  .js-plotly-plot .plotly .modebar {
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    padding: 6px 12px !important;
+    border: 1px solid oklch(0.88 0.015 250) !important; /* var(--border) */
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-group {
+    background: transparent !important;
+  }
+
+  .dark .js-plotly-plot .plotly .modebar {
+    background: oklch(0.2 0.02 250) !important; /* var(--card) */
+    border-color: oklch(0.25 0.04 250) !important; /* var(--border) */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn {
+    opacity: 0.8 !important;
+    padding: 4px !important;
+    background: transparent !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn:hover {
+    opacity: 1 !important;
+    background: oklch(0.71 0.02 260) !important; /* slate-400 */
+  }
+
+  .dark .js-plotly-plot .plotly .modebar-btn:hover {
+    background: oklch(0.45 0.02 250) !important; /* darker slate for dark mode */
+  }
+
+  .js-plotly-plot .plotly .modebar-btn path {
+    fill: oklch(0.45 0.02 250) !important; /* muted foreground */
+  }
+
+  .dark .js-plotly-plot .plotly .modebar-btn path {
+    fill: oklch(0.7 0.02 250) !important;
+  }
+
+  .js-plotly-plot .plotly .modebar-btn:hover path,
+  .js-plotly-plot .plotly .modebar-btn.active path {
+    fill: #22c55e !important; /* Success green */
+  }
 }
 
 @layer components {
@@ -226,7 +302,6 @@
     background-image:
       linear-gradient(to top, var(--overlay-color), var(--overlay-color)),
       var(--light-bg-image);
-    /* background-blend-mode: saturation; */
     background-blend-mode: hard-light;
     background-position: center bottom;
     background-size: cover;
@@ -235,5 +310,31 @@
   /* Hide background in dark mode */
   .dark .three-pillars-background {
     background-image: none;
+  }
+
+  /* Homepage custom dark mode background */
+  .homepage-bg {
+    @apply bg-background;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .dark .homepage-bg {
+    background: #141452;
+    background: 
+      linear-gradient(20deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1)),
+      linear-gradient(rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6)),
+      linear-gradient(90deg, rgba(20, 20, 82, 1) 0%, rgba(16, 16, 22, 1) 35%, rgba(37, 31, 106, 1) 100%);
+  }
+
+  /* Logo animation for sidebar */
+  @keyframes logoFadeScale {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }

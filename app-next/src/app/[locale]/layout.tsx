@@ -5,14 +5,16 @@ import { getMessages } from "next-intl/server";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import { QueryProvider } from "@/components/providers";
+import { QueryProvider, AuthProvider } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
 import { SidebarProvider } from "@/contexts/sidebar-context";
+import { Toaster } from "@/components/ui/toaster";
 import { locales } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -66,9 +68,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={inter.variable} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={cn(inter.variable, "overflow-x-hidden")}
+      suppressHydrationWarning
+    >
       <body
-        className="flex min-h-screen flex-col antialiased"
+        className="flex min-h-screen flex-col overflow-x-hidden antialiased"
         suppressHydrationWarning
       >
         <NextIntlClientProvider messages={messages}>
@@ -78,16 +84,19 @@ export default async function LocaleLayout({
             enableSystem
             disableTransitionOnChange={false}
           >
-            <QueryProvider>
-              <SidebarProvider>
-                <Header />
-                <div className="flex flex-1">
-                  <Sidebar />
-                  <MainContent>{children}</MainContent>
-                </div>
-                <Footer />
-              </SidebarProvider>
-            </QueryProvider>
+            <AuthProvider>
+              <QueryProvider>
+                <SidebarProvider>
+                  <Header />
+                  <div className="flex flex-1">
+                    <Sidebar />
+                    <MainContent>{children}</MainContent>
+                  </div>
+                  <ConditionalFooter />
+                </SidebarProvider>
+              </QueryProvider>
+            </AuthProvider>
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

@@ -4,10 +4,6 @@ import { Link } from "@/config/routing";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-/**
- * Footer Component - Unified openml.org + docs.openml.org
- * Now with full i18n support
- */
 export function Footer() {
   const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
@@ -28,13 +24,13 @@ export function Footer() {
                 alt="OpenML"
                 width={160}
                 height={53}
-                className="h-auto w-40"
+                className="h-auto w-auto"
                 priority
               />
             </Link>
             <p className="-mt-3 text-sm leading-relaxed text-slate-400">
               {t("tagline")}{" "}
-              <span className="text-acforeground font-semibold">
+              <span className="text-foreground font-semibold">
                 Simple. Accessible. Collaborative.
               </span>
             </p>
@@ -64,6 +60,7 @@ export function Footer() {
                   <a
                     href="https://github.com/openml"
                     target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="GitHub"
                     className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                   >
@@ -78,6 +75,7 @@ export function Footer() {
                   <a
                     href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ"
                     target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Slack"
                     className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                   >
@@ -92,6 +90,7 @@ export function Footer() {
                   <a
                     href="https://docs.openml.org/help/#:~:text=X%20(formerly%20Twitter)-,Post%20something%20now,-Technical%20questions"
                     target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="X"
                     className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                   >
@@ -137,6 +136,7 @@ export function Footer() {
                 <a
                   href="https://github.com/openml"
                   target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="GitHub"
                   className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                 >
@@ -151,6 +151,7 @@ export function Footer() {
                 <a
                   href="https://join.slack.com/t/openml/shared_invite/enQtODg4NjgzNTE4NjU3LTYwZDFhNzQ5NmE0NjIyNmM3NDMyMjFkZDQ0YWZkYWYxMTIxODFmMDhhMTUzMGYzMmM4NjIzYTZlYjBkOGE5MTQ"
                   target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Slack"
                   className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                 >
@@ -165,6 +166,7 @@ export function Footer() {
                 <a
                   href="https://docs.openml.org/help/#:~:text=X%20(formerly%20Twitter)-,Post%20something%20now,-Technical%20questions"
                   target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="X"
                   className="block rounded-sm p-1 text-slate-400 transition-all duration-200 hover:scale-115 hover:bg-transparent"
                 >
@@ -240,54 +242,66 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link
-                  href="/docs"
+                <a
+                  href="https://docs.openml.org/intro/"
                   className="text-slate-400 transition-colors hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="animated-underline">
                     {t("gettingStarted")}
                   </span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/docs/concepts"
+                <a
+                  href="https://docs.openml.org/concepts/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
                   <span className="animated-underline">{t("concepts")}</span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/docs/apis"
+                <a
+                  href="https://docs.openml.org/apiv2/"
                   className="text-slate-400 transition-colors hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="animated-underline">{t("apisAndSdks")}</span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/docs/python"
+                <a
+                  href="https://docs.openml.org/python/"
                   className="text-slate-400 transition-colors hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="animated-underline">{t("python")}</span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/docs/r"
+                <a
+                  href="https://docs.openml.org/r/"
                   className="text-slate-400 transition-colors hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="animated-underline">{t("r")}</span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/docs/java"
+                <a
+                  href="docs.openml.org/pytorch/"
                   className="text-slate-400 transition-colors hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="animated-underline">{t("java")}</span>
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -308,12 +322,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/contributing"
+                  href="/contribute"
                   className="text-slate-400 transition-colors hover:text-white"
                 >
-                  <span className="animated-underline">
-                    {t("contributing")}
-                  </span>
+                  <span className="animated-underline">{t("contribute")}</span>
                 </Link>
               </li>
               <li>

@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
 import { Plus, Database, Target, FolderPlus } from "lucide-react";
-import { Link } from "@/config/routing";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,19 +18,26 @@ import {
  * Create Menu - Client Component
  * Dropdown menu for creating new content (datasets, tasks, collections)
  * Now with full i18n support
+ * Only visible when user is logged in
  */
 export function CreateMenu() {
+  const { data: session, status } = useSession();
   const t = useTranslations("header");
+
+  // Hide menu if user is not authenticated
+  if (status === "loading" || !session) {
+    return null;
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="default"
+          variant="openml"
           size="sm"
-          className="hidden cursor-pointer gap-2 border-2 border-slate-700 bg-transparent py-3 font-semibold text-slate-700 hover:bg-slate-700 hover:text-white md:inline-flex"
+          className="group mr-0 cursor-pointer gap-2 border-0 bg-linear-to-r from-slate-600 to-slate-700 px-4 py-2.5 font-semibold text-white shadow-lg shadow-slate-500/30 transition-all duration-300 hover:scale-105 hover:from-slate-700 hover:to-slate-800 hover:shadow-xl hover:shadow-slate-600/40 md:mr-2"
         >
-          <Plus className="size-6" />
-          <span>{t("addNew")}</span>
+          <Plus className="size-5 transition-transform duration-300 group-hover:rotate-90" />
+          <span className="hidden md:inline-flex">{t("addNew")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

@@ -5,6 +5,7 @@
     "tasks": "Taken",
     "flows": "Flows",
     "runs": "Runs",
+    "users": "Gebruikersprofielen",
     "collections": "Collecties",
     "taskCollections": "Taken",
     "runCollections": "Runs",
@@ -25,10 +26,24 @@
     "meetUp": "Bijeenkomsten",
     "discussions": "Discussies",
     "extra": "EXTRA",
+    "users": "Gebruikersprofielen",
+    "account": "Account",
     "auth": "Authenticatie",
     "signIn": "Inloggen",
     "signUp": "Registreren",
     "resetPassword": "Wachtwoord Resetten",
+    "continueWith": "Of ga verder met",
+    "signInWithGitHub": "Inloggen met GitHub",
+    "signInWithGoogle": "Inloggen met Google",
+    "emailOrUsername": "E-mail of Gebruikersnaam",
+    "password": "Wachtwoord",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "username": "Gebruikersnaam",
+    "email": "E-mail",
+    "confirmPassword": "Bevestig Wachtwoord",
+    "createAccount": "Account Aanmaken",
     "pageNotFound": "Pagina Niet Gevonden",
     "serverError": "Serverfout"
   },
@@ -51,7 +66,7 @@
     "java": "Java",
     "community": "Gemeenschap",
     "aboutUs": "Over ons",
-    "contributing": "Bijdragen",
+    "contribute": "Bijdragen",
     "team": "Team",
     "publications": "Publicaties",
     "blog": "Blog",
@@ -140,5 +155,746 @@
     "loading": "Laden...",
     "error": "Fout",
     "noResults": "Geen resultaten gevonden"
+  },
+  "home": {
+    "hero": {
+      "version": "Versie 3.0: Gebouwd voor reproduceerbare wetenschap",
+      "title": "Het wereldwijde lab voor machine learning onderzoek",
+      "subtitle": "Machine learning gedijt bij transparantie. OpenML is de open, samenwerkende omgeving waar wetenschappers FAIR-data delen, experimenten organiseren en bouwen op state-of-the-art algoritmen.",
+      "description": "Machine learning gedijt bij transparantie. OpenML is de open, samenwerkende omgeving waar wetenschappers FAIR-data delen, experimenten organiseren en bouwen op state-of-the-art algoritmen.",
+      "startTracking": "Begin met bijhouden en delen!",
+      "readManifesto": "Lees het Manifest",
+      "trustedWorldwide": "Wereldwijd vertrouwd voor objectieve benchmarking van algoritmen.",
+      "stats": "+99,99% Reproduceerbaarheid 500k+ Datasets 10M+ Runs+",
+      "joinCommunity": "Sluit je aan bij de community!"
+    },
+    "ecosystem": {
+      "overline": "Het Ecosysteem",
+      "heading": "Naadloze integratie",
+      "subtitle": "Importeer naadloos data en exporteer experimenten vanuit je eigen wetenschappelijke omgeving.",
+      "button": "Bekijk API-documentatie"
+    },
+    "threePillars": {
+      "title": "De drie pijlers van OpenML",
+      "subtitle": "Open platform voor het delen van datasets, algoritmen en experimenten om een wereldwijde machine learning repository op te bouwen",
+      "fairData": {
+        "title": "FAIR-data op schaal",
+        "description": "Toegang tot duizenden uniform geformatteerde datasets. Elk dataset is geversioneerd, voorzien van metadata en direct klaar voor laden in je analysepipeline.",
+        "button": "Datasets verkennen"
+      },
+      "objectiveEvaluation": {
+        "title": "Objectieve evaluatie",
+        "description": "Stop met gokken. Voer je algoritmen uit op gestandaardiseerde taken met vooraf gedefinieerde train/test-splits om te zorgen dat je resultaten vergelijkbaar en peer-review-klaar zijn.",
+        "button": "Bekijk benchmarktaken"
+      },
+      "frictionlessFlows": {
+        "title": "Frictieloze ML-flows",
+        "description": "Behandel experimenten als objecten. Deel automatisch je model-pipelines (flows) en resultaten (runs) om een transparant wetenschappelijk record te creëren.",
+        "button": "Flows verkennen"
+      }
+    },
+    "accessibility": {
+      "title": "Toegankelijkheid & integratie",
+      "subtitle": "Gebruik OpenML vanuit de webinterface, notebooks of de command line — waar je al werkt.",
+      "webInterface": {
+        "title": "De webinterface",
+        "description": "Ontdek OpenML via een interactief webdashboard voor het verkennen van datasets en experimenten.",
+        "features": [
+          "Zoek, filter en bookmark datasets op taaktype, grootte en domein.",
+          "Bekijk metadata, doelvariabelen en distributies voordat je code schrijft.",
+          "Vergelijk versies, volg herkomst en spring direct naar gerelateerde taken, flows en runs."
+        ],
+        "summary": "Browse, visualiseer en organiseer alles op één plek — ideaal voor exploratieve analyse, onderwijs en snelle demo's.",
+        "button": "Datasets browsen"
+      },
+      "codeApis": {
+        "title": "De code (API's)",
+        "description": "Integreer direct in je code. Gebruik onze client libraries om programmatisch datasets te downloaden, taken uit te voeren en resultaten te uploaden zonder je IDE te verlaten.",
+        "viewGithub": "Bekijk op GitHub",
+        "downloadZip": "ZIP downloaden",
+        "button": "API-docs bekijken"
+      }
+    },
+    "benchmarking": {
+      "title": "Benchmarking-suites",
+      "subtitle": "De wetenschappelijke methode voor rigoureuze evaluatie",
+      "description": "Valideer je modellen op samengestelde benchmarking-suites over domeinen zoals gezondheidszorg, financiën en computer vision. Zorg dat je algoritme robuust is over veel datasets, niet slechts één benchmark.",
+      "tasks": {
+        "title": "Taken",
+        "subtitle": "Het probleem",
+        "description": "Gestandaardiseerde machine learning uitdagingen met vaste evaluatiemetrics (AUC, RMSE, Accuracy). Elke taak biedt vooraf gedefinieerde train/test-splits om te zorgen dat je resultaten vergelijkbaar en peer-review-klaar zijn.",
+        "button": "Taken bekijken"
+      },
+      "suites": {
+        "title": "Suites",
+        "subtitle": "De collectie",
+        "description": "Samengestelde collecties van taken (bijv. \"AutoML Benchmark\", \"Medical Diagnosis Suite\") voor uitgebreide stresstests van algoritmen over meerdere datasets en probleemgebieden.",
+        "button": "Suites browsen"
+      }
+    },
+    "workflowLoop": {
+      "title": "De OpenML-workflowloop",
+      "subtitle": "Integreer OpenML in elke stap van je ML-workflow.",
+      "import": {
+        "title": "Importeren",
+        "description": "Laad OpenML-datasets in één regel code, compatibel met scikit-learn, PyTorch, TensorFlow, XGBoost en meer.",
+        "button": "Startgids"
+      },
+      "buildRun": {
+        "title": "Bouwen & uitvoeren",
+        "description": "Train en evalueer modellen op die taken met je favoriete ML-bibliotheken. Probeer verschillende pipelines en hyperparameters tot je tevreden bent met de resultaten."
+      },
+      "export": {
+        "title": "Exporteren & publiceren",
+        "description": "Publiceer automatisch: Upload je workflows (flows), experimenten (runs) en evaluatiemetrics naar OpenML zodat anderen ze kunnen vergelijken en hergebruiken.",
+        "flows": "Flows",
+        "flowsLabel": "workflows",
+        "runs": "Runs",
+        "runsLabel": "experimenten",
+        "metrics": "Metrics",
+        "metricsLabel": "evaluatie"
+      },
+      "knowledgeBase": {
+        "title": "Kennisbasis",
+        "subtitle": "Draag bij aan de globale kennisbasis",
+        "description": "Genereer persistente identifiers (DOI's) voor je datasets, workflows en experimenten — voor FAIR-compliance en reproduceerbare wetenschap.",
+        "citationTitle": "De citatie-levenscyclus",
+        "citationDescription": "Laat je onderzoek niet sterven op een harde schijf. Uploaden naar OpenML creërt citeerbare, geversioneerde artefacten met herkomsttracking. Je werk wordt deel van het globale ML-benchmarkcorpus, geciteerd door peers en voedend meta-onderzoek."
+      }
+    },
+    "academicImpact": {
+      "title": "Draag bij aan de globale kennisbasis",
+      "intro": "Genereer persistente identifiers (DOI's) voor je datasets, workflows en experimenten — voor FAIR-compliance en reproduceerbare wetenschap.",
+      "subtitle": "De citatie-levenscyclus",
+      "text": "Laat je onderzoek niet sterven op een harde schijf. Uploaden naar OpenML creëert citeerbare, geversioneerde artefacten met herkomsttracking. Je werk wordt deel van het globale ML-benchmarkcorpus, geciteerd door peers en voedend meta-onderzoek."
+    },
+    "faq": {
+      "title": "OpenML FAQ",
+      "heading": "Duidelijke antwoorden op de belangrijkste vragen",
+      "description": "Of je nu je eerste model traint of grootschalige benchmarks uitvoert, OpenML stroomlijnt elke stap van je workflow. Deze Q&A benadrukt wat OpenML uniek maakt en hoe het je dagelijkse ML-werk kan vereenvoudigen.",
+      "questions": [
+        {
+          "question": "Waarom is OpenML ideaal voor ML-onderzoek?",
+          "answer": "OpenML maakt je experimenten volledig reproduceerbaar.",
+          "details": [
+            "algoritmen",
+            "hyperparameters",
+            "datasetversies",
+            "metrics",
+            "hardware"
+          ],
+          "footer": "Iedereen kan je resultaten exact herhalen."
+        },
+        {
+          "question": "Hoe maakt OpenML resultaten vergelijkbaar?",
+          "answer": "Alle datasets en taken zijn gestandaardiseerd. Je kunt vergelijken:",
+          "details": ["algoritmen", "pipelines", "hyperparameters"],
+          "footer": "over identieke evaluatieprotocollen — essentieel voor benchmarking."
+        },
+        {
+          "question": "Kan ik eerdere experimenten doorzoeken?",
+          "answer": "Ja. Elk experiment wordt gelogd met rijke, machineleesbare metadata. Je kunt dingen opvragen zoals:",
+          "details": [
+            "\"Welke modellen werken het beste op kleine tabulaire datasets?\""
+          ],
+          "footer": "Dit maakt OpenML krachtig voor meta-learning."
+        },
+        {
+          "question": "Wat maakt OpenML wetenschappelijk rigoureus?",
+          "answer": "OpenML handhaaft:",
+          "details": [
+            "gecureerde datasets",
+            "gestandaardiseerde taken",
+            "consistente train/test-splits",
+            "gedocumenteerde metadata"
+          ],
+          "footer": "Ideaal voor academische papers, reproduceerbaar onderzoek en ML-competities."
+        },
+        {
+          "question": "Hoe maakt OpenML resultaten vergelijkbaar?",
+          "answer": "Alle resultaten volgen gestandaardiseerde evaluatieprotocollen:",
+          "details": [
+            "uniforme datasetformaten",
+            "gedeelde taken met vaste splits",
+            "consistente metrics",
+            "identieke benchmarkingcondities"
+          ],
+          "footer": "Je kunt algoritmen, pipelines en hyperparameters direct vergelijken op schaal."
+        },
+        {
+          "question": "Kan ik eerdere experimenten doorzoeken?",
+          "answer": "Ja. Elk experiment wordt opgeslagen met machineleesbare metadata:",
+          "details": [
+            "dataseteigenschappen",
+            "algoritme-instellingen",
+            "prestatiemetrics",
+            "taaktype en -structuur"
+          ],
+          "footer": "Je kunt duizenden runs doorzoeken om te ontdekken wat het beste werkt voor jouw probleem."
+        }
+      ]
+    },
+    "about": {
+      "meta": {
+        "title": "Over OpenML - Open Machine Learning Platform",
+        "description": "Leer meer over de missie van OpenML om machine learning eenvoudig, toegankelijk en collaboratief te maken. Sluit je aan bij onze gemeenschap van onderzoekers en practitioners die een open ecosysteem bouwen van ML-data, modellen en benchmarks."
+      },
+      "hero": {
+        "title": "Over OpenML",
+        "subtitle": "Het bouwen van een naadloos, open ecosysteem van machine learning data, modellen en benchmarks — openlijk AI bevorderen ten voordele van de hele mensheid."
+      },
+      "toc": {
+        "onThisPage": "Op Deze Pagina"
+      }
+    },
+    "contribute": {
+      "meta": {
+        "title": "Bijdragen aan OpenML - Sluit Je Aan Bij Onze Gemeenschap",
+        "description": "Help mee de toekomst van open machine learning te bouwen. Draag code bij, deel datasets, verbeter documentatie, of ga in gesprek met onze gemeenschap. Elke bijdrage maakt verschil."
+      },
+      "hero": {
+        "title": "Bijdragen aan OpenML",
+        "subtitle": "Help ons de toekomst van open machine learning te bouwen. Of je nu ontwikkelaar, onderzoeker of enthousiast bent, er zijn vele manieren om betrokken te raken en impact te maken."
+      }
+    },
+    "documentation": {
+      "meta": {
+        "title": "OpenML Documentatie - Aan de Slag Gids",
+        "description": "Leer hoe je het OpenML-platform gebruikt. Verken datasets, voer experimenten uit, deel je werk en werk samen met de wereldwijde machine learning gemeenschap. Volledige gidsen voor Python, R en Java."
+      },
+      "hero": {
+        "title": "Documentatie",
+        "subtitle": "Alles wat je nodig hebt om aan de slag te gaan met OpenML. Leer hoe je datasets verkent, experimenten uitvoert en samenwerkt met de wereldwijde ML-gemeenschap."
+      },
+      "alert": {
+        "title": "Volledige Documentatie",
+        "description": "Voor uitgebreide API-referenties, tutorials en geavanceerde gidsen, bezoek onze volledige documentatie op"
+      }
+    },
+    "api": {
+      "meta": {
+        "title": "OpenML APIs - Python, R, Java & REST",
+        "description": "Krijg programmatische toegang tot duizenden ML datasets, taken en experimenten. Bouw reproduceerbare machine learning pipelines met Python, R, Java of onze REST API."
+      },
+      "version": "v1.0",
+      "title": "OpenML APIs",
+      "subtitle": "Krijg programmatische toegang tot duizenden ML datasets, taken en experimenten. Bouw reproduceerbare machine learning pipelines met Python, R, Java of onze REST API.",
+      "quickLinks": {
+        "python": "Python",
+        "rPackage": "R Pakket",
+        "java": "Java",
+        "restApi": "REST API"
+      },
+      "toc": {
+        "onThisPage": "Op deze pagina",
+        "overview": "Overzicht",
+        "gettingStarted": "Aan de Slag",
+        "installation": "Installatie",
+        "authentication": "Authenticatie",
+        "workingWith": "Werken met",
+        "datasets": "Datasets",
+        "tasks": "Taken",
+        "flows": "Flows",
+        "runs": "Runs",
+        "apiReference": "API Referentie",
+        "endpoints": "Endpoints",
+        "rateLimits": "Snelheidslimieten",
+        "resources": "Bronnen"
+      },
+      "overview": {
+        "title": "Overzicht",
+        "description": "OpenML biedt een uniforme interface voor toegang tot machine learning bronnen in meerdere programmeertalen. Of je nu datasets verkent, experimenten uitvoert of algoritmes benchmarkt, onze APIs maken het eenvoudig om OpenML in je workflow te integreren.",
+        "datasets": {
+          "title": "10.000+ Datasets",
+          "description": "Toegang tot gecureerde ML datasets met rijke metadata"
+        },
+        "tasks": {
+          "title": "50.000+ Taken",
+          "description": "Voorgedefinieerde ML taken met gestandaardiseerde evaluatie"
+        },
+        "runs": {
+          "title": "10M+ Runs",
+          "description": "Reproduceerbare experimenten en benchmarks"
+        }
+      },
+      "gettingStarted": {
+        "title": "Aan de Slag",
+        "installation": "Installatie",
+        "authentication": {
+          "title": "Authenticatie",
+          "alertTitle": "API Sleutel Vereist voor Uploads",
+          "alertDescription": "Het lezen van openbare data vereist geen authenticatie. Om echter datasets, runs te uploaden of toegang te krijgen tot privé bronnen, heb je een API sleutel nodig.",
+          "howToGet": "Hoe krijg je je API sleutel:",
+          "step1": "Maak een account aan of log in bij OpenML",
+          "step2": "Ga naar je Account Instellingen",
+          "step3": "Vind je API sleutel in de API sectie",
+          "getApiKey": "Haal Je API Sleutel"
+        }
+      },
+      "workingWith": {
+        "title": "Werken met",
+        "datasets": {
+          "title": "Datasets",
+          "description": "Datasets zijn de basis van OpenML. Ze bevatten de daadwerkelijke data die wordt gebruikt voor machine learning experimenten."
+        },
+        "tasks": {
+          "title": "Taken",
+          "description": "Taken definiëren een specifiek machine learning probleem: welke dataset te gebruiken, welk doel te voorspellen, en hoe te evalueren."
+        },
+        "flows": {
+          "title": "Flows",
+          "description": "Flows representeren machine learning pipelines of algoritmes. Ze beschrijven de exacte stappen en parameters die worden gebruikt."
+        },
+        "runs": {
+          "title": "Runs",
+          "description": "Runs zijn de resultaten van het toepassen van een flow op een taak. Ze bevatten voorspellingen, evaluaties en runtime informatie."
+        }
+      },
+      "apiReference": {
+        "title": "API Referentie",
+        "endpoints": {
+          "title": "Endpoints",
+          "data": {
+            "title": "Data API",
+            "description": "Dataset operaties",
+            "list": "Lijst datasets",
+            "get": "Haal dataset details",
+            "features": "Haal dataset kenmerken"
+          },
+          "task": {
+            "title": "Taak API",
+            "description": "Taak operaties",
+            "list": "Lijst taken",
+            "get": "Haal taak details"
+          },
+          "flow": {
+            "title": "Flow API",
+            "description": "Flow operaties",
+            "list": "Lijst flows",
+            "get": "Haal flow details"
+          },
+          "run": {
+            "title": "Run API",
+            "description": "Run operaties",
+            "list": "Lijst runs",
+            "get": "Haal run details"
+          }
+        },
+        "rateLimits": {
+          "title": "Snelheidslimieten",
+          "description": "Om eerlijk gebruik te garanderen, heeft de API snelheidslimieten:",
+          "anonymous": "Anoniem: 100 verzoeken/minuut",
+          "authenticated": "Geauthenticeerd: 1000 verzoeken/minuut",
+          "note": "Als je hogere limieten nodig hebt voor onderzoeksdoeleinden, neem dan contact met ons op."
+        }
+      },
+      "resources": {
+        "title": "Bronnen",
+        "documentation": {
+          "title": "Documentatie",
+          "python": "Python API Docs",
+          "r": "R Pakket Docs",
+          "rest": "REST API Referentie"
+        },
+        "community": {
+          "title": "Gemeenschap",
+          "github": "GitHub Repository",
+          "slack": "Slack Gemeenschap",
+          "discussions": "Discussies"
+        }
+      },
+      "languages": {
+        "python": {
+          "name": "Python",
+          "description": "De Python API biedt de meest uitgebreide toegang tot OpenML functionaliteit, met volledige ondersteuning voor scikit-learn, PyTorch en TensorFlow."
+        },
+        "r": {
+          "name": "R",
+          "description": "Het R pakket integreert naadloos met mlr3 en biedt toegang tot alle OpenML bronnen."
+        },
+        "java": {
+          "name": "Java",
+          "description": "De Java API connector biedt programmatische toegang tot OpenML voor JVM-gebaseerde applicaties."
+        },
+        "julia": {
+          "name": "Julia",
+          "description": "Het Julia pakket biedt high-performance toegang tot OpenML datasets en taken."
+        },
+        "rest": {
+          "name": "REST API",
+          "description": "Krijg rechtstreeks toegang tot OpenML via onze REST API voor elke programmeertaal of omgeving."
+        }
+      }
+    },
+    "meetUs": {
+      "meta": {
+        "title": "Ontmoet Ons - OpenML Hackathons & Evenementen",
+        "description": "Neem deel aan OpenML hackathons en community evenementen. Ontmoet het team, werk samen aan open science projecten, en help machine learning te democratiseren."
+      },
+      "hero": {
+        "title": "Laten we Afspreken!",
+        "subtitle": "Neem deel aan een van onze hackathons en help de toekomst van open machine learning vorm te geven"
+      },
+      "why": {
+        "title": "De wereld veranderen vereist gerichte, diepgaande inspanning",
+        "description": "In hackathon-achtige evenementen breken we met de routine en werken we wekenlang aan nieuwe ideeën die de wetenschappelijke gemeenschap vooruit helpen. Van coole uitbreidingen van OpenML zelf tot het oplossen van data-gedreven problemen op nieuwe manieren, we geloven in open science en het democratiseren van machine learning voor iedereen.",
+        "bringLaptop": "Breng gewoon je laptop mee",
+        "drinksSnacks": "Wij zorgen voor drankjes & snacks",
+        "greatCompany": "Gezellig gezelschap gegarandeerd"
+      },
+      "upcoming": {
+        "title": "Aankomende Evenementen",
+        "featured": "Uitgelicht",
+        "register": "Registreer (Gratis)",
+        "schedule": "Schema & Meer",
+        "howToPrepare": "Hoe Voor te Bereiden",
+        "viewVenue": "Bekijk locatie details",
+        "slackAlert": "Word lid van ons Slack kanaal om op de hoogte te blijven en mee te doen aan de discussie!"
+      },
+      "sponsor": {
+        "title": "Sponsor een Evenement",
+        "subtitle": "Sponsoring kan een geweldige hackathon nog beter maken!",
+        "description": "We zijn altijd erg blij met sponsoring om de volgende hackathon nog beter te maken. Sponsoren kan via de OpenML Foundation en wordt direct gebruikt ten behoeve van de deelnemers: voor snacks, sociale activiteiten, gratis spullen (zoals t-shirts)...",
+        "acknowledgment": "We erkennen graag uw steun op de OpenML website, en nodigen u uit om een presentatie te geven op het evenement.",
+        "contactUs": "Neem Contact Op Over Sponsoring"
+      },
+      "memories": {
+        "title": "Herinneringen",
+        "pastEvents": "Eerdere Evenementen",
+        "photoGallery": "Fotogalerij",
+        "photoDescription": "Bekijk foto's van eerdere evenementen",
+        "viewPhotos": "Bekijk Foto's op Flickr"
+      },
+      "cta": {
+        "title": "Klaar om Mee te Doen?",
+        "description": "Of je nu een ervaren ML expert bent of net begint, onze hackathons zijn de perfecte plek om te leren, samen te werken en impact te maken.",
+        "registerNext": "Registreer voor Volgend Evenement",
+        "joinSlack": "Word Lid van Slack Community"
+      }
+    },
+    "terms": {
+      "meta": {
+        "title": "Voorwaarden & Citatie - OpenML",
+        "description": "Meer informatie over OpenML-licenties, hoe u OpenML in uw onderzoek kunt citeren, en onze gebruiksvoorwaarden en privacybeleid."
+      },
+      "title": "Voorwaarden & Citatie",
+      "subtitle": "Licenties, citaties en voorwaarden voor het gebruik van OpenML in uw onderzoek en projecten.",
+      "licenses": {
+        "title": "Licenties",
+        "description": "OpenML ondersteunt meerdere open licenties om toegankelijkheid en hergebruik te maximaliseren. Elke dataset en bron op OpenML is getagd met de specifieke licentie.",
+        "ccby": "Naamsvermelding vereist. Vrij delen en aanpassen met juiste vermelding.",
+        "cc0": "Geen rechten voorbehouden. Vrij te gebruiken zonder beperkingen.",
+        "bsd": "Voor broncode. Permissieve licentie met minimale beperkingen."
+      },
+      "citation": {
+        "title": "Hoe te Citeren",
+        "subtitle": "Citeer OpenML als u het in uw onderzoek gebruikt. Het helpt ons impact aan te tonen en ontwikkeling voort te zetten.",
+        "openml": {
+          "title": "Citeer OpenML Platform",
+          "description": "Vanschoren et al., SIGKDD Explorations 2013"
+        },
+        "python": {
+          "title": "Citeer Python API",
+          "description": "Feurer et al., JMLR 2021"
+        },
+        "r": {
+          "title": "Citeer R API",
+          "description": "Casalicchio et al., Computational Statistics 2017"
+        },
+        "benchmark": {
+          "title": "Citeer Benchmarking Suites",
+          "description": "Bischl et al., NeurIPS 2021"
+        }
+      },
+      "termsOfUse": {
+        "title": "Gebruiksvoorwaarden",
+        "honorCode": {
+          "title": "Erecode",
+          "subtitle": "Richtlijnen voor ethisch gebruik van OpenML",
+          "items": {
+            "cite": "Geef juiste naamsvermelding en citeer de oorspronkelijke auteurs van datasets en papers",
+            "share": "Deel uw bijdragen openlijk zodat anderen op uw werk kunnen voortbouwen",
+            "respect": "Respecteer dataset-licenties en volg hun voorwaarden",
+            "quality": "Upload hoogwaardige, goed gedocumenteerde data en experimenten",
+            "feedback": "Geef constructieve feedback om het platform te helpen verbeteren"
+          }
+        },
+        "usageTerms": {
+          "title": "Gebruiksregels",
+          "subtitle": "Regels voor het gebruik van OpenML-diensten",
+          "intro": "Door OpenML te gebruiken, gaat u akkoord met de volgende voorwaarden:",
+          "items": {
+            "free": "OpenML is gratis te gebruiken voor onderzoek, onderwijs en niet-commerciële doeleinden",
+            "api": "API-gebruik moet redelijke snelheidslimieten volgen om eerlijke toegang voor alle gebruikers te garanderen",
+            "abuse": "Geautomatiseerd scrapen of misbruik van diensten kan leiden tot toegangsbeperkingen",
+            "warranty": "Data en diensten worden geleverd \"zoals ze zijn\" zonder enige garantie"
+          }
+        },
+        "privacy": {
+          "title": "Privacybeleid",
+          "subtitle": "Hoe wij met uw gegevens omgaan",
+          "intro": "Wij nemen uw privacy serieus. Zo gaan wij om met uw informatie:",
+          "items": {
+            "collect": "We verzamelen minimale persoonlijke informatie die nodig is om onze diensten te leveren",
+            "usage": "Gebruiksgegevens helpen ons OpenML te verbeteren en te begrijpen hoe het wordt gebruikt",
+            "share": "Wij verkopen of delen uw persoonlijke informatie niet met derden",
+            "cookies": "Wij gebruiken cookies voor authenticatie en om uw ervaring te verbeteren"
+          }
+        }
+      },
+      "contact": {
+        "title": "Vragen?",
+        "description": "Als u vragen heeft over licenties, citatie of gebruiksvoorwaarden, neem dan contact met ons op.",
+        "button": "Contact OpenML Team"
+      }
+    }
+  },
+  "dashboard": {
+    "meta": {
+      "title": "Dashboard - OpenML",
+      "description": "Uw persoonlijke OpenML dashboard. Volg uw bijdragen, reputatie en impact op machine learning onderzoek."
+    },
+    "welcome": "Welkom, {name}!",
+    "subtitle": "OpenML is de plek om datasets, workflows te delen en samen te werken aan machine learning onderzoek.",
+    "signOut": "Uitloggen",
+    "loading": "Laden...",
+    "stats": {
+      "reputation": "REPUTATIE",
+      "researchImpact": "onderzoeksimpact score",
+      "downloads": "Downloads",
+      "citations": "Citaties",
+      "flowReuses": "Flow Hergebruik",
+      "discussions": "Discussies",
+      "publicActivity": "PUBLIEKE ACTIVITEIT",
+      "activeDays": "{count} actieve dagen deze week",
+      "totalContributions": "TOTALE BIJDRAGEN",
+      "total": "totale bijdragen"
+    },
+    "contributions": {
+      "datasets": "Datasets",
+      "flows": "Flows",
+      "runs": "Runs",
+      "created": "gemaakt",
+      "experiments": "experimenten",
+      "inPublications": "in publicaties",
+      "reusesByOthers": "{count} keer hergebruikt door anderen"
+    },
+    "topContributions": {
+      "title": "Uw Top Bijdragen",
+      "mostDownloaded": "Meest Gedownloade Dataset",
+      "mostReused": "Meest Hergebruikte Flow",
+      "downloads": "downloads",
+      "reuses": "hergebruik"
+    },
+    "focus": {
+      "title": "Hoe te beginnen: Kies een focus voor vandaag",
+      "subtitle": "Help ons relevante suggesties voor u te maken",
+      "datasets": {
+        "title": "Datasets",
+        "description": "Verken en deel datasets"
+      },
+      "tasks": {
+        "title": "Taken",
+        "description": "Definieer ML problemen en benchmarks"
+      },
+      "flows": {
+        "title": "Flows",
+        "description": "Deel ML workflows en modellen"
+      }
+    },
+    "hideStats": "Statistieken verbergen"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Inloggen - OpenML",
+      "description": "Log in op uw OpenML-account",
+      "welcome": "Welkom bij OpenML",
+      "subtitle": "Log in op uw account of maak een nieuwe aan",
+      "continueWithGithub": "Doorgaan met GitHub",
+      "continueWithGoogle": "Doorgaan met Google",
+      "orContinueWith": "Of ga verder met",
+      "emailLabel": "E-mail of gebruikersnaam",
+      "emailPlaceholder": "Voer uw e-mail of gebruikersnaam in",
+      "passwordLabel": "Wachtwoord",
+      "passwordPlaceholder": "Voer uw wachtwoord in",
+      "signInButton": "Inloggen",
+      "signingIn": "Inloggen...",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Heeft u geen account?",
+      "signUpLink": "Registreren",
+      "invalidCredentials": "Ongeldige e-mail of wachtwoord",
+      "error": "Er is een fout opgetreden. Probeer het opnieuw.",
+      "oauthError": "Authenticatie mislukt. Probeer het opnieuw."
+    }
+  },
+  "dataset": {
+    "header": {
+      "uploadedOn": "Geüpload op {date}",
+      "by": "door",
+      "active": "Actief",
+      "deactivated": "Gedeactiveerd",
+      "inPreparation": "In Voorbereiding"
+    },
+    "stats": {
+      "instances": "Instanties",
+      "features": "Kenmerken",
+      "classes": "Klassen",
+      "missing": "Ontbrekend",
+      "tasks": "Taken",
+      "runs": "Runs",
+      "downloads": "Downloads",
+      "likes": "Likes"
+    },
+    "actions": {
+      "download": "Downloaden",
+      "downloadDataset": "Dataset Downloaden",
+      "originalFile": "Origineel ARFF/CSV bestand",
+      "showCode": "Code Tonen",
+      "codeSnippets": "Python, R, Julia, cURL",
+      "quickCopy": "Snel Kopiëren",
+      "like": "Like",
+      "bookmark": "Bladwijzer",
+      "bookmarked": "Opgeslagen",
+      "addToCollection": "Toevoegen aan Collectie",
+      "share": "Delen",
+      "copyLink": "Link Kopiëren",
+      "linkCopied": "Link Gekopieerd!",
+      "openNotebook": "Openen in Notebook",
+      "reportIssue": "Probleem Melden"
+    },
+    "codeDialog": {
+      "title": "Dataset Laden: {name}",
+      "description": "Gebruik deze codefragmenten om deze dataset te laden in uw favoriete programmeertaal",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd!",
+      "installation": "Installatie"
+    },
+    "tabs": {
+      "dataDetail": "Data Details",
+      "analysis": "Analyse",
+      "tasks": "Taken",
+      "runs": "Runs"
+    },
+    "description": {
+      "showMore": "Meer Tonen",
+      "showLess": "Minder Tonen",
+      "originalSource": "Originele Bron",
+      "relatedPaper": "Gerelateerd Paper"
+    },
+    "features": {
+      "title": "Kenmerken",
+      "description": "Gedetailleerde informatie over elk attribuut in de dataset",
+      "searchPlaceholder": "Zoek kenmerken...",
+      "filterTypes": "Filter Types",
+      "showAll": "Toon Alle {count} Kenmerken",
+      "showLess": "Minder Tonen",
+      "noMatch": "Geen kenmerken gevonden",
+      "target": "Doel",
+      "distinct": "Uniek",
+      "missing": "Ontbrekend",
+      "statistics": "Statistieken",
+      "type": "Type",
+      "featureName": "Kenmerknaam",
+      "types": {
+        "numeric": "Numeriek",
+        "nominal": "Nominaal",
+        "string": "String",
+        "date": "Datum"
+      },
+      "stats": {
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "mean": "Gemiddelde",
+        "stdDev": "Std Afwijking",
+        "distinctValues": "Unieke Waarden",
+        "missingValues": "Ontbrekende Waarden"
+      },
+      "valueDistribution": "Waarde Verdeling"
+    },
+    "information": {
+      "title": "Dataset Informatie",
+      "description": "Technische details en metadata"
+    },
+    "citation": {
+      "title": "Citatie",
+      "description": "Hoe deze dataset te citeren in academisch werk",
+      "copy": "Citatie Kopiëren"
+    },
+    "analysis": {
+      "title": "Data Visualisaties",
+      "description": "Visuele verkenning van de dataset",
+      "comingSoon": "Visualisaties Binnenkort Beschikbaar",
+      "comingSoonDesc": "Kenmerk distributies, correlaties en datakwaliteitsmetrieken worden hier weergegeven.",
+      "classBalance": "Klasse Balans",
+      "classBalanceDesc": "Verdeling van doelklassen",
+      "missingValues": "Ontbrekende Waarden",
+      "missingValuesDesc": "Data volledigheid",
+      "dimensionality": "Dimensionaliteit",
+      "dimensionalityDesc": "Kenmerken per instantie"
+    },
+    "tasks": {
+      "title": "Gerelateerde Taken",
+      "description": "Machine learning taken gedefinieerd op deze dataset",
+      "available": "{count} taak/taken beschikbaar op deze dataset",
+      "viewAll": "Bekijk alle taken",
+      "noTasks": "Er zijn nog geen taken gedefinieerd",
+      "createTask": "Taak Aanmaken"
+    },
+    "runs": {
+      "title": "ML Runs",
+      "description": "Machine learning experimenten op deze dataset",
+      "recorded": "{count} run(s) geregistreerd op deze dataset",
+      "viewAll": "Bekijk alle runs",
+      "noRuns": "Er zijn nog geen runs geregistreerd",
+      "runExperiment": "Experiment Uitvoeren",
+      "bestAccuracy": "Beste Nauwkeurigheid",
+      "topFlows": "Top Flows",
+      "leaderboardComingSoon": "Ranglijst binnenkort beschikbaar...",
+      "bestAlgorithms": "Best presterende algoritmes..."
+    },
+    "collection": {
+      "dialogTitle": "Toevoegen aan Collectie",
+      "dialogDescription": "Voeg \"{name}\" toe aan een van uw collecties of maak een nieuwe.",
+      "signInPrompt": "Log in om datasets aan uw collecties toe te voegen",
+      "createNew": "Nieuwe Collectie Aanmaken",
+      "cancel": "Annuleren"
+    },
+    "report": {
+      "dialogTitle": "Probleem Melden",
+      "dialogDescription": "Help ons OpenML te verbeteren door problemen met deze dataset te melden.",
+      "issueType": "Probleem Type",
+      "selectType": "Selecteer een probleem type...",
+      "types": {
+        "incorrectData": "Onjuiste of corrupte data",
+        "missingMetadata": "Ontbrekende of verkeerde metadata",
+        "duplicate": "Dubbele dataset",
+        "license": "Licentie overtreding",
+        "privacy": "Privacy probleem",
+        "other": "Anders"
+      },
+      "descriptionLabel": "Beschrijving",
+      "descriptionPlaceholder": "Beschrijf het probleem in detail...",
+      "emailLabel": "Uw E-mail (optioneel)",
+      "emailPlaceholder": "email@voorbeeld.com",
+      "emailHint": "We gebruiken dit om indien nodig contact op te nemen",
+      "cancel": "Annuleren",
+      "submit": "Rapport Versturen"
+    },
+    "qualities": {
+      "title": "Dataset Kwaliteiten",
+      "description": "Meta-features en statistische metingen",
+      "searchPlaceholder": "Zoek kwaliteiten...",
+      "categories": {
+        "counts": "Tellingen",
+        "statistics": "Statistieken",
+        "informationTheory": "Informatietheorie",
+        "ratios": "Verhoudingen",
+        "other": "Anders"
+      }
+    },
+    "deactivated": {
+      "title": "Dataset Gedeactiveerd",
+      "message": "Deze dataset is gedeactiveerd en niet meer beschikbaar."
+    }
   }
 }

@@ -13,7 +13,7 @@ from flask_jwt_extended import (
 )
 from pathlib import Path
 
-from server.extensions import Session
+from server.extensions import Session, argon2
 
 from server.extensions import jwt
 from server.user.models import User, UserGroups
@@ -83,6 +83,73 @@ def login():
             return jsonify(access_token=access_token), 200
 
 
+@user_blueprint.route("/register", methods=["POST"])
+def register():
+    """
+    Register new user
+
+    1. Takes JSON request with first_name, last_name, email, password
+    2. Creates new user account
+    3. Sends confirmation email
+    4. Returns success message
+    """
+
+    jobj = request.get_json()
+
+    # Validate required fields
+    required_fields = ["first_name", "last_name", "email", "password"]
+    for field in required_fields:
+        if field not in jobj or not jobj[field]:
+            return jsonify({"msg": f"{field} is required"}), 400
+
+    with Session() as session:
+        # Check if user already exists
+        existing_user = session.query(User).filter_by(email=jobj["email"]).first()
+        if existing_user:
+            return jsonify({"msg": "Email already registered"}), 400
+
+        # Generate username from email (before @)
+        username = jobj["email"].split("@")[0]
+
+        # Check if username is taken, add number if needed
+        base_username = username
+        counter = 1
+        while session.query(User).filter_by(username=username).first():
+            username = f"{base_username}{counter}"
+            counter += 1
+
+        # Create new user
+        new_user = User(
+            username=username,
+            email=jobj["email"],
+            first_name=jobj["first_name"],
+            last_name=jobj["last_name"],
+            active=0,  # Requires email confirmation
+        )
+        new_user.set_password(jobj["password"])
+
+        session.add(new_user)
+        session.commit()
+
+        # Send confirmation email
+        try:
+            confirmation_email(new_user.email, new_user.username)
+        except Exception as e:
+            print(f"Failed to send confirmation email: {e}")
+            # Don't fail registration if email fails
+
+        return (
+            jsonify(
+                {
+                    "msg": "Account created successfully. Please check your email to confirm your account.",
+                    "username": username,
+                    "email": jobj["email"],
+                }
+            ),
+            201,
+        )
+
+
 @user_blueprint.route("/profile", methods=["GET", "POST"])
 @jwt_required()
 def profile():
@@ -144,7 +211,9 @@ def image():
         f = request.files["file"]
         Path("dev_data/" + str(user.username)).mkdir(parents=True, exist_ok=True)
         f.save(
-            os.path.join("dev_data/" + str(user.username) + "/", secure_filename(f.filename))
+            os.path.join(
+                "dev_data/" + str(user.username) + "/", secure_filename(f.filename)
+            )
         )
         path = "imgs/dev_data/" + str(user.username) + "/" + secure_filename(f.filename)
         user.update_image_address(path)
@@ -184,6 +253,8 @@ def apikey():
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter(User.username == current_user).first()
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
         if request.method == "GET":
             api_key = user.session_hash
             return jsonify({"apikey": api_key}), 200
@@ -241,10 +312,229 @@ def confirm_user():
     return jsonify({"msg": "User confirmed"}), 200
 
 
+@user_blueprint.route("/auth/oauth/github", methods=["POST"])
+def oauth_github():
+    """
+    Handle GitHub OAuth authentication
+
+    Expected JSON payload:
+    {
+        "provider": "github",
+        "providerId": "12345678",  # GitHub user ID
+        "email": "user@example.com",
+        "name": "John Doe",
+        "image": "https://avatars.githubusercontent.com/u/12345678"
+    }
+
+    Returns JWT access token for authenticated user
+    """
+    data = request.get_json()
+
+    if not data or not data.get("providerId") or not data.get("email"):
+        return jsonify({"msg": "Missing required OAuth data"}), 400
+
+    provider_id = data["providerId"]
+    email = data["email"]
+    name = data.get("name", "")
+    image = data.get("image", "")
+
+    with Session() as session:
+        # Check if user already exists by email
+        user = session.query(User).filter_by(email=email).first()
+
+        if user:
+            # Existing user - link GitHub account if not already linked
+            # You could store provider_id in a new column or table for OAuth linking
+            # For now, just return access token
+            access_token = create_access_token(identity=user.username)
+            # Ensure user has an API key (session_hash)
+            if not user.session_hash:
+                user.set_session_hash()
+                session.merge(user)
+                session.commit()
+            return (
+                jsonify(
+                    access_token=access_token,
+                    id=user.id,
+                    username=user.username,
+                    email=user.email,
+                    image=user.image or image,
+                    apikey=user.session_hash,
+                ),
+                200,
+            )
+        else:
+            # New user - create account from OAuth data
+            # Generate username from email or name
+            from datetime import datetime
+
+            username = email.split("@")[0]
+
+            # Check if username exists, append number if needed
+            existing_user = session.query(User).filter_by(username=username).first()
+            if existing_user:
+                username = f"{username}_{provider_id[:6]}"
+
+            # Create new user
+            new_user = User(
+                username=username,
+                email=email,
+                first_name=name.split()[0] if name else "",
+                last_name=" ".join(name.split()[1:]) if len(name.split()) > 1 else "",
+                image=image,
+                active="1",  # Auto-activate OAuth users
+                bio="",
+                company="",
+                country="",
+                ip_address=request.remote_addr or "0.0.0.0",
+                created_on=datetime.now(),
+                password=argon2.generate_password_hash(
+                    secrets.token_hex(32)
+                ),  # Random password
+            )
+
+            session.add(new_user)
+            session.commit()
+
+            # Create user group
+            user_group = UserGroups(user_id=new_user.id)
+            user_group.set_group()
+            session.add(user_group)
+            session.commit()
+
+            # Generate API key for new user
+            new_user.set_session_hash()
+            session.merge(new_user)
+            session.commit()
+
+            # Create access token
+            access_token = create_access_token(identity=new_user.username)
+
+            return (
+                jsonify(
+                    access_token=access_token,
+                    id=new_user.id,
+                    username=new_user.username,
+                    email=new_user.email,
+                    image=new_user.image,
+                    apikey=new_user.session_hash,
+                ),
+                201,
+            )
+
+
+@user_blueprint.route("/auth/oauth/google", methods=["POST"])
+def oauth_google():
+    """
+    Handle Google OAuth authentication
+
+    Expected JSON payload:
+    {
+        "provider": "google",
+        "providerId": "1234567890",  # Google user ID
+        "email": "user@gmail.com",
+        "name": "John Doe",
+        "image": "https://lh3.googleusercontent.com/..."
+    }
+
+    Returns JWT access token for authenticated user
+    """
+    data = request.get_json()
+
+    if not data or not data.get("providerId") or not data.get("email"):
+        return jsonify({"msg": "Missing required OAuth data"}), 400
+
+    provider_id = data["providerId"]
+    email = data["email"]
+    name = data.get("name", "")
+    image = data.get("image", "")
+
+    with Session() as session:
+        # Check if user already exists by email
+        user = session.query(User).filter_by(email=email).first()
+
+        if user:
+            # Existing user - return access token
+            access_token = create_access_token(identity=user.username)
+            # Ensure user has an API key (session_hash)
+            if not user.session_hash:
+                user.set_session_hash()
+                session.merge(user)
+                session.commit()
+            return (
+                jsonify(
+                    access_token=access_token,
+                    id=user.id,
+                    username=user.username,
+                    email=user.email,
+                    image=user.image or image,
+                    apikey=user.session_hash,
+                ),
+                200,
+            )
+        else:
+            # New user - create account from OAuth data
+            from datetime import datetime
+
+            username = email.split("@")[0]
+
+            # Check if username exists
+            existing_user = session.query(User).filter_by(username=username).first()
+            if existing_user:
+                username = f"{username}_{provider_id[:6]}"
+
+            # Create new user
+            new_user = User(
+                username=username,
+                email=email,
+                first_name=name.split()[0] if name else "",
+                last_name=" ".join(name.split()[1:]) if len(name.split()) > 1 else "",
+                image=image,
+                active="1",  # Auto-activate OAuth users
+                bio="",
+                company="",
+                country="",
+                ip_address=request.remote_addr or "0.0.0.0",
+                created_on=datetime.now(),
+                password=argon2.generate_password_hash(
+                    secrets.token_hex(32)
+                ),  # Random password
+            )
+
+            session.add(new_user)
+            session.commit()
+
+            # Create user group
+            user_group = UserGroups(user_id=new_user.id)
+            user_group.set_group()
+            session.add(user_group)
+            session.commit()
+
+            # Generate API key for new user
+            new_user.set_session_hash()
+            session.merge(new_user)
+            session.commit()
+
+            # Create access token
+            access_token = create_access_token(identity=new_user.username)
+
+            return (
+                jsonify(
+                    access_token=access_token,
+                    id=new_user.id,
+                    username=new_user.username,
+                    email=new_user.email,
+                    image=new_user.image,
+                    apikey=new_user.session_hash,
+                ),
+                201,
+            )
+
+
 def user_from_token(session: Session, data, token_name):
     url = data["url"]
     parsed = urlparse(url)
-    (token, ) = parse_qs(parsed.query)["token"]
+    (token,) = parse_qs(parsed.query)["token"]
 
     user = session.query(User).filter_by(**{token_name: token}).first()
     if not user:

@@ -4,15 +4,89 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const nextConfig: NextConfig = {
+  // Vercel-specific optimizations
+  output: "standalone", // Optimize for Vercel deployment
+
+  // Enable WebAssembly support for parquet-wasm
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
+
+  // Configure webpack to handle WASM files
+  webpack: (config, { isServer }) => {
+    // Enable WebAssembly
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+
+    // Add rule for WASM files
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: "webassembly/async",
+    });
+
+    // Fix for WASM file resolution
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      };
+    }
+
+    return config;
+  },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.openml.org",
+        port: "",
+        pathname: "/**", // Allow all paths for profile images
+      },
+      {
+        protocol: "http",
+        hostname: "www.openml.org",
+        port: "",
+        pathname: "/**", // Some avatar URLs use http (legacy)
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**", // GitHub profile avatars
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**", // Google user avatars
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**", // GitHub user avatars
+      },
+      {
+        protocol: "https",
+        hostname: "live.staticflickr.com",
+        pathname: "/**",
+      },
+    ],
+    // Vercel automatically optimizes images
+    formats: ["image/avif", "image/webp"],
+  },
+
   // Built-in 301 redirects for backward compatibility
   // Academic papers and external links often cite OpenML entities using short URLs
+  // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
   async redirects() {
     return [
-      // ========================================
-      // SIMPLE PATH-BASED REDIRECTS (✅ Works in next.config.ts)
-      // ========================================
-
-      // Entity detail pages: /d/123 → /datasets/123 (no locale prefix for English)
       {
         source: "/d/:id",
         destination: "/datasets/:id",
@@ -45,7 +119,6 @@ const nextConfig: NextConfig = {
         destination: "/collections/:id",
         permanent: true,
       },
-
       // Search page redirects: /d/search → /datasets
       {
         source: "/d/search",
@@ -67,29 +140,6 @@ const nextConfig: NextConfig = {
         destination: "/runs",
         permanent: true,
       },
-
-      // ========================================
-      // QUERY-BASED REDIRECTS (❌ Cannot be done here)
-      // ========================================
-      // These URLs require middleware because they have query parameters
-      // that need to be parsed and transformed:
-      //
-      // /search?type=data&id=1464 → /datasets/1464 (English)
-      // /search?type=task → /tasks
-      // /search?type=flow → /flows
-      // /search?type=run → /runs
-      // /search?type=study&id=123 → /collections/123
-      // /search?type=study&study_type=task → /collections/tasks
-      // /search?type=study&study_type=run → /collections/runs
-      // /search?type=benchmark&id=383 → /benchmarks/383
-      // /search?type=benchmark&study_type=task → /benchmarks/tasks
-      // /search?type=benchmark&study_type=run → /benchmarks/runs
-      // /search?type=task_type → /task-types
-      // /search?type=measure&measure_type=data_quality → /measures/data-qualities
-      // /search?type=measure&measure_type=evaluation_measure → /measures/evaluation-measures
-      // /search?type=measure&measure_type=estimation_procedure → /measures/estimation-procedures
-      //
-      // Solution: Create src/middleware.ts (see implementation)
     ];
   },
 };

@@ -1,35 +1,48 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Integrations from "./Integrations";
 import { CornerRightUp, MoveUpRight } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 export const HeroHome: React.FC = () => {
+  const [showHint, setShowHint] = useState(true);
+  const { setHomeMenuOpen } = useSidebar();
+  const t = useTranslations("home.hero");
+  const tEco = useTranslations("home.ecosystem");
+
+  useEffect(() => {
+    // Hide hint after 8 seconds
+    const timer = setTimeout(() => setShowHint(false), 8000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="gradient-container w-full bg-slate-950">
-      {/* <section className="gradient mx-auto w-fit bg-[url(/img/06.jpeg)] bg-cover bg-center px-4 pt-[5%] pb-[6%] md:px-8"> */}
-      <section className="gradient mx-auto w-fit px-4 pt-[5%] pb-[6%] md:px-8">
+    // <div className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg_lightMode_4_heroSection.png')] bg-cover bg-center dark:bg-none">
+    <div
+      className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top dark:bg-none"
+      onClick={() => setHomeMenuOpen(false)}
+    >
+      {/* Hamburger Menu Hint - Fixed position */}
+      {showHint && (
+        <div className="animate-in fade-in slide-in-from-left-5 fixed top-28 left-4 z-50 duration-500 lg:top-32"></div>
+      )}
+
+      <section className="mx-auto w-fit px-4 pt-[5%] pb-[6%] md:px-8">
         <div className="grid max-w-7xl grid-cols-1 items-center gap-8 lg:mx-6 lg:grid-cols-2 lg:gap-10 2xl:mx-16">
           {/* Left Column - Text */}
           <div className="text-center lg:text-left">
-            <div className="mb-3 inline-block rounded-sm bg-slate-800 px-4 py-1 text-xs font-medium">
-              <span className="gradient-text">
-                Version 3.0: Built for Reproducible Science
-              </span>
+            <div className="mb-2 inline-block rounded-sm bg-slate-100 px-4 py-1 text-sm font-medium dark:bg-slate-800">
+              <span className="gradient-text">{t("version")}</span>
             </div>
 
             <h1 className="title-font gradient-text my-4 text-[clamp(3rem,4.6vw,72px)] leading-[1.15] font-bold tracking-tight">
-              <span className="block text-xl tracking-normal text-white opacity-90">
-                The Global Lab
-              </span>
-              for Machine Learning Research
+              {t("title")}
             </h1>
 
-            <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-300 lg:mr-auto lg:ml-0 lg:text-left">
-              Machine learning thrives on <b>transparency</b>. OpenML is the
-              open, collaborative environment where scientists{" "}
-              <b>share FAIR data</b>, <b>organize experiments</b>, and{" "}
-              <b>build upon</b> state-of-the-art algorithms.
+            <p className="mx-auto mb-8 max-w-2xl text-center text-lg leading-[1.8] text-slate-700 lg:mr-auto lg:ml-0 lg:text-left dark:text-slate-300">
+              {t("description")}
             </p>
 
             <div className="flex flex-col gap-6 sm:flex-row sm:justify-center lg:justify-start">
@@ -46,10 +59,10 @@ export const HeroHome: React.FC = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Start Tracking and Sharing!</span>
+                <span>{t("startTracking")}</span>
               </button>
-              <button className="text-bold flex items-center justify-start space-x-2 rounded-lg bg-slate-800 px-4 py-2 text-sm text-white shadow-lg outline -outline-offset-1 outline-white/10 transition hover:scale-105 hover:opacity-90">
-                <span>Read the Manifesto</span>
+              <button className="text-bold flex items-center justify-start space-x-2 rounded-lg bg-white px-4 py-2 text-sm text-slate-900 shadow-sm outline -outline-offset-1 outline-slate-200 transition hover:scale-105 hover:opacity-90 dark:bg-slate-800 dark:text-white dark:outline-white/10">
+                <span>{t("readManifesto")}</span>
                 <MoveUpRight className="h-5 w-5" />
               </button>
             </div>
@@ -66,7 +79,7 @@ export const HeroHome: React.FC = () => {
 
                 <Image
                   // src="/img/313b01fb-02f1-4ffe-90f7-2d4f229e3e6b.jpeg"
-                  src="/img/14.jpeg"
+                  src="/img/hero04.jpg"
                   alt="Light mode"
                   fill
                   priority
@@ -84,8 +97,8 @@ export const HeroHome: React.FC = () => {
               </div>
 
               {/* Badge now positioned from the bottom of the IMAGE container */}
-              <div className="floating absolute -bottom-[10px] translate-x-1/5 translate-y-1/2 md:right-8">
-                <div className="rounded-xl border border-slate-700 bg-slate-800 px-6 py-3 shadow-2xl">
+              <div className="floating absolute -bottom-[10px] translate-x-1/8 translate-y-1/2 md:right-8">
+                <div className="rounded-xl border border-slate-200 bg-slate-100 px-6 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                   <div className="flex items-center gap-3">
                     <div className="gradient-bg flex h-12 w-12 items-center justify-center rounded-full">
                       <svg
@@ -105,26 +118,15 @@ export const HeroHome: React.FC = () => {
                     </div>
                     <div>
                       <p className="gradient-text text-sm font-bold tracking-wide">
-                        Trusted worldwide to benchmark algorithms objectively.
+                        {t("trustedWorldwide")}
                       </p>
-                      <p className="text-[0.9rem] font-bold text-white">
-                        +99.99%{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Reproducibility{" "}
-                        </span>
-                        500k+{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Datasets{" "}
-                        </span>
-                        10M+{" "}
-                        <span className="text-[0.65rem] tracking-wider uppercase opacity-85">
-                          Runs+
-                        </span>
+                      <p className="text-[0.9rem] font-bold text-slate-900 dark:text-white">
+                        {t("stats")}
                       </p>
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    <button className="text-bold mt-2 flex max-w-sm items-center space-x-2 rounded-lg bg-slate-800 p-2 px-4 text-sm text-white shadow-lg outline -outline-offset-1 outline-white/10 transition hover:scale-105 hover:opacity-90">
+                    <button className="text-bold mt-2 flex max-w-sm items-center space-x-2 rounded-lg bg-white p-2 px-4 text-sm text-slate-900 shadow-lg outline -outline-offset-1 outline-slate-200 transition hover:scale-105 hover:opacity-90 dark:bg-slate-800 dark:text-white dark:outline-white/10">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5"
@@ -137,7 +139,7 @@ export const HeroHome: React.FC = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span>Join the Community!</span>
+                      <span>{t("joinCommunity")}</span>
                     </button>
                   </div>
                 </div>
@@ -147,16 +149,15 @@ export const HeroHome: React.FC = () => {
         </div>
       </section>
 
-      <section className="flex flex-wrap justify-center gap-8">
+      <section className="mt-22 flex flex-wrap justify-center gap-8 lg:mt-10">
         <Integrations
           content={{
-            overline: "The Ecosystem",
-            heading: "Frictionless Integration",
-            subtitle:
-              "Seamlessly import data and export experiments from your native scientific environment.",
+            overline: tEco("overline"),
+            heading: tEco("heading"),
+            subtitle: tEco("subtitle"),
             button: (
               <>
-                View API Documentation{" "}
+                {tEco("button")}{" "}
                 <CornerRightUp className="inline-block h-4 w-4" />
               </>
             ),

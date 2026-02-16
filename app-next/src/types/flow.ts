@@ -14,9 +14,11 @@ export interface Flow {
 
   // Metadata
   description?: string;
-  uploader: number;
-  uploader_name?: string;
+  uploader: string; // uploader name
+  uploader_id: number;
   upload_date?: string;
+  creator?: string;
+  contributor?: string;
 
   // Dependencies
   dependencies?: string;
@@ -39,9 +41,23 @@ export interface Flow {
 
   // Statistics
   runs?: number;
+  nr_of_likes?: number;
+  nr_of_downvotes?: number;
+  nr_of_issues?: number;
+  nr_of_downloads?: number;
+  total_downloads?: number;
+  reach?: number;
+  impact?: number;
+
+  // Date
+  date?: string;
 
   // Tags
   tag?: string[];
+  tags?: Array<{
+    tag: string;
+    uploader: string;
+  }>;
 
   // Binary information
   binary?: {

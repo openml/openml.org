@@ -72,7 +72,7 @@ export function FeatureTable({ features }: FeatureTableProps) {
   };
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle>
           {features.length} Feature{features.length !== 1 ? "s" : ""}

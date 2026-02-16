@@ -17,7 +17,7 @@ export type { Run, RunSearchResult } from "./run";
 export type {
   ElasticsearchHit,
   ElasticsearchResponse,
-  ElasticsearchQuery,
+  ElasticsearchQueryBody,
   SearchFacet,
   SearchFilter,
   PaginationState,

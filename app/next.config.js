@@ -10,6 +10,9 @@ const nextConfig = {
     "@mui/icons-material",
     "@mui/x-data-grid",
     "@mui/x-date-pickers",
+    "plotly.js",
+    "react-plotly.js",
+    "apache-arrow",
   ],
   modularizeImports: {
     "@mui/material": {

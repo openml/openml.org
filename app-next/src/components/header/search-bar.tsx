@@ -1,8 +1,8 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,21 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-/**
- * Enhanced Search Bar Component - Integrated Design
- *
- * TERMINOLOGY:
- * - "Integrated design": Dropdown is embedded INSIDE the search bar (single visual unit)
- * - "Composite component": Multiple UI elements (dropdown + input) working as one
- * - "Absolute positioning": Dropdown positioned within the search bar container
- *
- * Features:
- * - Index selector dropdown embedded in search bar
- * - Dynamic search with URL integration
- * - Responsive design
- * - Full i18n support
- */
+import { useDebouncedCallback } from "@/hooks/use-debounce";
 
 const searchIndices = [
   { key: "data", labelKey: "datasets", route: "/datasets" },
@@ -42,55 +28,95 @@ export function SearchBar() {
   const t = useTranslations("header");
   const router = useRouter();
   const pathname = usePathname();
-  const [selectedIndex, setSelectedIndex] = useState("data");
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
 
-  // Update selected index based on current route
-  useEffect(() => {
-    const currentIndex = searchIndices.find((index) =>
-      pathname.startsWith(index.route),
-    );
-    if (currentIndex) {
-      setSelectedIndex(currentIndex.key);
-    }
+  // Strip locale prefix for route matching (handles /en/datasets, /nl/tasks, etc.)
+  const effectivePath = useMemo(() => {
+    return pathname.replace(/^\/[a-z]{2}\//, "/");
   }, [pathname]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
-      if (currentIndex) {
-        router.push(
-          `${currentIndex.route}?q=${encodeURIComponent(searchQuery)}`,
-        );
-      }
-    }
-  };
+  // Derive selected index from URL pathname
+  const selectedIndex = useMemo(() => {
+    const currentIndex = searchIndices.find((index) =>
+      effectivePath.startsWith(index.route),
+    );
+    return currentIndex?.key ?? "data";
+  }, [effectivePath]);
 
-  const handleIndexChange = (value: string) => {
-    setSelectedIndex(value);
-    // If there's an active search, navigate to the new index with the same query
-    if (searchQuery.trim()) {
+  // Get the query from URL - this is the source of truth
+  const urlQuery = searchParams.get("q") || "";
+
+  // Local input state for responsive typing
+  const [inputValue, setInputValue] = useState(urlQuery);
+
+  // Sync input with URL when it changes externally (back/forward navigation, direct link)
+  useEffect(() => {
+    if (urlQuery !== inputValue) {
+      setInputValue(urlQuery);
+    }
+    // Only run when urlQuery changes, not inputValue (prevents loop)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQuery]);
+
+  // Debounced navigation - centralized and predictable
+  const debouncedNavigate = useDebouncedCallback(
+    (value: string, route: string) => {
+      if (!value.trim()) return;
+      // Use replace to avoid polluting history while typing
+      router.replace(`${route}?q=${encodeURIComponent(value)}`);
+    },
+    300,
+  );
+
+  // Handle input change - update local state immediately, navigate after debounce
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setInputValue(newValue);
+
+      // Get current route for navigation
+      const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+      if (currentIndex && newValue.trim()) {
+        debouncedNavigate(newValue, currentIndex.route);
+      }
+    },
+    [selectedIndex, debouncedNavigate],
+  );
+
+  // Handle form submit (Enter key) - navigate immediately
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (inputValue.trim()) {
+        const currentIndex = searchIndices.find((i) => i.key === selectedIndex);
+        if (currentIndex) {
+          router.push(
+            `${currentIndex.route}?q=${encodeURIComponent(inputValue)}`,
+          );
+        }
+      }
+    },
+    [inputValue, selectedIndex, router],
+  );
+
+  // Handle index (entity type) change
+  const handleIndexChange = useCallback(
+    (value: string) => {
       const newIndex = searchIndices.find((i) => i.key === value);
       if (newIndex) {
-        router.push(`${newIndex.route}?q=${encodeURIComponent(searchQuery)}`);
+        if (inputValue.trim()) {
+          router.push(`${newIndex.route}?q=${encodeURIComponent(inputValue)}`);
+        } else {
+          router.push(newIndex.route);
+        }
       }
-    }
-  };
-
-  const currentIndexLabel =
-    searchIndices.find((i) => i.key === selectedIndex)?.label || "Datasets";
+    },
+    [inputValue, router],
+  );
 
   return (
     <form onSubmit={handleSearch} className="max-w-2xl flex-1">
-      {/* 
-        INTEGRATED SEARCH BAR DESIGN:
-        - Single container with rounded border
-        - Dropdown on the left (embedded)
-        - Search icon in the middle
-        - Input field on the right
-      */}
-      <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 !bg-slate-100 !text-slate-900">
+      <div className="relative flex items-center overflow-hidden rounded-md border border-slate-300 bg-slate-100! text-slate-900!">
         {/* Index Selector - Embedded on the left */}
         <Select value={selectedIndex} onValueChange={handleIndexChange}>
           <SelectTrigger className="h-10 w-[130px] border-none bg-transparent! text-slate-900! shadow-none focus:ring-0">
@@ -115,9 +141,9 @@ export function SearchBar() {
         <Input
           type="search"
           placeholder={t("search")}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-none !bg-transparent pl-2 !text-slate-900 shadow-none placeholder:!text-slate-500 focus-visible:ring-0"
+          value={inputValue}
+          onChange={handleInputChange}
+          className="border-none bg-transparent! pl-2 text-slate-900! shadow-none placeholder:text-slate-500! focus-visible:ring-0"
         />
       </div>
     </form>

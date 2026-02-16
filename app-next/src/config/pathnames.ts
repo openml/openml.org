@@ -136,11 +136,49 @@ export const pathnames = {
     fr: "/a-propos",
     de: "/uber",
   },
+  "/team": {
+    en: "/team",
+    nl: "/team",
+    fr: "/equipe",
+    de: "/team",
+  },
+  "/publications": {
+    en: "/publications",
+    nl: "/publicaties",
+    fr: "/publications",
+    de: "/publikationen",
+  },
+  "/blog": {
+    en: "/blog",
+    nl: "/blog",
+    fr: "/blog",
+    de: "/blog",
+  },
+  "/contact": {
+    en: "/contact",
+    nl: "/contact",
+    fr: "/contact",
+    de: "/kontakt",
+  },
   "/meet-us": {
     en: "/meet-us",
     nl: "/ontmoet-ons",
     fr: "/rencontrez-nous",
     de: "/treffen-sie-uns",
+  },
+
+  // Legal pages
+  "/privacy": {
+    en: "/privacy",
+    nl: "/privacy",
+    fr: "/confidentialite",
+    de: "/datenschutz",
+  },
+  "/imprint": {
+    en: "/imprint",
+    nl: "/colofon",
+    fr: "/mentions-legales",
+    de: "/impressum",
   },
 
   // Auth section

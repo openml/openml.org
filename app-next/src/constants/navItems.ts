@@ -1,23 +1,7 @@
 // app-next/src/constants/navItems.ts
 import { entityColors } from "./entityColors";
-import {
-  faDatabase,
-  faFlag,
-  faCog,
-  faFlask,
-  faLayerGroup,
-  faChartColumn,
-  faTachometerAlt,
-  faUser,
-  faBookOpenReader,
-  faRocket,
-  faHandHoldingHeart,
-  faScaleBalanced,
-  faUsers,
-  faCampground,
-  faComments,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
+import { ENTITY_ICONS } from "./entityIcons";
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export interface NavItem {
   title: string;
@@ -27,6 +11,7 @@ export interface NavItem {
   color?: string;
   index?: string;
   children?: NavItem[];
+  isExternal?: boolean; // Flag for external links
 }
 
 export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
@@ -39,7 +24,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Datasets",
           titleKey: "datasets",
           href: "/datasets",
-          icon: faDatabase,
+          icon: ENTITY_ICONS.dataset,
           color: entityColors.data,
           index: "data",
         },
@@ -47,7 +32,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Tasks",
           titleKey: "tasks",
           href: "/tasks",
-          icon: faFlag,
+          icon: ENTITY_ICONS.task,
           color: entityColors.task,
           index: "task",
         },
@@ -55,7 +40,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Flows",
           titleKey: "flows",
           href: "/flows",
-          icon: faCog,
+          icon: ENTITY_ICONS.flow,
           color: entityColors.flow,
           index: "flow",
         },
@@ -63,7 +48,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Runs",
           titleKey: "runs",
           href: "/runs",
-          icon: faFlask,
+          icon: ENTITY_ICONS.run,
           color: entityColors.run,
           index: "run",
         },
@@ -71,7 +56,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Collections",
           titleKey: "collections",
           href: "/collections",
-          icon: faLayerGroup,
+          icon: ENTITY_ICONS.collection,
           color: entityColors.collections,
           children: [
             {
@@ -90,7 +75,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Benchmarks",
           titleKey: "benchmarks",
           href: "/benchmarks",
-          icon: faChartColumn,
+          icon: ENTITY_ICONS.benchmark,
           color: entityColors.benchmarks,
           children: [
             {
@@ -109,7 +94,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "Measures",
           titleKey: "measures",
           href: "/measures",
-          icon: faTachometerAlt,
+          icon: ENTITY_ICONS.measure,
           color: entityColors.measures,
           children: [
             {
@@ -138,29 +123,29 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
         {
           title: "Documentation",
           titleKey: "documentation",
-          href: "https://docs.openml.org",
-          icon: faBookOpenReader,
+          href: "/documentation",
+          icon: ENTITY_ICONS.docs,
           color: entityColors.docs,
         },
         {
-          title: "APIs",
+          title: "API's",
           titleKey: "apis",
           href: "/apis",
-          icon: faRocket,
+          icon: ENTITY_ICONS.api,
           color: entityColors.apis,
         },
         {
           title: "Contribute",
           titleKey: "contribute",
           href: "/contribute",
-          icon: faHandHoldingHeart,
+          icon: ENTITY_ICONS.contribute,
           color: entityColors.contribute,
         },
         {
           title: "Terms & Citation",
           titleKey: "termsAndCitation",
           href: "/terms",
-          icon: faScaleBalanced,
+          icon: ENTITY_ICONS.terms,
           color: entityColors.terms,
         },
       ],
@@ -173,54 +158,23 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           title: "About Us",
           titleKey: "aboutUs",
           href: "/about",
-          icon: faUsers,
+          icon: ENTITY_ICONS.about,
           color: entityColors.about,
         },
         {
           title: "Meet Up",
           titleKey: "meetUp",
-          href: "/meet",
-          icon: faCampground,
+          href: "/meet-us",
+          icon: ENTITY_ICONS.meet,
           color: entityColors.meet,
         },
         {
           title: "Discussions",
           titleKey: "discussions",
           href: "https://github.com/orgs/openml/discussions",
-          icon: faComments,
+          icon: ENTITY_ICONS.discussions,
           color: entityColors.discussions,
-        },
-      ],
-    },
-    {
-      title: "Extra",
-      titleKey: "extra",
-      items: [
-        {
-          title: "Auth",
-          titleKey: "auth",
-          href: "/auth",
-          icon: faUser,
-          color: entityColors.auth,
-          children: [
-            { title: "Sign In", titleKey: "signIn", href: "/auth/sign-in" },
-            { title: "Sign Up", titleKey: "signUp", href: "/auth/sign-up" },
-            {
-              title: "Reset Password",
-              titleKey: "resetPassword",
-              href: "/auth/reset-password",
-            },
-            {
-              title: "Page Not Found",
-              titleKey: "pageNotFound",
-              href: "/auth/404",
-            },
-            {
-              title: "Server Error",
-              titleKey: "serverError",
-              href: "/auth/500",
-            },
-          ],
+          isExternal: true, // Mark as external link
         },
       ],
     },
