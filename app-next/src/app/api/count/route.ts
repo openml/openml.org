@@ -26,6 +26,21 @@ export async function GET() {
     }
   });
 
+  // Add study_type breakdown queries for collections/benchmarks sidebar counts
+  const extraLabels: string[] = [];
+  requestBody += `{ "index": "study" }\n{ "size": 0, "query": { "term": { "study_type": "task" } } }\n`;
+  extraLabels.push("study_task");
+  requestBody += `{ "index": "study" }\n{ "size": 0, "query": { "term": { "study_type": "run" } } }\n`;
+  extraLabels.push("study_run");
+
+  // Add measure_type breakdown queries for measures sidebar counts
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "data_quality" } } }\n`;
+  extraLabels.push("measure_data_quality");
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "evaluation_measure" } } }\n`;
+  extraLabels.push("measure_evaluation");
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "estimation_procedure" } } }\n`;
+  extraLabels.push("measure_procedure");
+
   const startTime = Date.now();
 
   try {
@@ -40,8 +55,9 @@ export async function GET() {
     // console.log(`✅ [Count API] Success in ${duration}ms`);
 
     // Extract counts safely
+    const allLabels = [...indices, ...extraLabels];
     const counts = response.data.responses.map((r: any, i: number) => ({
-      index: indices[i],
+      index: allLabels[i],
       count:
         typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
     }));

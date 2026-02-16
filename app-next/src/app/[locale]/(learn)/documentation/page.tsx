@@ -18,8 +18,9 @@ import {
   Award,
   ExternalLink,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { FloatingDocsButton } from "@/components/docs/floating-docs-button";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -83,7 +84,6 @@ export default async function DocumentationPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const tHero = await getTranslations("home.documentation.hero");
-  const tAlert = await getTranslations("home.documentation.alert");
 
   const tocItems = [
     { id: "getting-started", title: "Getting Started", level: 2 },
@@ -113,21 +113,45 @@ export default async function DocumentationPage({
             <p className="text-muted-foreground text-xl">{tHero("subtitle")}</p>
           </div>
 
-          <Alert className="mb-8">
-            <BookOpen className="h-4 w-4" />
-            <AlertTitle>{tAlert("title")}</AlertTitle>
-            <AlertDescription>
-              {tAlert("description")}{" "}
-              <Link
-                href="https://docs.openml.org/"
-                className="text-primary font-medium hover:underline"
-                target="_blank"
-              >
-                docs.openml.org
-              </Link>{" "}
-              for in-depth guides, API references, and code examples.
-            </AlertDescription>
-          </Alert>
+          {/* Prominent docs banner */}
+          <div id="docs-banner" className="relative mb-10 overflow-hidden rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-6 text-white shadow-lg sm:px-8 sm:py-8">
+            <div
+              className="pointer-events-none absolute inset-0 opacity-10"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+            <div className="relative z-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold sm:text-xl">
+                    Complete Documentation Available
+                  </h2>
+                  <p className="text-sm text-blue-100">
+                    In-depth guides, API references, and code examples
+                  </p>
+                </div>
+              </div>
+              <Link href="https://docs.openml.org/" target="_blank">
+                <Button
+                  size="lg"
+                  className="gap-2 bg-white text-indigo-700 shadow-md hover:bg-indigo-50"
+                >
+                  <BookOpen className="h-5 w-5" />
+                  Visit docs.openml.org
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Floating sticky button (appears on scroll) */}
+          <FloatingDocsButton />
 
           {/* Getting Started */}
           <section id="getting-started" className="mb-16 scroll-mt-20">

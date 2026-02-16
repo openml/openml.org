@@ -1,0 +1,63 @@
+"use client";
+
+import { SearchProvider } from "@elastic/react-search-ui";
+import type { SearchDriverOptions } from "@elastic/search-ui";
+import { useSearchParams } from "next/navigation";
+import { createBenchmarkConfig } from "./benchmark-search-config";
+import { CollectionsSearchContainer } from "../collections/collections-search-container";
+import { BarChart3 } from "lucide-react";
+import { entityColors } from "@/constants/entityColors";
+
+interface BenchmarksSearchPageProps {
+  studyType: "task" | "run";
+  title: string;
+  description: string;
+}
+
+export function BenchmarksSearchPage({
+  studyType,
+  title,
+  description,
+}: BenchmarksSearchPageProps) {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  const config = createBenchmarkConfig(studyType);
+
+  return (
+    <SearchProvider
+      config={
+        {
+          ...config,
+          initialState: {
+            ...config.initialState,
+            searchTerm: initialQuery,
+          },
+        } as SearchDriverOptions
+      }
+    >
+      <div className="flex min-h-screen flex-col">
+        {/* Page Header */}
+        <div className="bg-muted/40 border-b">
+          <div className="container mx-auto px-4 py-8 sm:px-6">
+            <div className="flex items-start gap-3">
+              <BarChart3
+                className="h-8 w-8"
+                style={{ color: entityColors.benchmarks }}
+                aria-hidden="true"
+              />
+              <div className="space-y-0">
+                <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+                <p className="text-muted-foreground">{description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Reuse collection search container with benchmark path */}
+        <div className="mx-auto w-full flex-1 px-1.5 py-6">
+          <CollectionsSearchContainer basePath="/benchmarks" entityColor={entityColors.benchmarks} />
+        </div>
+      </div>
+    </SearchProvider>
+  );
+}

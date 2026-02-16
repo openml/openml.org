@@ -1,44 +1,63 @@
 import OpenMLSearchConnector from "@/services/OpenMLSearchConnector";
 
-const apiConnector = new OpenMLSearchConnector("benchmark");
-
 /**
  * Benchmark Search Configuration
+ *
+ * Benchmarks use the ES "study" index (same as collections).
+ * In the legacy app, benchmarks are differentiated by name wildcards
+ * (*benchmark*, *suite*). Here we use the same study_type filter
+ * since all benchmark suites are typed as "task" or "run".
  */
+export function createBenchmarkConfig(studyType: "task" | "run") {
+  const apiConnector = new OpenMLSearchConnector("study");
 
-const benchmarkConfig = {
-  apiConnector: apiConnector,
-  alwaysSearchOnInitialLoad: true,
-  trackUrlState: true,
-  urlPushDebounceLength: 500,
-  searchQuery: {
-    resultsPerPage: 20,
-    search_fields: {
-      name: { weight: 3 },
-      description: { weight: 2 },
-      // Add other benchmark-specific search fields
+  return {
+    apiConnector,
+    alwaysSearchOnInitialLoad: true,
+    trackUrlState: false,
+    searchQuery: {
+      resultsPerPage: 20,
+      search_fields: {
+        name: { weight: 3 },
+        description: { weight: 2 },
+        uploader: { weight: 1 },
+      },
+      result_fields: {
+        study_id: { raw: {} },
+        study_type: { raw: {} },
+        name: { snippet: { size: 200, fallback: true } },
+        description: { snippet: { size: 200, fallback: true } },
+        uploader: { raw: {} },
+        uploader_id: { raw: {} },
+        date: { raw: {} },
+        datasets_included: { raw: {} },
+        tasks_included: { raw: {} },
+        flows_included: { raw: {} },
+        runs_included: { raw: {} },
+      },
+      disjunctiveFacets: ["uploader.keyword"],
+      facets: {
+        "uploader.keyword": { type: "value", size: 20 },
+      },
     },
-    result_fields: {
-      benchmark_id: { raw: {} },
-      name: { raw: {} },
-      description: { snippet: { size: 200, fallback: true } },
-      uploader: { raw: {} },
-      uploader_id: { raw: {} },
-      date: { raw: {} },
-      nr_of_tasks: { raw: {} },
-      // Add other fields you want to display
+    initialState: {
+      resultsPerPage: 20,
+      sortList: [
+        {
+          field: studyType === "task" ? "tasks_included" : "runs_included",
+          direction: "desc" as const,
+        },
+      ],
+      filters: [
+        {
+          field: "study_type",
+          values: [studyType],
+          type: "any" as const,
+        },
+      ],
     },
-    disjunctiveFacets: [
-      // TODO: Add benchmark-specific facets
-    ],
-    facets: {
-      // TODO: Define facets based on your benchmark index structure
-    },
-  },
-  initialState: {
-    resultsPerPage: 20,
-    sortList: [{ field: "date", direction: "desc" }],
-  },
-};
+  };
+}
 
+const benchmarkConfig = createBenchmarkConfig("task");
 export default benchmarkConfig;
