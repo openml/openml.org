@@ -1,4 +1,4 @@
-name: release-docker
+name: release-docker-next
 
 on:
   workflow_dispatch:
