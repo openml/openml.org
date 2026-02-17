@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Github, Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { PasskeySignInButton } from "./passkey-signin-button";
+import { FloatingInput } from "@/components/ui/floating-input";
+import { Badge } from "@/components/ui/badge";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -75,123 +76,134 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Traditional Login Form */}
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="space-y-1">
-          <Label htmlFor="email" className="text-sm">
-            {t("signIn.emailLabel")}
-          </Label>
-          <Input
-            id="email"
-            type="text"
-            placeholder={t("signIn.emailPlaceholder")}
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-            disabled={isLoading}
-            className="h-9"
+    <div className="space-y-6">
+      {/* High Priority: Passkey & OAuth Section */}
+      <div className="space-y-4">
+        <div className="group relative">
+          <Badge className="absolute -top-2.5 right-4 z-10 border-0 bg-slate-500 px-2 py-0 text-[10px] text-white">
+            RECOMMENDED
+          </Badge>
+          <PasskeySignInButton
+            className="h-12 w-full bg-slate-600 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:scale-[1.01] hover:bg-slate-500 active:scale-[0.99]"
+            label="Sign in with FaceID or Fingerprint"
           />
         </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="password" className="text-sm">
-            {t("signIn.passwordLabel")}
-          </Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder={t("signIn.passwordPlaceholder")}
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              disabled={isLoading}
-              className="h-9 pr-10"
-              autoComplete="current-password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              tabIndex={-1}
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </button>
-          </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 border-slate-300 bg-white text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+            onClick={() => handleOAuthSignIn("google")}
+            disabled={isLoading}
+          >
+            <FcGoogle className="mr-2 h-5 w-5" />
+            <span className="text-sm font-medium">Google</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 border-slate-300 bg-white text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+            onClick={() => handleOAuthSignIn("github")}
+            disabled={isLoading}
+          >
+            <Github className="mr-2 h-5 w-5" />
+            <span className="text-sm font-medium">GitHub</span>
+          </Button>
         </div>
-
-        {error && (
-          <Alert variant="destructive" className="py-2">
-            <AlertDescription className="text-sm">{error}</AlertDescription>
-          </Alert>
-        )}
-
-        <Button type="submit" className="h-9 w-full" disabled={isLoading}>
-          {isLoading ? t("signIn.signingIn") : t("signIn.signInButton")}
-        </Button>
-      </form>
+      </div>
 
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="w-full border-t border-slate-200 dark:border-slate-600" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background text-muted-foreground px-2">
-            {t("signIn.orContinueWith")}
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-card px-4 font-medium tracking-wider text-slate-500 uppercase dark:text-slate-400">
+            or sign in with email
           </span>
         </div>
       </div>
 
-      {/* OAuth Buttons - Side by Side */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* Traditional Login Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <FloatingInput
+          id="email"
+          label="Email or username"
+          type="text"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          disabled={isLoading}
+          autoComplete="username"
+        />
+
+        <div className="space-y-1">
+          <FloatingInput
+            id="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            disabled={isLoading}
+            autoComplete="current-password"
+            endIcon={
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-white"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            }
+          />
+          <div className="flex justify-end pt-1">
+            <Link
+              href={`/${locale}/auth/forgot-password`}
+              className="text-xs font-medium text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-white"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+
+        {error && (
+          <Alert
+            variant="destructive"
+            className="animate-in fade-in slide-in-from-top-1 py-2.5"
+          >
+            <AlertDescription className="text-sm font-medium">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Button
-          type="button"
-          variant="outline"
-          className="h-9"
-          onClick={() => handleOAuthSignIn("github")}
+          type="submit"
+          className="h-11 w-full bg-slate-600 font-semibold text-white transition-all hover:bg-slate-500"
           disabled={isLoading}
         >
-          <Github className="mr-2 h-4 w-4" />
-          GitHub
+          {isLoading ? "Signing in..." : "Sign In"}
         </Button>
+      </form>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="h-9"
-          onClick={() => handleOAuthSignIn("google")}
-          disabled={isLoading}
-        >
-          <FcGoogle className="mr-2 h-4 w-4" />
-          Google
-        </Button>
-      </div>
-
-      {/* Footer Links */}
-      <div className="text-center text-sm">
-        <Link
-          href={`/${locale}/auth/forgot-password`}
-          className="text-primary hover:underline"
-        >
-          {t("signIn.forgotPassword")}
-        </Link>
-      </div>
-
-      <div className="text-muted-foreground text-center text-sm">
-        {t("signIn.noAccount")}{" "}
+      {/* Footer Info */}
+      <div className="pt-2 text-center text-sm">
+        <span className="text-slate-500 dark:text-slate-400">
+          Don't have an account?{" "}
+        </span>
         <Link
           href={`/${locale}/auth/signup`}
-          className="text-primary hover:underline"
+          className="font-semibold text-slate-700 decoration-2 underline-offset-4 hover:underline dark:text-white"
         >
-          {t("signIn.signUpLink")}
+          Create account
         </Link>
       </div>
     </div>

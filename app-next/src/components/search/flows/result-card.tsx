@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { truncateName } from "@/lib/utils";
 
 interface FlowResult {
   flow_id?: { raw: string | number };
@@ -63,7 +64,7 @@ interface FlowResultCardProps {
 
 export function FlowResultCard({ result }: FlowResultCardProps) {
   const flowId = result.flow_id?.raw;
-  const name = result.name?.raw || "Untitled Flow";
+  const name = truncateName(result.name?.raw || "Untitled Flow");
   const version = result.version?.raw || "1";
 
   // Parse description to get clean text

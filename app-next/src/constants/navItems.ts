@@ -58,16 +58,19 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           href: "/collections",
           icon: ENTITY_ICONS.collection,
           color: entityColors.collections,
+          index: "study",
           children: [
             {
               title: "Tasks",
               titleKey: "taskCollections",
               href: "/collections/tasks",
+              index: "study_task",
             },
             {
               title: "Runs",
               titleKey: "runCollections",
               href: "/collections/runs",
+              index: "study_run",
             },
           ],
         },
@@ -77,16 +80,19 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           href: "/benchmarks",
           icon: ENTITY_ICONS.benchmark,
           color: entityColors.benchmarks,
+          index: "study",
           children: [
             {
               title: "Task Suites",
               titleKey: "taskSuites",
               href: "/benchmarks/tasks",
+              index: "study_task",
             },
             {
               title: "Run Studies",
               titleKey: "runStudies",
               href: "/benchmarks/runs",
+              index: "study_run",
             },
           ],
         },
@@ -96,21 +102,25 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
           href: "/measures",
           icon: ENTITY_ICONS.measure,
           color: entityColors.measures,
+          index: "measure",
           children: [
             {
               title: "Data Qualities",
               titleKey: "dataQualities",
               href: "/measures/data",
+              index: "measure_data_quality",
             },
             {
               title: "Model Evaluations",
               titleKey: "modelEvaluations",
               href: "/measures/evaluation",
+              index: "measure_evaluation",
             },
             {
               title: "Test Procedures",
               titleKey: "testProcedures",
               href: "/measures/procedures",
+              index: "measure_procedure",
             },
           ],
         },

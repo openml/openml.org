@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { truncateName } from "@/lib/utils";
 
 interface Result {
   id?: { raw: string };
@@ -91,7 +92,7 @@ interface ResultCardProps {
 
 export function ResultCard({ result }: ResultCardProps) {
   const dataId = result.data_id?.raw || result.id?.raw;
-  const name = result.name?.snippet || result.name?.raw || "Untitled";
+  const name = truncateName(result.name?.snippet || result.name?.raw || "Untitled");
   const version = result.version?.raw || "1";
   const status = result.status?.raw || "active";
   const statusInfo =

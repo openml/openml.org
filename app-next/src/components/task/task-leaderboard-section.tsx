@@ -140,39 +140,42 @@ export function TaskLeaderboardSection({
         });
 
         const sortOrder = isLowerBetter ? "asc" : "desc";
-        const response = await fetch(`https://www.openml.org/es/run/_search`, {
+        const response = await fetch("/api/search", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            query: {
-              bool: {
-                must: [
-                  { term: { task_id: task.task_id } },
-                  { exists: { field: `evaluations.${measure}` } },
-                ],
-              },
-            },
-            sort: [
-              {
-                [`evaluations.${measure}`]: {
-                  order: sortOrder,
-                  unmapped_type: "double",
+            indexName: "run",
+            esQuery: {
+              query: {
+                bool: {
+                  must: [
+                    { term: { task_id: task.task_id } },
+                    { exists: { field: `evaluations.${measure}` } },
+                  ],
                 },
               },
-            ],
-            size: 10,
-            _source: [
-              "run_id",
-              "flow_name",
-              "flow_id",
-              "uploader",
-              "uploader_id",
-              "setup_string",
-              "evaluations",
-              "date",
-            ],
+              sort: [
+                {
+                  [`evaluations.${measure}`]: {
+                    order: sortOrder,
+                    unmapped_type: "double",
+                  },
+                },
+              ],
+              size: 10,
+              _source: [
+                "run_id",
+                "flow_name",
+                "flow_id",
+                "uploader",
+                "uploader_id",
+                "setup_string",
+                "evaluations",
+                "date",
+              ],
+            },
           }),
         });
 
@@ -210,26 +213,29 @@ export function TaskLeaderboardSection({
 
       try {
         // Query to find which evaluation measures exist for this task
-        const response = await fetch(`https://www.openml.org/es/run/_search`, {
+        const response = await fetch("/api/search", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            query: {
-              term: { task_id: task.task_id },
-            },
-            size: 0,
-            aggs: {
-              available_measures: {
-                nested: {
-                  path: "evaluations_array",
-                },
-                aggs: {
-                  measures: {
-                    terms: {
-                      field: "evaluations_array.evaluation_measure",
-                      size: 50,
+            indexName: "run",
+            esQuery: {
+              query: {
+                term: { task_id: task.task_id },
+              },
+              size: 0,
+              aggs: {
+                available_measures: {
+                  nested: {
+                    path: "evaluations_array",
+                  },
+                  aggs: {
+                    measures: {
+                      terms: {
+                        field: "evaluations_array.evaluation_measure",
+                        size: 50,
+                      },
                     },
                   },
                 },

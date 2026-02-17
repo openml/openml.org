@@ -12,6 +12,7 @@ import {
   FlaskConical,
 } from "lucide-react";
 import { WithSearch } from "@elastic/react-search-ui";
+import { truncateName } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -174,9 +175,9 @@ function SortableFlowsTable({ results }: { results: FlowResult[] }) {
                         >
                           <Cog className="h-4 w-4 shrink-0 text-blue-500" />
                           <span className="line-clamp-2 break-all">
-                            {result.name?.snippet ||
+                            {truncateName(result.name?.snippet ||
                               result.name?.raw ||
-                              "Untitled"}
+                              "Untitled")}
                           </span>
                         </Link>
                       </TableCell>

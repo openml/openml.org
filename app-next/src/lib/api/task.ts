@@ -1,24 +1,27 @@
 import { Task } from "@/types/task";
 import { notFound } from "next/navigation";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
-const ES_URL = "https://www.openml.org/es";
 const ES_INDEX = "task";
 
 export async function fetchTask(id: string): Promise<Task> {
   try {
-    const response = await fetch(`${ES_URL}/${ES_INDEX}/_doc/${id}`, {
-      next: {
-        revalidate: 3600, // Cache for 1 hour
-        tags: [`task-${id}`],
+    const response = await fetch(
+      getElasticsearchUrl(`${ES_INDEX}/_doc/${id}`),
+      {
+        next: {
+          revalidate: 3600, // Cache for 1 hour
+          tags: [`task-${id}`],
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    );
 
     if (response.status === 404) {
       console.error(
-        `[TaskAPI] 404 Not Found for ID: "${id}". URL: ${ES_URL}/${ES_INDEX}/_doc/${id}`,
+        `[TaskAPI] 404 Not Found for ID: "${id}". URL: ${getElasticsearchUrl(`${ES_INDEX}/_doc/${id}`)}`,
       );
       notFound();
     }
@@ -48,7 +51,7 @@ export async function fetchTask(id: string): Promise<Task> {
 
 export async function fetchTaskRunCount(taskId: string): Promise<number> {
   try {
-    const response = await fetch(`${ES_URL}/run/_search`, {
+    const response = await fetch(getElasticsearchUrl("run/_search"), {
       method: "POST",
       next: {
         revalidate: 1800, // Cache for 30 minutes
@@ -83,15 +86,18 @@ export async function fetchTaskDatasetName(
   datasetId: number,
 ): Promise<string | null> {
   try {
-    const response = await fetch(`${ES_URL}/data/_doc/${datasetId}`, {
-      next: {
-        revalidate: 3600,
-        tags: [`dataset-${datasetId}`],
+    const response = await fetch(
+      getElasticsearchUrl(`data/_doc/${datasetId}`),
+      {
+        next: {
+          revalidate: 3600,
+          tags: [`dataset-${datasetId}`],
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    );
 
     if (!response.ok) {
       return null;
@@ -115,7 +121,7 @@ export async function getPopularTaskIds(
   limit: number = 100,
 ): Promise<string[]> {
   try {
-    const response = await fetch(`${ES_URL}/${ES_INDEX}/_search`, {
+    const response = await fetch(getElasticsearchUrl(`${ES_INDEX}/_search`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

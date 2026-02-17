@@ -1,30 +1,15 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
-
-const ELASTICSEARCH_SERVER =
-  process.env.ELASTICSEARCH_SERVER ||
-  process.env.NEXT_PUBLIC_ELASTICSEARCH_SERVER ||
-  "https://www.openml.org/es";
-
-interface ElasticsearchHits {
-  total: number | { value: number; relation?: string };
-}
-
-interface ElasticsearchResponse {
-  hits: ElasticsearchHits;
-}
-
-interface MultiSearchResponse {
-  responses: ElasticsearchResponse[];
-}
+import {
+  getElasticsearchUrl,
+  ELASTICSEARCH_INDICES,
+} from "@/lib/elasticsearch";
 
 export async function GET() {
-  // Ensure URL ends with /
-  const baseUrl = ELASTICSEARCH_SERVER.endsWith("/")
-    ? ELASTICSEARCH_SERVER
-    : `${ELASTICSEARCH_SERVER}/`;
-  const elasticsearchEndpoint = `${baseUrl}_msearch`;
-  const indices = ["data", "task", "flow", "run", "study", "measure"];
+  const elasticsearchEndpoint = getElasticsearchUrl("_msearch");
+  const indices = ELASTICSEARCH_INDICES.filter(
+    (i) => i !== "user" && i !== "benchmark",
+  );
 
   // console.log("🔍 [Count API] Elasticsearch URL:", elasticsearchEndpoint);
   // console.log("📦 [Count API] Indices:", indices);
@@ -41,6 +26,21 @@ export async function GET() {
     }
   });
 
+  // Add study_type breakdown queries for collections/benchmarks sidebar counts
+  const extraLabels: string[] = [];
+  requestBody += `{ "index": "study" }\n{ "size": 0, "query": { "term": { "study_type": "task" } } }\n`;
+  extraLabels.push("study_task");
+  requestBody += `{ "index": "study" }\n{ "size": 0, "query": { "term": { "study_type": "run" } } }\n`;
+  extraLabels.push("study_run");
+
+  // Add measure_type breakdown queries for measures sidebar counts
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "data_quality" } } }\n`;
+  extraLabels.push("measure_data_quality");
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "evaluation_measure" } } }\n`;
+  extraLabels.push("measure_evaluation");
+  requestBody += `{ "index": "measure" }\n{ "size": 0, "query": { "term": { "measure_type": "estimation_procedure" } } }\n`;
+  extraLabels.push("measure_procedure");
+
   const startTime = Date.now();
 
   try {
@@ -55,13 +55,12 @@ export async function GET() {
     // console.log(`✅ [Count API] Success in ${duration}ms`);
 
     // Extract counts safely
-    const counts = response.data.responses.map(
-      (r: ElasticsearchResponse, i: number) => ({
-        index: indices[i],
-        count:
-          typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
-      }),
-    );
+    const allLabels = [...indices, ...extraLabels];
+    const counts = response.data.responses.map((r: any, i: number) => ({
+      index: allLabels[i],
+      count:
+        typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
+    }));
 
     // console.log("📊 [Count API] Counts:", counts);
     return NextResponse.json(counts);

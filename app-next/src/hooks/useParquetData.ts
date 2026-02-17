@@ -24,14 +24,14 @@ async function initParquetWasm() {
   if (!wasmInitPromise) {
     wasmInitPromise = (async () => {
       // Use the ESM bundle which works better with Next.js
-      const module = await import("parquet-wasm/esm");
+      const parquetMod = await import("parquet-wasm/esm");
 
       // Initialize WASM - the default export is the init function
-      if (typeof module.default === "function") {
-        await module.default();
+      if (typeof parquetMod.default === "function") {
+        await parquetMod.default();
       }
 
-      parquetWasmModule = module;
+      parquetWasmModule = parquetMod;
     })();
   }
 
@@ -169,7 +169,22 @@ export function useParquetData(
 
       // Helper function to try loading ARFF
       async function tryArff(url: string) {
-        const arffResponse = await fetch(url);
+        let arffResponse;
+        try {
+          arffResponse = await fetch(url);
+        } catch (fetchError) {
+          // Network error (CORS, offline, etc.) - fail gracefully
+          console.warn("ARFF fetch failed (network/CORS):", fetchError);
+          setState({
+            data: null,
+            columns: [],
+            rowCount: 0,
+            isLoading: false,
+            error: null, // Don't show error, just no data preview
+            isTooLarge: false,
+          });
+          return;
+        }
         if (!arffResponse.ok) {
           throw new Error(`Failed to fetch ARFF: ${arffResponse.statusText}`);
         }
@@ -217,7 +232,26 @@ export function useParquetData(
 
       try {
         // First, check if parquet exists with HEAD request
-        const headResponse = await fetch(parquetUrl, { method: "HEAD" });
+        let headResponse;
+        try {
+          headResponse = await fetch(parquetUrl, { method: "HEAD" });
+        } catch (fetchError) {
+          // Network error - try ARFF fallback or fail gracefully
+          console.warn("Parquet HEAD fetch failed (network/CORS):", fetchError);
+          if (arffUrl) {
+            await tryArff(arffUrl);
+          } else {
+            setState({
+              data: null,
+              columns: [],
+              rowCount: 0,
+              isLoading: false,
+              error: null,
+              isTooLarge: false,
+            });
+          }
+          return;
+        }
 
         if (headResponse.ok) {
           const contentLength = headResponse.headers.get("content-length");

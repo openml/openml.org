@@ -1,11 +1,12 @@
 import type { Flow } from "@/types/flow";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
 /**
  * Fetch a single flow by ID from Elasticsearch
  */
 export async function getFlow(id: number): Promise<Flow | null> {
   try {
-    const response = await fetch(`https://www.openml.org/es/flow/_doc/${id}`, {
+    const response = await fetch(getElasticsearchUrl(`flow/_doc/${id}`), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export async function getFlow(id: number): Promise<Flow | null> {
  */
 export async function fetchFlowRunCount(flowId: number): Promise<number> {
   try {
-    const response = await fetch(`https://www.openml.org/es/run/_count`, {
+    const response = await fetch(getElasticsearchUrl("run/_count"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +64,7 @@ export async function fetchFlowRunCount(flowId: number): Promise<number> {
  */
 export async function fetchFlowVersions(name: string): Promise<Flow[]> {
   try {
-    const response = await fetch(`https://www.openml.org/es/flow/_search`, {
+    const response = await fetch(getElasticsearchUrl("flow/_search"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

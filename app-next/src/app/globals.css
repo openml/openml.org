@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -279,7 +278,9 @@
   }
 
   .dark .js-plotly-plot .plotly .modebar-btn:hover {
-    background: oklch(0.45 0.02 250) !important; /* darker slate for dark mode */
+    background: oklch(
+      0.45 0.02 250
+    ) !important; /* darker slate for dark mode */
   }
 
   .js-plotly-plot .plotly .modebar-btn path {
@@ -317,13 +318,18 @@
     @apply bg-background;
     transition: background 0.3s ease-in-out;
   }
-  
+
   .dark .homepage-bg {
     background: #141452;
-    background: 
+    background:
       linear-gradient(20deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1)),
       linear-gradient(rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6)),
-      linear-gradient(90deg, rgba(20, 20, 82, 1) 0%, rgba(16, 16, 22, 1) 35%, rgba(37, 31, 106, 1) 100%);
+      linear-gradient(
+        90deg,
+        rgba(20, 20, 82, 1) 0%,
+        rgba(16, 16, 22, 1) 35%,
+        rgba(37, 31, 106, 1) 100%
+      );
   }
 
   /* Logo animation for sidebar */

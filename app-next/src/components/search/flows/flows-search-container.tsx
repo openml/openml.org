@@ -21,6 +21,7 @@ import {
 import { FlowResultCard } from "./result-card";
 import { FlowsResultsTable } from "./flows-results-table";
 import { parseDescription } from "../teaser";
+import { truncateName } from "@/lib/utils";
 
 interface FlowResult {
   flow_id?: { raw: string | number };
@@ -166,7 +167,7 @@ export function FlowsSearchContainer() {
                       {results && results.length > 0 ? (
                         results.map((result: FlowResult, index: number) => {
                           const flowId = result.flow_id?.raw;
-                          const name = result.name?.raw || "Untitled Flow";
+                          const name = truncateName(result.name?.raw || "Untitled Flow");
                           const description =
                             result.description?.snippet ||
                             result.description?.raw ||
@@ -329,7 +330,7 @@ export function FlowsSearchContainer() {
                             <div className="flex items-center gap-3">
                               <Cog className="h-4 w-4 text-[#3b82f6]" />
                               <span className="font-medium whitespace-nowrap">
-                                {result.name?.raw}
+                                {truncateName(result.name?.raw || "Untitled Flow")}
                               </span>
                             </div>
                             <div className="flex items-center gap-4 text-xs">
@@ -382,7 +383,7 @@ export function FlowsSearchContainer() {
                                     <div className="mb-1 flex items-start gap-2">
                                       <Cog className="mt-0.5 h-4 w-4 shrink-0 text-[#3b82f6]" />
                                       <h3 className="line-clamp-1 leading-tight font-semibold">
-                                        {result.name?.raw}
+                                        {truncateName(result.name?.raw || "Untitled Flow")}
                                       </h3>
                                     </div>
                                     <p className="text-muted-foreground line-clamp-2 text-xs">
@@ -423,7 +424,7 @@ export function FlowsSearchContainer() {
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-2xl font-bold">
-                                    {selectedFlow.name?.raw || "Untitled"}
+                                    {truncateName(selectedFlow.name?.raw || "Untitled")}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedFlow.version?.raw || 1}

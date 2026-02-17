@@ -8,6 +8,7 @@ import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, runSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { truncateName } from "@/lib/utils";
 import {
   FlaskConical,
   Calendar,
@@ -602,7 +603,7 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
 
         // Use helper functions to extract data from ES response
         const flowId = getFlowId(result);
-        const flowName = result._flowName || getFlowName(result);
+        const flowName = truncateName(result._flowName || getFlowName(result));
         const dataId = getDatasetId(result);
         const datasetName = result._datasetName || getDatasetName(result);
         const taskId = getTaskId(result);
@@ -751,7 +752,7 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
 
         // Use helper functions to extract data from ES response
         const flowId = getFlowId(result);
-        const flowName = result._flowName || getFlowName(result);
+        const flowName = truncateName(result._flowName || getFlowName(result));
         const dataId = getDatasetId(result);
         const datasetName = result._datasetName || getDatasetName(result);
         const taskId = getTaskId(result);
@@ -922,7 +923,7 @@ function RunTableView({ results }: { results: EnhancedRunResult[] }) {
                   const hasError = !!(
                     result.error_message?.raw || result.error?.raw
                   );
-                  const flowName = result._flowName || getFlowName(result);
+                  const flowName = truncateName(result._flowName || getFlowName(result));
                   const datasetName =
                     result._datasetName || getDatasetName(result);
                   const taskId = getTaskId(result);
@@ -996,7 +997,7 @@ function RunSplitView({
   // Use helper functions for selected run details
   const flowId = selected ? getFlowId(selected) : undefined;
   const flowName = selected
-    ? selected._flowName || getFlowName(selected)
+    ? truncateName(selected._flowName || getFlowName(selected))
     : "Unknown Flow";
   const dataId = selected ? getDatasetId(selected) : undefined;
   const datasetName = selected
@@ -1013,7 +1014,7 @@ function RunSplitView({
           const isSelected = result.run_id?.raw === runId;
 
           // Use helper functions for list item
-          const resultFlowName = result._flowName || getFlowName(result);
+          const resultFlowName = truncateName(result._flowName || getFlowName(result));
           const resultDatasetName =
             result._datasetName || getDatasetName(result);
           const resultTaskId = getTaskId(result);

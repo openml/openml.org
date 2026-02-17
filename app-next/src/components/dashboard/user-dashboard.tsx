@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -100,98 +100,29 @@ export function UserDashboard() {
     weeklyActivity: [0, 0, 0, 0, 0, 0, 0],
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
-
-  // Fetch user stats from OpenML API
-  const fetchUserStats = useCallback(
-    async (userId: string) => {
-      setIsLoadingStats(true);
-      try {
-        // Fetch datasets, flows, and runs in parallel
-        const [datasetsRes, flowsRes, runsRes] = await Promise.all([
-          fetch(`${API_URL}/api/v1/json/data/list?uploader=${userId}`).catch(
-            () => null,
-          ),
-          fetch(`${API_URL}/api/v1/json/flow/list?uploader=${userId}`).catch(
-            () => null,
-          ),
-          fetch(
-            `${API_URL}/api/v1/json/run/list?uploader=${userId}&limit=1000`,
-          ).catch(() => null),
-        ]);
-
-        let datasetsCreated = 0;
-        let flowsCreated = 0;
-        let runsCreated = 0;
-        let topDataset: { name: string; downloads: number } | undefined;
-        let topFlow: { name: string; reuses: number } | undefined;
-        const totalDownloads = 0;
-
-        // Parse datasets
-        if (datasetsRes?.ok) {
-          const data = await datasetsRes.json();
-          if (data?.data?.dataset) {
-            const datasets = Array.isArray(data.data.dataset)
-              ? data.data.dataset
-              : [data.data.dataset];
-            datasetsCreated = datasets.length;
-
-            // Find top dataset (by name for now, downloads not in list response)
-            if (datasets.length > 0) {
-              topDataset = {
-                name: datasets[0].name || "Unknown",
-                downloads: 0, // Would need separate API call per dataset
-              };
-            }
-          }
-        }
-
-        // Parse flows
-        if (flowsRes?.ok) {
-          const data = await flowsRes.json();
-          if (data?.flows?.flow) {
-            const flows = Array.isArray(data.flows.flow)
-              ? data.flows.flow
-              : [data.flows.flow];
-            flowsCreated = flows.length;
-
-            if (flows.length > 0) {
-              topFlow = {
-                name: flows[0].name || "Unknown",
-                reuses: 0,
-              };
-            }
-          }
-        }
-
-        // Parse runs
-        if (runsRes?.ok) {
-          const data = await runsRes.json();
-          if (data?.runs?.run) {
-            const runs = Array.isArray(data.runs.run)
-              ? data.runs.run
-              : [data.runs.run];
-            runsCreated = runs.length;
-          }
-        }
-
+  // Fetch user stats from Elasticsearch via internal API
+  const fetchUserStats = async (userId: string) => {
+    setIsLoadingStats(true);
+    try {
+      const response = await fetch(`/api/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
         setStats((prev) => ({
           ...prev,
-          datasetsCreated,
-          flowsCreated,
-          runsCreated,
-          topDataset,
-          topFlow,
-          totalDownloads,
+          datasetsCreated: data.datasets_uploaded || 0,
+          flowsCreated: data.flows_uploaded || 0,
+          runsCreated: data.runs_uploaded || 0,
+          totalDownloads:
+            (data.downloads_received_data || 0) +
+            (data.downloads_received_flow || 0),
         }));
-      } catch (error) {
-        console.error("Error fetching user stats:", error);
-      } finally {
-        setIsLoadingStats(false);
       }
-    },
-    [API_URL],
-  );
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
 
   // Calculate reputation score (StackOverflow style)
   const calculateReputation = (): ReputationBreakdown => {
@@ -219,13 +150,15 @@ export function UserDashboard() {
 
     // Redirect to sign-in if not authenticated
     if (status === "unauthenticated") {
-      router.push("/auth/signin");
+      router.push("/auth/sign-in");
       return;
     }
 
     // Load user from NextAuth session or localStorage fallback
     if (status === "authenticated" && session?.user) {
       const userId = session.user.id;
+      const isLocalUser = (session.user as any).isLocalUser;
+
       setUser({
         name: session.user.name || session.user.username || "User",
         username:
@@ -233,10 +166,12 @@ export function UserDashboard() {
         id: userId,
       });
 
-      // Fetch real stats if we have user ID
-      if (userId) {
+      // Only fetch stats from OpenML API if user exists on openml.org
+      // Local-only users (OAuth, local registration) don't have data there
+      if (userId && !isLocalUser) {
         fetchUserStats(userId);
       } else {
+        // Local user - show zeros, don't fetch incorrect data
         setIsLoadingStats(false);
       }
     } else {
@@ -267,7 +202,8 @@ export function UserDashboard() {
         setIsLoadingStats(false);
       }
     }
-  }, [session, status, router, fetchUserStats]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, status, router]);
 
   const focusCards: FocusCard[] = [
     {
@@ -327,7 +263,7 @@ export function UserDashboard() {
           </div>
           <Button
             variant="outline"
-            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+            onClick={() => signOut({ callbackUrl: "/auth/sign-in" })}
             className="gap-2"
           >
             <LogOut className="h-4 w-4" />

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/header/theme-toggle";
 import { SearchBar } from "@/components/header/search-bar";
 import { LanguageSwitcher } from "@/components/header/language-switcher";
-import { NotificationsBell } from "@/components/header/notifications-bell";
 import { UserActivitySidebar } from "@/components/layout/user-activity-sidebar";
 import { CreateMenu } from "@/components/header/create-menu";
 import { useSidebar } from "@/contexts/sidebar-context";
@@ -162,10 +161,7 @@ export function Header() {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* Notifications Bell - Hidden on mobile */}
-          <div className="hidden md:block">
-            <NotificationsBell />
-          </div>
+          {/* TODO: Notifications Bell - hidden until backend is built */}
 
           {/* Create Menu */}
           <CreateMenu />

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -19,7 +18,7 @@ import { User, LogOut, Settings, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { loginToOpenML } from "@/services/openml-api";
+import { useAuth } from "@/hooks/use-auth";
 
 interface UserProfile {
   username: string;
@@ -44,13 +43,30 @@ const signUpSchema = z.object({
 
 export function AccountPage() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    user: authUser,
+    isAuthenticated,
+    isLoading: loading,
+    login,
+    logout,
+  } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const t = useTranslations("sidebar");
   const { toast } = useToast();
+
+  // Map auth user to local UserProfile format
+  const user: UserProfile | null = authUser
+    ? {
+        username: authUser.username || authUser.email?.split("@")[0] || "",
+        email: authUser.email || "",
+        firstName: authUser.firstName || authUser.name?.split(" ")[0] || "",
+        lastName:
+          authUser.lastName ||
+          authUser.name?.split(" ").slice(1).join(" ") ||
+          "",
+        image: authUser.image || undefined,
+      }
+    : null;
 
   // Form states
   const [signInForm, setSignInForm] = useState({
@@ -65,33 +81,8 @@ export function AccountPage() {
     password: "",
   });
 
-  useEffect(() => {
-    // Check authentication status (check cookies/session)
-    const checkAuth = async () => {
-      try {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-          setIsAuthenticated(true);
-        } else {
-          // Redirect to sign-in if not authenticated
-          router.push("/auth/signin");
-        }
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [router]);
-
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("openml_token");
-    setUser(null);
-    setIsAuthenticated(false);
+  const handleSignOut = async () => {
+    await logout();
     toast({
       title: "Signed out",
       description: "You have been signed out successfully",
@@ -106,11 +97,8 @@ export function AccountPage() {
       // Validate with Zod
       const validated = signInSchema.parse(signInForm);
 
-      // Call real OpenML API
-      const result = await loginToOpenML(
-        validated.emailOrUsername,
-        validated.password,
-      );
+      // Use NextAuth login via useAuth hook
+      const result = await login(validated.emailOrUsername, validated.password);
 
       if (!result.success) {
         toast({
@@ -118,26 +106,8 @@ export function AccountPage() {
           description: result.error || "Invalid credentials",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
-      }
-
-      // Store JWT token and user data
-      if (result.token) {
-        localStorage.setItem("openml_token", result.token);
-      }
-
-      if (result.user) {
-        const userProfile: UserProfile = {
-          username: result.user.username,
-          email: result.user.email,
-          firstName: result.user.firstName || "",
-          lastName: result.user.lastName || "",
-          image: result.user.image,
-        };
-
-        localStorage.setItem("user", JSON.stringify(userProfile));
-        setUser(userProfile);
-        setIsAuthenticated(true);
       }
 
       toast({
@@ -146,21 +116,16 @@ export function AccountPage() {
       });
 
       // Redirect to dashboard
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 500);
+      router.push("/dashboard");
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Show validation errors
-        if (error.issues && Array.isArray(error.issues)) {
-          error.issues.forEach((err) => {
-            toast({
-              title: "Validation Error",
-              description: err.message,
-              variant: "destructive",
-            });
+        error.issues.forEach((err) => {
+          toast({
+            title: "Validation Error",
+            description: err.message,
+            variant: "destructive",
           });
-        }
+        });
       } else {
         toast({
           title: "Error",
@@ -181,44 +146,49 @@ export function AccountPage() {
       // Validate with Zod
       const validated = signUpSchema.parse(signUpForm);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const newUser: UserProfile = {
-        username: validated.email.split("@")[0], // Generate username from email
-        email: validated.email,
-        firstName: validated.firstName,
-        lastName: validated.lastName,
-      };
-
-      localStorage.setItem("user", JSON.stringify(newUser));
-      setUser(newUser);
-      setIsAuthenticated(true);
-      toast({
-        title: "Account created!",
-        description:
-          "You will receive an email to confirm your account. If you don't receive it, please check your spam folder.",
+      // Call the registration API
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: validated.firstName,
+          lastName: validated.lastName,
+          email: validated.email,
+          password: validated.password,
+        }),
       });
 
-      // Redirect to dashboard
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 500);
+      if (!response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Registration failed",
+          description: data.message || "Failed to create account",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      toast({
+        title: "Account created!",
+        description: "Please check your email to confirm your account.",
+      });
+
+      // Redirect to sign in
+      router.push("/auth/sign-in");
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Show validation errors
-        if (error.issues && Array.isArray(error.issues)) {
-          error.issues.forEach((err) => {
-            toast({
-              title: "Validation Error",
-              description: err.message,
-              variant: "destructive",
-            });
+        error.issues.forEach((err) => {
+          toast({
+            title: "Validation Error",
+            description: err.message,
+            variant: "destructive",
           });
-        }
+        });
       } else {
         toast({
           title: "Error",
-          description: "Failed to update password. Please try again.",
+          description: "Failed to create account. Please try again.",
           variant: "destructive",
         });
       }
@@ -489,7 +459,7 @@ export function AccountPage() {
 
                 <p className="text-muted-foreground text-sm">
                   You will receive an email to confirm your account. If you
-                  don't receive it, please check your spam folder.
+                  don&apos;t receive it, please check your spam folder.
                 </p>
 
                 <div className="bg-muted/50 flex items-start gap-2 rounded-lg border p-3">

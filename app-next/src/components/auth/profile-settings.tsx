@@ -16,8 +16,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Upload, Copy, RefreshCw, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  Upload,
+  Copy,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  Loader2,
+  Trash2,
+  Fingerprint,
+} from "lucide-react";
+import { PasskeyRegistration } from "@/components/auth/passkey-registration";
+import { listPasskeys, removePasskey, Passkey } from "@/services/passkey";
 import { useToast } from "@/hooks/use-toast";
 
 /**
@@ -34,35 +44,106 @@ export function ProfileSettings() {
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [passkeys, setPasskeys] = useState<Passkey[]>([]);
+  const [isLoadingPasskeys, setIsLoadingPasskeys] = useState(false);
+  const [isRemovingPasskey, setIsRemovingPasskey] = useState<number | null>(
+    null,
+  );
 
   const [profile, setProfile] = useState({
-    firstName: "Helder",
-    lastName: "Mendes",
-    email: "cmhelder@xs4all.nl",
-    bio: "No Bio",
+    firstName: "",
+    lastName: "",
+    email: "",
+    bio: "",
     affiliation: "",
-    country: "Netherlands",
+    country: "",
     image: "",
   });
 
-  // Load profile from session
+  // Load profile from database
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("/api/user/profile");
+        if (res.ok) {
+          const data = await res.json();
+          setProfile({
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            email: data.email || "",
+            bio: data.bio || "",
+            affiliation: data.affiliation || "",
+            country: data.country || "",
+            image: data.image || "",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+        // Fallback to session data
+        if (session?.user) {
+          const nameParts = session.user.name?.split(" ") || [];
+          setProfile((prev) => ({
+            ...prev,
+            firstName: nameParts[0] || "",
+            lastName: nameParts.slice(1).join(" ") || "",
+            email: session.user?.email || "",
+            image: session.user?.image || "",
+          }));
+        }
+      }
+    };
+
     if (session?.user) {
-      setProfile((prev) => ({
-        ...prev,
-        firstName:
-          (session.user as any).firstName ||
-          session.user.name?.split(" ")[0] ||
-          prev.firstName,
-        lastName:
-          (session.user as any).lastName ||
-          session.user.name?.split(" ")[1] ||
-          prev.lastName,
-        email: session.user.email || prev.email,
-        image: session.user.image || prev.image,
-      }));
+      fetchProfile();
     }
   }, [session]);
+
+  const fetchPasskeys = async () => {
+    try {
+      setIsLoadingPasskeys(true);
+      const result = await listPasskeys();
+      if (result.success) {
+        setPasskeys(result.passkeys || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch passkeys:", error);
+    } finally {
+      setIsLoadingPasskeys(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPasskeys();
+  }, []);
+
+  const handleDeletePasskey = async (id: number) => {
+    if (!window.confirm("Are you sure you want to remove this passkey?")) {
+      return;
+    }
+
+    try {
+      setIsRemovingPasskey(id);
+      const result = await removePasskey(id);
+      if (result.success) {
+        toast({
+          title: "Passkey Removed",
+          description: "The passkey has been successfully removed.",
+        });
+        fetchPasskeys();
+      } else {
+        throw new Error(result.error || "Failed to remove passkey");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to remove passkey",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRemovingPasskey(null);
+    }
+  };
 
   const handleCopyApiKey = () => {
     navigator.clipboard.writeText(apiKey);
@@ -178,17 +259,11 @@ export function ProfileSettings() {
       const formData = new FormData();
       formData.append("file", file);
 
-      // Use Vercel Blob in production, Flask backend in development
-      const isDevelopment = process.env.NODE_ENV === "development";
-      const uploadEndpoint = isDevelopment
-        ? "/api/upload-avatar"
-        : "/api/upload-avatar-vercel";
+      // Use direct Next.js API route
+      const uploadEndpoint = "/api/user/avatar";
 
       const response = await fetch(uploadEndpoint, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formData,
       });
 
@@ -269,24 +344,38 @@ export function ProfileSettings() {
         throw new Error("Not authenticated. Please log in again.");
       }
 
-      const backendUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const response = await fetch(`${backendUrl}/profile`, {
+      // Use direct Next.js API route
+      const response = await fetch("/api/user/profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          first_name: profile.firstName,
-          last_name: profile.lastName,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
           email: profile.email,
           bio: profile.bio,
+          affiliation: profile.affiliation,
+          country: profile.country,
         }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to save profile");
+      }
+
+      // ✅ Update NextAuth session with new name/email
+      if (update) {
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            email: profile.email,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            name: `${profile.firstName} ${profile.lastName}`,
+          },
+        });
       }
 
       // Update localStorage
@@ -327,9 +416,10 @@ export function ProfileSettings() {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-lg grid-cols-3">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="apikey">API Key</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
@@ -576,6 +666,104 @@ export function ProfileSettings() {
                   </a>
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Security Tab */}
+        <TabsContent value="security" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Passkeys</CardTitle>
+                  <CardDescription>
+                    Manage your biometrics and hardware security keys
+                  </CardDescription>
+                </div>
+                <PasskeyRegistration onSuccess={fetchPasskeys} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoadingPasskeys ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+                </div>
+              ) : passkeys.length > 0 ? (
+                <div className="divide-y rounded-md border">
+                  {passkeys.map((pk) => (
+                    <div
+                      key={pk.id}
+                      className="flex items-center justify-between p-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="bg-muted rounded-full p-2">
+                          <Fingerprint className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">
+                            {pk.deviceName || "Unnamed Device"}
+                          </p>
+                          <p className="text-muted-foreground text-xs">
+                            Registered:{" "}
+                            {new Date(pk.createdAt).toLocaleDateString()}
+                            {pk.lastUsedAt &&
+                              ` • Last used: ${new Date(
+                                pk.lastUsedAt,
+                              ).toLocaleDateString()}`}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30"
+                        onClick={() => handleDeletePasskey(pk.id)}
+                        disabled={isRemovingPasskey === pk.id}
+                      >
+                        {isRemovingPasskey === pk.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-muted/30 flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
+                  <Fingerprint className="text-muted-foreground mb-4 h-12 w-12 opacity-20" />
+                  <h3 className="text-lg font-medium">
+                    No passkeys registered
+                  </h3>
+                  <p className="text-muted-foreground mb-6 max-w-sm px-4 text-sm">
+                    Register a passkey to sign in securely using your
+                    fingerprint, face, or a hardware security key.
+                  </p>
+                  <PasskeyRegistration
+                    onSuccess={fetchPasskeys}
+                    trigger={
+                      <Button variant="outline">
+                        <Fingerprint className="mr-2 h-4 w-4" />
+                        Add your first Passkey
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-blue-100 bg-blue-50/50 dark:border-blue-900/50 dark:bg-blue-950/20">
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+                About Passkeys
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-blue-700 dark:text-blue-400">
+              Passkeys are a passwordless authentication method that offers
+              stronger security and a faster sign-in experience. They are synced
+              across your devices and cannot be phished.
             </CardContent>
           </Card>
         </TabsContent>

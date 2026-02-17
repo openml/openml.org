@@ -1,5 +1,24 @@
 import os
 import secrets
+import json
+from datetime import datetime
+from flask import Blueprint, jsonify, request, send_from_directory, abort, Response, session as flask_session
+from webauthn import (
+    generate_registration_options,
+    verify_registration_response,
+    generate_authentication_options,
+    verify_authentication_response,
+    options_to_json,
+    base64url_to_bytes,
+)
+from webauthn.helpers.structs import (
+    AttestationPreference,
+    AuthenticatorSelectionCriteria,
+    UserVerificationRequirement,
+    AuthenticatorAttachment,
+    RegistrationCredential,
+    AuthenticationCredential,
+)
 from distutils.util import strtobool
 from urllib.parse import parse_qs, urlparse
 
@@ -17,6 +36,7 @@ from server.extensions import Session, argon2
 
 from server.extensions import jwt
 from server.user.models import User, UserGroups
+from server.user.passkey_model import UserPasskey
 from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -540,3 +560,183 @@ def user_from_token(session: Session, data, token_name):
     if not user:
         raise ValueError(f"No user found for {token_name} {token}")
     return user
+
+
+# --- Passkey (WebAuthn) Endpoints ---
+
+RP_ID = os.environ.get("RP_ID", "localhost")
+RP_NAME = "OpenML"
+ORIGIN = os.environ.get("RP_ORIGIN", "http://localhost:3000")
+
+
+@user_blueprint.route("/auth/passkey/register-options", methods=["POST"])
+@jwt_required()
+def passkey_register_options():
+    current_user = get_jwt_identity()
+    with Session() as session:
+        user = session.query(User).filter_by(username=current_user).first()
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
+
+        # Check for existing credentials to exclude
+        existing_passkeys = session.query(UserPasskey).filter_by(user_id=user.id).all()
+        exclude_credentials = [
+            {"id": pk.credential_id, "type": "public-key"} for pk in existing_passkeys
+        ]
+
+        options = generate_registration_options(
+            rp_id=RP_ID,
+            rp_name=RP_NAME,
+            user_id=str(user.id).encode("utf-8"),
+            user_name=user.username,
+            user_display_name=f"{user.first_name} {user.last_name}".strip(),
+            attestation=AttestationPreference.NONE,
+            authenticator_selection=AuthenticatorSelectionCriteria(
+                authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+                resident_key=AuthenticatorSelectionCriteria.ResidentKeyRequirement.PREFERRED,
+                user_verification=UserVerificationRequirement.PREFERRED,
+            ),
+            exclude_credentials=exclude_credentials,
+        )
+
+        # Store challenge in session for verification
+        flask_session["registration_challenge"] = options.challenge
+
+        return options_to_json(options), 200
+
+
+@user_blueprint.route("/auth/passkey/register-verify", methods=["POST"])
+@jwt_required()
+def passkey_register_verify():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    device_name = data.get("deviceName", "Unnamed Device")
+
+    challenge = flask_session.get("registration_challenge")
+    if not challenge:
+        return jsonify({"msg": "Registration challenge not found"}), 400
+
+    try:
+        verification = verify_registration_response(
+            credential=data["credential"],
+            expected_challenge=challenge,
+            expected_origin=ORIGIN,
+            expected_rp_id=RP_ID,
+        )
+    except Exception as e:
+        return jsonify({"msg": f"Verification failed: {str(e)}"}), 400
+
+    with Session() as session:
+        user = session.query(User).filter_by(username=current_user).first()
+        
+        # Save the new passkey
+        new_passkey = UserPasskey(
+            user_id=user.id,
+            credential_id=verification.credential_id,
+            public_key=verification.credential_public_key,
+            sign_count=verification.sign_count,
+            transports=",".join(data["credential"]["response"].get("transports", [])),
+            device_name=device_name,
+        )
+        session.add(new_passkey)
+        session.commit()
+
+    return jsonify({"msg": "Passkey registered successfully"}), 201
+
+
+@user_blueprint.route("/auth/passkey/login-options", methods=["GET"])
+def passkey_login_options():
+    options = generate_authentication_options(
+        rp_id=RP_ID,
+        user_verification=UserVerificationRequirement.PREFERRED,
+    )
+
+    # Store challenge in session
+    flask_session["authentication_challenge"] = options.challenge
+
+    return options_to_json(options), 200
+
+
+@user_blueprint.route("/auth/passkey/login-verify", methods=["POST"])
+def passkey_login_verify():
+    data = request.get_json()
+    challenge = flask_session.get("authentication_challenge")
+
+    if not challenge:
+        return jsonify({"msg": "Authentication challenge not found"}), 400
+
+    credential_id = base64url_to_bytes(data["credential"]["id"])
+
+    with Session() as session:
+        # Find the passkey
+        passkey = session.query(UserPasskey).filter_by(credential_id=credential_id).first()
+        if not passkey:
+            return jsonify({"msg": "Passkey not recognized"}), 404
+
+        try:
+            verification = verify_authentication_response(
+                credential=data["credential"],
+                expected_challenge=challenge,
+                expected_origin=ORIGIN,
+                expected_rp_id=RP_ID,
+                credential_public_key=passkey.public_key,
+                credential_current_sign_count=passkey.sign_count,
+            )
+        except Exception as e:
+            return jsonify({"msg": f"Authentication failed: {str(e)}"}), 400
+
+        # Update passkey sign count and last used
+        passkey.sign_count = verification.new_sign_count
+        passkey.last_used_at = datetime.utcnow()
+        session.commit()
+
+        # Login successful - generate JWT
+        user = passkey.user
+        access_token = create_access_token(identity=user.username)
+        
+        return jsonify({
+            "access_token": access_token,
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "image": user.image,
+            "apikey": user.session_hash,
+            "firstName": user.first_name,
+            "lastName": user.last_name,
+        }), 200
+
+
+@user_blueprint.route("/auth/passkey/list", methods=["GET"])
+@jwt_required()
+def passkey_list():
+    current_user = get_jwt_identity()
+    with Session() as session:
+        user = session.query(User).filter_by(username=current_user).first()
+        passkeys = session.query(UserPasskey).filter_by(user_id=user.id).all()
+        
+        return jsonify([{
+            "id": pk.id,
+            "deviceName": pk.device_name,
+            "createdAt": pk.created_at.isoformat(),
+            "lastUsedAt": pk.last_used_at.isoformat(),
+        } for pk in passkeys]), 200
+
+
+@user_blueprint.route("/auth/passkey/remove", methods=["POST"])
+@jwt_required()
+def passkey_remove():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    passkey_id = data.get("passkeyId")
+
+    with Session() as session:
+        user = session.query(User).filter_by(username=current_user).first()
+        passkey = session.query(UserPasskey).filter_by(id=passkey_id, user_id=user.id).first()
+        
+        if not passkey:
+            return jsonify({"msg": "Passkey not found"}), 404
+
+        session.delete(passkey)
+        session.commit()
+
+    return jsonify({"msg": "Passkey removed successfully"}), 200

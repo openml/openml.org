@@ -8,6 +8,7 @@ import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, taskSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { truncateName } from "@/lib/utils";
 import {
   FlaskConical,
   Heart,
@@ -333,7 +334,7 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
     <div className="space-y-0">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName = result.source_data?.raw?.name || "Unknown Dataset";
+        const datasetName = truncateName(result.source_data?.raw?.name || "Unknown Dataset");
         const datasetId = result.source_data?.raw?.data_id;
         const taskType =
           result.tasktype?.raw?.name ||
@@ -462,7 +463,7 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName = result.source_data?.raw?.name || "Unknown Dataset";
+        const datasetName = truncateName(result.source_data?.raw?.name || "Unknown Dataset");
         const taskType =
           result.tasktype?.raw?.name ||
           result.task_type?.raw ||
@@ -660,8 +661,8 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
                 {results.map((result, index) => {
                   const tid = result.task_id?.raw || result.id?.raw;
                   const datasetId = result.source_data?.raw?.data_id;
-                  const datasetName =
-                    result.source_data?.raw?.name || "Unknown";
+                  const datasetName = truncateName(
+                    result.source_data?.raw?.name || "Unknown");
                   const taskType =
                     result.tasktype?.raw?.name ||
                     result.task_type?.raw ||
@@ -788,7 +789,7 @@ function TaskSplitView({
                 </h4>
               </div>
               <p className="text-muted-foreground line-clamp-1 text-xs">
-                on {result.source_data?.raw?.name || "Unknown Dataset"}
+                on {truncateName(result.source_data?.raw?.name || "Unknown Dataset")}
               </p>
               <div className="mt-2 flex gap-3 text-xs">
                 <span className="flex items-center gap-1">

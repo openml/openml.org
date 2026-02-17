@@ -32,3 +32,39 @@ export function abbreviateNumber(num: number | null | undefined): string {
     ? abbreviated.slice(0, -2) + "M"
     : abbreviated + "M";
 }
+
+/**
+ * Truncate a long name by keeping the start and end, with (...) in between.
+ * Tries to break at separator boundaries (dots, commas, spaces, parens, equals).
+ *
+ * Example:
+ *   "sklearn.pipeline.Pipeline(imputer=sklearn.impute._base.SimpleImputer,...DecisionTreeClassifier)(2)"
+ *   → "sklearn.pipeline.Pipeline(imputer=sklearn(...)DecisionTreeClassifier)(2)"
+ */
+export function truncateName(name: string, maxLength = 72): string {
+  if (!name || name.length <= maxLength) return name;
+
+  const separators = /[.\s,=(]/;
+  const headTarget = Math.ceil(maxLength * 0.45);
+  const tailTarget = Math.floor(maxLength * 0.35);
+
+  // Find a separator-boundary near the head target (search backwards)
+  let headEnd = headTarget;
+  for (let i = headTarget; i > headTarget - 15 && i > 0; i--) {
+    if (separators.test(name[i])) {
+      headEnd = i + 1;
+      break;
+    }
+  }
+
+  // Find a separator-boundary near the tail target (search forwards)
+  let tailStart = name.length - tailTarget;
+  for (let i = tailStart; i < tailStart + 15 && i < name.length; i++) {
+    if (separators.test(name[i])) {
+      tailStart = i;
+      break;
+    }
+  }
+
+  return `${name.slice(0, headEnd)}... (...) ...${name.slice(tailStart)}`;
+}

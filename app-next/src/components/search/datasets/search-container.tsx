@@ -11,6 +11,7 @@ import { ControlsBar } from "../shared/controls-bar";
 import { ResultCard } from "./result-card";
 import { parseDescription } from "../teaser";
 import { Badge } from "@/components/ui/badge";
+import { truncateName } from "@/lib/utils";
 import { entityColors } from "@/constants/entityColors";
 import {
   FlaskConical,
@@ -176,7 +177,7 @@ export function SearchContainer() {
                                   </svg>
                                   <div className="flex items-baseline gap-2">
                                     <h3 className="text-base font-semibold">
-                                      {result.name?.raw || "Untitled"}
+                                      {truncateName(result.name?.raw || "Untitled")}
                                     </h3>
                                     <span className="text-primary text-xs">
                                       v.{result.version?.raw || 1} ✓
@@ -351,7 +352,7 @@ export function SearchContainer() {
                                         />
                                       </svg>
                                       <h4 className="line-clamp-1 text-sm font-semibold">
-                                        {result.name?.raw || "Untitled"}
+                                        {truncateName(result.name?.raw || "Untitled")}
                                       </h4>
                                     </div>
                                     {/* Stats + Metadata badges on same line */}
@@ -437,7 +438,7 @@ export function SearchContainer() {
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-xl font-bold">
-                                    {selectedDataset.name?.raw || "Untitled"}
+                                    {truncateName(selectedDataset.name?.raw || "Untitled")}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedDataset.version?.raw || 1} ✓

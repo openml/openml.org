@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { WithSearch } from "@elastic/react-search-ui";
+import { truncateName } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -162,7 +163,7 @@ function SortableTable({ results }: { results: Result[] }) {
                         href={`/datasets/${result.data_id?.raw || result.id?.raw}`}
                         className="line-clamp-3 font-semibold text-green-600 hover:underline dark:text-green-500"
                       >
-                        {result.name?.snippet || result.name?.raw || "Untitled"}
+                        {truncateName(result.name?.snippet || result.name?.raw || "Untitled")}
                       </Link>
                     </TableCell>
                     <TableCell>{result.version?.raw || "-"}</TableCell>

@@ -1,4 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
+import { CollectionsSearchPage } from "@/components/search/collections/collections-search-page";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,11 +30,10 @@ export default async function CollectionTasksPage({
   setRequestLocale(locale);
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold">Task Collections</h1>
-      <p className="text-muted-foreground mt-4">
-        Task collections - coming soon
-      </p>
-    </div>
+    <CollectionsSearchPage
+      studyType="task"
+      title="Task Collections"
+      description="Curated collections of machine learning tasks"
+    />
   );
 }

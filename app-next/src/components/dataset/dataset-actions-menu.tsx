@@ -16,7 +16,9 @@ import {
   Link2,
   Check,
   ExternalLink,
+  Pencil,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -138,6 +140,14 @@ export function DatasetActionsMenu({
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
+
+          {/* Edit Dataset */}
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link href={`/datasets/${datasetId}/edit`}>
+              <Pencil className="mr-2 h-4 w-4" />
+              <span>Edit Dataset</span>
+            </Link>
+          </DropdownMenuItem>
 
           {/* Bookmark */}
           <DropdownMenuItem
