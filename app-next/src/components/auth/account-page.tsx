@@ -175,7 +175,7 @@ export function AccountPage() {
       });
 
       // Redirect to sign in
-      router.push("/auth/signin");
+      router.push("/auth/sign-in");
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.issues.forEach((err) => {

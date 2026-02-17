@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # MySQL database for local development
+  mysql:
+    image: mysql:8.0
+    container_name: openml-mysql-local
+    environment:
+      MYSQL_ROOT_PASSWORD: openml_local_root
+      MYSQL_DATABASE: openml_local
+      MYSQL_USER: openml
+      MYSQL_PASSWORD: openml_local_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-popenml_local_root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MailHog - catches all emails sent locally (in-memory storage)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: openml-mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+    driver: local

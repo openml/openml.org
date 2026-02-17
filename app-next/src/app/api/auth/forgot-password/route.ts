@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { queryOne, execute } from "@/lib/db";
+import { sendPasswordResetEmail } from "@/lib/mail";
+import crypto from "crypto";
 
-const OPENML_API_URL =
-  process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+interface UserRecord {
+  id: number;
+  email: string;
+  active: number;
+}
 
 /**
- * Forgot Password API Route
- * Proxies request to OpenML backend to avoid CORS issues
+ * Forgot Password - Send password reset email
+ * Uses LEGACY Flask schema for backward compatibility
+ * Bypasses Flask backend
  */
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const body = await request.json();
+    const { email } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -18,29 +26,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${OPENML_API_URL}/forgotpassword`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (response.ok) {
-      return NextResponse.json({
-        success: true,
-        message: "Password reset link sent",
-      });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { message: "Please enter a valid email address" },
+        { status: 400 },
+      );
     }
 
+    // Find user by email
+    const user = await queryOne<UserRecord>(
+      "SELECT id, email, active FROM users WHERE email = ?",
+      [email],
+    );
+
+    // Always return success (don't reveal if email exists)
+    // This prevents email enumeration attacks
+    if (!user) {
+      return NextResponse.json(
+        {
+          message:
+            "If an account exists with this email, you will receive a password reset link shortly.",
+        },
+        { status: 200 },
+      );
+    }
+
+    // Check if user account is active
+    if (user.active !== 1) {
+      return NextResponse.json(
+        {
+          message:
+            "If an account exists with this email, you will receive a password reset link shortly.",
+        },
+        { status: 200 },
+      );
+    }
+
+    // Delete any existing password reset tokens for this user
+    await execute("DELETE FROM password_reset_token WHERE user_id = ?", [
+      user.id,
+    ]);
+
+    // Generate password reset token (expires in 1 hour)
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await execute(
+      "INSERT INTO password_reset_token (user_id, token, expires_at) VALUES (?, ?, ?)",
+      [user.id, token, expiresAt],
+    );
+
+    // Send password reset email
+    await sendPasswordResetEmail(user.email, token);
+
     return NextResponse.json(
-      { message: data.message || "Failed to send reset link" },
-      { status: response.status },
+      {
+        message:
+          "If an account exists with this email, you will receive a password reset link shortly.",
+      },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Forgot password error:", error);
     return NextResponse.json(
-      { message: "An unexpected error occurred" },
+      { message: "An error occurred while processing your request" },
       { status: 500 },
     );
   }

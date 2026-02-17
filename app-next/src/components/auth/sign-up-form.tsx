@@ -19,6 +19,7 @@ export default function SignUpForm() {
   const t = useTranslations("auth");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [formData, setFormData] = useState({
@@ -49,6 +50,7 @@ export default function SignUpForm() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccess("");
 
     // Client-side validation
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
@@ -99,7 +101,9 @@ export default function SignUpForm() {
           router.push("/dashboard");
           router.refresh();
         } else {
-          setError("Account created! Please sign in.");
+          setSuccess(
+            "Account created! Please check your email to confirm your account before signing in.",
+          );
         }
       } else {
         setError(data.message || "Registration failed");
@@ -194,7 +198,7 @@ export default function SignUpForm() {
         router.push("/dashboard");
         router.refresh();
       } else {
-        router.push("/auth/signin?success=account_created");
+        router.push("/auth/sign-in?success=account_created");
       }
     } catch (err: any) {
       console.error("Passkey Sign-up error:", err);
@@ -278,6 +282,7 @@ export default function SignUpForm() {
               setFormData({ ...formData, firstName: e.target.value })
             }
             disabled={isLoading}
+            autoComplete="given-name"
           />
           <FloatingInput
             id="lastName"
@@ -288,6 +293,7 @@ export default function SignUpForm() {
               setFormData({ ...formData, lastName: e.target.value })
             }
             disabled={isLoading}
+            autoComplete="family-name"
           />
         </div>
 
@@ -303,6 +309,7 @@ export default function SignUpForm() {
           onBlur={(e) => checkEmail(e.target.value)}
           error={emailError}
           disabled={isLoading}
+          autoComplete="email"
         />
 
         <div className="relative">
@@ -320,6 +327,7 @@ export default function SignUpForm() {
               setFormData({ ...formData, password: e.target.value })
             }
             disabled={isLoading}
+            autoComplete="new-password"
             className="border-muted-foreground/10"
             endIcon={
               <button
@@ -337,6 +345,14 @@ export default function SignUpForm() {
             }
           />
         </div>
+
+        {success && (
+          <Alert className="animate-in fade-in slide-in-from-top-1 border-green-500 bg-green-50 py-2.5 dark:bg-green-950">
+            <AlertDescription className="text-xs font-medium text-green-700 dark:text-green-300">
+              {success}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {error && (
           <Alert
@@ -371,7 +387,7 @@ export default function SignUpForm() {
             Already have an account?{" "}
           </span>
           <Link
-            href={`/${locale}/auth/signin`}
+            href={`/${locale}/auth/sign-in`}
             className="font-semibold text-slate-700 decoration-2 underline-offset-4 hover:underline dark:text-white"
           >
             Sign in

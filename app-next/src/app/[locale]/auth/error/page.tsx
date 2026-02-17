@@ -52,7 +52,7 @@ export default function AuthErrorPage() {
           )}
           <div className="flex flex-col gap-2">
             <Button asChild className="w-full">
-              <Link href="/auth/signin">
+              <Link href="/auth/sign-in">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Sign In
               </Link>

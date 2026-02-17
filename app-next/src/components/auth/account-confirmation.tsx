@@ -42,7 +42,7 @@ export function AccountConfirmation() {
           );
           // Auto-redirect after 5 seconds
           setTimeout(() => {
-            router.push("/auth/signin");
+            router.push("/auth/sign-in");
           }, 5000);
         } else {
           const data = await response.json();
@@ -80,7 +80,7 @@ export function AccountConfirmation() {
             <h2 className="text-xl font-semibold">Account Verified!</h2>
             <p className="text-muted-foreground">{message}</p>
           </div>
-          <Button onClick={() => router.push("/auth/signin")}>
+          <Button onClick={() => router.push("/auth/sign-in")}>
             Sign In Now
           </Button>
         </>
@@ -96,7 +96,7 @@ export function AccountConfirmation() {
           <div className="flex gap-4">
             <Button
               variant="outline"
-              onClick={() => router.push("/auth/signup")}
+              onClick={() => router.push("/auth/sign-up")}
             >
               Back to Sign Up
             </Button>

@@ -57,7 +57,7 @@ export function ResetPasswordForm() {
       if (response.ok) {
         setIsSuccess(true);
         setTimeout(() => {
-          router.push("/auth/signin");
+          router.push("/auth/sign-in");
         }, 3000);
       } else {
         const data = await response.json();
@@ -84,7 +84,7 @@ export function ResetPasswordForm() {
             sign-in page...
           </p>
         </div>
-        <Button onClick={() => router.push("/auth/signin")}>Sign In Now</Button>
+        <Button onClick={() => router.push("/auth/sign-in")}>Sign In Now</Button>
       </div>
     );
   }
@@ -102,6 +102,7 @@ export function ResetPasswordForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={isLoading || !token}
+            autoComplete="new-password"
             className="pr-10"
           />
           <button
@@ -129,6 +130,7 @@ export function ResetPasswordForm() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           disabled={isLoading || !token}
+          autoComplete="new-password"
         />
       </div>
 
