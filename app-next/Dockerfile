@@ -70,10 +70,12 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy native modules compiled for alpine in deps stage
-# argon2 (password hashing) and its internal @node-rs bindings
+# Copy native modules not included in standalone output
+# argon2 (password hashing) - uses prebuilt binaries
 COPY --from=deps /app/node_modules/argon2 ./node_modules/argon2
-COPY --from=deps /app/node_modules/@node-rs ./node_modules/@node-rs
+COPY --from=deps /app/node_modules/@phc/format ./node_modules/@phc/format
+COPY --from=deps /app/node_modules/node-addon-api ./node_modules/node-addon-api
+COPY --from=deps /app/node_modules/node-gyp-build ./node_modules/node-gyp-build
 # better-sqlite3 (required: db.ts imports unconditionally; MySQL used at runtime)
 COPY --from=deps /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 COPY --from=deps /app/node_modules/bindings ./node_modules/bindings
