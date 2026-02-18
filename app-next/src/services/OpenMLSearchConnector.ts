@@ -22,6 +22,8 @@ interface FacetConfig {
 interface ElasticsearchAggregation {
   buckets?: Array<{
     key: string;
+    from?: number;
+    to?: number;
     doc_count: number;
   }>;
 }
@@ -174,11 +176,8 @@ class OpenMLSearchConnector implements APIConnector {
               range: { [filter.field]: range },
             });
           }
-          // Predefined range bucket selected by name (e.g., "0-1000")
-          else if (
-            typeof filterValue === "string" &&
-            filterValue.includes("-")
-          ) {
+          // Predefined range bucket selected by name (e.g., "100s", "Millions")
+          else if (typeof filterValue === "string") {
             const facetConfig = queryConfig.facets?.[filter.field] as
               | FacetConfig
               | undefined;
@@ -194,7 +193,36 @@ class OpenMLSearchConnector implements APIConnector {
                 query.bool?.filter?.push({
                   range: { [filter.field]: range },
                 });
+              } else {
+                // Try parsing ES bucket key format "from-to" (e.g., "0.0-999.0")
+                const dashIdx = filterValue.indexOf("-", filterValue.startsWith("-") ? 1 : 0);
+                if (dashIdx > 0) {
+                  const fromStr = filterValue.substring(0, dashIdx);
+                  const toStr = filterValue.substring(dashIdx + 1);
+                  const fromVal = fromStr === "*" ? undefined : parseFloat(fromStr);
+                  const toVal = toStr === "*" ? undefined : parseFloat(toStr);
+                  if (fromVal !== undefined || toVal !== undefined) {
+                    const range: Record<string, number> = {};
+                    if (fromVal !== undefined && !isNaN(fromVal)) range.gte = fromVal;
+                    if (toVal !== undefined && !isNaN(toVal)) range.lte = toVal;
+                    query.bool?.filter?.push({
+                      range: { [filter.field]: range },
+                    });
+                  }
+                } else {
+                  // No matching range — treat as regular term filter
+                  if (!filtersByField.has(filter.field)) {
+                    filtersByField.set(filter.field, []);
+                  }
+                  filtersByField.get(filter.field)!.push(filterValue);
+                }
               }
+            } else {
+              // Not a range facet — treat as regular term filter
+              if (!filtersByField.has(filter.field)) {
+                filtersByField.set(filter.field, []);
+              }
+              filtersByField.get(filter.field)!.push(filterValue);
             }
           }
           // Regular value filter (term/terms)
@@ -209,7 +237,21 @@ class OpenMLSearchConnector implements APIConnector {
 
       // Add term/terms queries
       filtersByField.forEach((values, field) => {
-        if (values.length === 1) {
+        // Nested fields (e.g., tags.tag) require a nested query
+        const nestedPath = field.split(".").length > 1 ? field.split(".")[0] : null;
+        const isNested = nestedPath === "tags";
+
+        if (isNested) {
+          // Each value needs its own nested query
+          values.forEach((value) => {
+            query.bool?.filter?.push({
+              nested: {
+                path: nestedPath,
+                query: { term: { [field]: value } },
+              },
+            });
+          });
+        } else if (values.length === 1) {
           query.bool?.filter?.push({ term: { [field]: values[0] } });
         } else if (values.length > 1) {
           query.bool?.filter?.push({ terms: { [field]: values } });
@@ -309,6 +351,7 @@ class OpenMLSearchConnector implements APIConnector {
   formatResponse(
     esResponse: ElasticsearchResponse<SourceDocument>,
     requestState: RequestState,
+    queryConfig?: QueryConfig,
   ): ResponseState {
     const { hits, aggregations } = esResponse;
 
@@ -362,13 +405,35 @@ class OpenMLSearchConnector implements APIConnector {
       Object.entries(aggregations).forEach(([fieldName, agg]) => {
         const typedAgg = agg as ElasticsearchAggregation;
         if (typedAgg.buckets) {
+          // For range facets, map ES bucket keys back to configured range names
+          const facetConfig = queryConfig?.facets?.[fieldName] as
+            | FacetConfig
+            | undefined;
+          const isRange =
+            facetConfig?.type === "range" && facetConfig.ranges;
+
           facets[fieldName] = [
             {
               type: "value",
-              data: typedAgg.buckets.map((bucket) => ({
-                value: bucket.key,
-                count: bucket.doc_count,
-              })),
+              data: typedAgg.buckets
+                .filter((bucket) => bucket.doc_count > 0)
+                .map((bucket) => {
+                  let value = bucket.key;
+
+                  if (isRange && facetConfig.ranges) {
+                    // Match by from/to values from the ES bucket
+                    const matchedRange = facetConfig.ranges.find(
+                      (r) =>
+                        r.from === bucket.from &&
+                        r.to === bucket.to,
+                    );
+                    if (matchedRange) {
+                      value = matchedRange.name;
+                    }
+                  }
+
+                  return { value, count: bucket.doc_count };
+                }),
             },
           ];
         }
@@ -431,7 +496,7 @@ class OpenMLSearchConnector implements APIConnector {
         );
       }
 
-      return this.formatResponse(data, requestState);
+      return this.formatResponse(data, requestState, queryConfig);
     } catch (error) {
       console.error("[OpenMLSearchConnector] Error:", error);
       throw error;

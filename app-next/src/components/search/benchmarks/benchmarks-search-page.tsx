@@ -5,8 +5,13 @@ import type { SearchDriverOptions } from "@elastic/search-ui";
 import { useSearchParams } from "next/navigation";
 import { createBenchmarkConfig } from "./benchmark-search-config";
 import { CollectionsSearchContainer } from "../collections/collections-search-container";
+import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { BarChart3 } from "lucide-react";
 import { entityColors } from "@/constants/entityColors";
+
+const facetLabels: Record<string, string> = {
+  "uploader.keyword": "Uploader",
+};
 
 interface BenchmarksSearchPageProps {
   studyType: "task" | "run";
@@ -39,16 +44,19 @@ export function BenchmarksSearchPage({
         {/* Page Header */}
         <div className="bg-muted/40 border-b">
           <div className="container mx-auto px-4 py-8 sm:px-6">
-            <div className="flex items-start gap-3">
-              <BarChart3
-                className="h-8 w-8"
-                style={{ color: entityColors.benchmarks }}
-                aria-hidden="true"
-              />
-              <div className="space-y-0">
-                <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-                <p className="text-muted-foreground">{description}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <BarChart3
+                  className="h-8 w-8"
+                  style={{ color: entityColors.benchmarks }}
+                  aria-hidden="true"
+                />
+                <div className="space-y-0">
+                  <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+                  <p className="text-muted-foreground">{description}</p>
+                </div>
               </div>
+              <ActiveFiltersHeader facetLabels={facetLabels} />
             </div>
           </div>
         </div>
