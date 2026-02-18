@@ -16,6 +16,11 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { truncateName } from "@/lib/utils";
 
 interface Result {
@@ -162,47 +167,64 @@ export function ResultCard({ result }: ResultCardProps) {
         <div className="space-y-2">
           <div className="text-muted-foreground flex flex-wrap gap-3 text-sm">
             {result.runs && result.runs.raw > 0 && (
-              <span className="flex items-center gap-1.5" title="runs">
-                <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                {abbreviateNumber(result.runs.raw)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex items-center gap-1.5">
+                    <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                    {abbreviateNumber(result.runs.raw)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Runs</TooltipContent>
+              </Tooltip>
             )}
             {result.nr_of_likes && result.nr_of_likes.raw > 0 && (
-              <span className="flex items-center gap-1.5" title="likes">
-                <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-                {abbreviateNumber(result.nr_of_likes.raw)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex items-center gap-1.5">
+                    <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
+                    {abbreviateNumber(result.nr_of_likes.raw)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Likes</TooltipContent>
+              </Tooltip>
             )}
             {result.nr_of_downloads && result.nr_of_downloads.raw > 0 && (
-              <span className="flex items-center gap-1.5" title="downloads">
-                <CloudDownload className="h-4 w-4 text-blue-500" />
-                {abbreviateNumber(result.nr_of_downloads.raw)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex items-center gap-1.5">
+                    <CloudDownload className="h-4 w-4 text-blue-500" />
+                    {abbreviateNumber(result.nr_of_downloads.raw)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Downloads</TooltipContent>
+              </Tooltip>
             )}
             {result.qualities?.raw?.NumberOfInstances && (
-              <span
-                className="flex items-center gap-1.5"
-                title="instances (rows)"
-              >
-                <BarChart3 className="h-4 w-4 text-gray-500" />
-                {abbreviateNumber(result.qualities.raw.NumberOfInstances)}
-              </span>
-            )}
-            {result.qualities?.raw?.NumberOfFeatures && (
-              <span
-                className="flex items-center gap-1.5"
-                title="features (columns)"
-              >
-                <BarChart3 className="h-4 w-4 rotate-90 text-gray-500" />
-                {abbreviateNumber(result.qualities.raw.NumberOfFeatures)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex items-center gap-1.5">
+                    <BarChart3 className="h-4 w-4 text-gray-500" />
+                    {abbreviateNumber(result.qualities.raw.NumberOfInstances)}
+                    {" x "}
+                    {result.qualities.raw.NumberOfFeatures
+                      ? abbreviateNumber(result.qualities.raw.NumberOfFeatures)
+                      : "N/A"}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Dimensions (rows x columns)</TooltipContent>
+              </Tooltip>
             )}
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
-              <Clock className="h-4 w-4" />
-              {result.date?.raw ? timeAgo(result.date.raw) : "Unknown"}
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                  <Clock className="h-4 w-4" />
+                  {result.date?.raw ? timeAgo(result.date.raw) : "Unknown"}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Upload date</TooltipContent>
+            </Tooltip>
             <Badge
               variant="openml"
               className="flex items-center gap-1 bg-[rgb(102,187,106)] px-2 py-0.5 text-xs font-semibold text-white"

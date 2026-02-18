@@ -262,7 +262,8 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
         >
           <div className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 transition-opacity hover:opacity-90 dark:border-blue-400">
             {user.avatar &&
-            (user.avatar.startsWith("http://") ||
+            (user.avatar.startsWith("/") ||
+              user.avatar.startsWith("http://") ||
               user.avatar.startsWith("https://")) ? (
               <Image
                 src={user.avatar}
@@ -316,7 +317,8 @@ export function UserActivitySidebar({ className }: UserActivitySidebarProps) {
           <div className="flex items-center gap-4 border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-800/50">
             <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-blue-500 dark:border-blue-400">
               {user?.avatar &&
-              (user.avatar.startsWith("http://") ||
+              (user.avatar.startsWith("/") ||
+                user.avatar.startsWith("http://") ||
                 user.avatar.startsWith("https://")) ? (
                 <Image
                   src={user.avatar}

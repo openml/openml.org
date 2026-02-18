@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Mail, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/card";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth.forgotPassword");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -38,11 +40,11 @@ export default function ForgotPasswordPage() {
         setMessage(data.message);
       } else {
         setStatus("error");
-        setMessage(data.message || "Failed to send reset link");
+        setMessage(data.message || t("failedToSend"));
       }
     } catch (error) {
       setStatus("error");
-      setMessage("An error occurred. Please try again.");
+      setMessage(t("unexpectedError"));
     }
   };
 
@@ -54,21 +56,21 @@ export default function ForgotPasswordPage() {
             <div className="mb-4 flex justify-center">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
+            <CardTitle className="text-2xl">{t("checkEmail")}</CardTitle>
             <CardDescription className="mt-2">{message}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-lg bg-blue-50 p-4 text-sm text-blue-700 dark:bg-blue-950/20 dark:text-blue-400">
-              <p className="font-medium mb-2">Next steps:</p>
+              <p className="font-medium mb-2">{t("nextSteps")}</p>
               <ol className="list-decimal list-inside space-y-1">
-                <li>Check your inbox at <strong>{email}</strong></li>
-                <li>Click the reset link in the email</li>
-                <li>Create your new password</li>
+                <li>{t("step1")} <strong>{email}</strong></li>
+                <li>{t("step2")}</li>
+                <li>{t("step3")}</li>
               </ol>
             </div>
 
             <p className="text-sm text-muted-foreground text-center">
-              Didn't receive the email? Check your spam folder or try again.
+              {t("didntReceive")}
             </p>
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
@@ -77,10 +79,10 @@ export default function ForgotPasswordPage() {
               variant="outline"
               className="w-full"
             >
-              Send Another Email
+              {t("sendAnother")}
             </Button>
             <Button asChild variant="ghost" className="w-full">
-              <Link href="/auth/sign-in">Back to Sign In</Link>
+              <Link href="/auth/sign-in">{t("backToSignIn")}</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -97,10 +99,9 @@ export default function ForgotPasswordPage() {
               <Mail className="h-8 w-8 text-blue-500" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Forgot Password?</CardTitle>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription className="mt-2">
-            No worries! Enter your email address and we'll send you a link to
-            reset your password.
+            {t("subtitle")}
           </CardDescription>
         </CardHeader>
 
@@ -114,12 +115,12 @@ export default function ForgotPasswordPage() {
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email Address
+                {t("emailLabel")}
               </label>
               <Input
                 id="email"
                 type="email"
-                placeholder="your.email@example.com"
+                placeholder={t("emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -137,17 +138,17 @@ export default function ForgotPasswordPage() {
               {status === "loading" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending Reset Link...
+                  {t("sendingResetLink")}
                 </>
               ) : (
-                "Send Reset Link"
+                t("sendResetLink")
               )}
             </Button>
 
             <Button asChild variant="ghost" className="w-full">
               <Link href="/auth/sign-in">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Sign In
+                {t("backToSignIn")}
               </Link>
             </Button>
           </CardFooter>

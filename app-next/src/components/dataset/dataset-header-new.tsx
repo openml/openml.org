@@ -16,6 +16,11 @@ import {
   Tag,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Dataset } from "@/types/dataset";
 import { DatasetDownloadMenu } from "./dataset-download-menu";
@@ -216,9 +221,23 @@ export function DatasetHeader({
           <Tag className="text-muted-foreground h-4 w-4" />
 
           {/* xs: count only */}
-          <span className="text-muted-foreground text-xs sm:hidden">
-            {tags.length} tags
-          </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors sm:hidden">
+                {tags.length} tags
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+              <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+              <div className="flex flex-wrap gap-1.5">
+                {tags.map((tagObj, idx) => (
+                  <a key={`pop-xs-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                    <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                  </a>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
 
           {/* sm: 3 tags */}
           <div className="hidden gap-2 sm:flex md:hidden">
@@ -236,9 +255,23 @@ export function DatasetHeader({
               </a>
             ))}
             {tags.length > 3 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 3} more
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">
+                    +{tags.length - 3} more
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tagObj, idx) => (
+                      <a key={`pop-sm-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
 
@@ -258,9 +291,23 @@ export function DatasetHeader({
               </a>
             ))}
             {tags.length > 6 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 6} more
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">
+                    +{tags.length - 6} more
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tagObj, idx) => (
+                      <a key={`pop-md-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
 
@@ -280,9 +327,23 @@ export function DatasetHeader({
               </a>
             ))}
             {tags.length > 8 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 8} more
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">
+                    +{tags.length - 8} more
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tagObj, idx) => (
+                      <a key={`pop-lg-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
 
@@ -302,9 +363,23 @@ export function DatasetHeader({
               </a>
             ))}
             {tags.length > 10 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 10} more
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">
+                    +{tags.length - 10} more
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tagObj, idx) => (
+                      <a key={`pop-xl-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
 
@@ -324,9 +399,23 @@ export function DatasetHeader({
               </a>
             ))}
             {tags.length > 12 && (
-              <span className="text-muted-foreground text-xs">
-                +{tags.length - 12} more
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">
+                    +{tags.length - 12} more
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tagObj, idx) => (
+                      <a key={`pop-2xl-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
+                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
         </div>

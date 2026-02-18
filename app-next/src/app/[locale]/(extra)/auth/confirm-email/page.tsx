@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,13 +16,14 @@ import {
 } from "@/components/ui/card";
 
 function EmailConfirmationContent() {
+  const t = useTranslations("auth.confirmEmail");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<
     "loading" | "success" | "error" | "already_confirmed"
   >(token ? "loading" : "error");
   const [message, setMessage] = useState(
-    token ? "" : "No confirmation token provided",
+    token ? "" : t("noToken"),
   );
   const [email, setEmail] = useState("");
 
@@ -47,9 +49,9 @@ function EmailConfirmationContent() {
       })
       .catch(() => {
         setStatus("error");
-        setMessage("An error occurred during email confirmation");
+        setMessage(t("error"));
       });
-  }, [token]);
+  }, [token, t]);
 
   return (
     <div className="container flex min-h-screen items-center justify-center py-10">
@@ -71,15 +73,14 @@ function EmailConfirmationContent() {
           </div>
 
           <CardTitle className="text-2xl">
-            {status === "loading" && "Confirming your email..."}
-            {status === "success" && "Email Confirmed!"}
-            {status === "already_confirmed" && "Already Confirmed"}
-            {status === "error" && "Confirmation Failed"}
+            {status === "loading" && t("confirming")}
+            {status === "success" && t("success")}
+            {status === "already_confirmed" && t("alreadyConfirmed")}
+            {status === "error" && t("failed")}
           </CardTitle>
 
           <CardDescription className="mt-2">
-            {status === "loading" &&
-              "Please wait while we verify your email address."}
+            {status === "loading" && t("pleaseWait")}
             {message}
           </CardDescription>
         </CardHeader>
@@ -95,23 +96,21 @@ function EmailConfirmationContent() {
                   </div>
                 )}
                 <p className="text-muted-foreground text-center text-sm">
-                  Your account is now active. You can sign in to start exploring
-                  OpenML.
+                  {t("accountActive")}
                 </p>
               </>
             )}
 
             {status === "error" && (
               <div className="text-muted-foreground space-y-3 text-sm">
-                <p>Possible reasons:</p>
+                <p>{t("possibleReasons")}</p>
                 <ul className="list-inside list-disc space-y-1">
-                  <li>The confirmation link has expired (24 hours)</li>
-                  <li>The link has already been used</li>
-                  <li>The link is invalid or corrupted</li>
+                  <li>{t("reasonExpired")}</li>
+                  <li>{t("reasonUsed")}</li>
+                  <li>{t("reasonInvalid")}</li>
                 </ul>
                 <p className="mt-3">
-                  If you need a new confirmation email, please contact support
-                  or try signing up again.
+                  {t("needNewEmail")}
                 </p>
               </div>
             )}
@@ -122,17 +121,17 @@ function EmailConfirmationContent() {
           <CardFooter className="flex flex-col gap-2">
             {(status === "success" || status === "already_confirmed") && (
               <Button asChild className="w-full">
-                <Link href="/auth/sign-in">Sign In to OpenML</Link>
+                <Link href="/auth/sign-in">{t("signInToOpenML")}</Link>
               </Button>
             )}
 
             {status === "error" && (
               <div className="flex w-full gap-2">
                 <Button asChild variant="outline" className="flex-1">
-                  <Link href="/auth/sign-up">Try Signing Up Again</Link>
+                  <Link href="/auth/sign-up">{t("trySignUpAgain")}</Link>
                 </Button>
                 <Button asChild variant="default" className="flex-1">
-                  <Link href="/">Go to Homepage</Link>
+                  <Link href="/">{t("goToHomepage")}</Link>
                 </Button>
               </div>
             )}
@@ -144,6 +143,7 @@ function EmailConfirmationContent() {
 }
 
 export default function EmailConfirmationPage() {
+  const t = useTranslations("auth.confirmEmail");
   return (
     <Suspense
       fallback={
@@ -153,7 +153,7 @@ export default function EmailConfirmationPage() {
               <div className="mb-4 flex justify-center">
                 <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
               </div>
-              <CardTitle className="text-2xl">Loading...</CardTitle>
+              <CardTitle className="text-2xl">{t("loading")}</CardTitle>
             </CardHeader>
           </Card>
         </div>

@@ -32,13 +32,13 @@ export default function SignInForm() {
 
     // Client-side validation
     if (!formData.email.trim()) {
-      setError("Email or username is required");
+      setError(t("signIn.emailRequired"));
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("signIn.passwordMinLength"));
       setIsLoading(false);
       return;
     }
@@ -81,11 +81,11 @@ export default function SignInForm() {
       <div className="space-y-4">
         <div className="group relative">
           <Badge className="absolute -top-2.5 right-4 z-10 border-0 bg-slate-500 px-2 py-0 text-[10px] text-white">
-            RECOMMENDED
+            {t("recommended")}
           </Badge>
           <PasskeySignInButton
             className="h-12 w-full bg-slate-600 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:scale-[1.01] hover:bg-slate-500 active:scale-[0.99]"
-            label="Sign in with FaceID or Fingerprint"
+            label={t("signIn.passkeyLabel")}
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function SignInForm() {
         </div>
         <div className="relative flex justify-center text-xs">
           <span className="bg-card px-4 font-medium tracking-wider text-slate-500 uppercase dark:text-slate-400">
-            or sign in with email
+            {t("signIn.orWithEmail")}
           </span>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function SignInForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <FloatingInput
           id="email"
-          label="Email or username"
+          label={t("signIn.emailLabel")}
           type="text"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -141,7 +141,7 @@ export default function SignInForm() {
         <div className="space-y-1">
           <FloatingInput
             id="password"
-            label="Password"
+            label={t("signIn.passwordLabel")}
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={(e) =>
@@ -169,7 +169,7 @@ export default function SignInForm() {
               href={`/${locale}/auth/forgot-password`}
               className="text-xs font-medium text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-white"
             >
-              Forgot password?
+              {t("signIn.forgotPassword")}
             </Link>
           </div>
         </div>
@@ -190,20 +190,20 @@ export default function SignInForm() {
           className="h-11 w-full bg-slate-600 font-semibold text-white transition-all hover:bg-slate-500"
           disabled={isLoading}
         >
-          {isLoading ? "Signing in..." : "Sign In"}
+          {isLoading ? t("signIn.signingIn") : t("signIn.signInButton")}
         </Button>
       </form>
 
       {/* Footer Info */}
       <div className="pt-2 text-center text-sm">
         <span className="text-slate-500 dark:text-slate-400">
-          Don't have an account?{" "}
+          {t("signIn.noAccount")}{" "}
         </span>
         <Link
-          href={`/${locale}/auth/signup`}
+          href={`/${locale}/auth/sign-up`}
           className="font-semibold text-slate-700 decoration-2 underline-offset-4 hover:underline dark:text-white"
         >
-          Create account
+          {t("signIn.createAccount")}
         </Link>
       </div>
     </div>
