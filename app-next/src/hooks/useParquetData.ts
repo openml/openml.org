@@ -92,12 +92,19 @@ function parseArff(arffText: string): {
 }
 
 /**
- * Generate the parquet URL from a dataset ID
+ * Wrap an external URL through our proxy to bypass CORS restrictions.
+ * In production, once CORS headers are added to data.openml.org, this can be removed.
+ */
+function proxyUrl(externalUrl: string): string {
+  return `/api/proxy-file?url=${encodeURIComponent(externalUrl)}`;
+}
+
+/**
+ * Generate the direct parquet URL from a dataset ID (for reference/export)
  * Format: https://data.openml.org/datasets/0000/0061/dataset_61.pq
  */
 export function getParquetUrl(datasetId: number | string): string {
   const id = Number(datasetId);
-  // Calculate the folder path (datasets are organized in groups of 10000)
   const folder = String(Math.floor(id / 10000)).padStart(4, "0");
   const subFolder = String(id).padStart(4, "0");
   return `https://data.openml.org/datasets/${folder}/${subFolder}/dataset_${id}.pq`;
@@ -108,7 +115,6 @@ export function getParquetUrl(datasetId: number | string): string {
  */
 export function getArffUrl(datasetUrl: string | undefined): string | null {
   if (!datasetUrl) return null;
-  // Dataset URL format: https://api.openml.org/data/download/{file_id}/dataset
   return datasetUrl;
 }
 
@@ -167,11 +173,11 @@ export function useParquetData(
     async function fetchData() {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      // Helper function to try loading ARFF
+      // Helper function to try loading ARFF (via proxy to avoid CORS)
       async function tryArff(url: string) {
         let arffResponse;
         try {
-          arffResponse = await fetch(url);
+          arffResponse = await fetch(proxyUrl(url));
         } catch (fetchError) {
           // Network error (CORS, offline, etc.) - fail gracefully
           console.warn("ARFF fetch failed (network/CORS):", fetchError);
@@ -227,14 +233,15 @@ export function useParquetData(
         });
       }
 
-      // Try parquet first
+      // Try parquet first (via proxy to avoid CORS)
       const parquetUrl = getParquetUrl(datasetId!);
+      const proxiedParquetUrl = proxyUrl(parquetUrl);
 
       try {
         // First, check if parquet exists with HEAD request
         let headResponse;
         try {
-          headResponse = await fetch(parquetUrl, { method: "HEAD" });
+          headResponse = await fetch(proxiedParquetUrl, { method: "HEAD" });
         } catch (fetchError) {
           // Network error - try ARFF fallback or fail gracefully
           console.warn("Parquet HEAD fetch failed (network/CORS):", fetchError);
@@ -273,8 +280,8 @@ export function useParquetData(
             return;
           }
 
-          // Fetch the parquet file
-          const response = await fetch(parquetUrl);
+          // Fetch the parquet file (via proxy)
+          const response = await fetch(proxiedParquetUrl);
           if (!response.ok) {
             throw new Error(`Failed to fetch parquet: ${response.statusText}`);
           }

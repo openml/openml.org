@@ -1,12 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   Database,
   Download,
+  Grid3X3,
+  LayoutList,
   Maximize2,
   Minimize2,
   FileText,
@@ -32,6 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import type { Dataset, DatasetFeature } from "@/types/dataset";
 import { useParquetData, computeDistribution } from "@/hooks/useParquetData";
@@ -67,7 +72,9 @@ export function DataAnalysisSection({
   className,
 }: DataAnalysisSectionProps) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const FEATURES_TABLE_PAGE_SIZE = 50;
+  const [featuresTablePage, setFeaturesTablePage] = useState(1);
+  const [featuresView, setFeaturesView] = useState<"list" | "grid">("grid");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTab, setActiveTab] = useState("features");
   const containerRef = useRef<HTMLElement>(null);
@@ -77,8 +84,16 @@ export function DataAnalysisSection({
   const numericFeatures = features.filter((f) => f.type === "numeric");
   const nominalFeatures = features.filter((f) => f.type === "nominal");
 
-  // Load parquet data for real distributions
-  const parquetState = useParquetData(dataset.data_id, dataset.url);
+  // Estimate raw data size to determine visualization strategy
+  const estimatedRawBytes =
+    (qualities.NumberOfInstances || 0) * (qualities.NumberOfFeatures || 0) * 8;
+  const isHugeDataset = estimatedRawBytes > 5 * 1024 * 1024 * 1024; // > 5GB raw estimate
+
+  // Load parquet data for real distributions (skip for huge datasets)
+  const parquetState = useParquetData(
+    isHugeDataset ? undefined : dataset.data_id,
+    isHugeDataset ? undefined : dataset.url,
+  );
 
   // Fullscreen toggle handler
   const toggleFullscreen = useCallback(async () => {
@@ -118,8 +133,13 @@ export function DataAnalysisSection({
       : null;
 
   // Limit displayed features initially
-  const displayedFeatures = showAllFeatures ? features : features.slice(0, 10);
-  const hasMoreFeatures = features.length > 10;
+  const totalFeaturesTablePages = Math.ceil(
+    features.length / FEATURES_TABLE_PAGE_SIZE,
+  );
+  const displayedFeatures = features.slice(
+    (featuresTablePage - 1) * FEATURES_TABLE_PAGE_SIZE,
+    featuresTablePage * FEATURES_TABLE_PAGE_SIZE,
+  );
 
   return (
     <section
@@ -229,91 +249,174 @@ export function DataAnalysisSection({
                   <TabsTrigger value="correlation">Correlation</TabsTrigger>
                 </TabsList>
 
-                {/* Features Tab - Compact table only */}
+                {/* Features Tab */}
                 <TabsContent value="features" className="space-y-4">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-muted-foreground px-3 py-2 text-left font-medium">
-                            #
-                          </th>
-                          <th className="text-muted-foreground px-3 py-2 text-left font-medium">
-                            Name
-                          </th>
-                          <th className="text-muted-foreground px-3 py-2 text-left font-medium">
-                            Type
-                          </th>
-                          <th className="text-muted-foreground px-3 py-2 text-left font-medium">
-                            Missing
-                          </th>
-                          <th className="text-muted-foreground px-3 py-2 text-left font-medium">
-                            Distinct
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {displayedFeatures.map((feature, index) => (
-                          <tr
-                            key={feature.index ?? index}
+                  {/* View toggle */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground text-xs">
+                      {features.length} features
+                    </span>
+                    <div className="flex items-center gap-1 rounded-md border p-0.5">
+                      <Button
+                        variant={
+                          featuresView === "grid" ? "secondary" : "ghost"
+                        }
+                        size="sm"
+                        className="h-7 px-2"
+                        onClick={() => setFeaturesView("grid")}
+                      >
+                        <Grid3X3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant={
+                          featuresView === "list" ? "secondary" : "ghost"
+                        }
+                        size="sm"
+                        className="h-7 px-2"
+                        onClick={() => setFeaturesView("list")}
+                      >
+                        <LayoutList className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Grid view */}
+                  {featuresView === "grid" ? (
+                    <div className="rounded-lg border p-2">
+                      <div className="grid grid-cols-2 gap-1 md:grid-cols-3 lg:grid-cols-4">
+                        {displayedFeatures.map((feature) => (
+                          <div
+                            key={feature.index}
                             className={cn(
-                              "hover:bg-muted/50 border-b last:border-0",
+                              "flex items-center gap-2 rounded px-2 py-1.5 text-sm",
                               feature.target &&
                                 "bg-amber-50 dark:bg-amber-950/20",
                             )}
                           >
-                            <td className="text-muted-foreground px-3 py-2">
-                              {index}
-                            </td>
-                            <td className="px-3 py-2 font-medium">
-                              <span className="flex items-center gap-1.5">
-                                {feature.target && (
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Target className="h-4 w-4 shrink-0 text-amber-500" />
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        Target attribute
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                )}
-                                {feature.name}
-                              </span>
-                            </td>
-                            <td className="px-3 py-2">
-                              <FeatureTypeBadge type={feature.type} />
-                            </td>
-                            <td className="px-3 py-2">
-                              {feature.missing || 0}
-                            </td>
-                            <td className="px-3 py-2">
-                              {feature.distinct || "—"}
-                            </td>
-                          </tr>
+                            <span className="flex items-center gap-1 truncate">
+                              {feature.target && (
+                                <Target className="h-3 w-3 shrink-0 text-amber-500" />
+                              )}
+                              <span className="truncate">{feature.name}</span>
+                            </span>
+                            <FeatureTypeBadge type={feature.type} />
+                          </div>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* List view */
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-muted-foreground px-3 py-2 text-left font-medium">
+                              #
+                            </th>
+                            <th className="text-muted-foreground px-3 py-2 text-left font-medium">
+                              Name
+                            </th>
+                            <th className="text-muted-foreground px-3 py-2 text-left font-medium">
+                              Type
+                            </th>
+                            <th className="text-muted-foreground px-3 py-2 text-left font-medium">
+                              Missing
+                            </th>
+                            <th className="text-muted-foreground px-3 py-2 text-left font-medium">
+                              Distinct
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {displayedFeatures.map((feature, index) => (
+                            <tr
+                              key={feature.index ?? index}
+                              className={cn(
+                                "hover:bg-muted/50 border-b last:border-0",
+                                feature.target &&
+                                  "bg-amber-50 dark:bg-amber-950/20",
+                              )}
+                            >
+                              <td className="text-muted-foreground px-3 py-2">
+                                {(featuresTablePage - 1) *
+                                  FEATURES_TABLE_PAGE_SIZE +
+                                  index}
+                              </td>
+                              <td className="px-3 py-2 font-medium">
+                                <span className="flex items-center gap-1.5">
+                                  {feature.target && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Target className="h-4 w-4 shrink-0 text-amber-500" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          Target attribute
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                  {feature.name}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2">
+                                <FeatureTypeBadge type={feature.type} />
+                              </td>
+                              <td className="px-3 py-2">
+                                {feature.missing || 0}
+                              </td>
+                              <td className="px-3 py-2">
+                                {feature.distinct || "—"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
 
-                  {/* Show more button */}
-                  {hasMoreFeatures && (
-                    <div className="mt-4 flex justify-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowAllFeatures(!showAllFeatures)}
-                      >
-                        {showAllFeatures
-                          ? `Show less`
-                          : `Show all ${features.length} columns`}
-                        {showAllFeatures ? (
-                          <ChevronUp className="ml-1 h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="ml-1 h-4 w-4" />
-                        )}
-                      </Button>
+                  {/* Pagination */}
+                  {totalFeaturesTablePages > 1 && (
+                    <div className="flex items-center justify-between px-3">
+                      <span className="text-muted-foreground text-xs">
+                        Showing{" "}
+                        {(featuresTablePage - 1) * FEATURES_TABLE_PAGE_SIZE + 1}
+                        -
+                        {Math.min(
+                          featuresTablePage * FEATURES_TABLE_PAGE_SIZE,
+                          features.length,
+                        )}{" "}
+                        of {features.length}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setFeaturesTablePage((p) => Math.max(1, p - 1))
+                          }
+                          disabled={featuresTablePage === 1}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                        <span className="text-muted-foreground px-2 text-xs">
+                          {featuresTablePage} / {totalFeaturesTablePages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setFeaturesTablePage((p) =>
+                              Math.min(totalFeaturesTablePages, p + 1),
+                            )
+                          }
+                          disabled={
+                            featuresTablePage === totalFeaturesTablePages
+                          }
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </TabsContent>
@@ -326,6 +429,9 @@ export function DataAnalysisSection({
                     allFeatures={features}
                     parquetData={parquetState.data}
                     isLoadingParquet={parquetState.isLoading}
+                    isTooLarge={parquetState.isTooLarge}
+                    isHugeDataset={isHugeDataset}
+                    datasetId={dataset.data_id}
                   />
                 </TabsContent>
 
@@ -334,6 +440,7 @@ export function DataAnalysisSection({
                   <CorrelationHeatmap
                     numericFeatures={numericFeatures}
                     parquetData={parquetState.data}
+                    datasetId={dataset.data_id}
                   />
                 </TabsContent>
               </Tabs>
@@ -486,45 +593,70 @@ function FeatureDistributionPlots({
   allFeatures,
   parquetData,
   isLoadingParquet,
+  isTooLarge,
+  isHugeDataset,
+  datasetId,
 }: {
   numericFeatures?: DatasetFeature[];
   nominalFeatures?: DatasetFeature[];
   allFeatures: DatasetFeature[];
   parquetData: Record<string, (string | number | null)[]> | null;
   isLoadingParquet: boolean;
+  isTooLarge?: boolean;
+  isHugeDataset?: boolean;
+  datasetId?: number;
 }) {
-  // Limit features display for performance (show first 50)
-  const MAX_DISPLAYED_FEATURES = 50;
-  const displayedFeatures = allFeatures.slice(0, MAX_DISPLAYED_FEATURES);
-  const hasMoreFeatures = allFeatures.length > MAX_DISPLAYED_FEATURES;
+  // Whether parquet data is unavailable (too large to load in browser)
+  const dataUnavailable = isTooLarge || isHugeDataset;
+
+  const FEATURES_PER_PAGE = 50;
+  const [featurePage, setFeaturePage] = useState(1);
+  const [filterText, setFilterText] = useState("");
+
+  // Filter all features based on search
+  const filteredFeatures = useMemo(() => {
+    if (!filterText) return allFeatures;
+    return allFeatures.filter((f) =>
+      f.name.toLowerCase().includes(filterText.toLowerCase()),
+    );
+  }, [allFeatures, filterText]);
+
+  // Paginate filtered features
+  const totalFeaturePages = Math.ceil(
+    filteredFeatures.length / FEATURES_PER_PAGE,
+  );
+  const displayedFeatures = filteredFeatures.slice(
+    (featurePage - 1) * FEATURES_PER_PAGE,
+    featurePage * FEATURES_PER_PAGE,
+  );
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setFeaturePage(1);
+  }, [filterText]);
 
   // State for feature selection
   const [selectedFeatures, setSelectedFeatures] = useState<Set<number>>(() => {
     const initialSelection = new Set<number>();
-    const featuresToSelect = displayedFeatures
+    // Pick up to 5 numeric + the target (if nominal) for class distribution
+    const targetNominal = allFeatures.find(
+      (f) => f.target && f.type === "nominal",
+    );
+    const numericNonTarget = allFeatures
       .filter((f) => f.type === "numeric" && !f.target)
-      .slice(0, 6);
+      .slice(0, 5);
+    const featuresToSelect = targetNominal
+      ? [targetNominal, ...numericNonTarget]
+      : numericNonTarget;
 
     if (featuresToSelect.length === 0) {
-      displayedFeatures
-        .slice(0, 6)
-        .forEach((f) => initialSelection.add(f.index));
+      allFeatures.slice(0, 6).forEach((f) => initialSelection.add(f.index));
     } else {
       featuresToSelect.forEach((f) => initialSelection.add(f.index));
     }
 
     return initialSelection;
   });
-
-  const [filterText, setFilterText] = useState("");
-
-  // Filter features based on search
-  const filteredFeatures = useMemo(() => {
-    if (!filterText) return displayedFeatures;
-    return displayedFeatures.filter((f) =>
-      f.name.toLowerCase().includes(filterText.toLowerCase()),
-    );
-  }, [displayedFeatures, filterText]);
 
   // Get selected feature objects
   const selectedFeatureObjects = allFeatures.filter((f) =>
@@ -559,11 +691,9 @@ function FeatureDistributionPlots({
         <div className="bg-muted/50 border-b px-4 py-3">
           <h4 className="text-sm font-medium">
             Choose features for distribution plot
-            {hasMoreFeatures && (
-              <span className="text-muted-foreground ml-2 font-normal">
-                (showing first {MAX_DISPLAYED_FEATURES} of {allFeatures.length})
-              </span>
-            )}
+            <span className="text-muted-foreground ml-2 font-normal">
+              ({filteredFeatures.length} features)
+            </span>
           </h4>
           <div className="mt-2 flex items-center gap-2">
             <Input
@@ -580,7 +710,7 @@ function FeatureDistributionPlots({
 
         <div className="max-h-[300px] overflow-y-auto p-2">
           <div className="grid grid-cols-2 gap-1 md:grid-cols-3 lg:grid-cols-4">
-            {filteredFeatures.map((feature) => (
+            {displayedFeatures.map((feature) => (
               <div
                 key={feature.index}
                 className={cn(
@@ -606,10 +736,47 @@ function FeatureDistributionPlots({
             ))}
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalFeaturePages > 1 && (
+          <div className="flex items-center justify-between border-t px-4 py-2">
+            <span className="text-muted-foreground text-xs">
+              Showing {(featurePage - 1) * FEATURES_PER_PAGE + 1}-
+              {Math.min(
+                featurePage * FEATURES_PER_PAGE,
+                filteredFeatures.length,
+              )}{" "}
+              of {filteredFeatures.length}
+            </span>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFeaturePage((p) => Math.max(1, p - 1))}
+                disabled={featurePage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-muted-foreground px-2 text-xs">
+                {featurePage} / {totalFeaturePages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setFeaturePage((p) => Math.min(totalFeaturePages, p + 1))
+                }
+                disabled={featurePage === totalFeaturePages}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Distribution Plots */}
-      {isLoadingParquet ? (
+      {isLoadingParquet && !dataUnavailable ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <span className="text-muted-foreground ml-2">Loading data...</span>
@@ -625,6 +792,7 @@ function FeatureDistributionPlots({
               key={feature.index}
               feature={feature}
               parquetData={parquetData}
+              dataUnavailable={dataUnavailable}
             />
           ))}
         </div>
@@ -639,11 +807,13 @@ function FeatureDistributionPlots({
 function DistributionPlot({
   feature,
   parquetData,
+  dataUnavailable,
 }: {
   feature: DatasetFeature;
   parquetData: Record<string, (string | number | null)[]> | null;
   targetFeature?: DatasetFeature;
   targetColors?: string[];
+  dataUnavailable?: boolean;
 }) {
   const isNumeric = feature.type === "numeric";
 
@@ -653,9 +823,8 @@ function DistributionPlot({
       const dataType = feature.type === "numeric" ? "numeric" : "nominal";
       return computeDistribution(parquetData[feature.name], dataType);
     }
-    // Fallback to feature.distr if available
+    // Fallback to feature.distr if available (works for nominal without parquet)
     if (feature.distr && feature.distr.length > 0) {
-      // Convert to DistributionData format
       if (isNumeric) {
         return {
           values: feature.distr.map((d: [string, number]) => d[1]),
@@ -671,10 +840,24 @@ function DistributionPlot({
     return null;
   }, [parquetData, feature, isNumeric]);
 
+  // Numeric features in too-large datasets: show "coming soon"
+  if (dataUnavailable && isNumeric) {
+    return (
+      <div className="flex h-[200px] flex-col items-center justify-center gap-2 rounded-lg border">
+        <Database className="h-6 w-6 text-green-500" />
+        <p className="text-muted-foreground text-xs">
+          Distribution will be available soon.
+        </p>
+      </div>
+    );
+  }
+
   if (!distribution) {
     return (
       <div className="flex h-[200px] items-center justify-center rounded-lg border">
-        <p className="text-muted-foreground text-sm">No data available</p>
+        <p className="mx-2 rounded-sm bg-green-600 px-2 py-1 text-center text-sm text-gray-200">
+          Distribution will be available soon
+        </p>
       </div>
     );
   }
@@ -744,10 +927,15 @@ function DistributionPlot({
 function CorrelationHeatmap({
   numericFeatures,
   parquetData,
+  datasetId,
 }: {
   numericFeatures: DatasetFeature[];
   parquetData: Record<string, (string | number | null)[]> | null;
+  datasetId?: number;
 }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   // Limit to first 20 numeric features for heatmap
   const MAX_FEATURES = 20;
   const limitedFeatures = numericFeatures.slice(0, MAX_FEATURES);
@@ -789,11 +977,11 @@ function CorrelationHeatmap({
 
   if (!parquetData) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <AlertCircle className="h-5 w-5 text-amber-500" />
-        <span className="text-muted-foreground ml-2">
+      <div className="flex flex-col items-center justify-center gap-3 py-12">
+        <AlertCircle className="h-8 w-8 text-amber-500" />
+        <p className="text-muted-foreground text-sm">
           Correlation requires real data. Load the parquet file to view.
-        </span>
+        </p>
       </div>
     );
   }
@@ -811,7 +999,7 @@ function CorrelationHeatmap({
   return (
     <div className="space-y-4">
       {numericFeatures.length > MAX_FEATURES && (
-        <p className="text-muted-foreground text-sm">
+        <p className="text-shadow-muted-foreground text-sm">
           Showing correlation for first {MAX_FEATURES} of{" "}
           {numericFeatures.length} numeric features.
         </p>
@@ -826,7 +1014,7 @@ function CorrelationHeatmap({
             y: featureNames,
             colorscale: [
               [0, "#ef4444"],
-              [0.5, "#ffffff"],
+              [0.5, "rgba(0,0,0,0)"],
               [1, "#22c55e"],
             ],
             zmin: -1,
@@ -838,12 +1026,17 @@ function CorrelationHeatmap({
         layout={{
           height: Math.max(400, limitedFeatures.length * 25),
           margin: { l: 120, r: 20, t: 20, b: 120 },
+          font: {
+            color: isDark ? "rgba(250,250,250,0.6)" : "rgba(0,0,0,0.6)",
+          },
           xaxis: {
             tickangle: -45,
             automargin: true,
+            gridcolor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
           },
           yaxis: {
             automargin: true,
+            gridcolor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
           },
           paper_bgcolor: "transparent",
           plot_bgcolor: "transparent",
