@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import {
   ChevronDown,
   ChevronLeft,
@@ -595,7 +595,6 @@ function FeatureDistributionPlots({
   isLoadingParquet,
   isTooLarge,
   isHugeDataset,
-  datasetId,
 }: {
   numericFeatures?: DatasetFeature[];
   nominalFeatures?: DatasetFeature[];
@@ -629,11 +628,6 @@ function FeatureDistributionPlots({
     (featurePage - 1) * FEATURES_PER_PAGE,
     featurePage * FEATURES_PER_PAGE,
   );
-
-  // Reset to page 1 when filter changes
-  useEffect(() => {
-    setFeaturePage(1);
-  }, [filterText]);
 
   // State for feature selection
   const [selectedFeatures, setSelectedFeatures] = useState<Set<number>>(() => {
@@ -699,7 +693,10 @@ function FeatureDistributionPlots({
             <Input
               placeholder="Filter features..."
               value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
+              onChange={(e) => {
+                setFilterText(e.target.value);
+                setFeaturePage(1);
+              }}
               className="h-8 max-w-xs"
             />
             <span className="text-muted-foreground text-xs">
@@ -908,15 +905,11 @@ function DistributionPlot({
             xaxis: {
               tickangle: isNumeric ? 0 : -45,
               automargin: true,
-              gridcolor: isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(0,0,0,0.1)",
+              gridcolor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
             },
             yaxis: {
               title: "Count",
-              gridcolor: isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(0,0,0,0.1)",
+              gridcolor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
             },
             bargap: 0.1,
             paper_bgcolor: "transparent",

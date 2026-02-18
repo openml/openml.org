@@ -227,12 +227,25 @@ export function DatasetHeader({
                 {tags.length} tags
               </button>
             </PopoverTrigger>
-            <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-              <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+            <PopoverContent
+              className="max-h-64 w-72 overflow-y-auto p-3"
+              align="start"
+            >
+              <p className="text-muted-foreground mb-2 text-xs font-medium">
+                All tags ({tags.length})
+              </p>
               <div className="flex flex-wrap gap-1.5">
                 {tags.map((tagObj, idx) => (
-                  <a key={`pop-xs-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                    <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                  <a
+                    key={`pop-xs-${tagObj.tag}-${idx}`}
+                    href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                    >
+                      {tagObj.tag}
+                    </Badge>
                   </a>
                 ))}
               </div>
@@ -244,7 +257,7 @@ export function DatasetHeader({
             {tags.slice(0, 3).map((tagObj, idx) => (
               <a
                 key={`sm-${tagObj.tag}-${idx}`}
-                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+                href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
               >
                 <Badge
                   variant="secondary"
@@ -261,12 +274,25 @@ export function DatasetHeader({
                     +{tags.length - 3} more
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                <PopoverContent
+                  className="max-h-64 w-72 overflow-y-auto p-3"
+                  align="start"
+                >
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">
+                    All tags ({tags.length})
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tagObj, idx) => (
-                      <a key={`pop-sm-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      <a
+                        key={`pop-sm-${tagObj.tag}-${idx}`}
+                        href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                      >
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                        >
+                          {tagObj.tag}
+                        </Badge>
                       </a>
                     ))}
                   </div>
@@ -280,7 +306,7 @@ export function DatasetHeader({
             {tags.slice(0, 6).map((tagObj, idx) => (
               <a
                 key={`md-${tagObj.tag}-${idx}`}
-                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+                href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
               >
                 <Badge
                   variant="secondary"
@@ -297,12 +323,25 @@ export function DatasetHeader({
                     +{tags.length - 6} more
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                <PopoverContent
+                  className="max-h-64 w-72 overflow-y-auto p-3"
+                  align="start"
+                >
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">
+                    All tags ({tags.length})
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tagObj, idx) => (
-                      <a key={`pop-md-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      <a
+                        key={`pop-md-${tagObj.tag}-${idx}`}
+                        href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                      >
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                        >
+                          {tagObj.tag}
+                        </Badge>
                       </a>
                     ))}
                   </div>
@@ -316,7 +355,7 @@ export function DatasetHeader({
             {tags.slice(0, 8).map((tagObj, idx) => (
               <a
                 key={`lg-${tagObj.tag}-${idx}`}
-                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+                href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
               >
                 <Badge
                   variant="secondary"
@@ -333,12 +372,25 @@ export function DatasetHeader({
                     +{tags.length - 8} more
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                <PopoverContent
+                  className="max-h-64 w-72 overflow-y-auto p-3"
+                  align="start"
+                >
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">
+                    All tags ({tags.length})
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tagObj, idx) => (
-                      <a key={`pop-lg-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      <a
+                        key={`pop-lg-${tagObj.tag}-${idx}`}
+                        href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                      >
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                        >
+                          {tagObj.tag}
+                        </Badge>
                       </a>
                     ))}
                   </div>
@@ -352,7 +404,7 @@ export function DatasetHeader({
             {tags.slice(0, 10).map((tagObj, idx) => (
               <a
                 key={`xl-${tagObj.tag}-${idx}`}
-                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+                href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
               >
                 <Badge
                   variant="secondary"
@@ -369,12 +421,25 @@ export function DatasetHeader({
                     +{tags.length - 10} more
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                <PopoverContent
+                  className="max-h-64 w-72 overflow-y-auto p-3"
+                  align="start"
+                >
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">
+                    All tags ({tags.length})
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tagObj, idx) => (
-                      <a key={`pop-xl-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      <a
+                        key={`pop-xl-${tagObj.tag}-${idx}`}
+                        href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                      >
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                        >
+                          {tagObj.tag}
+                        </Badge>
                       </a>
                     ))}
                   </div>
@@ -388,7 +453,7 @@ export function DatasetHeader({
             {tags.slice(0, 12).map((tagObj, idx) => (
               <a
                 key={`2xl-${tagObj.tag}-${idx}`}
-                href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}
+                href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
               >
                 <Badge
                   variant="secondary"
@@ -405,12 +470,25 @@ export function DatasetHeader({
                     +{tags.length - 12} more
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                  <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                <PopoverContent
+                  className="max-h-64 w-72 overflow-y-auto p-3"
+                  align="start"
+                >
+                  <p className="text-muted-foreground mb-2 text-xs font-medium">
+                    All tags ({tags.length})
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tagObj, idx) => (
-                      <a key={`pop-2xl-${tagObj.tag}-${idx}`} href={`/search?type=data&tags.tag=${encodeURIComponent(tagObj.tag)}`}>
-                        <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tagObj.tag}</Badge>
+                      <a
+                        key={`pop-2xl-${tagObj.tag}-${idx}`}
+                        href={`/datasets?tag=${encodeURIComponent(tagObj.tag)}`}
+                      >
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
+                        >
+                          {tagObj.tag}
+                        </Badge>
                       </a>
                     ))}
                   </div>

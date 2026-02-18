@@ -68,17 +68,32 @@ export function SearchContainer() {
   const driver = context?.driver;
   const query = searchParams.get("q") || "";
 
+  const tagFilter = searchParams.get("tag") || "";
+
   // 👇 Sync URL query → Search UI driver (Next.js is source of truth for URL)
   useEffect(() => {
     if (!driver) return;
 
     // Type assertion - these methods exist at runtime but types are incomplete
     const driverAny = driver as unknown as {
-      getState: () => { searchTerm?: string };
+      getState: () => {
+        searchTerm?: string;
+        filters?: Array<{ field: string; values: string[]; type: string }>;
+      };
       getActions: () => {
         setSearchTerm: (
           term: string,
           options?: { shouldClearFilters?: boolean },
+        ) => void;
+        addFilter: (
+          field: string,
+          value: string,
+          type?: string,
+        ) => void;
+        removeFilter: (
+          field: string,
+          value?: string,
+          type?: string,
         ) => void;
       };
     };
@@ -86,11 +101,22 @@ export function SearchContainer() {
     const currentTerm = driverAny.getState().searchTerm || "";
 
     // Only update if the term actually changed (prevents loops)
-    if (currentTerm === query) return;
+    if (currentTerm !== query) {
+      driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
+    }
 
-    // setSearchTerm from actions triggers search automatically
-    driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
-  }, [query, driver]);
+    // Apply tag filter from URL
+    if (tagFilter) {
+      const currentFilters = driverAny.getState().filters || [];
+      const existingTagFilter = currentFilters.find(
+        (f) => f.field === "tags.tag",
+      );
+      const hasTag = existingTagFilter?.values?.includes(tagFilter);
+      if (!hasTag) {
+        driverAny.getActions().addFilter("tags.tag", tagFilter, "any");
+      }
+    }
+  }, [query, tagFilter, driver]);
 
   return (
     <WithSearch
