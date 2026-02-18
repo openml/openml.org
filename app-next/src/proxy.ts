@@ -9,6 +9,11 @@ const intlMiddleware = createMiddleware(routing);
 export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
+  // Bypass middleware for direct API calls to the backend
+  if (pathname === "/api" || pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
   // Handle legacy /search redirects BEFORE locale processing
   if (pathname === "/search") {
     const type = searchParams.get("type");
