@@ -16,6 +16,7 @@ import {
   FileText,
   Target,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -439,7 +440,6 @@ export function DataAnalysisSection({
                   <CorrelationHeatmap
                     numericFeatures={numericFeatures}
                     parquetData={parquetState.data}
-                    isLoadingParquet={parquetState.isLoading}
                     datasetId={dataset.data_id}
                   />
                 </TabsContent>
@@ -815,8 +815,6 @@ function DistributionPlot({
   targetColors?: string[];
   dataUnavailable?: boolean;
 }) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
   const isNumeric = feature.type === "numeric";
 
   // Compute distribution from parquet data or use feature.distr
@@ -902,22 +900,11 @@ function DistributionPlot({
           layout={{
             height: 200,
             margin: { l: 40, r: 20, t: 10, b: 40 },
-            font: {
-              color: isDark ? "rgba(250,250,250,0.6)" : "rgba(0,0,0,0.6)",
-            },
             xaxis: {
               tickangle: isNumeric ? 0 : -45,
               automargin: true,
-              gridcolor: isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(0,0,0,0.1)",
             },
-            yaxis: {
-              title: "Count",
-              gridcolor: isDark
-                ? "rgba(255,255,255,0.1)"
-                : "rgba(0,0,0,0.1)",
-            },
+            yaxis: { title: "Count" },
             bargap: 0.1,
             paper_bgcolor: "transparent",
             plot_bgcolor: "transparent",
@@ -940,12 +927,10 @@ function DistributionPlot({
 function CorrelationHeatmap({
   numericFeatures,
   parquetData,
-  isLoadingParquet,
   datasetId,
 }: {
   numericFeatures: DatasetFeature[];
   parquetData: Record<string, (string | number | null)[]> | null;
-  isLoadingParquet?: boolean;
   datasetId?: number;
 }) {
   const { resolvedTheme } = useTheme();
@@ -991,19 +976,11 @@ function CorrelationHeatmap({
   }
 
   if (!parquetData) {
-    if (isLoadingParquet) {
-      return (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-          <span className="text-muted-foreground ml-2">Loading data...</span>
-        </div>
-      );
-    }
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-12">
-        <Database className="h-8 w-8 text-green-500" />
+        <AlertCircle className="h-8 w-8 text-amber-500" />
         <p className="text-muted-foreground text-sm">
-          Correlation data will be available soon.
+          Correlation requires real data. Load the parquet file to view.
         </p>
       </div>
     );
