@@ -15,14 +15,13 @@ interface DbUser {
   last_name: string | null;
   image: string | null;
   active: number;
-  session_hash: string | null;
 }
 
 interface OAuthDbUser {
   id: number;
   email: string;
   username: string;
-  session_hash: string | null;
+  session_hash?: string | null;
   first_name?: string | null;
   last_name?: string | null;
   image?: string | null;
@@ -69,8 +68,9 @@ export const authOptions: NextAuthOptions = {
           console.log("[Auth] Direct DB login for:", credentials.email);
 
           // Find user by email or username
+          // Query only columns guaranteed to exist in the legacy schema
           const user = await queryOne(
-            "SELECT id, username, email, password, first_name, last_name, image, active, session_hash FROM users WHERE email = ? OR username = ?",
+            "SELECT id, username, email, password, first_name, last_name, image, active FROM users WHERE email = ? OR username = ?",
             [credentials.email, credentials.email],
           );
 
@@ -100,6 +100,18 @@ export const authOptions: NextAuthOptions = {
 
           console.log("[Auth] Login successful for:", dbUser.username);
 
+          // Try to get session_hash (API key) if column exists
+          let sessionHash: string | null = null;
+          try {
+            const hashResult = await queryOne<{ session_hash: string | null }>(
+              "SELECT session_hash FROM users WHERE id = ?",
+              [dbUser.id],
+            );
+            sessionHash = hashResult?.session_hash || null;
+          } catch {
+            // session_hash column may not exist in all deployments
+          }
+
           // Return user object
           return {
             id: dbUser.id.toString(),
@@ -110,7 +122,7 @@ export const authOptions: NextAuthOptions = {
             image:
               dbUser.image && dbUser.image !== "0000" ? dbUser.image : null,
             username: dbUser.username,
-            session_hash: dbUser.session_hash,
+            session_hash: sessionHash,
           };
         } catch (error) {
           console.error("Login error:", error);
@@ -159,14 +171,14 @@ export const authOptions: NextAuthOptions = {
 
           // 1. Check if user exists by external ID
           let dbUser = await queryOne<OAuthDbUser>(
-            "SELECT id, email, username, session_hash, first_name, last_name, image FROM users WHERE external_source = ? AND external_id = ?",
+            "SELECT id, email, username, first_name, last_name, image FROM users WHERE external_source = ? AND external_id = ?",
             [account.provider, account.providerAccountId],
           );
 
           // 2. If not found, check by email
           if (!dbUser) {
             dbUser = await queryOne<OAuthDbUser>(
-              "SELECT id, email, username, session_hash, first_name, last_name, image FROM users WHERE email = ?",
+              "SELECT id, email, username, first_name, last_name, image FROM users WHERE email = ?",
               [email],
             );
 
@@ -205,13 +217,13 @@ export const authOptions: NextAuthOptions = {
 
               const result = await execute(
                 `INSERT INTO users (
-                  username, password, email, created_on, active, 
-                  first_name, last_name, company, country, bio, 
-                  external_source, external_id, session_hash, ip_address,
+                  username, password, email, created_on, active,
+                  first_name, last_name, company, country, bio,
+                  external_source, external_id, ip_address,
                   phone, image, core, forgotten_password_code, forgotten_password_time,
-                  remember_code, activation_selector, forgotten_password_selector, 
+                  remember_code, activation_selector, forgotten_password_selector,
                   remember_selector, activation_code, last_login
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                   username,
                   "oauth_no_password",
@@ -225,7 +237,6 @@ export const authOptions: NextAuthOptions = {
                   "OpenML user joined via " + account.provider,
                   account.provider,
                   account.providerAccountId,
-                  sessionHash,
                   "127.0.0.1", // ip_address
                   "0000", // phone
                   user.image || "0000", // image
@@ -247,6 +258,17 @@ export const authOptions: NextAuthOptions = {
                 console.error("Failed to get new user ID");
                 return false;
               }
+
+              // Try to set session_hash if column exists
+              try {
+                await execute(
+                  "UPDATE users SET session_hash = ? WHERE id = ?",
+                  [sessionHash, newId],
+                );
+              } catch {
+                // session_hash column may not exist
+              }
+
               dbUser = {
                 id: newId,
                 email,
@@ -276,7 +298,16 @@ export const authOptions: NextAuthOptions = {
           }
           user.id = String(dbUser.id);
           user.username = dbUser.username;
-          user.session_hash = dbUser.session_hash;
+          // Try to get session_hash (API key) if column exists
+          try {
+            const hashResult = await queryOne<{ session_hash: string | null }>(
+              "SELECT session_hash FROM users WHERE id = ?",
+              [dbUser.id],
+            );
+            user.session_hash = hashResult?.session_hash || null;
+          } catch {
+            user.session_hash = dbUser.session_hash || null;
+          }
           // Mark as local user (OAuth users don't exist on openml.org)
           (user as any).isLocalUser = true;
           return true;

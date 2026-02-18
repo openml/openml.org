@@ -23,37 +23,20 @@ The API key regeneration feature allows users to generate a new API key if their
 └──────────────────────────────────────────────────────────┘
 ```
 
-## Current Implementation
+## Database Schema
 
-### Frontend Component
+The API key is stored in the `users` table as `session_hash`:
 
-Location: `src/components/auth/profile-settings.tsx`
-
-```typescript
-const handleRegenerateApiKey = async () => {
-    // Calls Flask backend
-    const response = await fetch(`${apiUrl}/api-key/regenerate`, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    // Updates local state with new key
-};
+```sql
+-- session_hash column stores the API key (optional column, may not exist in all deployments)
+UPDATE users SET session_hash = ? WHERE id = ?
 ```
 
-### Flask Endpoint (Still Required)
-
-The Flask backend handles:
-
-1. Validating the JWT token
-2. Generating a new `session_hash`
-3. Updating the database
-4. Returning the new API key
+**Note:** The `session_hash` column is queried separately with a try/catch in the auth system, so it works even if the column doesn't exist.
 
 ## Migration to Direct Database
 
-To remove Flask dependency, create a new API route:
+To remove the Flask dependency, create a new API route:
 
 ### Proposed: `/api/user/api-key/regenerate`
 
@@ -81,7 +64,7 @@ export async function POST(request: NextRequest) {
         // Generate new API key (same format as Flask)
         const newApiKey = crypto.randomBytes(32).toString('hex');
 
-        // Update database
+        // Update database (will fail silently if session_hash column doesn't exist)
         await execute('UPDATE users SET session_hash = ? WHERE id = ?', [
             newApiKey,
             userId,
@@ -101,42 +84,14 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-### Update Frontend
-
-```typescript
-// In profile-settings.tsx
-const handleRegenerateApiKey = async () => {
-    // Use new direct endpoint instead of Flask
-    const response = await fetch('/api/user/api-key/regenerate', {
-        method: 'POST',
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        setApiKey(data.apiKey);
-        // Also update session
-        await update({ apikey: data.apiKey });
-    }
-};
-```
-
-## Database Schema
-
-The API key is stored in the `users` table:
-
-```sql
--- session_hash column stores the API key
-UPDATE users SET session_hash = ? WHERE id = ?
-```
-
 ## Environment Requirements
 
-| Environment                      | Regeneration Works? | Reason                                |
-| -------------------------------- | ------------------- | ------------------------------------- |
-| Local (SQLite)                   | ❌ (Flask needed)   | Current implementation requires Flask |
-| Local (after migration)          | ✅                  | Direct database update                |
-| Vercel + MySQL                   | ❌ (Flask needed)   | Current implementation requires Flask |
-| Vercel + MySQL (after migration) | ✅                  | Direct database update                |
+| Environment | Regeneration Works? | Reason |
+| --- | --- | --- |
+| Local (Docker MySQL) | ❌ (Flask needed) | Current implementation requires Flask |
+| Local (after migration) | ✅ | Direct database update |
+| Vercel + MySQL | ❌ (Flask needed) | Current implementation requires Flask |
+| Vercel + MySQL (after migration) | ✅ | Direct database update |
 
 ## Security Considerations
 
@@ -145,39 +100,11 @@ UPDATE users SET session_hash = ? WHERE id = ?
 3. **Session Update**: New key should be updated in NextAuth session
 4. **Confirmation Dialog**: User must confirm before regeneration
 
-## Files Involved
-
-| File                                           | Purpose                                    |
-| ---------------------------------------------- | ------------------------------------------ |
-| `src/components/auth/profile-settings.tsx`     | UI component with regenerate button        |
-| `src/app/api/user/api-key/route.ts`            | GET endpoint (view key)                    |
-| `src/app/api/user/api-key/regenerate/route.ts` | POST endpoint (regenerate) - TO BE CREATED |
-
-## Testing
-
-### Before Migration (Flask Required)
-
-1. Start Flask backend: `docker run -d -p 8000:5000 openmlorg-backend`
-2. Sign in to the app
-3. Go to Profile Settings → API Key tab
-4. Click "Regenerate API Key"
-5. Confirm the action
-6. Verify new key is displayed
-
-### After Migration
-
-1. Sign in to the app
-2. Go to Profile Settings → API Key tab
-3. Click "Regenerate API Key"
-4. Confirm the action
-5. Verify new key is displayed
-6. Verify likes still work with new key
-
 ## Migration Checklist
 
 - [ ] Create `/api/user/api-key/regenerate/route.ts`
 - [ ] Update `profile-settings.tsx` to use new endpoint
 - [ ] Update NextAuth session with new API key
-- [ ] Test locally with SQLite
+- [ ] Test locally with Docker MySQL
 - [ ] Test on Vercel with MySQL
 - [ ] Remove Flask proxy fallback

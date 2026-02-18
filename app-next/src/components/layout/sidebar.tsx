@@ -25,8 +25,10 @@ import Image from "next/image";
 import { useSidebar } from "@/contexts/sidebar-context";
 
 // Helper to check if a string is a valid URL
-const isValidUrl = (url: string | undefined | null): boolean => {
+const isValidImageSrc = (url: string | undefined | null): boolean => {
   if (!url || typeof url !== "string" || url.trim() === "") return false;
+  // Accept relative paths (local dev avatars) and absolute URLs (Vercel Blob, OAuth)
+  if (url.startsWith("/")) return true;
   try {
     new URL(url);
     return true;
@@ -178,7 +180,7 @@ export function Sidebar() {
                 {user && (
                   <div className="flex items-center gap-3 rounded-lg bg-slate-700/30 p-3">
                     <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500">
-                      {isValidUrl(user.avatar) ? (
+                      {isValidImageSrc(user.avatar) ? (
                         <Image
                           src={user.avatar}
                           alt={user.name}

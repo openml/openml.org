@@ -326,9 +326,27 @@ class OpenMLSearchConnector implements APIConnector {
       };
 
       // Wrap all source fields in { raw: value } format
-      Object.entries(hit._source).forEach(([key, value]) => {
-        formattedResult[key] = { raw: value };
-      });
+      // Flatten nested objects with dot-notation keys (e.g., qualities.NumberOfInstances)
+      const flattenSource = (
+        obj: Record<string, unknown>,
+        prefix = "",
+      ) => {
+        Object.entries(obj).forEach(([key, value]) => {
+          const fullKey = prefix ? `${prefix}.${key}` : key;
+          if (
+            value !== null &&
+            typeof value === "object" &&
+            !Array.isArray(value)
+          ) {
+            // Also store the parent object as-is for components that use nested access
+            formattedResult[fullKey] = { raw: value };
+            flattenSource(value as Record<string, unknown>, fullKey);
+          } else {
+            formattedResult[fullKey] = { raw: value };
+          }
+        });
+      };
+      flattenSource(hit._source);
 
       return formattedResult;
     });

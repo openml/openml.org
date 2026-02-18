@@ -11,6 +11,11 @@ import { ControlsBar } from "../shared/controls-bar";
 import { ResultCard } from "./result-card";
 import { parseDescription } from "../teaser";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { truncateName } from "@/lib/utils";
 import { entityColors } from "@/constants/entityColors";
 import {
@@ -194,59 +199,64 @@ export function SearchContainer() {
                                   }
                                 </p>
                                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                                  <span
-                                    className="flex items-center gap-1.5"
-                                    title="runs"
-                                  >
-                                    <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                                    {result.runs?.raw?.toLocaleString() || 0}
-                                  </span>
-                                  <span
-                                    className="flex items-center gap-1.5"
-                                    title="likes"
-                                  >
-                                    <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-                                    {result.nr_of_likes?.raw || 0}
-                                  </span>
-                                  <span
-                                    className="flex items-center gap-1.5"
-                                    title="downloads"
-                                  >
-                                    <CloudDownload className="h-4 w-4 text-blue-500" />
-                                    {result.nr_of_downloads?.raw || 0}
-                                  </span>
-                                  <span
-                                    className="flex items-center gap-1.5"
-                                    title="instances (rows)"
-                                  >
-                                    <BarChart3 className="h-4 w-4 text-gray-500" />
-                                    {result[
-                                      "qualities.NumberOfInstances"
-                                    ]?.raw?.toLocaleString() || "N/A"}
-                                  </span>
-                                  <span
-                                    className="flex items-center gap-1.5"
-                                    title="features (columns)"
-                                  >
-                                    <BarChart3 className="h-4 w-4 rotate-90 text-gray-500" />
-                                    {result["qualities.NumberOfFeatures"]
-                                      ?.raw || "N/A"}
-                                  </span>
-                                  <span
-                                    className="text-muted-foreground flex items-center gap-1.5"
-                                    title="date"
-                                  >
-                                    <Clock className="h-4 w-4" />
-                                    {result.date?.raw
-                                      ? new Date(
-                                          result.date.raw,
-                                        ).toLocaleDateString("en-US", {
-                                          year: "numeric",
-                                          month: "short",
-                                          day: "numeric",
-                                        })
-                                      : "N/A"}
-                                  </span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="flex items-center gap-1.5">
+                                        <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                                        {result.runs?.raw?.toLocaleString() || 0}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Runs</TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="flex items-center gap-1.5">
+                                        <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
+                                        {result.nr_of_likes?.raw || 0}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Likes</TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="flex items-center gap-1.5">
+                                        <CloudDownload className="h-4 w-4 text-blue-500" />
+                                        {result.nr_of_downloads?.raw || 0}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Downloads</TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="flex items-center gap-1.5">
+                                        <BarChart3 className="h-4 w-4 text-gray-500" />
+                                        {result[
+                                          "qualities.NumberOfInstances"
+                                        ]?.raw?.toLocaleString() || "N/A"}
+                                        {" x "}
+                                        {result["qualities.NumberOfFeatures"]
+                                          ?.raw || "N/A"}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Dimensions (rows x columns)</TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="text-muted-foreground flex items-center gap-1.5">
+                                        <Clock className="h-4 w-4" />
+                                        {result.date?.raw
+                                          ? new Date(
+                                              result.date.raw,
+                                            ).toLocaleDateString("en-US", {
+                                              year: "numeric",
+                                              month: "short",
+                                              day: "numeric",
+                                            })
+                                          : "N/A"}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Upload date</TooltipContent>
+                                  </Tooltip>
                                 </div>
                               </div>
                               <Badge

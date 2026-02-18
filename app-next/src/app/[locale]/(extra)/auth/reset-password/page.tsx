@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { CheckCircle, XCircle, Loader2, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/card";
 
 function ResetPasswordContent() {
+  const t = useTranslations("auth.resetPassword");
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -30,12 +32,12 @@ function ResetPasswordContent() {
     e.preventDefault();
 
     if (password.length < 8) {
-      setMessage("Password must be at least 8 characters");
+      setMessage(t("passwordMinLength"));
       return;
     }
 
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
+      setMessage(t("passwordsMismatch"));
       return;
     }
 
@@ -57,11 +59,11 @@ function ResetPasswordContent() {
         setTimeout(() => router.push("/auth/sign-in"), 3000);
       } else {
         setStatus("error");
-        setMessage(data.message || "Failed to reset password");
+        setMessage(data.message || t("failedToReset"));
       }
     } catch {
       setStatus("error");
-      setMessage("An error occurred. Please try again.");
+      setMessage(t("unexpectedError"));
     }
   };
 
@@ -73,14 +75,14 @@ function ResetPasswordContent() {
             <div className="mb-4 flex justify-center">
               <XCircle className="h-16 w-16 text-red-500" />
             </div>
-            <CardTitle className="text-2xl">Invalid Link</CardTitle>
+            <CardTitle className="text-2xl">{t("invalidLink")}</CardTitle>
             <CardDescription className="mt-2">
-              {message || "No reset token was found"}
+              {message || t("noToken")}
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button asChild className="w-full">
-              <Link href="/auth/forgot-password">Request New Reset Link</Link>
+              <Link href="/auth/forgot-password">{t("requestNewLink")}</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -96,17 +98,17 @@ function ResetPasswordContent() {
             <div className="mb-4 flex justify-center">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
-            <CardTitle className="text-2xl">Password Reset!</CardTitle>
+            <CardTitle className="text-2xl">{t("success")}</CardTitle>
             <CardDescription className="mt-2">{message}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-center text-sm text-muted-foreground">
-              Redirecting to sign in page...
+              {t("redirecting")}
             </p>
           </CardContent>
           <CardFooter>
             <Button asChild className="w-full">
-              <Link href="/auth/sign-in">Sign In Now</Link>
+              <Link href="/auth/sign-in">{t("signInNow")}</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -123,9 +125,9 @@ function ResetPasswordContent() {
               <Lock className="h-8 w-8 text-blue-500" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Reset Your Password</CardTitle>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription className="mt-2">
-            Enter your new password below
+            {t("subtitle")}
           </CardDescription>
         </CardHeader>
 
@@ -139,13 +141,13 @@ function ResetPasswordContent() {
 
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                New Password
+                {t("newPasswordLabel")}
               </label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter new password"
+                  placeholder={t("newPasswordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -166,19 +168,19 @@ function ResetPasswordContent() {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Must be at least 8 characters
+                {t("newPasswordHint")}
               </p>
             </div>
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="text-sm font-medium">
-                Confirm Password
+                {t("confirmPasswordLabel")}
               </label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm new password"
+                  placeholder={t("confirmPasswordPlaceholder")}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -210,15 +212,15 @@ function ResetPasswordContent() {
               {status === "loading" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Resetting Password...
+                  {t("resettingPassword")}
                 </>
               ) : (
-                "Reset Password"
+                t("resetButton")
               )}
             </Button>
 
             <Button asChild variant="ghost" className="w-full">
-              <Link href="/auth/sign-in">Back to Sign In</Link>
+              <Link href="/auth/sign-in">{t("backToSignIn")}</Link>
             </Button>
           </CardFooter>
         </form>
@@ -228,6 +230,7 @@ function ResetPasswordContent() {
 }
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("auth.resetPassword");
   return (
     <Suspense
       fallback={
@@ -237,7 +240,7 @@ export default function ResetPasswordPage() {
               <div className="mb-4 flex justify-center">
                 <Loader2 className="h-16 w-16 animate-spin text-blue-500" />
               </div>
-              <CardTitle className="text-2xl">Loading...</CardTitle>
+              <CardTitle className="text-2xl">{t("loading")}</CardTitle>
             </CardHeader>
           </Card>
         </div>

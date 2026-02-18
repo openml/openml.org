@@ -248,18 +248,14 @@ export function ProfileSettings() {
     try {
       setIsUploading(true);
 
-      // Get JWT token from NextAuth session or localStorage fallback
-      const token =
-        (session as any)?.accessToken || localStorage.getItem("access_token");
-
-      if (!token) {
+      if (!session?.user) {
         throw new Error("Not authenticated. Please log in again.");
       }
 
       const formData = new FormData();
       formData.append("file", file);
 
-      // Use direct Next.js API route
+      // Use direct Next.js API route (auth handled server-side via NextAuth session)
       const uploadEndpoint = "/api/user/avatar";
 
       const response = await fetch(uploadEndpoint, {
@@ -337,14 +333,11 @@ export function ProfileSettings() {
     try {
       setIsSaving(true);
 
-      // Get JWT token from NextAuth session or localStorage fallback
-      const token =
-        (session as any)?.accessToken || localStorage.getItem("access_token");
-      if (!token) {
+      if (!session?.user) {
         throw new Error("Not authenticated. Please log in again.");
       }
 
-      // Use direct Next.js API route
+      // Use direct Next.js API route (auth handled server-side via NextAuth session)
       const response = await fetch("/api/user/profile", {
         method: "POST",
         headers: {

@@ -15,6 +15,11 @@ import {
   Play,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { LikeButton } from "@/components/ui/like-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -182,9 +187,23 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
                     </Link>
                   ))}
                   {tags.length > 10 && (
-                    <span className="text-muted-foreground text-xs font-medium">
-                      +{tags.length - 10} more
-                    </span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs font-medium transition-colors">
+                          +{tags.length - 10} more
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
+                        <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {tags.map((tag, idx) => (
+                            <Link key={`pop-${tag}-${idx}`} href={`/search?type=flow&tag=${encodeURIComponent(tag)}`}>
+                              <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tag}</Badge>
+                            </Link>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   )}
                 </div>
               </div>

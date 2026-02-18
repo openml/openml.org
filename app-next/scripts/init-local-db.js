@@ -55,6 +55,7 @@ async function initDatabase() {
         forgotten_password_time VARCHAR(40),
         remember_code VARCHAR(40),
         remember_selector VARCHAR(40),
+        session_hash VARCHAR(255),
         INDEX idx_email (email),
         INDEX idx_username (username),
         INDEX idx_activation_code (activation_code)

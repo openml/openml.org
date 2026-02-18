@@ -37,7 +37,7 @@ export default function SignUpForm() {
       );
       const data = await res.json();
       if (data.exists) {
-        setEmailError("This email is already registered");
+        setEmailError(t("signUp.emailAlreadyRegistered"));
       } else {
         setEmailError("");
       }
@@ -52,31 +52,26 @@ export default function SignUpForm() {
     setError("");
     setSuccess("");
 
-    // Client-side validation
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
-      setError("First name and last name are required");
+      setError(t("signUp.nameRequired"));
       setIsLoading(false);
       return;
     }
 
     if (!formData.email.trim()) {
-      setError("Email is required");
+      setError(t("signUp.emailRequired"));
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("signUp.passwordMinLength"));
       setIsLoading(false);
       return;
     }
 
     try {
-      // Use direct Next.js API route
-      const registerUrl = "/api/auth/register";
-
-      // Call Next.js sign-up endpoint
-      const res = await fetch(registerUrl, {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -90,7 +85,6 @@ export default function SignUpForm() {
       const data = await res.json();
 
       if (res.ok) {
-        // Auto sign-in after successful registration
         const result = await signIn("credentials", {
           email: formData.email,
           password: formData.password,
@@ -101,15 +95,13 @@ export default function SignUpForm() {
           router.push("/dashboard");
           router.refresh();
         } else {
-          setSuccess(
-            "Account created! Please check your email to confirm your account before signing in.",
-          );
+          setSuccess(t("signUp.accountCreated"));
         }
       } else {
-        setError(data.message || "Registration failed");
+        setError(data.message || t("signUp.registrationFailed"));
       }
     } catch (err) {
-      setError("An error occurred during registration");
+      setError(t("signUp.registrationError"));
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +114,7 @@ export default function SignUpForm() {
     try {
       await signIn(provider, { callbackUrl: "/dashboard" });
     } catch (err) {
-      setError("OAuth sign up failed");
+      setError(t("signUp.oauthError"));
       setIsLoading(false);
     }
   };
@@ -136,9 +128,7 @@ export default function SignUpForm() {
       !formData.lastName.trim() ||
       !formData.email.trim()
     ) {
-      setError(
-        "Please fill in your name and email before using Passkey sign up",
-      );
+      setError(t("signUp.passkeyFieldsRequired"));
       setIsLoading(false);
       return;
     }
@@ -150,7 +140,6 @@ export default function SignUpForm() {
     }
 
     try {
-      // 1. Get Registration Options
       const optionsRes = await fetch("/api/auth/passkey/signup-options", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,16 +153,14 @@ export default function SignUpForm() {
       const options = await optionsRes.json();
       if (!optionsRes.ok) {
         if (options.error === "Email already registered") {
-          setEmailError("This email is already registered");
-          throw new Error("This email is already registered");
+          setEmailError(t("signUp.emailAlreadyRegistered"));
+          throw new Error(t("signUp.emailAlreadyRegistered"));
         }
         throw new Error(options.error || "Failed to get options");
       }
 
-      // 2. Start WebAuthn Registration
       const attestation = await startRegistration(options);
 
-      // 3. Verify Registration
       const verifyRes = await fetch("/api/auth/passkey/signup-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -188,7 +175,6 @@ export default function SignUpForm() {
       if (!verifyRes.ok)
         throw new Error(verification.error || "Verification failed");
 
-      // 4. Auto Sign-in
       const result = await signIn("passkey", {
         credential: JSON.stringify(verification),
         redirect: false,
@@ -202,10 +188,7 @@ export default function SignUpForm() {
       }
     } catch (err: any) {
       console.error("Passkey Sign-up error:", err);
-      setError(
-        err.message ||
-          "Passkey registration failed. Please try a different method.",
-      );
+      setError(err.message || t("signUp.passkeyError"));
     } finally {
       setIsLoading(false);
     }
@@ -217,7 +200,7 @@ export default function SignUpForm() {
       <div className="space-y-4">
         <div className="group relative">
           <Badge className="absolute -top-2.5 right-4 z-10 border-0 bg-slate-500 px-2 py-0 text-[10px] text-white">
-            RECOMMENDED
+            {t("recommended")}
           </Badge>
           <Button
             type="button"
@@ -226,10 +209,10 @@ export default function SignUpForm() {
             disabled={isLoading || !!emailError}
           >
             <Fingerprint className="mr-2 h-5 w-5" />
-            Sign up with FaceID or Fingerprint
+            {t("signUp.passkeyLabel")}
           </Button>
           <p className="mt-1.5 text-center text-[10px] font-medium text-slate-500 opacity-70 dark:text-slate-400">
-            No password required for biometric sign up
+            {t("signUp.passkeyHint")}
           </p>
         </div>
 
@@ -265,7 +248,7 @@ export default function SignUpForm() {
         </div>
         <div className="relative flex justify-center text-xs">
           <span className="bg-card px-4 font-medium tracking-wider text-slate-500 uppercase dark:text-slate-400">
-            or sign up with email
+            {t("signUp.orWithEmail")}
           </span>
         </div>
       </div>
@@ -275,7 +258,7 @@ export default function SignUpForm() {
         <div className="grid grid-cols-2 gap-3">
           <FloatingInput
             id="firstName"
-            label="First name"
+            label={t("signUp.firstNameLabel")}
             type="text"
             value={formData.firstName}
             onChange={(e) =>
@@ -286,7 +269,7 @@ export default function SignUpForm() {
           />
           <FloatingInput
             id="lastName"
-            label="Family name"
+            label={t("signUp.lastNameLabel")}
             type="text"
             value={formData.lastName}
             onChange={(e) =>
@@ -299,7 +282,7 @@ export default function SignUpForm() {
 
         <FloatingInput
           id="email"
-          label="Email address"
+          label={t("signUp.emailLabel")}
           type="email"
           value={formData.email}
           onChange={(e) => {
@@ -315,12 +298,12 @@ export default function SignUpForm() {
         <div className="relative">
           <div className="bg-card absolute -top-2 right-2 z-10 px-1">
             <span className="text-[9px] font-bold tracking-tight text-slate-400 uppercase dark:text-slate-500">
-              Only for email sign up
+              {t("signUp.passwordHint")}
             </span>
           </div>
           <FloatingInput
             id="password"
-            label="Password (min 8 characters)"
+            label={t("signUp.passwordLabel")}
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={(e) =>
@@ -370,7 +353,7 @@ export default function SignUpForm() {
           className="h-11 w-full bg-slate-600 font-semibold text-white transition-all hover:bg-slate-500"
           disabled={isLoading}
         >
-          {isLoading ? "Creating account..." : "Create Account"}
+          {isLoading ? t("signUp.creatingAccount") : t("signUp.createAccount")}
         </Button>
       </form>
 
@@ -378,19 +361,19 @@ export default function SignUpForm() {
       <div className="space-y-4 pt-2">
         <p className="flex items-center justify-center gap-1.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400">
           <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-          By joining, you agree to our Terms of Use
+          {t("signUp.termsNotice")}
           <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
         </p>
 
         <div className="text-center text-sm">
           <span className="text-slate-500 dark:text-slate-400">
-            Already have an account?{" "}
+            {t("signUp.hasAccount")}{" "}
           </span>
           <Link
             href={`/${locale}/auth/sign-in`}
             className="font-semibold text-slate-700 decoration-2 underline-offset-4 hover:underline dark:text-white"
           >
-            Sign in
+            {t("signUp.signInLink")}
           </Link>
         </div>
       </div>
