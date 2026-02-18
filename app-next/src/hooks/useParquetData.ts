@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { tableFromIPC, Table } from "apache-arrow";
 
-// Maximum file size to load in browser (5MB)
-const MAX_PARQUET_SIZE = 5 * 1024 * 1024;
+// Maximum file size to load in browser (10MB)
+const MAX_PARQUET_SIZE = 10 * 1024 * 1024;
 
 // Maximum rows to process for visualizations
 const MAX_ROWS = 10000;
@@ -313,12 +313,12 @@ export function useParquetData(
           // Read parquet using parquet-wasm
           const parquetBytes = new Uint8Array(arrayBuffer);
 
-          // readParquet returns Arrow IPC bytes (Uint8Array)
-          // We need to convert it to an Arrow Table using tableFromIPC
-          const ipcBytes = parquetModule.readParquet(parquetBytes);
+          // readParquet returns a parquet-wasm Table, convert to Arrow IPC stream
+          const wasmTable = parquetModule.readParquet(parquetBytes);
+          const ipcStream = wasmTable.intoIPCStream();
 
-          // Parse the Arrow IPC bytes into a Table
-          const table: Table = tableFromIPC(ipcBytes);
+          // Parse the Arrow IPC stream into an apache-arrow Table
+          const table: Table = tableFromIPC(ipcStream);
 
           // Extract column names
           const columns = table.schema.fields.map((f) => f.name);
@@ -364,6 +364,7 @@ export function useParquetData(
           }
         }
       } catch (err) {
+        console.error("Parquet loading failed:", err);
         if (cancelled) return;
 
         // Try ARFF as fallback
