@@ -96,7 +96,7 @@ export function DataAnalysisSection({
   );
 
   // Try stats API first (faster, works for all sizes)
-  const statsState = useDatasetStats(dataset.data_id, 100, !isHugeDataset);
+  const statsState = useDatasetStats(dataset.data_id, 100, true);
 
   // Fullscreen toggle handler
   const toggleFullscreen = useCallback(async () => {
