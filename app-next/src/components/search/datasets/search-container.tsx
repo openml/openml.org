@@ -68,29 +68,49 @@ export function SearchContainer() {
   const driver = context?.driver;
   const query = searchParams.get("q") || "";
 
+  const tagFilter = searchParams.get("tag") || "";
+
   // 👇 Sync URL query → Search UI driver (Next.js is source of truth for URL)
   useEffect(() => {
     if (!driver) return;
 
     // Type assertion - these methods exist at runtime but types are incomplete
     const driverAny = driver as unknown as {
-      getState: () => { searchTerm?: string };
+      getState: () => {
+        searchTerm?: string;
+        filters?: Array<{ field: string; values: string[]; type: string }>;
+      };
       getActions: () => {
         setSearchTerm: (
           term: string,
           options?: { shouldClearFilters?: boolean },
         ) => void;
+        addFilter: (field: string, value: string, type?: string) => void;
+        removeFilter: (field: string, value?: string, type?: string) => void;
       };
     };
 
     const currentTerm = driverAny.getState().searchTerm || "";
 
     // Only update if the term actually changed (prevents loops)
-    if (currentTerm === query) return;
+    if (currentTerm !== query) {
+      driverAny
+        .getActions()
+        .setSearchTerm(query, { shouldClearFilters: false });
+    }
 
-    // setSearchTerm from actions triggers search automatically
-    driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
-  }, [query, driver]);
+    // Apply tag filter from URL
+    if (tagFilter) {
+      const currentFilters = driverAny.getState().filters || [];
+      const existingTagFilter = currentFilters.find(
+        (f) => f.field === "tags.tag",
+      );
+      const hasTag = existingTagFilter?.values?.includes(tagFilter);
+      if (!hasTag) {
+        driverAny.getActions().addFilter("tags.tag", tagFilter, "any");
+      }
+    }
+  }, [query, tagFilter, driver]);
 
   return (
     <WithSearch
@@ -182,7 +202,9 @@ export function SearchContainer() {
                                   </svg>
                                   <div className="flex items-baseline gap-2">
                                     <h3 className="text-base font-semibold">
-                                      {truncateName(result.name?.raw || "Untitled")}
+                                      {truncateName(
+                                        result.name?.raw || "Untitled",
+                                      )}
                                     </h3>
                                     <span className="text-primary text-xs">
                                       v.{result.version?.raw || 1} ✓
@@ -203,7 +225,8 @@ export function SearchContainer() {
                                     <TooltipTrigger asChild>
                                       <span className="flex items-center gap-1.5">
                                         <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                                        {result.runs?.raw?.toLocaleString() || 0}
+                                        {result.runs?.raw?.toLocaleString() ||
+                                          0}
                                       </span>
                                     </TooltipTrigger>
                                     <TooltipContent>Runs</TooltipContent>
@@ -238,7 +261,9 @@ export function SearchContainer() {
                                           ?.raw || "N/A"}
                                       </span>
                                     </TooltipTrigger>
-                                    <TooltipContent>Dimensions (rows x columns)</TooltipContent>
+                                    <TooltipContent>
+                                      Dimensions (rows x columns)
+                                    </TooltipContent>
                                   </Tooltip>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
@@ -362,7 +387,9 @@ export function SearchContainer() {
                                         />
                                       </svg>
                                       <h4 className="line-clamp-1 text-sm font-semibold">
-                                        {truncateName(result.name?.raw || "Untitled")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled",
+                                        )}
                                       </h4>
                                     </div>
                                     {/* Stats + Metadata badges on same line */}
@@ -448,7 +475,9 @@ export function SearchContainer() {
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-xl font-bold">
-                                    {truncateName(selectedDataset.name?.raw || "Untitled")}
+                                    {truncateName(
+                                      selectedDataset.name?.raw || "Untitled",
+                                    )}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedDataset.version?.raw || 1} ✓

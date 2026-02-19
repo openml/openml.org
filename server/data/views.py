@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -13,6 +14,12 @@ from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from server.setup import setup_openml_config
+from server.src.dashboard.caching import (
+    CACHE_DIR_DASHBOARD,
+    load_cached_stats,
+    save_stats_cache,
+)
+from server.src.dashboard.helpers import compute_dataset_stats
 from server.utils import current_user
 
 data_blueprint = Blueprint(
@@ -243,4 +250,66 @@ def data_tag():
 
     dataset = openml.datasets.get_dataset(dataset_id)
     dataset.push_tag(tag)
+
+
+@data_blueprint.route("/api/v1/datasets/<int:dataset_id>/stats", methods=["GET"])
+def get_dataset_stats(dataset_id):
+    """
+    Returns JSON statistics for a dataset.
+
+    Query params:
+    - max_preview_rows (int, default=100): Max rows in preview
+    - force_refresh (bool, default=False): Skip cache, recompute
+
+    Returns:
+    {
+      "dataset_id": int,
+      "computed_at": str (ISO timestamp),
+      "cached": bool,
+      "statistics": {
+        "distribution": {...},
+        "correlation": {...},
+        "preview": {...}
+      }
+    }
+    """
+    try:
+        max_preview = request.args.get('max_preview_rows', 100, type=int)
+        force_refresh = request.args.get('force_refresh', False, type=bool)
+
+        # Try loading from JSON cache first
+        if not force_refresh:
+            cached_stats = load_cached_stats(dataset_id)
+            if cached_stats is not None:
+                # Validate cache has expected max_preview_rows
+                current_preview_rows = len(cached_stats.get("preview", {}).get("rows", []))
+                if current_preview_rows >= max_preview:
+                    # Cache is valid, return it
+                    return jsonify({
+                        "dataset_id": dataset_id,
+                        "computed_at": datetime.utcnow().isoformat() + "Z",
+                        "cached": True,
+                        "statistics": cached_stats
+                    }), 200
+
+        # Cache miss or force refresh - compute stats
+        stats = compute_dataset_stats(dataset_id, max_preview_rows=max_preview)
+
+        # Save to JSON cache
+        save_stats_cache(dataset_id, stats)
+
+        return jsonify({
+            "dataset_id": dataset_id,
+            "computed_at": datetime.utcnow().isoformat() + "Z",
+            "cached": False,
+            "statistics": stats
+        }), 200
+
+    except Exception as e:
+        # Log the error for debugging
+        import logging
+        logger = logging.getLogger("data")
+        logger.error(f"Error computing stats for dataset {dataset_id}: {str(e)}", exc_info=True)
+
+        return jsonify({"error": str(e)}), 500
 
