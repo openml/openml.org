@@ -201,3 +201,108 @@ def bin_numeric(df, column_name, output_name):
     df[output_name] = df[output_name].str.replace("(", "")
     df[output_name] = df[output_name].str.replace("]", "")
     return df
+
+
+def compute_dataset_stats(data_id, max_preview_rows=100):
+    """
+    Compute statistics for a dataset.
+
+    Args:
+        data_id: OpenML dataset ID
+        max_preview_rows: Maximum rows to include in preview (default: 100)
+
+    Returns:
+        Dictionary containing:
+        - distribution: Per-feature distribution data (histograms for numeric, counts for nominal)
+        - correlation: Correlation matrix for numeric features
+        - preview: First N rows of the dataset
+    """
+    logger.debug(f"Computing stats for dataset {data_id}")
+    start = time.time()
+
+    # Load data (uses existing caching)
+    df, meta_features, numerical_features, nominal_features = get_data_metadata(data_id)
+
+    # Clean dataset
+    df = clean_dataset(df)
+
+    # Compute distributions
+    distributions = {}
+    for col in df.columns:
+        if col in numerical_features:
+            # Numeric distribution: histogram with 20 bins
+            clean_col = df[col].dropna()
+            if len(clean_col) > 0:
+                hist, bin_edges = np.histogram(clean_col, bins=20)
+                distributions[col] = {
+                    "type": "numeric",
+                    "bins": bin_edges.tolist(),
+                    "counts": hist.tolist(),
+                    "mean": float(df[col].mean()),
+                    "std": float(df[col].std()),
+                    "min": float(df[col].min()),
+                    "max": float(df[col].max()),
+                    "missing": int(df[col].isna().sum())
+                }
+            else:
+                # All values are missing
+                distributions[col] = {
+                    "type": "numeric",
+                    "bins": [],
+                    "counts": [],
+                    "mean": None,
+                    "std": None,
+                    "min": None,
+                    "max": None,
+                    "missing": len(df)
+                }
+        else:
+            # Nominal distribution: category counts
+            counts = df[col].value_counts()
+            distributions[col] = {
+                "type": "nominal",
+                "categories": counts.index.tolist(),
+                "counts": counts.values.tolist(),
+                "missing": int(df[col].isna().sum())
+            }
+
+    # Compute correlation (numeric features only)
+    correlation = None
+    if numerical_features and len(numerical_features) > 0:
+        numeric_df = df[numerical_features]
+        # Remove columns with all NaN or constant values
+        numeric_df = numeric_df.loc[:, numeric_df.std() > 0]
+        if len(numeric_df.columns) > 1:
+            corr_matrix = numeric_df.corr()
+            correlation = {
+                "features": corr_matrix.columns.tolist(),
+                "matrix": corr_matrix.values.tolist()
+            }
+
+    # Generate preview
+    preview_df = df.head(max_preview_rows)
+    # Convert to list of lists, handling NaN values
+    rows = []
+    for _, row in preview_df.iterrows():
+        row_list = []
+        for val in row:
+            if pd.isna(val):
+                row_list.append(None)
+            else:
+                row_list.append(val)
+        rows.append(row_list)
+
+    preview = {
+        "columns": preview_df.columns.tolist(),
+        "rows": rows,
+        "total_rows": len(df)
+    }
+
+    end = time.time()
+    logger.debug(f"Stats computation took {end - start:.2f}s for dataset {data_id}")
+
+    return {
+        "distribution": distributions,
+        "correlation": correlation,
+        "preview": preview
+    }
