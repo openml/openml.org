@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: openml-backend-dev
+    namespace: openml-dev
+    labels:
+        app: openml-backend
+        environment: development
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: openml-backend
+            environment: development
+    template:
+        metadata:
+            labels:
+                app: openml-backend
+                environment: development
+        spec:
+            containers:
+                - name: flask
+                  image: openml-flask:latest # Update with your registry: your-registry/openml-flask:v1.0.0
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 5000
+                        name: http
+                        protocol: TCP
+
+                  # Environment variables from ConfigMap
+                  envFrom:
+                      - configMapRef:
+                            name: openml-backend-dev-config
+
+                  # Sensitive data from Secrets
+                  env:
+                      - name: APP_SECRET_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-backend-dev-secrets
+                                key: APP_SECRET_KEY
+                      - name: JWT_SECRET_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-backend-dev-secrets
+                                key: JWT_SECRET_KEY
+                      - name: SMTP_PASS
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-backend-dev-secrets
+                                key: SMTP_PASS
+
+                  # Health checks
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 5000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                      failureThreshold: 3
+
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: 5000
+                      initialDelaySeconds: 10
+                      periodSeconds: 5
+                      timeoutSeconds: 3
+                      failureThreshold: 3
+
+                  # Resource limits (development - lower resources)
+                  resources:
+                      requests:
+                          cpu: '250m'
+                          memory: '512Mi'
+                      limits:
+                          cpu: '1'
+                          memory: '2Gi'
+
+                  # Volume mounts for development (SQLite storage)
+                  volumeMounts:
+                      - name: data
+                        mountPath: /app/data
+
+            volumes:
+                - name: data
+                  emptyDir: {} # Ephemeral storage for dev SQLite
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: openml-backend-dev
+    namespace: openml-dev
+    labels:
+        app: openml-backend
+        environment: development
+spec:
+    type: ClusterIP
+    ports:
+        - port: 80
+          targetPort: 5000
+          protocol: TCP
+          name: http
+    selector:
+        app: openml-backend
+        environment: development
