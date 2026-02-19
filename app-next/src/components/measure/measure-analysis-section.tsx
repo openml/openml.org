@@ -228,63 +228,65 @@ export function MeasureAnalysisSection({
                     "<b>%{x}</b><br>Measures Added: %{y}<extra></extra>",
                 },
               ]}
-              layout={{
-                xaxis: {
-                  title: {
-                    text: "Year",
-                    font: {
+              layout={
+                {
+                  xaxis: {
+                    title: {
+                      text: "Year",
+                      font: {
+                        color:
+                          theme === "dark"
+                            ? "rgba(255,255,255,0.5)"
+                            : "rgba(0,0,0,0.5)",
+                      },
+                    },
+                    tickfont: {
                       color:
                         theme === "dark"
                           ? "rgba(255,255,255,0.5)"
                           : "rgba(0,0,0,0.5)",
                     },
-                  },
-                  tickfont: {
-                    color:
+                    gridcolor:
                       theme === "dark"
-                        ? "rgba(255,255,255,0.5)"
-                        : "rgba(0,0,0,0.5)",
+                        ? "rgba(255,255,255,0.1)"
+                        : "rgba(0,0,0,0.1)",
+                    linecolor:
+                      theme === "dark"
+                        ? "rgba(255,255,255,0.1)"
+                        : "rgba(0,0,0,0.1)",
                   },
-                  gridcolor:
-                    theme === "dark"
-                      ? "rgba(255,255,255,0.1)"
-                      : "rgba(0,0,0,0.1)",
-                  linecolor:
-                    theme === "dark"
-                      ? "rgba(255,255,255,0.1)"
-                      : "rgba(0,0,0,0.1)",
-                },
-                yaxis: {
-                  title: {
-                    text: "Count",
-                    font: {
+                  yaxis: {
+                    title: {
+                      text: "Count",
+                      font: {
+                        color:
+                          theme === "dark"
+                            ? "rgba(255,255,255,0.5)"
+                            : "rgba(0,0,0,0.5)",
+                      },
+                    },
+                    tickfont: {
                       color:
                         theme === "dark"
                           ? "rgba(255,255,255,0.5)"
                           : "rgba(0,0,0,0.5)",
                     },
-                  },
-                  tickfont: {
-                    color:
+                    gridcolor:
                       theme === "dark"
-                        ? "rgba(255,255,255,0.5)"
-                        : "rgba(0,0,0,0.5)",
+                        ? "rgba(255,255,255,0.1)"
+                        : "rgba(0,0,0,0.1)",
+                    linecolor:
+                      theme === "dark"
+                        ? "rgba(255,255,255,0.1)"
+                        : "rgba(0,0,0,0.1)",
                   },
-                  gridcolor:
-                    theme === "dark"
-                      ? "rgba(255,255,255,0.1)"
-                      : "rgba(0,0,0,0.1)",
-                  linecolor:
-                    theme === "dark"
-                      ? "rgba(255,255,255,0.1)"
-                      : "rgba(0,0,0,0.1)",
-                },
-                hovermode: "closest",
-                height: 300,
-                margin: { l: 50, r: 20, t: 20, b: 50 },
-                plot_bgcolor: "transparent",
-                paper_bgcolor: "transparent",
-              }}
+                  hovermode: "closest",
+                  height: 300,
+                  margin: { l: 50, r: 20, t: 20, b: 50 },
+                  plot_bgcolor: "transparent",
+                  paper_bgcolor: "transparent",
+                } as any
+              }
               config={{
                 responsive: true,
                 displayModeBar: false,

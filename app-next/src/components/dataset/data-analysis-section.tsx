@@ -39,6 +39,7 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import type { Dataset, DatasetFeature } from "@/types/dataset";
 import { useParquetData, computeDistribution } from "@/hooks/useParquetData";
+import { useDatasetStats } from "@/hooks/useDatasetStats";
 
 // Dynamic import for Plotly (required for SSR compatibility)
 const Plot = dynamic(() => import("react-plotly.js"), {
@@ -93,6 +94,9 @@ export function DataAnalysisSection({
     isHugeDataset ? undefined : dataset.data_id,
     isHugeDataset ? undefined : dataset.url,
   );
+
+  // Try stats API first (faster, works for all sizes)
+  const statsState = useDatasetStats(dataset.data_id, 100, !isHugeDataset);
 
   // Fullscreen toggle handler
   const toggleFullscreen = useCallback(async () => {
@@ -431,6 +435,8 @@ export function DataAnalysisSection({
                     isTooLarge={parquetState.isTooLarge}
                     isHugeDataset={isHugeDataset}
                     datasetId={dataset.data_id}
+                    statsData={statsState.stats?.distribution}
+                    isLoadingStats={statsState.isLoading}
                   />
                 </TabsContent>
 
@@ -441,6 +447,8 @@ export function DataAnalysisSection({
                     parquetData={parquetState.data}
                     isLoadingParquet={parquetState.isLoading}
                     datasetId={dataset.data_id}
+                    statsData={statsState.stats?.correlation}
+                    isLoadingStats={statsState.isLoading}
                   />
                 </TabsContent>
               </Tabs>
@@ -595,6 +603,8 @@ function FeatureDistributionPlots({
   isLoadingParquet,
   isTooLarge,
   isHugeDataset,
+  statsData,
+  isLoadingStats,
 }: {
   numericFeatures?: DatasetFeature[];
   nominalFeatures?: DatasetFeature[];
@@ -604,6 +614,8 @@ function FeatureDistributionPlots({
   isTooLarge?: boolean;
   isHugeDataset?: boolean;
   datasetId?: number;
+  statsData?: Record<string, any>;
+  isLoadingStats?: boolean;
 }) {
   // Whether parquet data is unavailable (too large to load in browser)
   const dataUnavailable = isTooLarge || isHugeDataset;
@@ -773,7 +785,7 @@ function FeatureDistributionPlots({
       </div>
 
       {/* Distribution Plots */}
-      {isLoadingParquet && !dataUnavailable ? (
+      {(isLoadingStats || (isLoadingParquet && !dataUnavailable)) ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <span className="text-muted-foreground ml-2">Loading data...</span>
@@ -790,6 +802,7 @@ function FeatureDistributionPlots({
               feature={feature}
               parquetData={parquetData}
               dataUnavailable={dataUnavailable}
+              statsData={statsData}
             />
           ))}
         </div>
@@ -805,24 +818,60 @@ function DistributionPlot({
   feature,
   parquetData,
   dataUnavailable,
+  statsData,
 }: {
   feature: DatasetFeature;
   parquetData: Record<string, (string | number | null)[]> | null;
   targetFeature?: DatasetFeature;
   targetColors?: string[];
   dataUnavailable?: boolean;
+  statsData?: Record<string, any>;
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const isNumeric = feature.type === "numeric";
 
-  // Compute distribution from parquet data or use feature.distr
+  // Compute distribution from stats API first, then fall back to parquet data or feature.distr
   const distribution = useMemo(() => {
+    // Priority 1: Use stats API datanpm if available
+    if (statsData && statsData[feature.name]) {
+      const featureStats = statsData[feature.name];
+      if (featureStats.type === "numeric") {
+        // Convert bins/counts from stats API to plot format
+        return {
+          bins: featureStats.bins?.map((binEdge: number, i: number, arr: number[]) => ({
+            min: binEdge,
+            max: arr[i + 1] || binEdge,
+            count: featureStats.counts[i] || 0,
+          })).slice(0, -1), // Remove last incomplete bin
+          stats: {
+            min: featureStats.min,
+            max: featureStats.max,
+            mean: featureStats.mean,
+            median: (featureStats.min + featureStats.max) / 2, // Approximate
+            q1: featureStats.min,
+            q3: featureStats.max,
+            std: featureStats.std,
+          },
+        };
+      } else {
+        // Nominal feature from stats API
+        return {
+          categories: featureStats.categories?.map((cat: string, i: number) => ({
+            value: cat,
+            count: featureStats.counts[i],
+          })),
+        };
+      }
+    }
+
+    // Priority 2: Compute from parquet data
     if (parquetData && parquetData[feature.name]) {
       const dataType = feature.type === "numeric" ? "numeric" : "nominal";
       return computeDistribution(parquetData[feature.name], dataType);
     }
-    // Fallback to feature.distr if available (works for nominal without parquet)
+
+    // Priority 3: Fallback to feature.distr if available (works for nominal without parquet)
     if (feature.distr && feature.distr.length > 0) {
       if (isNumeric) {
         return {
@@ -837,7 +886,7 @@ function DistributionPlot({
       };
     }
     return null;
-  }, [parquetData, feature, isNumeric]);
+  }, [statsData, parquetData, feature, isNumeric]);
 
   // Numeric features in too-large datasets: show "coming soon"
   if (dataUnavailable && isNumeric) {
@@ -861,15 +910,28 @@ function DistributionPlot({
     );
   }
 
-  // Filter out null values for Plotly
+  // Filter out null values for Plotly (only if using parquet data with raw values)
   const cleanData =
     parquetData?.[feature.name]?.filter(
       (v): v is string | number => v !== null,
     ) || [];
 
-  // Prepare bar chart data for nominal features
-  const barLabels = distribution.categories?.map((c) => c.value) || [];
-  const barValues = distribution.categories?.map((c) => c.count) || [];
+  // Prepare data based on distribution type
+  const hasRawData = cleanData.length > 0 && !statsData?.[feature.name];
+  const hasBinnedData = distribution?.bins && distribution.bins.length > 0;
+
+  // For numeric: use histogram with raw data OR bar chart with binned data
+  // For nominal: use bar chart with category counts
+  const barLabels = distribution?.categories?.map((c: any) => c.value) || [];
+  const barValues = distribution?.categories?.map((c: any) => c.count) || [];
+
+  // For binned numeric data, create bar chart labels from bin ranges
+  const binnedLabels = hasBinnedData
+    ? distribution.bins.map((bin: any) => `${bin.min.toFixed(1)}-${bin.max.toFixed(1)}`)
+    : [];
+  const binnedValues = hasBinnedData
+    ? distribution.bins.map((bin: any) => bin.count)
+    : [];
 
   return (
     <div className="rounded-lg border p-2">
@@ -883,13 +945,23 @@ function DistributionPlot({
         <Plot
           data={[
             isNumeric
-              ? {
-                  type: "histogram" as const,
-                  x: cleanData,
-                  marker: { color: "#22c55e" },
-                  opacity: 0.75,
-                }
+              ? hasRawData
+                ? {
+                    // Raw data histogram
+                    type: "histogram" as const,
+                    x: cleanData,
+                    marker: { color: "#22c55e" },
+                    opacity: 0.75,
+                  }
+                : {
+                    // Binned data bar chart
+                    type: "bar" as const,
+                    x: binnedLabels,
+                    y: binnedValues,
+                    marker: { color: "#22c55e" },
+                  }
               : {
+                  // Nominal bar chart
                   type: "bar" as const,
                   x: barLabels,
                   y: barValues,
@@ -935,11 +1007,15 @@ function CorrelationHeatmap({
   parquetData,
   isLoadingParquet,
   datasetId,
+  statsData,
+  isLoadingStats,
 }: {
   numericFeatures: DatasetFeature[];
   parquetData: Record<string, (string | number | null)[]> | null;
   isLoadingParquet?: boolean;
   datasetId?: number;
+  statsData?: { features: string[]; matrix: number[][] } | null;
+  isLoadingStats?: boolean;
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -948,32 +1024,46 @@ function CorrelationHeatmap({
   const MAX_FEATURES = 20;
   const limitedFeatures = numericFeatures.slice(0, MAX_FEATURES);
 
-  // Compute correlation matrix
-  const correlationMatrix = useMemo(() => {
-    if (!parquetData || limitedFeatures.length === 0) return null;
-
-    const n = limitedFeatures.length;
-    const matrix: number[][] = [];
-
-    for (let i = 0; i < n; i++) {
-      const row: number[] = [];
-      for (let j = 0; j < n; j++) {
-        if (i === j) {
-          row.push(1);
-        } else if (j < i) {
-          // Use symmetric value
-          row.push(matrix[j][i]);
-        } else {
-          const xData = parquetData[limitedFeatures[i].name] || [];
-          const yData = parquetData[limitedFeatures[j].name] || [];
-          row.push(computePearsonCorrelation(xData, yData));
-        }
-      }
-      matrix.push(row);
+  // Use stats API data first, then fall back to computing from parquet data
+  const correlationData = useMemo(() => {
+    // Priority 1: Use stats API data if available
+    if (statsData && statsData.features && statsData.matrix) {
+      return {
+        features: statsData.features,
+        matrix: statsData.matrix,
+      };
     }
 
-    return matrix;
-  }, [parquetData, limitedFeatures]);
+    // Priority 2: Compute from parquet data
+    if (parquetData && limitedFeatures.length > 0) {
+      const n = limitedFeatures.length;
+      const matrix: number[][] = [];
+
+      for (let i = 0; i < n; i++) {
+        const row: number[] = [];
+        for (let j = 0; j < n; j++) {
+          if (i === j) {
+            row.push(1);
+          } else if (j < i) {
+            // Use symmetric value
+            row.push(matrix[j][i]);
+          } else {
+            const xData = parquetData[limitedFeatures[i].name] || [];
+            const yData = parquetData[limitedFeatures[j].name] || [];
+            row.push(computePearsonCorrelation(xData, yData));
+          }
+        }
+        matrix.push(row);
+      }
+
+      return {
+        features: limitedFeatures.map((f) => f.name),
+        matrix,
+      };
+    }
+
+    return null;
+  }, [statsData, parquetData, limitedFeatures]);
 
   if (numericFeatures.length === 0) {
     return (
@@ -983,8 +1073,8 @@ function CorrelationHeatmap({
     );
   }
 
-  if (!parquetData) {
-    if (isLoadingParquet) {
+  if (!correlationData) {
+    if (isLoadingStats || isLoadingParquet) {
       return (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -1002,21 +1092,14 @@ function CorrelationHeatmap({
     );
   }
 
-  if (!correlationMatrix) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-      </div>
-    );
-  }
-
-  const featureNames = limitedFeatures.map((f) => f.name);
+  const featureNames = correlationData.features;
+  const correlationMatrix = correlationData.matrix;
 
   return (
     <div className="space-y-4">
       {numericFeatures.length > MAX_FEATURES && (
         <p className="text-shadow-muted-foreground text-sm">
-          Showing correlation for first {MAX_FEATURES} of{" "}
+          Showing correlation for first {featureNames.length} of{" "}
           {numericFeatures.length} numeric features.
         </p>
       )}
@@ -1040,7 +1123,7 @@ function CorrelationHeatmap({
           },
         ]}
         layout={{
-          height: Math.max(400, limitedFeatures.length * 25),
+          height: Math.max(400, featureNames.length * 25),
           margin: { l: 120, r: 20, t: 20, b: 120 },
           font: {
             color: isDark ? "rgba(250,250,250,0.6)" : "rgba(0,0,0,0.6)",
