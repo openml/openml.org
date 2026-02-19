@@ -785,7 +785,7 @@ function FeatureDistributionPlots({
       </div>
 
       {/* Distribution Plots */}
-      {(isLoadingStats || (isLoadingParquet && !dataUnavailable)) ? (
+      {isLoadingStats || (isLoadingParquet && !dataUnavailable) ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <span className="text-muted-foreground ml-2">Loading data...</span>
@@ -839,11 +839,13 @@ function DistributionPlot({
       if (featureStats.type === "numeric") {
         // Convert bins/counts from stats API to plot format
         return {
-          bins: featureStats.bins?.map((binEdge: number, i: number, arr: number[]) => ({
-            min: binEdge,
-            max: arr[i + 1] || binEdge,
-            count: featureStats.counts[i] || 0,
-          })).slice(0, -1), // Remove last incomplete bin
+          bins: featureStats.bins
+            ?.map((binEdge: number, i: number, arr: number[]) => ({
+              min: binEdge,
+              max: arr[i + 1] || binEdge,
+              count: featureStats.counts[i] || 0,
+            }))
+            .slice(0, -1), // Remove last incomplete bin
           stats: {
             min: featureStats.min,
             max: featureStats.max,
@@ -857,10 +859,12 @@ function DistributionPlot({
       } else {
         // Nominal feature from stats API
         return {
-          categories: featureStats.categories?.map((cat: string, i: number) => ({
-            value: cat,
-            count: featureStats.counts[i],
-          })),
+          categories: featureStats.categories?.map(
+            (cat: string, i: number) => ({
+              value: cat,
+              count: featureStats.counts[i],
+            }),
+          ),
         };
       }
     }
@@ -927,7 +931,9 @@ function DistributionPlot({
 
   // For binned numeric data, create bar chart labels from bin ranges
   const binnedLabels = hasBinnedData
-    ? distribution.bins.map((bin: any) => `${bin.min.toFixed(1)}-${bin.max.toFixed(1)}`)
+    ? distribution.bins.map(
+        (bin: any) => `${bin.min.toFixed(1)}-${bin.max.toFixed(1)}`,
+      )
     : [];
   const binnedValues = hasBinnedData
     ? distribution.bins.map((bin: any) => bin.count)

@@ -427,3 +427,73 @@ For issues or questions:
 - Check logs: `kubectl logs -n openml-<env> -l app=openml-backend`
 - Check events: `kubectl get events -n openml-<env> --sort-by='.lastTimestamp'`
 - Describe resources: `kubectl describe deployment openml-backend-<env> -n openml-<env>`
+  This PR adds Kubernetes deployment configuration for deploying the Flask backend with a single Docker image that adapts to different environments (dev/prod) based on runtime configuration.
+
+### Key Changes
+
+#### 1. Kubernetes Deployment Configuration (`k8s/`)
+
+- **Single Docker image** for all environments - build once, deploy everywhere
+- **Environment-specific behavior** via `ENVIRONMENT` variable:
+    - `development`: 1 worker, debug logs, SQLite, test OpenML server
+    - `production`: 4 workers, optimized, MySQL, production OpenML server
+    - `default`: Legacy mode (backward compatible)
+- **Complete K8s manifests** for dev and production:
+    - Separate namespaces, ConfigMaps, Secrets
+    - Production: HPA (3-10 replicas), resource limits, anti-affinity
+    - Development: Minimal resources, single replica
+- **Documentation**: Complete deployment guide (`k8s/README.md`)
+- **Test script**: Container validation script (`k8s/test-container.sh`)
+
+#### 2. Updated Docker Entrypoint (`docker/entrypoint.sh`)
+
+- Detects `ENVIRONMENT` variable and configures gunicorn accordingly
+- Backward compatible - defaults to legacy mode if `ENVIRONMENT` not set
+- No impact on existing deployments until explicitly configured
+
+#### 3. Stats API Architecture Documentation
+
+- Added `app-next/docs/STATS_API_ARCHITECTURE.md`
+- Documents server-side statistics computation architecture
+- Explains distribution/correlation chart rendering flow
+
+#### 4. Bug Fixes
+
+- Fixed Stats API disabled for huge datasets (now works for all sizes)
+- Added `stratified_sampling` property to Measure type
+- Fixed Plotly TypeScript errors with explicit type casting
+
+### Benefits
+
+✅ **Single image deployment** - Build once, deploy to dev/staging/prod  
+✅ **Environment parity** - Same code runs everywhere  
+✅ **Zero production impact** - Configuration files only, manual deployment required  
+✅ **Easy rollback** - Same image version across environments  
+✅ **Production-ready** - HPA, health checks, resource limits, security contexts
+
+### Deployment
+
+No changes are deployed automatically. To use:
+
+1. **Review** the configurations in `k8s/`
+2. **Build** Docker image: `docker build -t registry/openml-flask:v1.0.0 -f docker/Dockerfile .`
+3. **Test** locally: `./k8s/test-container.sh registry/openml-flask:v1.0.0`
+4. **Deploy to dev** first: `kubectl apply -f k8s/dev/`
+5. **Test thoroughly** in staging
+6. **Deploy to prod** when ready: `kubectl apply -f k8s/prod/`
+
+See `k8s/README.md` for complete deployment instructions.
+
+### Testing Checklist
+
+- [ ] Review Kubernetes configurations
+- [ ] Build and test Docker image locally
+- [ ] Deploy to staging/test Kubernetes cluster
+- [ ] Verify development mode works (1 worker, debug logs)
+- [ ] Verify production mode works (4 workers, optimized)
+- [ ] Test Stats API with various dataset sizes
+- [ ] Verify zero downtime rolling updates
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"

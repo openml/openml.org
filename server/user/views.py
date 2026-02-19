@@ -3,22 +3,29 @@ import secrets
 import json
 from datetime import datetime
 from flask import Blueprint, jsonify, request, send_from_directory, abort, Response, session as flask_session
-from webauthn import (
-    generate_registration_options,
-    verify_registration_response,
-    generate_authentication_options,
-    verify_authentication_response,
-    options_to_json,
-    base64url_to_bytes,
-)
-from webauthn.helpers.structs import (
-    AttestationPreference,
-    AuthenticatorSelectionCriteria,
-    UserVerificationRequirement,
-    AuthenticatorAttachment,
-    RegistrationCredential,
-    AuthenticationCredential,
-)
+
+# Optional webauthn support - gracefully handle if not installed
+try:
+    from webauthn import (
+        generate_registration_options,
+        verify_registration_response,
+        generate_authentication_options,
+        verify_authentication_response,
+        options_to_json,
+        base64url_to_bytes,
+    )
+    from webauthn.helpers.structs import (
+        AttestationPreference,
+        AuthenticatorSelectionCriteria,
+        UserVerificationRequirement,
+        AuthenticatorAttachment,
+        RegistrationCredential,
+        AuthenticationCredential,
+    )
+    WEBAUTHN_AVAILABLE = True
+except ImportError:
+    WEBAUTHN_AVAILABLE = False
+
 from distutils.util import strtobool
 from urllib.parse import parse_qs, urlparse
 
@@ -572,6 +579,9 @@ ORIGIN = os.environ.get("RP_ORIGIN", "http://localhost:3000")
 @user_blueprint.route("/auth/passkey/register-options", methods=["POST"])
 @jwt_required()
 def passkey_register_options():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
@@ -608,6 +618,9 @@ def passkey_register_options():
 @user_blueprint.route("/auth/passkey/register-verify", methods=["POST"])
 @jwt_required()
 def passkey_register_verify():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     current_user = get_jwt_identity()
     data = request.get_json()
     device_name = data.get("deviceName", "Unnamed Device")
@@ -628,7 +641,7 @@ def passkey_register_verify():
 
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
-        
+
         # Save the new passkey
         new_passkey = UserPasskey(
             user_id=user.id,
@@ -646,6 +659,9 @@ def passkey_register_verify():
 
 @user_blueprint.route("/auth/passkey/login-options", methods=["GET"])
 def passkey_login_options():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     options = generate_authentication_options(
         rp_id=RP_ID,
         user_verification=UserVerificationRequirement.PREFERRED,
@@ -659,6 +675,9 @@ def passkey_login_options():
 
 @user_blueprint.route("/auth/passkey/login-verify", methods=["POST"])
 def passkey_login_verify():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     data = request.get_json()
     challenge = flask_session.get("authentication_challenge")
 
@@ -709,11 +728,14 @@ def passkey_login_verify():
 @user_blueprint.route("/auth/passkey/list", methods=["GET"])
 @jwt_required()
 def passkey_list():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
         passkeys = session.query(UserPasskey).filter_by(user_id=user.id).all()
-        
+
         return jsonify([{
             "id": pk.id,
             "deviceName": pk.device_name,
@@ -725,6 +747,9 @@ def passkey_list():
 @user_blueprint.route("/auth/passkey/remove", methods=["POST"])
 @jwt_required()
 def passkey_remove():
+    if not WEBAUTHN_AVAILABLE:
+        return jsonify({"msg": "Passkey authentication is not available. WebAuthn library not installed."}), 503
+
     current_user = get_jwt_identity()
     data = request.get_json()
     passkey_id = data.get("passkeyId")

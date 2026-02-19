@@ -85,16 +85,8 @@ export function SearchContainer() {
           term: string,
           options?: { shouldClearFilters?: boolean },
         ) => void;
-        addFilter: (
-          field: string,
-          value: string,
-          type?: string,
-        ) => void;
-        removeFilter: (
-          field: string,
-          value?: string,
-          type?: string,
-        ) => void;
+        addFilter: (field: string, value: string, type?: string) => void;
+        removeFilter: (field: string, value?: string, type?: string) => void;
       };
     };
 
@@ -102,7 +94,9 @@ export function SearchContainer() {
 
     // Only update if the term actually changed (prevents loops)
     if (currentTerm !== query) {
-      driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
+      driverAny
+        .getActions()
+        .setSearchTerm(query, { shouldClearFilters: false });
     }
 
     // Apply tag filter from URL
@@ -208,7 +202,9 @@ export function SearchContainer() {
                                   </svg>
                                   <div className="flex items-baseline gap-2">
                                     <h3 className="text-base font-semibold">
-                                      {truncateName(result.name?.raw || "Untitled")}
+                                      {truncateName(
+                                        result.name?.raw || "Untitled",
+                                      )}
                                     </h3>
                                     <span className="text-primary text-xs">
                                       v.{result.version?.raw || 1} ✓
@@ -229,7 +225,8 @@ export function SearchContainer() {
                                     <TooltipTrigger asChild>
                                       <span className="flex items-center gap-1.5">
                                         <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                                        {result.runs?.raw?.toLocaleString() || 0}
+                                        {result.runs?.raw?.toLocaleString() ||
+                                          0}
                                       </span>
                                     </TooltipTrigger>
                                     <TooltipContent>Runs</TooltipContent>
@@ -264,7 +261,9 @@ export function SearchContainer() {
                                           ?.raw || "N/A"}
                                       </span>
                                     </TooltipTrigger>
-                                    <TooltipContent>Dimensions (rows x columns)</TooltipContent>
+                                    <TooltipContent>
+                                      Dimensions (rows x columns)
+                                    </TooltipContent>
                                   </Tooltip>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
@@ -388,7 +387,9 @@ export function SearchContainer() {
                                         />
                                       </svg>
                                       <h4 className="line-clamp-1 text-sm font-semibold">
-                                        {truncateName(result.name?.raw || "Untitled")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled",
+                                        )}
                                       </h4>
                                     </div>
                                     {/* Stats + Metadata badges on same line */}
@@ -474,7 +475,9 @@ export function SearchContainer() {
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-xl font-bold">
-                                    {truncateName(selectedDataset.name?.raw || "Untitled")}
+                                    {truncateName(
+                                      selectedDataset.name?.raw || "Untitled",
+                                    )}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedDataset.version?.raw || 1} ✓
