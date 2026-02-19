@@ -11,4 +11,5 @@ export interface Measure {
   max?: number;
   unit?: string;
   higherIsBetter?: boolean;
+  stratified_sampling?: string;
 }
