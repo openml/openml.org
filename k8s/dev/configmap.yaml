@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: openml-backend-dev-config
+    namespace: openml-dev
+data:
+    # Environment mode
+    ENVIRONMENT: 'development'
+
+    # Flask configuration
+    FLASK_ENV: 'development'
+    TESTING: 'True'
+    LOG_LEVEL: 'DEBUG'
+
+    # Gunicorn configuration
+    GUNICORN_WORKERS: '1'
+    GUNICORN_TIMEOUT: '60'
+
+    # Database (SQLite for dev)
+    DATABASE_URI: 'sqlite:///openml.db'
+
+    # SMTP Configuration (local/test)
+    SMTP_SERVER: 'email-server'
+    SMTP_PORT: '587'
+    SMTP_LOGIN: 'postmaster'
+    SMTP_USE_TLS: 'True'
+    EMAIL_SENDER: 'openml@example.org'
+    EMAIL_SERVER: 'localhost:5000'
+
+    # API URLs (development)
+    URL_API: 'http://localhost:8000/api/'
+
+    # CORS Origins (development)
+    CORS_ORIGINS: 'http://localhost:3000,http://localhost:8000,http://127.0.0.1:3000,http://localhost:3050'
+
+    # React App URLs (development)
+    REACT_APP_URL_SITE_BACKEND: 'http://localhost:8000/'
+    REACT_APP_URL_API: 'http://localhost:8000/api/'
+    REACT_APP_URL_ELASTICSEARCH: 'http://localhost:8000/es/'
+    REACT_APP_ELASTICSEARCH_VERSION_MAYOR: '6'
+    REACT_APP_URL_MINIO: 'http://localhost:8000/data/'

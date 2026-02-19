@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: openml-backend-prod-config
+    namespace: openml-prod
+data:
+    # Environment mode
+    ENVIRONMENT: 'production'
+
+    # Flask configuration
+    FLASK_ENV: 'production'
+    TESTING: 'False'
+    LOG_LEVEL: 'WARNING'
+
+    # Gunicorn configuration
+    GUNICORN_WORKERS: '4'
+    GUNICORN_TIMEOUT: '120'
+
+    # SMTP Configuration
+    SMTP_SERVER: 'smtp.production-server.com'
+    SMTP_PORT: '587'
+    SMTP_LOGIN: 'openml@production.com'
+    SMTP_USE_TLS: 'True'
+    EMAIL_SENDER: 'noreply@openml.org'
+
+    # API URLs (production)
+    URL_API: 'https://www.openml.org/api/'
+
+    # CORS Origins (production)
+    CORS_ORIGINS: 'https://www.openml.org,https://openml.org'
+
+    # React App URLs (production)
+    REACT_APP_URL_SITE_BACKEND: 'https://www.openml.org/'
+    REACT_APP_URL_API: 'https://www.openml.org/api/'
+    REACT_APP_URL_ELASTICSEARCH: 'https://www.openml.org/es/'
+    REACT_APP_ELASTICSEARCH_VERSION_MAYOR: '6'
+    REACT_APP_URL_MINIO: 'https://www.openml.org/data/'

@@ -1,0 +1,19 @@
+# Never commit production secrets!
+prod/secrets.yaml
+
+# Ignore any backup or temporary files
+*.bak
+*.tmp
+*.swp
+*~
+
+# Ignore local kubectl configs
+kubeconfig
+*.kubeconfig
+
+# Ignore Helm charts (if added later)
+charts/
+*.tgz
+
+# Ignore temporary patches
+*.patch
