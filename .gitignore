@@ -65,3 +65,9 @@ openml.db
 start_macOs_Intell/*
 
 start_macOS_M4/*
+
+# Backup files
+*.bak
+
+# Local Docker run commands (may contain secrets)
+.docker.run

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { QueryProvider, AuthProvider } from "@/components/providers";
@@ -13,7 +12,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import { Toaster } from "@/components/ui/toaster";
-import { locales } from "@/i18n";
+import { locales, type Locale } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({
@@ -60,12 +59,31 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // Validate locale
-  if (!locales.includes(locale as any)) {
+  if (!locales.includes(locale as Locale)) {
     notFound();
   }
 
   // Load messages for the current locale
   const messages = await getMessages();
+
+  // Read runtime environment variables
+  const clientEnv = {
+    NEXT_PUBLIC_API_URL:
+      process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org",
+    NEXT_PUBLIC_OPENML_API_URL:
+      process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org",
+    NEXT_PUBLIC_ELASTICSEARCH_SERVER:
+      process.env.NEXT_PUBLIC_ELASTICSEARCH_SERVER ||
+      "https://www.openml.org/es",
+    NEXT_PUBLIC_ELASTICSEARCH_URL:
+      process.env.NEXT_PUBLIC_ELASTICSEARCH_URL || "https://www.openml.org/es",
+    NEXT_PUBLIC_URL_MINIO:
+      process.env.NEXT_PUBLIC_URL_MINIO || "https://www.openml.org/data",
+    NEXT_PUBLIC_ENABLE_ELASTICSEARCH:
+      process.env.NEXT_PUBLIC_ENABLE_ELASTICSEARCH || "true",
+    ELASTICSEARCH_URL:
+      process.env.ELASTICSEARCH_URL || "https://www.openml.org/es",
+  };
 
   return (
     <html
@@ -73,6 +91,15 @@ export default async function LocaleLayout({
       className={cn(inter.variable, "overflow-x-hidden")}
       suppressHydrationWarning
     >
+      <head>
+        {/* Runtime config injection */}
+        <script
+          id="runtime-config"
+          dangerouslySetInnerHTML={{
+            __html: `window.__ENV__ = ${JSON.stringify(clientEnv)};`,
+          }}
+        />
+      </head>
       <body
         className="flex min-h-screen flex-col overflow-x-hidden antialiased"
         suppressHydrationWarning

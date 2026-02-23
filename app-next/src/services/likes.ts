@@ -5,9 +5,14 @@
  *
  * API key is obtained from session.apikey (set during OAuth login)
  */
+import { getConfig } from "@/lib/config";
 
-const OPENML_API_BASE =
-  process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+// const OPENML_API_BASE =
+//   process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+
+function getOpenMLApiBase(): string {
+  return getConfig("NEXT_PUBLIC_OPENML_API_URL") || "https://www.openml.org";
+}
 
 // Entity type mapping for OpenML API
 type EntityType = "dataset" | "flow" | "task" | "run";
@@ -121,6 +126,8 @@ async function likeEntity(
   const typeShort = entityTypeMap[entityType];
 
   try {
+    const OPENML_API_BASE = getOpenMLApiBase();
+
     const response = await fetch(
       `${OPENML_API_BASE}/api_new/v1/xml/votes/up/${typeShort}/${entityId}?api_key=${apiKey}`,
       {
@@ -164,6 +171,8 @@ async function unlikeEntity(
   const typeShort = entityTypeMap[entityType];
 
   try {
+    const OPENML_API_BASE = getOpenMLApiBase();
+
     const response = await fetch(
       `${OPENML_API_BASE}/api_new/v1/xml/votes/up/${typeShort}/${entityId}?api_key=${apiKey}`,
       {
@@ -204,6 +213,8 @@ export async function checkUserLikeStatus(
   const typeShort = entityTypeMap[entityType];
 
   try {
+    const OPENML_API_BASE = getOpenMLApiBase();
+
     const response = await fetch(
       `${OPENML_API_BASE}/api_new/v1/xml/votes/up/${userId}/${typeShort}/${entityId}?api_key=${apiKey}`,
       {

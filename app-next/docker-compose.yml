@@ -1,48 +1,74 @@
+###############################################################################
+# OpenML Next.js - Docker Compose (Local Docker Testing)
+###############################################################################
+# PURPOSE: Test the Docker image locally before pushing to Kubernetes
+#
+# USAGE:
+#   docker compose up --build        # Build and start
+#   docker compose up                # Start (using existing image)
+#   docker compose down              # Stop and remove container
+#
+# NOTE: This file is for local Docker testing only.
+#       For development: use `npm run dev` instead (faster, hot reload)
+#       For production:  use Kubernetes with ConfigMaps and Secrets
+#
+# SINGLE-IMAGE STRATEGY:
+#   - NO build.args for NEXT_PUBLIC_* variables
+#   - All variables are injected at RUNTIME via environment:
+#   - Same image can run in dev, test, preprod, production
+#   - See: k8s/SINGLE_IMAGE_NEXTJS_DEPLOYMENT.md
+###############################################################################
+
 services:
   openml-next:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        # Build-time variables (NEXT_PUBLIC_* baked into JS bundle)
-        # Override these to point to your own infrastructure
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://www.openml.org}
-        NEXT_PUBLIC_URL_API: ${NEXT_PUBLIC_URL_API:-https://www.openml.org/api/v1}
-        NEXT_PUBLIC_URL_SITE_BACKEND: ${NEXT_PUBLIC_URL_SITE_BACKEND:-https://www.openml.org}
-        NEXT_PUBLIC_OPENML_API_URL: ${NEXT_PUBLIC_OPENML_API_URL:-https://www.openml.org}
-        NEXT_PUBLIC_ELASTICSEARCH_SERVER: ${NEXT_PUBLIC_ELASTICSEARCH_SERVER:-https://www.openml.org/es}
-        NEXT_PUBLIC_URL_ELASTICSEARCH: ${NEXT_PUBLIC_URL_ELASTICSEARCH:-https://www.openml.org/es}
-        NEXT_PUBLIC_ENABLE_ELASTICSEARCH: ${NEXT_PUBLIC_ENABLE_ELASTICSEARCH:-true}
-        NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR: ${NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR:-8}
-        NEXT_PUBLIC_ENABLE_MINIO: ${NEXT_PUBLIC_ENABLE_MINIO:-true}
-        NEXT_PUBLIC_URL_MINIO: ${NEXT_PUBLIC_URL_MINIO:-https://www.openml.org/data}
+      # ✅ NO build.args here - NEXT_PUBLIC_* are injected at runtime
+      # ❌ OLD (wrong): args: NEXT_PUBLIC_API_URL: ...
+
     container_name: openml-next
     restart: unless-stopped
     ports:
       - "3050:3050"
+
+    # Load all variables from .env.local for local testing
+    # For production: use Kubernetes ConfigMaps and Secrets instead
     env_file:
-      - .env.docker
+      - .env.local
+
     environment:
-      # --- Core ---
+      # --- Core (override .env.local) ---
       NODE_ENV: production
       PORT: "3050"
       HOSTNAME: "0.0.0.0"
       NEXT_TELEMETRY_DISABLED: "1"
 
-      # --- Database (MySQL) ---
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-openml}
-      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      # --- Public URLs (runtime injection via window.__ENV__) ---
+      NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL:-http://localhost:3050}
+      NEXT_PUBLIC_OPENML_API_URL: ${NEXT_PUBLIC_OPENML_API_URL:-https://www.openml.org}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://www.openml.org}
+      NEXT_PUBLIC_URL_API: ${NEXT_PUBLIC_URL_API:-https://www.openml.org/api/v1}
+      NEXT_PUBLIC_URL_SITE_BACKEND: ${NEXT_PUBLIC_URL_SITE_BACKEND:-https://www.openml.org}
+      NEXT_PUBLIC_URL_ELASTICSEARCH: ${NEXT_PUBLIC_URL_ELASTICSEARCH:-https://www.openml.org/es}
+      NEXT_PUBLIC_ELASTICSEARCH_SERVER: ${NEXT_PUBLIC_ELASTICSEARCH_SERVER:-https://www.openml.org/es}
+      NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR: ${NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR:-8}
+      NEXT_PUBLIC_ENABLE_ELASTICSEARCH: ${NEXT_PUBLIC_ENABLE_ELASTICSEARCH:-true}
+      NEXT_PUBLIC_URL_MINIO: ${NEXT_PUBLIC_URL_MINIO:-https://www.openml.org/data}
+      NEXT_PUBLIC_ENABLE_MINIO: ${NEXT_PUBLIC_ENABLE_MINIO:-true}
 
-      # --- Elasticsearch (server-side, runtime) ---
-      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL:-https://es.openml.org/}
-      ELASTICSEARCH_SERVER: ${ELASTICSEARCH_SERVER:-https://www.openml.org/es/}
+      # --- Server-side URLs ---
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL:-https://www.openml.org/es}
+      ELASTICSEARCH_SERVER: ${ELASTICSEARCH_SERVER:-https://www.openml.org/es}
+      FLASK_BACKEND_URL: ${FLASK_BACKEND_URL:-https://www.openml.org}
 
-      # --- Authentication (NextAuth) ---
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      # --- Database ---
+      DATABASE_URL: ${DATABASE_URL}
+
+      # --- Authentication ---
+      SESSION_SECRET: ${SESSION_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3050}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
 
       # --- OAuth ---
       GITHUB_ID: ${GITHUB_ID}
@@ -50,20 +76,20 @@ services:
       GOOGLE_ID: ${GOOGLE_ID}
       GOOGLE_SECRET: ${GOOGLE_SECRET}
 
-      # --- Email / SMTP ---
-      SMTP_SERVER: ${SMTP_SERVER:-localhost}
-      SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_LOGIN: ${SMTP_LOGIN:-}
-      SMTP_PASS: ${SMTP_PASS:-}
-      EMAIL_SERVER: ${EMAIL_SERVER:-localhost:3050}
-      EMAIL_SENDER: ${EMAIL_SENDER:-'"OpenML" <noreply@openml.org>'}
-
       # --- WebAuthn / Passkeys ---
       RP_ID: ${RP_ID:-localhost}
       RP_ORIGIN: ${RP_ORIGIN:-http://localhost:3050}
 
-      # --- Flask Hybrid Proxy ---
-      FLASK_BACKEND_URL: ${FLASK_BACKEND_URL:-https://www.openml.org}
+      # --- Email / SMTP ---
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM:-"OpenML <noreply@openml.org>"}
+
+      # --- CORS ---
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3050}
 
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3050/"]
