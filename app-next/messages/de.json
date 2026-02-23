@@ -706,6 +706,12 @@
   },
   "auth": {
     "recommended": "EMPFOHLEN",
+    "signInRequired": {
+      "uploadDataset": "Sie müssen sich anmelden, um einen Datensatz hochzuladen",
+      "createTask": "Sie müssen sich anmelden, um eine Aufgabe zu definieren",
+      "createCollection": "Sie müssen sich anmelden, um eine Sammlung zu erstellen",
+      "default": "Sie müssen sich anmelden, um fortzufahren"
+    },
     "signIn": {
       "title": "Anmelden - OpenML",
       "description": "Melden Sie sich bei Ihrem OpenML-Konto an",
