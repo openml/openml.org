@@ -1,0 +1,143 @@
+###############################################################################
+# OpenML Next.js - Deployment + Service (Development / Test)
+###############################################################################
+# Image is published to DockerHub by GitHub Actions:
+#   openml/frontend:vX.Y.Z  (semver tags)
+#   openml/frontend:latest  (latest release)
+#
+# Apply: kubectl apply -f k8s/dev/nextjs-deployment.yaml
+# Update image: kubectl set image deployment/openml-next-dev \
+#               openml-next=openml/frontend:v1.2.3 -n openml-dev
+###############################################################################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: openml-next-dev
+    namespace: openml-dev
+    labels:
+        app: openml-next
+        environment: development
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: openml-next
+            environment: development
+    template:
+        metadata:
+            labels:
+                app: openml-next
+                environment: development
+        spec:
+            containers:
+                - name: openml-next
+                  # Image built by GitHub Actions → .github/workflows/release_docker_next.yaml
+                  # Published to: https://hub.docker.com/r/openml/frontend
+                  image: openml/frontend:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 3050
+                        name: http
+                        protocol: TCP
+
+                  # Non-secret config from ConfigMap
+                  envFrom:
+                      - configMapRef:
+                            name: openml-next-dev-config
+
+                  # Secrets injected individually
+                  env:
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: DATABASE_URL
+                      - name: SESSION_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: SESSION_SECRET
+                      - name: NEXTAUTH_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: NEXTAUTH_SECRET
+                      - name: GITHUB_ID
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: GITHUB_ID
+                      - name: GITHUB_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: GITHUB_SECRET
+                      - name: GOOGLE_ID
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: GOOGLE_ID
+                      - name: GOOGLE_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: GOOGLE_SECRET
+                      - name: SMTP_USER
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: SMTP_USER
+                      - name: SMTP_PASS
+                        valueFrom:
+                            secretKeyRef:
+                                name: openml-next-dev-secrets
+                                key: SMTP_PASS
+
+                  # Health checks
+                  livenessProbe:
+                      httpGet:
+                          path: /
+                          port: 3050
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                      failureThreshold: 3
+
+                  readinessProbe:
+                      httpGet:
+                          path: /
+                          port: 3050
+                      initialDelaySeconds: 10
+                      periodSeconds: 5
+                      timeoutSeconds: 3
+                      failureThreshold: 3
+
+                  # Resource limits (development - lower resources)
+                  resources:
+                      requests:
+                          cpu: "250m"
+                          memory: "512Mi"
+                      limits:
+                          cpu: "1"
+                          memory: "2Gi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: openml-next-dev
+    namespace: openml-dev
+    labels:
+        app: openml-next
+        environment: development
+spec:
+    type: ClusterIP
+    ports:
+        - port: 80
+          targetPort: 3050
+          protocol: TCP
+          name: http
+    selector:
+        app: openml-next
+        environment: development
