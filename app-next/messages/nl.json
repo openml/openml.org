@@ -706,6 +706,12 @@
   },
   "auth": {
     "recommended": "AANBEVOLEN",
+    "signInRequired": {
+      "uploadDataset": "U moet inloggen om een dataset te uploaden",
+      "createTask": "U moet inloggen om een taak te definiëren",
+      "createCollection": "U moet inloggen om een collectie aan te maken",
+      "default": "U moet inloggen om verder te gaan"
+    },
     "signIn": {
       "title": "Inloggen - OpenML",
       "description": "Log in op uw OpenML-account",
