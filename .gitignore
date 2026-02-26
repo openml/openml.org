@@ -71,3 +71,6 @@ start_macOS_M4/*
 
 # Local Docker run commands (may contain secrets)
 .docker.run
+scripts
+app-next/dev_dat
+dev_data
