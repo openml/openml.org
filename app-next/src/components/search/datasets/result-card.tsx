@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { parseDescription } from "../teaser";
 import {
+  Database,
   Heart,
   CloudDownload,
   FlaskConical,
@@ -96,9 +97,7 @@ interface ResultCardProps {
 
 export function ResultCard({ result }: ResultCardProps) {
   const dataId = result.data_id?.raw || result.id?.raw;
-  const name = truncateName(
-    result.name?.snippet || result.name?.raw || "Untitled",
-  );
+  const name = truncateName(result.name?.snippet || result.name?.raw || "Untitled");
   const version = result.version?.raw || "1";
   const status = result.status?.raw || "active";
   const statusInfo =
@@ -144,7 +143,7 @@ export function ResultCard({ result }: ResultCardProps) {
           <div className="w-full min-w-0">
             <div className="flex flex-wrap items-baseline gap-2">
               <Link href={`/datasets/${dataId}`}>
-                <h3 className="inline text-lg font-semibold wrap-break-word hyphens-auto hover:underline">
+                <h3 className="inline text-lg font-semibold break-words hyphens-auto hover:underline">
                   {name}
                 </h3>
               </Link>
