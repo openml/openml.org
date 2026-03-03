@@ -1,0 +1,56 @@
+# Dependencies (installed fresh in container)
+node_modules
+node_modules.nosync
+
+# Build output (rebuilt in container)
+.next
+out
+build
+
+# Version control
+.git
+.gitignore
+
+# Environment files (secrets must not be baked into image)
+.env
+.env.*
+!.env.docker.example
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development scripts and docs
+scripts/
+docs/
+Internal_docs/
+
+# Test and debug files
+coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker files (prevent recursive inclusion)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Python artifacts
+__pycache__
+*.pyc
+venv
+
+# Database files
+*.db
+*.sqlite

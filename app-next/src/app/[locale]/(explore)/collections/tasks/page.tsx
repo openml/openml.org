@@ -1,0 +1,39 @@
+import { setRequestLocale } from "next-intl/server";
+import { CollectionsSearchPage } from "@/components/search/collections/collections-search-page";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Task Collections - OpenML",
+  description:
+    "Browse curated collections of machine learning tasks. Find grouped tasks for specific domains, competitions, or research projects.",
+  keywords: [
+    "task collections",
+    "ML benchmarks",
+    "curated tasks",
+    "OpenML collections",
+  ],
+  openGraph: {
+    title: "Task Collections - OpenML",
+    description: "Curated collections of ML tasks.",
+    type: "website",
+    url: "https://www.openml.org/collections/tasks",
+    siteName: "OpenML",
+  },
+};
+
+export default async function CollectionTasksPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  return (
+    <CollectionsSearchPage
+      studyType="task"
+      title="Task Collections"
+      description="Curated collections of machine learning tasks"
+    />
+  );
+}
