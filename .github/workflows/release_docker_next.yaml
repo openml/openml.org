@@ -34,7 +34,7 @@ jobs:
         id: meta_dockerhub
         uses: docker/metadata-action@v5
         with:
-          images: "openml/frontend"
+          images: "openml/frontend-next"
           tags: |
             type=semver,pattern={{raw}}
 
