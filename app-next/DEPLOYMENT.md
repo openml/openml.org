@@ -34,7 +34,6 @@ NEXT_PUBLIC_URL_SITE_BACKEND=https://www.openml.org
 # Elasticsearch
 NEXT_PUBLIC_ENABLE_ELASTICSEARCH=true
 NEXT_PUBLIC_ELASTICSEARCH_SERVER=https://www.openml.org/es
-NEXT_PUBLIC_URL_ELASTICSEARCH=https://www.openml.org/es
 NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR=8
 
 # MinIO (File Storage)
