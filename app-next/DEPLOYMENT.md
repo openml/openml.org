@@ -34,7 +34,6 @@ NEXT_PUBLIC_URL_API=https://www.openml.org/api/v1
 NEXT_PUBLIC_ELASTICSEARCH_SERVER=https://www.openml.org/es
 
 # MinIO (File Storage)
-NEXT_PUBLIC_ENABLE_MINIO=true
 NEXT_PUBLIC_URL_MINIO=https://www.openml.org/data
 
 # Node Environment
