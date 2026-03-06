@@ -22,8 +22,6 @@ class OpenMLAPIClient {
 
   constructor() {
     this.client = axios.create({
-      // baseURL:
-      //   process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org",
       timeout: 15000,
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +34,7 @@ class OpenMLAPIClient {
       (config) => {
         // Set baseURL at runtime using getConfig
         config.baseURL =
-          getConfig("NEXT_PUBLIC_OPENML_API_URL") || "https://www.openml.org";
+          getConfig("NEXT_PUBLIC_OPENML_URL") || "https://www.openml.org";
 
         // Add authentication token if available
         const token =

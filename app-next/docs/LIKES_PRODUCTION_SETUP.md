@@ -119,4 +119,4 @@ After successful authentication:
 | --- | --- | --- |
 | `DATABASE_URL` | Yes (for likes) | MySQL connection string to shared database |
 | `NEXT_PUBLIC_ENABLE_LIKES` | No | Set to `false` to disable likes feature |
-| `NEXT_PUBLIC_OPENML_API_URL` | No | Override OpenML REST API URL (default: `https://www.openml.org`) |
+| `NEXT_PUBLIC_OPENML_URL` | No | Override OpenML REST API URL (default: `https://www.openml.org`) |

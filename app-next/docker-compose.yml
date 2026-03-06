@@ -24,9 +24,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # ✅ NO build.args here - NEXT_PUBLIC_* are injected at runtime
-      # ❌ OLD (wrong): args: NEXT_PUBLIC_API_URL: ...
-
     container_name: openml-next
     restart: unless-stopped
     ports:
@@ -46,8 +43,7 @@ services:
 
       # --- Public URLs (runtime injection via window.__ENV__) ---
       NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL:-http://localhost:3050}
-      NEXT_PUBLIC_OPENML_API_URL: ${NEXT_PUBLIC_OPENML_API_URL:-https://www.openml.org}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://www.openml.org}
+      NEXT_PUBLIC_OPENML_URL: ${NEXT_PUBLIC_OPENML_URL:-https://www.openml.org}
       NEXT_PUBLIC_URL_API: ${NEXT_PUBLIC_URL_API:-https://www.openml.org/api/v1}
       NEXT_PUBLIC_URL_SITE_BACKEND: ${NEXT_PUBLIC_URL_SITE_BACKEND:-https://www.openml.org}
       NEXT_PUBLIC_ELASTICSEARCH_SERVER: ${NEXT_PUBLIC_ELASTICSEARCH_SERVER:-https://www.openml.org/es}
