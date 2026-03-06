@@ -29,7 +29,6 @@ After deployment, go to **Project Settings** → **Environment Variables** and a
 # API Configuration
 NEXT_PUBLIC_OPENML_URL=https://www.openml.org
 NEXT_PUBLIC_URL_API=https://www.openml.org/api/v1
-NEXT_PUBLIC_URL_SITE_BACKEND=https://www.openml.org
 
 # Elasticsearch
 NEXT_PUBLIC_ENABLE_ELASTICSEARCH=true
@@ -143,7 +142,6 @@ fly deploy
 ```bash
 NEXT_PUBLIC_OPENML_URL=https://your-backend.railway.app
 NEXT_PUBLIC_URL_API=https://your-backend.railway.app/api/v1
-NEXT_PUBLIC_URL_SITE_BACKEND=https://your-backend.railway.app
 ```
 
 ---
