@@ -31,7 +31,6 @@ NEXT_PUBLIC_OPENML_URL=https://www.openml.org
 NEXT_PUBLIC_URL_API=https://www.openml.org/api/v1
 
 # Elasticsearch
-NEXT_PUBLIC_ENABLE_ELASTICSEARCH=true
 NEXT_PUBLIC_ELASTICSEARCH_SERVER=https://www.openml.org/es
 
 # MinIO (File Storage)
