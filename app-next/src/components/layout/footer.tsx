@@ -295,7 +295,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="docs.openml.org/pytorch/"
+                  href="https://docs.openml.org/pytorch/"
                   className="text-slate-400 transition-colors hover:text-white"
                   target="_blank"
                   rel="noopener noreferrer"
