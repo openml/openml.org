@@ -12,9 +12,9 @@
 | OAuth (Google/GitHub)  | NextAuth + Direct DB            | `DATABASE_URL` + `GITHUB_*` + `GOOGLE_*` |
 | Passkey signup/login   | Direct DB (WebAuthn)            | `DATABASE_URL` + `RP_ID` + `RP_ORIGIN`   |
 | Profile updates        | Direct DB                       | `DATABASE_URL`                           |
-| Avatar upload          | Direct filesystem/Vercel Blob   | `BLOB_READ_WRITE_TOKEN` (Vercel only)   |
-| Search/Data            | Elasticsearch + OpenML REST API | `NEXT_PUBLIC_URL_ELASTICSEARCH`          |
-| User profiles          | Elasticsearch                   | `NEXT_PUBLIC_URL_ELASTICSEARCH`          |
+| Avatar upload          | Direct filesystem/Vercel Blob   | `BLOB_READ_WRITE_TOKEN` (Vercel only)    |
+| Search/Data            | Elasticsearch + OpenML REST API | `                                        |
+| User profiles          | Elasticsearch                   | `                                        |
 
 ### 🔧 Still Uses Flask (Could Be Migrated)
 

@@ -175,7 +175,7 @@ export function ProfileSettings() {
       }
 
       const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
+        process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
 
       const response = await fetch(`${apiUrl}/api-key/regenerate`, {
         method: "POST",

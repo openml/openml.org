@@ -21,7 +21,7 @@ interface DataDetailSectionProps {
  * - Data preview link
  */
 export function DataDetailSection({ dataset }: DataDetailSectionProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://www.openml.org";
+  const apiUrl = process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
 
   return (
     <CollapsibleSection

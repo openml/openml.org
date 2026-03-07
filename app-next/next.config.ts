@@ -44,15 +44,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "www.openml.org",
+        hostname: "*.openml.org",
         port: "",
         pathname: "/**", // Allow all paths for profile images
-      },
-      {
-        protocol: "http",
-        hostname: "www.openml.org",
-        port: "",
-        pathname: "/**", // Some avatar URLs use http (legacy)
       },
       {
         protocol: "https",

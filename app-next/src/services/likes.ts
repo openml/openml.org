@@ -7,7 +7,7 @@
  */
 
 const OPENML_API_BASE =
-  process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+  process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
 
 // Entity type mapping for OpenML API
 type EntityType = "dataset" | "flow" | "task" | "run";

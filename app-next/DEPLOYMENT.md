@@ -27,18 +27,13 @@ After deployment, go to **Project Settings** → **Environment Variables** and a
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_URL=https://www.openml.org
+NEXT_PUBLIC_OPENML_URL=https://www.openml.org
 NEXT_PUBLIC_URL_API=https://www.openml.org/api/v1
-NEXT_PUBLIC_URL_SITE_BACKEND=https://www.openml.org
 
 # Elasticsearch
-NEXT_PUBLIC_ENABLE_ELASTICSEARCH=true
 NEXT_PUBLIC_ELASTICSEARCH_SERVER=https://www.openml.org/es
-NEXT_PUBLIC_URL_ELASTICSEARCH=https://www.openml.org/es
-NEXT_PUBLIC_ELASTICSEARCH_VERSION_MAYOR=8
 
 # MinIO (File Storage)
-NEXT_PUBLIC_ENABLE_MINIO=true
 NEXT_PUBLIC_URL_MINIO=https://www.openml.org/data
 
 # Node Environment
@@ -142,9 +137,8 @@ fly deploy
 ### Update Frontend Environment Variables
 
 ```bash
-NEXT_PUBLIC_API_URL=https://your-backend.railway.app
+NEXT_PUBLIC_OPENML_URL=https://your-backend.railway.app
 NEXT_PUBLIC_URL_API=https://your-backend.railway.app/api/v1
-NEXT_PUBLIC_URL_SITE_BACKEND=https://your-backend.railway.app
 ```
 
 ---
@@ -167,7 +161,7 @@ NEXT_PUBLIC_URL_SITE_BACKEND=https://your-backend.railway.app
 **Issue**: API calls failing
 
 - **Solution**: Check CORS settings on backend
-- Verify `NEXT_PUBLIC_API_URL` is correct
+- Verify `NEXT_PUBLIC_OPENML_URL` is correct
 
 **Issue**: Images not loading
 
