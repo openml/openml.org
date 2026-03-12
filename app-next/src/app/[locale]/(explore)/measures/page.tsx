@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 
-export default async function CollectionsPage({
+export default async function MeasuresPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  redirect(q ? `/collections/tasks?q=${encodeURIComponent(q)}` : "/collections/tasks");
+  redirect(q ? `/measures/evaluation?q=${encodeURIComponent(q)}` : "/measures/evaluation");
 }

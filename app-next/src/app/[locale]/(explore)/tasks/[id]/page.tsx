@@ -8,7 +8,9 @@ import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { TaskDefinitionSection } from "@/components/task/task-definition-section";
 import { TaskAnalysisSection } from "@/components/task/task-analysis-section";
 import { TaskRunsList } from "@/components/task/task-runs-list";
-import { TaskNavigationMenu } from "@/components/task/task-navigation-menu";
+import { WorkspaceSetter } from "@/components/workspace/workspace-setter";
+import { WorkspaceInlinePanel } from "@/components/workspace/workspace-inline-panel";
+import { entityColors } from "@/constants";
 
 /**
  * Generate SEO Metadata for Task
@@ -67,12 +69,52 @@ export default async function TaskDetailPage({
     <div className="relative min-h-screen">
       {/* Main Content */}
       <div className="container mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+        {/* Push context to the persistent workspace panel */}
+        <WorkspaceSetter
+          entity={{
+            type: "task",
+            id: task.task_id,
+            title: `${task.tasktype?.name || task.task_type || "Task"} on ${task.source_data?.name || "Unknown"}`,
+            subtitle: `Task #${task.task_id}`,
+            url: `/tasks/${id}`,
+            color: entityColors.task,
+          }}
+          sections={[
+            {
+              id: "definition",
+              label: "Task Definition",
+              iconName: "FileText",
+            },
+            {
+              id: "task-analysis",
+              label: "Task Analysis",
+              iconName: "BarChart3",
+            },
+            {
+              id: "runs",
+              label: "Runs",
+              iconName: "ExternalLink",
+              count: displayRunCount,
+            },
+          ]}
+          quickLinks={[
+            ...(task.source_data?.data_id
+              ? [
+                  {
+                    label: `Dataset: ${task.source_data.name}`,
+                    href: `/datasets/${task.source_data.data_id}`,
+                    iconName: "Database",
+                  },
+                ]
+              : []),
+          ]}
+        />
+
         {/* Header: Full Width - Name, stats, actions (Kaggle-style) */}
         <TaskHeader task={task} runCount={displayRunCount} />
 
-        {/* Content with Sidebar - Below Header */}
-        <div className="relative mt-6 flex min-h-screen gap-8">
-          {/* Left: Main Content - Single Column for now to match requested clean look */}
+        {/* Main Content + Inline Panel */}
+        <div className="mt-6 flex gap-8">
           <div className="min-w-0 flex-1 space-y-6">
             {/* 1. Task Definition (Target, Splits, Metrics) */}
             <CollapsibleSection
@@ -108,9 +150,7 @@ export default async function TaskDetailPage({
               <TaskRunsList task={task} runCount={displayRunCount} />
             </CollapsibleSection>
           </div>
-
-          {/* Right: Navigation Menu - Responsive */}
-          <TaskNavigationMenu runCount={displayRunCount} />
+          <WorkspaceInlinePanel />
         </div>
       </div>
     </div>
