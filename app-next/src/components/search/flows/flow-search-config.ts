@@ -17,7 +17,7 @@ const flowConfig = {
       name: { weight: 3 },
       description: { weight: 2 },
       uploader: { weight: 1 },
-      // Add other flow-specific search fields
+      "tags.tag": { weight: 1 },
     },
     result_fields: {
       flow_id: { raw: {} },
@@ -28,10 +28,10 @@ const flowConfig = {
       version: { raw: {} },
       date: { raw: {} },
       runs: { raw: {} },
+      tags: { raw: {} },
       nr_of_likes: { raw: {} },
       nr_of_downloads: { raw: {} },
       status: { raw: {} },
-      // Add other fields you want to display
     },
     disjunctiveFacets: ["dependencies.keyword"],
     facets: {
