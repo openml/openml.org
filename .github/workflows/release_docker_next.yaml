@@ -2,6 +2,9 @@ name: release-docker-next
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'next-v*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
