@@ -50,7 +50,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: openml/frontend-next
+          repository: openml/frontend
           short-description: "NextJS Frontend for OpenML."
           readme-filepath: ./app-next/docker/README.md
 
