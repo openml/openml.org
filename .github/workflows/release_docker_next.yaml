@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'The tag of the published docker image. Format: v[Major].[Minor].[Patch] (do not forget the v).'
+        description: 'The tag of the published docker image. Format: openml/frontend:v[Major].[Minor].[Patch] (do not forget the v).'
         required: true
         type: string
 
