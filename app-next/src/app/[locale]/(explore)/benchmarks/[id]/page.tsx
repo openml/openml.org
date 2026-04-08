@@ -1,47 +1,16 @@
 import { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import {
-  Award,
-  Database,
-  GitBranch,
-  Zap,
-  Calendar,
-  User,
-} from "lucide-react";
-import { getElasticsearchUrl } from "@/lib/elasticsearch";
+import { Award, Database, Flag, Cog, FlaskConical, Calendar, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { BenchmarkDatasetsSection } from "@/components/benchmark/benchmark-datasets-section";
+import { BenchmarkTasksSection } from "@/components/benchmark/benchmark-tasks-section";
+import { BenchmarkNavigationMenu } from "@/components/benchmark/benchmark-navigation-menu";
+import { entityColors } from "@/constants/entityColors";
 import Link from "next/link";
-
-interface StudyData {
-  study_id: number;
-  study_type: string;
-  name: string;
-  description?: string;
-  uploader?: string;
-  uploader_id?: number;
-  date?: string;
-  datasets_included?: number;
-  tasks_included?: number;
-  flows_included?: number;
-  runs_included?: number;
-}
-
-async function fetchStudy(id: string): Promise<StudyData> {
-  const url = getElasticsearchUrl(`study/_doc/${id}`);
-  const res = await fetch(url, { next: { revalidate: 3600 } });
-
-  if (!res.ok) {
-    throw new Error(`Benchmark ${id} not found`);
-  }
-
-  const data = await res.json();
-  if (!data.found || !data._source) {
-    throw new Error(`Benchmark ${id} not found`);
-  }
-
-  return data._source as StudyData;
-}
+import { fetchStudy } from "@/lib/api/study";
+import type { StudyData } from "@/lib/api/study";
 
 export async function generateMetadata({
   params,
@@ -52,12 +21,10 @@ export async function generateMetadata({
 
   try {
     const study = await fetchStudy(id);
-    const typeLabel =
-      study.study_type === "task" ? "Task Suite" : "Run Study";
+    const typeLabel = study.study_type === "task" ? "Task Suite" : "Run Study";
 
     return {
-      title: `${study.name} - ${typeLabel} - OpenML Benchmarks`,
-      description:
+      title: `${study.name} - ${typeLabel} - OpenML Benchmarks`, description:
         study.description?.substring(0, 160) ||
         `OpenML Benchmark ${typeLabel} #${id}`,
       openGraph: {
@@ -90,37 +57,32 @@ export default async function BenchmarkDetailPage({
     notFound();
   }
 
-  const typeLabel =
-    study.study_type === "task" ? "Task Suite" : "Run Study";
+  const typeLabel = study.study_type === "task" ? "Task Suite" : "Run Study";
 
   const entityCounts = [
     {
       label: "Datasets",
       count: study.datasets_included || 0,
       icon: Database,
-      color: "text-green-600",
-      href: `/datasets?q=study_${id}`,
+      color: entityColors.data,
     },
     {
       label: "Tasks",
       count: study.tasks_included || 0,
-      icon: Award,
-      color: "text-blue-600",
-      href: `/tasks?q=study_${id}`,
+      icon: Flag,
+      color: entityColors.task,
     },
     {
       label: "Flows",
       count: study.flows_included || 0,
-      icon: GitBranch,
-      color: "text-orange-600",
-      href: `/flows?q=study_${id}`,
+      icon: Cog,
+      color: entityColors.flow,
     },
     {
       label: "Runs",
       count: study.runs_included || 0,
-      icon: Zap,
-      color: "text-purple-600",
-      href: `/runs?q=study_${id}`,
+      icon: FlaskConical,
+      color: entityColors.run,
     },
   ];
 
@@ -130,14 +92,21 @@ export default async function BenchmarkDetailPage({
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-2">
-            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+            <span
+              className="rounded-full px-3 py-1 text-xs font-medium text-white"
+              style={{ backgroundColor: entityColors.benchmarks }}
+            >
               {typeLabel}
             </span>
             <span className="text-muted-foreground text-sm">#{id}</span>
           </div>
 
           <h1 className="mb-4 flex items-center gap-3 text-3xl font-bold tracking-tight">
-            <Award className="h-8 w-8 text-amber-600" aria-hidden="true" />
+            <Award
+              className="h-8 w-8"
+              style={{ color: entityColors.benchmarks }}
+              aria-hidden="true"
+            />
             {study.name}
           </h1>
 
@@ -166,11 +135,12 @@ export default async function BenchmarkDetailPage({
 
         {/* Entity counts grid */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {entityCounts.map(({ label, count, icon: Icon, color, href }) => (
-            <Link key={label} href={href}>
-              <Card className="hover:border-primary/50 transition-colors">
+          {entityCounts
+            .filter((e) => e.count > 0)
+            .map(({ label, count, icon: Icon, color }) => (
+              <Card key={label}>
                 <CardContent className="flex items-center gap-3 pt-6">
-                  <Icon className={`h-5 w-5 ${color}`} />
+                  <Icon className="h-5 w-5" style={{ color }} />
                   <div>
                     <p className="text-2xl font-bold">
                       {Number(count).toLocaleString()}
@@ -179,21 +149,54 @@ export default async function BenchmarkDetailPage({
                   </div>
                 </CardContent>
               </Card>
-            </Link>
-          ))}
+            ))}
         </div>
 
-        {/* Description */}
-        {study.description && (
-          <Card>
-            <CardContent className="pt-6">
-              <h2 className="mb-4 text-xl font-semibold">Description</h2>
-              <div className="text-muted-foreground prose dark:prose-invert max-w-none whitespace-pre-wrap">
-                {study.description}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Content with Sidebar Navigation */}
+        <div className="relative flex gap-8">
+          {/* Left: Main Content */}
+          <div className="min-w-0 flex-1 space-y-6">
+            {/* Description */}
+            {study.description && (
+              <section id="description" className="scroll-mt-20">
+                <CollapsibleSection
+                  title="Description"
+                  icon={
+                    <Award
+                      className="h-4 w-4"
+                      style={{ color: entityColors.benchmarks }}
+                    />
+                  }
+                  defaultOpen={true}
+                >
+                  <div
+                    className="text-muted-foreground prose dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: study.description }}
+                  />
+                </CollapsibleSection>
+              </section>
+            )}
+
+            {/* Datasets Section */}
+            <BenchmarkDatasetsSection
+              studyId={id}
+              totalCount={study.datasets_included || 0}
+            />
+
+            {/* Tasks Section */}
+            <BenchmarkTasksSection
+              studyId={id}
+              totalCount={study.tasks_included || 0}
+            />
+          </div>
+
+          {/* Right: Navigation Menu */}
+          <BenchmarkNavigationMenu
+            datasetsCount={study.datasets_included || 0}
+            tasksCount={study.tasks_included || 0}
+            basePath="/benchmarks"
+          />
+        </div>
       </div>
     </div>
   );

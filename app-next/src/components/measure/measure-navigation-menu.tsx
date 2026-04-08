@@ -9,42 +9,57 @@ import {
   X,
   ChevronRight,
   ChevronLeft,
-  Trophy,
-  List,
-  BarChart3,
   FileText,
+  Flag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { entityColors } from "@/constants/entityColors";
 
-interface TaskNavigationMenuProps {
-  runCount: number;
+interface MeasureNavigationMenuProps {
+  relatedTaskCount: number;
+  measureType: string;
 }
 
-export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
+const MEASURE_TYPE_ROUTES: Record<string, { href: string; label: string }> = {
+  evaluation_measure: { href: "/measures/evaluation", label: "Evaluation Measures" },
+  data_quality: { href: "/measures/data", label: "Data Quality Measures" },
+  estimation_procedure: { href: "/measures/procedures", label: "Estimation Procedures" },
+};
+
+export function MeasureNavigationMenu({
+  relatedTaskCount,
+  measureType,
+}: MeasureNavigationMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Navigation items for "On This Page"
+  const backRoute = MEASURE_TYPE_ROUTES[measureType] || {
+    href: "/measures/evaluation",
+    label: "All Measures",
+  };
+
   const pageNavItems = [
-    { id: "definition", label: "Task Definition", icon: FileText },
-    { id: "task-analysis", label: "Task Analysis", icon: Trophy },
+    { id: "description", label: "Description", icon: FileText },
     {
-      id: "runs",
-      label: "Runs",
-      icon: List,
-      count: runCount,
+      id: "related-tasks",
+      label: "Related Tasks",
+      icon: Flag,
+      count: relatedTaskCount,
     },
   ];
 
+  const violet = entityColors.measures;
+
   return (
     <>
-      {/* Mobile/Tablet: Floating Menu Button */}
+      {/* Mobile: Floating Menu Button */}
       <div className="fixed right-6 bottom-6 z-50 xl:hidden">
         <Button
           onClick={() => setIsOpen(!isOpen)}
           size="lg"
-          className="bg-[#ffa726] text-white shadow-lg hover:bg-[#fb8c00] dark:bg-[#ffa726] dark:hover:bg-[#fb8c00]"
+          className="text-white shadow-lg"
+          style={{ backgroundColor: violet }}
         >
           {isOpen ? (
             <X className="mr-2 h-5 w-5" />
@@ -55,20 +70,17 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
         </Button>
       </div>
 
-      {/* Mobile/Tablet: Slide-out Panel */}
+      {/* Mobile: Slide-out Panel */}
       {isOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black/50 xl:hidden"
             onClick={() => setIsOpen(false)}
           />
-
-          {/* Panel */}
           <div className="bg-background fixed top-0 right-0 bottom-0 z-50 w-80 shadow-2xl xl:hidden">
             <div className="flex h-full flex-col overflow-y-auto p-6">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-[#ffa726]">Navigation</h2>
+                <h2 className="text-lg font-semibold" style={{ color: violet }}>Navigation</h2>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -77,11 +89,12 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                   <X className="h-5 w-5" />
                 </Button>
               </div>
-
               <div className="space-y-4">
-                {/* Table of Contents */}
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
-                  <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
+                  <h3
+                    className="mb-3 text-sm font-semibold"
+                    style={{ color: violet }}
+                  >
                     On This Page
                   </h3>
                   <nav className="space-y-1">
@@ -106,28 +119,18 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                     ))}
                   </nav>
                 </div>
-
-                {/* Navigation Links */}
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
-                  <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
+                  <h3 className="mb-3 text-sm font-semibold" style={{ color: violet }}>
                     Quick Links
                   </h3>
                   <nav className="space-y-1">
                     <Link
-                      href="/search?type=task"
+                      href={backRoute.href}
                       className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                       onClick={() => setIsOpen(false)}
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Back to Search
-                    </Link>
-                    <Link
-                      href="/search?type=task"
-                      className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Grid3x3 className="h-4 w-4" />
-                      All Tasks
+                      {backRoute.label}
                     </Link>
                   </nav>
                 </div>
@@ -137,14 +140,13 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
         </>
       )}
 
-      {/* Desktop: Fixed Navigation with Collapse/Expand */}
+      {/* Desktop: Fixed Navigation */}
       <aside
         className={`hidden transition-all duration-300 xl:block ${
           isCollapsed ? "w-12" : "w-72"
         } shrink-0`}
       >
         {isCollapsed ? (
-          // Collapsed: Show only expand button
           <div className="absolute top-8 right-0">
             <Button
               onClick={() => setIsCollapsed(false)}
@@ -157,9 +159,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
             </Button>
           </div>
         ) : (
-          // Expanded: Show full navigation
           <div className="absolute top-8 right-0 max-h-[calc(100vh-12rem)] w-72 space-y-4 overflow-y-auto">
-            {/* Collapse Button */}
             <div className="flex justify-end">
               <Button
                 onClick={() => setIsCollapsed(true)}
@@ -172,10 +172,11 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                 Hide
               </Button>
             </div>
-
-            {/* Table of Contents */}
             <div className="bg-card rounded-lg border p-4 shadow-sm">
-              <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
+              <h3
+                className="mb-3 text-sm font-semibold"
+                style={{ color: violet }}
+              >
                 On This Page
               </h3>
               <nav className="space-y-1">
@@ -196,26 +197,24 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
                 ))}
               </nav>
             </div>
-
-            {/* Navigation Links */}
             <div className="bg-card rounded-lg border p-4 shadow-sm">
-              <h3 className="text-foreground mb-3 text-sm font-semibold">
+              <h3 className="mb-3 text-sm font-semibold" style={{ color: violet }}>
                 Quick Links
               </h3>
               <nav className="space-y-1">
                 <Link
-                  href="/search?type=task"
+                  href={backRoute.href}
                   className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  Back to Search
+                  {backRoute.label}
                 </Link>
                 <Link
-                  href="/search?type=task"
+                  href="/search?type=measure"
                   className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <Grid3x3 className="h-4 w-4" />
-                  All Tasks
+                  All Measures
                 </Link>
               </nav>
             </div>
