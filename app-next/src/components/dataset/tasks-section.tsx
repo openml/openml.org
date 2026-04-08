@@ -47,6 +47,7 @@ interface Task {
 export function TasksSection({ dataset, taskCount }: TasksSectionProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const [notAvailable, setNotAvailable] = useState(false);
 
   useEffect(() => {
     async function loadTasks() {
@@ -56,6 +57,10 @@ export function TasksSection({ dataset, taskCount }: TasksSectionProps) {
           `/api/dataset/${dataset.data_id}/tasks?limit=10`,
         );
         if (!response.ok) {
+          if (response.status === 404) {
+            setNotAvailable(true);
+            return;
+          }
           throw new Error("Failed to fetch tasks");
         }
         const data = await response.json();
@@ -152,6 +157,10 @@ export function TasksSection({ dataset, taskCount }: TasksSectionProps) {
               ))}
             </div>
           </>
+        ) : notAvailable ? (
+          <div className="text-muted-foreground py-8 text-center text-sm">
+            Tasks are not available for this dataset on the current server.
+          </div>
         ) : (
           <div className="text-muted-foreground py-8 text-center text-sm">
             No tasks found for this dataset

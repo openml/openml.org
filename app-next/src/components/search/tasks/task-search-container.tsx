@@ -8,16 +8,15 @@ import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, taskSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { truncateName } from "@/lib/utils";
 import {
-  FlaskConical,
   Heart,
   CloudDownload,
   Hash,
-  Trophy,
   Database,
   Target,
-  Gauge,
   ChevronRight,
   ArrowUpDown,
   ArrowUp,
@@ -334,7 +333,9 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
     <div className="space-y-0">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName = truncateName(result.source_data?.raw?.name || "Unknown Dataset");
+        const datasetName = truncateName(
+          result.source_data?.raw?.name || "Unknown Dataset",
+        );
         const datasetId = result.source_data?.raw?.data_id;
         const taskType =
           result.tasktype?.raw?.name ||
@@ -354,9 +355,10 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
             <div className="min-w-0 flex-1">
               {/* Title row */}
               <div className="mb-2 flex items-start gap-3">
-                <Trophy
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.task}
                   className="mt-0.5 h-5 w-5 shrink-0"
-                  style={{ color: "#FFA726" }}
+                  style={{ color: entityColors.task }}
                   aria-hidden="true"
                 />
                 <div>
@@ -385,7 +387,16 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
                         className="flex items-center gap-1.5"
                         title="Estimation procedure"
                       >
-                        <Gauge className="h-3.5 w-3.5 text-blue-500" />
+                        git checkout master
+                        <FontAwesomeIcon
+                          icon={ENTITY_ICONS.measures}
+                          className="h-3 w-3"
+                          style={{
+                            color: entityColors.measures,
+                            width: "18px",
+                            height: "18px",
+                          }}
+                        />
                         {estimation}
                       </span>
                     )}
@@ -396,7 +407,11 @@ function TaskListView({ results }: { results: TaskSearchResult[] }) {
               {/* Stats row */}
               <div className="ml-8 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                 <span className="flex items-center gap-1.5" title="Runs">
-                  <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={ENTITY_ICONS.run}
+                    className="h-4 w-4"
+                    style={{ color: entityColors.run }}
+                  />
                   <span className="font-medium">{runs.toLocaleString()}</span>
                   <span className="text-muted-foreground text-xs">runs</span>
                 </span>
@@ -463,7 +478,9 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {results.map((result, index) => {
         const tid = result.task_id?.raw || result.id?.raw;
-        const datasetName = truncateName(result.source_data?.raw?.name || "Unknown Dataset");
+        const datasetName = truncateName(
+          result.source_data?.raw?.name || "Unknown Dataset",
+        );
         const taskType =
           result.tasktype?.raw?.name ||
           result.task_type?.raw ||
@@ -482,7 +499,11 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
           >
             {/* Header */}
             <div className="mb-3 flex items-start justify-between">
-              <Trophy className="h-7 w-7" style={{ color: "#FFA726" }} />
+              <FontAwesomeIcon
+                icon={ENTITY_ICONS.task}
+                className="h-7 w-7"
+                style={{ color: entityColors.task }}
+              />
               <Badge
                 variant="openml"
                 className="bg-[#FFA726] text-xs text-white"
@@ -512,7 +533,16 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
               )}
               {estimation && (
                 <div className="text-muted-foreground flex items-center gap-1.5">
-                  <Gauge className="h-3 w-3 text-blue-500" />
+                  <FontAwesomeIcon
+                    icon={ENTITY_ICONS.measures}
+                    className="h-3 w-3"
+                    style={{
+                      color: entityColors.measures,
+                      width: "18px",
+                      height: "18px",
+                    }}
+                  />
+
                   <span className="line-clamp-1">{estimation}</span>
                 </div>
               )}
@@ -521,7 +551,11 @@ function TaskGridView({ results }: { results: TaskSearchResult[] }) {
             {/* Stats */}
             <div className="flex flex-wrap gap-3 border-t pt-3 text-xs">
               <span className="flex items-center gap-1" title="Runs">
-                <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="h-3 w-3"
+                  style={{ color: entityColors.run }}
+                />
                 <span className="font-medium">{runs.toLocaleString()}</span>
               </span>
               <span className="flex items-center gap-1" title="Likes">
@@ -662,7 +696,8 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
                   const tid = result.task_id?.raw || result.id?.raw;
                   const datasetId = result.source_data?.raw?.data_id;
                   const datasetName = truncateName(
-                    result.source_data?.raw?.name || "Unknown");
+                    result.source_data?.raw?.name || "Unknown",
+                  );
                   const taskType =
                     result.tasktype?.raw?.name ||
                     result.task_type?.raw ||
@@ -679,9 +714,10 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
                           href={`/tasks/${tid}`}
                           className="inline-flex items-center gap-1.5 font-medium text-[#FFA726] hover:text-[#a8690a]"
                         >
-                          <Trophy
+                          <FontAwesomeIcon
+                            icon={ENTITY_ICONS.task}
                             className="h-4 w-4"
-                            style={{ color: "#FFA726" }}
+                            style={{ color: entityColors.task }}
                           />
                           {tid}
                         </Link>
@@ -707,7 +743,11 @@ function TaskResultsTable({ results }: { results: TaskSearchResult[] }) {
                       </td>
                       <td className="p-3 text-right">
                         <span className="inline-flex items-center gap-1">
-                          <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
+                          <FontAwesomeIcon
+                            icon={ENTITY_ICONS.run}
+                            className="h-3 w-3"
+                            style={{ color: entityColors.run }}
+                          />
                           {result.runs?.raw?.toLocaleString() || 0}
                         </span>
                       </td>
@@ -774,13 +814,14 @@ function TaskSplitView({
               key={taskId || index}
               onClick={() => onSelectTask(result)}
               className={`hover:bg-accent block w-full cursor-pointer border-b p-3 text-left transition-colors ${
-                isSelected ? "bg-accent" : ""
+                isSelected ? "bg-accent/10" : ""
               }`}
             >
               <div className="mb-1 flex items-start gap-2">
-                <Trophy
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.task}
                   className="mt-0.5 h-4 w-4 shrink-0"
-                  style={{ color: "#FFA726" }}
+                  style={{ color: entityColors.task }}
                 />
                 <h4 className="line-clamp-1 text-sm font-semibold">
                   {result.tasktype?.raw?.name ||
@@ -789,11 +830,18 @@ function TaskSplitView({
                 </h4>
               </div>
               <p className="text-muted-foreground line-clamp-1 text-xs">
-                on {truncateName(result.source_data?.raw?.name || "Unknown Dataset")}
+                on{" "}
+                {truncateName(
+                  result.source_data?.raw?.name || "Unknown Dataset",
+                )}
               </p>
               <div className="mt-2 flex gap-3 text-xs">
                 <span className="flex items-center gap-1">
-                  <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={ENTITY_ICONS.run}
+                    className="h-3 w-3"
+                    style={{ color: entityColors.run }}
+                  />
                   {result.runs?.raw?.toLocaleString() || 0}
                 </span>
                 <span className="flex items-center gap-1">
@@ -815,7 +863,15 @@ function TaskSplitView({
         {selected && (
           <div>
             <div className="mb-4 flex items-start gap-3">
-              <Trophy className="h-8 w-8" style={{ color: "#FFA726" }} />
+              <FontAwesomeIcon
+                icon={ENTITY_ICONS.measures}
+                className="h-4 w-4"
+                style={{
+                  color: entityColors.measures,
+                  width: "32px",
+                  height: "32px",
+                }}
+              />
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-xl font-bold">
@@ -853,7 +909,15 @@ function TaskSplitView({
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Gauge className="mt-0.5 h-4 w-4 text-blue-500" />
+                  <FontAwesomeIcon
+                    icon={ENTITY_ICONS.measures}
+                    className="h-3 w-3"
+                    style={{
+                      color: entityColors.measures,
+                      width: "18px",
+                      height: "18px",
+                    }}
+                  />
                   <div>
                     <div className="text-muted-foreground text-xs">
                       Estimation Procedure
@@ -884,7 +948,11 @@ function TaskSplitView({
             {/* Stats Grid */}
             <div className="mb-6 grid grid-cols-3 gap-4 text-sm">
               <div className="rounded-lg border p-3 text-center">
-                <FlaskConical className="mx-auto mb-1 h-5 w-5 fill-red-500 text-red-500" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="mx-auto mb-1 h-5 w-5"
+                  style={{ color: entityColors.run }}
+                />
                 <div className="text-lg font-bold">
                   {selected.runs?.raw?.toLocaleString() || 0}
                 </div>
