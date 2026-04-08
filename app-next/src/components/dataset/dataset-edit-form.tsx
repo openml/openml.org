@@ -2,18 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import Link from "next/link";
-import { ArrowLeft, Save, Loader2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Save, Loader2, AlertTriangle, X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 interface DatasetEditFormProps {
   datasetId: number;
   datasetName: string;
   isOwner: boolean;
+  hasApiKey: boolean;
+  isLocalUser: boolean;
+  initialTags: string[];
   initialValues: {
     description: string;
     creator: string;
@@ -33,38 +39,53 @@ export function DatasetEditForm({
   datasetId,
   datasetName,
   isOwner,
+  hasApiKey,
+  isLocalUser,
+  initialTags,
   initialValues,
   features,
 }: DatasetEditFormProps) {
   const router = useRouter();
+  const locale = useLocale();
+  const { toast } = useToast();
   const [values, setValues] = useState(initialValues);
+  const [tags, setTags] = useState<string[]>(initialTags);
+  const [tagInput, setTagInput] = useState("");
+  const [tagInputError, setTagInputError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+
+  const TAG_PATTERN = /^[a-zA-Z0-9_.-]+$/;
 
   const handleChange = (
     field: keyof typeof values,
     value: string,
   ) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-    setError(null);
-    setSuccess(false);
+  };
+
+  const addTag = () => {
+    const trimmed = tagInput.trim();
+    if (!trimmed) return;
+    if (!TAG_PATTERN.test(trimmed)) {
+      setTagInputError("Only letters, numbers, underscores, hyphens, and dots are allowed.");
+      return;
+    }
+    if (!tags.includes(trimmed)) {
+      setTags((prev) => [...prev, trimmed]);
+    }
+    setTagInput("");
+    setTagInputError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       const res = await fetch(`/api/datasets/${datasetId}/edit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...values,
-          isOwner,
-        }),
+        body: JSON.stringify({ ...values, isOwner }),
       });
 
       if (!res.ok) {
@@ -72,14 +93,42 @@ export function DatasetEditForm({
         throw new Error(data.error || `Failed to save (${res.status})`);
       }
 
-      setSuccess(true);
-      // Redirect back to dataset page after short delay
+      // Apply tag changes — diff against initialTags
+      const toAdd = tags.filter((t) => !initialTags.includes(t));
+      const toRemove = initialTags.filter((t) => !tags.includes(t));
+
+      await Promise.all([
+        ...toAdd.map((tag) =>
+          fetch(`/api/datasets/${datasetId}/tags`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tag }),
+          }),
+        ),
+        ...toRemove.map((tag) =>
+          fetch(`/api/datasets/${datasetId}/tags`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tag }),
+          }),
+        ),
+      ]);
+
+      toast({
+        title: "Changes saved",
+        description: "Redirecting back to dataset...",
+      });
+
       setTimeout(() => {
-        router.push(`/datasets/${datasetId}`);
+        router.push(`/${locale}/datasets/${datasetId}`);
         router.refresh();
       }, 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save changes");
+      toast({
+        title: "Failed to save",
+        description: err instanceof Error ? err.message : "Failed to save changes",
+        variant: "destructive",
+      });
     } finally {
       setSaving(false);
     }
@@ -90,7 +139,7 @@ export function DatasetEditForm({
       {/* Header */}
       <div className="mb-8">
         <Link
-          href={`/datasets/${datasetId}`}
+          href={`/${locale}/datasets/${datasetId}`}
           className="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1.5 text-sm transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -103,16 +152,18 @@ export function DatasetEditForm({
         </p>
       </div>
 
-      {/* Status messages */}
-      {error && (
-        <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
-          <AlertTriangle className="h-4 w-4 shrink-0" />
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-400">
-          Changes saved successfully! Redirecting...
+      {/* Warning: user has no valid OpenML API key (e.g. local dev account) */}
+      {(!hasApiKey || isLocalUser) && (
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
+          <AlertTriangle className="mt-0.5 size-5 shrink-0" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium">Saving is unavailable in this environment</p>
+            <p className="text-xs">
+              {isLocalUser
+                ? "This account was created locally and does not have a valid OpenML API key. Dataset edits cannot be saved to the OpenML backend in a local development environment."
+                : "Your session does not include an OpenML API key. Saving changes requires signing in with a valid OpenML account."}
+            </p>
+          </div>
         </div>
       )}
 
@@ -282,14 +333,69 @@ export function DatasetEditForm({
         </Card>
       )}
 
+      {/* Tags */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Tags</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
+                  className="hover:text-destructive ml-0.5 rounded transition-colors"
+                  aria-label={`Remove tag ${tag}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+            {tags.length === 0 && (
+              <p className="text-muted-foreground text-sm">No tags yet.</p>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Add a tag..."
+              value={tagInput}
+              onChange={(e) => {
+                setTagInput(e.target.value);
+                setTagInputError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addTag();
+                }
+              }}
+              className={tagInputError ? "border-destructive" : ""}
+            />
+            <Button type="button" variant="outline" onClick={addTag} className="gap-1 shrink-0">
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </div>
+          {tagInputError ? (
+            <p className="text-destructive text-xs">{tagInputError}</p>
+          ) : (
+            <p className="text-muted-foreground text-xs">
+              Tags are applied when you save. Only letters, numbers, <code>_</code> <code>-</code> <code>.</code> allowed.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Actions */}
       <div className="flex items-center justify-between">
-        <Link href={`/datasets/${datasetId}`}>
+        <Link href={`/${locale}/datasets/${datasetId}`}>
           <Button type="button" variant="outline">
             Cancel
           </Button>
         </Link>
-        <Button type="submit" disabled={saving} className="gap-2">
+        <Button type="submit" disabled={saving || !hasApiKey || isLocalUser} className="gap-2" title={(!hasApiKey || isLocalUser) ? "Saving is not available in this environment" : undefined}>
           {saving ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
