@@ -110,11 +110,11 @@ export const pathnames = {
     fr: "/documentation",
     de: "/dokumentation",
   },
-  "/api": {
-    en: "/api",
-    nl: "/api",
-    fr: "/api",
-    de: "/api",
+  "/apis": {
+    en: "/apis",
+    nl: "/apis",
+    fr: "/apis",
+    de: "/apis",
   },
   "/contribute": {
     en: "/contribute",
