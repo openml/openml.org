@@ -8,8 +8,8 @@ class Config(object):
     """
     Config object for flask app
     """
-
-    load_dotenv(".env")
+    environment = os.environ.get("environment", "")
+    load_dotenv(f".env{environment}")
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
     #     'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
