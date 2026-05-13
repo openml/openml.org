@@ -154,18 +154,19 @@ export default class GetInvolved extends React.Component {
             <CardActionArea>
               <CardMedia
                 style={{ height: 240 }}
-                image="https://www.holland.com/upload_mm/7/2/d/68530_fullimage_leiden_canals.jpg"
+                image="https://artofresearch2020.aalto.fi/wp-content/uploads/2020/04/Aalto_University_Y_block_102013_by_Tuomas_Uusheimo_039-2048x1366.jpg"
                 title="Hackathon"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  2026 Winter Hackathon - February 16-20 - Leiden University, Leiden, The Netherlands
+                  2026 Summer Hackathon - June 15-19 - Aalto Univeristy, Espoo, Finland
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Join us at Leiden University to work on the next generation of OpenML.
+                  Join us at Aalto University to work on the next generation of OpenML.
+                  Feel free to stop by for an introductory presentation to OpenML on Monday afternoon, or to join us for the entire code sprint and contribute to OpenML!
                   
-                  By day we'll be at the <a href="https://www.universiteitleiden.nl/en/dossiers/building-projects/gorlaeus-building">brand new Science Campus</a> creating the next version of OpenML, and by night we'll relax in the cosy city center.
-                  Join our Slack channel to join the discussion.
+                  By day we'll be at the Aalto campus working on the next version of OpenML, and by night we enjoy Finland.
+                  Join our Slack #2026-aalto channel on our Slack server to join the discussion.
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -173,23 +174,23 @@ export default class GetInvolved extends React.Component {
             <Button
                 size="small"
                 color="primary"
-                href="https://forms.gle/iPAXC6k85k4L3fs46"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSc3_decEdgOXhQU8Sq01rGIoeACpsMQzKV8kSmexl4w4QTW1g/viewform?usp=dialog"
               >
-                Registration (free)
+                Introduction Sign Up (free)
               </Button>
               <Button
                 size="small"
                 color="primary"
-                href="https://docs.google.com/document/d/1jtqKIb91sz8ry7FkJVRobSKD8CnGpwzylFSA97ZdSK4/edit?usp=sharing"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSe1maxt19G6taleHlAtgHW_QtpybYVsxA3KHJlNh6OtyiiXBQ/viewform?usp=dialog"
               >
-                Schedule and more
+                Code Sprint Sign Up (free)
               </Button>
               <Button
                 size="small"
                 color="primary"
-                href="https://github.com/openml/openml.org/blob/master/meetups.md"
+                href="https://docs.google.com/document/d/1K7tZZx7QhNNrfng6oX-7B4UVD0H1vT72T3eghP7E9gY/edit?usp=sharing"
               >
-                Prepare
+                More information and schedule
               </Button>
             </CardActions>
           </Card>
