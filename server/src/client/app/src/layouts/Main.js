@@ -131,7 +131,7 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
-          {<Snackbar
+          <Snackbar
             open={bannerOpen}        
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             autoHideDuration={10000}
@@ -143,12 +143,12 @@ function Main(props) {
               severity="warning"
               sx={{ width: '100%'}}
             >
-                We're performing maintenance work on our servers in the week of 24-28 November. During this time, OpenML will be in read-only mode.{" "}
-                <a href="https://github.com/orgs/openml/discussions/27"> 
+                Join us at the OpenML Hackathon in Aalto, Finland, on June 15-19.{" "}
+                <a href="https://www.openml.org/meet">
                   Learn more.
                 </a>
             </Alert>
-          </Snackbar>}
+          </Snackbar>
           <Drawer drawerWidth={context.drawerWidth} open={false}>
             {hidden ? null : 
               <Sidebar
