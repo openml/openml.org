@@ -76,7 +76,7 @@ function Main(props) {
   const [activeSearch, setActiveSearch] = useState(false);
   const [mode, setMode] = useState("wide");
 
-  const [bannerOpen, setBannerOpen] = React.useState(false);
+  const [bannerOpen, setBannerOpen] = React.useState(true);
   const handleBannerClose = () => {
     setBannerOpen(false);
   };
@@ -131,7 +131,7 @@ function Main(props) {
           )}
           <CssBaseline />
           <GlobalStyle />
-          <Snackbar
+          {<Snackbar
             open={bannerOpen}        
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             autoHideDuration={10000}
@@ -148,7 +148,7 @@ function Main(props) {
                   Learn more.
                 </a>
             </Alert>
-          </Snackbar>
+          </Snackbar>}
           <Drawer drawerWidth={context.drawerWidth} open={false}>
             {hidden ? null : 
               <Sidebar
