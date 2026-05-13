@@ -140,7 +140,7 @@ function Main(props) {
           >
             <Alert
               onClose={handleBannerClose}
-              severity="warning"
+              severity="info"
               sx={{ width: '100%'}}
             >
                 Join us at the OpenML Hackathon in Aalto, Finland, on June 15-19.{" "}
