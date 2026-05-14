@@ -1,23 +1,17 @@
+import functools
+from http import HTTPStatus
 import os
 import secrets
 import json
 from datetime import datetime
-from flask import Blueprint, jsonify, request, send_from_directory, abort, Response, session as flask_session
-from webauthn import (
-    generate_registration_options,
-    verify_registration_response,
-    generate_authentication_options,
-    verify_authentication_response,
-    options_to_json,
-    base64url_to_bytes,
-)
-from webauthn.helpers.structs import (
-    AttestationPreference,
-    AuthenticatorSelectionCriteria,
-    UserVerificationRequirement,
-    AuthenticatorAttachment,
-    RegistrationCredential,
-    AuthenticationCredential,
+from flask import (
+    Blueprint,
+    jsonify,
+    request,
+    send_from_directory,
+    abort,
+    Response,
+    session as flask_session,
 )
 from distutils.util import strtobool
 from urllib.parse import parse_qs, urlparse
@@ -41,6 +35,32 @@ from server.utils import confirmation_email
 from werkzeug.utils import secure_filename
 from PIL import Image
 from io import BytesIO
+
+_PASSKEY_ENABLED = bool(strtobool(os.environ.get("OPENML_PASSKEY_ENABLED", "false")))
+try:
+    from webauthn import (
+        generate_registration_options,
+        verify_registration_response,
+        generate_authentication_options,
+        verify_authentication_response,
+        options_to_json,
+        base64url_to_bytes,
+    )
+    from webauthn.helpers.structs import (
+        AttestationPreference,
+        AuthenticatorSelectionCriteria,
+        UserVerificationRequirement,
+        AuthenticatorAttachment,
+        RegistrationCredential,
+        AuthenticationCredential,
+    )
+
+    RP_ID = os.environ.get("RP_ID", "localhost")
+    RP_NAME = "OpenML"
+    ORIGIN = os.environ.get("RP_ORIGIN", "http://localhost:3000")
+except ImportError:
+    if _PASSKEY_ENABLED:
+        raise
 
 user_blueprint = Blueprint(
     "user", __name__, static_folder="server/src/client/app/build"
@@ -563,14 +583,21 @@ def user_from_token(session: Session, data, token_name):
 
 
 # --- Passkey (WebAuthn) Endpoints ---
+def passkey_required(endpoint):
+    @functools.wraps(endpoint)
+    def wrapper(*args, **kwargs):
+        if not _PASSKEY_ENABLED:
+            return jsonify(
+                {"msg": "Passkey functions disabled."}
+            ), HTTPStatus.NOT_IMPLEMENTED
+        return endpoint(*args, **kwargs)
 
-RP_ID = os.environ.get("RP_ID", "localhost")
-RP_NAME = "OpenML"
-ORIGIN = os.environ.get("RP_ORIGIN", "http://localhost:3000")
+    return wrapper
 
 
 @user_blueprint.route("/auth/passkey/register-options", methods=["POST"])
 @jwt_required()
+@passkey_required
 def passkey_register_options():
     current_user = get_jwt_identity()
     with Session() as session:
@@ -607,6 +634,7 @@ def passkey_register_options():
 
 @user_blueprint.route("/auth/passkey/register-verify", methods=["POST"])
 @jwt_required()
+@passkey_required
 def passkey_register_verify():
     current_user = get_jwt_identity()
     data = request.get_json()
@@ -628,7 +656,7 @@ def passkey_register_verify():
 
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
-        
+
         # Save the new passkey
         new_passkey = UserPasskey(
             user_id=user.id,
@@ -645,6 +673,7 @@ def passkey_register_verify():
 
 
 @user_blueprint.route("/auth/passkey/login-options", methods=["GET"])
+@passkey_required
 def passkey_login_options():
     options = generate_authentication_options(
         rp_id=RP_ID,
@@ -658,6 +687,7 @@ def passkey_login_options():
 
 
 @user_blueprint.route("/auth/passkey/login-verify", methods=["POST"])
+@passkey_required
 def passkey_login_verify():
     data = request.get_json()
     challenge = flask_session.get("authentication_challenge")
@@ -669,7 +699,9 @@ def passkey_login_verify():
 
     with Session() as session:
         # Find the passkey
-        passkey = session.query(UserPasskey).filter_by(credential_id=credential_id).first()
+        passkey = (
+            session.query(UserPasskey).filter_by(credential_id=credential_id).first()
+        )
         if not passkey:
             return jsonify({"msg": "Passkey not recognized"}), 404
 
@@ -693,37 +725,46 @@ def passkey_login_verify():
         # Login successful - generate JWT
         user = passkey.user
         access_token = create_access_token(identity=user.username)
-        
-        return jsonify({
-            "access_token": access_token,
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "image": user.image,
-            "apikey": user.session_hash,
-            "firstName": user.first_name,
-            "lastName": user.last_name,
-        }), 200
+
+        return jsonify(
+            {
+                "access_token": access_token,
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "image": user.image,
+                "apikey": user.session_hash,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+            }
+        ), 200
 
 
 @user_blueprint.route("/auth/passkey/list", methods=["GET"])
 @jwt_required()
+@passkey_required
 def passkey_list():
     current_user = get_jwt_identity()
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
         passkeys = session.query(UserPasskey).filter_by(user_id=user.id).all()
-        
-        return jsonify([{
-            "id": pk.id,
-            "deviceName": pk.device_name,
-            "createdAt": pk.created_at.isoformat(),
-            "lastUsedAt": pk.last_used_at.isoformat(),
-        } for pk in passkeys]), 200
+
+        return jsonify(
+            [
+                {
+                    "id": pk.id,
+                    "deviceName": pk.device_name,
+                    "createdAt": pk.created_at.isoformat(),
+                    "lastUsedAt": pk.last_used_at.isoformat(),
+                }
+                for pk in passkeys
+            ]
+        ), 200
 
 
 @user_blueprint.route("/auth/passkey/remove", methods=["POST"])
 @jwt_required()
+@passkey_required
 def passkey_remove():
     current_user = get_jwt_identity()
     data = request.get_json()
@@ -731,8 +772,10 @@ def passkey_remove():
 
     with Session() as session:
         user = session.query(User).filter_by(username=current_user).first()
-        passkey = session.query(UserPasskey).filter_by(id=passkey_id, user_id=user.id).first()
-        
+        passkey = (
+            session.query(UserPasskey).filter_by(id=passkey_id, user_id=user.id).first()
+        )
+
         if not passkey:
             return jsonify({"msg": "Passkey not found"}), 404
 

@@ -16,6 +16,7 @@ WORKDIR /app
 RUN python -m pip install -r requirements.txt
 
 RUN useradd --create-home unprivileged-user
+ENV OPENML_PASSKEY_ENABLED=false
 
 COPY --from=build /app/server/src/client/app/build /app/server/src/client/app/build
 
