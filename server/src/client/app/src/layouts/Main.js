@@ -143,7 +143,7 @@ function Main(props) {
               severity="info"
               sx={{ width: '100%'}}
             >
-                Join us at the OpenML Hackathon in Aalto, Finland, on June 15-19.{" "}
+                Join us at the OpenML Hackathon in Aalto, Finland, on June 15-18.{" "}
                 <a href="https://www.openml.org/meet">
                   Learn more.
                 </a>
