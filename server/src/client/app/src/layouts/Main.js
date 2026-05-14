@@ -76,7 +76,7 @@ function Main(props) {
   const [activeSearch, setActiveSearch] = useState(false);
   const [mode, setMode] = useState("wide");
 
-  const [bannerOpen, setBannerOpen] = React.useState(false);
+  const [bannerOpen, setBannerOpen] = React.useState(true);
   const handleBannerClose = () => {
     setBannerOpen(false);
   };
@@ -140,11 +140,11 @@ function Main(props) {
           >
             <Alert
               onClose={handleBannerClose}
-              severity="warning"
+              severity="info"
               sx={{ width: '100%'}}
             >
-                We're performing maintenance work on our servers in the week of 24-28 November. During this time, OpenML will be in read-only mode.{" "}
-                <a href="https://github.com/orgs/openml/discussions/27"> 
+                Join us at the OpenML Hackathon in Aalto, Finland, on June 15-19.{" "}
+                <a href="https://www.openml.org/meet">
                   Learn more.
                 </a>
             </Alert>
