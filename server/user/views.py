@@ -596,8 +596,8 @@ def passkey_required(endpoint):
 
 
 @user_blueprint.route("/auth/passkey/register-options", methods=["POST"])
-@jwt_required()
 @passkey_required
+@jwt_required()
 def passkey_register_options():
     current_user = get_jwt_identity()
     with Session() as session:
@@ -633,8 +633,8 @@ def passkey_register_options():
 
 
 @user_blueprint.route("/auth/passkey/register-verify", methods=["POST"])
-@jwt_required()
 @passkey_required
+@jwt_required()
 def passkey_register_verify():
     current_user = get_jwt_identity()
     data = request.get_json()
@@ -741,8 +741,8 @@ def passkey_login_verify():
 
 
 @user_blueprint.route("/auth/passkey/list", methods=["GET"])
-@jwt_required()
 @passkey_required
+@jwt_required()
 def passkey_list():
     current_user = get_jwt_identity()
     with Session() as session:
@@ -763,8 +763,8 @@ def passkey_list():
 
 
 @user_blueprint.route("/auth/passkey/remove", methods=["POST"])
-@jwt_required()
 @passkey_required
+@jwt_required()
 def passkey_remove():
     current_user = get_jwt_identity()
     data = request.get_json()
