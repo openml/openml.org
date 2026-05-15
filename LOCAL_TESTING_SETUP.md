@@ -164,6 +164,9 @@ SMTP_FROM=OpenML <noreply@openml.org>
 NEXT_PUBLIC_URL=http://localhost:3050
 NODE_ENV=development
 
+# Enable Passkey Endpoints
+OPENML_PASSKEY_ENABLED=true
+
 # Existing API endpoints
 NEXT_PUBLIC_OPENML_API_URL=https://www.openml.org
 NEXT_PUBLIC_URL_ELASTICSEARCH=https://www.openml.org/es/

@@ -44,6 +44,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV PORT=3050
 ENV HOSTNAME=0.0.0.0
+ENV OPENML_PASSKEY_ENABLED=true
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
