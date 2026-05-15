@@ -37,14 +37,12 @@ export async function fetchDataset(id: string): Promise<Dataset> {
 
     return data._source as Dataset;
   } catch (error) {
-    // Log error for debugging (server-side only)
-    console.error(`Error fetching dataset ${id}:`, error);
-
-    // Re-throw notFound() errors
-    if (error instanceof Error && error.message === "NEXT_NOT_FOUND") {
+    // Re-throw notFound() — Next.js uses digest, not message
+    if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") {
       throw error;
     }
 
+    console.error(`Error fetching dataset ${id}:`, error);
     throw new Error("Failed to load dataset");
   }
 }
