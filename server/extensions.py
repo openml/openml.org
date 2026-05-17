@@ -21,7 +21,8 @@ extension.py
 Declares extension for Flask App, connects with already existing database
 """
 # specifying engine according to existing db
-load_dotenv(".env")
+environment = os.environ.get("environment", "")
+load_dotenv(f".env{environment}")
 
 
 if not strtobool(os.environ.get("TESTING", "True")):
