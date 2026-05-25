@@ -133,6 +133,22 @@ class OpenMLSearchConnector implements APIConnector {
           });
         }
 
+        // Issue #385: If the search term contains spaces, also search for the underscored version
+        // This allows "house prices nominal" to match the dataset "house_prices_nominal"
+        if (searchTerm.includes(" ")) {
+          const underscoredTerm = searchTerm.replace(/\s+/g, "_");
+          shouldClauses.push({
+            multi_match: {
+              query: underscoredTerm,
+              fields: searchFields.map(
+                (f) =>
+                  `${f}^${(queryConfig.search_fields?.[f]?.weight || 1) * 2}`,
+              ),
+              type: "phrase",
+            },
+          });
+        }
+
         query.bool?.must?.push({
           bool: {
             should: shouldClauses,
@@ -383,7 +399,7 @@ class OpenMLSearchConnector implements APIConnector {
       totalPages: Math.ceil(totalResults / (requestState.resultsPerPage || 10)),
       pagingStart:
         ((requestState.current || 1) - 1) *
-          (requestState.resultsPerPage || 10) +
+        (requestState.resultsPerPage || 10) +
         1,
       pagingEnd: Math.min(
         (requestState.current || 1) * (requestState.resultsPerPage || 10),
