@@ -6,14 +6,23 @@ import { useSearchParams } from "next/navigation";
 import flowConfig from "./flow-search-config";
 import { ActiveFiltersHeader } from "../shared/active-filters-header";
 import { FlowsSearchContainer } from "./flows-search-container";
+import { Tag, X } from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export function FlowsSearchPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const tagFilter = searchParams.get("tag") || "";
+
+  const initialFilters = tagFilter
+    ? [{ field: "tags.tag", values: [tagFilter], type: "any" as const }]
+    : [];
 
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
     "dependencies.keyword": "Libraries",
+    "tags.tag": "Tag",
   };
 
   return (
@@ -24,6 +33,7 @@ export function FlowsSearchPage() {
           initialState: {
             ...flowConfig.initialState,
             searchTerm: initialQuery,
+            filters: initialFilters,
           },
         } as SearchDriverOptions
       }
@@ -51,6 +61,24 @@ export function FlowsSearchPage() {
                   <p className="text-muted-foreground">
                     Browse machine learning algorithms and workflows
                   </p>
+                  {tagFilter && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-1.5 px-3 py-1"
+                      >
+                        <Tag className="h-3 w-3" />
+                        <span>Tag: {tagFilter}</span>
+                        <Link
+                          href="/flows"
+                          className="hover:bg-muted ml-1 rounded-full p-0.5"
+                          title="Clear tag filter"
+                        >
+                          <X className="h-3 w-3" />
+                        </Link>
+                      </Badge>
+                    </div>
+                  )}
                 </div>
               </div>
               <ActiveFiltersHeader facetLabels={facetLabels} />
@@ -59,7 +87,7 @@ export function FlowsSearchPage() {
         </div>
 
         {/* Search Container */}
-        <div className="mx-auto w-full flex-1 px-1.5 py-6">
+        <div className="mx-auto w-full flex-1 px-1.5 pb-6">
           <FlowsSearchContainer />
         </div>
       </div>

@@ -8,14 +8,9 @@ import { ControlsBar } from "../shared/controls-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
-import {
-  Database,
-  Cog,
-  FlaskConical,
-  Building2,
-  Calendar,
-  Search,
-} from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { Database, Building2, Calendar, Search } from "lucide-react";
 
 interface UserResult {
   user_id?: { raw: string | number };
@@ -146,7 +141,7 @@ export function UsersSearchContainer({
                     <div className="flex items-center gap-2">
                       <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
                       <span className="text-muted-foreground text-sm">
-                        Searching for "{searchTerm}"...
+                        Searching for &quot;{searchTerm}&quot;...
                       </span>
                     </div>
                   ) : (
@@ -157,18 +152,18 @@ export function UsersSearchContainer({
                           <span className="text-primary font-semibold">
                             {totalResults}
                           </span>{" "}
-                          {totalResults === 1 ? "user" : "users"} matching "
-                          <span className="font-medium">{searchTerm}</span>"
+                          {totalResults === 1 ? "user" : "users"} matching &quot;
+                          <span className="font-medium">{searchTerm}</span>&quot;
                         </span>
                       ) : (
                         <div className="flex items-center gap-2">
                           <Search className="text-muted-foreground h-4 w-4" />
                           <span className="text-muted-foreground text-sm">
-                            No users found matching "
+                            No users found matching &quot;
                             <span className="text-foreground font-medium">
                               {searchTerm}
                             </span>
-                            "
+                            &quot;
                           </span>
                         </div>
                       )}
@@ -287,7 +282,11 @@ export function UsersSearchContainer({
                                 )}
                                 {result.flows_uploaded?.raw !== undefined && (
                                   <span className="flex items-center gap-1">
-                                    <Cog className="h-3 w-3 text-orange-600" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.flow}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.flow }}
+                                    />
                                     <span className="font-medium">
                                       {result.flows_uploaded.raw}
                                     </span>
@@ -295,7 +294,11 @@ export function UsersSearchContainer({
                                 )}
                                 {result.runs_uploaded?.raw !== undefined && (
                                   <span className="flex items-center gap-1">
-                                    <FlaskConical className="h-3 w-3 text-red-600" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.run}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.run }}
+                                    />
                                     <span className="font-medium">
                                       {result.runs_uploaded.raw}
                                     </span>
@@ -402,7 +405,11 @@ export function UsersSearchContainer({
                                 )}
                                 {result.flows_uploaded?.raw !== undefined && (
                                   <span className="flex items-center gap-1.5">
-                                    <Cog className="h-3 w-3 text-orange-600" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.flow}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.flow }}
+                                    />
                                     <span className="font-medium">
                                       {result.flows_uploaded.raw}
                                     </span>
@@ -413,7 +420,11 @@ export function UsersSearchContainer({
                                 )}
                                 {result.runs_uploaded?.raw !== undefined && (
                                   <span className="flex items-center gap-1.5">
-                                    <FlaskConical className="h-3 w-3 text-red-600" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.run}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.run }}
+                                    />
                                     <span className="font-medium">
                                       {result.runs_uploaded.raw}
                                     </span>
@@ -449,11 +460,11 @@ export function UsersSearchContainer({
                               No users found
                             </h3>
                             <p className="text-muted-foreground mb-4 text-sm">
-                              We couldn't find any users matching "
+                              We couldn&apos;t find any users matching &quot;
                               <span className="text-foreground font-medium">
                                 {searchTerm}
                               </span>
-                              "
+                              &quot;
                             </p>
                             <p className="text-muted-foreground text-xs">
                               Try adjusting your search terms or check for typos
@@ -541,7 +552,7 @@ export function UsersSearchContainer({
                                   1,
                                   current - Math.floor(PAGES_TO_SHOW / 2),
                                 );
-                                let endPage = Math.min(
+                                const endPage = Math.min(
                                   totalPages,
                                   startPage + PAGES_TO_SHOW - 1,
                                 );
