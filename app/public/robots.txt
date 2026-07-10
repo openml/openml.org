@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /datasets?*
+Disallow: /tasks?*
+Disallow: /flows?*
+Disallow: /runs?*
+Allow: /datasets$
+Allow: /tasks$
+Allow: /flows$
+Allow: /runs$
