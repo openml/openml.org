@@ -3816,42 +3816,6 @@
                     }
                 }
             }
-        },
-        "/user/list": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "List all users by user id. Only accessible to admins.",
-                "description": "Returns an array with all user ids and names.",
-                "operationId": "Api_user::username_list",
-                "responses": {
-                    "200": {
-                        "description": "A list of users",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserList"
-                                },
-                                "example": {
-                                    "users": {
-                                        "user": [
-                                            {
-                                                "id": "1",
-                                                "username": "janvanrijn@gmail.com"
-                                            },
-                                            {
-                                                "id": "2",
-                                                "username": "joaquin.vanschoren@gmail.com"
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
