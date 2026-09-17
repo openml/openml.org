@@ -190,7 +190,7 @@ export default async function DocumentationPage({
                       Java clients
                     </p>
                     <Link
-                      href="/docs-apis"
+                      href="/apis"
                       className="text-primary mt-auto text-sm hover:underline"
                     >
                       View APIs →
@@ -533,7 +533,7 @@ run.publish()`}</code>
           <section id="apis" className="mb-16 scroll-mt-20">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-3xl font-bold">APIs & Integrations</h2>
-              <Link href="/docs-apis">
+              <Link href="/apis">
                 <Button variant="outline" size="sm" className="gap-2">
                   <Code className="h-4 w-4" />
                   Full API Guide
@@ -739,7 +739,7 @@ run.publish()`}</code>
                   <CardDescription>Direct HTTP access</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Link href="/docs-apis#rest">
+                  <Link href="/apis#rest">
                     <Button
                       variant="outline"
                       size="sm"

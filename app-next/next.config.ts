@@ -134,18 +134,6 @@ const nextConfig: NextConfig = {
         destination: "/runs",
         permanent: true,
       },
-      // /apis conflicts with legacy PHP /api* routing on production Apache.
-      // Keep a Next-level redirect for deployments that serve app-next directly.
-      {
-        source: "/apis",
-        destination: "/docs-apis",
-        permanent: true,
-      },
-      {
-        source: "/:locale/apis",
-        destination: "/:locale/docs-apis",
-        permanent: true,
-      },
     ];
   },
   // Hybrid proxy: routes not yet migrated to Next.js fall back to Flask

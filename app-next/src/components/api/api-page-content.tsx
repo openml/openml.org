@@ -783,7 +783,7 @@ openml.config.apikey = "your_api_key_here"`}
                   </p>
                 </div>
                 <Button asChild>
-                  <Link href="https://www.openml.org/docs-apis" target="_blank">
+                  <Link href="https://www.openml.org/apis" target="_blank">
                     <ExternalLink className="mr-2 h-4 w-4" />
                     View Swagger Documentation
                   </Link>
@@ -814,7 +814,7 @@ openml.config.apikey = "your_api_key_here"`}
                   icon: Terminal,
                   title: "REST API Reference",
                   description: "Swagger documentation",
-                  href: "https://www.openml.org/docs-apis",
+                  href: "https://www.openml.org/apis",
                 },
                 {
                   icon: Database,

@@ -46,7 +46,7 @@ function Footer() {
           }}
         >
           <List>
-            <ListItemButton component="a" href="docs-apis">
+            <ListItemButton component="a" href="apis">
               <ListItemText primary="APIs" />
             </ListItemButton>
             <ListItemButton component="a" href="contribute">

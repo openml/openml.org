@@ -136,7 +136,7 @@ export function proxy(request: NextRequest) {
  */
 export const config = {
   matcher: [
-    // Match all routes except static files and API routes (but allow /docs-apis page)
+    // Match all routes except static files and API routes (but allow /apis page)
     "/((?!api/|_next|_vercel|.*\\..*).*)",
     // Legacy redirect patterns
     "/search",
