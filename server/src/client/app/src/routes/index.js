@@ -319,8 +319,8 @@ const documentationRoutes = {
 };
 
 const apiRoutes = {
-    id: "APIs",
-    path: '/docs-apis',
+    id: "API's",
+    path: '/apis',
     icon: <BlueMenuIcon icon='code' fixedWidth />,
     component: API,
     color: blue[800],
