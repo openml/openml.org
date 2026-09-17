@@ -1,109 +1,54 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import {
-  FileText,
-  BarChart3,
-  Settings2,
-  Tags,
-  AlertCircle,
-  LineChart,
-  Download,
-} from "lucide-react";
+import type { Metadata } from "next";
+import { AlertCircle } from "lucide-react";
+import { getRun } from "@/lib/api/run";
 import { RunHeader } from "@/components/run/run-header";
 import { RunMetricsSection } from "@/components/run/run-metrics-section";
 import { RunParametersSection } from "@/components/run/run-parameters-section";
-import { RunNavigationMenu } from "@/components/run/run-navigation-menu";
 import { RunTagsSection } from "@/components/run/run-tags-section";
 import { RunOutputFilesSection } from "@/components/run/run-output-files-section";
 import { RunAnalysesSection } from "@/components/run/run-analyses-section";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { WorkspaceSetter } from "@/components/workspace/workspace-setter";
+import { WorkspaceInlinePanel } from "@/components/workspace/workspace-inline-panel";
+import { entityColors } from "@/constants";
+import {
+  BarChart3,
+  Settings2,
+  Tags,
+  FileText,
+  LineChart,
+  Download,
+} from "lucide-react";
 import Link from "next/link";
 
-// API response types
-interface RunApiResponse {
-  run?: Run;
-  error?: { code: string; message: string };
-}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const runId = parseInt(id, 10);
 
-interface Run {
-  run_id: number;
-  uploader?: string;
-  uploader_id?: number;
-  upload_time?: string;
-  flow_id?: number;
-  flow_name?: string;
-  task_id?: number;
-  task?: {
-    task_id?: number;
-    task_type?: string;
-    source_data?: {
-      data_id?: number;
-      name?: string;
+  if (isNaN(runId)) {
+    return {
+      title: "Run Not Found | OpenML",
     };
-  };
-  visibility?: string;
-  error_message?: string | null;
-  tag?: string[];
-  parameter_setting?: Array<{
-    name: string;
-    value: string | number | boolean | null;
-  }>;
-  output_data?: {
-    evaluation?: Array<{
-      name: string;
-      value: string | number;
-      stdev?: string | number;
-      array_data?: Record<string, string | number>;
-      per_fold?: Array<number | number[]>;
-    }>;
-  };
-  nr_of_likes?: number;
-  nr_of_downloads?: number;
-  nr_of_issues?: number;
-  nr_of_downvotes?: number;
-  setup_string?: string;
-}
-
-// Fetch run data from API - no mock data, proper error handling
-async function getRun(
-  runId: number,
-): Promise<{ run: Run | null; error: string | null }> {
-  try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
-    const response = await fetch(`${apiUrl}/json/run/${runId}`, {
-      next: { revalidate: 3600 },
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        return { run: null, error: `Run #${runId} not found` };
-      }
-      return {
-        run: null,
-        error: `Failed to fetch run: HTTP ${response.status}`,
-      };
-    }
-
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      return { run: null, error: "Invalid response format from API" };
-    }
-
-    const data: RunApiResponse = await response.json();
-
-    if (data.error) {
-      return { run: null, error: data.error.message || "Unknown API error" };
-    }
-
-    return { run: data.run || null, error: null };
-  } catch (error) {
-    console.error("Failed to fetch run:", error);
-    return { run: null, error: "Failed to connect to OpenML API" };
   }
+
+  const { run } = await getRun(runId);
+
+  if (!run) {
+    return {
+      title: "Run Not Found | OpenML",
+    };
+  }
+
+  return {
+    title: `Run ${run.run_id} | OpenML`,
+    description: `Details for Run ${run.run_id} on task ${run.task_id} with flow ${run.flow_id}.`,
+  };
 }
 
 export default async function RunDetailPage({
@@ -151,106 +96,180 @@ export default async function RunDetailPage({
   return (
     <div className="relative min-h-screen">
       <div className="container mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+        {/* Push context to the persistent workspace panel */}
+        <WorkspaceSetter
+          entity={{
+            type: "run",
+            id: run.run_id,
+            title: `Run #${run.run_id}`,
+            subtitle: run.flow_name || `Flow #${run.flow_id}`,
+            url: `/runs/${run.run_id}`,
+            color: entityColors.run,
+          }}
+          sections={[
+            ...(evaluationsCount > 0
+              ? [
+                  {
+                    id: "metrics",
+                    label: "Evaluation Metrics",
+                    iconName: "BarChart3",
+                    count: evaluationsCount,
+                  },
+                ]
+              : []),
+            {
+              id: "analyses",
+              label: "Analyses",
+              iconName: "LineChart",
+            },
+            ...(parametersCount > 0
+              ? [
+                  {
+                    id: "parameters",
+                    label: "Parameters",
+                    iconName: "Settings2",
+                    count: parametersCount,
+                  },
+                ]
+              : []),
+            ...(tagsCount > 0
+              ? [
+                  {
+                    id: "tags",
+                    label: "Tags",
+                    iconName: "Tags",
+                    count: tagsCount,
+                  },
+                ]
+              : []),
+            {
+              id: "output-files",
+              label: "Output Files",
+              iconName: "Download",
+            },
+            ...(run.setup_string
+              ? [
+                  {
+                    id: "setup",
+                    label: "Setup",
+                    iconName: "FileText",
+                  },
+                ]
+              : []),
+          ]}
+          quickLinks={[
+            ...(run.task_id
+              ? [
+                  {
+                    label: `Task #${run.task_id}`,
+                    href: `/tasks/${run.task_id}`,
+                    iconName: "ExternalLink",
+                  },
+                ]
+              : []),
+            {
+              label: run.flow_name || `Flow #${run.flow_id}`,
+              href: `/flows/${run.flow_id}`,
+              iconName: "ExternalLink",
+            },
+          ]}
+          actions={[
+            {
+              label: "Compare with…",
+              href: `/runs/compare?ids=${run.run_id}`,
+              iconName: "GitCompareArrows",
+            },
+          ]}
+        />
+
         {/* Header: Full Width */}
         <RunHeader run={run} />
 
-        {/* Content with Sidebar */}
-        <div className="relative mt-6 flex min-h-screen gap-8">
-          {/* Left: Main Content */}
+        {/* Main Content + Inline Panel */}
+        <div className="mt-6 flex gap-8">
           <div className="min-w-0 flex-1 space-y-6">
-            {/* Evaluation Metrics */}
-            {evaluationsCount > 0 && (
-              <CollapsibleSection
-                id="metrics"
-                title="Evaluation Metrics"
-                description="Performance metrics from cross-validation"
-                icon={<BarChart3 className="h-4 w-4 text-blue-500" />}
-                badge={evaluationsCount}
-                defaultOpen={true}
-              >
-                <RunMetricsSection run={run} />
-              </CollapsibleSection>
-            )}
-
-            {/* Analyses - Predictions, Confusion Matrix */}
+          {/* Evaluation Metrics */}
+          {evaluationsCount > 0 && (
             <CollapsibleSection
-              id="analyses"
-              title="Analyses"
-              description="Predictions, confusion matrix, and class distribution"
-              icon={<LineChart className="h-4 w-4 text-purple-500" />}
+              id="metrics"
+              title="Evaluation Metrics"
+              description="Performance metrics from cross-validation"
+              icon={<BarChart3 className="h-4 w-4 text-blue-500" />}
+              badge={evaluationsCount}
+              defaultOpen={true}
+            >
+              <RunMetricsSection run={run} />
+            </CollapsibleSection>
+          )}
+
+          {/* Analyses - Predictions, Confusion Matrix */}
+          <CollapsibleSection
+            id="analyses"
+            title="Analyses"
+            description="Predictions, confusion matrix, and class distribution"
+            icon={<LineChart className="h-4 w-4 text-purple-500" />}
+            defaultOpen={false}
+          >
+            <RunAnalysesSection runId={run.run_id} />
+          </CollapsibleSection>
+
+          {/* Parameters */}
+          {parametersCount > 0 && (
+            <CollapsibleSection
+              id="parameters"
+              title="Parameters"
+              description="Flow parameters used in this run"
+              icon={<Settings2 className="h-4 w-4 text-gray-500" />}
+              badge={parametersCount}
+              defaultOpen={true}
+            >
+              <RunParametersSection run={run} />
+            </CollapsibleSection>
+          )}
+
+          {/* Tags */}
+          {tagsCount > 0 && (
+            <CollapsibleSection
+              id="tags"
+              title="Tags"
+              description="Labels and categories for this run"
+              icon={<Tags className="h-4 w-4 text-purple-500" />}
+              badge={tagsCount}
               defaultOpen={false}
             >
-              <RunAnalysesSection runId={run.run_id} />
+              <RunTagsSection tags={run.tag || []} />
             </CollapsibleSection>
+          )}
 
-            {/* Parameters */}
-            {parametersCount > 0 && (
-              <CollapsibleSection
-                id="parameters"
-                title="Parameters"
-                description="Flow parameters used in this run"
-                icon={<Settings2 className="h-4 w-4 text-gray-500" />}
-                badge={parametersCount}
-                defaultOpen={true}
-              >
-                <RunParametersSection run={run} />
-              </CollapsibleSection>
-            )}
+          {/* Output Files */}
+          <CollapsibleSection
+            id="output-files"
+            title="Output Files"
+            description="Download run description and predictions"
+            icon={<Download className="h-4 w-4 text-blue-500" />}
+            defaultOpen={false}
+          >
+            <RunOutputFilesSection runId={run.run_id} />
+          </CollapsibleSection>
 
-            {/* Tags */}
-            {tagsCount > 0 && (
-              <CollapsibleSection
-                id="tags"
-                title="Tags"
-                description="Labels and categories for this run"
-                icon={<Tags className="h-4 w-4 text-purple-500" />}
-                badge={tagsCount}
-                defaultOpen={false}
-              >
-                <RunTagsSection tags={run.tag || []} />
-              </CollapsibleSection>
-            )}
-
-            {/* Output Files */}
+          {/* Setup Description (if available) */}
+          {run.setup_string && (
             <CollapsibleSection
-              id="output-files"
-              title="Output Files"
-              description="Download run description and predictions"
-              icon={<Download className="h-4 w-4 text-blue-500" />}
+              id="setup"
+              title="Setup"
+              description="Run configuration details"
+              icon={<FileText className="h-4 w-4 text-gray-500" />}
               defaultOpen={false}
             >
-              <RunOutputFilesSection runId={run.run_id} />
+              <div className="prose dark:prose-invert max-w-none p-4">
+                <pre className="text-sm whitespace-pre-wrap">
+                  {run.setup_string}
+                </pre>
+              </div>
             </CollapsibleSection>
-
-            {/* Setup Description (if available) */}
-            {run.setup_string && (
-              <CollapsibleSection
-                id="setup"
-                title="Setup"
-                description="Run configuration details"
-                icon={<FileText className="h-4 w-4 text-gray-500" />}
-                defaultOpen={false}
-              >
-                <div className="prose dark:prose-invert max-w-none p-4">
-                  <pre className="text-sm whitespace-pre-wrap">
-                    {run.setup_string}
-                  </pre>
-                </div>
-              </CollapsibleSection>
-            )}
+          )}
           </div>
-
-          {/* Right: Navigation Menu */}
-          <RunNavigationMenu
-            hasMetrics={evaluationsCount > 0}
-            hasAnalyses={true}
-            hasParameters={parametersCount > 0}
-            hasTags={tagsCount > 0}
-            hasSetup={!!run.setup_string}
-            metricsCount={evaluationsCount}
-            parametersCount={parametersCount}
-            tagsCount={tagsCount}
-          />
+          <WorkspaceInlinePanel />
         </div>
       </div>
     </div>
