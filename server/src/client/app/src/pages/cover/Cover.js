@@ -852,7 +852,7 @@ class Cover extends React.Component {
                     value={rExample}
                   />
                 </Grid>
-                <MoreLink to="/docs-apis" style={{ fontSize: "1.1em" }}>
+                <MoreLink to="/apis" style={{ fontSize: "1.1em" }}>
                   Learn more about the OpenML APIs{" "}
                   <ListIcon icon="arrow-right" style={{ marginLeft: 5 }} />
                 </MoreLink>

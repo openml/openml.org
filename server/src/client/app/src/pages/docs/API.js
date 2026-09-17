@@ -378,7 +378,7 @@ EvaluationList el = openml.evaluationList(tasks, null, "area_under_roc_curve", 1
   }
 }
 
-function API() {
+function OpenMLSwaggerUI() {
   const [api, setApi] = useState('Python');
   const [open, setOpen] = React.useState(false);
 
@@ -537,4 +537,4 @@ function API() {
   );
 }
 
-export default API;
+export default OpenMLSwaggerUI;

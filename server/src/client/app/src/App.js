@@ -447,7 +447,7 @@ class App extends React.Component {
             return orange[600];
         } else if (
             type === 'flow' ||
-            window.location.pathname.startsWith('/docs-apis')
+            window.location.pathname.startsWith('/api')
         ) {
             return blue[800];
         } else if (
