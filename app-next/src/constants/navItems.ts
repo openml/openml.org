@@ -140,7 +140,7 @@ export const navItems: { title: string; titleKey: string; items: NavItem[] }[] =
         {
           title: "API's",
           titleKey: "apis",
-          href: "/apis",
+          href: "/docs-apis",
           icon: ENTITY_ICONS.api,
           color: entityColors.apis,
         },

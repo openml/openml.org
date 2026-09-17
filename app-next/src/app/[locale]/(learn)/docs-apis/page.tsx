@@ -29,13 +29,13 @@ export async function generateMetadata({
       "scikit-learn",
     ],
     alternates: {
-      canonical: `/${locale}/apis`,
+      canonical: `/${locale}/docs-apis`,
     },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
-      url: `https://www.openml.org/${locale}/apis`,
+      url: `https://www.openml.org/${locale}/docs-apis`,
       siteName: "OpenML",
       images: [
         {
