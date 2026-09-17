@@ -124,7 +124,7 @@ const learnSection = [
     title: "sidebar.docs",
   },
   {
-    href: "/apis",
+    href: "/docs-apis",
     title: "sidebar.apis",
   },
   {
