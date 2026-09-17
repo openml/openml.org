@@ -1,6 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
-import { MeasureList } from "@/components/measure/measure-list";
-import { Gauge } from "lucide-react";
+import { MeasureSearchContainer, MeasureStatsCard } from "@/components/measure";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { entityColors } from "@/constants/entityColors";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -39,7 +41,12 @@ export default async function ModelEvaluationPage({
       <div className="bg-muted/40 border-b">
         <div className="container mx-auto px-4 py-8 sm:px-6">
           <div className="flex items-start gap-3">
-            <Gauge className="h-8 w-8 text-sky-600" aria-hidden="true" />
+            <FontAwesomeIcon
+              icon={ENTITY_ICONS.measure}
+              className="h-8 w-8"
+              style={{ color: entityColors.measures }}
+              aria-hidden="true"
+            />
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
                 Evaluation Measures
@@ -51,8 +58,9 @@ export default async function ModelEvaluationPage({
           </div>
         </div>
       </div>
-      <div className="container mx-auto max-w-[1000px] px-4 py-8 sm:px-6">
-        <MeasureList measureType="evaluation_measure" />
+      <div className="container mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
+        <MeasureStatsCard measureType="evaluation_measure" />
+        <MeasureSearchContainer measureType="evaluation_measure" />
       </div>
     </div>
   );
