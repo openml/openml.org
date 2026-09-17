@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { parseDescription } from "../teaser";
-import {
-  Cog,
-  Heart,
-  CloudDownload,
-  FlaskConical,
-  Hash,
-  Clock,
-  User,
-} from "lucide-react";
+import { Heart, CloudDownload, Hash, Clock, User } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS, entityColors } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { truncateName } from "@/lib/utils";
@@ -95,7 +89,11 @@ export function FlowResultCard({ result }: FlowResultCardProps) {
 
       {/* Flow Icon - Top Left */}
       <div className="absolute top-2 right-2 z-20">
-        <Cog className="h-5 w-5 text-[#3b82f6]" strokeWidth={1.5} />
+        <FontAwesomeIcon
+          icon={ENTITY_ICONS.flow}
+          className="h-5 w-5"
+          style={{ color: entityColors.flow }}
+        />
       </div>
 
       <CardContent className="py-0.55 px-4">
@@ -143,7 +141,11 @@ export function FlowResultCard({ result }: FlowResultCardProps) {
           <div className="flex items-center gap-3">
             <div className="flex flex-wrap gap-4 text-sm font-medium">
               <span className="flex items-center gap-1.5" title="runs">
-                <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="h-4 w-4"
+                  style={{ color: entityColors.run }}
+                />
                 {abbreviateNumber(Number(result.runs?.raw || 0))}
               </span>
               <span className="flex items-center gap-1.5" title="likes">
