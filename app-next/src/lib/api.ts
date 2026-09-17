@@ -15,7 +15,7 @@ import type {
  * This client provides methods to interact with the OpenML REST API directly,
  * bypassing Flask backend for improved performance.
  *
- * API Documentation: https://www.openml.org/apis
+ * API Documentation: https://www.openml.org/docs-apis
  */
 class OpenMLAPIClient {
   private client: AxiosInstance;

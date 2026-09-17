@@ -27,7 +27,7 @@ const STATIC_PAGES = [
   "/",
   "/about",
   "/documentation",
-  "/apis",
+  "/docs-apis",
   "/terms",
   "/auth/signin",
   "/datasets",
