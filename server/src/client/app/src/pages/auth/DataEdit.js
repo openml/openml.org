@@ -72,14 +72,9 @@ function DataEdit() {
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
-    const handleChange = (event) => {
-        setDescription(event.target.value);
-        event.preventDefault();
-    }
 
     useEffect(() => {
         async function fetchData() {
-            // You can await here
             const yourConfig = {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token")
@@ -90,24 +85,23 @@ function DataEdit() {
             };
             const response = await axios(process.env.REACT_APP_URL_SITE_BACKEND + "data-edit", yourConfig);
 
-            //setUserId(response.data.user_id);
-            setName(response.data.name);
-            setDescription(response.data.description);
-            setCreator(response.data.creator);
-            setDate(response.data.date);
-            setLanguage(response.data.language);
-            setCitation(response.data.citation);
-            setDefTatt(response.data.default_target_attribute);
-            setRowIdatt(response.data.row_id_attribute);
-            setIgnoreatt(response.data.ignore_attribute);
-            setODUrl(response.data.original_data_url);
-            setPaperUrl(response.data.paper_url);
+            setName(response.data.name || "");
+            setDescription(response.data.description || "");
+            setCreator(response.data.creator || "");
+            setDate(response.data.date || "");
+            setLanguage(response.data.language || "");
+            setCitation(response.data.citation || "");
+            setDefTatt(response.data.default_target_attribute || "");
+            setRowIdatt(response.data.row_id_attribute || "");
+            setIgnoreatt(response.data.ignore_attribute || "");
+            setODUrl(response.data.original_data_url || "");
+            setPaperUrl(response.data.paper_url || "");
             if (response.data.owner === 'true') {
                 setOwner(true);
             }
         }
         fetchData();
-    }, []); // Or [] if effect doesn't need props or state
+    }, []);
 
     function datatoflask(event) {
         event.preventDefault();
@@ -117,21 +111,22 @@ function DataEdit() {
                     process.env.REACT_APP_URL_SITE_BACKEND + "data-edit",
                     {
                         owner: "true",
-                        description: event.target.description.value,
-                        creator: event.target.creator.value,
-                        date: event.target.collection_date.value,
-                        citation: event.target.citation.value,
-                        language: event.target.language.value,
-                        default_target_attribute: event.target.default_target_attribute.value,
-                        ignore_attribute: event.target.ignore_attribute.value,
-                        row_id_attribute: event.target.row_id_attribute.value,
-                        original_data_url: event.target.original_data_url.value,
-                        paper_url: event.target.paper_url.value
+                        description: description,
+                        creator: creator,
+                        date: date,
+                        citation: citation,
+                        language: language,
+                        default_target_attribute: def_tar_att,
+                        ignore_attribute: ignore_att,
+                        row_id_attribute: row_id_att,
+                        original_data_url: original_data_url,
+                        paper_url: paper_url
                     },
                     yourConfig
                 )
                 .then(function (response) {
                     console.log(response.data);
+                    setSuccess(true);
                 })
                 .catch(function (error) {
                     setError(true);
@@ -144,13 +139,13 @@ function DataEdit() {
                     process.env.REACT_APP_URL_SITE_BACKEND + "data-edit",
                     {
                         owner: "false",
-                        description: event.target.description.value,
-                        creator: event.target.creator.value,
-                        date: event.target.collection_date.value,
-                        citation: event.target.citation.value,
-                        language: event.target.language.value,
-                        original_data_url: event.target.original_data_url.value,
-                        paper_url: event.target.paper_url.value
+                        description: description,
+                        creator: creator,
+                        date: date,
+                        citation: citation,
+                        language: language,
+                        original_data_url: original_data_url,
+                        paper_url: paper_url
                     },
                     yourConfig
                 )
@@ -200,7 +195,7 @@ function DataEdit() {
                                 {tabValue === 0 ? (
                                     <FormControl fullWidth>
                                         <TextField
-                                            onChange={handleChange}
+                                            onChange={(event) => setDescription(event.target.value)}
                                             variant="outlined"
                                             label=""
                                             id="description"
@@ -221,39 +216,63 @@ function DataEdit() {
                                 </div>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
                                     <InputLabel shrink htmlFor="citation">Citation</InputLabel>
-                                    <Input id="citation" placeholder="citation" defaultValue={citation}
-                                        multiline />
+                                    <Input
+                                        id="citation"
+                                        value={citation}
+                                        onChange={(event) => setCitation(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
                                     <InputLabel shrink htmlFor="creator">Creator</InputLabel>
-                                    <Input id="creator" placeholder="creator" defaultValue={creator}
-                                        multiline />
+                                    <Input
+                                        id="creator"
+                                        value={creator}
+                                        onChange={(event) => setCreator(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
-                                    <InputLabel shrink htmlFor="Collection Date">
+                                    <InputLabel shrink htmlFor="collection_date">
                                         Collection date
                                     </InputLabel>
-                                    <Input id="collection_date" placeholder="Collection date" defaultValue={date}
-                                        multiline />
+                                    <Input
+                                        id="collection_date"
+                                        value={date}
+                                        onChange={(event) => setDate(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
                                     <InputLabel shrink htmlFor="language">Language</InputLabel>
-                                    <Input id="language" placeholder="Language" defaultValue={language}
-                                        multiline />
+                                    <Input
+                                        id="language"
+                                        value={language}
+                                        onChange={(event) => setLanguage(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
                                     <InputLabel shrink htmlFor="original_data_url">
                                         Original data URL
                                     </InputLabel>
-                                    <Input id="original_data_url" placeholder="original_data_url"
-                                        defaultValue={original_data_url} multiline />
+                                    <Input
+                                        id="original_data_url"
+                                        value={original_data_url}
+                                        onChange={(event) => setODUrl(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 <FormControl fullWidth sx={{ mb: 3 }}>
                                     <InputLabel shrink htmlFor="paper_url">
                                         Paper Url
                                     </InputLabel>
-                                    <Input id="paper_url" placeholder="paper_url"
-                                        defaultValue={paper_url} multiline />
+                                    <Input
+                                        id="paper_url"
+                                        value={paper_url}
+                                        onChange={(event) => setPaperUrl(event.target.value)}
+                                        multiline
+                                    />
                                 </FormControl>
                                 {owner && (
                                     <Box p={1} border="3px solid red" borderRadius="5px" padding={5} marginTop={10}
@@ -262,20 +281,32 @@ function DataEdit() {
                                         <FormControl fullWidth sx={{ mb: 3 }}>
                                             <InputLabel shrink
                                                 htmlFor="default_target_attribute">default_target_attribute</InputLabel>
-                                            <Input id="default_target_attribute" placeholder="default_target_attribute"
-                                                defaultValue={def_tar_att} multiline />
+                                            <Input
+                                                id="default_target_attribute"
+                                                value={def_tar_att}
+                                                onChange={(event) => setDefTatt(event.target.value)}
+                                                multiline
+                                            />
                                         </FormControl>
                                         <FormControl fullWidth sx={{ mb: 3 }}>
                                             <InputLabel shrink htmlFor="ignore_attribute">ignore_attribute</InputLabel>
-                                            <Input id="ignore_attribute" placeholder="ignore_attribute"
-                                                defaultValue={ignore_att} multiline />
+                                            <Input
+                                                id="ignore_attribute"
+                                                value={ignore_att}
+                                                onChange={(event) => setIgnoreatt(event.target.value)}
+                                                multiline
+                                            />
                                         </FormControl>
                                         <FormControl fullWidth sx={{ mb: 3 }}>
                                             <InputLabel shrink htmlFor="row_id_attribute">
                                                 row_id_attribute
                                             </InputLabel>
-                                            <Input id="row_id_attribute" placeholder="row_id_attribute"
-                                                defaultValue={row_id_att} multiline />
+                                            <Input
+                                                id="row_id_attribute"
+                                                value={row_id_att}
+                                                onChange={(event) => setRowIdatt(event.target.value)}
+                                                multiline
+                                            />
                                         </FormControl>
 
 
