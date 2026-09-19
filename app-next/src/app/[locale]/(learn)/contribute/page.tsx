@@ -332,7 +332,7 @@ export default async function ContributePage({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Link
-                      href="https://docs.openml.org/"
+                      href="https://docs.openml.org/contributing/website/Website/"
                       target="_blank"
                     >
                       <Button

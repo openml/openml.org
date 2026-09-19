@@ -229,7 +229,7 @@ const website = {
   iconColor: purple[400],
   chips: [
     {
-      link: "https://docs.openml.org/",
+      link: "https://docs.openml.org/contributing/website/Website/",
       icon: faBookOpen,
       target: "_blank",
     },

@@ -376,7 +376,7 @@ export default class GetInvolved extends React.Component {
                   </Typography>
                   <List component="nav">
                     <ContactChipFull
-                      link="https://docs.openml.org/"
+                      link="https://docs.openml.org/contributing/website/Website/"
                       icon="book-open"
                       text="Website docs"
                     />
