@@ -222,7 +222,7 @@ const ResultCard = ({ result }) => {
       )}
       <ColorStats color={grey[400]} sx={{ fontSize: ".9rem", ml: 3, pt: 1 }}>
         <ColoredIcon icon={faHistory} fixedWidth sx={{ pr: 1.5, ml: 6 }} />
-        <TimeAgo date={new Date(result.date.raw)} minPeriod={60} />
+        <TimeAgo date={new Date(result.date?.raw?.replace(" ", "T") + "Z")} minPeriod={60} />
       </ColorStats>
       <Box sx={{ flexGrow: 1 }} />
       <ID color={grey[400]} sx={{ fontSize: ".9rem" }}>

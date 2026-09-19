@@ -285,7 +285,7 @@ class SearchElement extends React.Component {
         {this.props.stats2 !== undefined && this.props.type === "run" && scores}
         <ColorStats color={grey[400]}>
             <ColoredIcon icon="history" fixedWidth />
-            <TimeAgo date={new Date(this.props.date)} minPeriod={60} />
+            <TimeAgo date={new Date(this.props.date?.replace(" ", "T") + "Z")} minPeriod={60} />
         </ColorStats>
 
         <SubStats color={grey[400]}>
