@@ -326,7 +326,7 @@ export default class GetInvolved extends React.Component {
                   </Typography>
                   <List component="nav">
                     <ContactChipFull
-                      link="https://docs.openml.org/Website/"
+                      link="https://docs.openml.org/"
                       icon="book-open"
                       text="Developer docs"
                     />
@@ -376,7 +376,7 @@ export default class GetInvolved extends React.Component {
                   </Typography>
                   <List component="nav">
                     <ContactChipFull
-                      link="https://docs.openml.org/Website/"
+                      link="https://docs.openml.org/contributing/website/Website/"
                       icon="book-open"
                       text="Website docs"
                     />
@@ -412,7 +412,7 @@ export default class GetInvolved extends React.Component {
                       text="OpenML Docs"
                     />
                     <ContactChip
-                      link="https://docs.openml.org/OpenML-Docs/"
+                      link="https://docs.openml.org/contributing/OpenML-Docs/"
                       icon={["fab", "github"]}
                       text="How to update the docs"
                     />

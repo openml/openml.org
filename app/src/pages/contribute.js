@@ -191,7 +191,7 @@ const code = {
   iconColor: blue[400],
   chips: [
     {
-      link: "https://docs.openml.org/Website/",
+      link: "https://docs.openml.org/",
       icon: faBookOpen,
       target: "_blank",
     },
@@ -229,7 +229,7 @@ const website = {
   iconColor: purple[400],
   chips: [
     {
-      link: "https://docs.openml.org/Website/",
+      link: "https://docs.openml.org/contributing/website/Website/",
       icon: faBookOpen,
       target: "_blank",
     },
@@ -252,7 +252,7 @@ const docs = {
       target: "_blank",
     },
     {
-      link: "https://docs.openml.org/OpenML-Docs/",
+      link: "https://docs.openml.org/contributing/OpenML-Docs/",
       icon: faGithub,
       target: "_blank",
     },

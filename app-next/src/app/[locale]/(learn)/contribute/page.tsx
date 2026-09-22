@@ -286,8 +286,8 @@ export default async function ContributePage({
                         icon: Code,
                       },
                       {
-                        label: "Docs",
-                        href: "https://docs.openml.org/Website/",
+                        label: "Developer docs",
+                        href: "https://docs.openml.org/",
                         icon: BookOpen,
                       },
                     ].map((item) => (
@@ -332,7 +332,7 @@ export default async function ContributePage({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Link
-                      href="https://docs.openml.org/Website/"
+                      href="https://docs.openml.org/contributing/website/Website/"
                       target="_blank"
                     >
                       <Button
@@ -396,7 +396,7 @@ export default async function ContributePage({
                       </Button>
                     </Link>
                     <Link
-                      href="https://docs.openml.org/OpenML-Docs/"
+                      href="https://docs.openml.org/contributing/OpenML-Docs/"
                       target="_blank"
                     >
                       <Button
