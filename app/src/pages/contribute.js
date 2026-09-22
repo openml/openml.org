@@ -252,7 +252,7 @@ const docs = {
       target: "_blank",
     },
     {
-      link: "https://docs.openml.org/OpenML-Docs/",
+      link: "https://docs.openml.org/contributing/OpenML-Docs/",
       icon: faGithub,
       target: "_blank",
     },

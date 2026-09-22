@@ -412,7 +412,7 @@ export default class GetInvolved extends React.Component {
                       text="OpenML Docs"
                     />
                     <ContactChip
-                      link="https://docs.openml.org/OpenML-Docs/"
+                      link="https://docs.openml.org/contributing/OpenML-Docs/"
                       icon={["fab", "github"]}
                       text="How to update the docs"
                     />

@@ -396,7 +396,7 @@ export default async function ContributePage({
                       </Button>
                     </Link>
                     <Link
-                      href="https://docs.openml.org/OpenML-Docs/"
+                      href="https://docs.openml.org/contributing/OpenML-Docs/"
                       target="_blank"
                     >
                       <Button
