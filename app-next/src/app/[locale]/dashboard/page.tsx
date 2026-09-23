@@ -1,4 +1,7 @@
 import { getTranslations } from "next-intl/server";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { UserDashboard } from "@/components/dashboard/user-dashboard";
 import type { Metadata } from "next";
 
@@ -23,6 +26,17 @@ export async function generateMetadata({
   };
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect(`/${locale}/auth/sign-in?callbackUrl=/${locale}/dashboard`);
+  }
+
   return <UserDashboard />;
 }

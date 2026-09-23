@@ -17,10 +17,15 @@ export async function GET(
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const size = parseInt(searchParams.get("size") || "10");
+    const sort = searchParams.get("sort") || "date_desc";
 
-    // console.log(
-    //   `🔍 [User Datasets API] Fetching datasets for user ${id}, page ${page}`,
-    // );
+    const sortMap: Record<string, object[]> = {
+      date_desc: [{ date: { order: "desc" } }],
+      runs_desc: [{ runs: { order: "desc" } }],
+      likes_desc: [{ nr_of_likes: { order: "desc" } }],
+      downloads_desc: [{ nr_of_downloads: { order: "desc" } }],
+      name_asc: [{ "name.keyword": { order: "asc" } }],
+    };
 
     // Query ElasticSearch for datasets by uploader_id
     const esQuery = {
@@ -29,7 +34,7 @@ export async function GET(
           uploader_id: id,
         },
       },
-      sort: [{ date: { order: "desc" } }],
+      sort: sortMap[sort] ?? sortMap["date_desc"],
       from: (page - 1) * size,
       size: size,
     };
@@ -41,12 +46,11 @@ export async function GET(
     });
 
     const hits = (response.data.hits?.hits || []) as ElasticsearchHit[];
-    const total = response.data.hits?.total?.value || 0;
+    const totalHits = response.data.hits?.total;
+    const total =
+      typeof totalHits === "object" ? totalHits.value : totalHits || 0;
 
     const datasets = hits.map((hit) => hit._source);
-    // console.log(
-    //   `✅ [User Datasets API] Found ${datasets.length} datasets (${total} total)`,
-    // );
 
     return NextResponse.json({
       datasets,
