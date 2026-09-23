@@ -202,10 +202,10 @@ function Public() {
               <FontAwesomeIcon icon="cloud-upload-alt" size="2x" color={green[800]}/>
               </Box>
               <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Drag 'n' drop some files here, or click to select files.</Paragraph>
+              <Paragraph>Drag 'n' drop your file here, or click to select a file.</Paragraph>
               </Box>                
               <Box display="flex" flex-direction="column" alignItems="center" justifyContent="center">
-              <Paragraph>Currently we only support text based formats like csv and json</Paragraph>
+              <Paragraph>Currently, we only support text-based formats like csv and json.</Paragraph>
               </Box>
             </div>
           </DropCard>
