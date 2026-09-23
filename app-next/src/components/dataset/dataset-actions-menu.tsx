@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import {
   MoreHorizontal,
   FolderPlus,
@@ -10,14 +10,11 @@ import {
   Share2,
   NotebookPen,
   Flag,
-  Twitter,
-  Facebook,
-  Linkedin,
   Link2,
   Check,
-  ExternalLink,
-  Pencil,
 } from "lucide-react";
+import { FaXTwitter, FaFacebook, FaLinkedin, FaPython } from "react-icons/fa6";
+import { SiR } from "react-icons/si";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,10 +37,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { ReportIssueDialog } from "@/components/ui/report-issue-dialog";
 import { cn } from "@/lib/utils";
+
+const BOOKMARK_KEY = "openml_bookmarks_datasets";
 
 interface DatasetActionsMenuProps {
   datasetId: number;
@@ -70,10 +67,20 @@ export function DatasetActionsMenu({
   onBookmarkToggle,
   className,
 }: DatasetActionsMenuProps) {
+  const { data: session } = useSession();
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [collectionDialogOpen, setCollectionDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [bookmarked, setBookmarked] = useState(isBookmarked);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(BOOKMARK_KEY);
+      const ids: number[] = stored ? JSON.parse(stored) : [];
+      if (ids.includes(datasetId)) setBookmarked(true);
+    } catch {
+      // localStorage unavailable
+    }
+  }, [datasetId]);
 
   const datasetUrl =
     typeof window !== "undefined"
@@ -93,9 +100,19 @@ export function DatasetActionsMenu({
   };
 
   const handleBookmarkToggle = () => {
-    setBookmarked(!bookmarked);
+    const next = !bookmarked;
+    setBookmarked(next);
     onBookmarkToggle?.();
-    // TODO: Implement actual bookmark API call
+    try {
+      const stored = localStorage.getItem(BOOKMARK_KEY);
+      const ids: number[] = stored ? JSON.parse(stored) : [];
+      const updated = next
+        ? [...new Set([...ids, datasetId])]
+        : ids.filter((id) => id !== datasetId);
+      localStorage.setItem(BOOKMARK_KEY, JSON.stringify(updated));
+    } catch {
+      // localStorage unavailable
+    }
   };
 
   const handleShare = (platform: string) => {
@@ -114,14 +131,113 @@ export function DatasetActionsMenu({
   };
 
   const handleOpenNotebook = (platform: "python" | "r") => {
-    // Link to OpenML documentation examples
-    const notebookUrls: Record<string, string> = {
-      python:
-        "https://docs.openml.org/examples/20_basic/simple_datasets_tutorial/",
-      r: "https://docs.openml.org/r/",
+    const cells =
+      platform === "python"
+        ? [
+            {
+              cell_type: "markdown",
+              metadata: {},
+              source: [
+                `# OpenML Dataset: ${datasetName}\n`,
+                `Dataset ID: **${datasetId}** — loaded via the [OpenML Python API](https://github.com/openml/openml-python)`,
+              ],
+            },
+            {
+              cell_type: "code",
+              execution_count: null,
+              metadata: {},
+              outputs: [],
+              source: ["!pip install openml --quiet"],
+            },
+            {
+              cell_type: "code",
+              execution_count: null,
+              metadata: {},
+              outputs: [],
+              source: [
+                "import openml\n",
+                "\n",
+                `dataset = openml.datasets.get_dataset(${datasetId})\n`,
+                'print(f"Dataset: {dataset.name}")\n',
+                'print(f"Description: {(dataset.description or \"\")[:500]}")',
+              ],
+            },
+            {
+              cell_type: "code",
+              execution_count: null,
+              metadata: {},
+              outputs: [],
+              source: [
+                "X, y, categorical_indicator, attribute_names = dataset.get_data(\n",
+                "    target=dataset.default_target_attribute\n",
+                ")\n",
+                'print(f"Shape: {X.shape}")\n',
+                "X.head()",
+              ],
+            },
+          ]
+        : [
+            {
+              cell_type: "markdown",
+              metadata: {},
+              source: [
+                `# OpenML Dataset: ${datasetName}\n`,
+                `Dataset ID: **${datasetId}** — loaded via the [OpenML R package](https://cran.r-project.org/web/packages/OpenML/)`,
+              ],
+            },
+            {
+              cell_type: "code",
+              execution_count: null,
+              metadata: {},
+              outputs: [],
+              source: ['install.packages("OpenML")\n', "library(OpenML)"],
+            },
+            {
+              cell_type: "code",
+              execution_count: null,
+              metadata: {},
+              outputs: [],
+              source: [
+                `dataset <- getOMLDataSet(data.id = ${datasetId})\n`,
+                "print(dataset$desc$name)\n",
+                "head(dataset$data)",
+              ],
+            },
+          ];
+
+    const notebook = {
+      nbformat: 4,
+      nbformat_minor: 5,
+      metadata:
+        platform === "python"
+          ? {
+              kernelspec: {
+                display_name: "Python 3",
+                language: "python",
+                name: "python3",
+              },
+              language_info: { name: "python", version: "3.9.0" },
+            }
+          : {
+              kernelspec: {
+                display_name: "R",
+                language: "R",
+                name: "ir",
+              },
+              language_info: { name: "R" },
+            },
+      cells,
     };
 
-    window.open(notebookUrls[platform], "_blank");
+    const blob = new Blob([JSON.stringify(notebook, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `openml_dataset_${datasetId}_${platform}.ipynb`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -142,12 +258,12 @@ export function DatasetActionsMenu({
           <DropdownMenuSeparator />
 
           {/* Edit Dataset */}
-          <DropdownMenuItem asChild className="cursor-pointer">
+          {/* <DropdownMenuItem asChild className="cursor-pointer">
             <Link href={`/datasets/${datasetId}/edit`}>
               <Pencil className="mr-2 h-4 w-4" />
               <span>Edit Dataset</span>
             </Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
 
           {/* Bookmark */}
           <DropdownMenuItem
@@ -190,21 +306,21 @@ export function DatasetActionsMenu({
                   onClick={() => handleShare("twitter")}
                   className="cursor-pointer"
                 >
-                  <Twitter className="mr-2 h-4 w-4" />
+                  <FaXTwitter className="mr-2 h-4 w-4" />
                   <span>Twitter / X</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleShare("linkedin")}
                   className="cursor-pointer"
                 >
-                  <Linkedin className="mr-2 h-4 w-4" />
+                  <FaLinkedin className="mr-2 h-4 w-4" />
                   <span>LinkedIn</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleShare("facebook")}
                   className="cursor-pointer"
                 >
-                  <Facebook className="mr-2 h-4 w-4" />
+                  <FaFacebook className="mr-2 h-4 w-4" />
                   <span>Facebook</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -242,15 +358,15 @@ export function DatasetActionsMenu({
                   onClick={() => handleOpenNotebook("python")}
                   className="cursor-pointer"
                 >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  <span>Python Tutorial</span>
+                  <FaPython className="mr-2 h-4 w-4" />
+                  <span>Download Python Notebook</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => handleOpenNotebook("r")}
                   className="cursor-pointer"
                 >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  <span>R Tutorial</span>
+                  <SiR className="mr-2 h-4 w-4" />
+                  <span>Download R Notebook</span>
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -286,17 +402,34 @@ export function DatasetActionsMenu({
             </DialogDescription>
           </DialogHeader>
 
-          {/* TODO: Fetch user's collections and display them here */}
           <div className="space-y-4 py-4">
-            <div className="text-muted-foreground flex items-center justify-center rounded-lg border-2 border-dashed p-8 text-sm">
-              <p>Sign in to add datasets to your collections</p>
-            </div>
-
-            <div className="text-center">
-              <Button variant="outline" size="sm">
-                Create New Collection
-              </Button>
-            </div>
+            {session ? (
+              <>
+                <p className="text-muted-foreground text-sm">
+                  Collections group machine learning tasks. Create a new
+                  collection and add tasks from this dataset.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <Button asChild>
+                    <Link href="/collections/create">Create New Collection</Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/collections">View My Collections</Link>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-muted-foreground flex items-center justify-center rounded-lg border-2 border-dashed p-8 text-sm">
+                  <p>Sign in to add datasets to your collections</p>
+                </div>
+                <div className="text-center">
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/auth/sign-in">Sign In</Link>
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
 
           <DialogFooter>
@@ -310,81 +443,13 @@ export function DatasetActionsMenu({
         </DialogContent>
       </Dialog>
 
-      {/* Report Issue Dialog */}
-      <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
-              <Flag className="h-5 w-5" />
-              Report an Issue
-            </DialogTitle>
-            <DialogDescription>
-              Help us improve OpenML by reporting issues with this dataset.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="issue-type">Issue Type</Label>
-              <select
-                id="issue-type"
-                className="border-input bg-background flex h-10 w-full rounded-md border px-3 py-2 text-sm"
-              >
-                <option value="">Select an issue type...</option>
-                <option value="incorrect-data">
-                  Incorrect or corrupt data
-                </option>
-                <option value="missing-metadata">
-                  Missing or wrong metadata
-                </option>
-                <option value="duplicate">Duplicate dataset</option>
-                <option value="license">License violation</option>
-                <option value="privacy">Privacy concern</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="issue-description">Description</Label>
-              <Textarea
-                id="issue-description"
-                placeholder="Please describe the issue in detail..."
-                rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="issue-email">Your Email (optional)</Label>
-              <Input
-                id="issue-email"
-                type="email"
-                placeholder="email@example.com"
-              />
-              <p className="text-muted-foreground text-xs">
-                We&apos;ll use this to follow up if needed
-              </p>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setReportDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                // TODO: Implement report submission
-                setReportDialogOpen(false);
-              }}
-            >
-              Submit Report
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ReportIssueDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        entityType="dataset"
+        entityId={datasetId}
+        entityName={datasetName}
+      />
     </>
   );
 }
