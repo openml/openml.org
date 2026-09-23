@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { navItems, type NavItem } from "@/constants";
@@ -42,7 +43,6 @@ export function Sidebar() {
   const isHomePage = pathname === "/";
   const { isCollapsed, setIsCollapsed, homeMenuOpen, setHomeMenuOpen } =
     useSidebar();
-  const [counts, setCounts] = useState<Record<string, number>>({});
   const { data: session, status } = useSession();
   const [user, setUser] = useState<{
     name: string;
@@ -61,7 +61,7 @@ export function Sidebar() {
       const name =
         session.user.name ||
         `${firstName} ${lastName}`.trim() ||
-        (session.user as any).username ||
+        session.user.username ||
         session.user.email?.split("@")[0] ||
         "User";
       const email = session.user.email || "";
@@ -88,42 +88,36 @@ export function Sidebar() {
     }
   }, [status, session]);
 
-  // Fetch entity counts on mount
-  useEffect(() => {
-    fetch("/api/count")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const countsMap = data.reduce(
-            (
-              acc: Record<string, number>,
-              item: { index: string; count: number },
-            ) => {
-              acc[item.index] = item.count;
-              return acc;
-            },
-            {},
-          );
-          setCounts(countsMap);
-        } else {
-          console.warn(
-            "⚠️ API returned non-array data, counts unavailable:",
-            data,
-          );
-        }
-      })
-      .catch((error) => {
+  // Fetch entity counts with React Query (deduplicates requests, caches results)
+  const { data: counts = {} } = useQuery<Record<string, number>>({
+    queryKey: ["entity-counts"],
+    queryFn: async () => {
+      const response = await fetch("/api/count");
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const data = await response.json();
+      if (!Array.isArray(data)) {
         console.warn(
-          "⚠️ Could not fetch entity counts (sidebar will work without them):",
-          error.message,
+          "⚠️ API returned non-array data, counts unavailable:",
+          data,
         );
-      });
-  }, []);
+        return {};
+      }
+      return data.reduce(
+        (
+          acc: Record<string, number>,
+          item: { index: string; count: number },
+        ) => {
+          acc[item.index] = item.count;
+          return acc;
+        },
+        {},
+      );
+    },
+    staleTime: 5 * 60 * 1000, // Cache counts for 5 minutes
+    retry: 1,
+  });
 
   // Render mobile/tablet unified menu (< 1024px for all pages, all sizes for homepage)
   const renderUnifiedMenu = () => (
@@ -131,8 +125,11 @@ export function Sidebar() {
       {/* Overlay when menu is open */}
       {homeMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-700/20"
+          className="fixed inset-0 z-40 bg-white/10 dark:bg-slate-950/20"
           onClick={() => setHomeMenuOpen(false)}
+          style={{
+            filter: "contrast(1.75)",
+          }}
         />
       )}
 
@@ -151,17 +148,17 @@ export function Sidebar() {
       >
         {/* Logo Header - Only show when menu is open */}
         {homeMenuOpen && (
-          <div className="relative flex min-h-40 shrink-0 items-start justify-center bg-[#233044] py-6">
+          <div className="relative flex shrink-0 items-center justify-center bg-[#233044] py-4">
             <Link
               href="/"
-              className="group flex w-64 items-start justify-center"
+              className="group flex w-64 items-center justify-center"
               onClick={() => setHomeMenuOpen(false)}
             >
               <Image
                 src="/logo_openML_dark-bkg.png"
                 alt="OpenML Logo"
-                width={100}
-                height={50}
+                width={140}
+                height={70}
                 className="h-auto w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
                 style={{
                   animation: "logoFadeScale 0.4s ease-out 0.2s both",
@@ -531,6 +528,7 @@ function SidebarItem({
         isActive && "bg-[#1E2A38] font-medium text-white",
       )}
     >
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <Link
         href={item.href as any}
         className="flex items-center justify-between"

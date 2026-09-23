@@ -8,11 +8,11 @@ import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
 import {
-  Cog,
   Heart,
   CloudDownload,
-  FlaskConical,
   Calendar,
   User,
   Hash,
@@ -156,18 +156,46 @@ export function FlowsSearchContainer() {
           />
 
           <div className="p-4">
-            <WithSearch mapContextToProps={({ results }) => ({ results })}>
-              {({ results }) => (
+            <WithSearch
+              mapContextToProps={({ results, isLoading }) => ({
+                results,
+                isLoading,
+              })}
+            >
+              {({ results, isLoading }) => (
                 <>
                   {view === "table" && (
                     <FlowsResultsTable results={results as FlowResult[]} />
                   )}
                   {view === "list" && (
                     <div className="space-y-0">
-                      {results && results.length > 0 ? (
+                      {isLoading ? (
+                        Array.from({ length: 5 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="flex items-start justify-between border-b p-4"
+                          >
+                            <div className="min-w-0 flex-1 space-y-2">
+                              <div className="h-4 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-4">
+                                {Array.from({ length: 3 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
                         results.map((result: FlowResult, index: number) => {
                           const flowId = result.flow_id?.raw;
-                          const name = truncateName(result.name?.raw || "Untitled Flow");
+                          const name = truncateName(
+                            result.name?.raw || "Untitled Flow",
+                          );
                           const description =
                             result.description?.snippet ||
                             result.description?.raw ||
@@ -182,7 +210,11 @@ export function FlowsSearchContainer() {
                                 {/* Line 1: Icon, Name, Version, ID Badge */}
                                 <div className="mb-1 flex items-start justify-between gap-3">
                                   <div className="flex items-start gap-3">
-                                    <Cog className="mt-1 h-5 w-5 shrink-0 text-[#3b82f6]" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.flow}
+                                      className="mt-1 h-5 w-5 shrink-0"
+                                      style={{ color: entityColors.flow }}
+                                    />
                                     <div className="flex items-baseline gap-2">
                                       <h3 className="text-base font-semibold">
                                         {name}
@@ -257,7 +289,11 @@ export function FlowsSearchContainer() {
                                     className="flex items-center gap-1.5"
                                     title="runs"
                                   >
-                                    <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.run}
+                                      className="h-4 w-4"
+                                      style={{ color: entityColors.run }}
+                                    />
                                     {result.runs?.raw?.toLocaleString() || 0}
                                   </span>
                                   <span
@@ -303,7 +339,15 @@ export function FlowsSearchContainer() {
 
                   {view === "grid" && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {results && results.length > 0 ? (
+                      {isLoading ? (
+                        Array.from({ length: 8 }).map((_, i) => (
+                          <div key={i} className="rounded-lg border p-4 space-y-3">
+                            <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-2/3 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
                         results.map((result: FlowResult, index: number) => (
                           <FlowResultCard
                             key={result.flow_id?.raw || index}
@@ -328,9 +372,15 @@ export function FlowsSearchContainer() {
                             className="flex items-center justify-between p-3 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/15"
                           >
                             <div className="flex items-center gap-3">
-                              <Cog className="h-4 w-4 text-[#3b82f6]" />
+                              <FontAwesomeIcon
+                                icon={ENTITY_ICONS.flow}
+                                className="h-4 w-4"
+                                style={{ color: entityColors.flow }}
+                              />
                               <span className="font-medium whitespace-nowrap">
-                                {truncateName(result.name?.raw || "Untitled Flow")}
+                                {truncateName(
+                                  result.name?.raw || "Untitled Flow",
+                                )}
                               </span>
                             </div>
                             <div className="flex items-center gap-4 text-xs">
@@ -354,7 +404,22 @@ export function FlowsSearchContainer() {
                   {view === "split" && (
                     <div className="flex min-h-[600px] gap-0 overflow-hidden rounded-md border">
                       <div className="bg-muted/10 w-[380px] shrink-0 space-y-0 overflow-y-auto border-r">
-                        {results && results.length > 0 ? (
+                        {isLoading ? (
+                          Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="border-b px-4 py-3 space-y-2">
+                              <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-3">
+                                {Array.from({ length: 3 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))
+                        ) : results && results.length > 0 ? (
                           (() => {
                             // Auto-select first flow if none selected
                             const selectedId = selectedFlow?.flow_id?.raw;
@@ -381,9 +446,15 @@ export function FlowsSearchContainer() {
                                     }`}
                                   >
                                     <div className="mb-1 flex items-start gap-2">
-                                      <Cog className="mt-0.5 h-4 w-4 shrink-0 text-[#3b82f6]" />
+                                      <FontAwesomeIcon
+                                        icon={ENTITY_ICONS.flow}
+                                        className="mt-0.5 h-4 w-4 shrink-0"
+                                        style={{ color: entityColors.flow }}
+                                      />
                                       <h3 className="line-clamp-1 leading-tight font-semibold">
-                                        {truncateName(result.name?.raw || "Untitled Flow")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled Flow",
+                                        )}
                                       </h3>
                                     </div>
                                     <p className="text-muted-foreground line-clamp-2 text-xs">
@@ -417,14 +488,17 @@ export function FlowsSearchContainer() {
                         {selectedFlow ? (
                           <div className="mx-auto max-w-4xl">
                             <div className="mb-6 flex items-start gap-4">
-                              <Cog
-                                className="mt-1 h-10 w-10 shrink-0 text-[#3b82f6]"
-                                strokeWidth={1.5}
+                              <FontAwesomeIcon
+                                icon={ENTITY_ICONS.flow}
+                                className="mt-1 h-10 w-10 shrink-0"
+                                style={{ color: entityColors.flow }}
                               />
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-2xl font-bold">
-                                    {truncateName(selectedFlow.name?.raw || "Untitled")}
+                                    {truncateName(
+                                      selectedFlow.name?.raw || "Untitled",
+                                    )}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedFlow.version?.raw || 1}
@@ -460,7 +534,11 @@ export function FlowsSearchContainer() {
                             {/* Stats Grid */}
                             <div className="grid grid-cols-3 gap-6">
                               <div className="rounded-lg border p-4">
-                                <FlaskConical className="mb-2 h-5 w-5 fill-red-500 text-red-500" />
+                                <FontAwesomeIcon
+                                  icon={ENTITY_ICONS.run}
+                                  className="mb-2 h-5 w-5"
+                                  style={{ color: entityColors.run }}
+                                />
                                 <div className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                                   Runs
                                 </div>

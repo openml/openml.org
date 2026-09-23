@@ -61,7 +61,7 @@ export function UsersSearchPage() {
         </div>
 
         {/* Search Container */}
-        <div className="mx-auto w-full flex-1 px-1.5 py-6">
+        <div className="mx-auto w-full flex-1 px-1.5 pb-6">
           <UsersSearchContainer
             searchScope={searchScope}
             onSearchScopeChange={setSearchScope}

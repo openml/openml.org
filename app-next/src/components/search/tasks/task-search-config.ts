@@ -23,6 +23,7 @@ const taskConfig = {
       "source_data.name": { weight: 3 },
       "tasktype.name": { weight: 2 },
       "estimation_procedure.type": { weight: 1 },
+      "tags.tag": { weight: 1 },
     },
     result_fields: {
       task_id: { raw: {} },
@@ -35,6 +36,7 @@ const taskConfig = {
       target_feature: { raw: {} },
       evaluation_measures: { raw: {} },
       runs: { raw: {} },
+      tags: { raw: {} },
       nr_of_likes: { raw: {} },
       nr_of_downloads: { raw: {} },
     },
