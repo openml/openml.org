@@ -31,7 +31,6 @@ async function fetchMeasures(measureType: string): Promise<Measure[]> {
         },
       },
       size: 200,
-      sort: [{ name: { order: "asc" } }],
     }),
     next: { revalidate: 3600 },
   });
@@ -39,8 +38,11 @@ async function fetchMeasures(measureType: string): Promise<Measure[]> {
   if (!res.ok) return [];
 
   const data = await res.json();
-  return (data.hits?.hits || []).map(
+  const measures = (data.hits?.hits || []).map(
     (hit: { _source: Measure }) => hit._source,
+  );
+  return measures.sort((a: Measure, b: Measure) =>
+    a.name.localeCompare(b.name),
   );
 }
 
