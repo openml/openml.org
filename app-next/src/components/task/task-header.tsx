@@ -1,15 +1,15 @@
 import Link from "next/link";
+import { ENTITY_ICONS, entityColors } from "@/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Calendar,
   Hash,
   Target,
   Tag,
-  Heart,
   CloudDownload,
   Settings,
   ThumbsDown,
   AlertCircle,
-  FlaskConical,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,8 +17,11 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { ClickableTagList } from "@/components/ui/clickable-tag-list";
 import type { Task } from "@/types/task";
 import { ExperimentMenu } from "@/components/ui/experiment-menu";
+import { LikeButton } from "@/components/ui/like-button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
 
 interface TaskHeaderProps {
   task: Task;
@@ -49,8 +52,13 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
       })
     : null;
 
-  // Tags
-  const tags = task.tag ?? [];
+  // Tags — API may return a single string instead of string[]
+  const rawTags = task.tag;
+  const tags = Array.isArray(rawTags)
+    ? rawTags
+    : typeof rawTags === "string"
+      ? [rawTags]
+      : [];
 
   // Stats
   const likes = task.nr_of_likes ?? 0;
@@ -61,7 +69,7 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
   return (
     <header className="space-y-6 border-b p-0">
       {/* LINE 1: Task Icon + Title */}
-      <div className="flex items-start gap-3">
+      <div className="mb-0 flex items-start gap-3">
         <div
           className="flex h-9 w-9 shrink-0 items-center justify-center p-0"
           aria-hidden="true"
@@ -94,7 +102,6 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
               {task.task_id}
             </Badge>
 
-            {/* Dataset Link - Green Icon + Text */}
             {/* Dataset Link - Green Icon + Text */}
             {datasetId && (
               <Link
@@ -145,13 +152,16 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
             )}
           </div>
 
-          {/* LINE 3: Stats (Likes, Downvotes, Issues, Downloads, Runs) */}
+          {/* LINE 3: Stats */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-sm">
-            {/* Likes */}
-            <div className="flex items-center gap-1">
-              <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-              <span>{likes} likes</span>
-            </div>
+            {/* Likes — interactive, synced */}
+            <LikeButton
+              entityType="task"
+              entityId={task.task_id}
+              initialLikes={likes}
+              showCount={true}
+              size="sm"
+            />
 
             {/* Downvotes */}
             <div className="text-muted-foreground flex items-center gap-1">
@@ -173,7 +183,11 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
 
             {/* Runs */}
             <div className="text-muted-foreground flex items-center gap-1">
-              <FlaskConical className="h-4 w-4 text-black dark:text-white" />
+              <FontAwesomeIcon
+                icon={ENTITY_ICONS.run}
+                className="h-4 w-4"
+                style={{ color: entityColors.run }}
+              />
               <span className="font-semibold">
                 {displayRunCount.toLocaleString()} runs
               </span>
@@ -186,19 +200,10 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
       {tags.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 pl-12">
           <Tag className="text-muted-foreground h-4 w-4" />
-          {tags.slice(0, 10).map((tag, idx) => (
-            <Link
-              key={`${tag}-${idx}`}
-              href={`/search?type=task&tag=${encodeURIComponent(tag)}`}
-            >
-              <Badge
-                variant="secondary"
-                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors"
-              >
-                {tag}
-              </Badge>
-            </Link>
-          ))}
+          <ClickableTagList
+            tags={tags.slice(0, 10)}
+            getHref={(tag) => `/tasks?tag=${encodeURIComponent(tag)}`}
+          />
           {tags.length > 10 && (
             <Popover>
               <PopoverTrigger asChild>
@@ -206,15 +211,18 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
                   +{tags.length - 10} more
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {tags.map((tag, idx) => (
-                    <Link key={`pop-${tag}-${idx}`} href={`/search?type=task&tag=${encodeURIComponent(tag)}`}>
-                      <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tag}</Badge>
-                    </Link>
-                  ))}
-                </div>
+              <PopoverContent
+                className="max-h-64 w-72 overflow-y-auto p-3"
+                align="start"
+              >
+                <p className="text-muted-foreground mb-2 text-xs font-medium">
+                  All tags ({tags.length})
+                </p>
+                <ClickableTagList
+                  tags={tags}
+                  getHref={(tag) => `/tasks?tag=${encodeURIComponent(tag)}`}
+                  className="gap-1.5"
+                />
               </PopoverContent>
             </Popover>
           )}
@@ -223,6 +231,11 @@ export function TaskHeader({ task, runCount }: TaskHeaderProps) {
 
       {/* LINE 5: Action Buttons */}
       <div className="flex flex-wrap items-center justify-end gap-3 pt-2 pb-4">
+        <EntityActionsMenu
+          entityType="task"
+          entityId={task.task_id}
+          entityName={`${taskType} on ${datasetName}`}
+        />
         <ExperimentMenu
           entityType="task"
           entityId={task.task_id}
