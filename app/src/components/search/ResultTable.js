@@ -180,7 +180,7 @@ export const renderTags = (params) => {
 };
 
 export const renderDate = (params) => {
-  return <TimeAgo date={new Date(params.value)} minPeriod={60} />;
+  return <TimeAgo date={new Date(params.value?.replace(" ", "T") + "Z")} minPeriod={60} />;
 };
 
 export const renderDescription = (params) => {
