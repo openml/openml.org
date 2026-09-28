@@ -276,7 +276,7 @@ class SearchElement extends React.Component {
             </Stats>
           </Tooltip>
         )}
-        <Tooltip title={this.props.type + " ID"} placement="top-start">
+        <Tooltip title={(this.props.type || "") + " ID"} placement="top-start">
           <Stats>
             <ColoredIcon color={grey[400]} icon="id-badge" fixedWidth />{" "}
             {this.props.id}
