@@ -324,6 +324,18 @@ export class SearchResultsPanel extends React.Component {
     return false;
   }
 
+  snakeCaseToTitle(str) {
+      // convert qtype string into title to display
+      var title = str;
+
+      // 1. convert snake-cased string into separated strings, and
+      // 2. title case
+      title = title.split("_").map(this.capitalize).join(" ")
+      // 3. simple pluralize
+      title = title + "s"
+      return title;
+  }
+
   capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
@@ -412,7 +424,7 @@ export class SearchResultsPanel extends React.Component {
       if (qtype === "task" || (type === "task" && qtype === "task")){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}s
+                    {this.snakeCaseToTitle(qtype)}
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Tasks define specific problems to be solved using {type === "task" ? (<span>a given dataset</span>) : (<span>this {type}</span>)}. 
@@ -425,7 +437,7 @@ export class SearchResultsPanel extends React.Component {
       } else if (qtype === "data"){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}sets
+                    {this.snakeCaseToTitle(qtype + "set")}
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Datasets provide training data for machine learning models. OpenML datasets are uniformly formatted and come
@@ -440,7 +452,7 @@ export class SearchResultsPanel extends React.Component {
       } else if (qtype === "flow"){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}s
+                   {this.snakeCaseToTitle(qtype)}
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Flows represent machine learning pipelines or neural architectures, or (untrained) machine learning models, such as 
@@ -453,7 +465,7 @@ export class SearchResultsPanel extends React.Component {
       } else if (qtype === "run"){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}s
+                  {this.snakeCaseToTitle(qtype)}
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Runs are evaluations of machine learning models (flows) trained on {type === "run" ? (<span>a given task</span>) : (<span>this {type}</span>)}. 
@@ -465,7 +477,7 @@ export class SearchResultsPanel extends React.Component {
       } else if (qtype === "task_type"){
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}s
+                  {this.snakeCaseToTitle(qtype)}
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
                   Task types define a machine-readable schema for specific machine learning tasks (e.g. classification). 
@@ -523,7 +535,7 @@ export class SearchResultsPanel extends React.Component {
                   Data qualities
                 </Typography>
                 <Typography style={{ marginBottom: "15px" }}>
-                  Data qualities are measureable properties of datasets, such as size, shape, statistical properties, benchmarks, and the presence of missing values.
+                  Data qualities are measurable properties of datasets, such as size, shape, statistical properties, benchmarks, and the presence of missing values.
                 </Typography>
               </Box>
       } else if (qtype === "measure" && measure_type === "measure"){
@@ -548,7 +560,7 @@ export class SearchResultsPanel extends React.Component {
       } else {
         return <Box m={2} pt={3}>
                 <Typography variant="h3" style={{ marginBottom: "15px" }}>
-                  {this.capitalize(qtype)}s
+                    {this.snakeCaseToTitle(qtype)}
                 </Typography>
               </Box>
       }
