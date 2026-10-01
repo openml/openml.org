@@ -192,7 +192,16 @@ export function useParquetData(
           return;
         }
         if (!arffResponse.ok) {
-          throw new Error(`Failed to fetch ARFF: ${arffResponse.statusText}`);
+          // File not available (server error, not processed yet, etc.) — fail silently
+          setState({
+            data: null,
+            columns: [],
+            rowCount: 0,
+            isLoading: false,
+            error: null,
+            isTooLarge: false,
+          });
+          return;
         }
 
         const arffText = await arffResponse.text();
@@ -310,15 +319,31 @@ export function useParquetData(
           // Initialize parquet-wasm (uses cached module if already loaded)
           const parquetModule = await initParquetWasm();
 
-          // Read parquet using parquet-wasm
+          // Read parquet using parquet-wasm.
+          // Some parquet files use encodings unsupported by parquet-wasm
+          // (e.g. boolean dictionary packing). Catch wasm errors here and
+          // fall back to ARFF silently instead of surfacing the error.
           const parquetBytes = new Uint8Array(arrayBuffer);
-
-          // readParquet returns a parquet-wasm Table, convert to Arrow IPC stream
-          const wasmTable = parquetModule.readParquet(parquetBytes);
-          const ipcStream = wasmTable.intoIPCStream();
-
-          // Parse the Arrow IPC stream into an apache-arrow Table
-          const table: Table = tableFromIPC(ipcStream);
+          let table: Table;
+          try {
+            const wasmTable = parquetModule.readParquet(parquetBytes);
+            const ipcStream = wasmTable.intoIPCStream();
+            table = tableFromIPC(ipcStream);
+          } catch (_wasmErr) {
+            if (arffUrl && !cancelled) {
+              await tryArff(arffUrl);
+            } else if (!cancelled) {
+              setState({
+                data: null,
+                columns: [],
+                rowCount: 0,
+                isLoading: false,
+                error: null,
+                isTooLarge: false,
+              });
+            }
+            return;
+          }
 
           // Extract column names
           const columns = table.schema.fields.map((f) => f.name);

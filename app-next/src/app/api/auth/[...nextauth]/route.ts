@@ -65,8 +65,6 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Direct database authentication - bypasses Flask
-          console.log("[Auth] Direct DB login for:", credentials.email);
-
           // Find user by email or username
           // Query only columns guaranteed to exist in the legacy schema
           const user = await queryOne(
@@ -75,7 +73,6 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!user) {
-            console.log("[Auth] User not found:", credentials.email);
             return null;
           }
 
@@ -83,7 +80,6 @@ export const authOptions: NextAuthOptions = {
 
           // Check if user is active
           if (!dbUser.active) {
-            console.log("[Auth] User not activated:", credentials.email);
             return null;
           }
 
@@ -94,11 +90,8 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!isValid) {
-            console.log("[Auth] Invalid password for:", credentials.email);
             return null;
           }
-
-          console.log("[Auth] Login successful for:", dbUser.username);
 
           // Try to get session_hash (API key) if column exists
           let sessionHash: string | null = null;
@@ -112,6 +105,36 @@ export const authOptions: NextAuthOptions = {
             // session_hash column may not exist in all deployments
           }
 
+          // Resolve real OpenML user ID from API key (handles local dev ID mismatch)
+          let openmlUserId: string | undefined;
+          if (sessionHash) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            try {
+              const openmlApiUrl =
+                process.env.OPENML_API_URL || "https://www.openml.org";
+              // Try /user/whoami first, fall back to /user/data
+              for (const path of ["/api/v1/json/user/whoami", "/api/v1/json/user/data"]) {
+                const res = await fetch(
+                  `${openmlApiUrl}${path}?api_key=${encodeURIComponent(sessionHash)}`,
+                  { signal: controller.signal },
+                );
+                if (res.ok) {
+                  const data = await res.json();
+                  const rawId = data?.user?.id ?? data?.id;
+                  if (rawId != null) {
+                    openmlUserId = String(rawId);
+                    break;
+                  }
+                }
+              }
+            } catch {
+              // Non-critical: fall back to local DB ID for ownership checks
+            } finally {
+              clearTimeout(timeoutId);
+            }
+          }
+
           // Return user object
           return {
             id: dbUser.id.toString(),
@@ -123,6 +146,7 @@ export const authOptions: NextAuthOptions = {
               dbUser.image && dbUser.image !== "0000" ? dbUser.image : null,
             username: dbUser.username,
             session_hash: sessionHash,
+            openmlUserId,
           };
         } catch (error) {
           console.error("Login error:", error);
@@ -309,7 +333,7 @@ export const authOptions: NextAuthOptions = {
             user.session_hash = dbUser.session_hash || null;
           }
           // Mark as local user (OAuth users don't exist on openml.org)
-          (user as any).isLocalUser = true;
+          user.isLocalUser = true;
           return true;
         } catch (error) {
           console.error("SignIn Callback Error:", error);
@@ -336,7 +360,8 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.picture = user.image;
-        token.isLocalUser = (user as any).isLocalUser || false;
+        token.isLocalUser = user.isLocalUser || false;
+        token.openmlUserId = user.openmlUserId;
       }
 
       return token;
@@ -352,14 +377,18 @@ export const authOptions: NextAuthOptions = {
         session.user.lastName = token.lastName;
         // Add API key to session for likes/votes
         if (token.apikey) {
-          session.apikey = token.apikey as string;
+          session.apikey = token.apikey;
         }
         // Add profile image to session
         if (token.picture) {
-          session.user.image = token.picture as string;
+          session.user.image = token.picture;
         }
         // Mark if user is local-only (not from openml.org)
-        (session.user as any).isLocalUser = token.isLocalUser || false;
+        session.user.isLocalUser = token.isLocalUser || false;
+        // Real OpenML user ID (may differ from local DB ID in dev environments)
+        if (token.openmlUserId) {
+          session.user.openmlUserId = token.openmlUserId;
+        }
       }
       return session;
     },

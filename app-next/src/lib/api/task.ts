@@ -39,12 +39,11 @@ export async function fetchTask(id: string): Promise<Task> {
 
     return data._source as Task;
   } catch (error) {
-    console.error(`Error fetching task ${id}:`, error);
-
-    if (error instanceof Error && error.message === "NEXT_NOT_FOUND") {
+    if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") {
       throw error;
     }
 
+    console.error(`Error fetching task ${id}:`, error);
     throw new Error("Failed to load task");
   }
 }

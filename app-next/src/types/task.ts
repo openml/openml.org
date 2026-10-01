@@ -1,5 +1,4 @@
-/**
- * OpenML Task Entity
+/** OpenML Task Entity
  * Represents a machine learning task in the OpenML platform
  */
 export interface Task {
@@ -20,7 +19,7 @@ export interface Task {
     data_id: number;
     name: string;
   };
-  source_data_name?: string; // For backward compatibility
+  source_data_name?: string; // backward compatibility
 
   // Task configuration
   target_feature?: string;
@@ -65,7 +64,6 @@ export interface Task {
   // Quality metrics
   quality?: Record<string, string>;
 
-  // Dates
   // Dates
   upload_date?: string;
   date?: string;
