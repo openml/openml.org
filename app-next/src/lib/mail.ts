@@ -1,9 +1,13 @@
 import nodemailer from "nodemailer";
+import { APP_CONFIG } from "@/lib/config";
+import { generateConfirmEmail } from "./email-templates/confirm-email";
+import { generateResetPasswordEmail } from "./email-templates/reset-password";
+import { generateProfileUpdateEmail } from "./email-templates/profile-update";
+import { generateAdminReviewEmail } from "./email-templates/admin-upload";
+import { generateDatasetEditEmail } from "./email-templates/dataset-edit";
+import { generateEntityCreatedEmail } from "./email-templates/entity-created";
 
-/**
- * Shared email utility for sending system emails
- */
-
+// Shared email utility for sending system emails
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "localhost",
   port: parseInt(process.env.SMTP_PORT || "1025"),
@@ -17,60 +21,19 @@ const transporter = nodemailer.createTransport({
       : undefined,
 });
 
-/**
- * Send account confirmation email
- */
+// Send account confirmation email
 export async function sendConfirmationEmail(email: string, token: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3050";
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3050";
   const link = `${baseUrl}/auth/confirm-email?token=${token}`;
   const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+
+  const htmlContent = generateConfirmEmail(link, logoUrl);
 
   const mailOptions = {
     from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
     to: email,
     subject: "Welcome to OpenML!",
-    html: `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <!-- Header with Logo and Brand Color -->
-        <div style="background-color: #233044; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0;">
-          <img src="${logoUrl}" alt="OpenML Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;" />
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">Welcome to OpenML!</h1>
-        </div>
-
-        <!-- Content -->
-        <div style="padding: 40px 30px; background-color: #ffffff;">
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Hi there,</p>
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Thank you for signing up to OpenML, the collaborative machine learning platform.</p>
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">To verify your email address and activate your account, please click the button below:</p>
-
-          <!-- CTA Button -->
-          <div style="text-align: center; margin: 40px 0;">
-            <a href="${link}" style="background-color: #233044; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">Confirm Email Address</a>
-          </div>
-
-          <!-- Alternative Link -->
-          <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 30px 0;">
-            <p style="color: #233044; font-size: 14px; margin: 0 0 10px 0;">Or copy and paste this link into your browser:</p>
-            <p style="color: #233044; font-size: 14px; word-break: break-all; margin: 0;">${link}</p>
-          </div>
-
-          <p style="color: #9ca3af; font-size: 14px; line-height: 1.6; margin-bottom: 10px;">⏱️ This confirmation link will expire in 24 hours.</p>
-          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 30px;">If you didn't create an account with OpenML, you can safely ignore this email.</p>
-
-          <!-- Support Info -->
-          <div style="border-top: 2px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 10px;">Need help? Contact us at <a href="mailto:openmachinelearning@gmail.com" style="color: #2563eb; text-decoration: none;">openmachinelearning@gmail.com</a></p>
-            <p style="color: #374151; font-size: 15px; line-height: 1.6; margin-bottom: 5px;">Have a great day,</p>
-            <p style="color: #2563eb; font-size: 15px; font-weight: 600; margin: 0;">The OpenML Team</p>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
-          <p style="color: #9ca3af; font-size: 12px; margin: 0;">© ${new Date().getFullYear()} OpenML. Open Machine Learning Platform.</p>
-        </div>
-      </div>
-    `,
+    html: htmlContent,
     text: `Hi,
 
 Thank you for signing up to OpenML.
@@ -95,64 +58,19 @@ The OpenML team`,
   }
 }
 
-/**
- * Send password reset email
- */
+//Send password reset email
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3050";
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3050";
   const link = `${baseUrl}/auth/reset-password?token=${token}`;
   const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+
+  const htmlContent = generateResetPasswordEmail(link, logoUrl);
 
   const mailOptions = {
     from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
     to: email,
     subject: "Reset Your OpenML Password",
-    html: `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <!-- Header with Logo and Brand Color -->
-        <div style="background-color: #233044; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0;">
-          <img src="${logoUrl}" alt="OpenML Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;" />
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">Reset Your Password</h1>
-        </div>
-
-        <!-- Content -->
-        <div style="padding: 40px 30px; background-color: #ffffff;">
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Hi there,</p>
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">We received a request to reset your password for your OpenML account.</p>
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">Click the button below to create a new password:</p>
-
-          <!-- CTA Button -->
-          <div style="text-align: center; margin: 40px 0;">
-            <a href="${link}" style="background-color: #233044; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">Reset Password</a>
-          </div>
-
-          <!-- Alternative Link -->
-          <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 30px 0;">
-            <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">Or copy and paste this link into your browser:</p>
-            <p style="color: #233044; font-size: 14px; word-break: break-all; margin: 0;">${link}</p>
-          </div>
-
-          <p style="color: #9ca3af; font-size: 14px; line-height: 1.6; margin-bottom: 10px;">⏱️ This reset link will expire in 1 hour.</p>
-
-          <!-- Security Notice -->
-          <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 4px; margin: 20px 0;">
-            <p style="color: #92400e; font-size: 14px; margin: 0; line-height: 1.6;"><strong>🔒 Security Notice:</strong> If you didn't request a password reset, please ignore this email. Your password will remain unchanged.</p>
-          </div>
-
-          <!-- Support Info -->
-          <div style="border-top: 2px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 10px;">Need help? Contact us at <a href="mailto:openmachinelearning@gmail.com" style="color: #2563eb; text-decoration: none;">openmachinelearning@gmail.com</a></p>
-            <p style="color: #374151; font-size: 15px; line-height: 1.6; margin-bottom: 5px;">Best regards,</p>
-            <p style="color: #2563eb; font-size: 15px; font-weight: 600; margin: 0;">The OpenML Team</p>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="background-color: #f9fafb; padding: 20px 30px; text-align: center; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
-          <p style="color: #9ca3af; font-size: 12px; margin: 0;">© ${new Date().getFullYear()} OpenML. Open Machine Learning Platform.</p>
-        </div>
-      </div>
-    `,
+    html: htmlContent,
     text: `Hi,
 
 We received a request to reset your password for your OpenML account.
@@ -176,6 +94,174 @@ The OpenML Team`,
     return { success: true };
   } catch (error) {
     console.error("Error sending password reset email:", error);
+    return { success: false, error };
+  }
+}
+
+// Send profile update notification
+export async function sendProfileUpdateEmail(email: string, name: string) {
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3000";
+  const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+  const supportUrl = "mailto:openmachinelearning@gmail.com";
+
+  const htmlContent = generateProfileUpdateEmail(
+    name,
+    ["Profile Details"],
+    logoUrl,
+  );
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
+    to: email,
+    subject: "Security Alert: Profile Updated",
+    html: htmlContent,
+    text: `Hi ${name},
+
+Your OpenML profile has been updated.
+
+If you made this change, you can safely ignore this email.
+If you did not authorize this change, please contact us immediately at ${supportUrl}.
+
+Best regards,
+The OpenML Team`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Profile update email sent:", info.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending profile update email:", error);
+    return { success: false, error };
+  }
+}
+
+//Send dataset upload notification to admins
+export async function sendDatasetUploadEmail(
+  uploaderName: string,
+  datasetName: string,
+  datasetId: string | number,
+) {
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3000";
+  const datasetUrl = `${baseUrl}/datasets/${datasetId}`;
+  const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+
+  const htmlContent = generateAdminReviewEmail(
+    uploaderName,
+    datasetId.toString(),
+    datasetName,
+    logoUrl,
+    datasetUrl,
+  );
+
+  // Send to ADMIN_EMAIL or default support email
+  const adminEmail = process.env.ADMIN_EMAIL || "openmachinelearning@gmail.com";
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
+    to: adminEmail,
+    subject: `New Dataset Upload: ${datasetName}`,
+    html: htmlContent,
+    text: `New Dataset Upload
+
+User: ${uploaderName}
+Dataset: ${datasetName}
+Link: ${datasetUrl}
+
+Please review this dataset to ensure it meets our quality standards.`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Dataset upload email sent:", info.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending dataset upload email:", error);
+    return { success: false, error };
+  }
+}
+
+// Send creation confirmation to the creator (dataset, task, or collection)
+export async function sendCreationConfirmationEmail(
+  recipientEmail: string,
+  entityType: "dataset" | "task" | "collection",
+  entityName: string,
+  entityId: string | number,
+) {
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3050";
+  const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+  const pathMap = { dataset: "datasets", task: "tasks", collection: "collections" };
+  const entityUrl = `${baseUrl}/${pathMap[entityType]}/${entityId}`;
+
+  const htmlContent = generateEntityCreatedEmail(
+    entityType,
+    entityName,
+    entityId.toString(),
+    entityUrl,
+    logoUrl,
+  );
+
+  const labelMap = { dataset: "Dataset", task: "Task", collection: "Collection" };
+  const label = labelMap[entityType];
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
+    to: recipientEmail,
+    subject: `Your OpenML ${label} "${entityName}" has been created`,
+    html: htmlContent,
+    text: `Your ${label} "${entityName}" has been successfully submitted to OpenML.\nView it at: ${entityUrl}\n\nBest regards,\nThe OpenML Team`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`${label} creation email sent:`, info.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error(`Error sending ${label} creation email:`, error);
+    return { success: false, error };
+  }
+}
+
+// Send dataset edit notification
+
+export async function sendDatasetEditEmail(
+  recipientEmail: string,
+  datasetName: string,
+  datasetId: string | number,
+) {
+  const baseUrl = APP_CONFIG.siteUrl || "http://localhost:3000";
+  const datasetUrl = `${baseUrl}/datasets/${datasetId}`;
+  const logoUrl = `${baseUrl}/logo_openML_light-bkg.png`;
+
+  const htmlContent = generateDatasetEditEmail(
+    "User",
+    datasetId.toString(),
+    datasetName,
+    ["Metadata updated"], // changes
+    logoUrl,
+    datasetUrl,
+  );
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"OpenML" <noreply@openml.org>',
+    to: recipientEmail,
+    subject: `Update: Dataset "${datasetName}" has been modified`,
+    html: htmlContent,
+    text: `Dataset Update
+
+The dataset "${datasetName}" has been updated.
+View the changes here: ${datasetUrl}
+
+Best regards,
+The OpenML Team`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Dataset edit email sent:", info.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending dataset edit email:", error);
     return { success: false, error };
   }
 }
