@@ -19,6 +19,7 @@ export function DatasetsSearchPage() {
     "qualities.NumberOfFeatures": "Features",
     "qualities.NumberOfClasses": "Task Type",
     format: "Format",
+    "tags.tag": "Tag",
   };
 
   return (
