@@ -149,6 +149,24 @@ const dataStatus = {
   }
 };
 
+/**
+ * Attempts to convert a time string to UTC
+ * format with simple method.
+ *
+ * For example "2019-07-09 15:22:03" converts to "2019-07-09T15:22:03Z"
+ * If the string is already in UTC format, it will be returned in the original UTC form.
+ * If it's in a format that cannot be properly converted, it will also be returned in original form.
+ *
+ * OpenML's API currently returns timestamps that are not always in UTC.
+ * This caused a time skew issue when displaying them on the website.
+ * **/
+const toUTC = (originalDateString) => {
+  let utcAttempt = originalDateString?.replace(" ", "T") + "Z";
+
+  const date = new Date(utcAttempt);
+  return isNaN(date) ? originalDateString : date.toISOString();
+};
+
 class SearchElement extends React.Component {
 
   randomColor = () => {
@@ -285,7 +303,7 @@ class SearchElement extends React.Component {
         {this.props.stats2 !== undefined && this.props.type === "run" && scores}
         <ColorStats color={grey[400]}>
             <ColoredIcon icon="history" fixedWidth />
-            <TimeAgo date={new Date(this.props.date?.replace(" ", "T") + "Z")} minPeriod={60} />
+            <TimeAgo date={toUTC(this.props.date)} minPeriod={60} />
         </ColorStats>
 
         <SubStats color={grey[400]}>
