@@ -42,9 +42,14 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Forward the client's Accept-Encoding to avoid serving gzip/brotli to
+    // clients that can't handle it (fixes #367)
+    const clientEncoding = request.headers.get("accept-encoding") || "identity";
+
     const response = await fetch(url, {
       headers: {
         "User-Agent": "OpenML-NextApp/1.0",
+        "Accept-Encoding": clientEncoding,
       },
     });
 
@@ -64,26 +69,39 @@ export async function GET(request: NextRequest) {
       upstreamContentType.includes("octet-stream") ||
       upstreamContentType.includes("parquet");
 
+    // Pass through content-encoding so the client knows if it's compressed
+    const contentEncoding = response.headers.get("content-encoding");
+
     if (isBinary) {
       // Binary response (parquet files)
       const buffer = await response.arrayBuffer();
+      const binaryHeaders: Record<string, string> = {
+        "Content-Type": "application/octet-stream",
+        "Content-Length": buffer.byteLength.toString(),
+        "Cache-Control": "public, max-age=86400",
+        "Vary": "Accept-Encoding",
+      };
+      if (contentEncoding) {
+        binaryHeaders["Content-Encoding"] = contentEncoding;
+      }
       return new NextResponse(buffer, {
         status: 200,
-        headers: {
-          "Content-Type": "application/octet-stream",
-          "Content-Length": buffer.byteLength.toString(),
-          "Cache-Control": "public, max-age=86400",
-        },
+        headers: binaryHeaders,
       });
     } else {
       // Text response (ARFF, CSV, predictions)
       const text = await response.text();
+      const textHeaders: Record<string, string> = {
+        "Content-Type": upstreamContentType,
+        "Cache-Control": "public, max-age=3600",
+        "Vary": "Accept-Encoding",
+      };
+      if (contentEncoding) {
+        textHeaders["Content-Encoding"] = contentEncoding;
+      }
       return new NextResponse(text, {
         status: 200,
-        headers: {
-          "Content-Type": upstreamContentType,
-          "Cache-Control": "public, max-age=3600",
-        },
+        headers: textHeaders,
       });
     }
   } catch (error) {
