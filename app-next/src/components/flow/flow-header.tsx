@@ -2,27 +2,24 @@ import Link from "next/link";
 import {
   Calendar,
   Hash,
-  Heart,
   CloudDownload,
   ThumbsDown,
   AlertCircle,
-  FlaskConical,
   GitBranch,
-  User,
-  Users,
-  Cog,
   Tag as TagIcon,
-  Play,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS, entityColors } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { LikeButton } from "@/components/ui/like-button";
+import { ClickableTagList } from "@/components/ui/clickable-tag-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LikeButton } from "@/components/ui/like-button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
 import type { Flow } from "@/types/flow";
 
 interface FlowHeaderProps {
@@ -67,15 +64,23 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
   };
 
   return (
-    <header className="space-y-6 border-b pb-6">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+    <header className="space-y-6 border-b p-0">
+      <div className="mb-1 flex flex-col lg:flex-row lg:items-start lg:justify-between">
         {/* Left: Icon + Title + Metadata */}
         <div className="flex min-w-0 items-start gap-4">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center p-0"
             aria-hidden="true"
           >
-            <Cog className="h-10 w-10 text-[#3b82f6]" strokeWidth={1.5} />
+            <FontAwesomeIcon
+              icon={ENTITY_ICONS.flow}
+              className="h-8 w-8"
+              style={{
+                color: entityColors.flow,
+                height: "2rem",
+                width: "2rem",
+              }}
+            />
           </div>
 
           <div className="mr-6 min-w-0 flex-1 space-y-1">
@@ -87,8 +92,8 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
               {/* Flow ID Badge - using Flow color (blue) */}
               <Badge
-                variant="outline"
-                className="flex items-center gap-0.5 border-blue-200 bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700 hover:bg-blue-200"
+                variant="openml"
+                className="flex items-center gap-0.5 bg-[#2f65cb] px-2 py-0.5 text-xs font-semibold text-white hover:bg-blue-800"
               >
                 <Hash className="h-3 w-3" />
                 {flow.flow_id}
@@ -133,13 +138,16 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
               )}
             </div>
 
-            {/* LINE 3: Stats row (Matching Task style) - Wrapped to remove extra padding/margin */}
+            {/* LINE 3: Stats row */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-              {/* Likes */}
-              <div className="flex items-center gap-1">
-                <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-                <span>{likes} likes</span>
-              </div>
+              {/* Likes — interactive, synced */}
+              <LikeButton
+                entityType="flow"
+                entityId={flow.flow_id}
+                initialLikes={likes}
+                showCount={true}
+                size="sm"
+              />
 
               {/* Downvotes */}
               <div className="text-muted-foreground flex items-center gap-1">
@@ -161,7 +169,11 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
 
               {/* Runs */}
               <div className="text-muted-foreground flex items-center gap-1">
-                <FlaskConical className="h-4 w-4 text-black dark:text-white" />
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="h-4 w-4"
+                  style={{ color: entityColors.run }}
+                />
                 <span className="font-semibold">
                   {displayRunCount.toLocaleString()} runs
                 </span>
@@ -170,46 +182,84 @@ export function FlowHeader({ flow, runCount }: FlowHeaderProps) {
 
             {/* LINE 4: Tags Section */}
             {tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 pt-4">
-                <TagIcon className="text-muted-foreground h-4 w-4" />
-                <div className="flex flex-wrap gap-2">
-                  {tags.slice(0, 10).map((tag, idx) => (
-                    <Link
-                      key={`${tag}-${idx}`}
-                      href={`/search?type=flow&tag=${encodeURIComponent(tag)}`}
-                    >
-                      <Badge
-                        variant="secondary"
-                        className="border-accent hover:bg-primary/10 hover:text-primary cursor-pointer border text-xs transition-colors"
-                      >
-                        {tag}
-                      </Badge>
-                    </Link>
-                  ))}
+              <div className="flex items-start gap-2">
+                <TagIcon className="text-muted-foreground mt-1 h-4 w-4 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <ClickableTagList
+                    tags={tags.slice(0, 10)}
+                    getHref={(tag) => `/flows?tag=${encodeURIComponent(tag)}`}
+                  />
                   {tags.length > 10 && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs font-medium transition-colors">
+                        <button className="text-muted-foreground hover:text-foreground mt-2 cursor-pointer text-xs font-medium transition-colors">
                           +{tags.length - 10} more
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="max-h-64 w-72 overflow-y-auto p-3" align="start">
-                        <p className="text-muted-foreground mb-2 text-xs font-medium">All tags ({tags.length})</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {tags.map((tag, idx) => (
-                            <Link key={`pop-${tag}-${idx}`} href={`/search?type=flow&tag=${encodeURIComponent(tag)}`}>
-                              <Badge variant="secondary" className="hover:bg-primary/10 hover:text-primary cursor-pointer text-xs transition-colors">{tag}</Badge>
-                            </Link>
-                          ))}
-                        </div>
+                      <PopoverContent
+                        className="max-h-64 w-72 overflow-y-auto p-3"
+                        align="start"
+                      >
+                        <p className="text-muted-foreground mb-2 text-xs font-medium">
+                          All tags ({tags.length})
+                        </p>
+                        <ClickableTagList
+                          tags={tags}
+                          getHref={(tag) =>
+                            `/flows?tag=${encodeURIComponent(tag)}`
+                          }
+                          className="gap-1.5"
+                        />
                       </PopoverContent>
                     </Popover>
                   )}
                 </div>
               </div>
             )}
+            {/* {tags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <TagIcon className="text-muted-foreground h-4 w-4" />
+                <ClickableTagList
+                  tags={tags.slice(0, 10)}
+                  getHref={(tag) => `/flows?tag=${encodeURIComponent(tag)}`}
+                />
+                {tags.length > 10 && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="text-muted-foreground hover:text-foreground cursor-pointer text-xs font-medium transition-colors">
+                        +{tags.length - 10} more
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="max-h-64 w-72 overflow-y-auto p-3"
+                      align="start"
+                    >
+                      <p className="text-muted-foreground mb-2 text-xs font-medium">
+                        All tags ({tags.length})
+                      </p>
+                      <ClickableTagList
+                        tags={tags}
+                        getHref={(tag) =>
+                          `/flows?tag=${encodeURIComponent(tag)}`
+                        }
+                        className="gap-1.5"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </div>
+            )} */}
           </div>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap items-center justify-end gap-3 pb-4">
+        <EntityActionsMenu
+          entityType="flow"
+          entityId={flow.flow_id}
+          entityName={flow.name}
+        />
       </div>
     </header>
   );

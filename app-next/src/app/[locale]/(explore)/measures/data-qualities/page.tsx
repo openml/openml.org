@@ -1,7 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 import { MeasureList } from "@/components/measure/measure-list";
-import { Gauge } from "lucide-react";
 import type { Metadata } from "next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS, entityColors } from "@/constants";
 
 export const metadata: Metadata = {
   title: "Data Quality Measures - OpenML",
@@ -37,7 +38,16 @@ export default async function DataQualitiesPage({
       <div className="bg-muted/40 border-b">
         <div className="container mx-auto px-4 py-8 sm:px-6">
           <div className="flex items-start gap-3">
-            <Gauge className="h-8 w-8 text-sky-600" aria-hidden="true" />
+            <FontAwesomeIcon
+              icon={ENTITY_ICONS.measures}
+              className="h-4 w-4"
+              style={{
+                color: entityColors.measures,
+                width: "32px",
+                height: "32px",
+              }}
+              aria-hidden="true"
+            />
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
                 Data Quality Measures
