@@ -10,6 +10,7 @@ import { SearchContainer } from "./search-container";
 export function DatasetsSearchPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const tagParam = searchParams.get("tag") || "";
 
   // Facet labels for Active Filters
   const facetLabels: Record<string, string> = {
@@ -19,16 +20,27 @@ export function DatasetsSearchPage() {
     "qualities.NumberOfFeatures": "Features",
     "qualities.NumberOfClasses": "Task Type",
     format: "Format",
+    "tags.tag": "Tag",
   };
+
+  // Build initial filters, adding tag filter from URL if present
+  const initialFilters = [
+    ...dataConfig.initialState.filters,
+    ...(tagParam
+      ? [{ field: "tags.tag", values: [tagParam], type: "any" as const }]
+      : []),
+  ];
 
   return (
     <SearchProvider
+      key={tagParam}
       config={
         {
           ...dataConfig,
           initialState: {
             ...dataConfig.initialState,
             searchTerm: initialQuery,
+            filters: initialFilters,
           },
         } as SearchDriverOptions
       }
@@ -65,7 +77,7 @@ export function DatasetsSearchPage() {
         </div>
 
         {/* Search Container */}
-        <div className="mx-auto w-full flex-1 px-1.5 py-6">
+        <div className="mx-auto w-full flex-1 px-1.5 pb-6">
           <SearchContainer />
         </div>
       </div>

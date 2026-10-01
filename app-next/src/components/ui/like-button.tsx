@@ -131,7 +131,7 @@ export function LikeButton({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className={cn("flex items-center gap-1", className)}>
+          <div className={cn("flex items-center", className)}>
             <Button
               variant="ghost"
               size="icon"

@@ -1,6 +1,7 @@
 "use client";
 
 import { Database, FileText, Download, ExternalLink } from "lucide-react";
+import { APP_CONFIG } from "@/lib/config";
 import { entityTailwindColors } from "@/constants/entityColors";
 import { Button } from "@/components/ui/button";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
@@ -21,7 +22,7 @@ interface DataDetailSectionProps {
  * - Data preview link
  */
 export function DataDetailSection({ dataset }: DataDetailSectionProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
+  const apiUrl = APP_CONFIG.openmlApiUrl || "https://www.openml.org";
 
   return (
     <CollapsibleSection
