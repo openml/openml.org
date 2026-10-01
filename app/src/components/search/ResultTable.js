@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { faCopy, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "next-i18next";
+import { toUTC } from "../../utils/helpers";
 
 import Teaser from "../../components/search/Teaser";
 import TimeAgo from "react-timeago";
@@ -180,7 +181,7 @@ export const renderTags = (params) => {
 };
 
 export const renderDate = (params) => {
-  return <TimeAgo date={new Date(params.value?.replace(" ", "T") + "Z")} minPeriod={60} />;
+  return <TimeAgo date={toUTC(params.value)} minPeriod={60} />;
 };
 
 export const renderDescription = (params) => {
