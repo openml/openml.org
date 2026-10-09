@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Component } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { isValidEmail } from "./validateEmail";
 import {
   Avatar,
   Button,
@@ -82,9 +83,7 @@ function Public() {
     // Both request should not be clubbed together because it will give error on server side image
     event.preventDefault();
     if (
-      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(
-        event.target.email.value
-      ) !== true
+      !isValidEmail(event.target.email.value)
     ) {
       setError(true);
       setErrorMessage("Please enter valid email");
