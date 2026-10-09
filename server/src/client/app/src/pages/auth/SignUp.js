@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import axios from "axios";
+import { isValidEmail } from "./validateEmail";
 
 const Button = styled(MuiButton)(spacing);
 
@@ -43,9 +44,7 @@ function SignUp() {
       setError(true);
       setErrorMessage("Password too weak. Use at least 8 characters, with numbers, digits, and special characters.");
     } else if (
-      /[a-zA-Z0-9]+@(?:[a-zA-Z0-9-]+\.)+[A-Za-z]+$/.test(
-        event.target.email.value
-      ) !== true
+      !isValidEmail(event.target.email.value)
     ) {
       setError(true);
       setErrorMessage("Please enter valid email");
