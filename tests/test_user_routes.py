@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from flask_jwt_extended import create_access_token
 from server.extensions import Session
 
 from server.user.models import User
@@ -72,6 +73,46 @@ def test_api_key_post(test_client, init_database):
     headers = {"Authorization": "Bearer {}".format(access_token)}
     response = test_client.post("/api-key", headers=headers)
     assert response.status_code == 200
+
+
+@pytest.fixture
+def api_key_user(test_client):
+    with Session() as session:
+        user = User(
+            email="apikey@test.com",
+            username="apikey_tester",
+            active=1,
+            ip_address="127.0.0.1",
+            created_on=0,
+            company="",
+            country="",
+            bio="",
+        )
+        user.set_password("apikey")
+        user.session_hash = "old-api-key"
+        session.add(user)
+        session.commit()
+    headers = {"Authorization": "Bearer " + create_access_token(identity="apikey_tester")}
+    yield headers
+    with Session() as session:
+        session.query(User).filter_by(username="apikey_tester").delete()
+        session.commit()
+
+
+def test_api_key_reset_returns_new_key(test_client, api_key_user):
+    response = test_client.post("/api-key", headers=api_key_user)
+
+    assert response.status_code == 200
+    new_key = response.json.get("apikey")
+    assert new_key, "POST /api-key must return the new key so the UI can display it"
+    assert new_key != "old-api-key"
+
+    with Session() as session:
+        stored = session.query(User).filter_by(username="apikey_tester").first()
+        assert stored.session_hash == new_key
+
+    get_response = test_client.get("/api-key", headers=api_key_user)
+    assert get_response.json["apikey"] == new_key
 
 
 def test_logout(test_client, init_database):

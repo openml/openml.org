@@ -302,7 +302,7 @@ def apikey():
             user.set_session_hash()
             session.merge(user)
             session.commit()
-            return jsonify({"msg": "API Key updated"}), 200
+            return jsonify({"msg": "API Key updated", "apikey": user.session_hash}), 200
 
 
 @user_blueprint.route("/delete", methods=["GET", "POST"])
