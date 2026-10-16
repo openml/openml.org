@@ -30,7 +30,7 @@ export default async function DatasetEditPage({
   // Auth check — redirect to sign-in if not authenticated
   const session = await getServerSession(authOptions);
   if (!session?.user) {
-    redirect(`/auth/signin?callbackUrl=/datasets/${id}/edit`);
+    redirect(`/${locale}/auth/sign-in?reason=uploadDataset&callbackUrl=/${locale}/datasets/${id}/edit`);
   }
 
   const dataset = await fetchDataset(id);
@@ -39,12 +39,20 @@ export default async function DatasetEditPage({
   const userId = (session.user as { id?: string }).id;
   const isOwner = userId ? Number(userId) === dataset.uploader_id : false;
 
+  // Check whether the session has a valid OpenML API key
+  const hasApiKey = !!(session as { apikey?: string }).apikey;
+  // OAuth users created in local dev environments don't have a real OpenML API key
+  const isLocalUser =
+    (session.user as { isLocalUser?: boolean }).isLocalUser ?? false;
+
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
       <DatasetEditForm
         datasetId={dataset.data_id}
         datasetName={dataset.name}
         isOwner={isOwner}
+        hasApiKey={hasApiKey}
+        isLocalUser={isLocalUser}
         initialValues={{
           description: dataset.description || "",
           creator: dataset.creator || "",
