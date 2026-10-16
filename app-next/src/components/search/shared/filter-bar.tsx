@@ -208,7 +208,7 @@ export function FilterBar({
 
   return (
     // <div className="bg-background flex flex-wrap items-center gap-2 border-b p-4">
-    <div className="bg-background flex items-center justify-center gap-6 border-b px-4 pb-4">
+    <div className="bg-background flex items-center justify-center gap-6 border-b px-4 py-3">
       <span className="text-muted-foreground mr-2 text-sm font-medium">
         Filters:
       </span>

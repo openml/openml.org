@@ -5,7 +5,6 @@ import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar } from "../shared/controls-bar";
-import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Calendar, User, Target } from "lucide-react";
 
 interface BenchmarkResult {
