@@ -29,6 +29,7 @@ import {
 import { PasskeyRegistration } from "@/components/auth/passkey-registration";
 import { listPasskeys, removePasskey, Passkey } from "@/services/passkey";
 import { useToast } from "@/hooks/use-toast";
+import { APP_CONFIG } from "@/lib/config";
 
 /**
  * Profile Settings Page - Inspired by OpenML's /auth/edit-profile
@@ -175,7 +176,7 @@ export function ProfileSettings() {
       }
 
       const apiUrl =
-        process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
+        APP_CONFIG.openmlApiUrl || "https://www.openml.org";
 
       const response = await fetch(`${apiUrl}/api-key/regenerate`, {
         method: "POST",
