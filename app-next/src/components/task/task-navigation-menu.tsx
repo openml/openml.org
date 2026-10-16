@@ -68,7 +68,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
           <div className="bg-background fixed top-0 right-0 bottom-0 z-50 w-80 shadow-2xl xl:hidden">
             <div className="flex h-full flex-col overflow-y-auto p-6">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Navigation</h2>
+                <h2 className="text-lg font-semibold text-[#ffa726]">Navigation</h2>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -109,7 +109,7 @@ export function TaskNavigationMenu({ runCount }: TaskNavigationMenuProps) {
 
                 {/* Navigation Links */}
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
-                  <h3 className="text-foreground mb-3 text-sm font-semibold">
+                  <h3 className="mb-3 text-sm font-semibold text-[#ffa726]">
                     Quick Links
                   </h3>
                   <nav className="space-y-1">
