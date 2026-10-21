@@ -143,9 +143,9 @@ function Main(props) {
               severity="info"
               sx={{ width: '100%'}}
             >
-                Some services are temporarily unavailable due to PHP vulnerabilities.{" "}
+                We are upgrading our systems in light of recent PHP vulnerabilities. During this time, some website functionality may temporarily be unavailable. We apologise for this inconvenience. Further information will be shared{" "}
                 <a href="https://github.com/orgs/openml/discussions/39">
-                  Learn more.
+                  here.
                 </a>
             </Alert>
           </Snackbar>}
