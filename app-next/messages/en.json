@@ -689,6 +689,12 @@
   },
   "auth": {
     "recommended": "RECOMMENDED",
+    "signInRequired": {
+      "uploadDataset": "You need to sign in to upload a dataset",
+      "createTask": "You need to sign in to define a task",
+      "createCollection": "You need to sign in to create a collection",
+      "default": "You need to sign in to continue"
+    },
     "signIn": {
       "title": "Sign In - OpenML",
       "description": "Sign in to your OpenML account",
