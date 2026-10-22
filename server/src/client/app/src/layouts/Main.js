@@ -76,7 +76,7 @@ function Main(props) {
   const [activeSearch, setActiveSearch] = useState(false);
   const [mode, setMode] = useState("wide");
 
-  const [bannerOpen, setBannerOpen] = React.useState(true);
+  const [bannerOpen, setBannerOpen] = React.useState(false);
   const handleBannerClose = () => {
     setBannerOpen(false);
   };
