@@ -469,7 +469,7 @@ export function TaskAnalysisSection({
                 </AlertDescription>
               </Alert>
             ) : (
-              <div className="overflow-hidden rounded-xl border bg-white shadow-sm dark:bg-slate-950">
+              <div className="overflow-hidden rounded-xl border bg-transparent shadow-sm">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/50 text-xs">
@@ -534,7 +534,7 @@ export function TaskAnalysisSection({
               <p>Every dot is a run, click for details</p>
               <p>Every y-axis label is a flow, click for details</p>
             </div>
-            <div className="rounded-xl border bg-white p-4 shadow-sm dark:bg-slate-900">
+            <div className="rounded-xl border bg-transparent p-4 shadow-sm">
               <div className="plotly-chart-container">
                 <Plot
                   data={
@@ -556,7 +556,7 @@ export function TaskAnalysisSection({
                           ),
                           size: 9,
                           opacity: 0.7,
-                          line: { width: 0.5, color: "white" },
+                          line: { width: 0.5, color: "rgba(128,128,128,0.3)" },
                         },
                         customdata: group.runs.map((r) => r.run_id),
                       };
@@ -566,20 +566,28 @@ export function TaskAnalysisSection({
                     height: Math.max(400, flowsData.length * 35),
                     margin: { l: 280, r: 40, t: 40, b: 60 },
                     showlegend: false,
+                    font: { color: "#9ca3af" },
                     xaxis: {
                       title: selectedMetric.replace(/_/g, " ").toUpperCase(),
-                      gridcolor: "#f1f5f9",
+                      gridcolor: "rgba(128,128,128,0.2)",
                       zeroline: false,
                       side: "top",
-                    } as any,
+                      tickfont: { color: "#9ca3af" },
+                      titlefont: { color: "#9ca3af" },
+                    },
                     yaxis: {
                       automargin: true,
-                      gridcolor: "#f1f5f9",
+                      gridcolor: "rgba(128,128,128,0.2)",
+                      tickfont: { color: "#9ca3af" },
                     },
                     hovermode: "closest",
+                    hoverlabel: {
+                      font: { color: "white" },
+                      bordercolor: "white",
+                    },
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
-                  }}
+                  } as any}
                   config={{
                     displayModeBar: true,
                     responsive: true,
@@ -601,7 +609,7 @@ export function TaskAnalysisSection({
           {/* Section 3: People / Evaluations Over Time */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold tracking-tight">People:</h2>
-            <div className="rounded-xl border bg-white p-4 shadow-sm dark:bg-slate-900">
+            <div className="rounded-xl border bg-transparent p-4 shadow-sm">
               <div className="plotly-chart-container">
                 <Plot
                   data={Array.from(uploaderColors.keys()).map((uploader) => {
@@ -615,8 +623,12 @@ export function TaskAnalysisSection({
                       x: uploaderRuns.map((r) => r.date),
                       y: uploaderRuns.map((r) => r.value),
                       text: uploaderRuns.map(
-                        (r) =>
-                          `Run ${r.run_id}<br>Flow: ${r.flow_name}<br>Score: ${r.value.toFixed(6)}<br>Date: ${new Date(r.date).toLocaleDateString()}`,
+                        (r) => {
+                          const flowLabel = r.flow_name.length > 60
+                            ? r.flow_name.substring(0, 60) + "..."
+                            : r.flow_name;
+                          return `Run ${r.run_id}<br>Flow: ${flowLabel}<br>Score: ${r.value.toFixed(6)}<br>Date: ${new Date(r.date).toLocaleDateString()}`;
+                        },
                       ),
                       hoverinfo: "text",
                       marker: {
@@ -631,20 +643,29 @@ export function TaskAnalysisSection({
                     height: 450,
                     margin: { l: 80, r: 40, t: 40, b: 60 },
                     showlegend: false,
+                    font: { color: "#9ca3af" },
                     xaxis: {
                       title: "upload_time",
-                      gridcolor: "#f1f5f9",
-                      type: "date" as any,
+                      gridcolor: "rgba(128,128,128,0.2)",
+                      type: "date",
+                      tickfont: { color: "#9ca3af" },
+                      titlefont: { color: "#9ca3af" },
                     },
                     yaxis: {
                       title: selectedMetric,
-                      gridcolor: "#f1f5f9",
-                      autorange: (isLowerBetter ? "reversed" : true) as any,
+                      gridcolor: "rgba(128,128,128,0.2)",
+                      autorange: isLowerBetter ? "reversed" : true,
+                      tickfont: { color: "#9ca3af" },
+                      titlefont: { color: "#9ca3af" },
                     },
                     hovermode: "closest",
+                    hoverlabel: {
+                      font: { color: "white" },
+                      bordercolor: "white",
+                    },
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
-                  }}
+                  } as any}
                   config={{
                     displayModeBar: true,
                     responsive: true,
