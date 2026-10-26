@@ -1,0 +1,28 @@
+services:
+  openml-next:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openml-next
+    restart: unless-stopped
+    ports:
+      - "3050:3050"
+
+    # Load all variables from .env.local for local testing
+    # For production: use Kubernetes ConfigMaps and Secrets instead
+    env_file:
+      - .env.services
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3050/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    networks:
+      - openml-services
+
+networks:
+  openml-services:
+    external: true

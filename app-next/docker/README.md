@@ -14,6 +14,11 @@ docker run --rm -d -p 5000:5000 --name openml-frontend openml/frontend:env_[vers
 docker kill openml-frontend  # the container doesn't seem to respond to a friendly stop request
 ```
 
+## Configuration
+
+Copy the `.env.docker.example` file to `.env.docker` and update the values as necessary.
+
+
 ## Build and publish
 
 For local development using docker compose (openml services):
