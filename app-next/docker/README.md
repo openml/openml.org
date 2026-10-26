@@ -1,6 +1,6 @@
 # openml frontend
 
-The frontend for OpenML.
+The new frontend for OpenML. The preview is available at `beta.openml.org`.
 
 ## Usage
 
@@ -18,13 +18,13 @@ docker kill openml-frontend  # the container doesn't seem to respond to a friend
 
 For local development using docker compose (openml services):
 ```bash
-docker build -f app-next/Dockerfile --tag openml/frontend:dev_[version] .
+docker build -f Dockerfile --tag openml/frontend:dev_[version] .
 docker push openml/frontend:dev_[version]
 ```
 
 For production on kubernetes:
 ```bash
-docker build -f app-next/Dockerfile --tag openml/frontend:k8s_[version] --build-arg environment=.k8s .
+docker build -f Dockerfile --tag openml/frontend:k8s_[version] --build-arg environment=.k8s .
 docker push openml/frontend:k8s_[version]
 ```
 
