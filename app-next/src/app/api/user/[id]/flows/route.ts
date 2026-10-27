@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-
-const ELASTICSEARCH_SERVER = "https://es.openml.org/";
-const FLOW_INDEX = "flow";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
 interface ElasticsearchHit {
   _source: Record<string, unknown>;
@@ -34,7 +32,7 @@ export async function GET(
       size: size,
     };
 
-    const url = `${ELASTICSEARCH_SERVER}${FLOW_INDEX}/_search`;
+    const url = getElasticsearchUrl("flow/_search");
     const response = await axios.post(url, esQuery, {
       headers: { "Content-Type": "application/json" },
       timeout: 10000,
