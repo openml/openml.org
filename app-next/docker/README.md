@@ -17,20 +17,16 @@ docker kill openml-frontend  # the container doesn't seem to respond to a friend
 ## Configuration
 
 Copy the `.env.docker.example` file to `.env.docker` and update the values as necessary.
+For an example configuration that works with `services` setup, see the `.env.services.example` file in the `app-next` directory.
 
 
-## Build and publish
+## Build
 
-For local development using docker compose (openml services):
+For local development using docker compose (openml services), run from the `app-next` directory containing the `Dockerfile`:
 ```bash
 docker build -f Dockerfile --tag openml/frontend:dev_[version] .
-docker push openml/frontend:dev_[version]
 ```
 
-For production on kubernetes:
-```bash
-docker build -f Dockerfile --tag openml/frontend:k8s_[version] --build-arg environment=.k8s .
-docker push openml/frontend:k8s_[version]
-```
+## Publish
+Publishing the NextJS image goes through a GitHub workflow which can only be triggered from the GitHub Actions menu for users with the right permissions.
 
-Similarly, builds can be made for other environments.
