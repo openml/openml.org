@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
-const ES_URL = process.env.ES_URL || "https://es.openml.org";
 
 export async function GET(
   request: NextRequest,
@@ -11,7 +11,7 @@ export async function GET(
   const limit = parseInt(searchParams.get("limit") || "10");
 
   try {
-    const response = await fetch(`${ES_URL}/run/_search`, {
+    const response = await fetch(getElasticsearchUrl("/run/_search"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
