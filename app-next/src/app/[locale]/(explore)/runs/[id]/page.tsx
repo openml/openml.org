@@ -70,7 +70,7 @@ async function getRun(
 ): Promise<{ run: Run | null; error: string | null }> {
   try {
     const apiUrl =
-      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+      process.env.OPENML_API_URL || "https://www.openml.org/api/v1";
     const response = await fetch(`${apiUrl}/json/run/${runId}`, {
       next: { revalidate: 3600 },
       headers: {
