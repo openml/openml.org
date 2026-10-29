@@ -37,7 +37,7 @@ export const APP_CONFIG = {
     return getConfig("NEXT_PUBLIC_OPENML_URL");
   },
   get esServer() {
-    return getConfig("NEXT_PUBLIC_ELASTICSEARCH_SERVER");
+    return getConfig("ELASTICSEARCH_SERVER");
   },
   get minioUrl() {
     return getConfig("NEXT_PUBLIC_URL_MINIO");
