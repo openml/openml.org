@@ -531,19 +531,6 @@ export default class SearchPanel extends React.Component {
       )
       .catch(error => {
         console.error(error);
-        try {
-          this.setState({
-            error:
-              "" +
-              error +
-              (error.hasOwnProperty("fileName")
-                ? " (" + error.fileName + ":" + error.lineNumber + ")"
-                : "")
-          });
-        } catch (ex) {
-          console.error("There was an error displaying the above error");
-          console.error(ex);
-        }
       });
 }
 
@@ -572,14 +559,6 @@ loadSubQuery() {
     .catch(error => {
       console.error(error);
       try {
-        this.setState({
-          error:
-            "" +
-            error +
-            (error.hasOwnProperty("fileName")
-              ? " (" + error.fileName + ":" + error.lineNumber + ")"
-              : "")
-        });
         this.context.setSubResults(0, []);
       } catch (ex) {
         console.error("There was an error displaying the above error");
