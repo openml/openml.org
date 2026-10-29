@@ -40,6 +40,6 @@ export const APP_CONFIG = {
     return getConfig("ELASTICSEARCH_SERVER");
   },
   get minioUrl() {
-    return getConfig("NEXT_PUBLIC_URL_MINIO");
+    return getConfig("OPENML_DATA_URL");
   },
 };
