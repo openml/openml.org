@@ -8,7 +8,7 @@ const CORE_IDS = [
   34198,
 ];
 
-const OPENML_API_URL = process.env.NEXT_PUBLIC_OPENML_API_URL || "https://www.openml.org";
+const OPENML_BASE_URL = process.env.OPENML_BASE_URL || "https://www.openml.org";
 
 interface CoreTeamMember {
   user_id: number;
@@ -67,7 +67,7 @@ export async function GET() {
         // Build proper image URL
         let imageUrl = user.image || "";
         if (imageUrl && !imageUrl.startsWith("http")) {
-          imageUrl = `${OPENML_API_URL}/img/${imageUrl}`;
+          imageUrl = `${OPENML_BASE_URL}/img/${imageUrl}`;
         }
 
         return {
