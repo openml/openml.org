@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Github, Eye, EyeOff } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
+import { GoogleIcon } from "@/components/icons/google-icon";
 import { PasskeySignInButton } from "./passkey-signin-button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Badge } from "@/components/ui/badge";
@@ -56,7 +56,7 @@ export default function SignInForm() {
         router.push("/dashboard");
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       setError(t("signIn.error"));
     } finally {
       setIsLoading(false);
@@ -69,7 +69,7 @@ export default function SignInForm() {
 
     try {
       await signIn(provider, { callbackUrl: "/dashboard" });
-    } catch (err) {
+    } catch (_err) {
       setError(t("signIn.oauthError"));
       setIsLoading(false);
     }
@@ -97,7 +97,7 @@ export default function SignInForm() {
             onClick={() => handleOAuthSignIn("google")}
             disabled={isLoading}
           >
-            <FcGoogle className="mr-2 h-5 w-5" />
+            <GoogleIcon className="mr-2 h-5 w-5" />
             <span className="text-sm font-medium">Google</span>
           </Button>
 

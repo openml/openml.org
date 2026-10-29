@@ -11,9 +11,6 @@ export async function GET() {
     (i) => i !== "user" && i !== "benchmark",
   );
 
-  // console.log("🔍 [Count API] Elasticsearch URL:", elasticsearchEndpoint);
-  // console.log("📦 [Count API] Indices:", indices);
-
   // Build NDJSON body for _msearch - correct format
   // For datasets (data index), only count active ones per team leader request
   let requestBody = "";
@@ -44,15 +41,10 @@ export async function GET() {
   const startTime = Date.now();
 
   try {
-    // console.log("⏳ [Count API] Sending request...");
-
     const response = await axios.post(elasticsearchEndpoint, requestBody, {
       headers: { "Content-Type": "application/x-ndjson" },
       timeout: 30000, // 30 second timeout
     });
-
-    const duration = Date.now() - startTime;
-    // console.log(`✅ [Count API] Success in ${duration}ms`);
 
     // Extract counts safely
     const allLabels = [...indices, ...extraLabels];
@@ -62,7 +54,6 @@ export async function GET() {
         typeof r.hits.total === "number" ? r.hits.total : r.hits.total.value,
     }));
 
-    // console.log("📊 [Count API] Counts:", counts);
     return NextResponse.json(counts);
   } catch (error) {
     const duration = Date.now() - startTime;
