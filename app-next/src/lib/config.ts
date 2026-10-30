@@ -31,15 +31,3 @@ export const getConfig = (key: string): string => {
   return process.env[key] || "";
 };
 
-// Type-safe helper for commonly used variables
-export const APP_CONFIG = {
-  get apiUrl() {
-    return getConfig("NEXT_PUBLIC_OPENML_URL");
-  },
-  get esServer() {
-    return getConfig("NEXT_PUBLIC_ELASTICSEARCH_SERVER");
-  },
-  get minioUrl() {
-    return getConfig("NEXT_PUBLIC_URL_MINIO");
-  },
-};
