@@ -33,10 +33,6 @@ export const HeroHome: React.FC = () => {
         <div className="grid max-w-7xl grid-cols-1 items-center gap-8 lg:mx-6 lg:grid-cols-2 lg:gap-10 2xl:mx-16">
           {/* Left Column - Text */}
           <div className="text-center lg:text-left">
-            <div className="mb-2 inline-block rounded-sm bg-slate-100 px-4 py-1 text-sm font-medium dark:bg-slate-800">
-              <span className="gradient-text">{t("version")}</span>
-            </div>
-
             <h1 className="title-font gradient-text my-4 text-[clamp(3rem,4.6vw,72px)] leading-[1.15] font-bold tracking-tight">
               {t("title")}
             </h1>
