@@ -76,12 +76,56 @@ export async function generateMetadata({
   };
 }
 
-// Upcoming events data
-const upcomingEvents = [
+// all event data, we distinguish between past and present events
+// programmatically since that means less changes to keep the website
+// up to date. 
+interface EventItem {
+    // A unique identifier, e.g., YYYY-Location or YYYY-Season
+    id: string;
+    title: string; 
+    startDate: string; // YYYY-MM-DD
+    endDate: string; // YYYY-MM-DD
+    location: string; // Venue, City, Country
+    description: string;
+    // URLs are relative unless prefixed with a protocl (https://)
+    registrationUrl?: string; 
+    scheduleUrl?: string;
+    prepareUrl?: string;
+    venueUrl: string;
+    isFeatured?: boolean;
+    // Indicate registration is closed. If closed, the register link is not shown and a 'closed' element appears.
+    isRegistrationOpen?: boolean; 
+    eventUrl?: string; // URL to a specific event page, e.g. https://shonan.nii.ac.jp/seminars/258/
+    blogUrl?: string; // URL to a blogpost write up of the event
+}
+const events: EventItem[] = [
+  {
+    id: "dagstuhl-2027",
+    title: "2027 Dagstuhl Research Meeting",
+    startDate: "2027-01-04",
+    endDate: "2027-01-08",
+    location: "Schloss Dagstuhl, Wadern, Germany",
+    description: "Core contributors get together for a week to work on the next generation of OpenML.",
+    venueUrl: "https://www.dagstuhl.de",
+    eventUrl: "https://www.dagstuhl.de/en/seminars/seminar-calendar/seminar-details/27014",
+    isRegistrationOpen: false,
+  },
+  {
+    id: "shonan-2027",
+    title: "2027 Shonan Research Seminar",
+    startDate: "2027-03-15",
+    endDate: "2027-03-18",
+    location: "Shonan, Tokyo, Japan",
+    description: "We bring together proficient researchers from all over the world who are actively promoting and building open machine learning, and leading key research and industry projects in this area.",
+    venueUrl: "https://shonan.nii.ac.jp",
+    eventUrl: "https://shonan.nii.ac.jp/seminars/258/",
+    isRegistrationOpen: false,
+  },
   {
     id: "winter-2026",
     title: "2026 Winter Hackathon",
-    date: "February 16-20, 2026",
+    startDate: "2026-02-16",
+    endDate: "2026-02-20",
     location: "Leiden University, Leiden, The Netherlands",
     description:
       "Join us at Leiden University to work on the next generation of OpenML. By day we'll be at the brand new Science Campus creating the next version of OpenML, and by night we'll relax in the cosy city center.",
@@ -93,19 +137,52 @@ const upcomingEvents = [
       "https://www.universiteitleiden.nl/en/dossiers/building-projects/gorlaeus-building",
     isFeatured: true,
   },
+  {
+    id: "summer-2026",
+    title: "2026 Summer Hackathon",
+    startDate: "2026-06-15",
+    endDate: "2026-06-18",
+    location: "Aalto University, Espoo, Finland",
+    description: "Join us in Aalto for a week of OpenML development and midsummer sun.",
+    venueUrl: "https://www.aalto.fi/",
+  },
 ];
 
-// Past events for reference
-const pastEvents = [
-  {
-    year: "2024",
-    events: ["Spring Hackathon - Eindhoven", "Fall Workshop - Online"],
-  },
-  {
-    year: "2023",
-    events: ["Summer Hackathon - Munich", "Winter Sprint - Amsterdam"],
-  },
-];
+function getEventDateRangeAsString(event: EventItem, locale: string) {
+  let startDate = new Date(event.startDate);
+  let endDate = new Date(event.endDate);
+
+  let startDay = startDate.getDate();
+  let endDay = endDate.getDate();
+  let startMonth = startDate.toLocaleString(locale, { month: 'long' });
+  let endMonth = endDate.toLocaleString(locale, { month: 'long' });
+  let startYear = startDate.getFullYear();
+  let endYear = endDate.getFullYear();
+
+  if (startYear != endYear) {
+    return `${startDay} ${startMonth} ${startYear} - ${endDay} ${endMonth} ${endYear}`;
+  }
+  if (startMonth != endMonth) {
+    return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${endYear}`;
+  }
+  return `${startDay} - ${endDay} ${endMonth} ${endYear}`;
+}
+
+let upcomingEvents = [];
+// past events are grouped by year
+let pastEvents = new Map();
+
+for (const event of events) {
+  let endDate = new Date(event.endDate);
+  if (endDate.getTime() < Date.now()) {
+    const year = endDate.getFullYear();
+    if (!pastEvents.has(year)) pastEvents.set(year, []);
+    pastEvents.get(year).push(event);
+  } 
+  else {
+    upcomingEvents.push(event);
+  }
+}
 
 // JSON-LD structured data for events
 function generateEventJsonLd() {
@@ -221,7 +298,7 @@ export default async function MeetUsPage({
                     <CardDescription className="mt-2 flex flex-wrap gap-4 text-base">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        {event.date}
+                        {getEventDateRangeAsString(event, locale)}
                       </span>
                       <span className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
@@ -232,6 +309,11 @@ export default async function MeetUsPage({
                   {event.isFeatured && (
                     <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-medium">
                       {t("upcoming.featured")}
+                    </span>
+                  )}
+                  {event.isRegistrationOpen === false && (
+                    <span className="bg-destructive text-primary-foreground rounded-full px-3 py-1 text-sm font-medium">
+                      {t("upcoming.registrationClosed")}
                     </span>
                   )}
                 </div>
@@ -251,24 +333,30 @@ export default async function MeetUsPage({
                 )}
 
                 <div className="flex flex-wrap gap-3 pt-2">
+                {event.registrationUrl && event.isRegistrationOpen !== false && (
                   <Link href={event.registrationUrl} target="_blank">
                     <Button className="gap-2">
                       <Calendar className="h-4 w-4" />
                       {t("upcoming.register")}
                     </Button>
                   </Link>
+                )}
+                { event.scheduleUrl && (
                   <Link href={event.scheduleUrl} target="_blank">
                     <Button variant="outline" className="gap-2">
                       {t("upcoming.schedule")}
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </Link>
+                )}
+                { event.prepareUrl && (
                   <Link href={event.prepareUrl} target="_blank">
                     <Button variant="ghost" className="gap-2">
                       {t("upcoming.howToPrepare")}
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </Link>
+                )}
                 </div>
               </CardContent>
             </Card>
@@ -335,16 +423,28 @@ export default async function MeetUsPage({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {pastEvents.map((year) => (
-                    <div key={year.year}>
-                      <h4 className="font-semibold">{year.year}</h4>
-                      <ul className="text-muted-foreground ml-4 list-disc text-sm">
-                        {year.events.map((event, idx) => (
-                          <li key={idx}>{event}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                  {
+                      Array.from(pastEvents).map(([year, events]) => (
+                      <div key={year}>
+                        <h4 className="font-semibold">{year}</h4>
+                        <ul className="text-muted-foreground ml-4 list-disc text-sm">
+                        {
+                          events.map((event) => (
+                            <li key={event.id}>
+                            {
+                              event.blogUrl ? (
+                              <a href={event.blogUrl}>{event.title}</a>
+                              ) : (
+                                event.title
+                              )
+                            }
+                            </li>
+                          ))
+                        }
+                        </ul>
+                      </div>
+                      ))
+                  }
                 </div>
               </CardContent>
             </Card>
