@@ -532,7 +532,8 @@
         "schedule": "Schedule & More",
         "howToPrepare": "How to Prepare",
         "viewVenue": "View venue details",
-        "slackAlert": "Join our Slack channel to stay updated and join the discussion!"
+        "slackAlert": "Join our Slack channel to stay updated and join the discussion!",
+        "registrationClosed": "Registration Closed"
       },
       "sponsor": {
         "title": "Sponsor an Event",
