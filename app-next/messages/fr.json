@@ -706,6 +706,12 @@
   },
   "auth": {
     "recommended": "RECOMMANDÉ",
+    "signInRequired": {
+      "uploadDataset": "Vous devez vous connecter pour télécharger un jeu de données",
+      "createTask": "Vous devez vous connecter pour définir une tâche",
+      "createCollection": "Vous devez vous connecter pour créer une collection",
+      "default": "Vous devez vous connecter pour continuer"
+    },
     "signIn": {
       "title": "Se connecter - OpenML",
       "description": "Connectez-vous à votre compte OpenML",

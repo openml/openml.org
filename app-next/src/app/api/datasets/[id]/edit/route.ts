@@ -72,8 +72,12 @@ export async function POST(
     if (!response.ok) {
       const text = await response.text();
       console.error(`OpenML API error editing dataset ${id}:`, text);
+      const message =
+        response.status === 401 || response.status === 403
+          ? "Your API key is not accepted by the OpenML server. If you are using a local test account, dataset editing is not supported — only real OpenML accounts can save changes."
+          : "Failed to save changes. Please try again.";
       return NextResponse.json(
-        { error: "Failed to save changes. Please try again." },
+        { error: message },
         { status: response.status },
       );
     }
