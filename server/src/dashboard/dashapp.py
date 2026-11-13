@@ -1,11 +1,9 @@
-import shutil
-
 import dash
 import openml
 from dash import dcc, html
 from flask_caching import Cache
 
-from .caching import CACHE_DIR_ROOT, CACHE_DIR_FLASK, CACHE_DIR_DASHBOARD
+from .caching import CACHE_DIR_ROOT, CACHE_DIR_FLASK
 from .callbacks import register_callbacks
 from .dash_config import COMMON_CACHE
 
@@ -60,6 +58,4 @@ def create_dash_app(flask_app):
     app.layout = html.Div([url, global_loading_icon, page_content])
 
     register_callbacks(app, cache)
-    shutil.rmtree(CACHE_DIR_DASHBOARD)
-    CACHE_DIR_DASHBOARD.mkdir()
     return app
