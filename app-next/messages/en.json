@@ -148,9 +148,9 @@
       "subtitle": "Machine learning thrives on transparency. OpenML is the open, collaborative environment where scientists share FAIR data, organize experiments, and build upon state-of-the-art algorithms.",
       "description": "Machine learning thrives on transparency. OpenML is the open, collaborative environment where scientists share FAIR data, organize experiments, and build upon state-of-the-art algorithms.",
       "startTracking": "Start Tracking and Sharing!",
-      "readManifesto": "Read the Manifesto",
-      "trustedWorldwide": "Trusted worldwide to benchmark algorithms objectively.",
-      "stats": "+99.99% Reproducibility 500k+ Datasets 10M+ Runs+",
+      "readManifesto": "Our Mission",
+      "trustedWorldwide": "It's really cool.",
+      "stats": "Over 1500 papers that cite us think so, too.",
       "joinCommunity": "Join the Community!"
     },
     "ecosystem": {
@@ -161,20 +161,21 @@
     },
     "threePillars": {
       "title": "The Three Pillars of OpenML",
-      "subtitle": "Open platform for sharing datasets, algorithms, and experiments to build a global machine learning repository",
+      "subtitle": "An open science platform for sharing interconnected AI artifacts.",
       "fairData": {
         "title": "FAIR Data at Scale",
-        "description": "Access thousands of uniformly formatted datasets. Every dataset is versioned, meta-tagged, and ready for immediate loading into your analysis pipeline.",
+        "description": "Access thousands of uniformly formatted datasets and other AI artifacts. Every dataset is versioned, meta-tagged, and ready for immediate loading into your analysis pipeline.",
+        "description": "Access thousands of uniformly formatted AI artifacts. Every artifact comes with metadata and is ready for use in your research.",
         "button": "Explore Datasets"
       },
       "objectiveEvaluation": {
-        "title": "Objective Evaluation",
-        "description": "Stop guessing. Run your algorithms on standardized tasks with predefined train/test splits to ensure your results are comparable and peer-review ready.",
+        "title": "Common Benchmarks",
+        "description": "Run your algorithms on standardized tasks with predefined train/test splits to ensure your results are comparable and peer-review ready.",
         "button": "View Benchmark Tasks"
       },
       "frictionlessFlows": {
-        "title": "Frictionless ML Flows",
-        "description": "Treat experiments as objects. Share your model pipelines (flows) and results (runs) automatically to create a transparent scientific record.",
+        "title": "Frictionless Data Sharing",
+        "description": "Share your model pipelines (flows) and results (runs) automatically to create a transparent scientific record.",
         "button": "Explore Flows"
       }
     },
