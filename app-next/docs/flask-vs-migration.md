@@ -2,19 +2,19 @@
 
 ### ✅ Already Migrated (No Flask Needed)
 
-| Feature                | Implementation                  | Env Vars Needed                          |
-| ---------------------- | ------------------------------- | ---------------------------------------- |
-| Login (email/password) | Direct DB (Argon2i verification)| `DATABASE_URL`                           |
-| Registration           | Direct DB insert                | `DATABASE_URL` + `SMTP_*`               |
-| Email confirmation     | Direct DB (token-based)         | `DATABASE_URL`                           |
-| Forgot password        | Direct DB + email               | `DATABASE_URL` + `SMTP_*`               |
-| Reset password         | Direct DB (Argon2i hashing)     | `DATABASE_URL`                           |
-| OAuth (Google/GitHub)  | NextAuth + Direct DB            | `DATABASE_URL` + `GITHUB_*` + `GOOGLE_*` |
-| Passkey signup/login   | Direct DB (WebAuthn)            | `DATABASE_URL` + `RP_ID` + `RP_ORIGIN`   |
-| Profile updates        | Direct DB                       | `DATABASE_URL`                           |
-| Avatar upload          | Direct filesystem/Vercel Blob   | `BLOB_READ_WRITE_TOKEN` (Vercel only)    |
-| Search/Data            | Elasticsearch + OpenML REST API | `                                        |
-| User profiles          | Elasticsearch                   | `                                        |
+| Feature                | Implementation                   | Env Vars Needed                          |
+| ---------------------- | -------------------------------- | ---------------------------------------- |
+| Login (email/password) | Direct DB (Argon2i verification) | `DATABASE_URL`                           |
+| Registration           | Direct DB insert                 | `DATABASE_URL` + `SMTP_*`                |
+| Email confirmation     | Direct DB (token-based)          | `DATABASE_URL`                           |
+| Forgot password        | Direct DB + email                | `DATABASE_URL` + `SMTP_*`                |
+| Reset password         | Direct DB (Argon2i hashing)      | `DATABASE_URL`                           |
+| OAuth (Google/GitHub)  | NextAuth + Direct DB             | `DATABASE_URL` + `GITHUB_*` + `GOOGLE_*` |
+| Passkey signup/login   | Direct DB (WebAuthn)             | `DATABASE_URL` + `RP_ID` + `RP_ORIGIN`   |
+| Profile updates        | Direct DB                        | `DATABASE_URL`                           |
+| Avatar upload          | Direct filesystem/Vercel Blob    | `BLOB_READ_WRITE_TOKEN` (Vercel only)    |
+| Search/Data            | Elasticsearch + OpenML REST API  | `NEXT_PUBLIC_URL_ELASTICSEARCH`          |
+| User profiles          | Elasticsearch                    | `NEXT_PUBLIC_URL_ELASTICSEARCH`          |
 
 ### 🔧 Still Uses Flask (Could Be Migrated)
 
@@ -25,11 +25,11 @@
 
 ### ❌ Not Migratable (Requires OpenML REST API)
 
-| Feature             | Reason                              | Env Vars Needed                      |
-| ------------------- | ----------------------------------- | ------------------------------------ |
-| **Likes**           | Must call OpenML REST API           | `DATABASE_URL` (for valid API key)   |
-| **Data uploads**    | OpenML REST API handles processing  | `DATABASE_URL` (for valid API key)   |
-| **Run submissions** | OpenML REST API handles ML pipeline | `DATABASE_URL` (for valid API key)   |
+| Feature             | Reason                              | Env Vars Needed                    |
+| ------------------- | ----------------------------------- | ---------------------------------- |
+| **Likes**           | Must call OpenML REST API           | `DATABASE_URL` (for valid API key) |
+| **Data uploads**    | OpenML REST API handles processing  | `DATABASE_URL` (for valid API key) |
+| **Run submissions** | OpenML REST API handles ML pipeline | `DATABASE_URL` (for valid API key) |
 
 ---
 
