@@ -84,7 +84,7 @@ export async function fetchFlowVersions(name: string): Promise<Flow[]> {
     }
 
     const data = await response.json();
-    return data.hits.hits.map((hit: any) => hit._source as Flow);
+    return data.hits.hits.map((hit: { _source: Flow }) => hit._source);
   } catch (error) {
     console.error("Error fetching flow versions:", error);
     return [];

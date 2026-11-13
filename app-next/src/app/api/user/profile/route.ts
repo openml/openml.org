@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { execute, queryOne } from "@/lib/db";
+import { sendProfileUpdateEmail } from "@/lib/mail";
 
 interface UserProfile {
   first_name: string;
@@ -86,6 +87,14 @@ export async function POST(request: NextRequest) {
         userId,
       ],
     );
+
+    // Send notification email
+    const targetEmail = email || session.user.email;
+    const targetName = firstName || session.user.name || "User";
+
+    if (targetEmail) {
+      await sendProfileUpdateEmail(targetEmail, targetName);
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -13,6 +14,12 @@ from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from server.setup import setup_openml_config
+from server.src.dashboard.caching import (
+    CACHE_DIR_DASHBOARD,
+    load_cached_stats,
+    save_stats_cache,
+)
+from server.src.dashboard.helpers import compute_dataset_stats
 from server.utils import current_user
 
 data_blueprint = Blueprint(
@@ -121,7 +128,7 @@ def data_edit():
                 citation=citation,
                 language=language,
                 original_data_url=original_data_url,
-                paper_url=paper_url
+                paper_url=paper_url,
             )
         elif owner == "true":
             default_target_attribute = j_obj["default_target_attribute"]
@@ -144,33 +151,54 @@ def data_edit():
                 ignore_attribute=ignore_attribute,
                 row_id_attribute=row_id_attribute,
                 original_data_url=original_data_url,
-                paper_url=paper_url
+                paper_url=paper_url,
             )
 
         return str("data edit successful")
 
 
 @data_blueprint.route("/data-upload", methods=["POST"])
-@jwt_required()
 def data_upload():
     """
     Function to upload dataset
     """
 
-    user = current_user()
-    user_api_key = user.session_hash
+    user_api_key = request.form.get("api_key") or (
+        request.files.get("metadata")
+        and json.loads(request.files["metadata"].read()).get("api_key")
+    )
+    if not user_api_key:
+        return jsonify({"msg": "api_key required"}), 401
+
+    # Set server URL explicitly — avoids double /api/api/ from URL_API env var
+    openml.config.server = os.getenv(
+        "OPENML_SERVER_URL", "https://www.openml.org/api/v1/xml"
+    )
+    openml.config.apikey = user_api_key
 
     data_file = request.files["dataset"]
     metadata = request.files["metadata"]
 
     with tempfile.TemporaryDirectory() as tmpdirname:
-        path = Path(tmpdirname) / f"{user_api_key}?{secure_filename(data_file.filename)}"
+        path = (
+            Path(tmpdirname) / f"{user_api_key}?{secure_filename(data_file.filename)}"
+        )
         data_file.save(path)
 
         metadata = metadata.read()
         metadata = json.loads(metadata)
-        dataset_name = metadata["dataset_name"]
-        description = metadata["description"]
+        def _sanitize(text):
+            """Replace Unicode smart quotes and dashes with ASCII equivalents."""
+            if not text:
+                return text
+            return (
+                text.replace("\u2018", "'").replace("\u2019", "'")  # ' '
+                    .replace("\u201c", '"').replace("\u201d", '"')  # " "
+                    .replace("\u2013", "-").replace("\u2014", "-")  # – —
+            )
+
+        dataset_name = _sanitize(metadata["dataset_name"]).replace(" ", "_")
+        description = _sanitize(metadata["description"])
         creator = metadata["creator"] or None
         contributor = metadata["contributor"] or None
         collection_date = metadata["collection_date"] or None
@@ -185,57 +213,58 @@ def data_upload():
         supported_extensions = [".csv", ".parquet", ".json", ".feather", ".arff"]
 
         if file_extension not in supported_extensions:
-            return jsonify({"msg": "format not supported"})
+            return jsonify({"msg": f"Unsupported file format '{file_extension}'. Supported formats: CSV, JSON, Parquet, Feather, ARFF."}), 422
 
-        elif file_extension == ".arff":
-            with open(path, "r") as arff_file:
-                arff_dict = arff.load(arff_file)
-            attribute_names, dtypes = zip(*arff_dict["attributes"])
-            data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
-            for attribute_name, dtype in arff_dict["attributes"]:
-                # 'real' and 'numeric' are probably interpreted correctly.
-                # Date support needs to be added.
-                if isinstance(dtype, list):
-                    data[attribute_name] = data[attribute_name].astype("category")
-            df = data
+        try:
+            if file_extension == ".arff":
+                with open(path, "r") as arff_file:
+                    arff_dict = arff.load(arff_file)
+                attribute_names, dtypes = zip(*arff_dict["attributes"])
+                data = pd.DataFrame(arff_dict["data"], columns=attribute_names)
+                for attribute_name, dtype in arff_dict["attributes"]:
+                    if isinstance(dtype, list):
+                        data[attribute_name] = data[attribute_name].astype("category")
+                df = data
+            elif file_extension == ".csv":
+                df = pd.read_csv(path)
+            elif file_extension == ".json":
+                df = pd.read_json(path)
+            elif file_extension == ".parquet":
+                df = pd.read_parquet(path)
+            elif file_extension == ".feather":
+                df = pd.read_feather(path)
+        except Exception as e:
+            return jsonify({"msg": f"Could not read file: {e}"}), 422
 
-        elif file_extension == ".csv":
-            df = pd.read_csv(path)
+        try:
+            oml_dataset = openml.datasets.create_dataset(
+                name=dataset_name,
+                description=description,
+                data=df,
+                creator=creator,
+                contributor=contributor,
+                collection_date=collection_date,
+                licence=licence,
+                language=language,
+                attributes="auto",
+                default_target_attribute=def_tar_att,
+                ignore_attribute=ignore_attribute,
+                citation=citation,
+            )
+            oml_dataset.publish()
+        except ValueError as e:
+            return jsonify({"msg": str(e)}), 422
+        except Exception as e:
+            return jsonify({"msg": f"Upload failed: {e}"}), 500
 
-        elif file_extension == ".json":
-            df = pd.read_json(path)
-
-        elif file_extension == ".parquet":
-            df = pd.read_parquet(path)
-
-        elif file_extension == ".feather":
-            df = pd.read_feather(path)
-
-        oml_dataset = openml.datasets.create_dataset(
-            name=dataset_name,
-            description=description,
-            data=df,
-            creator=creator,
-            contributor=contributor,
-            collection_date=collection_date,
-            licence=licence,
-            language=language,
-            attributes="auto",
-            default_target_attribute=def_tar_att,
-            ignore_attribute=ignore_attribute,
-            citation=citation,
-        )
-        oml_dataset.publish()
-
-    # TODO Add error for bad dataset
-    return jsonify({"msg": "dataset uploaded"}), 200
+    return jsonify({"msg": "dataset uploaded", "id": str(oml_dataset.dataset_id)}), 200
 
 
 @data_blueprint.route("/data-tag", methods=["POST"])
 @jwt_required()
 def data_tag():
     j_obj = request.get_json()
-    tag = j_obj['tag']
+    tag = j_obj["tag"]
     url = request.args.get("url")
     parsed = urlparse(url)
     dataset_id = parse_qs(parsed.query)["id"]
@@ -244,3 +273,79 @@ def data_tag():
     dataset = openml.datasets.get_dataset(dataset_id)
     dataset.push_tag(tag)
 
+
+@data_blueprint.route("/api/v1/datasets/<int:dataset_id>/stats", methods=["GET"])
+def get_dataset_stats(dataset_id):
+    """
+    Returns JSON statistics for a dataset.
+
+    Query params:
+    - max_preview_rows (int, default=100): Max rows in preview
+    - force_refresh (bool, default=False): Skip cache, recompute
+
+    Returns:
+    {
+      "dataset_id": int,
+      "computed_at": str (ISO timestamp),
+      "cached": bool,
+      "statistics": {
+        "distribution": {...},
+        "correlation": {...},
+        "preview": {...}
+      }
+    }
+    """
+    try:
+        max_preview = request.args.get("max_preview_rows", 100, type=int)
+        force_refresh = request.args.get("force_refresh", False, type=bool)
+
+        # Try loading from JSON cache first
+        if not force_refresh:
+            cached_stats = load_cached_stats(dataset_id)
+            if cached_stats is not None:
+                # Validate cache has expected max_preview_rows
+                current_preview_rows = len(
+                    cached_stats.get("preview", {}).get("rows", [])
+                )
+                if current_preview_rows >= max_preview:
+                    # Cache is valid, return it
+                    return (
+                        jsonify(
+                            {
+                                "dataset_id": dataset_id,
+                                "computed_at": datetime.utcnow().isoformat() + "Z",
+                                "cached": True,
+                                "statistics": cached_stats,
+                            }
+                        ),
+                        200,
+                    )
+
+        # Cache miss or force refresh - compute stats
+        stats = compute_dataset_stats(dataset_id, max_preview_rows=max_preview)
+
+        # Save to JSON cache
+        save_stats_cache(dataset_id, stats)
+
+        return (
+            jsonify(
+                {
+                    "dataset_id": dataset_id,
+                    "computed_at": datetime.utcnow().isoformat() + "Z",
+                    "cached": False,
+                    "statistics": stats,
+                }
+            ),
+            200,
+        )
+
+    except Exception as e:
+        # Log the error for debugging
+        import logging
+
+        logger = logging.getLogger("data")
+        logger.error(
+            f"Error computing stats for dataset {dataset_id}: {str(e)}", exc_info=True
+        )
+
+        return jsonify({"error": str(e)}), 500
