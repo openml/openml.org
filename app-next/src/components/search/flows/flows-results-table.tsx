@@ -1,15 +1,17 @@
 "use client";
 
+import { entityColors } from "@/constants/entityColors";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Link from "next/link";
 import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  Cog,
   GitBranch,
   Heart,
   CloudDownload,
-  FlaskConical,
 } from "lucide-react";
 import { WithSearch } from "@elastic/react-search-ui";
 import { truncateName } from "@/lib/utils";
@@ -72,7 +74,13 @@ const tableColumns = [
   },
   {
     field: "runs",
-    label: <FlaskConical className="h-4 w-4 text-black dark:text-white" />,
+    label: (
+      <FontAwesomeIcon
+        icon={ENTITY_ICONS.run}
+        className="h-4 w-4"
+        style={{ color: entityColors.run }}
+      />
+    ),
     tooltip: "Runs",
     width: "w-16",
     sortable: true,
@@ -171,13 +179,19 @@ function SortableFlowsTable({ results }: { results: FlowResult[] }) {
                       <TableCell className="min-w-0">
                         <Link
                           href={`/flows/${flowId}`}
-                          className="flex items-center gap-2 font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                          className="flex items-center gap-2 font-semibold hover:underline"
+                          style={{ color: entityColors.flow }}
                         >
-                          <Cog className="h-4 w-4 shrink-0 text-blue-500" />
+                          <FontAwesomeIcon
+                            icon={ENTITY_ICONS.flow}
+                            className="h-4 w-4 shrink-0"
+                          />
                           <span className="line-clamp-2 break-all">
-                            {truncateName(result.name?.snippet ||
-                              result.name?.raw ||
-                              "Untitled")}
+                            {truncateName(
+                              result.name?.snippet ||
+                                result.name?.raw ||
+                                "Untitled",
+                            )}
                           </span>
                         </Link>
                       </TableCell>

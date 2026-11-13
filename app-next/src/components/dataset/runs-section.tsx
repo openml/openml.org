@@ -60,6 +60,7 @@ function getInitials(name: string): string {
 export function RunsSection({ dataset, runCount }: RunsSectionProps) {
   const [runs, setRuns] = useState<Run[]>([]);
   const [loading, setLoading] = useState(false);
+  const [notAvailable, setNotAvailable] = useState(false);
 
   useEffect(() => {
     async function loadRuns() {
@@ -69,6 +70,10 @@ export function RunsSection({ dataset, runCount }: RunsSectionProps) {
           `/api/dataset/${dataset.data_id}/runs?limit=10`,
         );
         if (!response.ok) {
+          if (response.status === 404) {
+            setNotAvailable(true);
+            return;
+          }
           throw new Error("Failed to fetch runs");
         }
         const data = await response.json();
@@ -186,6 +191,10 @@ export function RunsSection({ dataset, runCount }: RunsSectionProps) {
               ))}
             </div>
           </>
+        ) : notAvailable ? (
+          <div className="text-muted-foreground py-8 text-center text-sm">
+            Runs are not available for this dataset on the current server.
+          </div>
         ) : (
           <div className="text-muted-foreground py-8 text-center text-sm">
             No runs found for this dataset

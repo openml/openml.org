@@ -33,9 +33,10 @@ export function createCollectionConfig(studyType: "task" | "run") {
         flows_included: { raw: {} },
         runs_included: { raw: {} },
       },
-      disjunctiveFacets: ["uploader.keyword"],
+      disjunctiveFacets: ["uploader.keyword", "visibility"],
       facets: {
         "uploader.keyword": { type: "value", size: 20 },
+        "visibility": { type: "value", size: 5 },
       },
     },
     initialState: {
