@@ -225,7 +225,7 @@ export function MetadataSection({ dataset }: MetadataSectionProps) {
               {tags.map((tag, idx) => (
                 <Link
                   key={idx}
-                  href={`/search?type=data&tags.tag=${encodeURIComponent(tag.tag)}`}
+                  href={`/datasets?tag=${encodeURIComponent(tag.tag)}`}
                   className="bg-muted hover:bg-muted/80 rounded-full px-2 py-1 text-xs transition-colors"
                 >
                   {tag.tag}
