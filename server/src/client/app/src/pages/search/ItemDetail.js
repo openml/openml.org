@@ -244,7 +244,7 @@ export class EntryDetails extends React.Component {
     }
 
     // Sanity check for bad ID types before rendering
-    if ((this.props.type === "study" || this.props.type === "benchmark") && this.state.obj !== null &&
+    if ((this.props.type === "study" || this.props.type === "benchmark") && this.state.obj &&
     this.props.filters["study_type"]["value"] !== this.state.obj.study_type
     ){ // auto-redirect for bad study type in URL
       let currentUrlParams = new URLSearchParams(this.props.location.search);
@@ -308,7 +308,7 @@ export class EntryDetails extends React.Component {
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '50vh' }}>
           <Grid item xs={6} style={{ textAlign: 'center' }}>
             <h2>This is not the {this.props.type} you are looking for.</h2>
-            {(this.state.obj.visibility === "private" || this.props.userID === undefined) &&
+            {(this.state.obj?.visibility === "private" || this.props.userID === undefined) &&
               <p>You might see more after logging in.</p>
             }
           </Grid>
