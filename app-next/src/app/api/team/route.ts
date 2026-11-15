@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getElasticsearchUrl } from "@/lib/elasticsearch";
 
 // Team member IDs from OpenML database (matching current openml.org/about)
 const TC_IDS = [1, 2, 27, 86, 348, 970]; // Steering Committee
@@ -7,7 +8,7 @@ const CORE_IDS = [
   34198,
 ];
 
-const OPENML_API_URL = "https://www.openml.org";
+const OPENML_BASE_URL = process.env.OPENML_BASE_URL || "https://www.openml.org";
 
 interface CoreTeamMember {
   user_id: number;
@@ -31,7 +32,7 @@ export async function GET() {
       _source: ["user_id", "first_name", "last_name", "bio", "image"],
     };
 
-    const response = await fetch(`${OPENML_API_URL}/es/user/_search`, {
+    const response = await fetch(getElasticsearchUrl("user/_search"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +67,7 @@ export async function GET() {
         // Build proper image URL
         let imageUrl = user.image || "";
         if (imageUrl && !imageUrl.startsWith("http")) {
-          imageUrl = `${OPENML_API_URL}/img/${imageUrl}`;
+          imageUrl = `${OPENML_BASE_URL}/img/${imageUrl}`;
         }
 
         return {
