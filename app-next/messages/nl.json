@@ -158,7 +158,6 @@
   },
   "home": {
     "hero": {
-      "version": "Versie 3.0: Gebouwd voor reproduceerbare wetenschap",
       "title": "Het wereldwijde lab voor machine learning onderzoek",
       "subtitle": "Machine learning gedijt bij transparantie. OpenML is de open, samenwerkende omgeving waar wetenschappers FAIR-data delen, experimenten organiseren en bouwen op state-of-the-art algoritmen.",
       "description": "Machine learning gedijt bij transparantie. OpenML is de open, samenwerkende omgeving waar wetenschappers FAIR-data delen, experimenten organiseren en bouwen op state-of-the-art algoritmen.",
