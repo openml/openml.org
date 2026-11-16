@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
+import { APP_CONFIG } from "@/lib/config";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { WithSearch, Paging, SearchContext } from "@elastic/react-search-ui";
 import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar, runSortOptions } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { truncateName } from "@/lib/utils";
 import {
-  FlaskConical,
   Calendar,
   User,
   Hash,
   Database,
-  Cog,
-  Trophy,
   XCircle,
   Heart,
   CloudDownload,
@@ -25,6 +25,8 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  GitCompareArrows,
+  X,
 } from "lucide-react";
 
 interface Evaluation {
@@ -102,8 +104,7 @@ async function fetchFlowName(flowId: number): Promise<string> {
   }
 
   try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+    const apiUrl = APP_CONFIG.urlApi || "https://www.openml.org/api/v1";
     const response = await fetch(`${apiUrl}/json/flow/${flowId}`, {
       headers: { Accept: "application/json" },
     });
@@ -128,8 +129,7 @@ async function fetchDatasetName(dataId: number): Promise<string> {
   }
 
   try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+    const apiUrl = APP_CONFIG.urlApi || "https://www.openml.org/api/v1";
     const response = await fetch(`${apiUrl}/json/data/${dataId}`, {
       headers: { Accept: "application/json" },
     });
@@ -266,21 +266,24 @@ function EnrichedRunsView({
   results,
   selectedRun,
   onSelectRun,
+  selectedIds,
+  onToggleId,
 }: {
   view: string;
   results: RunResult[];
   selectedRun: EnhancedRunResult | null;
   onSelectRun: (run: EnhancedRunResult) => void;
+  selectedIds: Set<string | number>;
+  onToggleId: (id: string | number) => void;
 }) {
   const [enrichedResults, setEnrichedResults] = useState<EnhancedRunResult[]>(
     [],
   );
-  const [lastResultsKey, setLastResultsKey] = useState<string>("");
+  const lastResultsKey = useRef<string>("");
 
   useEffect(() => {
     if (!results || results.length === 0) {
-      setEnrichedResults([]);
-      setLastResultsKey("");
+      lastResultsKey.current = "";
       return;
     }
 
@@ -288,23 +291,18 @@ function EnrichedRunsView({
     const resultsKey = results.map((r) => r.run_id?.raw).join(",");
 
     // Don't re-fetch if we already have these results
-    if (resultsKey === lastResultsKey) {
+    if (resultsKey === lastResultsKey.current) {
       return;
     }
 
-    setLastResultsKey(resultsKey);
+    lastResultsKey.current = resultsKey;
 
-    // Set initial results immediately (with IDs as fallback)
-    const initialEnriched: EnhancedRunResult[] = results.map((r) => ({ ...r }));
-    setEnrichedResults(initialEnriched);
-
-    // Fetch names in background
+    // Fetch names in background, then update state once (async — no cascading renders)
     Promise.all(
       results.map(async (result) => {
         const flowId = result["run_flow.flow_id"]?.raw || result.flow_id?.raw;
         const dataId = result["run_task.source_data.data_id"]?.raw;
 
-        // Check cache first before fetching
         const [flowName, datasetName] = await Promise.all([
           flowId ? fetchFlowName(Number(flowId)) : Promise.resolve(undefined),
           dataId
@@ -327,16 +325,48 @@ function EnrichedRunsView({
       .catch((error) => {
         console.error("Failed to enrich runs:", error);
       });
-  }, [results, lastResultsKey]); // Depend on results and lastResultsKey
+  }, [results]);
+
+  // Fall back to raw results while enrichment is in flight to avoid showing stale data
+  const enrichedKey = enrichedResults[0]?.run_id?.raw;
+  const currentKey = results[0]?.run_id?.raw;
+  const enrichmentIsCurrent =
+    results.length > 0 &&
+    enrichedResults.length > 0 &&
+    enrichedKey === currentKey;
+  const displayedResults =
+    results.length === 0
+      ? []
+      : enrichmentIsCurrent
+        ? enrichedResults
+        : results.map((r) => ({ ...r }));
 
   return (
     <>
-      {view === "list" && <RunListView results={enrichedResults} />}
-      {view === "grid" && <RunGridView results={enrichedResults} />}
-      {view === "table" && <RunTableView results={enrichedResults} />}
+      {view === "list" && (
+        <RunListView
+          results={displayedResults}
+          selectedIds={selectedIds}
+          onToggleId={onToggleId}
+        />
+      )}
+      {view === "grid" && (
+        <RunGridView
+          results={displayedResults}
+          selectedIds={selectedIds}
+          onToggleId={onToggleId}
+        />
+      )}
+      {view === "table" && (
+        <RunTableView
+          results={displayedResults}
+          selectedIds={selectedIds}
+          onToggleId={onToggleId}
+        />
+      )}
       {view === "split" && (
         <RunSplitView
-          results={enrichedResults}
+          results={displayedResults}
           selectedRun={selectedRun}
           onSelectRun={onSelectRun}
         />
@@ -350,6 +380,8 @@ export function RunsSearchContainer() {
   const [selectedRun, setSelectedRun] = useState<EnhancedRunResult | null>(
     null,
   );
+  const [compareIds, setCompareIds] = useState<Set<string | number>>(new Set());
+  const router = useRouter();
   const searchParams = useSearchParams();
   const context = useContext(SearchContext);
   const driver = context?.driver;
@@ -361,6 +393,25 @@ export function RunsSearchContainer() {
     if (currentTerm === query) return;
     driver.getActions().setSearchTerm(query, { shouldClearFilters: false });
   }, [query, driver]);
+
+  const toggleCompareId = useCallback((id: string | number) => {
+    setCompareIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else if (next.size < 10) {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleCompare = useCallback(() => {
+    if (compareIds.size >= 2) {
+      const ids = Array.from(compareIds).join(",");
+      router.push(`/runs/compare?ids=${ids}`);
+    }
+  }, [compareIds, router]);
 
   return (
     <WithSearch
@@ -420,6 +471,8 @@ export function RunsSearchContainer() {
                   results={(results || []) as RunResult[]}
                   selectedRun={selectedRun}
                   onSelectRun={setSelectedRun}
+                  selectedIds={compareIds}
+                  onToggleId={toggleCompareId}
                 />
               )}
             </WithSearch>
@@ -583,13 +636,45 @@ export function RunsSearchContainer() {
               );
             }}
           </WithSearch>
+
+          {/* Floating comparison bar */}
+          {compareIds.size > 0 && (
+            <div className="fixed right-6 bottom-6 z-50 flex items-center gap-3 rounded-xl border bg-white/95 px-4 py-3 shadow-lg backdrop-blur supports-backdrop-filter:bg-white/80 dark:bg-slate-900/95 dark:supports-backdrop-filter:bg-slate-900/80">
+              <GitCompareArrows className="h-5 w-5 text-red-500" />
+              <span className="text-sm font-medium">
+                {compareIds.size} run{compareIds.size !== 1 ? "s" : ""} selected
+              </span>
+              <button
+                onClick={handleCompare}
+                disabled={compareIds.size < 2}
+                className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Compare
+              </button>
+              <button
+                onClick={() => setCompareIds(new Set())}
+                className="text-muted-foreground hover:text-foreground rounded p-1 transition-colors"
+                title="Clear selection"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </WithSearch>
   );
 }
 
-function RunListView({ results }: { results: EnhancedRunResult[] }) {
+function RunListView({
+  results,
+  selectedIds,
+  onToggleId,
+}: {
+  results: EnhancedRunResult[];
+  selectedIds: Set<string | number>;
+  onToggleId: (id: string | number) => void;
+}) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
@@ -625,10 +710,28 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
             key={runId || index}
             className="relative flex items-start justify-between border-b p-4 transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
           >
+            {/* Compare checkbox */}
+            {runId && (
+              <label
+                className="relative z-10 mt-1.5 mr-2 flex shrink-0 cursor-pointer items-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(runId)}
+                  onChange={() => onToggleId(runId)}
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-red-500 accent-red-500"
+                />
+              </label>
+            )}
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <FlaskConical className="mt-1 h-5 w-5 shrink-0 fill-red-500 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={ENTITY_ICONS.run}
+                    className="mt-1 h-5 w-5 shrink-0"
+                    style={{ color: entityColors.run }}
+                  />
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-base font-semibold">{flowName}</h3>
@@ -672,7 +775,11 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
                     className="flex items-center gap-1 hover:underline"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Cog className="h-3 w-3 text-[#3b82f6]" />
+                    <FontAwesomeIcon
+                      icon={ENTITY_ICONS.flow}
+                      className="h-3 w-3"
+                      style={{ color: entityColors.flow }}
+                    />
                     Flow #{flowId}
                   </Link>
                 )}
@@ -692,7 +799,11 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
                     className="flex items-center gap-1 hover:underline"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Trophy className="h-3 w-3 text-[#FFA726]" />
+                    <FontAwesomeIcon
+                      icon={ENTITY_ICONS.task}
+                      className="h-3 w-3"
+                      style={{ color: entityColors.task }}
+                    />
                     Task #{taskId}
                   </Link>
                 )}
@@ -739,7 +850,15 @@ function RunListView({ results }: { results: EnhancedRunResult[] }) {
   );
 }
 
-function RunGridView({ results }: { results: EnhancedRunResult[] }) {
+function RunGridView({
+  results,
+  selectedIds,
+  onToggleId,
+}: {
+  results: EnhancedRunResult[];
+  selectedIds: Set<string | number>;
+  onToggleId: (id: string | number) => void;
+}) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
@@ -751,9 +870,7 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
         const hasError = !!(result.error_message?.raw || result.error?.raw);
 
         // Use helper functions to extract data from ES response
-        const flowId = getFlowId(result);
         const flowName = truncateName(result._flowName || getFlowName(result));
-        const dataId = getDatasetId(result);
         const datasetName = result._datasetName || getDatasetName(result);
         const taskId = getTaskId(result);
         const taskTypeName = getTaskTypeName(result);
@@ -768,13 +885,31 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
           .join(" • ");
 
         return (
-          <Link
+          <div
             key={runId || index}
-            href={`/runs/${runId}`}
-            className="bg-card block rounded-lg border p-4 transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
+            className="bg-card relative rounded-lg border p-4 transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
           >
             <div className="mb-2 flex items-start justify-between">
-              <FlaskConical className="h-8 w-8 fill-red-500 text-red-500" />
+              <div className="flex items-center gap-2">
+                {runId && (
+                  <label
+                    className="relative z-10 flex cursor-pointer items-center"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(runId)}
+                      onChange={() => onToggleId(runId)}
+                      className="h-4 w-4 cursor-pointer rounded border-gray-300 text-red-500 accent-red-500"
+                    />
+                  </label>
+                )}
+                <FontAwesomeIcon
+                  icon={ENTITY_ICONS.run}
+                  className="h-8 w-8"
+                  style={{ color: entityColors.run }}
+                />
+              </div>
               <Badge variant="openml" className="bg-red-500 text-white">
                 #{runId}
               </Badge>
@@ -821,7 +956,14 @@ function RunGridView({ results }: { results: EnhancedRunResult[] }) {
                 {result.nr_of_issues?.raw || 0}
               </span>
             </div>
-          </Link>
+            <Link
+              href={`/runs/${runId}`}
+              className="absolute inset-0"
+              aria-label={`View run ${runId}`}
+            >
+              <span className="sr-only">View run {runId}</span>
+            </Link>
+          </div>
         );
       })}
     </div>
@@ -849,7 +991,15 @@ const runTableColumns = [
   },
 ];
 
-function RunTableView({ results }: { results: EnhancedRunResult[] }) {
+function RunTableView({
+  results,
+  selectedIds,
+  onToggleId,
+}: {
+  results: EnhancedRunResult[];
+  selectedIds: Set<string | number>;
+  onToggleId: (id: string | number) => void;
+}) {
   if (!results || results.length === 0)
     return (
       <div className="text-muted-foreground p-8 text-center">No runs found</div>
@@ -901,6 +1051,9 @@ function RunTableView({ results }: { results: EnhancedRunResult[] }) {
             <table className="w-full">
               <thead>
                 <tr className="bg-muted/50 border-b">
+                  <th className="w-10 p-3 text-center">
+                    <span className="sr-only">Compare</span>
+                  </th>
                   {runTableColumns.map((column) => (
                     <th
                       key={column.field}
@@ -923,7 +1076,9 @@ function RunTableView({ results }: { results: EnhancedRunResult[] }) {
                   const hasError = !!(
                     result.error_message?.raw || result.error?.raw
                   );
-                  const flowName = truncateName(result._flowName || getFlowName(result));
+                  const flowName = truncateName(
+                    result._flowName || getFlowName(result),
+                  );
                   const datasetName =
                     result._datasetName || getDatasetName(result);
                   const taskId = getTaskId(result);
@@ -934,6 +1089,16 @@ function RunTableView({ results }: { results: EnhancedRunResult[] }) {
                       key={runId || index}
                       className="border-b transition-colors hover:bg-red-50 dark:hover:bg-red-900/15"
                     >
+                      <td className="p-3 text-center">
+                        {runId && (
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(runId)}
+                            onChange={() => onToggleId(runId)}
+                            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-red-500 accent-red-500"
+                          />
+                        )}
+                      </td>
                       <td className="p-3">
                         <Link
                           href={`/runs/${runId}`}
@@ -995,16 +1160,13 @@ function RunSplitView({
   const runId = selected?.run_id?.raw;
 
   // Use helper functions for selected run details
-  const flowId = selected ? getFlowId(selected) : undefined;
   const flowName = selected
     ? truncateName(selected._flowName || getFlowName(selected))
     : "Unknown Flow";
-  const dataId = selected ? getDatasetId(selected) : undefined;
   const datasetName = selected
     ? selected._datasetName || getDatasetName(selected)
     : "Unknown Dataset";
   const taskId = selected ? getTaskId(selected) : undefined;
-  const taskTypeName = selected ? getTaskTypeName(selected) : undefined;
   const metrics = extractMetrics(selected?.evaluations?.raw);
 
   return (
@@ -1014,7 +1176,9 @@ function RunSplitView({
           const isSelected = result.run_id?.raw === runId;
 
           // Use helper functions for list item
-          const resultFlowName = truncateName(result._flowName || getFlowName(result));
+          const resultFlowName = truncateName(
+            result._flowName || getFlowName(result),
+          );
           const resultDatasetName =
             result._datasetName || getDatasetName(result);
           const resultTaskId = getTaskId(result);

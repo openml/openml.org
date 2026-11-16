@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useContext } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { SearchContext } from "@elastic/react-search-ui";
 import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
@@ -18,14 +18,9 @@ import {
 } from "@/components/ui/tooltip";
 import { truncateName } from "@/lib/utils";
 import { entityColors } from "@/constants/entityColors";
-import {
-  FlaskConical,
-  Heart,
-  CloudDownload,
-  BarChart3,
-  Clock,
-  Hash,
-} from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { Heart, CloudDownload, BarChart3, Clock, Hash, X } from "lucide-react";
 
 interface SearchResult {
   id?: { raw: string | number };
@@ -64,9 +59,11 @@ export function SearchContainer() {
     null,
   );
   const searchParams = useSearchParams();
+  const router = useRouter();
   const context = useContext(SearchContext);
   const driver = context?.driver;
   const query = searchParams.get("q") || "";
+  const tagParam = searchParams.get("tag") || "";
 
   // 👇 Sync URL query → Search UI driver (Next.js is source of truth for URL)
   useEffect(() => {
@@ -86,10 +83,11 @@ export function SearchContainer() {
     const currentTerm = driverAny.getState().searchTerm || "";
 
     // Only update if the term actually changed (prevents loops)
-    if (currentTerm === query) return;
-
-    // setSearchTerm from actions triggers search automatically
-    driverAny.getActions().setSearchTerm(query, { shouldClearFilters: false });
+    if (currentTerm !== query) {
+      driverAny
+        .getActions()
+        .setSearchTerm(query, { shouldClearFilters: false });
+    }
   }, [query, driver]);
 
   return (
@@ -149,17 +147,80 @@ export function SearchContainer() {
             </div>
           )}
 
+          {/* Tag Filter Header */}
+          {tagParam && (
+            <div className="bg-muted/30 border-b px-4 py-3">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">Datasets tagged</span>
+                <Badge variant="secondary" className="gap-1 font-semibold">
+                  <Hash className="h-3 w-3" />
+                  {tagParam}
+                </Badge>
+                <span className="text-muted-foreground">—</span>
+                <span className="text-primary font-semibold">
+                  {totalResults?.toLocaleString() || 0}
+                </span>
+                <span className="text-muted-foreground">
+                  {totalResults === 1 ? "result" : "results"} found
+                </span>
+                <button
+                  onClick={() =>
+                    router.push(
+                      query
+                        ? `/datasets?q=${encodeURIComponent(query)}`
+                        : "/datasets",
+                    )
+                  }
+                  className="text-muted-foreground hover:text-foreground ml-auto rounded-sm transition-colors"
+                  aria-label="Remove tag filter"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
           <FilterBar facets={searchFacets} />
           <ControlsBar view={view} onViewChange={setView} />
 
           <div className="p-4">
-            <WithSearch mapContextToProps={({ results }) => ({ results })}>
-              {({ results }) => (
+            <WithSearch
+              mapContextToProps={({ results, isLoading }) => ({
+                results,
+                isLoading,
+              })}
+            >
+              {({ results, isLoading }) => (
                 <>
                   {view === "table" && <ResultsTable results={results} />}
                   {view === "list" && (
                     <div className="space-y-0">
-                      {results && results.length > 0 ? (
+                      {isLoading ? (
+                        Array.from({ length: 5 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="flex items-start justify-between border-b p-4"
+                          >
+                            <div className="min-w-0 flex-1 space-y-2">
+                              <div className="flex items-center gap-3">
+                                <div className="h-5 w-5 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                                <div className="h-4 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              </div>
+                              <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-4">
+                                {Array.from({ length: 4 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                            <div className="ml-4 h-5 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
                         results.map((result: SearchResult, index: number) => {
                           const did = result.data_id?.raw || result.id?.raw;
                           return (
@@ -182,7 +243,9 @@ export function SearchContainer() {
                                   </svg>
                                   <div className="flex items-baseline gap-2">
                                     <h3 className="text-base font-semibold">
-                                      {truncateName(result.name?.raw || "Untitled")}
+                                      {truncateName(
+                                        result.name?.raw || "Untitled",
+                                      )}
                                     </h3>
                                     <span className="text-primary text-xs">
                                       v.{result.version?.raw || 1} ✓
@@ -202,8 +265,14 @@ export function SearchContainer() {
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <span className="flex items-center gap-1.5">
-                                        <FlaskConical className="h-4 w-4 fill-red-500 text-red-500" />
-                                        {result.runs?.raw?.toLocaleString() || 0}
+                                        <FontAwesomeIcon
+                                          icon={ENTITY_ICONS.run}
+                                          className="h-4 w-4"
+                                          style={{ color: entityColors.run }}
+                                        />
+                                        {Number(
+                                          result.runs?.raw || 0,
+                                        ).toLocaleString()}
                                       </span>
                                     </TooltipTrigger>
                                     <TooltipContent>Runs</TooltipContent>
@@ -238,7 +307,9 @@ export function SearchContainer() {
                                           ?.raw || "N/A"}
                                       </span>
                                     </TooltipTrigger>
-                                    <TooltipContent>Dimensions (rows x columns)</TooltipContent>
+                                    <TooltipContent>
+                                      Dimensions (rows x columns)
+                                    </TooltipContent>
                                   </Tooltip>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
@@ -290,7 +361,18 @@ export function SearchContainer() {
                   )}
                   {view === "grid" && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {results && results.length > 0 ? (
+                      {isLoading ? (
+                        Array.from({ length: 8 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="space-y-3 rounded-lg border p-4"
+                          >
+                            <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-2/3 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
                         results.map((result: SearchResult, index: number) => (
                           <ResultCard
                             key={result.id?.raw || result.data_id?.raw || index}
@@ -307,7 +389,21 @@ export function SearchContainer() {
                   {view === "split" && (
                     <div className="flex gap-0">
                       <div className="w-[380px] space-y-0 overflow-y-auto border-r">
-                        {results && results.length > 0 ? (
+                        {isLoading ? (
+                          Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="space-y-2 border-b p-3">
+                              <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-3">
+                                {Array.from({ length: 3 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))
+                        ) : results && results.length > 0 ? (
                           (() => {
                             // Auto-select first dataset if none selected or if selected dataset is not in current results
                             const currentIds = results.map(
@@ -362,7 +458,9 @@ export function SearchContainer() {
                                         />
                                       </svg>
                                       <h4 className="line-clamp-1 text-sm font-semibold">
-                                        {truncateName(result.name?.raw || "Untitled")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled",
+                                        )}
                                       </h4>
                                     </div>
                                     {/* Stats + Metadata badges on same line */}
@@ -371,9 +469,14 @@ export function SearchContainer() {
                                         className="flex items-center gap-1"
                                         title="runs"
                                       >
-                                        <FlaskConical className="h-3 w-3 fill-red-500 text-red-500" />
-                                        {result.runs?.raw?.toLocaleString() ||
-                                          0}
+                                        <FontAwesomeIcon
+                                          icon={ENTITY_ICONS.run}
+                                          className="h-3 w-3"
+                                          style={{ color: entityColors.run }}
+                                        />
+                                        {Number(
+                                          result.runs?.raw || 0,
+                                        ).toLocaleString()}
                                       </span>
                                       <span
                                         className="flex items-center gap-1"
@@ -448,7 +551,9 @@ export function SearchContainer() {
                               <div className="flex-1">
                                 <div className="mb-1 flex items-baseline gap-2">
                                   <h2 className="text-xl font-bold">
-                                    {truncateName(selectedDataset.name?.raw || "Untitled")}
+                                    {truncateName(
+                                      selectedDataset.name?.raw || "Untitled",
+                                    )}
                                   </h2>
                                   <span className="text-primary text-sm">
                                     v.{selectedDataset.version?.raw || 1} ✓
@@ -479,7 +584,11 @@ export function SearchContainer() {
                             {/* Stats Grid */}
                             <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
                               <div className="flex items-center gap-2">
-                                <FlaskConical className="h-5 w-5 fill-red-500 text-red-500" />
+                                <FontAwesomeIcon
+                                  icon={ENTITY_ICONS.run}
+                                  className="h-5 w-5"
+                                  style={{ color: entityColors.run }}
+                                />
                                 <div>
                                   <div className="text-muted-foreground text-xs">
                                     Runs
