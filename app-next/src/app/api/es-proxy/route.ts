@@ -9,8 +9,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { indexName, esQuery } = body;
 
-    // console.log("🔍 [ES Proxy] Request for index:", indexName);
-
     if (!indexName || !esQuery) {
       return NextResponse.json(
         { error: "Missing indexName or esQuery" },
@@ -19,17 +17,11 @@ export async function POST(req: NextRequest) {
     }
 
     const url = getElasticsearchUrl(`${indexName}/_search`);
-    // console.log("⏳ [ES Proxy] Sending to:", url);
 
     const response = await axios.post(url, esQuery, {
       headers: { "Content-Type": "application/json" },
       timeout: 30000, // 30 second timeout
     });
-
-    const duration = Date.now() - startTime;
-    // console.log(
-    //   `✅ [ES Proxy] Success in ${duration}ms - ${response.data.hits?.total?.value || 0} results`,
-    // );
 
     return NextResponse.json(response.data);
   } catch (error: unknown) {
