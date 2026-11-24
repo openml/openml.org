@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { APP_CONFIG } from "@/lib/config";
 
 /**
  * API Route: GET /api/user/api-key
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Use 127.0.0.1 instead of localhost for more reliable resolution
     const localApiUrl = "http://127.0.0.1:8000";
     const prodApiUrl =
-      process.env.NEXT_PUBLIC_OPENML_URL || "https://www.openml.org";
+      APP_CONFIG.openmlApiUrl || "https://www.openml.org";
 
     // Try local first, then production
     const urlsToTry = [localApiUrl, prodApiUrl];
