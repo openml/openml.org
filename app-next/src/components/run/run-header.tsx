@@ -1,22 +1,27 @@
 import Link from "next/link";
 import {
-  Calendar,
   User,
-  Database,
-  Cog,
-  Trophy,
-  FlaskConical,
   CheckCircle2,
   XCircle,
-  Heart,
   CloudDownload,
   MessageCircle,
-  ThumbsDown,
   Eye,
   EyeOff,
+  GitCompareArrows,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { entityColors } from "@/constants/entityColors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
+import { LikeButton } from "@/components/ui/like-button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
+
+function truncateFlowName(name: string): string {
+  const words = name.split(" ");
+  if (words.length <= 8) return name;
+  return `${words.slice(0, 4).join(" ")} ... ${words.slice(-4).join(" ")}`;
+}
 
 interface RunTaskSourceData {
   data_id?: number;
@@ -51,30 +56,38 @@ interface RunHeaderProps {
 }
 
 export function RunHeader({ run }: RunHeaderProps) {
-  const uploadDate =
-    run.uploader_date || run.upload_time
-      ? new Date(run.uploader_date || run.upload_time || "").toLocaleDateString(
-          "en-US",
-          {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          },
-        )
-      : null;
-
   const hasError = !!run.error_message;
   const isPublic = run.visibility === "public" || !run.visibility;
+  const uploaderLabel =
+    run.uploader || (run.uploader_id ? `user/${run.uploader_id}` : null);
+  const uploaderHref = run.uploader
+    ? `/users/${run.uploader}`
+    : run.uploader_id
+      ? `/users/${run.uploader_id}`
+      : null;
+  const flowLabel = run.flow_name
+    ? truncateFlowName(run.flow_name)
+    : run.flow_id
+      ? `Flow #${run.flow_id}`
+      : null;
+
+  const likes = run.nr_of_likes || 0;
 
   return (
-    <header className="space-y-6 border-b pb-6">
+    <header className="space-y-3 border-b p-0">
       <div className="flex items-start gap-3">
-        <FlaskConical
+        <FontAwesomeIcon
+          icon={ENTITY_ICONS.run}
           className="mt-1 h-9 w-9 shrink-0"
-          style={{ color: entityColors.run, fill: entityColors.run }}
+          style={{
+            color: entityColors.run,
+            width: "32px",
+            height: "32px",
+          }}
         />
 
         <div className="flex-1 space-y-2">
+          {/* Line 1: Run ID + status badges */}
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Run #{run.run_id}
@@ -93,7 +106,6 @@ export function RunHeader({ run }: RunHeaderProps) {
                 Success
               </Badge>
             )}
-            {/* Visibility indicator */}
             <Badge
               variant="outline"
               className={`flex items-center gap-1 ${isPublic ? "border-green-500 text-green-600" : "border-orange-500 text-orange-600"}`}
@@ -107,86 +119,75 @@ export function RunHeader({ run }: RunHeaderProps) {
             </Badge>
           </div>
 
-          {/* Links to related entities */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-            {/* Flow */}
-            {run.flow_id && (
-              <Link
-                href={`/flows/${run.flow_id}`}
-                className="flex items-center gap-1 text-[#3b82f6] hover:underline"
-              >
-                <Cog className="h-4 w-4" />
-                {run.flow_name || `Flow #${run.flow_id}`}
-              </Link>
-            )}
-
-            {/* Dataset */}
-            {run.task?.source_data?.data_id && (
-              <Link
-                href={`/datasets/${run.task.source_data.data_id}`}
-                className="flex items-center gap-1 text-green-600 hover:underline"
-              >
-                <Database className="h-4 w-4" />
-                {run.task.source_data.name ||
-                  `Dataset #${run.task.source_data.data_id}`}
-              </Link>
-            )}
-
-            {/* Task */}
-            {run.task_id && (
-              <Link
-                href={`/tasks/${run.task_id}`}
-                className="flex items-center gap-1 text-[#FFA726] hover:underline"
-              >
-                <Trophy className="h-4 w-4" />
-                Task #{run.task_id}
-              </Link>
-            )}
-          </div>
-
-          {/* Uploader and Date */}
+          {/* Line 2: Uploader + engagement metrics */}
           <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            {run.uploader && (
+            {uploaderLabel && uploaderHref && (
               <Link
-                href={`/users/${run.uploader}`}
+                href={uploaderHref}
                 className="flex items-center gap-1 hover:underline"
               >
                 <User className="h-4 w-4" />
-                {run.uploader}
+                {uploaderLabel}
               </Link>
             )}
-
-            {uploadDate && (
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                <span>{uploadDate}</span>
-              </div>
-            )}
-
-            {/* Engagement Metrics (NEW) */}
-            <span className="flex items-center gap-1" title="likes">
-              <Heart className="h-4 w-4 fill-purple-500 text-purple-500" />
-              {run.nr_of_likes || 0} likes
-            </span>
-
+            <LikeButton
+              entityType="run"
+              entityId={run.run_id}
+              initialLikes={likes}
+              showCount={true}
+              size="sm"
+            />
             <span className="flex items-center gap-1" title="downloads">
               <CloudDownload className="h-4 w-4 text-gray-500" />
               {run.nr_of_downloads || 0} downloads
             </span>
-
             <span className="flex items-center gap-1" title="issues">
               <MessageCircle className="h-4 w-4 text-orange-500" />
               {run.nr_of_issues || 0} issues
             </span>
+          </div>
 
-            {(run.nr_of_downvotes ?? 0) > 0 && (
-              <span className="flex items-center gap-1" title="downvotes">
-                <ThumbsDown className="h-4 w-4 text-red-500" />
-                {run.nr_of_downvotes} downvotes
-              </span>
+          {/* Line 3: Task ID + truncated flow name */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+            {run.task_id && (
+              <Link
+                href={`/tasks/${run.task_id}`}
+                className="flex items-center gap-1 hover:underline"
+                style={{ color: entityColors.task }}
+              >
+                <FontAwesomeIcon icon={ENTITY_ICONS.task} className="h-4 w-4" />
+                Task #{run.task_id}
+              </Link>
+            )}
+            {run.flow_id && flowLabel && (
+              <Link
+                href={`/flows/${run.flow_id}`}
+                className="flex items-center gap-1 hover:underline"
+                style={{ color: entityColors.flow }}
+              >
+                <FontAwesomeIcon icon={ENTITY_ICONS.flow} className="h-4 w-4" />
+                <span className="max-w-[480px] truncate" title={run.flow_name}>
+                  {flowLabel}
+                </span>
+              </Link>
             )}
           </div>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap items-center justify-end gap-3 pb-4">
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/runs/compare?ids=${run.run_id}`}>
+            <GitCompareArrows className="h-4 w-4" />
+            Compare with…
+          </Link>
+        </Button>
+        <EntityActionsMenu
+          entityType="run"
+          entityId={run.run_id}
+          entityName={`Run #${run.run_id}`}
+        />
       </div>
     </header>
   );
