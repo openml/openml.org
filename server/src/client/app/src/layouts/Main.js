@@ -143,7 +143,7 @@ function Main(props) {
               severity="info"
               sx={{ width: '100%'}}
             >
-                OpenML will be in read-only mode Nov 23-30 for maintenance. We apologise for this inconvenience. Further information will be shared{" "}
+                OpenML will be in read-only mode Nov 30-Dec 7 for maintenance. We apologise for this inconvenience. Further information will be shared{" "}
                 <a href="https://github.com/orgs/openml/discussions/40">
                   here.
                 </a>
