@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { WithSearch, Paging } from "@elastic/react-search-ui";
-import { FilterBar } from "../shared/filter-bar";
 import { ControlsBar } from "../shared/controls-bar";
 import { Badge } from "@/components/ui/badge";
 import { entityColors } from "@/constants/entityColors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ENTITY_ICONS } from "@/constants/entityIcons";
 import { truncateName } from "@/lib/utils";
 import {
   Layers,
@@ -14,8 +15,6 @@ import {
   User,
   Database,
   Flag,
-  Cog,
-  FlaskConical,
   Hash,
   Clock,
   ArrowRight,
@@ -35,10 +34,6 @@ interface StudyResult {
   runs_included?: { raw: number };
   [key: string]: unknown;
 }
-
-const searchFacets = [
-  { label: "Uploader", field: "uploader.keyword" },
-];
 
 const sortOptions = [
   { name: "Relevance", value: [], id: "relevance" },
@@ -124,8 +119,8 @@ export function CollectionsSearchContainer({
             </div>
           )}
 
-          {/* Search Results Header */}
-          {searchTerm && (
+          {/* Search Results Header — only shown when a search query is active */}
+          {!isLoading && !!searchTerm && (
             <div className="bg-muted/30 border-b px-4 py-3">
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-muted-foreground">
@@ -143,7 +138,6 @@ export function CollectionsSearchContainer({
             </div>
           )}
 
-          <FilterBar facets={searchFacets} />
           <ControlsBar
             view={view}
             onViewChange={setView}
@@ -151,152 +145,176 @@ export function CollectionsSearchContainer({
           />
 
           <div className="p-4">
-            <WithSearch mapContextToProps={({ results }) => ({ results })}>
-              {({ results }) => (
+            <WithSearch
+              mapContextToProps={({ results, isLoading }) => ({
+                results,
+                isLoading,
+              })}
+            >
+              {({ results, isLoading }) => (
                 <>
                   {view === "list" && (
                     <div className="space-y-0">
-                      {results && results.length > 0 ? (
-                        results.map(
-                          (result: StudyResult, index: number) => {
-                            const studyId = result.study_id?.raw;
-                            const name = truncateName(
-                              result.name?.raw || "Untitled Collection",
-                            );
-                            const description =
-                              result.description?.snippet ||
-                              result.description?.raw ||
-                              "";
-                            const datasetsCount = Number(
-                              result.datasets_included?.raw || 0,
-                            );
-                            const tasksCount = Number(
-                              result.tasks_included?.raw || 0,
-                            );
-                            const flowsCount = Number(
-                              result.flows_included?.raw || 0,
-                            );
-                            const runsCount = Number(
-                              result.runs_included?.raw || 0,
-                            );
+                      {isLoading ? (
+                        Array.from({ length: 5 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="flex items-start justify-between border-b p-4"
+                          >
+                            <div className="min-w-0 flex-1 space-y-2">
+                              <div className="h-4 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="h-3 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-4">
+                                {Array.from({ length: 4 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
+                        results.map((result: StudyResult, index: number) => {
+                          const studyId = result.study_id?.raw;
+                          const name = truncateName(
+                            result.name?.raw || "Untitled Collection",
+                          );
+                          const description =
+                            result.description?.snippet ||
+                            result.description?.raw ||
+                            "";
+                          const datasetsCount = Number(
+                            result.datasets_included?.raw || 0,
+                          );
+                          const tasksCount = Number(
+                            result.tasks_included?.raw || 0,
+                          );
+                          const flowsCount = Number(
+                            result.flows_included?.raw || 0,
+                          );
+                          const runsCount = Number(
+                            result.runs_included?.raw || 0,
+                          );
 
-                            return (
-                              <div
-                                key={studyId || index}
-                                className="hover:bg-accent relative flex items-start justify-between border-b p-4 transition-colors"
-                              >
-                                <div className="min-w-0 flex-1">
-                                  <div className="mb-1 flex items-start gap-3">
-                                    <Layers
-                                      className="mt-1 h-5 w-5 shrink-0"
-                                      style={{ color: entityColor }}
-                                    />
-                                    <div className="flex items-baseline gap-2">
-                                      <h3 className="text-base font-semibold">
-                                        {name}
-                                      </h3>
-                                    </div>
-                                  </div>
-
-                                  {description && (
-                                    <p
-                                      className="text-muted-foreground mb-2 line-clamp-2 text-sm"
-                                      dangerouslySetInnerHTML={{
-                                        __html: description,
-                                      }}
-                                    />
-                                  )}
-
-                                  {/* Entity counts with correct colors */}
-                                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                                    {datasetsCount > 0 && (
-                                      <span
-                                        className="flex items-center gap-1.5"
-                                        title="datasets"
-                                      >
-                                        <Database
-                                          className="h-4 w-4"
-                                          style={{ color: entityColors.data }}
-                                        />
-                                        {datasetsCount.toLocaleString()}
-                                      </span>
-                                    )}
-                                    {tasksCount > 0 && (
-                                      <span
-                                        className="flex items-center gap-1.5"
-                                        title="tasks"
-                                      >
-                                        <Flag
-                                          className="h-4 w-4"
-                                          style={{ color: entityColors.task }}
-                                        />
-                                        {tasksCount.toLocaleString()}
-                                      </span>
-                                    )}
-                                    {flowsCount > 0 && (
-                                      <span
-                                        className="flex items-center gap-1.5"
-                                        title="flows"
-                                      >
-                                        <Cog
-                                          className="h-4 w-4"
-                                          style={{ color: entityColors.flow }}
-                                        />
-                                        {flowsCount.toLocaleString()}
-                                      </span>
-                                    )}
-                                    {runsCount > 0 && (
-                                      <span
-                                        className="flex items-center gap-1.5"
-                                        title="runs"
-                                      >
-                                        <FlaskConical
-                                          className="h-4 w-4"
-                                          style={{ color: entityColors.run }}
-                                        />
-                                        {runsCount.toLocaleString()}
-                                      </span>
-                                    )}
-                                    {result.date?.raw && (
-                                      <span
-                                        className="text-muted-foreground flex items-center gap-1.5"
-                                        title="date"
-                                      >
-                                        <Clock className="h-4 w-4" />
-                                        {new Date(
-                                          result.date.raw,
-                                        ).toLocaleDateString("en-US", {
-                                          year: "numeric",
-                                          month: "short",
-                                        })}
-                                      </span>
-                                    )}
+                          return (
+                            <div
+                              key={studyId || index}
+                              className="hover:bg-accent relative flex items-start justify-between border-b p-4 transition-colors"
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="mb-1 flex items-start gap-3">
+                                  <Layers
+                                    className="mt-1 h-5 w-5 shrink-0"
+                                    style={{ color: entityColor }}
+                                  />
+                                  <div className="flex items-baseline gap-2">
+                                    <h3 className="text-base font-semibold">
+                                      {name}
+                                    </h3>
                                   </div>
                                 </div>
 
-                                <Badge
-                                  variant="openml"
-                                  className="relative z-10 flex items-center gap-0.75 px-2 py-0.5 text-xs font-semibold text-white"
-                                  style={{ backgroundColor: entityColor }}
-                                  title="study ID"
-                                >
-                                  <Hash className="h-3 w-3" />
-                                  {studyId}
-                                </Badge>
+                                {description && (
+                                  <p
+                                    className="text-muted-foreground mb-2 line-clamp-2 text-sm"
+                                    dangerouslySetInnerHTML={{
+                                      __html: description,
+                                    }}
+                                  />
+                                )}
 
-                                <Link
-                                  href={`${basePath}/${studyId}`}
-                                  className="absolute inset-0"
-                                  aria-label={`View ${name}`}
-                                >
-                                  <span className="sr-only">
-                                    View {name}
-                                  </span>
-                                </Link>
+                                {/* Entity counts with correct colors */}
+                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                                  {datasetsCount > 0 && (
+                                    <span
+                                      className="flex items-center gap-1.5"
+                                      title="datasets"
+                                    >
+                                      <Database
+                                        className="h-4 w-4"
+                                        style={{ color: entityColors.data }}
+                                      />
+                                      {datasetsCount.toLocaleString()}
+                                    </span>
+                                  )}
+                                  {tasksCount > 0 && (
+                                    <span
+                                      className="flex items-center gap-1.5"
+                                      title="tasks"
+                                    >
+                                      <Flag
+                                        className="h-4 w-4"
+                                        style={{ color: entityColors.task }}
+                                      />
+                                      {tasksCount.toLocaleString()}
+                                    </span>
+                                  )}
+                                  {flowsCount > 0 && (
+                                    <span
+                                      className="flex items-center gap-1.5"
+                                      title="flows"
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={ENTITY_ICONS.flow}
+                                        className="h-4 w-4"
+                                        style={{ color: entityColors.flow }}
+                                      />
+                                      {flowsCount.toLocaleString()}
+                                    </span>
+                                  )}
+                                  {runsCount > 0 && (
+                                    <span
+                                      className="flex items-center gap-1.5"
+                                      title="runs"
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={ENTITY_ICONS.run}
+                                        className="h-4 w-4"
+                                        style={{ color: entityColors.run }}
+                                      />
+                                      {runsCount.toLocaleString()}
+                                    </span>
+                                  )}
+                                  {result.date?.raw && (
+                                    <span
+                                      className="text-muted-foreground flex items-center gap-1.5"
+                                      title="date"
+                                    >
+                                      <Clock className="h-4 w-4" />
+                                      {new Date(
+                                        result.date.raw,
+                                      ).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                      })}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            );
-                          },
-                        )
+
+                              <Badge
+                                variant="openml"
+                                className="relative z-10 flex items-center gap-0.75 px-2 py-0.5 text-xs font-semibold text-white"
+                                style={{ backgroundColor: entityColor }}
+                                title="study ID"
+                              >
+                                <Hash className="h-3 w-3" />
+                                {studyId}
+                              </Badge>
+
+                              <Link
+                                href={`${basePath}/${studyId}`}
+                                className="absolute inset-0"
+                                aria-label={`View ${name}`}
+                              >
+                                <span className="sr-only">View {name}</span>
+                              </Link>
+                            </div>
+                          );
+                        })
                       ) : (
                         <div className="text-muted-foreground p-8 text-center">
                           No results found
@@ -307,96 +325,128 @@ export function CollectionsSearchContainer({
 
                   {view === "grid" && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {results && results.length > 0 ? (
-                        results.map(
-                          (result: StudyResult, index: number) => {
-                            const studyId = result.study_id?.raw;
-                            const name = truncateName(
-                              result.name?.raw || "Untitled Collection",
-                            );
-                            const description =
-                              result.description?.snippet ||
-                              result.description?.raw ||
-                              "";
-                            const datasetsCount = Number(
-                              result.datasets_included?.raw || 0,
-                            );
-                            const tasksCount = Number(
-                              result.tasks_included?.raw || 0,
-                            );
-                            const flowsCount = Number(
-                              result.flows_included?.raw || 0,
-                            );
-                            const runsCount = Number(
-                              result.runs_included?.raw || 0,
-                            );
+                      {isLoading ? (
+                        Array.from({ length: 8 }).map((_, i) => (
+                          <div key={i} className="rounded-lg border p-4 space-y-3">
+                            <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                            <div className="h-3 w-2/3 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                          </div>
+                        ))
+                      ) : results && results.length > 0 ? (
+                        results.map((result: StudyResult, index: number) => {
+                          const studyId = result.study_id?.raw;
+                          const name = truncateName(
+                            result.name?.raw || "Untitled Collection",
+                          );
+                          const description =
+                            result.description?.snippet ||
+                            result.description?.raw ||
+                            "";
+                          const datasetsCount = Number(
+                            result.datasets_included?.raw || 0,
+                          );
+                          const tasksCount = Number(
+                            result.tasks_included?.raw || 0,
+                          );
+                          const flowsCount = Number(
+                            result.flows_included?.raw || 0,
+                          );
+                          const runsCount = Number(
+                            result.runs_included?.raw || 0,
+                          );
 
-                            return (
-                              <Link
-                                key={studyId || index}
-                                href={`${basePath}/${studyId}`}
-                                className="hover:bg-accent group relative flex flex-col rounded-lg border p-4 transition-colors"
-                              >
-                                <div className="mb-2 flex items-center justify-between">
-                                  <Layers
-                                    className="h-5 w-5"
-                                    style={{ color: entityColor }}
-                                  />
-                                  <Badge
-                                    variant="openml"
-                                    className="flex items-center gap-0.5 px-1.5 py-0 text-[10px] font-semibold text-white"
-                                    style={{ backgroundColor: entityColor }}
+                          return (
+                            <Link
+                              key={studyId || index}
+                              href={`${basePath}/${studyId}`}
+                              className="hover:bg-accent group relative flex flex-col rounded-lg border p-4 transition-colors"
+                            >
+                              <div className="mb-2 flex items-center justify-between">
+                                <Layers
+                                  className="h-5 w-5"
+                                  style={{ color: entityColor }}
+                                />
+                                <Badge
+                                  variant="openml"
+                                  className="flex items-center gap-0.5 px-1.5 py-0 text-[10px] font-semibold text-white"
+                                  style={{ backgroundColor: entityColor }}
+                                >
+                                  <Hash className="h-2.5 w-2.5" />
+                                  {studyId}
+                                </Badge>
+                              </div>
+                              <h4 className="mb-1 line-clamp-1 text-sm font-semibold">
+                                {name}
+                              </h4>
+                              {description && (
+                                <p
+                                  className="text-muted-foreground mb-3 line-clamp-2 text-xs"
+                                  dangerouslySetInnerHTML={{
+                                    __html: description,
+                                  }}
+                                />
+                              )}
+                              <div className="mt-auto flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                                {datasetsCount > 0 && (
+                                  <span
+                                    className="flex items-center gap-1"
+                                    title="datasets"
                                   >
-                                    <Hash className="h-2.5 w-2.5" />
-                                    {studyId}
-                                  </Badge>
-                                </div>
-                                <h4 className="mb-1 line-clamp-1 text-sm font-semibold">
-                                  {name}
-                                </h4>
-                                {description && (
-                                  <p
-                                    className="text-muted-foreground mb-3 line-clamp-2 text-xs"
-                                    dangerouslySetInnerHTML={{
-                                      __html: description,
-                                    }}
-                                  />
+                                    <Database
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.data }}
+                                    />
+                                    {datasetsCount.toLocaleString()}
+                                  </span>
                                 )}
-                                <div className="mt-auto flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                                  {datasetsCount > 0 && (
-                                    <span className="flex items-center gap-1" title="datasets">
-                                      <Database className="h-3 w-3" style={{ color: entityColors.data }} />
-                                      {datasetsCount.toLocaleString()}
-                                    </span>
-                                  )}
-                                  {tasksCount > 0 && (
-                                    <span className="flex items-center gap-1" title="tasks">
-                                      <Flag className="h-3 w-3" style={{ color: entityColors.task }} />
-                                      {tasksCount.toLocaleString()}
-                                    </span>
-                                  )}
-                                  {flowsCount > 0 && (
-                                    <span className="flex items-center gap-1" title="flows">
-                                      <Cog className="h-3 w-3" style={{ color: entityColors.flow }} />
-                                      {flowsCount.toLocaleString()}
-                                    </span>
-                                  )}
-                                  {runsCount > 0 && (
-                                    <span className="flex items-center gap-1" title="runs">
-                                      <FlaskConical className="h-3 w-3" style={{ color: entityColors.run }} />
-                                      {runsCount.toLocaleString()}
-                                    </span>
-                                  )}
-                                </div>
-                                {result.uploader?.raw && (
-                                  <p className="text-muted-foreground mt-2 truncate text-xs">
-                                    {result.uploader.raw}
-                                  </p>
+                                {tasksCount > 0 && (
+                                  <span
+                                    className="flex items-center gap-1"
+                                    title="tasks"
+                                  >
+                                    <Flag
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.task }}
+                                    />
+                                    {tasksCount.toLocaleString()}
+                                  </span>
                                 )}
-                              </Link>
-                            );
-                          },
-                        )
+                                {flowsCount > 0 && (
+                                  <span
+                                    className="flex items-center gap-1"
+                                    title="flows"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.flow}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.flow }}
+                                    />
+                                    {flowsCount.toLocaleString()}
+                                  </span>
+                                )}
+                                {runsCount > 0 && (
+                                  <span
+                                    className="flex items-center gap-1"
+                                    title="runs"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={ENTITY_ICONS.run}
+                                      className="h-3 w-3"
+                                      style={{ color: entityColors.run }}
+                                    />
+                                    {runsCount.toLocaleString()}
+                                  </span>
+                                )}
+                              </div>
+                              {result.uploader?.raw && (
+                                <p className="text-muted-foreground mt-2 truncate text-xs">
+                                  {result.uploader.raw}
+                                </p>
+                              )}
+                            </Link>
+                          );
+                        })
                       ) : (
                         <div className="text-muted-foreground col-span-full p-8 text-center">
                           No results found
@@ -409,15 +459,31 @@ export function CollectionsSearchContainer({
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b bg-muted/50">
-                            <th className="px-4 py-3 text-left font-medium">ID</th>
-                            <th className="px-4 py-3 text-left font-medium">Name</th>
-                            <th className="px-4 py-3 text-left font-medium">Uploader</th>
-                            <th className="px-4 py-3 text-right font-medium">Datasets</th>
-                            <th className="px-4 py-3 text-right font-medium">Tasks</th>
-                            <th className="px-4 py-3 text-right font-medium">Flows</th>
-                            <th className="px-4 py-3 text-right font-medium">Runs</th>
-                            <th className="px-4 py-3 text-left font-medium">Date</th>
+                          <tr className="bg-muted/50 border-b">
+                            <th className="px-4 py-3 text-left font-medium">
+                              ID
+                            </th>
+                            <th className="px-4 py-3 text-left font-medium">
+                              Name
+                            </th>
+                            <th className="px-4 py-3 text-left font-medium">
+                              Uploader
+                            </th>
+                            <th className="px-4 py-3 text-right font-medium">
+                              Datasets
+                            </th>
+                            <th className="px-4 py-3 text-right font-medium">
+                              Tasks
+                            </th>
+                            <th className="px-4 py-3 text-right font-medium">
+                              Flows
+                            </th>
+                            <th className="px-4 py-3 text-right font-medium">
+                              Runs
+                            </th>
+                            <th className="px-4 py-3 text-left font-medium">
+                              Date
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -444,27 +510,39 @@ export function CollectionsSearchContainer({
                                         href={`${basePath}/${studyId}`}
                                         className="hover:underline"
                                       >
-                                        {truncateName(result.name?.raw || "Untitled")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled",
+                                        )}
                                       </Link>
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground">
+                                    <td className="text-muted-foreground px-4 py-3">
                                       {result.uploader?.raw || "-"}
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                      {Number(result.datasets_included?.raw || 0).toLocaleString()}
+                                      {Number(
+                                        result.datasets_included?.raw || 0,
+                                      ).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                      {Number(result.tasks_included?.raw || 0).toLocaleString()}
+                                      {Number(
+                                        result.tasks_included?.raw || 0,
+                                      ).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                      {Number(result.flows_included?.raw || 0).toLocaleString()}
+                                      {Number(
+                                        result.flows_included?.raw || 0,
+                                      ).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-3 text-right">
-                                      {Number(result.runs_included?.raw || 0).toLocaleString()}
+                                      {Number(
+                                        result.runs_included?.raw || 0,
+                                      ).toLocaleString()}
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground">
+                                    <td className="text-muted-foreground px-4 py-3">
                                       {result.date?.raw
-                                        ? new Date(result.date.raw).toLocaleDateString("en-US", {
+                                        ? new Date(
+                                            result.date.raw,
+                                          ).toLocaleDateString("en-US", {
                                             year: "numeric",
                                             month: "short",
                                           })
@@ -476,7 +554,10 @@ export function CollectionsSearchContainer({
                             )
                           ) : (
                             <tr>
-                              <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
+                              <td
+                                colSpan={8}
+                                className="text-muted-foreground px-4 py-8 text-center"
+                              >
                                 No results found
                               </td>
                             </tr>
@@ -489,7 +570,21 @@ export function CollectionsSearchContainer({
                   {view === "split" && (
                     <div className="flex gap-0">
                       <div className="w-[380px] space-y-0 overflow-y-auto border-r">
-                        {results && results.length > 0 ? (
+                        {isLoading ? (
+                          Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="border-b p-3 space-y-2">
+                              <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                              <div className="flex gap-3">
+                                {Array.from({ length: 3 }).map((_, j) => (
+                                  <div
+                                    key={j}
+                                    className="h-3 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))
+                        ) : results && results.length > 0 ? (
                           (() => {
                             const currentIds = results.map(
                               (r: StudyResult) => r.study_id?.raw,
@@ -515,9 +610,7 @@ export function CollectionsSearchContainer({
                                     href={`${basePath}/${studyId}`}
                                     onClick={(e) => {
                                       e.preventDefault();
-                                      setSelectedStudy(
-                                        result as StudyResult,
-                                      );
+                                      setSelectedStudy(result as StudyResult);
                                     }}
                                     className={`hover:bg-accent block cursor-pointer border-b p-3 transition-colors dark:hover:bg-slate-700 ${
                                       isSelected
@@ -531,26 +624,57 @@ export function CollectionsSearchContainer({
                                         style={{ color: entityColor }}
                                       />
                                       <h4 className="line-clamp-1 text-sm font-semibold">
-                                        {truncateName(result.name?.raw || "Untitled")}
+                                        {truncateName(
+                                          result.name?.raw || "Untitled",
+                                        )}
                                       </h4>
                                     </div>
                                     <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                                      {Number(result.datasets_included?.raw || 0) > 0 && (
-                                        <span className="flex items-center gap-1" title="datasets">
-                                          <Database className="h-3 w-3" style={{ color: entityColors.data }} />
-                                          {Number(result.datasets_included?.raw || 0).toLocaleString()}
+                                      {Number(
+                                        result.datasets_included?.raw || 0,
+                                      ) > 0 && (
+                                        <span
+                                          className="flex items-center gap-1"
+                                          title="datasets"
+                                        >
+                                          <Database
+                                            className="h-3 w-3"
+                                            style={{ color: entityColors.data }}
+                                          />
+                                          {Number(
+                                            result.datasets_included?.raw || 0,
+                                          ).toLocaleString()}
                                         </span>
                                       )}
-                                      {Number(result.tasks_included?.raw || 0) > 0 && (
-                                        <span className="flex items-center gap-1" title="tasks">
-                                          <Flag className="h-3 w-3" style={{ color: entityColors.task }} />
-                                          {Number(result.tasks_included?.raw || 0).toLocaleString()}
+                                      {Number(result.tasks_included?.raw || 0) >
+                                        0 && (
+                                        <span
+                                          className="flex items-center gap-1"
+                                          title="tasks"
+                                        >
+                                          <Flag
+                                            className="h-3 w-3"
+                                            style={{ color: entityColors.task }}
+                                          />
+                                          {Number(
+                                            result.tasks_included?.raw || 0,
+                                          ).toLocaleString()}
                                         </span>
                                       )}
-                                      {Number(result.runs_included?.raw || 0) > 0 && (
-                                        <span className="flex items-center gap-1" title="runs">
-                                          <FlaskConical className="h-3 w-3" style={{ color: entityColors.run }} />
-                                          {Number(result.runs_included?.raw || 0).toLocaleString()}
+                                      {Number(result.runs_included?.raw || 0) >
+                                        0 && (
+                                        <span
+                                          className="flex items-center gap-1"
+                                          title="runs"
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={ENTITY_ICONS.run}
+                                            className="h-3 w-3"
+                                            style={{ color: entityColors.run }}
+                                          />
+                                          {Number(
+                                            result.runs_included?.raw || 0,
+                                          ).toLocaleString()}
                                         </span>
                                       )}
                                     </div>
@@ -576,7 +700,9 @@ export function CollectionsSearchContainer({
                                   style={{ color: entityColor }}
                                 />
                                 <h2 className="text-xl font-bold">
-                                  {truncateName(selectedStudy.name?.raw || "Untitled")}
+                                  {truncateName(
+                                    selectedStudy.name?.raw || "Untitled",
+                                  )}
                                 </h2>
                               </div>
                               <Badge
@@ -594,28 +720,59 @@ export function CollectionsSearchContainer({
                               </p>
                             )}
                             <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                              {Number(selectedStudy.datasets_included?.raw || 0) > 0 && (
+                              {Number(
+                                selectedStudy.datasets_included?.raw || 0,
+                              ) > 0 && (
                                 <span className="flex items-center gap-1.5">
-                                  <Database className="h-4 w-4" style={{ color: entityColors.data }} />
-                                  {Number(selectedStudy.datasets_included?.raw || 0).toLocaleString()} datasets
+                                  <Database
+                                    className="h-4 w-4"
+                                    style={{ color: entityColors.data }}
+                                  />
+                                  {Number(
+                                    selectedStudy.datasets_included?.raw || 0,
+                                  ).toLocaleString()}{" "}
+                                  datasets
                                 </span>
                               )}
-                              {Number(selectedStudy.tasks_included?.raw || 0) > 0 && (
+                              {Number(selectedStudy.tasks_included?.raw || 0) >
+                                0 && (
                                 <span className="flex items-center gap-1.5">
-                                  <Flag className="h-4 w-4" style={{ color: entityColors.task }} />
-                                  {Number(selectedStudy.tasks_included?.raw || 0).toLocaleString()} tasks
+                                  <Flag
+                                    className="h-4 w-4"
+                                    style={{ color: entityColors.task }}
+                                  />
+                                  {Number(
+                                    selectedStudy.tasks_included?.raw || 0,
+                                  ).toLocaleString()}{" "}
+                                  tasks
                                 </span>
                               )}
-                              {Number(selectedStudy.flows_included?.raw || 0) > 0 && (
+                              {Number(selectedStudy.flows_included?.raw || 0) >
+                                0 && (
                                 <span className="flex items-center gap-1.5">
-                                  <Cog className="h-4 w-4" style={{ color: entityColors.flow }} />
-                                  {Number(selectedStudy.flows_included?.raw || 0).toLocaleString()} flows
+                                  <FontAwesomeIcon
+                                    icon={ENTITY_ICONS.flow}
+                                    className="h-4 w-4"
+                                    style={{ color: entityColors.flow }}
+                                  />
+                                  {Number(
+                                    selectedStudy.flows_included?.raw || 0,
+                                  ).toLocaleString()}{" "}
+                                  flows
                                 </span>
                               )}
-                              {Number(selectedStudy.runs_included?.raw || 0) > 0 && (
+                              {Number(selectedStudy.runs_included?.raw || 0) >
+                                0 && (
                                 <span className="flex items-center gap-1.5">
-                                  <FlaskConical className="h-4 w-4" style={{ color: entityColors.run }} />
-                                  {Number(selectedStudy.runs_included?.raw || 0).toLocaleString()} runs
+                                  <FontAwesomeIcon
+                                    icon={ENTITY_ICONS.run}
+                                    className="h-4 w-4"
+                                    style={{ color: entityColors.run }}
+                                  />
+                                  {Number(
+                                    selectedStudy.runs_included?.raw || 0,
+                                  ).toLocaleString()}{" "}
+                                  runs
                                 </span>
                               )}
                             </div>
@@ -628,7 +785,9 @@ export function CollectionsSearchContainer({
                             {selectedStudy.date?.raw && (
                               <p className="text-muted-foreground mb-4 text-sm">
                                 <Calendar className="mr-1 inline h-4 w-4" />
-                                {new Date(selectedStudy.date.raw).toLocaleDateString("en-US", {
+                                {new Date(
+                                  selectedStudy.date.raw,
+                                ).toLocaleDateString("en-US", {
                                   year: "numeric",
                                   month: "long",
                                   day: "numeric",
@@ -723,9 +882,7 @@ export function CollectionsSearchContainer({
                             return (
                               <button
                                 key={page}
-                                onClick={() =>
-                                  isAccessible && onChange(page)
-                                }
+                                onClick={() => isAccessible && onChange(page)}
                                 disabled={!isAccessible}
                                 className={`rounded border px-3 py-1 ${
                                   isCurrent
