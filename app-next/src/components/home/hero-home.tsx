@@ -1,5 +1,3 @@
-"use client";
-import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Integrations from "./Integrations";
 import { CornerRightUp, MoveUpRight } from "lucide-react";
@@ -7,28 +5,12 @@ import { useTranslations } from "next-intl";
 import { useSidebar } from "@/contexts/sidebar-context";
 
 export const HeroHome: React.FC = () => {
-  const [showHint, setShowHint] = useState(true);
-  const { setHomeMenuOpen } = useSidebar();
   const t = useTranslations("home.hero");
   const tEco = useTranslations("home.ecosystem");
 
-  useEffect(() => {
-    // Hide hint after 8 seconds
-    const timer = setTimeout(() => setShowHint(false), 8000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     // <div className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg_lightMode_4_heroSection.png')] bg-cover bg-center dark:bg-none">
-    <div
-      className="dark:bg-muted/30 relative overflow-hidden bg-[url('/img/bg-light_hero.png')] bg-cover bg-top dark:bg-none"
-      onClick={() => setHomeMenuOpen(false)}
-    >
-      {/* Hamburger Menu Hint - Fixed position */}
-      {showHint && (
-        <div className="animate-in fade-in slide-in-from-left-5 fixed top-28 left-4 z-50 duration-500 lg:top-32"></div>
-      )}
-
+    <div>
       <section className="mx-auto w-fit px-4 pt-[5%] pb-[6%] md:px-8">
         <div className="grid max-w-7xl grid-cols-1 items-center gap-8 lg:mx-6 lg:grid-cols-2 lg:gap-10 2xl:mx-16">
           {/* Left Column - Text */}

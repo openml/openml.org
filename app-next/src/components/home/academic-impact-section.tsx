@@ -1,5 +1,3 @@
-"use client";
-
 import { SectionContainer } from "@/components/layout/section-container";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
