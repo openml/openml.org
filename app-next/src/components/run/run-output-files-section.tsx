@@ -25,7 +25,7 @@ export function RunOutputFilesSection({
   outputFiles,
 }: RunOutputFilesSectionProps) {
   const apiUrl =
-    process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+    process.env.OPENML_API_URL || "https://www.openml.org/api/v1";
 
   // Default output files for runs
   const defaultFiles = [

@@ -47,7 +47,7 @@ export function RunAnalysesSection({ runId }: RunAnalysesSectionProps) {
       try {
         setLoading(true);
         const apiUrl =
-          process.env.NEXT_PUBLIC_URL_API || "https://www.openml.org/api/v1";
+          process.env.OPENML_API_URL || "https://www.openml.org/api/v1";
 
         // Fetch predictions from OpenML API
         const response = await fetch(`${apiUrl}/json/run/${runId}`, {
